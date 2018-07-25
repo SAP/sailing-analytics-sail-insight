@@ -1348,6 +1348,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sap.sailing.ios.SAPTracker;
 				PRODUCT_NAME = sap_sailing_insight;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1371,6 +1372,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sap.sailing.ios.SAPTracker;
 				PRODUCT_NAME = sap_sailing_insight;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

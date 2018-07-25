@@ -10,7 +10,7 @@ const Welcome = () => (
   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
     <View style={{ alignItems: 'center' }}>
       <Text style={{ textAlign: 'center', marginTop: 8 }}>
-        {I18n.t('title_welcome')}
+        {I18n.t('title_welcome')?.toUpperCase()}
       </Text>
     </View>
   </View>
