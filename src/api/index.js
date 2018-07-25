@@ -2,7 +2,7 @@ import { listRequest } from './handler'
 
 
 const Endpoints = {
-  regatta: '/regatta',
+  regatta: '/regattas',
   leaderboards: '/leaderboards',
 }
 

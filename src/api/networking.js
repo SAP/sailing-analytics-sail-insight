@@ -32,16 +32,15 @@ export const request = async (url, { method = 'GET', signer = defaultSignedHeade
   } finally {
     if (DEV_MODE) {
       Logger.groupedDebug(
+        `${response?.status || 'ERR'}: ${fetchOptions.method} ${url}`,
         {
           method: fetchOptions.method,
           headers: fetchOptions.headers,
-          body: data,
+          body,
           response,
         },
-        `${response?.status?.ERR}: ${fetchOptions.method} ${url}`,
       )
     }
   }
-
   return response
 }

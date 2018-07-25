@@ -1,4 +1,4 @@
-let apiRoot = 'https://dev.sapsailing.com'
+let apiRoot = 'https://www.sapsailing.com/sailingserver'
 const ApiSuffix = '/api/v1'
 
 

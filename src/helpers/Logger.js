@@ -1,8 +1,8 @@
 /* eslint-disable */
 
-import { get, keys } from 'lodash'
+import { keys, isUndefined } from 'lodash'
 
-import {DEV_MODE} from './environment';
+import { DEV_MODE } from './environment'
 
 
 const envAction = logAction => (DEV_MODE ? logAction : () => {})
@@ -12,14 +12,18 @@ export default {
   error: envAction(console.error),
   debug: envAction(console.log),
   warn: envAction(console.warn),
-  groupedDebug: envAction((data = {}, title) => {
+  groupedDebug: envAction((message, data = {}) => {
     if (console.groupCollapsed) {
-      console.groupCollapsed(title)
+      console.groupCollapsed(message)
     } else {
-      console.log(title)
+      console.log(message)
     }
-    keys(data).forEach((element) => {
-      console.log(element, data[element])
+    keys(data).forEach((property) => {
+      const value = data[property]
+      if (isUndefined(value)) {
+        return
+      }
+      console.log(property, value)
     })
     if (console.groupEnd) { console.groupEnd() }
   }),

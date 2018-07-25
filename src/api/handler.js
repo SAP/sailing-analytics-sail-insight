@@ -1,10 +1,15 @@
+import { normalize } from 'normalizr'
+
 import Logger from 'helpers/Logger'
 import * as networking from './networking'
 
 import ApiException from './ApiException'
 import { getUrl } from './config'
 
-
+/**
+ * extract json data from response
+ * @param {*} response object
+ */
 const responseData = async (response) => {
   if (!response) {
     return null
@@ -31,11 +36,14 @@ const responseDataArray = async (response, options) => {
   return data || []
 }
 
-
-const requestWithHandler = responseHandler => async (path, options) => {
+/**
+ * get request function with specific response data handler
+ * @param {*} responseHandler function to extract the data from response
+ */
+const requestWithHandler = responseHandler => async (path, options, dataSchema) => {
   const response = await networking.request(getUrl(path), options)
   const data = responseHandler ? await responseHandler(response) : response
-  return data
+  return dataSchema && data ? normalize(data, dataSchema) : data
 }
 
 
