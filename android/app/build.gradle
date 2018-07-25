@@ -134,6 +134,21 @@ android {
         }
     }
     buildToolsVersion rootProject.ext.buildToolsVersion
+
+    flavorDimensions "default"
+
+    productFlavors {
+        dev {
+            dimension "default"
+            manifestPlaceholders = [
+                    branchIOKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
+                    branchIOTestKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
+                    branchIOAppLink:"d-labs.app.link",
+                    branchIOTestMode: false,
+                    branchIOScheme: "d-labs",
+            ]
+        }
+    }
 }
 
 dependencies {
