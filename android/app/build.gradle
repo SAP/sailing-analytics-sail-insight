@@ -145,7 +145,7 @@ android {
                     branchIOTestKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
                     branchIOAppLink:"d-labs.app.link",
                     branchIOTestMode: false,
-                    branchIOScheme: "d-labs",
+                    branchIOScheme: "comsapsailingtracker",
             ]
         }
     }

@@ -6,10 +6,13 @@ import ReduxThunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import EStyleSheet from 'react-native-extended-stylesheet'
 
+import * as DeepLinking from 'integrations/DeepLinking'
+
 import Reducers from 'reducers'
 import AppNavigator from 'navigation/AppNavigator'
 import * as colors from 'styles/colors'
 import * as dimensions from 'styles/dimensions'
+import { performDeepLink } from 'actions'
 
 
 StatusBar.setBarStyle('dark-content')
@@ -39,8 +42,19 @@ if (module.hot) {
 }
 
 // must be a component to support hot reloading
-// eslint-disable-next-line react/prefer-stateless-function
 class App extends Component {
+  componentDidMount() {
+    DeepLinking.addListener(this.handleDeeplink)
+  }
+
+  componentWillUnmount() {
+    DeepLinking.removeListener(this.handleDeeplink)
+  }
+
+  handleDeeplink = (params) => {
+    store.dispatch(performDeepLink(params))
+  }
+
   render() {
     return (
       <Provider store={store}>
