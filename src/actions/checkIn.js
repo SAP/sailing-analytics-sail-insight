@@ -1,2 +1,4 @@
 
-export const checkIn = () => () => {}
+export const checkIn = data => async (_, getState) => {
+
+}

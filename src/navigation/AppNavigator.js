@@ -2,12 +2,16 @@ import React, { Component } from 'react'
 import { createStackNavigator } from 'react-navigation'
 
 import Welcome from 'containers/Welcome'
+import QRScanner from 'containers/QRScanner'
+
+import * as Screens from './Screens'
 import NavigationService from './NavigationService'
 
 
 const MainNavigator = createStackNavigator(
   {
-    Welcome: { screen: Welcome, navigationOptions: { header: null } },
+    [Screens.Welcome]: { screen: Welcome, navigationOptions: { header: null } },
+    [Screens.QRScanner]: { screen: QRScanner },
   },
   {
     initialRouteName: 'Welcome',
