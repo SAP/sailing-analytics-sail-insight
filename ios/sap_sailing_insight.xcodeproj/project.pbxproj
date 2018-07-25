@@ -39,6 +39,7 @@
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		674DD3B9609145549852DF35 /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A2B306FC04948978EBEAD1A /* libRNCamera.a */; };
 		9A7201380A18488D9A50DDD3 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCE39D05504C4265BDE0AD26 /* libReactNativePermissions.a */; };
+		408E7F7645A14C0885E4A72E /* libreact-native-branch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9190A08B7C4606B6AD7F69 /* libreact-native-branch.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -348,6 +349,8 @@
 		9A2B306FC04948978EBEAD1A /* libRNCamera.a */ = {isa = PBXFileReference; name = "libRNCamera.a"; path = "libRNCamera.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		8A9E7D3772BC4978BCC2BFBF /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; name = "ReactNativePermissions.xcodeproj"; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		FCE39D05504C4265BDE0AD26 /* libReactNativePermissions.a */ = {isa = PBXFileReference; name = "libReactNativePermissions.a"; path = "libReactNativePermissions.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		8C3D206835664EC09AFCFBC6 /* RNBranch.xcodeproj */ = {isa = PBXFileReference; name = "RNBranch.xcodeproj"; path = "../node_modules/react-native-branch/ios/RNBranch.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		1F9190A08B7C4606B6AD7F69 /* libreact-native-branch.a */ = {isa = PBXFileReference; name = "libreact-native-branch.a"; path = "libreact-native-branch.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -378,6 +381,7 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				674DD3B9609145549852DF35 /* libRNCamera.a in Frameworks */,
 				9A7201380A18488D9A50DDD3 /* libReactNativePermissions.a in Frameworks */,
+				408E7F7645A14C0885E4A72E /* libreact-native-branch.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,6 +570,7 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				313F1B74054941BBB04BA348 /* RNCamera.xcodeproj */,
 				8A9E7D3772BC4978BCC2BFBF /* ReactNativePermissions.xcodeproj */,
+				8C3D206835664EC09AFCFBC6 /* RNBranch.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1194,11 +1199,13 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-branch/ios/**",
 				);
 			};
 			name = Debug;
@@ -1221,11 +1228,13 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-branch/ios/**",
 				);
 			};
 			name = Release;
@@ -1249,6 +1258,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-branch/ios/**",
 				);
 			};
 			name = Debug;
@@ -1271,6 +1281,7 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-branch/ios/**",
 				);
 			};
 			name = Release;
@@ -1302,11 +1313,13 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-branch/ios/**",
 				);
 			};
 			name = Debug;
@@ -1338,11 +1351,13 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-branch/ios/**",
 				);
 			};
 			name = Release;
@@ -1373,11 +1388,13 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-branch/ios/**",
 				);
 			};
 			name = Debug;
@@ -1408,11 +1425,13 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-camera/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-branch/ios/**",
 				);
 			};
 			name = Release;
