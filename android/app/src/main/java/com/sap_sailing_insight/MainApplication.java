@@ -3,6 +3,7 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 
 import io.branch.referral.Branch;
 import io.branch.rnbranch.RNBranchPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNI18nPackage(),
             new RNBranchPackage(),
             new RNCameraPackage()
       );
