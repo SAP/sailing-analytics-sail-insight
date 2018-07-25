@@ -1,0 +1,48 @@
+{
+  "name": "sap_sailing_insight",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start-reset-cache": "npm start -- --reset-cache",
+    "test": "jest"
+  },
+  "dependencies": {
+    "lodash": "4.17.10",
+    "prop-types": "15.6.2",
+    "react": "16.4.1",
+    "react-native": "0.56.0",
+    "react-native-extended-stylesheet": "0.8.1",
+    "react-native-i18n": "2.0.15",
+    "react-navigation": "2.9.0",
+    "react-navigation-redux-helpers": "2.0.4",
+    "react-redux": "5.0.7",
+    "redux": "4.0.0",
+    "redux-actions": "2.4.0",
+    "redux-thunk": "2.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0-beta.54",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "8.2.6",
+    "babel-jest": "23.4.0",
+    "babel-plugin-module-resolver": "3.1.1",
+    "babel-plugin-transform-inline-environment-variables": "0.4.3",
+    "babel-preset-react-native": "^5",
+    "eslint": "5.2.0",
+    "eslint-config-airbnb": "17.0.0",
+    "eslint-import-resolver-babel-module": "^4.0.0",
+    "eslint-plugin-import": "2.13.0",
+    "eslint-plugin-jest": "21.18.0",
+    "eslint-plugin-jsx-a11y": "6.1.1",
+    "eslint-plugin-react": "7.10.0",
+    "eslint-plugin-react-native": "3.2.1",
+    "jest": "23.4.1",
+    "react-test-renderer": "16.4.1",
+    "redux-devtools-extension": "2.13.5"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

@@ -1,0 +1,3 @@
+rootProject.name = 'sap_sailing_insight'
+
+include ':app'

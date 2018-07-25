@@ -1,0 +1,18 @@
+{
+  "presets": ["react-native"],
+  "plugins": [
+    ["@babel/plugin-proposal-optional-chaining"],
+    ["transform-inline-environment-variables"],
+    [
+      "module-resolver", 
+      {
+        "cwd": "babelrc",
+        "root": ["./src"],
+        "extensions": [".js", ".jsx", ".ios.js", ".android.js"],
+        "alias": {
+          "assets": "./assets"
+        }
+      }
+    ]
+  ]
+}
