@@ -1,41 +1,25 @@
 import React, { Component } from 'react'
-import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import { StatusBar, View } from 'react-native'
-import ReduxThunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
-import EStyleSheet from 'react-native-extended-stylesheet'
+import { View } from 'react-native'
 
 import * as DeepLinking from 'integrations/DeepLinking'
 
-import Reducers from 'reducers'
+import configureStore from 'store/configureStore'
 import AppNavigator from 'navigation/AppNavigator'
-import * as colors from 'styles/colors'
-import * as dimensions from 'styles/dimensions'
 import { performDeepLink } from 'actions'
+import { initStyles, recalculateStyles } from 'styles'
 
 
-StatusBar.setBarStyle('dark-content')
-StatusBar.setBackgroundColor(colors.$containerBackgroundColor)
+initStyles()
 
-EStyleSheet.build({
-  ...colors,
-  ...dimensions,
-})
-
-const enhancers = composeWithDevTools(applyMiddleware(
-  ReduxThunk,
-))
-
-const store = createStore(Reducers, {}, enhancers)
+const store = configureStore()
 
 // enable hot module replacement for reducers
 if (module.hot) {
   const acceptCallback = () => {
     const rootReducer = require('./reducers/index.js').default
     store.replaceReducer(rootReducer)
-    EStyleSheet.clearCache()
-    EStyleSheet.build() // recalculate styles
+    recalculateStyles()
   }
   module.hot.accept('reducers', acceptCallback)
   module.hot.acceptCallback = acceptCallback
