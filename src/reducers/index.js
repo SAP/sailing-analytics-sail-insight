@@ -1,10 +1,9 @@
 import { combineReducers } from 'redux'
 
-import NavigationReducer from './NavigationReducer'
-
+import CheckInReducer from './CheckInReducer'
 
 const reducers = combineReducers({
-  nav: NavigationReducer,
+  checkIn: CheckInReducer,
 })
 
 

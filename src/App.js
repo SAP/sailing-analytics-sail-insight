@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import { View } from 'react-native'
+import { PersistGate } from 'redux-persist/integration/react'
 
 import * as DeepLinking from 'integrations/DeepLinking'
 
@@ -8,11 +9,12 @@ import configureStore from 'store/configureStore'
 import AppNavigator from 'navigation/AppNavigator'
 import { performDeepLink } from 'actions'
 import { initStyles, recalculateStyles } from 'styles'
+import { container } from 'styles/commons'
 
 
 initStyles()
 
-const store = configureStore()
+const { store, persistor } = configureStore()
 
 // enable hot module replacement for reducers
 if (module.hot) {
@@ -42,9 +44,11 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <View style={{ flex: 1 }}>
-          <AppNavigator />
-        </View>
+        <PersistGate loading={null} persistor={persistor}>
+          <View style={container.main}>
+            <AppNavigator />
+          </View>
+        </PersistGate>
       </Provider>
     )
   }

@@ -6,14 +6,20 @@ import {
 
 import I18n from 'i18n'
 
-const Welcome = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <View style={{ alignItems: 'center' }}>
-      <Text style={{ textAlign: 'center', marginTop: 8 }}>
-        {I18n.t('title_welcome')?.toUpperCase()}
-      </Text>
+const Welcome = () => {
+  console.log('RENDER')
+  return (
+    <View style={{
+      flex: 1, justifyContent: 'center', alignItems: 'center',
+    }}
+    >
+      <View style={{ alignItems: 'center' }}>
+        <Text style={{ textAlign: 'center', marginTop: 8 }}>
+          {I18n.t('title_welcome')?.toUpperCase()}
+        </Text>
+      </View>
     </View>
-  </View>
-)
+  )
+}
 
 export default Welcome
