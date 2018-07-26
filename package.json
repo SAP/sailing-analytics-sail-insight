@@ -22,6 +22,7 @@
     "react-native-linear-gradient": "2.4.0",
     "react-native-permissions": "1.1.1",
     "react-native-qrcode-scanner": "1.0.1",
+    "react-native-svg": "^6.4.1",
     "react-navigation": "2.9.0",
     "react-navigation-redux-helpers": "2.0.4",
     "react-redux": "5.0.7",
