@@ -27,7 +27,7 @@ export default createStackNavigator(
             onPress={() => options?.navigation?.goBack(null)}
             textStyle={buttons.navigationBack}
           >
-            {I18n.t('caption_back')}
+            {I18n.t('caption_cancel')}
           </TextButton>
         ),
       }),

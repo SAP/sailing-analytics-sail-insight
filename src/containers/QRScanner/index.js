@@ -1,50 +1,27 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import {
-  Text,
-  TouchableOpacity,
-} from 'react-native'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 
-import { checkIn } from 'actions/checkIn'
 import styles from './styles'
 
 
 class QRScanner extends Component {
-  static propTypes = {
-    checkIn: PropTypes.func.isRequired,
-  }
-
-  onSuccess = (qr) => {
-    this.props.checkIn(qr?.data)
+  onRead = (qr) => {
+    if (!qr?.data) {
+      return
+    }
+    this?.props?.navigation?.goBack?.()
+    this?.props?.navigation?.state?.params?.onSuccess?.(qr?.data)
   }
 
   render() {
     return (
       <QRCodeScanner
-        onRead={this.onSuccess}
-        topContent={(
-          <Text style={styles.centerText}>
-            Go to
-            {' '}
-            <Text style={styles.textBold}>
-wikipedia.org/wiki/QR_code
-            </Text>
-            {' '}
-on your computer and scan the QR code.
-          </Text>
-)}
-        bottomContent={(
-          <TouchableOpacity style={styles.buttonTouchable}>
-            <Text style={styles.buttonText}>
-OK. Got it!
-            </Text>
-          </TouchableOpacity>
-)}
+        cameraStyle={styles.camera}
+        onRead={this.onRead}
+        showMarker
       />
     )
   }
 }
 
-export default connect(null, { checkIn })(QRScanner)
+export default QRScanner

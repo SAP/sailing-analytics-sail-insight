@@ -3,3 +3,4 @@ export const $containerFixedMargin = 16
 export const $containerFixedSmallMargin = 8
 
 export const $defaultImageButtonSize = 40
+export const $actionButtonBorderRadius = 6

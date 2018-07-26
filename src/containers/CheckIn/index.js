@@ -4,12 +4,15 @@ import { connect } from 'react-redux'
 import {
   View,
   Text,
-  TouchableOpacity,
 } from 'react-native'
 
+import I18n from 'i18n'
 import { checkIn } from 'actions/checkIn'
+import { container, buttons } from 'styles/commons'
+import { navigateToQRScanner } from 'navigation'
+
 import GradientContainer from 'components/GradientContainer'
-import { container } from 'styles/commons'
+import TextButton from 'components/TextButton'
 
 import styles from './styles'
 
@@ -19,14 +22,24 @@ class CheckIn extends Component {
     checkIn: PropTypes.func.isRequired,
   }
 
-  onSuccess = (qr) => {
-    this.props.checkIn(qr?.data)
+  onSuccess = (url) => {
+    console.log(url)
+  }
+
+  onQRPress = () => {
+    navigateToQRScanner({ onSuccess: this.onSuccess })
   }
 
   render() {
     return (
-      <GradientContainer style={container.main}>
-        <View />
+      <GradientContainer style={[container.main, styles.container]}>
+        <TextButton
+          textStyle={buttons.actionText}
+          style={buttons.actionFullWidth}
+          onPress={this.onQRPress}
+        >
+          {I18n.t('caption_qr_scanner')}
+        </TextButton>
       </GradientContainer>
     )
   }

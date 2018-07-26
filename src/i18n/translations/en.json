@@ -3,5 +3,6 @@
   "title_regattas" : "Regattas",
   "title_check_in" : "SAP Sail InSight",
   "text_more_information_at" : "More information at",
-  "caption_back": "Back"
+  "caption_cancel": "Back",
+  "caption_qr_scanner": "Scan QR-Code"
 }

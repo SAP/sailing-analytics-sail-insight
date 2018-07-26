@@ -7,6 +7,17 @@ export default EStyleSheet.create({
     width: 50,
     height: 50,
   },
+  actionFullWidth: {
+    backgroundColor: '$actionButtonColor',
+    width: '96%',
+    alignSelf: 'center',
+    height: 80,
+    borderRadius: '$actionButtonBorderRadius',
+  },
+  actionText: {
+    color: 'white',
+    fontSize: 17,
+  },
   navigationBack: {
     color: '$actionButtonColor',
     paddingRight: '$containerFixedMargin',
