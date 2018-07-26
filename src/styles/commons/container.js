@@ -5,4 +5,10 @@ export default EStyleSheet.create({
     flex: 1,
     backgroundColor: '$containerBackgroundColor',
   },
+  logo: {
+    height: 30,
+    width: 60,
+    resizeMode: 'contain',
+    marginLeft: 16,
+  },
 })

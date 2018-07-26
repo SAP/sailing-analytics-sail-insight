@@ -3,6 +3,7 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 
 import io.branch.referral.Branch;
@@ -28,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new LinearGradientPackage(),
             new RNI18nPackage(),
             new RNBranchPackage(),
             new RNCameraPackage()

@@ -1,16 +1,23 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import {
   Text,
   TouchableOpacity,
 } from 'react-native'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 
+import { checkIn } from 'actions/checkIn'
 import styles from './styles'
 
 
 class QRScanner extends Component {
-  onSuccess=(e) => {
-    console.log(e)
+  static propTypes = {
+    checkIn: PropTypes.func.isRequired,
+  }
+
+  onSuccess = (qr) => {
+    this.props.checkIn(qr?.data)
   }
 
   render() {
@@ -40,4 +47,4 @@ OK. Got it!
   }
 }
 
-export default QRScanner
+export default connect(null, { checkIn })(QRScanner)

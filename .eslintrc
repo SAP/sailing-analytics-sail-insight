@@ -16,7 +16,8 @@
     }],
     "no-debugger": "off",
     "global-require": "off",
-    "max-len": [2, 120]
+    "max-len": [2, 120],
+    "react/destructuring-assignment": [1, "never"]
   },
   "settings": {
     "import/resolver": {
