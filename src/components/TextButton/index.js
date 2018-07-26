@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { TouchableOpacity, Text } from 'react-native'
 
-import { stylesheetPropType } from 'helper/proptypes'
+import { stylesheetPropType } from 'helpers/propTypes'
 
 import Spinner from 'components/ActivityIndicator'
 

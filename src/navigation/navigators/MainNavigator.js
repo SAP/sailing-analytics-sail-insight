@@ -5,11 +5,11 @@ import { Image } from 'react-native'
 import I18n from 'i18n'
 
 import Images from '@assets/Images'
-import { container } from 'styles/commons'
+import { container, navigation } from 'styles/commons'
 
 import Welcome from 'containers/Welcome'
-
 import * as Screens from 'navigation/Screens'
+
 import CheckInNavigator from './CheckInNavigator'
 
 
@@ -33,5 +33,6 @@ export default createStackNavigator(
     initialRouteName: Screens.Welcome,
     mode: 'modal',
     headerMode: 'screen',
+    navigationOptions: { headerTitleStyle: navigation.headerTitle },
   },
 )

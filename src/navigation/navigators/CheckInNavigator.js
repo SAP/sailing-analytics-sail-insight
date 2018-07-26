@@ -1,14 +1,16 @@
 import React from 'react'
 import { createStackNavigator } from 'react-navigation'
-import { Image, Button } from 'react-native'
+import { Image } from 'react-native'
 
 import I18n from 'i18n'
 
 import Images from '@assets/Images'
-import { container } from 'styles/commons'
+import { container, navigation, buttons } from 'styles/commons'
 
 import QRScanner from 'containers/QRScanner'
 import CheckIn from 'containers/CheckIn'
+
+import TextButton from 'components/TextButton'
 
 import * as Screens from 'navigation/Screens'
 
@@ -21,11 +23,12 @@ export default createStackNavigator(
         title: I18n.t('title_check_in'),
         headerLeft: () => <Image style={container.logo} source={Images.corporateIdentity.sapSailingLogo} />,
         headerRight: (
-          <Button
+          <TextButton
             onPress={() => options?.navigation?.goBack(null)}
-            title={I18n.t('caption_back')}
-            allCaps={false}
-          />
+            textStyle={buttons.navigationBack}
+          >
+            {I18n.t('caption_back')}
+          </TextButton>
         ),
       }),
     },
@@ -40,5 +43,6 @@ export default createStackNavigator(
     initialRouteName: Screens.CheckIn,
     mode: 'card',
     headerMode: 'screen',
+    navigationOptions: { headerTitleStyle: navigation.headerTitle },
   },
 )

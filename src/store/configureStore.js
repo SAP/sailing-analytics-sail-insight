@@ -9,6 +9,7 @@ import Reducers from 'reducers'
 const persistConfig = {
   key: 'root',
   storage,
+  debounce: 1000,
 }
 
 export default (initialState = {}) => {
