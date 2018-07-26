@@ -1,4 +1,4 @@
-import querystring from 'querystring'
+import querystring from 'query-string'
 
 import { listRequest, request } from './handler'
 
@@ -16,7 +16,7 @@ export const requestRegattas = () => listRequest(Endpoints.regatta)
 export const requestLeaderboards = () => listRequest(Endpoints.leaderboards)
 
 const deviceMapping = url => (leaderboardName, data) => request(
-  url.format(querystring.escape(leaderboardName)),
+  url.format(querystring.encode(leaderboardName)),
   { method: 'POST', body: data },
 )
 
