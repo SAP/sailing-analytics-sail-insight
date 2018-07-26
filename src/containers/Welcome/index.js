@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  View,
   Text,
   TouchableOpacity,
 } from 'react-native'
@@ -8,8 +7,11 @@ import Hyperlink from 'react-native-hyperlink'
 
 import I18n from 'i18n'
 import { navigateToQRScanner } from 'navigation'
+import { container } from 'styles/commons'
 
+import GradientContainer from 'components/GradientContainer'
 import styles from './styles'
+import ImageButton from '../../components/ImageButton';
 
 class Welcome extends Component {
   startQRScanner = () => {
@@ -18,15 +20,13 @@ class Welcome extends Component {
 
   render() {
     return (
-      <View style={{
-        flex: 1, justifyContent: 'center', alignItems: 'center',
-      }}
-      >
-        <Text>
+      <GradientContainer style={[container.main, { alignItems: 'center' }]}>
+        <Text style={styles.moreInformationText}>
           {I18n.t('text_more_information_at')}
         </Text>
         <Hyperlink
-          linkStyle={styles.hyperLink}
+          style={styles.hyperLink}
+          linkStyle={styles.hyperLinkText}
           linkDefault
         >
           <Text>
@@ -37,11 +37,9 @@ class Welcome extends Component {
           style={{ alignItems: 'center' }}
           onPress={this.startQRScanner}
         >
-          <Text style={{ textAlign: 'center', marginTop: 8 }}>
-            {I18n.t('title_welcome').toUpperCase()}
-          </Text>
+          <ImageButton
         </TouchableOpacity>
-      </View>
+      </GradientContainer>
     )
   }
 }
