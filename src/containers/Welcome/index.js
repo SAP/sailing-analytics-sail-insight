@@ -6,16 +6,19 @@ import {
 import Hyperlink from 'react-native-hyperlink'
 
 import I18n from 'i18n'
-import { navigateToQRScanner } from 'navigation'
-import { container } from 'styles/commons'
+import { navigateToCheckIn } from 'navigation'
+import { container, buttons } from 'styles/commons'
 
 import GradientContainer from 'components/GradientContainer'
+import ImageButton from 'components/ImageButton'
+import Images from '@assets/Images'
+
 import styles from './styles'
-import ImageButton from '../../components/ImageButton';
+
 
 class Welcome extends Component {
-  startQRScanner = () => {
-    navigateToQRScanner()
+  onAddPress = () => {
+    navigateToCheckIn()
   }
 
   render() {
@@ -33,12 +36,12 @@ class Welcome extends Component {
             {'https://sapsailing.com'}
           </Text>
         </Hyperlink>
-        <TouchableOpacity
-          style={{ alignItems: 'center' }}
-          onPress={this.startQRScanner}
-        >
-          <ImageButton
-        </TouchableOpacity>
+        <ImageButton
+          style={[buttons.action, styles.addButton]}
+          onPress={this.onAddPress}
+          source={Images.actionables.add}
+          circular
+        />
       </GradientContainer>
     )
   }

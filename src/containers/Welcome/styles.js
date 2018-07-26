@@ -11,4 +11,10 @@ export default EStyleSheets.create({
   moreInformationText: {
     marginTop: '$containerFixedMargin',
   },
+  addButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    margin: '$containerFixedMargin',
+  },
 })

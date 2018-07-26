@@ -1,5 +1,7 @@
 {
   "title_welcome" : "Welcome",
   "title_regattas" : "Regattas",
-  "text_more_information_at" : "More information at"
+  "title_check_in" : "SAP Sail InSight",
+  "text_more_information_at" : "More information at",
+  "caption_back": "Back"
 }

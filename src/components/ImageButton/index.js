@@ -1,20 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { TouchableOpacity } from 'react-native'
-import { get } from 'lodash'
+import { TouchableOpacity, Image } from 'react-native'
 
-import Image from 'components/Image'
-import { stylesheetPropType, imageSourcePropType } from 'helpers/proptypes'
+import { stylesheetPropType, imageSourcePropType } from 'helpers/propTypes'
 import { $defaultImageButtonSize } from 'styles/dimensions'
 
 import styles from './styles'
+
 
 class ImageButton extends Component {
   static propTypes = {
     style: stylesheetPropType,
     source: imageSourcePropType,
     onPress: PropTypes.func,
-    resizeMode: PropTypes.string,
     circular: PropTypes.bool,
     autoWidth: PropTypes.bool,
   }
@@ -23,7 +21,6 @@ class ImageButton extends Component {
     style: null,
     source: null,
     onPress: null,
-    resizeMode: Image.resizeMode.contain,
     circular: false,
     autoWidth: false,
   }
@@ -39,9 +36,13 @@ class ImageButton extends Component {
   }
 
   handleContentSizeChange(event) {
+    const height = event?.nativeEvent?.layout?.height
+    if (!height) {
+      return
+    }
     this.setState({
-      borderRadius: get(event, 'nativeEvent.layout.height') / 2,
-      width: get(event, 'nativeEvent.layout.height'),
+      borderRadius: height / 2,
+      width: height,
     })
   }
 
@@ -60,7 +61,6 @@ class ImageButton extends Component {
         <Image
           source={this.props.source}
           style={styles.imageStyle}
-          resizeMode={this.props.resizeMode}
         />
       </TouchableOpacity>
     )
