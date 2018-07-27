@@ -9,6 +9,23 @@ const UrlPropertyNames = {
   MarkId: 'mark_id',
 }
 
+const BodyKeys = {
+  BoatId: 'boatId',
+  CompetitorId: 'competitorId',
+  DeviceType: 'deviceType',
+  DeviceUUID: 'deviceUuid',
+  Fixes: 'fixes',
+  FixesCourse: 'course',
+  FixesLatitude: 'latitude',
+  FixesLongitude: 'longitude',
+  FixesSpeed: 'speed',
+  FixesTimestamp: 'timestamp',
+  FromMillis: 'fromMillis',
+  MarkId: 'markId',
+  PushDeviceID: 'pushDeviceId',
+  ToMillis: 'toMillis',
+}
+
 const extractData = (url) => {
   if (!url) {
     return null
@@ -45,9 +62,31 @@ const extractData = (url) => {
     isTraining: false,
     ...(boatId && { boatId }),
     ...(competitorId && { competitorId }),
-    ...(boatId && { markId }),
+    ...(markId && { markId }),
   }
 }
+
+const deviceMappingData = (checkInData) => {
+  if (!checkInData) {
+    return
+  }
+  const {
+    boatId,
+    competitorId,
+    markId,
+  } = checkInData
+
+  const body = {
+    [BodyKeys.DeviceType]: '',
+    [BodyKeys.DeviceUUID]: '',
+    [BodyKeys.FromMillis]: new Date().getTime(),
+    [BodyKeys.PushDeviceID]: '',
+    ...(boatId && { [BodyKeys.BoatId]: boatId }),
+    ...(competitorId && { [BodyKeys.CompetitorId]: competitorId }),
+    ...(markId && { [BodyKeys.MarkId]: markId }),
+  }
+}
+
 
 export default {
   extractData,
