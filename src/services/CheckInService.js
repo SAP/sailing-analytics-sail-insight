@@ -1,5 +1,7 @@
 import querystring from 'query-string'
 import parse from 'url-parse'
+import { Platform } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 
 const UrlPropertyNames = {
   BoatId: 'boat_id',
@@ -77,17 +79,19 @@ const deviceMappingData = (checkInData) => {
   } = checkInData
 
   const body = {
-    [BodyKeys.DeviceType]: '',
-    [BodyKeys.DeviceUUID]: '',
+    [BodyKeys.DeviceType]: Platform.OS,
+    [BodyKeys.DeviceUUID]: DeviceInfo.getUniqueID(),
     [BodyKeys.FromMillis]: new Date().getTime(),
     [BodyKeys.PushDeviceID]: '',
     ...(boatId && { [BodyKeys.BoatId]: boatId }),
     ...(competitorId && { [BodyKeys.CompetitorId]: competitorId }),
     ...(markId && { [BodyKeys.MarkId]: markId }),
   }
+  console.log(body)
 }
 
 
 export default {
   extractData,
+  deviceMappingData,
 }

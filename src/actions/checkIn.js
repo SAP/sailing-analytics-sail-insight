@@ -16,4 +16,5 @@ export const checkIn = url => async (dispatch) => {
   const data = CheckInService.extractData(url)
   console.log(data)
   dispatch(collectCheckInData(data))
+  CheckInService.deviceMappingData(data)
 }
