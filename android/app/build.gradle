@@ -152,7 +152,7 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-mauron85-background-geolocation')
+    implementation project(':react-native-mauron85-background-geolocation')
     implementation project(':react-native-device-info')
     implementation project(':react-native-svg')
     implementation project(':react-native-linear-gradient')

@@ -44,9 +44,17 @@ allprojects {
 }
 
 ext {
-    buildToolsVersion = "27.0.3"
+//    buildToolsVersion = "27.0.3"
     minSdkVersion = 16
-    compileSdkVersion = 27
-    targetSdkVersion = 27
+//    compileSdkVersion = 27
+//    targetSdkVersion = 27
+//    supportLibVersion = "27.1.1"
+//    googlePlayServicesVersion = "9.8.0"
+
+    compileSdkVersion = 26
+    targetSdkVersion = 26
+    buildToolsVersion = "27.0.3"
     supportLibVersion = "27.1.1"
+    googlePlayServicesVersion = "11.8.0"
+    gradle3EXPERIMENTAL = "yes"
 }
