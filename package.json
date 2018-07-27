@@ -32,6 +32,7 @@
     "redux-actions": "2.4.0",
     "redux-persist": "5.10.0",
     "redux-thunk": "2.3.0",
+    "reselect": "^3.0.1",
     "string-format": "^2.0.0",
     "url-parse": "^1.4.1",
     "uuid": "^3.3.2"
