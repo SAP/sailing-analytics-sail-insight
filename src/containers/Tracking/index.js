@@ -22,7 +22,7 @@ class CheckIn extends Component {
     this.props.checkIn(url)
   }
 
-  onQRPress = () => {
+  onTrackingPress = () => {
     navigateToQRScanner({ onSuccess: this.onSuccess })
   }
 
@@ -32,9 +32,9 @@ class CheckIn extends Component {
         <TextButton
           textStyle={buttons.actionText}
           style={buttons.actionFullWidth}
-          onPress={this.onQRPress}
+          onPress={this.onTrackingPress}
         >
-          {I18n.t('caption_qr_scanner')}
+          {I18n.t('caption_start_tracking')}
         </TextButton>
       </GradientContainer>
     )

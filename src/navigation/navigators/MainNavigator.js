@@ -8,6 +8,7 @@ import Images from '@assets/Images'
 import { container, navigation } from 'styles/commons'
 
 import Welcome from 'containers/Welcome'
+import Tracking from 'containers/Tracking/index'
 import * as Screens from 'navigation/Screens'
 
 import CheckInNavigator from './CheckInNavigator'
@@ -22,8 +23,14 @@ export default createStackNavigator(
         headerLeft: () => <Image style={container.logo} source={Images.corporateIdentity.sapSailingLogo} />,
       },
     },
-    [CheckInNavigator]: {
+    [Screens.CheckInNavigator]: {
       screen: CheckInNavigator,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    [Screens.Tracking]: {
+      screen: Tracking,
       navigationOptions: {
         header: null,
       },

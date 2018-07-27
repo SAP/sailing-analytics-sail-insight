@@ -11,6 +11,7 @@ import Hyperlink from 'react-native-hyperlink'
 import I18n from 'i18n'
 import { getListViewDataSource } from 'helpers/utils'
 import { getCheckInList } from 'selectors/checkIn'
+import { navigateToTracking } from 'navigation'
 
 import RegattaItem from 'components/RegattaItem'
 
@@ -42,9 +43,11 @@ class RegattaList extends Component {
   }
 
   renderItem(regatta) {
-    console.log(regatta)
     return (
-      <RegattaItem regatta={regatta} />
+      <RegattaItem
+        regatta={regatta}
+        onPress={() => navigateToTracking(regatta)}
+      />
     )
   }
 
