@@ -3,6 +3,7 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.horcrux.svg.SvgPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNDeviceInfo(),
             new SvgPackage(),
             new LinearGradientPackage(),
             new RNI18nPackage(),
