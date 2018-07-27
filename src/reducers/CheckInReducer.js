@@ -1,17 +1,26 @@
 import { handleActions } from 'redux-actions'
 
-import { updateCurrentCheckIn } from 'actions/checkIn'
+import { addCheckIn } from 'actions/checkIn'
 
 
 const initialState = {
-  data: null,
+  active: {},
 }
 
 const reducer = handleActions({
-  [updateCurrentCheckIn]: (state = {}, action = {}) => ({
-    ...state,
-    data: action.payload,
-  }),
+  [addCheckIn]: (state = {}, action) => {
+    const leaderboardName = action?.payload?.leaderboardName
+    if (!leaderboardName) {
+      return state
+    }
+    return {
+      ...state,
+      active: {
+        ...state.active,
+        [leaderboardName]: action.payload,
+      },
+    }
+  },
 }, initialState)
 
 export default reducer

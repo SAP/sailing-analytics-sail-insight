@@ -2,4 +2,4 @@ import * as api from 'api'
 import { fetchEntityFunction } from 'helpers/actions'
 
 
-export const fetchEvent = fetchEntityFunction(api.requestEvent)
+export const fetchCompetitor = fetchEntityFunction(api.requestCompetitor)
