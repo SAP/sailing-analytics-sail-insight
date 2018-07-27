@@ -11,6 +11,7 @@ const Endpoints = {
   leaderboards: '/leaderboards',
   boats: '/boats',
   events: '/events',
+  gpsFixes: '/gps_fixes',
   competitors: '/competitors',
   marks: '/leaderboards/{0}/marks',
   startDeviceMapping: '/leaderboards/{0}/device_mappings/start',
@@ -52,3 +53,8 @@ const deviceMapping = url => (leaderboardName, data) => request(
 )
 export const startDeviceMapping = deviceMapping(Endpoints.startDeviceMapping)
 export const stopDeviceMapping = deviceMapping(Endpoints.stopDeviceMapping)
+
+export const sendGpsFixes = gpsFixes => request(
+  gpsFixes,
+  { method: 'POST', body: gpsFixes },
+)

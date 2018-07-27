@@ -10,6 +10,8 @@ import AppNavigator from 'navigation/AppNavigator'
 import { performDeepLink } from 'actions'
 import { initStyles, recalculateStyles } from 'styles'
 import { container } from 'styles/commons'
+import LocationService, { LocationTrackingStatus } from 'services/LocationService'
+import { updateTrackedLeaderboard, updateTrackingStatus } from 'actions/locations'
 
 
 initStyles()
@@ -31,14 +33,27 @@ if (module.hot) {
 class App extends Component {
   componentDidMount() {
     DeepLinking.addListener(this.handleDeeplink)
+    LocationService.setStartListener(this.handleLocationTrackingStart)
+    LocationService.setStopListener(this.handleLocationTrackingStop)
   }
 
   componentWillUnmount() {
     DeepLinking.removeListener(this.handleDeeplink)
+    LocationService.setStartListener(null)
+    LocationService.setStopListener(null)
   }
 
   handleDeeplink = (params) => {
     store.dispatch(performDeepLink(params))
+  }
+
+  handleLocationTrackingStart() {
+    store.dispatch(updateTrackingStatus(LocationTrackingStatus.RUNNING))
+  }
+
+  handleLocationTrackingStop() {
+    store.dispatch(updateTrackingStatus(LocationTrackingStatus.STOPPED))
+    store.dispatch(updateTrackedLeaderboard(null))
   }
 
   render() {

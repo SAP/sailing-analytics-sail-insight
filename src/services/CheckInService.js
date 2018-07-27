@@ -95,8 +95,12 @@ const deviceMappingData = (checkInData) => {
   return body
 }
 
+const gpsFixData = (location) => {
+  // TODO: transform data
+}
 
 export default {
   extractData,
   deviceMappingData,
+  gpsFixData,
 }
