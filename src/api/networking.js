@@ -14,7 +14,6 @@ const defaultSignedHeaders = (url, method, headers) => headers
 // eslint-disable-next-line import/prefer-default-export
 export const request = async (url, { method = 'GET', signer = defaultSignedHeaders, body } = {}) => {
   const data = body ? { body: JSON.stringify(body) } : {}
-
   const fetchOptions = {
     method,
     headers: await signer(url, method, DEFAULT_HEADERS, data.body),

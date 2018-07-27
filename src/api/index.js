@@ -1,4 +1,4 @@
-import querystring from 'query-string'
+import format from 'string-format'
 
 import { listRequest, request, dataRequest } from './handler'
 import { leaderboardSchema, eventSchema } from './schemas'
@@ -25,7 +25,7 @@ export const requestLeaderboard = leaderboardName => dataRequest(
 export const requestEvent = eventId => dataRequest(`${Endpoints.events}/${eventId}`, undefined, eventSchema)
 
 const deviceMapping = url => (leaderboardName, data) => request(
-  url.format(escape(leaderboardName)),
+  format(url, escape(leaderboardName)),
   { method: 'POST', body: data },
 )
 export const startDeviceMapping = deviceMapping(Endpoints.startDeviceMapping)

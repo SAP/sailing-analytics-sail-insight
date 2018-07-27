@@ -2,6 +2,9 @@ import querystring from 'query-string'
 import parse from 'url-parse'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
+import uuidv5 from 'uuid/v5'
+
+const uuidNamespace = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
 
 const UrlPropertyNames = {
   BoatId: 'boat_id',
@@ -27,6 +30,8 @@ const BodyKeys = {
   PushDeviceID: 'pushDeviceId',
   ToMillis: 'toMillis',
 }
+
+const createUuid = id => uuidv5(id, uuidNamespace)
 
 const extractData = (url) => {
   if (!url) {
@@ -70,7 +75,7 @@ const extractData = (url) => {
 
 const deviceMappingData = (checkInData) => {
   if (!checkInData) {
-    return
+    return null
   }
   const {
     boatId,
@@ -80,14 +85,14 @@ const deviceMappingData = (checkInData) => {
 
   const body = {
     [BodyKeys.DeviceType]: Platform.OS,
-    [BodyKeys.DeviceUUID]: DeviceInfo.getUniqueID(),
+    [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
     [BodyKeys.FromMillis]: new Date().getTime(),
     [BodyKeys.PushDeviceID]: '',
     ...(boatId && { [BodyKeys.BoatId]: boatId }),
     ...(competitorId && { [BodyKeys.CompetitorId]: competitorId }),
     ...(markId && { [BodyKeys.MarkId]: markId }),
   }
-  console.log(body)
+  return body
 }
 
 
