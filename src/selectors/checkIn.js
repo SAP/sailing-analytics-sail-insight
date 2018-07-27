@@ -29,7 +29,6 @@ export const getCheckInList = createSelector(
     if (!activeCheckIns) {
       return []
     }
-    console.log(activeCheckIns, eventEntity, leaderboardEntity, boatEntity, competitorEntity, markEntity)
     return values(activeCheckIns).map(checkIn => checkIn && {
       ...checkIn,
       leaderboard: leaderboardEntity?.[checkIn.leaderboardName],
