@@ -12,6 +12,8 @@ import I18n from 'i18n'
 import { getListViewDataSource } from 'helpers/utils'
 import { getCheckInList } from 'selectors/checkIn'
 
+import RegattaItem from 'components/RegattaItem'
+
 import styles from './styles'
 
 
@@ -40,12 +42,9 @@ class RegattaList extends Component {
   }
 
   renderItem(regatta) {
+    console.log(regatta)
     return (
-      <View>
-        <Text>
-          {JSON.stringify(regatta)}
-        </Text>
-      </View>
+      <RegattaItem regatta={regatta} />
     )
   }
 

@@ -33,9 +33,9 @@ export const getCheckInList = createSelector(
       ...checkIn,
       leaderboard: leaderboardEntity?.[checkIn.leaderboardName],
       event: eventEntity?.[checkIn.eventId],
-      ...(checkIn.boatId && { boatId: boatEntity?.[checkIn.boatId] }),
-      ...(checkIn.competitorId && { competitorId: competitorEntity?.[checkIn.competitorId] }),
-      ...(checkIn.markId && { markId: markEntity?.[checkIn.markId] }),
+      ...(checkIn.boatId && { boat: boatEntity?.[checkIn.boatId] }),
+      ...(checkIn.competitorId && { competitor: competitorEntity?.[checkIn.competitorId] }),
+      ...(checkIn.markId && { mark: markEntity?.[checkIn.markId] }),
     })
   },
 )

@@ -9,7 +9,6 @@ export default EStyleSheets.create({
     textDecorationLine: 'underline',
   },
   header: {
-    width: '100%',
     alignItems: 'center',
     marginBottom: '$containerFixedMargin',
     marginTop: '$containerFixedMargin',
