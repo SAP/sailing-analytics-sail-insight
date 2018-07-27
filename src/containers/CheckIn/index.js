@@ -23,7 +23,7 @@ class CheckIn extends Component {
   }
 
   onSuccess = (url) => {
-    console.log(url)
+    this.props.checkIn(url)
   }
 
   onQRPress = () => {
