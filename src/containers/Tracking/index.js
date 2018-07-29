@@ -9,6 +9,7 @@ import { container, buttons } from 'styles/commons'
 
 import GradientContainer from 'components/GradientContainer'
 import TextButton from 'components/TextButton'
+import RegattaItem from 'components/RegattaItem'
 
 import { LocationTrackingStatus } from 'services/LocationService'
 import CheckInService from 'services/CheckInService'
@@ -35,7 +36,6 @@ class Tracking extends Component {
   }
 
   componentDidMount() {
-    console.log('REGATTA', this.props?.checkInData)
     this.props.initApiRoot(this.props?.checkInData?.leaderboardName)
   }
 
@@ -44,7 +44,6 @@ class Tracking extends Component {
   }
 
   onTrackingPress = () => {
-    console.log(this.props.locationTrackingStatus)
     if (this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING) {
       this.props.stopLocationTracking()
     } else {
@@ -64,6 +63,10 @@ class Tracking extends Component {
     const isRunning = this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING
     return (
       <GradientContainer style={[container.main, styles.container]}>
+        <RegattaItem
+          style={{ width: '66%', backgroundColor: 'transparent' }}
+          regatta={this.props?.checkInData}
+        />
         <View style={styles.detailButtonContainer}>
           <TextButton
             textStyle={buttons.actionText}
