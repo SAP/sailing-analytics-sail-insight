@@ -31,9 +31,6 @@ export default createStackNavigator(
     },
     [Screens.Tracking]: {
       screen: Tracking,
-      navigationOptions: {
-        header: null,
-      },
     },
   },
   {

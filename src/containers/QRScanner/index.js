@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 
+import NavigationService from 'navigation/NavigationService'
 import styles from './styles'
 
 
 class QRScanner extends Component {
-  onRead = (qr) => {
+  onRead = async (qr) => {
     if (!qr?.data) {
       return
     }
-    this?.props?.navigation?.goBack?.()
-    this?.props?.navigation?.state?.params?.onSuccess?.(qr?.data)
+    NavigationService.navigateBack()
+    await this?.props?.navigation?.state?.params?.onSuccess?.(qr?.data)
   }
 
   render() {

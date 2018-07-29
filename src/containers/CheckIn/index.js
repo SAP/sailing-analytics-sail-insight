@@ -6,12 +6,13 @@ import I18n from 'i18n'
 import { checkIn } from 'actions/checkIn'
 import { container, buttons } from 'styles/commons'
 import { navigateToQRScanner } from 'navigation'
-import { Logger } from 'helpers/Logger'
+import Logger from 'helpers/Logger'
 
 import GradientContainer from 'components/GradientContainer'
 import TextButton from 'components/TextButton'
 
 import styles from './styles'
+import NavigationService from '../../navigation/NavigationService'
 
 
 class CheckIn extends Component {
@@ -27,7 +28,7 @@ class CheckIn extends Component {
     this.setState({ isLoading: true })
     try {
       await this.props.checkIn(url)
-      this?.props?.navigation?.goBack?.()
+      NavigationService.navigateBack()
     } catch (err) {
       Logger.debug(err)
     } finally {
