@@ -4,17 +4,17 @@ import Logger from 'helpers/Logger'
 
 BackgroundGeolocation.configure({
   desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,
-  stationaryRadius: 50,
-  distanceFilter: 50,
+  stationaryRadius: 2,
+  distanceFilter: 2,
   notificationTitle: 'Background tracking',
   notificationText: 'enabled',
   debug: true,
   startOnBoot: false,
   stopOnTerminate: false,
   locationProvider: BackgroundGeolocation.DISTANCE_FILTER_PROVIDER,
-  interval: 10000,
-  fastestInterval: 5000,
-  activitiesInterval: 10000,
+  interval: 2000,
+  fastestInterval: 2000,
+  activitiesInterval: 5000,
   stopOnStillActivity: false,
 })
 
@@ -37,6 +37,15 @@ BackgroundGeolocation.on('stop', () => {
 })
 
 const listeners = []
+const handleLocation = async (location) => {
+  await Promise.all(listeners.map(listener => listener(location)))
+}
+
+BackgroundGeolocation.on('stationary', async (location) => {
+  Logger.debug('[INFO] BackgroundGeolocation is now in stationary', location)
+  await handleLocation(location)
+})
+
 
 const addLocationListener = listener => listeners.push(listener)
 const removeLocationListener = (listener) => {
@@ -46,14 +55,11 @@ const removeLocationListener = (listener) => {
   }
 }
 
-const handleLocation = async (location) => {
-  await Promise.all(listeners.map(listener => listener(location)))
-}
-
 BackgroundGeolocation.on('location', (location) => {
   // handle your locations here
   // to perform long running operation on iOS
   // you need to create background task
+  Logger.debug('ON_LOCATION', location)
   BackgroundGeolocation.startTask(async (taskKey) => {
     // execute long running task
     // eg. ajax post location

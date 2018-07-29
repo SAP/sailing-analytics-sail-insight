@@ -55,6 +55,6 @@ export const startDeviceMapping = deviceMapping(Endpoints.startDeviceMapping)
 export const stopDeviceMapping = deviceMapping(Endpoints.stopDeviceMapping)
 
 export const sendGpsFixes = gpsFixes => request(
-  gpsFixes,
+  Endpoints.gpsFixes,
   { method: 'POST', body: gpsFixes },
 )

@@ -4,6 +4,10 @@ import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import uuidv5 from 'uuid/v5'
 
+import Logger from 'helpers/Logger'
+import * as api from 'api'
+import LocationService from './LocationService'
+
 const uuidNamespace = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
 
 const UrlPropertyNames = {
@@ -30,6 +34,7 @@ const BodyKeys = {
   PushDeviceID: 'pushDeviceId',
   ToMillis: 'toMillis',
 }
+
 
 const createUuid = id => uuidv5(id, uuidNamespace)
 
@@ -98,17 +103,29 @@ const deviceMappingData = (checkInData) => {
 const gpsFixData = locations => locations && {
   [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
   [BodyKeys.Fixes]: locations.map(location => ({
-    [BodyKeys.FixesCourse]: location.bearing,
     [BodyKeys.FixesLatitude]: location.latitude,
     [BodyKeys.FixesLongitude]: location.longitude,
-    [BodyKeys.FixesSpeed]: location.speed,
     [BodyKeys.FixesTimestamp]: location.time,
+    [BodyKeys.FixesCourse]: location.bearing || 0,
+    [BodyKeys.FixesSpeed]: location.speed || 0,
   })),
 }
 
 const eventUrl = checkInData => checkInData && `${checkInData.serverUrl}/gwt/Home.html?navigationTab=Regattas#EventPlace:eventId=${checkInData.eventId}`
 
 const leaderboardUrl = checkInData => checkInData && `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
+
+const onLocation = async (location) => {
+  try {
+    const gpsFix = gpsFixData([location])
+    Logger.debug('GPS FIX: ', gpsFix)
+    api.sendGpsFixes(gpsFix)
+  } catch (err) {
+    Logger.debug(err)
+  }
+}
+
+LocationService.addLocationListener(onLocation)
 
 export default {
   extractData,

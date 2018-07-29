@@ -10,10 +10,13 @@ import { container, buttons } from 'styles/commons'
 import GradientContainer from 'components/GradientContainer'
 import TextButton from 'components/TextButton'
 
-import LocationService, { LocationTrackingStatus } from 'services/LocationService'
+import { LocationTrackingStatus } from 'services/LocationService'
 import CheckInService from 'services/CheckInService'
 import { getLocationTrackingStatus } from 'selectors/location'
-import { updateTrackedLeaderboard } from 'actions/locations'
+import {
+  startLocationTracking,
+  stopLocationTracking,
+} from 'actions/locations'
 import styles from './styles'
 
 
@@ -21,7 +24,8 @@ class Tracking extends Component {
   static propTypes = {
     checkIn: PropTypes.func.isRequired,
     initApiRoot: PropTypes.func.isRequired,
-    updateTrackedLeaderboard: PropTypes.func.isRequired,
+    startLocationTracking: PropTypes.func.isRequired,
+    stopLocationTracking: PropTypes.func.isRequired,
     locationTrackingStatus: PropTypes.string,
     checkInData: PropTypes.shape({}).isRequired,
   }
@@ -40,8 +44,12 @@ class Tracking extends Component {
   }
 
   onTrackingPress = () => {
-    LocationService.start()
-    this.props.updateTrackedLeaderboard()
+    console.log(this.props.locationTrackingStatus)
+    if (this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING) {
+      this.props.stopLocationTracking()
+    } else {
+      this.props.startLocationTracking(this.props?.checkInData?.leaderboardName)
+    }
   }
 
   onEventPress = () => {
@@ -93,4 +101,9 @@ const mapStateToProps = (state, props) => ({
   checkInData: props?.navigation?.state?.params,
 })
 
-export default connect(mapStateToProps, { checkIn, initApiRoot, updateTrackedLeaderboard })(Tracking)
+export default connect(mapStateToProps, {
+  checkIn,
+  initApiRoot,
+  startLocationTracking,
+  stopLocationTracking,
+})(Tracking)
