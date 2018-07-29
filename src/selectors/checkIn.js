@@ -11,6 +11,8 @@ import { getMarkEntity } from './mark'
 
 export const getActiveCheckIns = state => state?.[CHECK_IN_REDUCER_NAME]?.active
 
+export const getCheckInByLeaderboardName = (state, leaderboardName) => state?.[CHECK_IN_REDUCER_NAME]?.[leaderboardName]
+
 export const getCheckInList = createSelector(
   getActiveCheckIns,
   getEventEntity,

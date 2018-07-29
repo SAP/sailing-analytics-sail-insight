@@ -95,12 +95,25 @@ const deviceMappingData = (checkInData) => {
   return body
 }
 
-const gpsFixData = (location) => {
-  // TODO: transform data
+const gpsFixData = locations => locations && {
+  [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
+  [BodyKeys.Fixes]: locations.map(location => ({
+    [BodyKeys.FixesCourse]: location.bearing,
+    [BodyKeys.FixesLatitude]: location.latitude,
+    [BodyKeys.FixesLongitude]: location.longitude,
+    [BodyKeys.FixesSpeed]: location.speed,
+    [BodyKeys.FixesTimestamp]: location.time,
+  })),
 }
+
+const eventUrl = checkInData => checkInData && `${checkInData.serverUrl}/gwt/Home.html?navigationTab=Regattas#EventPlace:eventId=${checkInData.eventId}`
+
+const leaderboardUrl = checkInData => checkInData && `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
 
 export default {
   extractData,
   deviceMappingData,
   gpsFixData,
+  eventUrl,
+  leaderboardUrl,
 }

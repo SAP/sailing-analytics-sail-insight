@@ -6,5 +6,7 @@
   "caption_cancel": "Abbrechen",
   "caption_qr_scanner": "QR-Code scannen",
   "caption_start_tracking": "Starte Tracking",
-  "caption_stop_tracking": "Stoppe Tracking"
+  "caption_stop_tracking": "Stoppe Tracking",
+  "caption_to_event": "Zum Event",
+  "caption_to_leaderboard": "Zum Leaderboard"
 }

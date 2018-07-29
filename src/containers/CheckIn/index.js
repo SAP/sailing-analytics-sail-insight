@@ -6,6 +6,7 @@ import I18n from 'i18n'
 import { checkIn } from 'actions/checkIn'
 import { container, buttons } from 'styles/commons'
 import { navigateToQRScanner } from 'navigation'
+import { Logger } from 'helpers/Logger'
 
 import GradientContainer from 'components/GradientContainer'
 import TextButton from 'components/TextButton'
@@ -18,8 +19,20 @@ class CheckIn extends Component {
     checkIn: PropTypes.func.isRequired,
   }
 
-  onSuccess = (url) => {
-    this.props.checkIn(url)
+  state = {
+    isLoading: false,
+  }
+
+  onSuccess = async (url) => {
+    this.setState({ isLoading: true })
+    try {
+      await this.props.checkIn(url)
+      this?.props?.navigation?.goBack?.()
+    } catch (err) {
+      Logger.debug(err)
+    } finally {
+      this.setState({ isLoading: false })
+    }
   }
 
   onQRPress = () => {
@@ -33,6 +46,7 @@ class CheckIn extends Component {
           textStyle={buttons.actionText}
           style={buttons.actionFullWidth}
           onPress={this.onQRPress}
+          isLoading={this.state.isLoading}
         >
           {I18n.t('caption_qr_scanner')}
         </TextButton>
