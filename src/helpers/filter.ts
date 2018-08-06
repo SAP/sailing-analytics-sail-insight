@@ -1,13 +1,13 @@
 import {
-  isObject,
-  get,
   forOwn,
+  get,
+  head,
   includes,
   isFunction,
   isNumber,
-  head,
-  omitBy,
+  isObject,
   keys,
+  omitBy,
 } from 'lodash'
 
 /**
@@ -61,10 +61,11 @@ export const filterEntityByIds = (entityValue, ids = [], includeIds = false) => 
   return remaining
 }
 
+export const pickEntityElementsBy = (entity, filter, excludeIdsFromFilter) =>
+  getFilteredEntity(entity, filter, true, excludeIdsFromFilter)
 
-export const pickEntityElementsBy = (entity, filter, excludeIdsFromFilter) => getFilteredEntity(entity, filter, true, excludeIdsFromFilter)
-
-export const omitEntityElementsBy = (entity, filter, excludeIdsFromFilter) => getFilteredEntity(entity, filter, false, excludeIdsFromFilter)
+export const omitEntityElementsBy = (entity, filter, excludeIdsFromFilter) =>
+  getFilteredEntity(entity, filter, false, excludeIdsFromFilter)
 
 export const getDirtyFieldsOnly = (data, initialData) => {
   if (!data || !initialData) {
