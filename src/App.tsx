@@ -13,6 +13,8 @@ import configureStore from 'store/configureStore'
 import { initStyles, recalculateStyles } from 'styles'
 import { container } from 'styles/commons'
 
+declare var module: any
+
 initStyles()
 
 const { store, persistor } = configureStore()
@@ -42,7 +44,7 @@ class App extends Component {
     LocationService.setStopListener(null)
   }
 
-  public handleDeeplink = (params) => {
+  public handleDeeplink = (params: any) => {
     store.dispatch(performDeepLink(params))
   }
 

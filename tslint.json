@@ -1,9 +1,14 @@
 {
+  "defaultSeverity": "error",
   "extends": [
-    "tslint:latest", 
-    "tslint-config-prettier",
-    "tslint-react"
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-config-airbnb"
   ],
+  "jsRules": {
+    "quotemark": [true, "single"],
+    "semicolon": [true, "never"]
+  },
   "rules": {
     "semicolon": [true, "never"],
     "no-submodule-imports": false,
