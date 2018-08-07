@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
-import { Provider } from 'react-redux'
 import { View } from 'react-native'
+import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
 import * as DeepLinking from 'integrations/DeepLinking'
 
-import configureStore from 'store/configureStore'
-import AppNavigator from 'navigation/AppNavigator'
 import { performDeepLink } from 'actions'
+import { updateTrackedLeaderboard, updateTrackingStatus } from 'actions/locations'
+import AppNavigator from 'navigation/AppNavigator'
+import LocationService, { LocationTrackingStatus } from 'services/LocationService'
+import configureStore from 'store/configureStore'
 import { initStyles, recalculateStyles } from 'styles'
 import { container } from 'styles/commons'
-import LocationService, { LocationTrackingStatus } from 'services/LocationService'
-import { updateTrackedLeaderboard, updateTrackingStatus } from 'actions/locations'
 
+declare var module: any
 
 initStyles()
 
@@ -31,32 +32,32 @@ if (module.hot) {
 
 // must be a component to support hot reloading
 class App extends Component {
-  componentDidMount() {
+  public componentDidMount() {
     DeepLinking.addListener(this.handleDeeplink)
     LocationService.setStartListener(this.handleLocationTrackingStart)
     LocationService.setStopListener(this.handleLocationTrackingStop)
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     DeepLinking.removeListener(this.handleDeeplink)
     LocationService.setStartListener(null)
     LocationService.setStopListener(null)
   }
 
-  handleDeeplink = (params) => {
+  public handleDeeplink = (params: any) => {
     store.dispatch(performDeepLink(params))
   }
 
-  handleLocationTrackingStart() {
+  public handleLocationTrackingStart() {
     store.dispatch(updateTrackingStatus(LocationTrackingStatus.RUNNING))
   }
 
-  handleLocationTrackingStop() {
+  public handleLocationTrackingStop() {
     store.dispatch(updateTrackingStatus(LocationTrackingStatus.STOPPED))
     store.dispatch(updateTrackedLeaderboard(null))
   }
 
-  render() {
+  public render() {
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>

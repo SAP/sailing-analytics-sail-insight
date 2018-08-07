@@ -8,7 +8,7 @@
       {
         "cwd": "babelrc",
         "root": ["./src"],
-        "extensions": [".js", ".jsx", ".ios.js", ".android.js"],
+        "extensions": [".ts", ".tsx", ".js", ".jsx", ".ios.js", ".android.js"],
         "alias": {
           "assets": "./assets"
         }

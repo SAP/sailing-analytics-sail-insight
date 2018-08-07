@@ -1,0 +1,34 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-react",
+    "tslint-config-airbnb"
+  ],
+  "jsRules": {
+    "quotemark": [true, "single"],
+    "semicolon": [true, "never"]
+  },
+  "rules": {
+    "semicolon": [true, "never"],
+    "no-submodule-imports": false,
+    // "no-implicit-dependencies": [true, ["~"]],
+    "no-implicit-dependencies": [false],
+    "import-name": [false],
+    "max-line-length": [true, {"limit": 120, "ignore-pattern": "^import |^export {(.*?)}"}],
+    "no-trailing-whitespace": [true, "ignore-comments"],
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-module",
+      "check-separator",
+      "check-rest-spread",
+      "check-type",
+      "check-typecast",
+      "check-type-operator",
+      "check-preblock"
+    ]
+  }
+}
