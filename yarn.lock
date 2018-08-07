@@ -663,6 +663,12 @@
   dependencies:
     csstype "^2.2.0"
 
+"@types/realm@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@types/realm/-/realm-1.13.0.tgz#d0c0178e727f3732f9337d6e9ccfc45d7b77ef13"
+  dependencies:
+    realm "*"
+
 "@types/redux-actions@^2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@types/redux-actions/-/redux-actions-2.3.0.tgz#d28d7913ec86ee9e20ecb33a1fed887ecb538149"
@@ -5180,7 +5186,7 @@ readdirp@^2.0.0:
     readable-stream "^2.0.2"
     set-immediate-shim "^1.0.1"
 
-realm@^2.14.0:
+realm@*, realm@2.14.0:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/realm/-/realm-2.14.0.tgz#47c4b4459c6bac3e5965da44fc4b51617cc34d66"
   dependencies:
