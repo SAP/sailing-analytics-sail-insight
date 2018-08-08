@@ -16,8 +16,8 @@ const persistConfig = {
 
 export default (initialState = {}) => {
   const enhancers = composeWithDevTools(applyMiddleware(
-    ReduxThunk,
     createNetworkMiddleware(),
+    ReduxThunk,
   ))
 
   const persistedReducer = persistReducer(persistConfig, Reducers)
