@@ -40,7 +40,9 @@ const rootComponent = () => (
 )
 
 const AppWithNetworkConnectivity = withNetworkConnectivity({
-  withRedux: true, // It won't inject isConnected as a prop in this case
+  withRedux: true, // no isConnected as a prop in this case
+  checkConnectionInterval: 3000,
+  checkInBackground: true,
 })(rootComponent)
 
 // must be a component to support hot reloading
