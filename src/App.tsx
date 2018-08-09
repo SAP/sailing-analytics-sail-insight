@@ -8,7 +8,7 @@ import * as DeepLinking from 'integrations/DeepLinking'
 
 import { performDeepLink } from 'actions'
 import { checkIn } from 'actions/checkIn'
-import { updateTrackedLeaderboard, updateTrackingStatus } from 'actions/locations'
+import { handleGPSLocation, removeTrackedRegatta, updateTrackingStatus } from 'actions/locations'
 import AppNavigator from 'navigation/AppNavigator'
 import LocationService, { LocationTrackingStatus } from 'services/LocationService'
 import configureStore from 'store/configureStore'
@@ -74,7 +74,7 @@ class App extends Component {
 
   public handleLocationTrackingStop() {
     store.dispatch(updateTrackingStatus(LocationTrackingStatus.STOPPED))
-    store.dispatch(updateTrackedLeaderboard(null))
+    store.dispatch(removeTrackedRegatta())
   }
 
   public handleLocation(location: any) {
