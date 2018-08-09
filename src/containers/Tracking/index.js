@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { View, Linking } from 'react-native'
 
 import I18n from 'i18n'
-import { checkIn, initApiRoot } from 'actions/checkIn'
+import { checkIn } from 'actions/checkIn'
 import { container, buttons } from 'styles/commons'
 
 import GradientContainer from 'components/GradientContainer'
@@ -24,7 +24,6 @@ import styles from './styles'
 class Tracking extends Component {
   static propTypes = {
     checkIn: PropTypes.func.isRequired,
-    initApiRoot: PropTypes.func.isRequired,
     startLocationTracking: PropTypes.func.isRequired,
     stopLocationTracking: PropTypes.func.isRequired,
     locationTrackingStatus: PropTypes.string,
@@ -33,10 +32,6 @@ class Tracking extends Component {
 
   static defaultProps = {
     locationTrackingStatus: null,
-  }
-
-  componentDidMount() {
-    this.props.initApiRoot(this.props?.checkInData?.leaderboardName)
   }
 
   onSuccess = (url) => {
@@ -106,7 +101,6 @@ const mapStateToProps = (state, props) => ({
 
 export default connect(mapStateToProps, {
   checkIn,
-  initApiRoot,
   startLocationTracking,
   stopLocationTracking,
 })(Tracking)
