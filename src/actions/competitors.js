@@ -1,5 +1,5 @@
 import * as api from 'api'
-import { fetchEntityFunction } from 'helpers/actions'
+import { fetchEntityAction } from 'helpers/actions'
 
 
-export const fetchCompetitor = fetchEntityFunction(api.requestCompetitor)
+export const fetchCompetitor = fetchEntityAction(api.requestCompetitor)

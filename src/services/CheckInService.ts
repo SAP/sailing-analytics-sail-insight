@@ -1,11 +1,11 @@
 import querystring from 'query-string'
-import parse from 'url-parse'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
+import parse from 'url-parse'
 import uuidv5 from 'uuid/v5'
 
+import api from 'api'
 import Logger from 'helpers/Logger'
-import * as api from 'api'
 import LocationService from './LocationService'
 
 const uuidNamespace = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
@@ -36,19 +36,20 @@ const BodyKeys = {
 }
 
 
-const createUuid = id => uuidv5(id, uuidNamespace)
+const createUuid = (id: string) => uuidv5(id, uuidNamespace)
 
-const extractData = (url) => {
+const extractData = (url: string) => {
   if (!url) {
     return null
   }
-
-  const serverUrl = parse(url)?.origin
+  const parsedUrl = parse(url)
+  const serverUrl = parsedUrl && parsedUrl.origin
   if (!serverUrl) {
     return null
   }
 
-  const queryData = querystring.parseUrl(url)?.query
+  const parsedQuery = querystring.parseUrl(url)
+  const queryData = parsedQuery && parsedQuery.query
   if (!queryData) {
     return null
   }
@@ -78,7 +79,7 @@ const extractData = (url) => {
   }
 }
 
-const deviceMappingData = (checkInData) => {
+const deviceMappingData = (checkInData: any) => {
   if (!checkInData) {
     return null
   }
@@ -100,9 +101,9 @@ const deviceMappingData = (checkInData) => {
   return body
 }
 
-const gpsFixData = locations => locations && {
+const gpsFixData = (locations: any) => locations && {
   [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
-  [BodyKeys.Fixes]: locations.map(location => ({
+  [BodyKeys.Fixes]: locations.map((location: any) => ({
     [BodyKeys.FixesLatitude]: location.latitude,
     [BodyKeys.FixesLongitude]: location.longitude,
     [BodyKeys.FixesTimestamp]: location.time,
@@ -111,26 +112,40 @@ const gpsFixData = locations => locations && {
   })),
 }
 
-const eventUrl = checkInData => checkInData && `${checkInData.serverUrl}/gwt/Home.html?navigationTab=Regattas#EventPlace:eventId=${checkInData.eventId}`
+const eventUrl = (checkInData: any) =>
+  checkInData &&
+  `${checkInData.serverUrl}/gwt/Home.html?navigationTab=Regattas#EventPlace:eventId=${checkInData.eventId}`
 
-const leaderboardUrl = checkInData => checkInData && `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
+const leaderboardUrl = (checkInData: any) =>
+  checkInData &&
+  `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
 
-const onLocation = async (location) => {
-  try {
-    const gpsFix = gpsFixData([location])
-    Logger.debug('GPS FIX: ', gpsFix)
-    api.sendGpsFixes(gpsFix)
-  } catch (err) {
-    Logger.debug(err)
-  }
+// const onLocation = async (location: any) => {
+//   try {
+//     const gpsFix = gpsFixData([location])
+//     Logger.debug('GPS FIX: ', gpsFix)
+//     api.sendGpsFixes(gpsFix)
+//   } catch (err) {
+//     Logger.debug(err)
+//   }
+// }
+
+// LocationService.addLocationListener(onLocation)
+
+interface CheckInService {
+  extractData: (url: string) => void
+  deviceMappingData: (checkInData: any) => void
+  gpsFixData: (locations: any) => void
+  eventUrl: (checkInData: any) => void
+  leaderboardUrl: (checkInData: any) => void
 }
 
-LocationService.addLocationListener(onLocation)
-
-export default {
+const service: CheckInService = {
   extractData,
   deviceMappingData,
   gpsFixData,
   eventUrl,
   leaderboardUrl,
 }
+
+export default service

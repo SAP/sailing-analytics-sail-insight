@@ -1,5 +1,5 @@
 import * as api from 'api'
-import { fetchEntityFunction } from 'helpers/actions'
+import { fetchEntityAction } from 'helpers/actions'
 
 
-export const fetchMark = fetchEntityFunction(api.requestMark)
+export const fetchMark = fetchEntityAction(api.requestMark)

@@ -10,14 +10,14 @@ export const ENTITIES_REDUCER_NAME = 'entities'
 export const LOCATION_TRACKING_REDUCER_NAME = 'locationTracking'
 export const NETWORK_REDUCER_NAME = 'network'
 
-interface IRootReducer {
+interface RootReducer {
   [NETWORK_REDUCER_NAME]: any
   [CHECK_IN_REDUCER_NAME]: any
   [ENTITIES_REDUCER_NAME]: any
   [LOCATION_TRACKING_REDUCER_NAME]: any
 }
 
-const reducer: IRootReducer = {
+const reducer: RootReducer = {
   [NETWORK_REDUCER_NAME]: network,
   [CHECK_IN_REDUCER_NAME]: CheckInReducer,
   [ENTITIES_REDUCER_NAME]: EntityReducer,
