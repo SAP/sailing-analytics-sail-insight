@@ -1,6 +1,8 @@
-import BackgroundGeolocation from 'react-native-mauron85-background-geolocation'
 import Logger from 'helpers/Logger'
+import BackgroundGeolocation from 'react-native-mauron85-background-geolocation'
 
+
+const LOG_TAG = '[BG_LOCATION]'
 
 BackgroundGeolocation.configure({
   desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,
@@ -18,49 +20,55 @@ BackgroundGeolocation.configure({
   stopOnStillActivity: false,
 })
 
-let startListener
-let stopListener
+let startListener: (() => void) | null
+let stopListener: (() => void) | null
 
-const setStartListener = (listener) => { startListener = listener }
-const setStopListener = (listener) => { stopListener = listener }
+const setStartListener = (listener: () => void) => { startListener = listener }
+const setStopListener = (listener: () => void) => { stopListener = listener }
+const removeStartListener = () => { startListener = null }
+const removeStopListener = () => { stopListener = null }
 
 BackgroundGeolocation.on('start', () => {
-  Logger.debug('[INFO] BackgroundGeolocation service has been started')
+  Logger.debug(`${LOG_TAG} Service has been started`)
   if (!startListener) { return }
   startListener()
 })
 
 BackgroundGeolocation.on('stop', () => {
-  Logger.debug('[INFO] BackgroundGeolocation service has been stopped')
+  Logger.debug(`${LOG_TAG} Service has been stopped`)
   if (!stopListener) { return }
   stopListener()
 })
 
-const listeners = []
-const handleLocation = async (location) => {
+BackgroundGeolocation.on('error', (err: any) => {
+  Logger.debug(`${LOG_TAG} [ERR]`, err)
+})
+
+const listeners: any[] = []
+const handleLocation = async (location: any) => {
   await Promise.all(listeners.map(listener => listener(location)))
 }
 
-BackgroundGeolocation.on('stationary', async (location) => {
+BackgroundGeolocation.on('stationary', async (location: any) => {
   Logger.debug('[INFO] BackgroundGeolocation is now in stationary', location)
   await handleLocation(location)
 })
 
 
-const addLocationListener = listener => listeners.push(listener)
-const removeLocationListener = (listener) => {
+const addLocationListener = (listener: (location: any) => void) => listeners.push(listener)
+const removeLocationListener = (listener: (location: any) => void) => {
   const index = listeners.indexOf(listener)
   if (index !== -1) {
     listeners.splice(index, 1)
   }
 }
 
-BackgroundGeolocation.on('location', (location) => {
+BackgroundGeolocation.on('location', (location: any) => {
   // handle your locations here
   // to perform long running operation on iOS
   // you need to create background task
   Logger.debug('ON_LOCATION', location)
-  BackgroundGeolocation.startTask(async (taskKey) => {
+  BackgroundGeolocation.startTask(async (taskKey: string) => {
     // execute long running task
     // eg. ajax post location
     // IMPORTANT: task has to be ended by endTask
@@ -76,10 +84,12 @@ export const LocationTrackingStatus = {
 }
 
 export default {
-  start: BackgroundGeolocation.start,
-  stop: BackgroundGeolocation.stop,
   addLocationListener,
   removeLocationListener,
   setStartListener,
   setStopListener,
+  removeStartListener,
+  removeStopListener,
+  start: BackgroundGeolocation.start,
+  stop: BackgroundGeolocation.stop,
 }

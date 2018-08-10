@@ -59,8 +59,8 @@ class App extends Component {
 
   public componentWillUnmount() {
     DeepLinking.removeListener(this.handleDeeplink)
-    LocationService.setStartListener(null)
-    LocationService.setStopListener(null)
+    LocationService.removeStartListener()
+    LocationService.removeStopListener()
     LocationService.removeLocationListener(this.handleLocation)
   }
 

@@ -24,12 +24,9 @@ class Tracking extends React.Component<{
   checkIn: (url: string) => void,
   startLocationTracking: (leaderboardName: string, eventId: string) => void,
   stopLocationTracking: () => void,
-  locationTrackingStatus: string?,
+  locationTrackingStatus?: string,
   checkInData: any,
 } > {
-  public static defaultProps = {
-    locationTrackingStatus: null,
-  }
 
   public onSuccess = (url: string) => {
     this.props.checkIn(url)
@@ -85,7 +82,7 @@ class Tracking extends React.Component<{
         </TextButton>
       </GradientContainer>
     )
-  },
+  }
 }
 
 const mapStateToProps = (state: any, props: any) => ({

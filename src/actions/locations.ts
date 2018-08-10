@@ -28,5 +28,5 @@ export const stopLocationTracking = () => (dispatch: (action: any) => void) => {
 }
 
 export const handleGPSLocation = (location: any) => (dispatch: (action: any) => void) => {
-  Logger.debug(location)
+  // TODO: handle location
 }
