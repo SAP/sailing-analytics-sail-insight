@@ -101,7 +101,7 @@ const deviceMappingData = (checkInData: any) => {
   return body
 }
 
-const gpsFixData = (locations: any) => locations && {
+export const gpsFixData = (locations: any) => locations && {
   [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
   [BodyKeys.Fixes]: locations.map((location: any) => ({
     [BodyKeys.FixesLatitude]: location.latitude,
