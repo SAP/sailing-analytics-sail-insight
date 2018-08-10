@@ -34,3 +34,8 @@ export const checkIn = (url: string) => async (dispatch: (action: any) => void) 
   await api(data.serverUrl).startDeviceMapping(data.leaderboardName, body)
   dispatch(addCheckIn(data))
 }
+
+export const insertTestCheckIns = () => (dispatch: (action: any) => void) => {
+  dispatch(checkIn('https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'))
+  dispatch(checkIn('https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart+2&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'))
+}
