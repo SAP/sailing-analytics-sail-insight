@@ -2,13 +2,14 @@ import { reducer as network } from 'react-native-offline'
 import { combineReducers } from 'redux'
 
 import CheckInReducer from './CheckInReducer'
+import {
+  CHECK_IN_REDUCER_NAME,
+  ENTITIES_REDUCER_NAME,
+  LOCATION_TRACKING_REDUCER_NAME,
+  NETWORK_REDUCER_NAME,
+} from './config'
 import EntityReducer from './EntityReducer'
 import LocationTrackingReducer from './LocationTrackingReducer'
-
-export const CHECK_IN_REDUCER_NAME = 'checkIn'
-export const ENTITIES_REDUCER_NAME = 'entities'
-export const LOCATION_TRACKING_REDUCER_NAME = 'locationTracking'
-export const NETWORK_REDUCER_NAME = 'network'
 
 interface RootReducer {
   [NETWORK_REDUCER_NAME]: any
@@ -20,11 +21,10 @@ interface RootReducer {
 const reducer: RootReducer = {
   [NETWORK_REDUCER_NAME]: network,
   [CHECK_IN_REDUCER_NAME]: CheckInReducer,
-  [ENTITIES_REDUCER_NAME]: EntityReducer,
   [LOCATION_TRACKING_REDUCER_NAME]: LocationTrackingReducer,
+  [ENTITIES_REDUCER_NAME]: EntityReducer,
 }
 
 const reducers = combineReducers(reducer)
-
 
 export default reducers

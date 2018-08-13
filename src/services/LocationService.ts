@@ -23,10 +23,22 @@ BackgroundGeolocation.configure({
 let startListener: (() => void) | null
 let stopListener: (() => void) | null
 
-const setStartListener = (listener: () => void) => { startListener = listener }
-const setStopListener = (listener: () => void) => { stopListener = listener }
-const removeStartListener = () => { startListener = null }
-const removeStopListener = () => { stopListener = null }
+export const checkStatus: () => any = () => new Promise<any>((resolve, reject) => BackgroundGeolocation.checkStatus(
+  resolve,
+  reject,
+))
+
+export const setStartListener = async (listener: () => void) => {
+  startListener = listener
+  const status = await checkStatus()
+  if (!listener || !status || !status.isRunning) {
+    return
+  }
+  listener()
+}
+export const setStopListener = (listener: () => void) => { stopListener = listener }
+export const removeStartListener = () => { startListener = null }
+export const removeStopListener = () => { stopListener = null }
 
 BackgroundGeolocation.on('start', () => {
   Logger.debug(`${LOG_TAG} Service has been started`)
@@ -55,8 +67,8 @@ BackgroundGeolocation.on('stationary', async (location: any) => {
 })
 
 
-const addLocationListener = (listener: (location: any) => void) => listeners.push(listener)
-const removeLocationListener = (listener: (location: any) => void) => {
+export const addLocationListener = (listener: (location: any) => void) => listeners.push(listener)
+export const removeLocationListener = (listener: (location: any) => void) => {
   const index = listeners.indexOf(listener)
   if (index !== -1) {
     listeners.splice(index, 1)
@@ -77,7 +89,6 @@ BackgroundGeolocation.on('location', (location: any) => {
   })
 })
 
-
 export const LocationTrackingStatus = {
   RUNNING: 'RUNNING',
   STOPPED: 'STOPPED',
@@ -96,13 +107,5 @@ export class LocationTrackingException extends Error {
   }
 }
 
-export default {
-  addLocationListener,
-  removeLocationListener,
-  setStartListener,
-  setStopListener,
-  removeStartListener,
-  removeStopListener,
-  start: BackgroundGeolocation.start,
-  stop: BackgroundGeolocation.stop,
-}
+export const start = BackgroundGeolocation.start
+export const stop = BackgroundGeolocation.stop

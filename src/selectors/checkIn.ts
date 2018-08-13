@@ -1,7 +1,7 @@
 import { values } from 'lodash'
 import { createSelector } from 'reselect'
 
-import { CHECK_IN_REDUCER_NAME } from 'reducers'
+import { CHECK_IN_REDUCER_NAME } from 'reducers/config'
 import { getBoatEntity } from './boat'
 import { getCompetitorEntity } from './competitor'
 import { getEventEntity } from './event'
@@ -53,5 +53,5 @@ export const getTrackedEvent = createSelector(
 
 export const getTrackedEventBaseUrl = createSelector(
   getTrackedEvent,
-  (event: any) => event && event.baseUrl,
+  (event: any) => event && event.baseURL,
 )

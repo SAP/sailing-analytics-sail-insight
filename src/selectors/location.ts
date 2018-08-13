@@ -1,4 +1,4 @@
-import { LOCATION_TRACKING_REDUCER_NAME } from 'reducers'
+import { LOCATION_TRACKING_REDUCER_NAME } from 'reducers/config'
 
 
 export const getLocationTrackingStatus = (state: any = {}) =>

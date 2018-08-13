@@ -7,9 +7,9 @@ import { PersistGate } from 'redux-persist/integration/react'
 import * as DeepLinking from 'integrations/DeepLinking'
 
 import { performDeepLink } from 'actions'
-import { handleGPSLocation, removeTrackedRegatta, updateTrackingStatus } from 'actions/locations'
+import { handleLocation, removeTrackedRegatta, updateTrackingStatus } from 'actions/locations'
 import AppNavigator from 'navigation/AppNavigator'
-import LocationService, { LocationTrackingStatus } from 'services/LocationService'
+import * as LocationService from 'services/LocationService'
 import configureStore from 'store/configureStore'
 import { initStyles, recalculateStyles } from 'styles'
 import { container } from 'styles/commons'
@@ -66,16 +66,16 @@ class App extends Component {
   }
 
   public handleLocationTrackingStart() {
-    store.dispatch(updateTrackingStatus(LocationTrackingStatus.RUNNING))
+    store.dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.RUNNING))
   }
 
   public handleLocationTrackingStop() {
-    store.dispatch(updateTrackingStatus(LocationTrackingStatus.STOPPED))
+    store.dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.STOPPED))
     store.dispatch(removeTrackedRegatta())
   }
 
   public handleLocation(location: any) {
-    store.dispatch(handleGPSLocation(location))
+    store.dispatch(handleLocation(location))
   }
 
   public render() {

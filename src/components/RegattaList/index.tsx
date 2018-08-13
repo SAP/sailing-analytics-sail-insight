@@ -24,7 +24,7 @@ class RegattaList extends React.Component<{
 } > {
 
   public componentDidMount() {
-    // this.props.insertTestCheckIns()
+    this.props.insertTestCheckIns()
   }
 
   public renderHeader() {

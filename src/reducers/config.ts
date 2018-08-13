@@ -1,0 +1,4 @@
+export const CHECK_IN_REDUCER_NAME = 'checkIn'
+export const ENTITIES_REDUCER_NAME = 'entities'
+export const LOCATION_TRACKING_REDUCER_NAME = 'locationTracking'
+export const NETWORK_REDUCER_NAME = 'network'

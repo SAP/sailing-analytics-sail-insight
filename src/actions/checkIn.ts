@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions'
 
 import api from 'api'
-import CheckInService from 'services/CheckInService'
+import * as CheckInService from 'services/CheckInService'
 
 import { fetchEntityAction } from 'helpers/actions'
 

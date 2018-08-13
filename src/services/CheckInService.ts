@@ -1,12 +1,10 @@
+import { GPSFix } from 'models'
 import querystring from 'query-string'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 import uuidv5 from 'uuid/v5'
 
-import api from 'api'
-import Logger from 'helpers/Logger'
-import LocationService from './LocationService'
 
 const uuidNamespace = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
 
@@ -18,7 +16,7 @@ const UrlPropertyNames = {
   MarkId: 'mark_id',
 }
 
-const BodyKeys = {
+export const BodyKeys = {
   BoatId: 'boatId',
   CompetitorId: 'competitorId',
   DeviceType: 'deviceType',
@@ -38,7 +36,7 @@ const BodyKeys = {
 
 const createUuid = (id: string) => uuidv5(id, uuidNamespace)
 
-const extractData = (url: string) => {
+export const extractData = (url: string) => {
   if (!url) {
     return null
   }
@@ -79,7 +77,7 @@ const extractData = (url: string) => {
   }
 }
 
-const deviceMappingData = (checkInData: any) => {
+export const deviceMappingData = (checkInData: any) => {
   if (!checkInData) {
     return null
   }
@@ -101,51 +99,24 @@ const deviceMappingData = (checkInData: any) => {
   return body
 }
 
-export const gpsFixData = (locations: any) => locations && {
-  [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
-  [BodyKeys.Fixes]: locations.map((location: any) => ({
-    [BodyKeys.FixesLatitude]: location.latitude,
-    [BodyKeys.FixesLongitude]: location.longitude,
-    [BodyKeys.FixesTimestamp]: location.time,
-    [BodyKeys.FixesCourse]: location.bearing || 0,
-    [BodyKeys.FixesSpeed]: location.speed || 0,
-  })),
-}
+const gpsFixPostItem = (fix: GPSFix) => fix && ({
+  [BodyKeys.FixesLatitude]: fix.latitude,
+  [BodyKeys.FixesLongitude]: fix.longitude,
+  [BodyKeys.FixesTimestamp]: fix.timeMillis,
+  [BodyKeys.FixesCourse]: fix.bearingInDeg || 0,
+  [BodyKeys.FixesSpeed]: fix.speedInKnots || 0,
+})
 
-const eventUrl = (checkInData: any) =>
+export const gpsFixPostData = (fixes: GPSFix[]) => fixes && ({
+  [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
+  [BodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)),
+})
+
+export const eventUrl = (checkInData: any) =>
   checkInData &&
   `${checkInData.serverUrl}/gwt/Home.html?navigationTab=Regattas#EventPlace:eventId=${checkInData.eventId}`
 
-const leaderboardUrl = (checkInData: any) =>
+export const leaderboardUrl = (checkInData: any) =>
   checkInData &&
   `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
 
-// const onLocation = async (location: any) => {
-//   try {
-//     const gpsFix = gpsFixData([location])
-//     Logger.debug('GPS FIX: ', gpsFix)
-//     api.sendGpsFixes(gpsFix)
-//   } catch (err) {
-//     Logger.debug(err)
-//   }
-// }
-
-// LocationService.addLocationListener(onLocation)
-
-interface CheckInService {
-  extractData: (url: string) => void
-  deviceMappingData: (checkInData: any) => void
-  gpsFixData: (locations: any) => void
-  eventUrl: (checkInData: any) => void
-  leaderboardUrl: (checkInData: any) => void
-}
-
-const service: CheckInService = {
-  extractData,
-  deviceMappingData,
-  gpsFixData,
-  eventUrl,
-  leaderboardUrl,
-}
-
-export default service

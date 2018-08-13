@@ -6,7 +6,8 @@ import { persistReducer, persistStore } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import ReduxThunk from 'redux-thunk'
 
-import Reducers, { NETWORK_REDUCER_NAME } from 'reducers'
+import Reducers from 'reducers'
+import { NETWORK_REDUCER_NAME } from 'reducers/config'
 
 const persistConfig = {
   // storage,
