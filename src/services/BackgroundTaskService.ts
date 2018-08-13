@@ -15,7 +15,7 @@ const handleTimerEvent = async () => {
   await Promise.all(listeners.map(listener => listener()))
 }
 
-const startBackgroundTimer = (interval: number) => BackgroundTimer.runBackgroundTimer(handleTimerEvent)
+const startBackgroundTimer = (interval: number) => BackgroundTimer.runBackgroundTimer(handleTimerEvent, interval)
 const stopBackgroundTimer = () => BackgroundTimer.stopBackgroundTimer()
 
 export default {
