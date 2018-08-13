@@ -1,7 +1,7 @@
 import Logger from 'helpers/Logger'
 import { GPSFix } from 'models'
 import realm from './realm'
-import { GPS_FIX_REQUEST_SCHEMA_NAME } from './schemas'
+import { BASE_URL_PROPERTY_NAME, GPS_FIX_PROPERTY_NAME, GPS_FIX_REQUEST_SCHEMA_NAME } from './schemas'
 
 
 const read = (type: string) => (options?: {
@@ -19,13 +19,14 @@ const read = (type: string) => (options?: {
 }
 
 export const writeGPSFixRequest = (url: string, gpsFix: GPSFix) => {
+  console.log(gpsFix, url)
   try {
     realm.write(() => {
       realm.create(
         GPS_FIX_REQUEST_SCHEMA_NAME,
         {
-          url,
-          gpsFix,
+          [BASE_URL_PROPERTY_NAME]: url,
+          [GPS_FIX_PROPERTY_NAME]: gpsFix,
         },
       )
     })

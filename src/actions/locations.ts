@@ -48,7 +48,6 @@ export const handleLocation = (location: any) => async (dispatch: (action: any) 
   )
 
   const postData = CheckInService.gpsFixPostData([gpsFix])
-  Logger.debug('GPS FIX: ', postData)
   if (!postData) {
     throw new LocationService.LocationTrackingException('gpsFix creation failed')
   }

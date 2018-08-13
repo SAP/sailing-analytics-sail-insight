@@ -5,33 +5,40 @@ import * as networking from './networking'
 
 import ApiException from './ApiException'
 
-/**
- * extract json data from response
- * @param {*} response object
- */
-const responseData = async (response: any) => {
+
+const defaultResponseHandler = (dataHandler?: (response: any) => any) => async (response: any) => {
   if (!response) {
     return null
   }
   if (!response.ok) {
     let data = null
-    try {
-      data = response.status !== 404 ? await response.json() : { message: 'NOT FOUND' }
-    } catch (err) {
-      data = err
+    if (response.status === 404) {
+      data = { message: 'NOT FOUND' }
+    }
+    if (dataHandler) {
+      data = await dataHandler(response)
     }
     throw new ApiException(data && (data.message || data.detail || 'unknown_error'), response.status, data)
   }
   try {
-    return await response.json()
+    return dataHandler ? dataHandler(response) : response
   } catch (err) {
     Logger.debug('JSON Response error:', err)
   }
   return null
 }
 
-const responseDataArray = async (response: any) => {
-  const data = await responseData(response)
+const jsonData = async (response: any) => {
+  try {
+    return await response.json()
+  } catch (err) {
+    Logger.debug('JSON Response error:', err)
+    return err
+  }
+}
+
+const jsonDataArray = async (response: any) => {
+  const data = await jsonData(response)
   return data || []
 }
 
@@ -39,17 +46,17 @@ const responseDataArray = async (response: any) => {
  * get request function with specific response data handler
  * @param {*} responseHandler function to extract the data from response
  */
-const requestWithHandler = (responseHandler?: (response: any) => void) => async (
+const requestWithHandler = (dataHandler?: (response: any) => any) => async (
   url: string,
   options?: any,
   dataSchema?: any,
 ) => {
   const response = await networking.request(url, options)
-  const data = responseHandler ? await responseHandler(response) : response
+  const data = await defaultResponseHandler(dataHandler)(response)
   return dataSchema && data ? normalize(data, dataSchema) : data
 }
 
 
-export const dataRequest = requestWithHandler(responseData)
+export const dataRequest = requestWithHandler(jsonData)
 export const request = requestWithHandler()
-export const listRequest = requestWithHandler(responseDataArray)
+export const listRequest = requestWithHandler(jsonDataArray)
