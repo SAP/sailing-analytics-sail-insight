@@ -1,18 +1,18 @@
 
-import Logger from 'helpers/Logger'
 import { DEV_MODE } from 'helpers/environment'
+import Logger from 'helpers/Logger'
 
 
 const DEFAULT_HEADERS = {
-  Accept: 'application/json',
+  // Accept: 'application/json',
   'Content-Type': 'application/json',
-  'Cache-Control': 'no-cache',
+  // 'Cache-Control': 'no-cache',
 }
 
-const defaultSignedHeaders = (url, method, headers) => headers
+const defaultSignedHeaders = (url: string, method: string, headers: any, body?: any) => headers
 
 // eslint-disable-next-line import/prefer-default-export
-export const request = async (url, { method = 'GET', signer = defaultSignedHeaders, body } = {}) => {
+export const request = async (url: any, { method = 'GET', signer = defaultSignedHeaders, body = null } = {}) => {
   const data = body ? { body: JSON.stringify(body) } : {}
   const fetchOptions = {
     method,
@@ -31,12 +31,12 @@ export const request = async (url, { method = 'GET', signer = defaultSignedHeade
   } finally {
     if (DEV_MODE) {
       Logger.groupedDebug(
-        `${response?.status || 'ERR'}: ${fetchOptions.method} ${url}`,
+        `${(response && response.status) || 'ERR'}: ${fetchOptions.method} ${url}`,
         {
-          method: fetchOptions.method,
-          headers: fetchOptions.headers,
           body,
           response,
+          method: fetchOptions.method,
+          headers: fetchOptions.headers,
         },
       )
     }
