@@ -19,7 +19,6 @@ const read = (type: string) => (options?: {
 }
 
 export const writeGPSFixRequest = (url: string, gpsFix: GPSFix) => {
-  console.log(gpsFix, url)
   try {
     realm.write(() => {
       realm.create(
@@ -36,3 +35,13 @@ export const writeGPSFixRequest = (url: string, gpsFix: GPSFix) => {
 }
 
 export const readGPSFixRequests = read(GPS_FIX_REQUEST_SCHEMA_NAME)
+
+export const deleteGPSFixRequests = (fixes: any) => {
+  try {
+    realm.write(() => {
+      realm.delete(fixes)
+    })
+  } catch (e) {
+    Logger.debug('Error on deletion', e)
+  }
+}

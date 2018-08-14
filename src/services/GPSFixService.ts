@@ -1,7 +1,7 @@
 import api from 'api'
 import Logger from 'helpers/Logger'
 import { keys } from 'lodash'
-import { readGPSFixRequests, writeGPSFixRequest } from 'storage'
+import { deleteGPSFixRequests, readGPSFixRequests, writeGPSFixRequest } from 'storage'
 import { BASE_URL_PROPERTY_NAME } from 'storage/schemas'
 import BackgroundTaskService from './BackgroundTaskService'
 import * as CheckInService from './CheckInService'
@@ -9,7 +9,6 @@ import * as CheckInService from './CheckInService'
 const UPDATE_TIME_INTERVAL_IN_MILLIS = 15000
 
 const onTask = async () => {
-  // TODO: get gps fix request objects and bulk send them 
   const fixRequests = readGPSFixRequests({ sortedBy: BASE_URL_PROPERTY_NAME })
 
   const urls: { [url: string]: any[]; } = {}
@@ -26,10 +25,10 @@ const onTask = async () => {
     const postData = CheckInService.gpsFixPostData(urls[url])
     try {
       await api(url).sendGpsFixes(postData)
+      deleteGPSFixRequests(urls[url])
     } catch (err) {
       Logger.debug(err)
     }
-    // TODO: delete gps fix requests on success
   }))
 }
 
