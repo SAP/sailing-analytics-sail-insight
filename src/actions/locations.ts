@@ -3,7 +3,7 @@ import { createAction } from 'redux-actions'
 import api from 'api'
 import Logger from 'helpers/Logger'
 import { GPSFix } from 'models'
-import { getTrackedEventBaseUrl } from 'selectors/checkIn'
+import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import * as CheckInService from 'services/CheckInService'
 import * as GPSFixService from 'services/GPSFixService'
 import * as LocationService from 'services/LocationService'
@@ -35,7 +35,7 @@ export const stopLocationTracking = () => (dispatch: (action: any) => void) => {
 
 export const handleLocation = (location: any) => async (dispatch: (action: any) => void, getState: () => any) => {
   // TODO: handle location
-  const serverUrl = getTrackedEventBaseUrl(getState())
+  const serverUrl = getTrackedCheckInBaseUrl(getState())
   if (!serverUrl) {
     throw new LocationService.LocationTrackingException('missing event baseUrl')
   }

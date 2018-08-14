@@ -6,15 +6,17 @@ import { getBoatEntity } from './boat'
 import { getCompetitorEntity } from './competitor'
 import { getEventEntity } from './event'
 import { getLeaderboardEntity } from './leaderboard'
-import { getTrackedEventId } from './location'
+import { getTrackedEventId, getTrackedLeaderboardName } from './location'
 import { getMarkEntity } from './mark'
 
 
 export const getActiveCheckIns = (state: any) =>
   state && state[CHECK_IN_REDUCER_NAME] && state[CHECK_IN_REDUCER_NAME].active
 
-export const getCheckInByLeaderboardName = (state: any, leaderboardName: string) =>
-  state && state[CHECK_IN_REDUCER_NAME] && state[CHECK_IN_REDUCER_NAME][leaderboardName]
+export const getCheckInByLeaderboardName = (state: any = {}, leaderboardName: string) =>
+  state[CHECK_IN_REDUCER_NAME] &&
+  state[CHECK_IN_REDUCER_NAME].active &&
+  state[CHECK_IN_REDUCER_NAME].active[leaderboardName]
 
 export const getCheckInList = createSelector(
   getActiveCheckIns,
@@ -51,7 +53,7 @@ export const getTrackedEvent = createSelector(
   (eventId, eventEntity) => eventEntity && eventEntity[eventId],
 )
 
-export const getTrackedEventBaseUrl = createSelector(
-  getTrackedEvent,
-  (event: any) => event && event.baseURL,
-)
+export const getTrackedCheckInBaseUrl = (state: any = {}) => {
+  const checkIn = getCheckInByLeaderboardName(state, getTrackedLeaderboardName(state))
+  return checkIn && checkIn.serverUrl
+}

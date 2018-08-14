@@ -6,3 +6,7 @@ export const getLocationTrackingStatus = (state: any = {}) =>
 
 export const getTrackedEventId = (state: any = {}) =>
   state[LOCATION_TRACKING_REDUCER_NAME] && state[LOCATION_TRACKING_REDUCER_NAME].eventId
+
+export const getTrackedLeaderboardName = (state: any = {}) =>
+  state[LOCATION_TRACKING_REDUCER_NAME] && state[LOCATION_TRACKING_REDUCER_NAME].leaderboardName
+
