@@ -51,14 +51,15 @@ export const request = async (url: any, { method = 'GET', signer = defaultSigned
     throw err
   } finally {
     if (DEV_MODE) {
+      const headers = fetchOptions.headers
       Logger.groupedDebug(
         `${(response && response.status) || 'ERR'}: ${fetchOptions.method} ${url}`,
         {
           data,
+          headers,
+          method,
           body,
           response,
-          method: fetchOptions.method,
-          headers: fetchOptions.headers,
         },
       )
     }

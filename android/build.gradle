@@ -40,6 +40,12 @@ allprojects {
             url 'https://maven.google.com/'
             name 'Google'
         }
+        maven {
+            url "$rootDir/../node_modules/react-native-background-geolocation/android/libs"
+        }
+        maven {
+            url "$rootDir/../node_modules/react-native-background-fetch/android/libs"
+        }
     }
 }
 

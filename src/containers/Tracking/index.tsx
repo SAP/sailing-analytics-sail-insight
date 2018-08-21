@@ -14,8 +14,9 @@ import {
   startLocationTracking,
   stopLocationTracking,
 } from 'actions/locations'
+import Logger from 'helpers/Logger'
 import { getLocationTrackingStatus } from 'selectors/location'
-import CheckInService from 'services/CheckInService'
+import * as CheckInService from 'services/CheckInService'
 import { LocationTrackingStatus } from 'services/LocationService'
 import styles from './styles'
 
@@ -28,16 +29,27 @@ class Tracking extends React.Component<{
   checkInData: any,
 } > {
 
+  public state = {
+    isLoading: false,
+  }
+
   public onSuccess = (url: string) => {
     this.props.checkIn(url)
   }
 
-  public onTrackingPress = () => {
-    if (this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING) {
-      this.props.stopLocationTracking()
-    } else {
-      const { checkInData } = this.props
-      this.props.startLocationTracking(checkInData.leaderboardName, checkInData.eventId)
+  public onTrackingPress = async () => {
+    await this.setState({ isLoading: true })
+    try {
+      if (this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING) {
+        await this.props.stopLocationTracking()
+      } else {
+        const { checkInData } = this.props
+        await this.props.startLocationTracking(checkInData.leaderboardName, checkInData.eventId)
+      }
+    } catch (err) {
+      Logger.debug(err)
+    } finally {
+      this.setState({ isLoading: false })
     }
   }
 
@@ -77,6 +89,7 @@ class Tracking extends React.Component<{
           textStyle={buttons.actionText}
           style={[buttons.actionFullWidth, isRunning ? { backgroundColor: 'red' } : null]}
           onPress={this.onTrackingPress}
+          isLoading={this.state.isLoading}
         >
           {isRunning ? I18n.t('caption_stop_tracking') : I18n.t('caption_start_tracking')}
         </TextButton>

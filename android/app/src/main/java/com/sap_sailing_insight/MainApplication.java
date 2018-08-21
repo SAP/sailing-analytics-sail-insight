@@ -3,9 +3,10 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
+import com.transistorsoft.rnbackgroundgeolocation.RNBackgroundGeolocation;
 import com.ocetnik.timer.BackgroundTimerPackage;
 import io.realm.react.RealmReactPackage;
-import com.marianhello.bgloc.react.BackgroundGeolocationPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.horcrux.svg.SvgPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -34,9 +35,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNBackgroundFetchPackage(),
+            new RNBackgroundGeolocation(),
             new BackgroundTimerPackage(),
             new RealmReactPackage(),
-            new BackgroundGeolocationPackage(),
             new RNDeviceInfo(),
             new SvgPackage(),
             new LinearGradientPackage(),
