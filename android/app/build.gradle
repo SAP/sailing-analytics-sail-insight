@@ -73,7 +73,8 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js"
+    entryFile: "index.js",
+    // bundleInDebug: true
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -152,9 +153,10 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-background-timer')
+    implementation project(':react-native-background-fetch')
+    implementation project(':react-native-background-geolocation')
+    implementation project(':react-native-background-timer')
     implementation project(':realm')
-    implementation project(':react-native-mauron85-background-geolocation')
     implementation project(':react-native-device-info')
     implementation project(':react-native-svg')
     implementation project(':react-native-linear-gradient')

@@ -7,7 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import * as DeepLinking from 'integrations/DeepLinking'
 
 import { performDeepLink } from 'actions'
-import { handleLocation, removeTrackedRegatta, updateTrackingStatus } from 'actions/locations'
+import { handleLocation, initLocationTracking, removeTrackedRegatta, updateTrackingStatus } from 'actions/locations'
 import AppNavigator from 'navigation/AppNavigator'
 import * as LocationService from 'services/LocationService'
 import configureStore from 'store/configureStore'
@@ -49,15 +49,14 @@ const AppWithNetworkConnectivity = withNetworkConnectivity({
 class App extends Component {
   public componentDidMount() {
     DeepLinking.addListener(this.handleDeeplink)
-    LocationService.setStartListener(this.handleLocationTrackingStart)
-    LocationService.setStopListener(this.handleLocationTrackingStop)
+    LocationService.addStatusListener(this.handleLocationTrackingStatus)
     LocationService.addLocationListener(this.handleLocation)
+    store.dispatch(initLocationTracking())
   }
 
   public componentWillUnmount() {
     DeepLinking.removeListener(this.handleDeeplink)
-    LocationService.removeStartListener()
-    LocationService.removeStopListener()
+    LocationService.removeStatusListener(this.handleLocationTrackingStatus)
     LocationService.removeLocationListener(this.handleLocation)
   }
 
@@ -65,13 +64,11 @@ class App extends Component {
     store.dispatch(performDeepLink(params))
   }
 
-  public handleLocationTrackingStart() {
-    store.dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.RUNNING))
-  }
-
-  public handleLocationTrackingStop() {
-    store.dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.STOPPED))
-    store.dispatch(removeTrackedRegatta())
+  public handleLocationTrackingStatus(state: any) {
+    const status = state && state.enabled ?
+    LocationService.LocationTrackingStatus.RUNNING :
+    LocationService.LocationTrackingStatus.STOPPED
+    store.dispatch(updateTrackingStatus(status))
   }
 
   public handleLocation(location: any) {

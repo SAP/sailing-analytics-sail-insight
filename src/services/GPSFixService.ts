@@ -3,8 +3,9 @@ import Logger from 'helpers/Logger'
 import { keys } from 'lodash'
 import { deleteGPSFixRequests, readGPSFixRequests, writeGPSFixRequest } from 'storage'
 import { BASE_URL_PROPERTY_NAME } from 'storage/schemas'
-import BackgroundTaskService from './BackgroundTaskService'
+import * as BackgroundTaskService from './BackgroundTaskService'
 import * as CheckInService from './CheckInService'
+import * as LocationService from './LocationService'
 
 const UPDATE_TIME_INTERVAL_IN_MILLIS = 15000
 
@@ -36,12 +37,14 @@ export const storeGPSFix = (serverUrl: string, gpsFix: any) => writeGPSFixReques
 
 export const startPeriodicalGPSFixUpdates = () => {
   Logger.debug('[GPS-Fix] Offline Manager started')
-  BackgroundTaskService.startBackgroundTimer(UPDATE_TIME_INTERVAL_IN_MILLIS)
-  BackgroundTaskService.addTaskListener(onTask)
+  // BackgroundTaskService.startBackgroundTimer(UPDATE_TIME_INTERVAL_IN_MILLIS)
+  // BackgroundTaskService.addTaskListener(onTask)
+  LocationService.addHeartbeatListener(onTask)
 }
 
 export const stopGPSFixUpdates = () => {
   Logger.debug('[GPS-Fix] Offline Manager stopped')
-  BackgroundTaskService.removeTaskListener(onTask)
-  BackgroundTaskService.stopBackgroundTimer()
+  // BackgroundTaskService.removeTaskListener(onTask)
+  // BackgroundTaskService.stopBackgroundTimer()
+  LocationService.removeHeartbeatListener(onTask)
 }

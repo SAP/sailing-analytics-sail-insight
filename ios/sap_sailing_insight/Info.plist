@@ -46,19 +46,22 @@
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>App requires background tracking</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>App requires background tracking</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>App requires background tracking</string>
+	<key>NSLocationUsageDescription</key>
+	<string>App requires background tracking</string>
+	<key>NSMotionUsageDescription</key>
+	<string>App requires motion tracking</string>
 	<key>NSCameraUsageDescription</key>
 	<string>App requires camera</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>App requires microphone</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App requires background tracking</string>
-	<key>NSMotionUsageDescription</key>
-	<string>App requires motion tracking</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
+		<string>fetch</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
