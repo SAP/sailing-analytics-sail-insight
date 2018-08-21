@@ -1,6 +1,11 @@
 import { handleActions } from 'redux-actions'
 
+import { updateTrackedRegatta } from '../actions/locations'
 import { addCheckIn } from 'actions/checkIn'
+
+
+console.log('UZPCATE', updateTrackedRegatta)
+console.log('cghec', addCheckIn)
 
 
 const initialState = {
@@ -8,8 +13,10 @@ const initialState = {
 }
 
 const reducer = handleActions({
-  [addCheckIn]: (state = {}, action) => {
-    const leaderboardName = action?.payload?.leaderboardName
+  [updateTrackedRegatta]: (state = {}, action) => {
+    console.log(action)
+    debugger
+    const leaderboardName = action.payload.leaderboardName
     if (!leaderboardName) {
       return state
     }

@@ -1,71 +1,61 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { Linking, View } from 'react-native'
 import { connect } from 'react-redux'
-import { View, Linking } from 'react-native'
 
+import { checkIn } from 'actions/checkIn'
 import I18n from 'i18n'
-import { checkIn, initApiRoot } from 'actions/checkIn'
-import { container, buttons } from 'styles/commons'
+import { buttons, container } from 'styles/commons'
 
 import GradientContainer from 'components/GradientContainer'
-import TextButton from 'components/TextButton'
 import RegattaItem from 'components/RegattaItem'
+import TextButton from 'components/TextButton'
 
-import { LocationTrackingStatus } from 'services/LocationService'
-import CheckInService from 'services/CheckInService'
-import { getLocationTrackingStatus } from 'selectors/location'
 import {
   startLocationTracking,
   stopLocationTracking,
 } from 'actions/locations'
+import { getLocationTrackingStatus } from 'selectors/location'
+import CheckInService from 'services/CheckInService'
+import { LocationTrackingStatus } from 'services/LocationService'
 import styles from './styles'
 
 
-class Tracking extends Component {
-  static propTypes = {
-    checkIn: PropTypes.func.isRequired,
-    initApiRoot: PropTypes.func.isRequired,
-    startLocationTracking: PropTypes.func.isRequired,
-    stopLocationTracking: PropTypes.func.isRequired,
-    locationTrackingStatus: PropTypes.string,
-    checkInData: PropTypes.shape({}).isRequired,
-  }
+class Tracking extends React.Component<{
+  checkIn: (url: string) => void,
+  startLocationTracking: (leaderboardName: string, eventId: string) => void,
+  stopLocationTracking: () => void,
+  locationTrackingStatus?: string,
+  checkInData: any,
+} > {
 
-  static defaultProps = {
-    locationTrackingStatus: null,
-  }
-
-  componentDidMount() {
-    this.props.initApiRoot(this.props?.checkInData?.leaderboardName)
-  }
-
-  onSuccess = (url) => {
+  public onSuccess = (url: string) => {
     this.props.checkIn(url)
   }
 
-  onTrackingPress = () => {
+  public onTrackingPress = () => {
     if (this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING) {
       this.props.stopLocationTracking()
     } else {
-      this.props.startLocationTracking(this.props?.checkInData?.leaderboardName)
+      const { checkInData } = this.props
+      this.props.startLocationTracking(checkInData.leaderboardName, checkInData.eventId)
     }
   }
 
-  onEventPress = () => {
-    Linking.openURL(CheckInService.eventUrl(this.props?.checkInData))
+  public onEventPress = () => {
+    Linking.openURL(CheckInService.eventUrl(this.props.checkInData))
   }
 
-  onLeaderboardPress = () => {
-    Linking.openURL(CheckInService.leaderboardUrl(this.props?.checkInData))
+  public onLeaderboardPress = () => {
+    Linking.openURL(CheckInService.leaderboardUrl(this.props.checkInData))
   }
 
-  render() {
+  public render() {
     const isRunning = this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING
     return (
       <GradientContainer style={[container.main, styles.container]}>
         <RegattaItem
           style={{ width: '66%', backgroundColor: 'transparent' }}
-          regatta={this.props?.checkInData}
+          regatta={this.props.checkInData}
         />
         <View style={styles.detailButtonContainer}>
           <TextButton
@@ -88,25 +78,20 @@ class Tracking extends Component {
           style={[buttons.actionFullWidth, isRunning ? { backgroundColor: 'red' } : null]}
           onPress={this.onTrackingPress}
         >
-          {
-            isRunning
-              ? I18n.t('caption_stop_tracking')
-              : I18n.t('caption_start_tracking')
-          }
+          {isRunning ? I18n.t('caption_stop_tracking') : I18n.t('caption_start_tracking')}
         </TextButton>
       </GradientContainer>
     )
   }
 }
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = (state: any, props: any) => ({
   locationTrackingStatus: getLocationTrackingStatus(state),
-  checkInData: props?.navigation?.state?.params,
+  checkInData: props.navigation.state.params,
 })
 
 export default connect(mapStateToProps, {
   checkIn,
-  initApiRoot,
   startLocationTracking,
   stopLocationTracking,
 })(Tracking)

@@ -15,6 +15,7 @@
     "query-string": "6.1.0",
     "react": "16.4.1",
     "react-native": "0.56.0",
+    "react-native-background-timer": "2.0.1",
     "react-native-branch": "2.3.2",
     "react-native-camera": "1.1.4",
     "react-native-device-info": "^0.22.1",
@@ -23,12 +24,14 @@
     "react-native-i18n": "2.0.15",
     "react-native-linear-gradient": "2.4.0",
     "react-native-mauron85-background-geolocation": "^0.5.0-alpha.35",
+    "react-native-offline": "3.11.1",
     "react-native-permissions": "1.1.1",
     "react-native-qrcode-scanner": "1.0.1",
     "react-native-svg": "^6.4.1",
     "react-navigation": "2.9.0",
     "react-navigation-redux-helpers": "2.0.4",
     "react-redux": "5.0.7",
+    "realm": "2.14.0",
     "redux": "4.0.0",
     "redux-actions": "2.4.0",
     "redux-persist": "5.10.0",
@@ -39,19 +42,23 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@babel/cli": "7.0.0-beta.56",
     "@babel/core": "7.0.0-beta.56",
     "@babel/plugin-syntax-optional-chaining": "7.0.0-beta.56",
     "@types/jest": "23.3.1",
     "@types/lodash": "^4.14.116",
+    "@types/query-string": "^6.1.0",
     "@types/react": "16.4.7",
     "@types/react-native": "0.56.5",
     "@types/react-navigation": "^2.0.12",
     "@types/react-redux": "^6.0.6",
     "@types/react-test-renderer": "16.0.1",
+    "@types/realm": "^1.13.0",
     "@types/redux-actions": "^2.3.0",
-    "babel-cli": "6.26.0",
+    "@types/url-parse": "^1.4.1",
+    "@types/uuid": "^3.4.3",
     "babel-core": "7.0.0-bridge.0",
-    "babel-jest": "23.4.0",
+    "babel-jest": "23.4.2",
     "babel-plugin-module-resolver": "3.1.1",
     "babel-plugin-transform-inline-environment-variables": "0.4.3",
     "babel-preset-react-native": "^5",
@@ -68,14 +75,22 @@
   },
   "jest": {
     "preset": "react-native",
+    "globals": {
+      "ts-jest": {
+        "useBabelrc": true
+      }
+    },
     "moduleFileExtensions": [
       "ts",
       "tsx",
-      "js"
+      "js",
+      "jsx",
+      "json",
+      "node"
     ],
     "transform": {
-      "^.+\\.(js)$": "<rootDir>/node_modules/babel-jest",
-      "\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+      "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
+      "\\.(ts|tsx)$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "testPathIgnorePatterns": [
