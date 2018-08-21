@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* tslint:disable:no-console no-empty */
 
 import { isUndefined, keys } from 'lodash'
 

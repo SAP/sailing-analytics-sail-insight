@@ -4,9 +4,10 @@ import api from 'api'
 import * as CheckInService from 'services/CheckInService'
 
 import { fetchEntityAction } from 'helpers/actions'
+import { Dispatch } from 'helpers/types'
 
 
-const collectCheckInData = (checkInData: any) => async (dispatch: (action: any) => void) => {
+const collectCheckInData = (checkInData: any) => async (dispatch: Dispatch) => {
   if (!checkInData) {
     return
   }
@@ -27,7 +28,7 @@ const collectCheckInData = (checkInData: any) => async (dispatch: (action: any) 
 
 export const addCheckIn = createAction('ADD_CHECK_IN')
 
-export const checkIn = (url: string) => async (dispatch: (action: any) => void) => {
+export const checkIn = (url: string) => async (dispatch: Dispatch) => {
   const data: any = CheckInService.extractData(url)
   await dispatch(collectCheckInData(data))
   const body = CheckInService.deviceMappingData(data)
@@ -35,7 +36,12 @@ export const checkIn = (url: string) => async (dispatch: (action: any) => void) 
   dispatch(addCheckIn(data))
 }
 
-export const insertTestCheckIns = () => (dispatch: (action: any) => void) => {
-  dispatch(checkIn('https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'))
-  dispatch(checkIn('https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart+2&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'))
+export const insertTestCheckIns = () => (dispatch: Dispatch) => {
+  // tslint:disable-next-line
+  const testUrl1 = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'
+  // tslint:disable-next-line
+  const testUrl2 = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart+2&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'
+
+  dispatch(checkIn(testUrl1))
+  dispatch(checkIn(testUrl2))
 }

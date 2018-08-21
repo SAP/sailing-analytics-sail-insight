@@ -2,6 +2,7 @@ import { createAction } from 'redux-actions'
 
 import api from 'api'
 import Logger from 'helpers/Logger'
+import { Dispatch } from 'helpers/types'
 import { GPSFix } from 'models'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import * as CheckInService from 'services/CheckInService'
@@ -19,7 +20,7 @@ export const updateTrackedRegatta = createAction('UPDATE_TRACKED_REGATTA')
 export const startLocationTracking = (
   leaderboardName: string,
   eventId: string,
-) => async (dispatch: (action: any) => void) => {
+) => async (dispatch: Dispatch) => {
   try {
     await dispatch(updateTrackedRegatta({
       leaderboardName,
@@ -34,14 +35,14 @@ export const startLocationTracking = (
   }
 }
 
-export const stopLocationTracking = () => async (dispatch: (action: any) => void) => {
+export const stopLocationTracking = () => async (dispatch: Dispatch) => {
   await LocationService.changePace(false)
   await LocationService.stop()
   GPSFixService.stopGPSFixUpdates()
   dispatch(removeTrackedRegatta())
 }
 
-export const handleLocation = (gpsFix: GPSFix) => async (dispatch: (action: any) => void, getState: () => any) => {
+export const handleLocation = (gpsFix: GPSFix) => async (dispatch: Dispatch, getState: () => any) => {
   const serverUrl = getTrackedCheckInBaseUrl(getState())
   if (!serverUrl) {
     throw new LocationTrackingException('missing event baseUrl')
@@ -58,7 +59,7 @@ export const handleLocation = (gpsFix: GPSFix) => async (dispatch: (action: any)
   }
 }
 
-export const initLocationTracking = () => async (dispatch: (action: any) => void) => {
+export const initLocationTracking = () => async (dispatch: Dispatch) => {
   const enabled = await LocationService.isEnabled()
   const status = enabled ?
   LocationService.LocationTrackingStatus.RUNNING :

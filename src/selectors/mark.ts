@@ -1,5 +1,5 @@
 import { MARK_ENTITY_NAME } from 'api/schemas'
-import { getEntityArrayByType, getEntityById, getEntities } from './entity'
+import { getEntities, getEntityArrayByType, getEntityById } from './entity'
 
 
 export const getMarkEntity = (state: any) => getEntities(state, MARK_ENTITY_NAME)

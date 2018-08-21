@@ -1,3 +1,4 @@
+import { Dispatch } from 'helpers/types'
 import { get, isArray } from 'lodash'
 import { createAction } from 'redux-actions'
 
@@ -17,7 +18,7 @@ export const receiveEntities = createAction('RECEIVE_ENTITIES')
 export const removeEntity = createAction('REMOVE_ENTITY')
 export const removeEntities = createAction('REMOVE_ENTITIES')
 
-export const receivePaginatedEntities = (payload: any) => async (dispatch: (action: any) => void) => {
+export const receivePaginatedEntities = (payload: any) => async (dispatch: Dispatch) => {
   if (!payload) {
     return null
   }

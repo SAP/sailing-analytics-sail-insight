@@ -118,5 +118,6 @@ export const eventUrl = (checkInData: any) =>
 
 export const leaderboardUrl = (checkInData: any) =>
   checkInData &&
+  // tslint:disable-next-line
   `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
 
