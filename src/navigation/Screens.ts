@@ -1,0 +1,5 @@
+export const Welcome = 'Welcome'
+export const QRScanner = 'QRScanner'
+export const CheckIn = 'CheckIn'
+export const CheckInNavigator = 'CheckInNavigator'
+export const RegattaDetail = 'RegattaDetail'

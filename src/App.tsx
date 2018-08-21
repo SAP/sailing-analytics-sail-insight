@@ -6,7 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 
 import * as DeepLinking from 'integrations/DeepLinking'
 
-import { performDeepLink } from 'actions'
+import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationTracking, removeTrackedRegatta, updateTrackingStatus } from 'actions/locations'
 import AppNavigator from 'navigation/AppNavigator'
 import * as LocationService from 'services/LocationService'

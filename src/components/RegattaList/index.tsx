@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { insertTestCheckIns } from 'actions/checkIn'
 import { getListViewDataSource } from 'helpers/utils'
 import I18n from 'i18n'
-import { navigateToTracking } from 'navigation'
+import { navigateToRegattaDetail } from 'navigation'
 import { getCheckInList } from 'selectors/checkIn'
 
 import RegattaItem from 'components/RegattaItem'
@@ -50,7 +50,7 @@ class RegattaList extends React.Component<{
     return (
       <RegattaItem
         regatta={regatta}
-        onPress={() => navigateToTracking(regatta)}
+        onPress={() => navigateToRegattaDetail(regatta)}
       />
     )
   }
