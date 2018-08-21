@@ -5,4 +5,4 @@ export const navigateToQRScanner = (params: any) => NavigationService.navigate(S
 
 export const navigateToCheckIn = () => NavigationService.navigate(Screens.CheckIn)
 
-export const navigateToTracking = (params: any) => NavigationService.navigate(Screens.RegattaDetail, params)
+export const navigateToRegattaDetail = (params: any) => NavigationService.navigate(Screens.RegattaDetail, params)
