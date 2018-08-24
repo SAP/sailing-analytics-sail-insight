@@ -11,6 +11,8 @@ import * as CheckInService from './CheckInService'
 
 const UPDATE_TIME_INTERVAL_IN_MILLIS = 15000
 
+let stopWhenSynced = false
+
 export const syncFixes = async () => {
   const fixRequests = readGPSFixRequests({ sortedBy: BASE_URL_PROPERTY_NAME })
   const urls: { [url: string]: any[]; } = {}
@@ -32,6 +34,9 @@ export const syncFixes = async () => {
       Logger.debug(err)
     }
   }))
+  if (stopWhenSynced) {
+    stopGPSFixUpdates()
+  }
 }
 
 export const storeGPSFix = (serverUrl: string, gpsFix: GPSFix) =>
@@ -54,4 +59,13 @@ export const stopGPSFixUpdates = () => {
   BackgroundTaskService.removeTaskListener(syncFixes)
   BackgroundTaskService.stopBackgroundTimer()
   // LocationService.removeHeartbeatListener(onTask)
+}
+
+export const stopGPSFixUpdatesWhenSynced = () => {
+  const count = unsentGpsFixCount()
+  if (count > 0) {
+    stopWhenSynced = true
+    return
+  }
+  stopGPSFixUpdates()
 }

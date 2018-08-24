@@ -1,8 +1,9 @@
-import { Dimensions, Platform } from 'react-native'
+import { isPlatformAndroid } from 'helpers/environment'
+import { Dimensions } from 'react-native'
 
 
 const screen = Dimensions.get('window')
-const headerTitleStyleProps = Platform.OS === 'android' ? { flexGrow: 1 } : { width: screen.width }
+const headerTitleStyleProps = isPlatformAndroid ? { flexGrow: 1 } : { width: screen.width }
 
 export default {
   headerTitle: {

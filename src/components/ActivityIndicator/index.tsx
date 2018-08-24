@@ -10,16 +10,17 @@ import styles from './styles'
 class Spinner extends React.Component<{
   size?: number | 'small' | 'large',
   style?: any,
+  color?: string,
 } > {
   public static defaultProps = {
     size: 'small',
   }
 
   public render() {
-    const { size, style } = this.props
+    const { size, style, color } = this.props
     return (
       <View style={[styles.spinnerStyle, style]}>
-        <ActivityIndicator size={size} />
+        <ActivityIndicator size={size} color={color || 'white'} />
       </View>
     )
   }
