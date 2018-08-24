@@ -6,6 +6,11 @@
 
   "text_more_information_at": "More information at",
   "text_device_id": "Device id",
+  "text_accuracy": "Accuracy",
+  "text_unsent_gps_fixes": "Unsent GPS fixes",
+  "text_speed_knots": "Speed (Knots)",
+  "text_tracking_time": "Tracking time",
+  "text_bearing_deg": "Course over ground",
 
   "caption_cancel": "Back",
   "caption_qr_scanner": "Scan QR-Code",

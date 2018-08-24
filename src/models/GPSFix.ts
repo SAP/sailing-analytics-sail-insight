@@ -1,6 +1,7 @@
 export default class GPSFix {
   public speedInKnots: number | null
   public bearingInDeg: number | null
+  public accuracy?: number
 
   constructor(
     public latitude: number,

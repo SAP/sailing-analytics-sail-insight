@@ -10,4 +10,10 @@ export default {
     alignSelf: 'center',
     ...headerTitleStyleProps,
   },
+  headerTitleSmall: {
+    textAlign: 'center',
+    alignSelf: 'center',
+    ...headerTitleStyleProps,
+    fontSize: 13,
+  },
 }

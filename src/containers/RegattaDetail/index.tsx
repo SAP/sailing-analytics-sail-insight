@@ -8,7 +8,6 @@ import I18n from 'i18n'
 import { buttons, container } from 'styles/commons'
 
 import GradientContainer from 'components/GradientContainer'
-import RegattaItem from 'components/RegattaItem'
 import TextButton from 'components/TextButton'
 
 import {
@@ -16,10 +15,9 @@ import {
   stopLocationTracking,
 } from 'actions/locations'
 import { settingsWithCheckoutActionSheetOptions } from 'helpers/actionSheets'
-import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { CheckIn } from 'models'
-import { navigateBack } from 'navigation'
+import { navigateBack, navigateToTracking } from 'navigation'
 import { getLocationTrackingStatus } from 'selectors/location'
 import * as CheckInService from 'services/CheckInService'
 import { LocationTrackingStatus } from 'services/LocationService'
@@ -42,7 +40,12 @@ class RegattaDetail extends React.Component<{
   }
 
   public componentDidMount() {
-    this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
+    const { checkInData = {} }: any = this.props
+    this.props.navigation.setParams({
+      heading: checkInData.event && checkInData.event.name,
+      subHeading: checkInData.leaderboardName,
+      onOptionsPressed: this.onOptionsPressed,
+    })
   }
 
   public onCheckoutPressed = async () => {
@@ -50,7 +53,7 @@ class RegattaDetail extends React.Component<{
       await this.props.checkOut(this.props.checkInData)
       navigateBack()
     } catch (err) {
-      Logger.debug(err)
+      Alert.alert(getUnknownErrorMessage())
     }
   }
 
@@ -66,6 +69,7 @@ class RegattaDetail extends React.Component<{
       } else {
         const { checkInData } = this.props
         await this.props.startLocationTracking(checkInData.leaderboardName, checkInData.eventId)
+        navigateToTracking(checkInData)
       }
     } catch (err) {
       Alert.alert(getUnknownErrorMessage())
@@ -86,10 +90,6 @@ class RegattaDetail extends React.Component<{
     const isRunning = this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING
     return (
       <GradientContainer style={[container.main, styles.container]}>
-        <RegattaItem
-          style={{ width: '66%', backgroundColor: 'transparent' }}
-          regatta={this.props.checkInData}
-        />
         <View style={styles.detailButtonContainer}>
           <TextButton
             textStyle={buttons.actionText}
@@ -108,7 +108,7 @@ class RegattaDetail extends React.Component<{
         </View>
         <TextButton
           textStyle={buttons.actionText}
-          style={[buttons.actionFullWidth, isRunning ? { backgroundColor: 'red' } : null]}
+          style={buttons.actionFullWidth}
           onPress={this.onTrackingPress}
           isLoading={this.state.isLoading}
         >
