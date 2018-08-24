@@ -5,7 +5,7 @@ import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 import uuidv5 from 'uuid/v5'
 
-const uuidNamespace = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
+const UUID_NAMESPACE = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
 
 const UrlPropertyNames = {
   BoatId: 'boat_id',
@@ -33,7 +33,9 @@ export const BodyKeys = {
 }
 
 
-const createUuid = (id: string) => uuidv5(id, uuidNamespace)
+const createUuid = (id: string) => uuidv5(id, UUID_NAMESPACE)
+
+export const getDeviceId = () => createUuid(DeviceInfo.getUniqueID())
 
 export const extractData = (url: string) => {
   if (!url) {
@@ -73,7 +75,7 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
 
   const body = {
     [BodyKeys.DeviceType]: Platform.OS,
-    [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
+    [BodyKeys.DeviceUUID]: getDeviceId(),
     [BodyKeys.FromMillis]: new Date().getTime(),
     [BodyKeys.PushDeviceID]: '',
     ...(boatId && { [BodyKeys.BoatId]: boatId }),
@@ -94,7 +96,7 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   } = checkInData
 
   const body = {
-    [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
+    [BodyKeys.DeviceUUID]: getDeviceId(),
     [BodyKeys.ToMillis]: new Date().getTime(),
     ...(boatId && { [BodyKeys.BoatId]: boatId }),
     ...(competitorId && { [BodyKeys.CompetitorId]: competitorId }),
