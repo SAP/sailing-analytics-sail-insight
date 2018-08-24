@@ -3,16 +3,17 @@ import { Image, TouchableOpacity } from 'react-native'
 
 import { $defaultImageButtonSize } from 'styles/dimensions'
 
-import { ImageSource } from 'helpers/types'
+import { ImageSource, StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 
 class ImageButton extends React.Component<{
-  style?: any,
-  source: ImageSource,
-  onPress: () => void,
-  circular: boolean,
-  autoWidth: boolean,
+  style?: StyleSheetType,
+  imageStyle?: StyleSheetType,
+  source?: ImageSource,
+  onPress?: () => void,
+  circular?: boolean,
+  autoWidth?: boolean,
 } > {
   public state = {
     borderRadius: $defaultImageButtonSize / 2,
@@ -31,21 +32,31 @@ class ImageButton extends React.Component<{
   }
 
   public render() {
+    const {
+      circular,
+      autoWidth,
+      style,
+      imageStyle,
+      source,
+      onPress,
+    } = this.props
+
     const touchableStyle = [
       styles.containerStyle,
-      this.props.circular && { borderRadius: this.state.borderRadius },
-      this.props.autoWidth && { width: this.state.width },
-      this.props.style,
+      circular && { borderRadius: this.state.borderRadius },
+      autoWidth && { width: this.state.width },
+      style,
     ]
+
     return (
       <TouchableOpacity
         onLayout={this.handleContentSizeChange}
         style={touchableStyle}
-        onPress={this.props.onPress}
+        onPress={onPress}
       >
         <Image
-          source={this.props.source}
-          style={styles.imageStyle}
+          source={source}
+          style={[styles.imageStyle, imageStyle]}
         />
       </TouchableOpacity>
     )

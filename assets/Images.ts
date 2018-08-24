@@ -5,5 +5,6 @@ export default {
   },
   actionables: {
     add: require('./img/add_icon.png'),
+    settings: require('./img/settings_icon.png'),
   },
 }

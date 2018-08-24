@@ -1,8 +1,8 @@
-import NavigationService from './NavigationService'
+import * as  NavigationService from './NavigationService'
 import * as Screens from './Screens'
 
+export const navigateBack = NavigationService.navigateBack
 export const navigateToQRScanner = (params: any) => NavigationService.navigate(Screens.QRScanner, params)
-
 export const navigateToCheckIn = () => NavigationService.navigate(Screens.CheckIn)
-
 export const navigateToRegattaDetail = (params: any) => NavigationService.navigate(Screens.RegattaDetail, params)
+export const navigateToAppSettings = () => NavigationService.navigate(Screens.AppSettings)

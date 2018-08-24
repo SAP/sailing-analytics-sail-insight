@@ -35,6 +35,7 @@
     "no-consecutive-blank-lines": [true, 2],
     "indent": [true, "spaces", 2],
     "variable-name": [true, "ban-keywords", "check-format", "allow-pascal-case"],
-    "interface-name" : [true, "never-prefix"]
+    "interface-name" : [true, "never-prefix"],
+    "jsx-no-multiline-js": [false]
   }
 }

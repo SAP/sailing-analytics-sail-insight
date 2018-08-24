@@ -1,10 +1,9 @@
-import { GPSFix } from 'models'
+import { CheckIn, GPSFix } from 'models'
 import querystring from 'query-string'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 import uuidv5 from 'uuid/v5'
-
 
 const uuidNamespace = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
 
@@ -42,9 +41,6 @@ export const extractData = (url: string) => {
   }
   const parsedUrl = parse(url)
   const serverUrl = parsedUrl && parsedUrl.origin
-  if (!serverUrl) {
-    return null
-  }
 
   const parsedQuery = querystring.parseUrl(url)
   const queryData = parsedQuery && parsedQuery.query
@@ -52,32 +48,20 @@ export const extractData = (url: string) => {
     return null
   }
 
-  const eventId = queryData[UrlPropertyNames.EventId]
-  const leaderboardName = queryData[UrlPropertyNames.LeaderboardName]
-  if (!eventId || !leaderboardName) {
-    return null
-  }
-
-  const boatId = queryData[UrlPropertyNames.BoatId]
-  const markId = queryData[UrlPropertyNames.MarkId]
-  const competitorId = queryData[UrlPropertyNames.CompetitorId]
-
-  if (!boatId && !markId && !competitorId) {
-    return null
-  }
-
-  return {
+  const checkIn = new CheckIn(
     serverUrl,
-    eventId,
-    leaderboardName,
-    isTraining: false,
-    ...(boatId && { boatId }),
-    ...(competitorId && { competitorId }),
-    ...(markId && { markId }),
-  }
+    queryData[UrlPropertyNames.EventId],
+    queryData[UrlPropertyNames.LeaderboardName],
+    false,
+    queryData[UrlPropertyNames.CompetitorId],
+    queryData[UrlPropertyNames.BoatId],
+    queryData[UrlPropertyNames.MarkId],
+  )
+
+  return checkIn.isValid() ? checkIn : null
 }
 
-export const deviceMappingData = (checkInData: any) => {
+export const checkInDeviceMappingData = (checkInData: CheckIn) => {
   if (!checkInData) {
     return null
   }
@@ -92,6 +76,26 @@ export const deviceMappingData = (checkInData: any) => {
     [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
     [BodyKeys.FromMillis]: new Date().getTime(),
     [BodyKeys.PushDeviceID]: '',
+    ...(boatId && { [BodyKeys.BoatId]: boatId }),
+    ...(competitorId && { [BodyKeys.CompetitorId]: competitorId }),
+    ...(markId && { [BodyKeys.MarkId]: markId }),
+  }
+  return body
+}
+
+export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
+  if (!checkInData) {
+    return null
+  }
+  const {
+    boatId,
+    competitorId,
+    markId,
+  } = checkInData
+
+  const body = {
+    [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
+    [BodyKeys.ToMillis]: new Date().getTime(),
     ...(boatId && { [BodyKeys.BoatId]: boatId }),
     ...(competitorId && { [BodyKeys.CompetitorId]: competitorId }),
     ...(markId && { [BodyKeys.MarkId]: markId }),

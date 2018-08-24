@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import NavigationService from './NavigationService'
+import * as NavigationService from './NavigationService'
 import MainNavigator from './navigators/MainNavigator'
 
 

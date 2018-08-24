@@ -1,12 +1,20 @@
 {
-  "title_welcome" : "Willkommen",
-  "title_regattas" : "Regatten",
-  "title_check_in" : "SAP Sail InSight",
+  "title_welcome": "Willkommen",
+  "title_regattas": "Regatten",
+  "title_check_in": "SAP Sail InSight",
+  "title_app_settings" : "Einstellungen",
+
   "text_more_information_at" : "Mehr Informationen auf",
+
   "caption_cancel": "Abbrechen",
   "caption_qr_scanner": "QR-Code scannen",
   "caption_start_tracking": "Starte Tracking",
   "caption_stop_tracking": "Stoppe Tracking",
   "caption_to_event": "Zum Event",
-  "caption_to_leaderboard": "Zum Leaderboard"
+  "caption_to_leaderboard": "Zum Leaderboard",
+  "caption_done": "Fertig",
+  "caption_settings": "Einstellungen",
+  "caption_checkout": "Checkout",
+
+  "error_unkown": "Unbekannter Fehler"
 }

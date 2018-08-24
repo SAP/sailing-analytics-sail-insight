@@ -23,4 +23,9 @@ export default EStyleSheet.create({
     paddingRight: '$containerFixedMargin',
     fontSize: 17,
   },
+  actionIcon: {
+    tintColor: '$actionButtonColor',
+    width: 26,
+    height: 26,
+  },
 })

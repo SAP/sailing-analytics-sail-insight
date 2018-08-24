@@ -1,6 +1,7 @@
+import { omit } from 'lodash'
 import { handleActions } from 'redux-actions'
 
-import { addCheckIn } from 'actions/checkIn'
+import { addCheckIn, removeCheckIn } from 'actions/checkIn'
 
 
 const initialState = {
@@ -9,7 +10,7 @@ const initialState = {
 
 const reducer = handleActions(
   {
-    [addCheckIn as any]: (state: any = {}, action) => {
+    [addCheckIn as any]: (state: any = initialState, action) => {
       const leaderboardName = action.payload.leaderboardName
       if (!leaderboardName) {
         return state
@@ -20,6 +21,16 @@ const reducer = handleActions(
           ...state.active,
           [leaderboardName]: action.payload,
         },
+      }
+    },
+    [removeCheckIn as any]: (state: any = initialState, action) => {
+      const leaderboardName = action.payload.leaderboardName
+      if (!leaderboardName) {
+        return state
+      }
+      return {
+        ...state,
+        active: omit(state.active, [leaderboardName]),
       }
     },
   },
