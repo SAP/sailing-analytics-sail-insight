@@ -115,7 +115,7 @@ const gpsFixPostItem = (fix: GPSFix) => fix && ({
 
 export const gpsFixPostData = (fixes: GPSFix[]) => fixes && ({
   [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
-  [BodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)),
+  [BodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
 })
 
 export const eventUrl = (checkInData: any) =>

@@ -16,6 +16,7 @@ export const GPS_SCHEMA: Realm.ObjectSchema = {
     timeMillis: 'double',
     speedInKnots: 'double?',
     bearingInDeg: 'double?',
+    accuracy: 'double?',
   },
 }
 

@@ -53,7 +53,10 @@ export const insertTestCheckIns = () => (dispatch: Dispatch) => {
   const testUrl1 = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'
   // tslint:disable-next-line
   const testUrl2 = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart+2&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'
+  // tslint:disable-next-line
+  const testUrl3 = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel-Massenstart-03&competitor_id=3947cddd-f52b-43b2-9390-cd54b9eb9f12'
 
-  dispatch(checkIn(testUrl1))
-  dispatch(checkIn(testUrl2))
+  // dispatch(checkIn(testUrl1))
+  // dispatch(checkIn(testUrl2))
+  // dispatch(checkIn(testUrl3))
 }

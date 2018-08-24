@@ -1,4 +1,5 @@
 import Logger from 'helpers/Logger'
+import { metersPerSecondsToKnots } from 'helpers/physics'
 import { GPSFix } from 'models'
 import moment from 'moment'
 import { Platform } from 'react-native'
@@ -17,7 +18,7 @@ const config = {
     BackgroundGeolocation.DESIRED_ACCURACY_NAVIGATION,
   distanceFilter: 2,
   stopOnTerminate: false,
-  heartbeatInterval: 10, // in seconds
+  heartbeatInterval: 15, // in seconds
   stopOnStillActivity: false,
   // debug
   debug: __DEV__,
@@ -65,9 +66,11 @@ const handleLocation = async (location: any = {}) => {
     coords.latitude,
     coords.longitude,
     momentTime.valueOf(),
-    coords.speed,
+    metersPerSecondsToKnots(coords.speed),
     coords.heading,
   )
+  gpsFix.accuracy = coords.accuracy
+
   await Promise.all(locationListeners.map(listener => listener && listener(gpsFix)))
 }
 
