@@ -1,7 +1,9 @@
-export default {
+import EStyleSheets from 'react-native-extended-stylesheet'
+
+export default EStyleSheets.create({
   container: { flex: 1 },
-  camera: {
-    height: '100%',
-    width: '100%',
+  item: {
+    backgroundColor: 'white',
+    padding: '$containerFixedSmallMargin',
   },
-}
+})
