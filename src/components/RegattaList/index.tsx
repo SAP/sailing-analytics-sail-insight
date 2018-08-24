@@ -15,16 +15,18 @@ import { getCheckInList } from 'selectors/checkIn'
 
 import RegattaItem from 'components/RegattaItem'
 
+import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 
 class RegattaList extends React.Component<{
   insertTestCheckIns: () => void,
   regattaDataSource: any,
+  style?: StyleSheetType,
 } > {
 
   public componentDidMount() {
-    // this.props.insertTestCheckIns()
+    this.props.insertTestCheckIns()
   }
 
   public renderHeader() {

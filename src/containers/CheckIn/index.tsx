@@ -4,13 +4,12 @@ import { connect } from 'react-redux'
 import { checkIn } from 'actions/checkIn'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
-import { navigateToQRScanner } from 'navigation'
+import { navigateBack, navigateToQRScanner } from 'navigation'
 import { buttons, container } from 'styles/commons'
 
 import GradientContainer from 'components/GradientContainer'
 import TextButton from 'components/TextButton'
 
-import NavigationService from 'navigation/NavigationService'
 import styles from './styles'
 
 
@@ -25,7 +24,7 @@ class CheckIn extends React.Component<{
     this.setState({ isLoading: true })
     try {
       await this.props.checkIn(url)
-      NavigationService.navigateBack()
+      navigateBack()
     } catch (err) {
       Logger.debug(err)
     } finally {

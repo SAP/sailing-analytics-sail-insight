@@ -1,3 +1,4 @@
+import { ActionSheetProvider, connectActionSheet } from '@expo/react-native-action-sheet'
 import React, { Component } from 'react'
 import { View } from 'react-native'
 import { withNetworkConnectivity } from 'react-native-offline'
@@ -78,7 +79,9 @@ class App extends Component {
   public render() {
     return (
       <Provider store={store}>
-        <AppWithNetworkConnectivity/>
+        <ActionSheetProvider>
+          <AppWithNetworkConnectivity/>
+        </ActionSheetProvider>
       </Provider>
     )
   }

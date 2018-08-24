@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import { connectActionSheet } from '@expo/react-native-action-sheet'
+import React from 'react'
 
 import Images from '@assets/Images'
 import { navigateToCheckIn } from 'navigation'
@@ -8,15 +9,27 @@ import GradientContainer from 'components/GradientContainer'
 import ImageButton from 'components/ImageButton'
 import RegattaList from 'components/RegattaList'
 
-import { StyleSheetType } from 'helpers/types'
+import { settingsActionSheetOptions } from 'helpers/actionSheets'
+import { ShowActionSheet, StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 
+@connectActionSheet
 class Welcome extends React.Component<{
   style?: StyleSheetType,
+  navigation: any,
+  showActionSheetWithOptions: ShowActionSheet,
 } > {
+  public componentDidMount() {
+    this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
+  }
+
   public onAddPress = () => {
     navigateToCheckIn()
+  }
+
+  public onOptionsPressed = () => {
+    this.props.showActionSheetWithOptions(...settingsActionSheetOptions)
   }
 
   public render() {

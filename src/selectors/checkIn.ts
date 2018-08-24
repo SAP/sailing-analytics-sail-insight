@@ -1,6 +1,7 @@
 import { values } from 'lodash'
 import { createSelector } from 'reselect'
 
+import { CheckIn } from 'models'
 import { CHECK_IN_REDUCER_NAME } from 'reducers/config'
 import { getBoatEntity } from './boat'
 import { getCompetitorEntity } from './competitor'
@@ -37,7 +38,7 @@ export const getCheckInList = createSelector(
       return []
     }
     return values(activeCheckIns).map(checkIn => checkIn && {
-      ...checkIn,
+      ...(checkIn instanceof CheckIn ? checkIn.toPlainObject() : checkIn),
       leaderboard: leaderboardEntity && leaderboardEntity[checkIn.leaderboardName],
       event: eventEntity && eventEntity[checkIn.eventId],
       ...(checkIn.boatId && { boat: boatEntity && boatEntity[checkIn.boatId] }),

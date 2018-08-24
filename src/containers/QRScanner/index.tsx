@@ -1,7 +1,7 @@
 import React from 'react'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 
-import NavigationService from 'navigation/NavigationService'
+import { navigateBack } from 'navigation'
 import styles from './styles'
 
 
@@ -13,7 +13,7 @@ class QRScanner extends React.Component<{
     if (!qr || !qr.data) {
       return
     }
-    NavigationService.navigateBack()
+    navigateBack()
     const successAction =
       this.props.navigation &&
       this.props.navigation.state &&

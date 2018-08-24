@@ -1,13 +1,15 @@
 import { createAction } from 'redux-actions'
 
 import api from 'api'
+import { CheckIn } from 'models'
 import * as CheckInService from 'services/CheckInService'
 
 import { fetchEntityAction } from 'helpers/actions'
 import { Dispatch } from 'helpers/types'
+import CheckInException from 'services/CheckInService/CheckInException'
 
 
-const collectCheckInData = (checkInData: any) => async (dispatch: Dispatch) => {
+const collectCheckInData = (checkInData: CheckIn) => async (dispatch: Dispatch) => {
   if (!checkInData) {
     return
   }
@@ -27,13 +29,23 @@ const collectCheckInData = (checkInData: any) => async (dispatch: Dispatch) => {
 }
 
 export const addCheckIn = createAction('ADD_CHECK_IN')
+export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 
 export const checkIn = (url: string) => async (dispatch: Dispatch) => {
-  const data: any = CheckInService.extractData(url)
+  const data: CheckIn | null = CheckInService.extractData(url)
+  if (!data) {
+    throw new CheckInException('could not extract data.')
+  }
   await dispatch(collectCheckInData(data))
-  const body = CheckInService.deviceMappingData(data)
+  const body = CheckInService.checkInDeviceMappingData(data)
   await api(data.serverUrl).startDeviceMapping(data.leaderboardName, body)
   dispatch(addCheckIn(data))
+}
+
+export const checkOut = (data: CheckIn) => async (dispatch: Dispatch) => {
+  const body = CheckInService.checkoutDeviceMappingData(data)
+  await api(data.serverUrl).stopDeviceMapping(data.leaderboardName, body)
+  await dispatch(removeCheckIn(data))
 }
 
 export const insertTestCheckIns = () => (dispatch: Dispatch) => {

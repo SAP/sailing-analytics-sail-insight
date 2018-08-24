@@ -1,8 +1,9 @@
+import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { Linking, View } from 'react-native'
+import { Alert, Linking, View } from 'react-native'
 import { connect } from 'react-redux'
 
-import { checkIn } from 'actions/checkIn'
+import { checkOut } from 'actions/checkIn'
 import I18n from 'i18n'
 import { buttons, container } from 'styles/commons'
 
@@ -14,27 +15,47 @@ import {
   startLocationTracking,
   stopLocationTracking,
 } from 'actions/locations'
+import { settingsWithCheckoutActionSheetOptions } from 'helpers/actionSheets'
 import Logger from 'helpers/Logger'
+import { getUnknownErrorMessage } from 'helpers/texts'
+import { CheckIn } from 'models'
+import { navigateBack } from 'navigation'
 import { getLocationTrackingStatus } from 'selectors/location'
 import * as CheckInService from 'services/CheckInService'
 import { LocationTrackingStatus } from 'services/LocationService'
 import styles from './styles'
 
 
-class Tracking extends React.Component<{
-  checkIn: (url: string) => void,
+@connectActionSheet
+class RegattaDetail extends React.Component<{
+  checkOut: (checkIn: CheckIn) => void,
   startLocationTracking: (leaderboardName: string, eventId: string) => void,
   stopLocationTracking: () => void,
   locationTrackingStatus?: string,
-  checkInData: any,
+  checkInData: CheckIn,
+  showActionSheetWithOptions: any,
+  navigation: any,
 } > {
 
   public state = {
     isLoading: false,
   }
 
-  public onSuccess = (url: string) => {
-    this.props.checkIn(url)
+  public componentDidMount() {
+    this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
+  }
+
+  public onCheckoutPressed = async () => {
+    try {
+      await this.props.checkOut(this.props.checkInData)
+      navigateBack()
+    } catch (err) {
+      Logger.debug(err)
+    }
+  }
+
+  public onOptionsPressed = () => {
+    this.props.showActionSheetWithOptions(...settingsWithCheckoutActionSheetOptions(this.onCheckoutPressed))
   }
 
   public onTrackingPress = async () => {
@@ -47,7 +68,7 @@ class Tracking extends React.Component<{
         await this.props.startLocationTracking(checkInData.leaderboardName, checkInData.eventId)
       }
     } catch (err) {
-      Logger.debug(err)
+      Alert.alert(getUnknownErrorMessage())
     } finally {
       this.setState({ isLoading: false })
     }
@@ -104,7 +125,7 @@ const mapStateToProps = (state: any, props: any) => ({
 })
 
 export default connect(mapStateToProps, {
-  checkIn,
+  checkOut,
   startLocationTracking,
   stopLocationTracking,
-})(Tracking)
+})(RegattaDetail)
