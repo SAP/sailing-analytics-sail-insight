@@ -1,9 +1,11 @@
+import moment from 'moment'
+import BackgroundGeolocation from 'react-native-background-geolocation'
+
+import { isPlatformAndroid } from 'helpers/environment'
 import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { GPSFix } from 'models'
-import moment from 'moment'
-import { Platform } from 'react-native'
-import BackgroundGeolocation from 'react-native-background-geolocation'
+
 
 const LOG_TAG = '[BG_LOCATION]'
 const HEARTBEAT_KEY = 'heartbeat'
@@ -13,7 +15,7 @@ const LOCATION_KEY = 'location'
 
 const config = {
   reset: true,
-  desiredAccuracy: Platform.OS === 'android' ?
+  desiredAccuracy: isPlatformAndroid ?
     BackgroundGeolocation.DESIRED_ACCURACY_HIGH :
     BackgroundGeolocation.DESIRED_ACCURACY_NAVIGATION,
   distanceFilter: 2,

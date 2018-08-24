@@ -1,13 +1,14 @@
-import { Platform, StatusBar } from 'react-native'
+import { StatusBar } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 
+import { isPlatformAndroid } from 'helpers/environment'
 import * as colors from 'styles/colors'
 import * as dimensions from 'styles/dimensions'
 import * as fonts from 'styles/fonts'
 
 export const initStyles = () => {
   StatusBar.setBarStyle('dark-content')
-  if (Platform.OS === 'android') {
+  if (isPlatformAndroid) {
     StatusBar.setBackgroundColor(colors.$containerBackgroundColor)
   }
 

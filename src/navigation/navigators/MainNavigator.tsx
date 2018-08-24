@@ -72,21 +72,6 @@ export default createStackNavigator(
         headerTitle: multilineHeaderTitle(navigation),
       }),
     },
-    [Screens.AppSettings]: {
-      screen: AppSettings,
-      navigationOptions: () => ({
-        title: I18n.t('title_app_settings'),
-        headerLeft: logoHeaderLeft,
-        headerRight: (
-          <TextButton
-            onPress={navigateBack}
-            textStyle={buttons.navigationBack}
-          >
-            {I18n.t('caption_done')}
-          </TextButton>
-        ),
-      }),
-    },
   },
   {
     initialRouteName: Screens.Welcome,

@@ -48,7 +48,11 @@ const AppWithNetworkConnectivity = withNetworkConnectivity({
 
 // must be a component to support hot reloading
 class App extends Component {
+
+  public deepLinkSubscriber: any
+
   public componentDidMount() {
+    this.initDeepLinks()
     DeepLinking.addListener(this.handleDeeplink)
     LocationService.addStatusListener(this.handleLocationTrackingStatus)
     LocationService.addLocationListener(this.handleLocation)
@@ -57,8 +61,21 @@ class App extends Component {
 
   public componentWillUnmount() {
     DeepLinking.removeListener(this.handleDeeplink)
+    this.finalizeDeepLinks()
     LocationService.removeStatusListener(this.handleLocationTrackingStatus)
     LocationService.removeLocationListener(this.handleLocation)
+  }
+
+  public initDeepLinks() {
+    this.deepLinkSubscriber = DeepLinking.initialize()
+  }
+
+  public finalizeDeepLinks() {
+    if (!this.deepLinkSubscriber) {
+      return
+    }
+    this.deepLinkSubscriber()
+    this.deepLinkSubscriber = null
   }
 
   public handleDeeplink = (params: any) => {

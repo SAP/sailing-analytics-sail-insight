@@ -45,7 +45,7 @@ export const startLocationTracking = (
 export const stopLocationTracking = () => async (dispatch: Dispatch) => {
   await LocationService.changePace(false)
   await LocationService.stop()
-  GpsFixService.stopGPSFixUpdates()
+  GpsFixService.stopGPSFixUpdatesWhenSynced()
   dispatch(removeTrackedRegatta())
 }
 
@@ -72,7 +72,7 @@ export const handleLocation = (gpsFix: GPSFix) => async (dispatch: Dispatch, get
   if (gpsFix.accuracy) {
     await dispatch(updateLocationAccuracy(gpsFix.accuracy))
   }
-  if (gpsFix.speedInKnots) {
+  if (gpsFix.speedInKnots && gpsFix.speedInKnots > -1) {
     await dispatch(updateSpeedInKnots(gpsFix.speedInKnots))
   }
   if (gpsFix.bearingInDeg && gpsFix.bearingInDeg > -1) {

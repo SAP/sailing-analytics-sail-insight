@@ -1,8 +1,7 @@
 
-import { DEV_MODE } from 'helpers/environment'
+import { DEV_MODE, isPlatformAndroid } from 'helpers/environment'
 import Logger from 'helpers/Logger'
 import { isString } from 'lodash'
-import { Platform } from 'react-native'
 
 
 const DEFAULT_HEADERS = {
@@ -20,7 +19,7 @@ const DEFAULT_HEADERS = {
  */
 const getPlatformHeaders = (headers: any = {}) => {
   const contentType = headers && headers['Content-Type']
-  if (Platform.OS !== 'android' || !isString(contentType) || contentType.includes('charset')) {
+  if (isPlatformAndroid || !isString(contentType) || contentType.includes('charset')) {
     return headers
   }
   return {

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Alert, Text } from 'react-native'
+import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
 
@@ -20,23 +21,32 @@ class Tracking extends React.Component<{
   navigation: any,
   stopLocationTracking: () => void,
   trackingStats: any,
+  checkInData: any,
 } > {
   public state = {
     isLoading: false,
+    durationText: '-',
   }
 
   public componentDidMount() {
-    const { checkInData = {} }: any = this.props
+    const { checkInData } = this.props
     this.props.navigation.setParams({
       heading: checkInData.event && checkInData.event.name,
       subHeading: checkInData.leaderboardName,
       onOptionsPressed: this.onOptionsPressed,
     })
-    timer.setTimeout(this, 'tracking_timer', () => this.setState({}), 1000)
+    timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 500)
+    KeepAwake.activate()
   }
 
   public componentWillUnmount() {
-    timer.clearTimeout(this)
+    timer.clearInterval(this)
+    KeepAwake.deactivate()
+  }
+
+  public handleTimerEvent = () => {
+    const { trackingStats } = this.props
+    this.setState({ durationText: uiDurationText(trackingStats.startedAt) })
   }
 
   public onOptionsPressed = () => {
@@ -60,7 +70,7 @@ class Tracking extends React.Component<{
     return (
       <GradientContainer style={container.main}>
         <Text style={styles.informationItem}>
-          {`${I18n.t('text_tracking_time')}: ${uiDurationText(trackingStats.startedAt)}`}
+          {`${I18n.t('text_tracking_time')}: ${this.state.durationText}`}
         </Text>
         <Text style={styles.informationItem}>
           {`${I18n.t('text_accuracy')}: ${trackingStats.locationAccuracy}`}

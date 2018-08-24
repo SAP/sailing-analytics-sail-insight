@@ -74,7 +74,7 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     entryFile: "index.js",
-    // bundleInDebug: true
+//    bundleInDebug: true
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -98,7 +98,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.sap_sailing_insight"
+        applicationId "com.dlabs.sailing"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -142,17 +142,28 @@ android {
         dev {
             dimension "default"
             manifestPlaceholders = [
-                    branchIOKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
-                    branchIOTestKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
-                    branchIOAppLink:"d-labs.app.link",
+                    branchIOKey:"key_live_jdx39oTEIOV5InIMLFJpWahmsseyKfej",
+                    branchIOTestKey:"key_test_glsZ7bKARNP6PnRMPxQl7lmfBvhzPnbr",
+                    branchIOAppLink:"wsy3.app.link",
                     branchIOTestMode: false,
-                    branchIOScheme: "comsapsailingtracker",
+                    branchIOScheme: "dlabssailing",
+            ]
+        }
+        insights {
+            dimension "default"
+            manifestPlaceholders = [
+                branchIOKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
+                branchIOTestKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
+                branchIOAppLink:"d-labs.app.link",
+                branchIOTestMode: false,
+                branchIOScheme: "comsapsailingtracker",
             ]
         }
     }
 }
 
 dependencies {
+    implementation project(':react-native-keep-awake')
     implementation project(':react-native-background-fetch')
     implementation project(':react-native-background-geolocation')
     implementation project(':react-native-background-timer')
