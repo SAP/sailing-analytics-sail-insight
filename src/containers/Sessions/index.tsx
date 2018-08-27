@@ -15,7 +15,7 @@ import styles from './styles'
 
 
 @connectActionSheet
-class Welcome extends React.Component<{
+class Sessions extends React.Component<{
   style?: StyleSheetType,
   navigation: any,
   showActionSheetWithOptions: ShowActionSheet,
@@ -47,4 +47,4 @@ class Welcome extends React.Component<{
   }
 }
 
-export default Welcome
+export default Sessions

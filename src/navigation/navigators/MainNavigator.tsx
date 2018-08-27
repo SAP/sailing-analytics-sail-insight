@@ -14,10 +14,11 @@ import ImageButton from 'components/ImageButton'
 import TextButton from 'components/TextButton'
 import AppSettings from 'containers/AppSettings'
 import RegattaDetail from 'containers/RegattaDetail'
+import Sessions from 'containers/Sessions'
 import Tracking from 'containers/Tracking'
-import Welcome from 'containers/Welcome'
 import { navigateBack } from 'navigation'
 import CheckInNavigator from './CheckInNavigator'
+import MainTabNavigator from './MainTabNavigator'
 
 
 const logoHeaderLeft = () => <Image style={container.logo} source={Images.corporateIdentity.sapSailingLogo} />
@@ -30,8 +31,9 @@ const multilineHeaderTitle = (navigation: any = {}) => (
 
 export default createStackNavigator(
   {
-    [Screens.Welcome]: {
-      screen: Welcome,
+    [Screens.MainTabs]: MainTabNavigator,
+    [Screens.Sessions]: {
+      screen: Sessions,
       navigationOptions: {
         title: I18n.t('title_regattas'),
         headerLeft: logoHeaderLeft,
@@ -74,7 +76,7 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.Welcome,
+    initialRouteName: Screens.MainTabs,
     mode: 'modal',
     headerMode: 'screen',
     navigationOptions: (options: any) => ({
