@@ -1,15 +1,17 @@
 import React from 'react'
-import { Text, TouchableOpacity } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 
 import Spinner from 'components/ActivityIndicator'
+import Text from 'components/Text'
 
+import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 
 class TextButton extends React.Component<{
   style?: any,
   children?: any,
-  textStyle?: any,
+  textStyle?: StyleSheetType,
   isLoading?: boolean,
   disabled?: boolean,
   onPress?: () => void,

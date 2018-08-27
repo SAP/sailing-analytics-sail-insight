@@ -1,11 +1,13 @@
 import React from 'react'
-import { Alert, Text } from 'react-native'
+import { Alert } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
 
 import GradientContainer from 'components/GradientContainer'
+import Text from 'components/Text'
 import TextButton from 'components/TextButton'
+
 import { buttons, container } from 'styles/commons'
 import styles from './styles'
 

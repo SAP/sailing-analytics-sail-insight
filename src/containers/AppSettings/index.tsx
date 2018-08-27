@@ -1,7 +1,8 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 
 import GradientContainer from 'components/GradientContainer'
+import Text from 'components/Text'
 
 import I18n from 'i18n'
 import { getDeviceId } from 'services/CheckInService'

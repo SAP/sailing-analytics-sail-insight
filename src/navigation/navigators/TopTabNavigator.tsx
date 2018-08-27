@@ -1,8 +1,8 @@
 import React from 'react'
-import { Text } from 'react-native'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 
+import Text from 'components/Text'
 import { getTabItemTitleTranslationKey } from 'helpers/texts'
 import I18n from 'i18n'
 import {

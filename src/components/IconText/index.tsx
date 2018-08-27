@@ -1,8 +1,9 @@
 import React from 'react'
 import {
-  Image, Text, View,
+  Image, View,
 } from 'react-native'
 
+import Text from 'components/Text'
 import { ImageSource, StyleSheetType } from 'helpers/types'
 import styles from './styles'
 

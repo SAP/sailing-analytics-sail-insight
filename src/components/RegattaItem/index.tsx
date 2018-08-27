@@ -1,11 +1,10 @@
 import React from 'react'
 import {
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native'
 
-
+import Text from 'components/Text'
 import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 

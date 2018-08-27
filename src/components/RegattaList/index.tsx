@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   ListView,
-  Text,
   View,
 } from 'react-native'
 import Hyperlink from 'react-native-hyperlink'
@@ -14,6 +13,7 @@ import { navigateToRegattaDetail } from 'navigation'
 import { getCheckInList } from 'selectors/checkIn'
 
 import RegattaItem from 'components/RegattaItem'
+import Text from 'components/Text'
 
 import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
