@@ -23,6 +23,7 @@ export default createBottomTabNavigator(
   },
   {
     initialRouteName: Screens.Sessions,
+    backBehavior: 'none',
     navigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
         const { routeName = '' } = navigation.state
