@@ -8,6 +8,7 @@ import Sessions from 'containers/Sessions'
 import TrackingSetup from 'containers/TrackingSetup'
 
 import Images from '@assets/Images'
+import I18n from 'i18n'
 import * as Screens from 'navigation/Screens'
 import { $tabNavigationActiveIconColor, $tabNavigationActiveTextColor, $tabNavigationInactiveColor } from 'styles/colors'
 import tabs from 'styles/commons/tabs'
@@ -21,9 +22,10 @@ export default createBottomTabNavigator(
     [Screens.Account]: Account,
   },
   {
+    initialRouteName: Screens.Sessions,
     navigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName } = navigation.state
+        const { routeName = '' } = navigation.state
         let icon
         switch (routeName) {
           case Screens.TrackingSetup:
@@ -35,13 +37,13 @@ export default createBottomTabNavigator(
 
         return (
           <IconText
-            iconStyle={[tabs.tabItemIcon, { tintColor:  iconTintColor }]}
+            iconStyle={[tabs.tabItemIcon, { tintColor: iconTintColor }]}
             textStyle={[tabs.tabItemText, { color: tintColor }]}
             source={icon}
             iconTintColor={iconTintColor}
             iconPosition="first"
           >
-            {routeName}
+            {I18n.t(`caption_tab_${routeName.toLowerCase()}`)}
           </IconText>
         )
       },
@@ -54,6 +56,7 @@ export default createBottomTabNavigator(
         backgroundColor: 'white',
       },
       showLabel: false,
+      showIcon: true,
     },
   },
 )

@@ -21,6 +21,10 @@
   "caption_done": "Fertig",
   "caption_settings": "Einstellungen",
   "caption_checkout": "Checkout",
+  "caption_tab_trackingsetup": "Tracking",
+  "caption_tab_sessions": "Sessions",
+  "caption_tab_checkin": "Teilnehmen",
+  "caption_tab_account": "Mein Account",
 
   "error_unkown": "Unbekannter Fehler"
 }

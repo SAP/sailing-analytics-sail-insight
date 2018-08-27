@@ -21,6 +21,10 @@
   "caption_done": "Done",
   "caption_settings": "Settings",
   "caption_checkout": "Checkout",
+  "caption_tab_trackingsetup": "Tracking",
+  "caption_tab_sessions": "Sessions",
+  "caption_tab_checkin": "Join Regatta",
+  "caption_tab_account": "My Account",
 
   "error_unkown": "Unknown error"
 }
