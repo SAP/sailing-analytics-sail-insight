@@ -25,6 +25,10 @@
   "caption_tab_sessions": "Sessions",
   "caption_tab_checkin": "Join Regatta",
   "caption_tab_account": "My Account",
+  "caption_tab_usersessions": "My sessions",
+  "caption_tab_tracks": "All tracks",
+  "caption_tab_userprofile": "My Profile",
+  "caption_tab_appsettings": "Settings",
 
   "error_unkown": "Unknown error"
 }

@@ -31,12 +31,10 @@ const multilineHeaderTitle = (navigation: any = {}) => (
 
 export default createStackNavigator(
   {
-    [Screens.MainTabs]: MainTabNavigator,
-    [Screens.Sessions]: {
-      screen: Sessions,
+    [Screens.MainTabs]: {
+      screen: MainTabNavigator,
       navigationOptions: {
-        title: I18n.t('title_regattas'),
-        headerLeft: logoHeaderLeft,
+        header: null,
       },
     },
     [Screens.CheckInNavigator]: {
@@ -81,18 +79,6 @@ export default createStackNavigator(
     headerMode: 'screen',
     navigationOptions: (options: any) => ({
       headerTitleStyle: navigationStyles.headerTitle,
-      headerRight: (
-        <ImageButton
-          onPress={
-            options.navigation &&
-            options.navigation.state &&
-            options.navigation.state.params &&
-            options.navigation.state.params.onOptionsPressed
-          }
-          source={Images.actionables.settings}
-          imageStyle={buttons.actionIcon}
-        />
-      ),
     }),
   },
 )

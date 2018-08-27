@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { container } from 'styles/commons'
 
 
-class Account extends React.Component<{
+class Tracks extends React.Component<{
   navigation: any,
 } > {
 
@@ -15,4 +15,4 @@ class Account extends React.Component<{
   }
 }
 
-export default Account
+export default Tracks

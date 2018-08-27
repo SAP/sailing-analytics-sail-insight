@@ -2,8 +2,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
-  tabItemText: {
-    fontSize: '$tabItemFontSize',
+  bottomTabItemText: {
+    fontSize: '$bottomTabItemFontSize',
+  },
+  topTabItemText: {
+    fontSize: '$topTabItemFontSize',
   },
   tabItemIcon: {
     width: 24,

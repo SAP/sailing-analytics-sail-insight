@@ -25,6 +25,10 @@
   "caption_tab_sessions": "Sessions",
   "caption_tab_checkin": "Teilnehmen",
   "caption_tab_account": "Mein Account",
+  "caption_tab_usersessions": "Meine Sessions",
+  "caption_tab_tracks": "Tracks",
+  "caption_tab_userprofile": "Mein Profil",
+  "caption_tab_appsettings": "Einstellungen",
 
   "error_unkown": "Unbekannter Fehler"
 }

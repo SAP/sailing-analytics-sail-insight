@@ -38,3 +38,8 @@ export const getErrorDisplayMessage = (exception: any) => {
   }
   return getUnknownErrorMessage()
 }
+
+export const getCaptionTranslationKey = (suffix: string) => `caption_${suffix}`
+
+export const getTabItemTitleTranslationKey = (routeName: string) =>
+  getCaptionTranslationKey(`tab_${routeName.toLowerCase()}`)
