@@ -1,21 +1,26 @@
 import React from 'react'
 import { Text } from 'react-native'
+import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 
 import { getTabItemTitleTranslationKey } from 'helpers/texts'
 import I18n from 'i18n'
-import * as Screens from 'navigation/Screens'
-import { $tabNavigationActiveIconColor, $tabNavigationActiveTextColor, $tabNavigationInactiveColor } from 'styles/colors'
+import {
+  $tabNavigationActiveIconColor,
+  $tabNavigationActiveTextColor,
+  $tabNavigationInactiveColor,
+} from 'styles/colors'
 import tabs from 'styles/commons/tabs'
 
 
-const TAB_BAR_HEIGHT = 52
+const TAB_BAR_PADDING = 20
+const TAB_BAR_HEIGHT = 30 + TAB_BAR_PADDING
 const INDICATOR_HEIGHT = 3
 
-export default (screenConfig: any, navigatorConfig: any = {}) => createMaterialTopTabNavigator(
+export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTabNavigator(
   screenConfig,
   {
-    ...navigatorConfig,
+    ...(navigatorConfig || {}),
     backBehavior: 'none',
     navigationOptions: ({ navigation }) => ({
       tabBarLabel: ({ tintColor }) => (
@@ -31,10 +36,11 @@ export default (screenConfig: any, navigatorConfig: any = {}) => createMaterialT
       inactiveTintColor: $tabNavigationInactiveColor,
       style: {
         backgroundColor: 'white',
-        // height: TAB_BAR_HEIGHT,
       },
       tabStyle: {
-        height: TAB_BAR_HEIGHT - INDICATOR_HEIGHT,
+        marginTop: getStatusBarHeight(),
+        paddingTop: TAB_BAR_PADDING,
+        height: TAB_BAR_HEIGHT,
       },
       indicatorStyle: {
         backgroundColor: $tabNavigationActiveIconColor,
