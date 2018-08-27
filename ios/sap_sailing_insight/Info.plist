@@ -84,5 +84,10 @@
 		<key>live</key>
 		<string>key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m</string>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>bentonsans_bold.otf</string>
+		<string>bentonsans_regular.otf</string>
+	</array>
 </dict>
 </plist>
