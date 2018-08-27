@@ -88,6 +88,10 @@
 	<array>
 		<string>bentonsans_bold.otf</string>
 		<string>bentonsans_regular.otf</string>
+		<string>bentonsans_extralight.otf</string>
+		<string>bentonsans_light.otf</string>
+		<string>bentonsans_medium.otf</string>
+		<string>bentonsans_thin.otf</string>
 	</array>
 </dict>
 </plist>

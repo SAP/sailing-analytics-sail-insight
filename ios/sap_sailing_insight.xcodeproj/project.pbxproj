@@ -61,6 +61,10 @@
 		FE9D32BC651645C2875D5BAC /* libRNI18n-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE9F00F02FC407EA88B89C3 /* libRNI18n-tvOS.a */; };
 		2FA64DC712B54507B0BD87AC /* bentonsans_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = B167D67EC9A4418591AFFCD1 /* bentonsans_bold.otf */; };
 		64C30A90795748E18B7ED10C /* bentonsans_regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 527570D5D0A34C3C8710BFE9 /* bentonsans_regular.otf */; };
+		112BD3A5E9BD4180816F5686 /* bentonsans_extralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0509553113A14202829C6ACA /* bentonsans_extralight.otf */; };
+		195A914BAA404C6D906E1E3B /* bentonsans_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2444D8AAC4A94E06B14E1619 /* bentonsans_light.otf */; };
+		39B02C161FDF4356BFD9A53D /* bentonsans_medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3281F93E519F464983190728 /* bentonsans_medium.otf */; };
+		9305B9B167824E1FA4A23E48 /* bentonsans_thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2F54F786A71945108688604E /* bentonsans_thin.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -529,6 +533,10 @@
 		FCE39D05504C4265BDE0AD26 /* libReactNativePermissions.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativePermissions.a; sourceTree = "<group>"; };
 		B167D67EC9A4418591AFFCD1 /* bentonsans_bold.otf */ = {isa = PBXFileReference; name = "bentonsans_bold.otf"; path = "../assets/fonts/bentonsans_bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		527570D5D0A34C3C8710BFE9 /* bentonsans_regular.otf */ = {isa = PBXFileReference; name = "bentonsans_regular.otf"; path = "../assets/fonts/bentonsans_regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0509553113A14202829C6ACA /* bentonsans_extralight.otf */ = {isa = PBXFileReference; name = "bentonsans_extralight.otf"; path = "../assets/fonts/bentonsans_extralight.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2444D8AAC4A94E06B14E1619 /* bentonsans_light.otf */ = {isa = PBXFileReference; name = "bentonsans_light.otf"; path = "../assets/fonts/bentonsans_light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		3281F93E519F464983190728 /* bentonsans_medium.otf */ = {isa = PBXFileReference; name = "bentonsans_medium.otf"; path = "../assets/fonts/bentonsans_medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2F54F786A71945108688604E /* bentonsans_thin.otf */ = {isa = PBXFileReference; name = "bentonsans_thin.otf"; path = "../assets/fonts/bentonsans_thin.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -969,6 +977,10 @@
 			children = (
 				B167D67EC9A4418591AFFCD1 /* bentonsans_bold.otf */,
 				527570D5D0A34C3C8710BFE9 /* bentonsans_regular.otf */,
+				0509553113A14202829C6ACA /* bentonsans_extralight.otf */,
+				2444D8AAC4A94E06B14E1619 /* bentonsans_light.otf */,
+				3281F93E519F464983190728 /* bentonsans_medium.otf */,
+				2F54F786A71945108688604E /* bentonsans_thin.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1607,6 +1619,10 @@
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				2FA64DC712B54507B0BD87AC /* bentonsans_bold.otf in Resources */,
 				64C30A90795748E18B7ED10C /* bentonsans_regular.otf in Resources */,
+				112BD3A5E9BD4180816F5686 /* bentonsans_extralight.otf in Resources */,
+				195A914BAA404C6D906E1E3B /* bentonsans_light.otf in Resources */,
+				39B02C161FDF4356BFD9A53D /* bentonsans_medium.otf in Resources */,
+				9305B9B167824E1FA4A23E48 /* bentonsans_thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
