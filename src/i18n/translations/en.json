@@ -11,6 +11,7 @@
   "text_speed_knots": "Speed (Knots)",
   "text_tracking_time": "Tracking time",
   "text_bearing_deg": "Course over ground",
+  "text_tracks": "Tracks",
 
   "caption_cancel": "Back",
   "caption_qr_scanner": "Scan QR-Code",

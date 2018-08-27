@@ -47,7 +47,16 @@ export default createBottomTabNavigator(
         let icon
         switch (routeName) {
           case Screens.TrackingSetup:
-            icon = Images.actionables.add
+            icon = Images.tabs.tracking
+            break
+          case Screens.Sessions:
+            icon = Images.tabs.sessions
+            break
+          case Screens.CheckIn:
+            icon = Images.tabs.join
+            break
+          case Screens.Account:
+            icon = Images.tabs.account
             break
         }
 

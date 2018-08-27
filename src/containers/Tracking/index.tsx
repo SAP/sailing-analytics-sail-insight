@@ -12,7 +12,7 @@ import { buttons, container } from 'styles/commons'
 import styles from './styles'
 
 import {  stopLocationTracking } from 'actions/locations'
-import { uiDurationText } from 'helpers/date'
+import { durationText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { navigateBack, navigateToAppSettings } from 'navigation'
@@ -48,7 +48,7 @@ class Tracking extends React.Component<{
 
   public handleTimerEvent = () => {
     const { trackingStats } = this.props
-    this.setState({ durationText: uiDurationText(trackingStats.startedAt) })
+    this.setState({ durationText: durationText(trackingStats.startedAt) })
   }
 
   public onOptionsPressed = () => {

@@ -11,6 +11,7 @@
   "text_speed_knots": "Geschwindigkeit (Knoten)",
   "text_tracking_time": "Tracking-Zeit",
   "text_bearing_deg": "Kurs",
+  "text_tracks": "Tracks",
 
   "caption_cancel": "Abbrechen",
   "caption_qr_scanner": "QR-Code scannen",
