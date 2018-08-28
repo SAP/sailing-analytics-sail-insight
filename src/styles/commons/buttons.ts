@@ -7,6 +7,15 @@ export default EStyleSheet.create({
     width: 50,
     height: 50,
   },
+  actionRectangular: {
+    backgroundColor: '$actionButtonColor',
+    padding: 12,
+    borderRadius: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+  },
   actionFullWidth: {
     backgroundColor: '$actionButtonColor',
     width: '96%',

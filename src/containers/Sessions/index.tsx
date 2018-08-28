@@ -1,6 +1,6 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 
 
 import Images from '@assets/Images'
@@ -10,8 +10,10 @@ import { buttons, container } from 'styles/commons'
 import ImageButton from 'components/ImageButton'
 import RegattaList from 'components/RegattaList'
 
+import IconText from 'components/IconText'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheet, StyleSheetType } from 'helpers/types'
+import I18n from 'i18n'
 import styles from './styles'
 
 
@@ -37,12 +39,18 @@ class Sessions extends React.Component<{
     return (
       <View style={container.list}>
         <RegattaList style={container.list} />
-        <ImageButton
-          style={[buttons.action, styles.addButton]}
+        <TouchableOpacity
+          style={[buttons.actionRectangular, styles.addButton]}
           onPress={this.onAddPress}
-          source={Images.actionables.add}
-          circular={true}
-        />
+        >
+          <IconText
+            source={Images.actionables.add}
+            textStyle={buttons.actionText}
+            style={container.row}
+          >
+            {I18n.t('caption_new_session')}
+          </IconText>
+        </TouchableOpacity>
       </View>
     )
   }
