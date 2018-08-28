@@ -11,6 +11,7 @@
   "text_speed_knots": "Speed (Knots)",
   "text_tracking_time": "Tracking time",
   "text_bearing_deg": "Course over ground",
+  "text_tracks": "Tracks",
 
   "caption_cancel": "Back",
   "caption_qr_scanner": "Scan QR-Code",
@@ -21,6 +22,15 @@
   "caption_done": "Done",
   "caption_settings": "Settings",
   "caption_checkout": "Checkout",
+  "caption_tab_trackingsetup": "Tracking",
+  "caption_tab_sessions": "Sessions",
+  "caption_tab_checkin": "Join Regatta",
+  "caption_tab_account": "My Account",
+  "caption_tab_usersessions": "My sessions",
+  "caption_tab_tracks": "All tracks",
+  "caption_tab_userprofile": "My Profile",
+  "caption_tab_appsettings": "Settings",
+  "caption_new_session": "New session",
 
   "error_unkown": "Unknown error"
 }

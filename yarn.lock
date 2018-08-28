@@ -5028,6 +5028,10 @@ react-native-i18n@2.0.15:
   dependencies:
     i18n-js "3.0.11"
 
+react-native-iphone-x-helper@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.0.3.tgz#7a2f1e0574e899a0f1d426e6167fd98990083214"
+
 react-native-keep-awake@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/react-native-keep-awake/-/react-native-keep-awake-3.1.0.tgz#7a5ebdf1ccebc68c73cecf46c750a2698a07f1a7"
@@ -5068,6 +5072,12 @@ react-native-safe-area-view@^0.8.0:
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.8.0.tgz#22d78cb8e8658d04a10cd53c1546e0bc86cb7aea"
   dependencies:
     hoist-non-react-statics "^2.3.1"
+
+react-native-status-bar-height@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-status-bar-height/-/react-native-status-bar-height-2.0.0.tgz#9def59bdfa162da73134aff4f480ef2fc873ee0a"
+  dependencies:
+    react-native-iphone-x-helper "^1.0.1"
 
 react-native-svg@6.5.2:
   version "6.5.2"

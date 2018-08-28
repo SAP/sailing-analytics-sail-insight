@@ -10,14 +10,13 @@ import { buttons, container, navigation as navigationStyles } from 'styles/commo
 import * as Screens from 'navigation/Screens'
 
 import HeaderTitle from 'components/HeaderTitle'
-import ImageButton from 'components/ImageButton'
 import TextButton from 'components/TextButton'
 import AppSettings from 'containers/AppSettings'
 import RegattaDetail from 'containers/RegattaDetail'
 import Tracking from 'containers/Tracking'
-import Welcome from 'containers/Welcome'
 import { navigateBack } from 'navigation'
 import CheckInNavigator from './CheckInNavigator'
+import MainTabNavigator from './MainTabNavigator'
 
 
 const logoHeaderLeft = () => <Image style={container.logo} source={Images.corporateIdentity.sapSailingLogo} />
@@ -30,11 +29,10 @@ const multilineHeaderTitle = (navigation: any = {}) => (
 
 export default createStackNavigator(
   {
-    [Screens.Welcome]: {
-      screen: Welcome,
+    [Screens.MainTabs]: {
+      screen: MainTabNavigator,
       navigationOptions: {
-        title: I18n.t('title_regattas'),
-        headerLeft: logoHeaderLeft,
+        header: null,
       },
     },
     [Screens.CheckInNavigator]: {
@@ -74,23 +72,11 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.Welcome,
+    initialRouteName: Screens.MainTabs,
     mode: 'modal',
     headerMode: 'screen',
     navigationOptions: (options: any) => ({
       headerTitleStyle: navigationStyles.headerTitle,
-      headerRight: (
-        <ImageButton
-          onPress={
-            options.navigation &&
-            options.navigation.state &&
-            options.navigation.state.params &&
-            options.navigation.state.params.onOptionsPressed
-          }
-          source={Images.actionables.settings}
-          imageStyle={buttons.actionIcon}
-        />
-      ),
     }),
   },
 )

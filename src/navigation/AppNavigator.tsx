@@ -5,10 +5,15 @@ import MainNavigator from './navigators/MainNavigator'
 
 
 class AppNavigator extends Component {
+
+  public handleNavigatorRef = (ref: any) => {
+    NavigationService.setTopLevelNavigator(ref)
+  }
+
   public render() {
     return (
       <MainNavigator
-        ref={(navigatorRef: any) => { NavigationService.setTopLevelNavigator(navigatorRef) }}
+        ref={this.handleNavigatorRef}
       />
     )
   }

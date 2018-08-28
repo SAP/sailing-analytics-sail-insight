@@ -9,7 +9,7 @@ import * as fonts from 'styles/fonts'
 export const initStyles = () => {
   StatusBar.setBarStyle('dark-content')
   if (isPlatformAndroid) {
-    StatusBar.setBackgroundColor(colors.$containerBackgroundColor)
+    StatusBar.setBackgroundColor(colors.$navigationBarBackgroundColor)
   }
 
   EStyleSheet.build({

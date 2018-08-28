@@ -13,6 +13,7 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* sap_sailing_insightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */; };
+		112BD3A5E9BD4180816F5686 /* bentonsans_extralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0509553113A14202829C6ACA /* bentonsans_extralight.otf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -24,6 +25,7 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		165C2BDF3A2349ACA9CDB23C /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2354102185664676B9B5030E /* libRNSVG-tvOS.a */; };
+		195A914BAA404C6D906E1E3B /* bentonsans_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2444D8AAC4A94E06B14E1619 /* bentonsans_light.otf */; };
 		24835D55349A49238F5E79A6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 48801B0D5D4B4D46A81DDB39 /* libz.tbd */; };
 		2CDCC9F153954F8ABA53D8DE /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F81971C8EFD34E708D20A666 /* libRNDeviceInfo.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -40,14 +42,18 @@
 		2DCD954D1E0B4F2C00145EB5 /* sap_sailing_insightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2EDB25DADACD4FDAB3B4B25B /* libCocoaLumberjack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DE2493F5B194B6A89502462 /* libCocoaLumberjack.a */; };
+		2FA64DC712B54507B0BD87AC /* bentonsans_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = B167D67EC9A4418591AFFCD1 /* bentonsans_bold.otf */; };
+		39B02C161FDF4356BFD9A53D /* bentonsans_medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3281F93E519F464983190728 /* bentonsans_medium.otf */; };
 		408E7F7645A14C0885E4A72E /* libreact-native-branch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9190A08B7C4606B6AD7F69 /* libreact-native-branch.a */; };
 		4439F9950E0D4FEFAEBAA1EF /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48D19F3865F54560A363145B /* libRNBackgroundTimer.a */; };
 		5536C5CA256B48ED8D5F9AC2 /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC6180A3A444A9DB5927ECA /* libRNI18n.a */; };
 		57BC4A89C8DD4BD596D64D6E /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E652804557F46EBA1BACA13 /* libBVLinearGradient.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		64C30A90795748E18B7ED10C /* bentonsans_regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 527570D5D0A34C3C8710BFE9 /* bentonsans_regular.otf */; };
 		674DD3B9609145549852DF35 /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A2B306FC04948978EBEAD1A /* libRNCamera.a */; };
 		67C887A13F324C418FB14ED9 /* libRNBackgroundGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9016D095AEC4269A6888384 /* libRNBackgroundGeolocation.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		9305B9B167824E1FA4A23E48 /* bentonsans_thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2F54F786A71945108688604E /* bentonsans_thin.otf */; };
 		9732283BC1BC432DB3BF3C81 /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37AD602985A944BCA6980DC1 /* libRNDeviceInfo-tvOS.a */; };
 		9A7201380A18488D9A50DDD3 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCE39D05504C4265BDE0AD26 /* libReactNativePermissions.a */; };
 		9DE4753D30F94CD1B0097EEC /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CB8C2C4D5654BC98F217424 /* libRNSVG.a */; };
@@ -476,6 +482,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sap_sailing_insightTests.m; sourceTree = "<group>"; };
 		038E7A07C1B14DC7BE95AF83 /* libc++.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		0509553113A14202829C6ACA /* bentonsans_extralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = bentonsans_extralight.otf; path = ../assets/fonts/bentonsans_extralight.otf; sourceTree = "<group>"; };
 		08143EC286E14C4EAAE7443D /* libRealmReact.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRealmReact.a; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
@@ -491,16 +498,20 @@
 		1F9190A08B7C4606B6AD7F69 /* libreact-native-branch.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libreact-native-branch.a"; sourceTree = "<group>"; };
 		216ABF84BF4E45C39286AA40 /* Lumberjack.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Lumberjack.xcodeproj; path = "../node_modules/cocoa-lumberjack/CocoaLumberjack/Lumberjack.xcodeproj"; sourceTree = "<group>"; };
 		2354102185664676B9B5030E /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
+		2444D8AAC4A94E06B14E1619 /* bentonsans_light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = bentonsans_light.otf; path = ../assets/fonts/bentonsans_light.otf; sourceTree = "<group>"; };
 		280EA5E601CD4238B22A674C /* TSBackgroundFetch.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = TSBackgroundFetch.framework; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/TSBackgroundFetch.framework"; sourceTree = SDKROOT; };
 		2D02E47B1E0B4A5D006451C7 /* sap_sailing_insight-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sap_sailing_insight-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* sap_sailing_insight-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "sap_sailing_insight-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D6E5187A071441F9CF99B8D /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		2F54F786A71945108688604E /* bentonsans_thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = bentonsans_thin.otf; path = ../assets/fonts/bentonsans_thin.otf; sourceTree = "<group>"; };
 		2FC6180A3A444A9DB5927ECA /* libRNI18n.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNI18n.a; sourceTree = "<group>"; };
 		313F1B74054941BBB04BA348 /* RNCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
+		3281F93E519F464983190728 /* bentonsans_medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = bentonsans_medium.otf; path = ../assets/fonts/bentonsans_medium.otf; sourceTree = "<group>"; };
 		37AD602985A944BCA6980DC1 /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; };
 		48801B0D5D4B4D46A81DDB39 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		48D19F3865F54560A363145B /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundTimer.a; sourceTree = "<group>"; };
+		527570D5D0A34C3C8710BFE9 /* bentonsans_regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = file; name = bentonsans_regular.otf; path = ../assets/fonts/bentonsans_regular.otf; sourceTree = "<group>"; };
 		5CB1F1F15878420381EE7719 /* RealmReact.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RealmReact.xcodeproj; path = "../node_modules/realm/react-native/ios/RealmReact.xcodeproj"; sourceTree = "<group>"; };
 		5DE2493F5B194B6A89502462 /* libCocoaLumberjack.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libCocoaLumberjack.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
@@ -520,6 +531,7 @@
 		9EF2E204C78D45129E45F602 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBackgroundTimer.xcodeproj; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; };
 		AAE2517500FE482CA8E80668 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		B167D67EC9A4418591AFFCD1 /* bentonsans_bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = bentonsans_bold.otf; path = ../assets/fonts/bentonsans_bold.otf; sourceTree = "<group>"; };
 		B9016D095AEC4269A6888384 /* libRNBackgroundGeolocation.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundGeolocation.a; sourceTree = "<group>"; };
 		BEE83EE5FD6A42B09C5A2BC8 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		C251A455D34F4BD8804A6CBF /* KCKeepAwake.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = KCKeepAwake.xcodeproj; path = "../node_modules/react-native-keep-awake/ios/KCKeepAwake.xcodeproj"; sourceTree = "<group>"; };
@@ -721,6 +733,19 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2753BF697C684F71AE74EF73 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B167D67EC9A4418591AFFCD1 /* bentonsans_bold.otf */,
+				527570D5D0A34C3C8710BFE9 /* bentonsans_regular.otf */,
+				0509553113A14202829C6ACA /* bentonsans_extralight.otf */,
+				2444D8AAC4A94E06B14E1619 /* bentonsans_light.otf */,
+				3281F93E519F464983190728 /* bentonsans_medium.otf */,
+				2F54F786A71945108688604E /* bentonsans_thin.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -802,6 +827,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				9814960121087E7F003994D2 /* Recovered References */,
+				2753BF697C684F71AE74EF73 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -1591,6 +1617,12 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				2FA64DC712B54507B0BD87AC /* bentonsans_bold.otf in Resources */,
+				64C30A90795748E18B7ED10C /* bentonsans_regular.otf in Resources */,
+				112BD3A5E9BD4180816F5686 /* bentonsans_extralight.otf in Resources */,
+				195A914BAA404C6D906E1E3B /* bentonsans_light.otf in Resources */,
+				39B02C161FDF4356BFD9A53D /* bentonsans_medium.otf in Resources */,
+				9305B9B167824E1FA4A23E48 /* bentonsans_thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

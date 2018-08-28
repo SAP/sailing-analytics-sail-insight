@@ -4,7 +4,8 @@ export default EStyleSheets.create({
   addButton: {
     position: 'absolute',
     bottom: 0,
-    right: 0,
+    // right: 0,
+    alignSelf: 'center',
     margin: '$containerFixedMargin',
   },
 })

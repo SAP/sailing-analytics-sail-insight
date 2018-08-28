@@ -5,6 +5,13 @@ export default EStyleSheet.create({
     flex: 1,
     backgroundColor: '$containerBackgroundColor',
   },
+  list: {
+    flex: 1,
+    backgroundColor: '$listBackgroundColor',
+  },
+  row: {
+    flexDirection: 'row',
+  },
   logo: {
     height: 30,
     width: 60,

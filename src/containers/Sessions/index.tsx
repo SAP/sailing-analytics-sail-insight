@@ -1,21 +1,24 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
+import { TouchableOpacity, View } from 'react-native'
+
 
 import Images from '@assets/Images'
 import { navigateToCheckIn } from 'navigation'
 import { buttons, container } from 'styles/commons'
 
-import GradientContainer from 'components/GradientContainer'
 import ImageButton from 'components/ImageButton'
 import RegattaList from 'components/RegattaList'
 
+import IconText from 'components/IconText'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheet, StyleSheetType } from 'helpers/types'
+import I18n from 'i18n'
 import styles from './styles'
 
 
 @connectActionSheet
-class Welcome extends React.Component<{
+class Sessions extends React.Component<{
   style?: StyleSheetType,
   navigation: any,
   showActionSheetWithOptions: ShowActionSheet,
@@ -34,17 +37,23 @@ class Welcome extends React.Component<{
 
   public render() {
     return (
-      <GradientContainer style={container.main}>
-        <RegattaList style={container.main} />
-        <ImageButton
-          style={[buttons.action, styles.addButton]}
+      <View style={container.list}>
+        <RegattaList style={container.list} />
+        <TouchableOpacity
+          style={[buttons.actionRectangular, styles.addButton]}
           onPress={this.onAddPress}
-          source={Images.actionables.add}
-          circular={true}
-        />
-      </GradientContainer>
+        >
+          <IconText
+            source={Images.actionables.add}
+            textStyle={buttons.actionText}
+            style={container.row}
+          >
+            {I18n.t('caption_new_session')}
+          </IconText>
+        </TouchableOpacity>
+      </View>
     )
   }
 }
 
-export default Welcome
+export default Sessions

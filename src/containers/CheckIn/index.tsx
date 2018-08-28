@@ -1,4 +1,5 @@
 import React from 'react'
+import { View } from 'react-native'
 import { connect } from 'react-redux'
 
 import { checkIn } from 'actions/checkIn'
@@ -7,7 +8,6 @@ import I18n from 'i18n'
 import { navigateBack, navigateToQRScanner } from 'navigation'
 import { buttons, container } from 'styles/commons'
 
-import GradientContainer from 'components/GradientContainer'
 import TextButton from 'components/TextButton'
 
 import styles from './styles'
@@ -38,7 +38,7 @@ class CheckIn extends React.Component<{
 
   public render() {
     return (
-      <GradientContainer style={[container.main, styles.container]}>
+      <View style={[container.main, styles.container]}>
         <TextButton
           textStyle={buttons.actionText}
           style={buttons.actionFullWidth}
@@ -47,7 +47,7 @@ class CheckIn extends React.Component<{
         >
           {I18n.t('caption_qr_scanner')}
         </TextButton>
-      </GradientContainer>
+      </View>
     )
   }
 }

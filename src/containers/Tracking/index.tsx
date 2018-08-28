@@ -1,16 +1,18 @@
 import React from 'react'
-import { Alert, Text } from 'react-native'
+import { Alert } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
 
 import GradientContainer from 'components/GradientContainer'
+import Text from 'components/Text'
 import TextButton from 'components/TextButton'
+
 import { buttons, container } from 'styles/commons'
 import styles from './styles'
 
 import {  stopLocationTracking } from 'actions/locations'
-import { uiDurationText } from 'helpers/date'
+import { durationText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { navigateBack, navigateToAppSettings } from 'navigation'
@@ -46,7 +48,7 @@ class Tracking extends React.Component<{
 
   public handleTimerEvent = () => {
     const { trackingStats } = this.props
-    this.setState({ durationText: uiDurationText(trackingStats.startedAt) })
+    this.setState({ durationText: durationText(trackingStats.startedAt) })
   }
 
   public onOptionsPressed = () => {
