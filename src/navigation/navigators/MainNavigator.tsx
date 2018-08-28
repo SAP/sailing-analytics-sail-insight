@@ -10,11 +10,9 @@ import { buttons, container, navigation as navigationStyles } from 'styles/commo
 import * as Screens from 'navigation/Screens'
 
 import HeaderTitle from 'components/HeaderTitle'
-import ImageButton from 'components/ImageButton'
 import TextButton from 'components/TextButton'
 import AppSettings from 'containers/AppSettings'
 import RegattaDetail from 'containers/RegattaDetail'
-import Sessions from 'containers/Sessions'
 import Tracking from 'containers/Tracking'
 import { navigateBack } from 'navigation'
 import CheckInNavigator from './CheckInNavigator'
