@@ -63,7 +63,7 @@ class RegattaList extends React.Component<{
         enableEmptySections={true}
         dataSource={this.props.regattaDataSource}
         renderRow={this.renderItem}
-        renderHeader={this.renderHeader}
+        // renderHeader={this.renderHeader}
       />
     )
   }

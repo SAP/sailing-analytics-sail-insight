@@ -1,11 +1,12 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
+import { View } from 'react-native'
+
 
 import Images from '@assets/Images'
 import { navigateToCheckIn } from 'navigation'
 import { buttons, container } from 'styles/commons'
 
-import GradientContainer from 'components/GradientContainer'
 import ImageButton from 'components/ImageButton'
 import RegattaList from 'components/RegattaList'
 
@@ -34,7 +35,7 @@ class Sessions extends React.Component<{
 
   public render() {
     return (
-      <GradientContainer style={container.main}>
+      <View style={container.main}>
         <RegattaList style={container.main} />
         <ImageButton
           style={[buttons.action, styles.addButton]}
@@ -42,7 +43,7 @@ class Sessions extends React.Component<{
           source={Images.actionables.add}
           circular={true}
         />
-      </GradientContainer>
+      </View>
     )
   }
 }

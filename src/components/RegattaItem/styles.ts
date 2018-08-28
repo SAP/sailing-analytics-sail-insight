@@ -21,6 +21,9 @@ export default EStyleSheets.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  textMargins: {
+    marginTop: '$textFixedMargin',
+  },
   nameText: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -36,5 +39,9 @@ export default EStyleSheets.create({
   },
   tracksCountText: {
     fontSize: 12,
+  },
+  trackingButton: {
+    width: 49,
+    height: 49,
   },
 })

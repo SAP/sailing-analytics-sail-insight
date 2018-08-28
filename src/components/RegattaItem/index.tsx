@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 
 import IconText from 'components/IconText'
+import ImageButton from 'components/ImageButton'
 import Text from 'components/Text'
 
 import Images from '@assets/Images'
@@ -20,6 +21,10 @@ class RegattaItem extends React.Component<{
 } > {
   public static defaultProps = {
     size: 'small',
+  }
+
+  public onStartTrackingPress = () => {
+    // TODO: start Tracking
   }
 
   public render() {
@@ -46,17 +51,36 @@ class RegattaItem extends React.Component<{
             {/* <Text>
               {regatta && regatta.event && regatta.event.name}
             </Text> */}
-            <View style={styles.line}>
-              <Text style={styles.dateText}>{dateFromToText(regatta.event.startDate, regatta.event.endDate)}</Text>
+            <View style={[styles.line, styles.textMargins]}>
+              <Text
+                style={styles.dateText}
+              >
+                {dateFromToText(regatta.event.startDate, regatta.event.endDate)}
+              </Text>
               <Text style={styles.tracksText}>{`${I18n.t('text_tracks').toUpperCase()}:`}</Text>
               <Text style={styles.tracksCountText}>{1/*TODO: fill data*/}</Text>
             </View>
           </View>
-          <View style={styles.innerContainer}>
+          <View style={[styles.innerContainer, styles.textMargins]}>
             <View>
-              <IconText style={styles.iconText} source={Images.info.boat}>{'BOAT'}</IconText>
-              <IconText style={styles.iconText} source={Images.info.location}>{'LOCATION'}</IconText>
+              <IconText
+                style={styles.iconText}
+                source={Images.info.boat}
+              >
+                {'BOAT'/*TODO: fill data*/}
+              </IconText>
+              <IconText
+                style={[styles.iconText, styles.textMargins]}
+                source={Images.info.location}
+              >
+                {'LOCATION'/*TODO: fill data*/}
+              </IconText>
             </View>
+            <ImageButton
+              source={Images.actionables.startTracking}
+              style={styles.trackingButton}
+              onPress={this.onStartTrackingPress}
+            />
           </View>
         </View>
       </TouchableOpacity>
