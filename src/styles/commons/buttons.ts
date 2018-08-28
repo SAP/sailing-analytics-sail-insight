@@ -25,7 +25,7 @@ export default EStyleSheet.create({
   },
   actionText: {
     color: 'white',
-    fontSize: 17,
+    fontSize: 20,
   },
   navigationBack: {
     color: '$actionButtonColor',
