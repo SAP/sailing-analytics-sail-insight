@@ -35,8 +35,8 @@ class Sessions extends React.Component<{
 
   public render() {
     return (
-      <View style={container.main}>
-        <RegattaList style={container.main} />
+      <View style={container.list}>
+        <RegattaList style={container.list} />
         <ImageButton
           style={[buttons.action, styles.addButton]}
           onPress={this.onAddPress}

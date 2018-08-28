@@ -1,5 +1,6 @@
 export const $navigationBarBackgroundColor = 'white'
-export const $containerBackgroundColor = '#EEEEEE'
+export const $containerBackgroundColor = 'white'
+export const $listBackgroundColor = '#EEEEEE'
 
 export const $containerBackgroundLowerColor = '#D7DFE8'
 export const $containerBackgroundUpperColor = '#D9EFEF'
