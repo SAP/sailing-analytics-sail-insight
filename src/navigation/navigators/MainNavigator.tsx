@@ -7,14 +7,16 @@ import I18n from 'i18n'
 import Images from '@assets/Images'
 import { buttons, container, navigation as navigationStyles } from 'styles/commons'
 
+import { navigateBack } from 'navigation'
 import * as Screens from 'navigation/Screens'
 
 import HeaderTitle from 'components/HeaderTitle'
 import TextButton from 'components/TextButton'
 import AppSettings from 'containers/AppSettings'
 import RegattaDetail from 'containers/RegattaDetail'
+import SplashScreen from 'containers/SplashScreen'
 import Tracking from 'containers/Tracking'
-import { navigateBack } from 'navigation'
+
 import CheckInNavigator from './CheckInNavigator'
 import MainTabNavigator from './MainTabNavigator'
 
@@ -29,6 +31,12 @@ const multilineHeaderTitle = (navigation: any = {}) => (
 
 export default createStackNavigator(
   {
+    [Screens.Splash]: {
+      screen: SplashScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
     [Screens.MainTabs]: {
       screen: MainTabNavigator,
       navigationOptions: {
@@ -72,7 +80,7 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.MainTabs,
+    initialRouteName: Screens.Splash,
     mode: 'modal',
     headerMode: 'screen',
     navigationOptions: (options: any) => ({

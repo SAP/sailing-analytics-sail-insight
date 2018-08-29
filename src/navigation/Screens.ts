@@ -1,3 +1,4 @@
+export const Splash = 'Splash'
 export const MainTabs = 'MainTabs'
 export const Sessions = 'Sessions'
 export const UserSessions = 'UserSessions'
