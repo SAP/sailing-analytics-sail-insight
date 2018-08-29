@@ -6,7 +6,7 @@ import { checkIn } from 'actions/checkIn'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { navigateBack, navigateToQRScanner } from 'navigation'
-import { buttons, container } from 'styles/commons'
+import { button, container } from 'styles/commons'
 
 import TextButton from 'components/TextButton'
 
@@ -40,8 +40,8 @@ class CheckIn extends React.Component<{
     return (
       <View style={[container.main, styles.container]}>
         <TextButton
-          textStyle={buttons.actionText}
-          style={buttons.actionFullWidth}
+          textStyle={button.actionText}
+          style={button.actionFullWidth}
           onPress={this.onQRPress}
           isLoading={this.state.isLoading}
         >

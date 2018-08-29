@@ -12,6 +12,7 @@ import Images from '@assets/Images'
 import { dateFromToText } from 'helpers/date'
 import { StyleSheetType } from 'helpers/types'
 import I18n from 'i18n'
+import { text } from 'styles/commons'
 import styles from './styles'
 
 class RegattaItem extends React.Component<{
@@ -57,7 +58,7 @@ class RegattaItem extends React.Component<{
               >
                 {dateFromToText(regatta.event.startDate, regatta.event.endDate)}
               </Text>
-              <Text style={styles.tracksText}>{`${I18n.t('text_tracks').toUpperCase()}:`}</Text>
+              <Text style={[text.propertyName, styles.tracksText]}>{`${I18n.t('text_tracks').toUpperCase()}:`}</Text>
               <Text style={styles.tracksCountText}>{1/*TODO: fill data*/}</Text>
             </View>
           </View>
@@ -77,7 +78,7 @@ class RegattaItem extends React.Component<{
               </IconText>
             </View>
             <ImageButton
-              source={Images.actionables.startTracking}
+              source={Images.actionables.recordColored}
               style={styles.trackingButton}
               onPress={this.onStartTrackingPress}
             />

@@ -12,15 +12,17 @@ import UserProfile from 'containers/UserProfile'
 import Images from '@assets/Images'
 import { getTabItemTitleTranslationKey } from 'helpers/texts'
 import I18n from 'i18n'
+import { navigateToTrackingSetup } from 'navigation'
 import * as Screens from 'navigation/Screens'
-import { $tabNavigationActiveIconColor, $tabNavigationActiveTextColor, $tabNavigationInactiveColor } from 'styles/colors'
-import tabs from 'styles/commons/tabs'
+import { generateNewSession } from 'services/SessionService'
+import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
+import { tab } from 'styles/commons'
 import TopTabNavigator from './TopTabNavigator'
 
 
 export default createBottomTabNavigator(
   {
-    [Screens.TrackingSetup]: TrackingSetup,
+    [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.Sessions]: TopTabNavigator(
       {
         [Screens.UserSessions]: Sessions,
@@ -46,7 +48,7 @@ export default createBottomTabNavigator(
         const { routeName = '' } = navigation.state
         let icon
         switch (routeName) {
-          case Screens.TrackingSetup:
+          case Screens.TrackingSetupAction:
             icon = Images.tabs.tracking
             break
           case Screens.Sessions:
@@ -60,12 +62,12 @@ export default createBottomTabNavigator(
             break
         }
 
-        const iconTintColor = focused ? $tabNavigationActiveIconColor : tintColor
+        const iconTintColor = focused ? $primaryActiveColor : tintColor
 
         return (
           <IconText
-            iconStyle={[tabs.tabItemIcon, { tintColor: iconTintColor }]}
-            textStyle={[tabs.bottomTabItemText, { color: tintColor }]}
+            iconStyle={[tab.tabItemIcon, { tintColor: iconTintColor }]}
+            textStyle={[tab.bottomTabItemText, { color: tintColor }]}
             source={icon}
             iconTintColor={iconTintColor}
             iconPosition="first"
@@ -74,10 +76,24 @@ export default createBottomTabNavigator(
           </IconText>
         )
       },
+      tabBarOnPress: (props: any = {}) => {
+        if (!props.defaultHandler || !props.navigation) {
+          return
+        }
+        if (!props.navigation.state) {
+          return props.defaultHandler(navigation)
+        }
+        switch (navigation.state.routeName) {
+          case Screens.TrackingSetupAction:
+            navigateToTrackingSetup(generateNewSession())
+            return
+        }
+        return props.defaultHandler(props.navigation)
+      },
     }),
     tabBarOptions: {
-      activeTintColor: $tabNavigationActiveTextColor,
-      inactiveTintColor: $tabNavigationInactiveColor,
+      activeTintColor: $primaryTextColor,
+      inactiveTintColor: $secondaryTextColor,
       style: {
         height: 56,
         backgroundColor: 'white',

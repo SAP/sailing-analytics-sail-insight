@@ -2,7 +2,7 @@ import React from 'react'
 import { Image, View } from 'react-native'
 
 import Images from '@assets/Images'
-import { $actionButtonColor } from 'styles/colors'
+import { $primaryButtonColor } from 'styles/colors'
 import { container } from 'styles/commons'
 import styles from './styles'
 
@@ -21,7 +21,7 @@ class SplashScreen extends React.Component<{
         </View>
         <ActivityIndicator
           style={styles.activityIndicator}
-          color={$actionButtonColor}
+          color={$primaryButtonColor}
           size="large"
         />
       </View>

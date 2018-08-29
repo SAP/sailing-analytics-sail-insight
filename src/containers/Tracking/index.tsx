@@ -87,8 +87,8 @@ class Tracking extends React.Component<{
           {`${I18n.t('text_unsent_gps_fixes')}: ${trackingStats.unsentGpsFixCount || 0}`}
         </Text>
         <TextButton
-          textStyle={buttons.actionText}
-          style={[buttons.actionFullWidth, styles.stopButton]}
+          textStyle={button.actionText}
+          style={[button.actionFullWidth, styles.stopButton]}
           onPress={this.onStopTrackingPress}
           isLoading={this.state.isLoading}
         >

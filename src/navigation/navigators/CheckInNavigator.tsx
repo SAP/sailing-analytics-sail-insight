@@ -5,7 +5,7 @@ import { createStackNavigator } from 'react-navigation'
 import I18n from 'i18n'
 
 import Images from '@assets/Images'
-import { buttons, container, navigation } from 'styles/commons'
+import { button, container, navigation } from 'styles/commons'
 
 import TextButton from 'components/TextButton'
 import CheckIn from 'containers/CheckIn'
@@ -23,7 +23,7 @@ export default createStackNavigator(
     //     headerRight: (
     //       <TextButton
     //         onPress={() => options.navigation && options.navigation.goBack && options.navigation.goBack(null)}
-    //         textStyle={buttons.navigationBack}
+    //         textStyle={button.modalBack}
     //       >
     //         {I18n.t('caption_cancel')}
     //       </TextButton>
@@ -37,7 +37,7 @@ export default createStackNavigator(
         headerRight: (
           <TextButton
             onPress={() => options.navigation && options.navigation.goBack && options.navigation.goBack(null)}
-            textStyle={buttons.navigationBack}
+            textStyle={button.modalBack}
           >
             {I18n.t('caption_cancel')}
           </TextButton>
