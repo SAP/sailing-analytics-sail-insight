@@ -2,13 +2,13 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
   action: {
-    backgroundColor: '$actionButtonColor',
+    backgroundColor: '$primaryButtonColor',
     padding: 8,
     width: 50,
     height: 50,
   },
   actionRectangular: {
-    backgroundColor: '$actionButtonColor',
+    backgroundColor: '$primaryButtonColor',
     padding: 12,
     borderRadius: 6,
     shadowColor: '#000',
@@ -17,7 +17,7 @@ export default EStyleSheet.create({
     shadowRadius: 2,
   },
   actionFullWidth: {
-    backgroundColor: '$actionButtonColor',
+    backgroundColor: '$primaryButtonColor',
     width: '96%',
     alignSelf: 'center',
     height: 80,
@@ -27,13 +27,16 @@ export default EStyleSheet.create({
     color: 'white',
     fontSize: 20,
   },
-  navigationBack: {
-    color: '$actionButtonColor',
-    paddingRight: '$containerFixedMargin',
+  textButtonText: {
+    color: '$primaryButtonColor',
+    fontSize: 16,
+  },
+  modalBack: {
+    color: '$primaryButtonColor',
     fontSize: 17,
   },
   actionIcon: {
-    tintColor: '$actionButtonColor',
+    tintColor: '$primaryButtonColor',
     width: 26,
     height: 26,
   },

@@ -1,12 +1,10 @@
-export const $navigationBarBackgroundColor = 'white'
-export const $containerBackgroundColor = 'white'
-export const $listBackgroundColor = '#EEEEEE'
+export const $primaryBackgroundColor = 'white'
+export const $secondaryBackgroundColor = '#EEEEEE'
 
-export const $containerBackgroundLowerColor = '#D7DFE8'
-export const $containerBackgroundUpperColor = '#D9EFEF'
+export const $primaryButtonColor = '#008FD3'
+export const $actionButtonColor = '#D0021B'
 
-export const $actionButtonColor = '#008FD3'
+export const $primaryTextColor = 'black'
+export const $secondaryTextColor = '#777777'
 
-export const $tabNavigationActiveIconColor = '#F0AB00'
-export const $tabNavigationActiveTextColor = '#000000'
-export const $tabNavigationInactiveColor = '#777777'
+export const $primaryActiveColor = '#F0AB00'

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import { checkOut } from 'actions/checkIn'
 import I18n from 'i18n'
-import { buttons, container } from 'styles/commons'
+import { button, container } from 'styles/commons'
 
 import GradientContainer from 'components/GradientContainer'
 import TextButton from 'components/TextButton'
@@ -92,23 +92,23 @@ class RegattaDetail extends React.Component<{
       <GradientContainer style={[container.main, styles.container]}>
         <View style={styles.detailButtonContainer}>
           <TextButton
-            textStyle={buttons.actionText}
-            style={[buttons.actionFullWidth, styles.detailButton]}
+            textStyle={button.actionText}
+            style={[button.actionFullWidth, styles.detailButton]}
             onPress={this.onEventPress}
           >
             {I18n.t('caption_to_event')}
           </TextButton>
           <TextButton
-            textStyle={buttons.actionText}
-            style={[buttons.actionFullWidth, styles.detailButton]}
+            textStyle={button.actionText}
+            style={[button.actionFullWidth, styles.detailButton]}
             onPress={this.onLeaderboardPress}
           >
             {I18n.t('caption_to_leaderboard')}
           </TextButton>
         </View>
         <TextButton
-          textStyle={buttons.actionText}
-          style={buttons.actionFullWidth}
+          textStyle={button.actionText}
+          style={button.actionFullWidth}
           onPress={this.onTrackingPress}
           isLoading={this.state.isLoading}
         >

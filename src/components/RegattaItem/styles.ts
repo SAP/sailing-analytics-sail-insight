@@ -32,8 +32,6 @@ export default EStyleSheets.create({
     fontSize: 12,
   },
   tracksText: {
-    fontSize: 12,
-    fontWeight: '300',
     marginLeft: 6,
     marginRight: 3,
   },

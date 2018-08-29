@@ -1,5 +1,7 @@
+import Session from 'models/Session'
 import * as  NavigationService from './NavigationService'
 import * as Screens from './Screens'
+
 
 export const navigateBack = NavigationService.navigateBack
 export const initialNavigation = () => NavigationService.navigateWithReset(Screens.MainTabs)
@@ -8,3 +10,4 @@ export const navigateToCheckIn = () => NavigationService.navigate(Screens.CheckI
 export const navigateToRegattaDetail = (params: any) => NavigationService.navigate(Screens.RegattaDetail, params)
 export const navigateToAppSettings = () => NavigationService.navigate(Screens.AppSettings)
 export const navigateToTracking = (params: any) => NavigationService.navigate(Screens.Tracking, params)
+export const navigateToTrackingSetup = (session: Session) => NavigationService.navigate(Screens.TrackingSetup, session)

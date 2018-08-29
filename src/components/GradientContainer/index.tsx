@@ -1,11 +1,6 @@
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 
-import {
-  $containerBackgroundLowerColor,
-  $containerBackgroundUpperColor,
-} from 'styles/colors'
-
 
 class GradientContainer extends React.Component<{
   children?: any,
@@ -17,7 +12,7 @@ class GradientContainer extends React.Component<{
       <LinearGradient
         start={{ x: 0.0, y: 0.0 }}
         end={{ x: 0.0, y: 1.0 }}
-        colors={[$containerBackgroundUpperColor, $containerBackgroundLowerColor]}
+        colors={['#D9EFEF', '#D7DFE8']}
         {...remainingProps}
       >
         {children}

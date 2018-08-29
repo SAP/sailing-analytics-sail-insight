@@ -3,11 +3,18 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 export default EStyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: '$containerBackgroundColor',
+    backgroundColor: '$primaryBackgroundColor',
   },
   list: {
     flex: 1,
-    backgroundColor: '$listBackgroundColor',
+    backgroundColor: '$secondaryBackgroundColor',
+  },
+  content: {
+    flexGrow: 1,
+  },
+  stretchContent: {
+    alignSelf: 'stretch',
+    flexGrow: 1,
   },
   row: {
     flexDirection: 'row',

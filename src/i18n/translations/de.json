@@ -12,6 +12,13 @@
   "text_tracking_time": "Tracking-Zeit",
   "text_bearing_deg": "Kurs",
   "text_tracks": "Tracks",
+  "text_track_name": "Track-Name",
+  "text_boat": "Boot",
+  "text_number": "Nummer",
+  "text_class": "Klasse",
+  "text_team_name": "Team-Name",
+  "text_privacy_setting": "Privatsphäre-Einst.",
+  "text_empty_value_placeholder": "<FEHLT>",
 
   "caption_cancel": "Abbrechen",
   "caption_qr_scanner": "QR-Code scannen",
@@ -23,6 +30,7 @@
   "caption_settings": "Einstellungen",
   "caption_checkout": "Checkout",
   "caption_tab_trackingsetup": "Tracking",
+  "caption_tab_trackingsetupaction": "Tracking",
   "caption_tab_sessions": "Sessions",
   "caption_tab_checkin": "Teilnehmen",
   "caption_tab_account": "Mein Account",
@@ -31,6 +39,8 @@
   "caption_tab_userprofile": "Mein Profil",
   "caption_tab_appsettings": "Einstellungen",
   "caption_new_session": "Neue Session",
+  "caption_start": "Start",
+  "caption_share_session": "Teile diese Session",
 
   "error_unkown": "Unbekannter Fehler"
 }

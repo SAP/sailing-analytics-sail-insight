@@ -4,16 +4,16 @@ import { TouchableOpacity, View } from 'react-native'
 
 
 import Images from '@assets/Images'
-import { navigateToCheckIn } from 'navigation'
-import { buttons, container } from 'styles/commons'
+import { navigateToTrackingSetup } from 'navigation'
+import { button, container } from 'styles/commons'
 
-import ImageButton from 'components/ImageButton'
 import RegattaList from 'components/RegattaList'
 
 import IconText from 'components/IconText'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheet, StyleSheetType } from 'helpers/types'
 import I18n from 'i18n'
+import { generateNewSession } from 'services/SessionService'
 import styles from './styles'
 
 
@@ -27,8 +27,8 @@ class Sessions extends React.Component<{
     this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
   }
 
-  public onAddPress = () => {
-    navigateToCheckIn()
+  public onNewSessionPress = () => {
+    navigateToTrackingSetup(generateNewSession())
   }
 
   public onOptionsPressed = () => {
@@ -40,12 +40,12 @@ class Sessions extends React.Component<{
       <View style={container.list}>
         <RegattaList style={container.list} />
         <TouchableOpacity
-          style={[buttons.actionRectangular, styles.addButton]}
-          onPress={this.onAddPress}
+          style={[button.actionRectangular, styles.addButton]}
+          onPress={this.onNewSessionPress}
         >
           <IconText
             source={Images.actionables.add}
-            textStyle={buttons.actionText}
+            textStyle={button.actionText}
             style={container.row}
           >
             {I18n.t('caption_new_session')}

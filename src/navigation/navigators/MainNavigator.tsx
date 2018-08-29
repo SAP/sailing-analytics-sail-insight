@@ -5,17 +5,17 @@ import { createStackNavigator } from 'react-navigation'
 import I18n from 'i18n'
 
 import Images from '@assets/Images'
-import { buttons, container, navigation as navigationStyles } from 'styles/commons'
+import { container, navigation as navigationStyles } from 'styles/commons'
 
-import { navigateBack } from 'navigation'
 import * as Screens from 'navigation/Screens'
 
 import HeaderTitle from 'components/HeaderTitle'
-import TextButton from 'components/TextButton'
+import ModalBackButton from 'components/ModalBackButton'
 import AppSettings from 'containers/AppSettings'
 import RegattaDetail from 'containers/RegattaDetail'
 import SplashScreen from 'containers/SplashScreen'
 import Tracking from 'containers/Tracking'
+import TrackingSetup from 'containers/TrackingSetup'
 
 import CheckInNavigator from './CheckInNavigator'
 import MainTabNavigator from './MainTabNavigator'
@@ -60,14 +60,7 @@ export default createStackNavigator(
       navigationOptions: () => ({
         title: I18n.t('title_app_settings'),
         headerLeft: logoHeaderLeft,
-        headerRight: (
-          <TextButton
-            onPress={navigateBack}
-            textStyle={buttons.navigationBack}
-          >
-            {I18n.t('caption_done')}
-          </TextButton>
-        ),
+        headerRight: (<ModalBackButton>{I18n.t('caption_done')}</ModalBackButton>),
       }),
     },
     [Screens.Tracking]: {
@@ -76,6 +69,14 @@ export default createStackNavigator(
         headerLeft: logoHeaderLeft,
         gesturesEnabled: false,
         headerTitle: multilineHeaderTitle(navigation),
+      }),
+    },
+    [Screens.TrackingSetup]: {
+      screen: TrackingSetup,
+      navigationOptions: () => ({
+        title: I18n.t('caption_new_session'),
+        headerLeft: null,
+        headerRight: <ModalBackButton/>,
       }),
     },
   },

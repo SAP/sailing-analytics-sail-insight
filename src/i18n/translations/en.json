@@ -12,6 +12,13 @@
   "text_tracking_time": "Tracking time",
   "text_bearing_deg": "Course over ground",
   "text_tracks": "Tracks",
+  "text_track_name": "Track name",
+  "text_boat": "Boat",
+  "text_number": "Number",
+  "text_class": "Class",
+  "text_team_name": "Team name",
+  "text_privacy_setting": "Privacy setting",
+  "text_empty_value_placeholder": "<EMPTY>",
 
   "caption_cancel": "Back",
   "caption_qr_scanner": "Scan QR-Code",
@@ -23,6 +30,7 @@
   "caption_settings": "Settings",
   "caption_checkout": "Checkout",
   "caption_tab_trackingsetup": "Tracking",
+  "caption_tab_trackingsetupaction": "Tracking",
   "caption_tab_sessions": "Sessions",
   "caption_tab_checkin": "Join Regatta",
   "caption_tab_account": "My Account",
@@ -31,6 +39,8 @@
   "caption_tab_userprofile": "My Profile",
   "caption_tab_appsettings": "Settings",
   "caption_new_session": "New session",
+  "caption_start": "Start",
+  "caption_share_session": "Share this session",
 
   "error_unkown": "Unknown error"
 }
