@@ -9,9 +9,6 @@ export default EStyleSheets.create({
     backgroundColor: 'white',
     marginBottom: '$containerFixedSmallMargin',
   },
-  iconText: {
-    flexDirection: 'row',
-  },
   innerContainer: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -41,5 +38,8 @@ export default EStyleSheets.create({
   trackingButton: {
     width: 49,
     height: 49,
+  },
+  trackingImage: {
+    tintColor: '$importantHighlightColor',
   },
 })

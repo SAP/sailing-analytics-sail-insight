@@ -12,6 +12,7 @@ import Images from '@assets/Images'
 import { dateFromToText } from 'helpers/date'
 import { StyleSheetType } from 'helpers/types'
 import I18n from 'i18n'
+import { $secondaryTextColor } from 'styles/colors'
 import { text } from 'styles/commons'
 import styles from './styles'
 
@@ -65,21 +66,25 @@ class RegattaItem extends React.Component<{
           <View style={[styles.innerContainer, styles.textMargins]}>
             <View>
               <IconText
-                style={styles.iconText}
                 source={Images.info.boat}
+                iconTintColor={$secondaryTextColor}
+                alignment="horizontal"
               >
                 {'BOAT'/*TODO: fill data*/}
               </IconText>
               <IconText
-                style={[styles.iconText, styles.textMargins]}
+                style={styles.textMargins}
                 source={Images.info.location}
+                iconTintColor={$secondaryTextColor}
+                alignment="horizontal"
               >
                 {'LOCATION'/*TODO: fill data*/}
               </IconText>
             </View>
             <ImageButton
-              source={Images.actionables.recordColored}
+              source={Images.actions.recordColored}
               style={styles.trackingButton}
+              imageStyle={styles.trackingImage}
               onPress={this.onStartTrackingPress}
             />
           </View>

@@ -10,4 +10,15 @@ export default EStyleSheet.create({
     fontSize: 16,
     fontWeight: '300',
   },
+  error: {
+    color: '$importantHighlightColor',
+  },
+  claim: {
+    alignSelf: 'stretch',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  claimHighlighted: {
+    color: '$primaryActiveColor',
+  },
 })

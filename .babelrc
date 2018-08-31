@@ -3,7 +3,6 @@
     "react-native"
   ],
   "plugins": [
-    ["@babel/plugin-syntax-optional-chaining"],
     ["transform-inline-environment-variables"],
     [
       "module-resolver", 

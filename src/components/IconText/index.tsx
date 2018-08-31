@@ -15,6 +15,7 @@ class IconText extends React.Component<{
   textStyle?: StyleSheetType,
   source?: ImageSource,
   iconPosition?: 'first' | 'second',
+  alignment?: 'horizontal' | 'vertical',
 } > {
   public render() {
     const {
@@ -25,12 +26,15 @@ class IconText extends React.Component<{
       source,
       style,
       iconPosition = 'first',
+      alignment = 'vertical',
     } = this.props
+
+    const tintStyle = iconTintColor ? { tintColor: iconTintColor } : null
+    const alignmentStyle = { flexDirection: alignment === 'vertical' ? 'column' : 'row' }
 
     const icon = (
       <Image
-        style={[styles.baseIcon, iconStyle]}
-        tintColor={iconTintColor}
+        style={[styles.baseIcon, iconStyle, tintStyle]}
         source={source}
       />
     )
@@ -40,14 +44,14 @@ class IconText extends React.Component<{
     const separator = <View style={styles.separator} />
 
     return iconPosition === 'second' ? (
-      <View style={[styles.baseItem, style]}>
+      <View style={[styles.baseItem, alignmentStyle, style]}>
         {text}
         {separator}
         {icon}
       </View>
 
     ) : (
-      <View style={[styles.baseItem, style]}>
+      <View style={[styles.baseItem, alignmentStyle, style]}>
         {icon}
         {separator}
         {text}

@@ -43,6 +43,16 @@ export default createBottomTabNavigator(
     initialRouteName: Screens.Sessions,
     backBehavior: 'none',
     swipeEnabled: false,
+    tabBarOptions: {
+      activeTintColor: $primaryTextColor,
+      inactiveTintColor: $secondaryTextColor,
+      style: {
+        height: 56,
+        backgroundColor: 'white',
+      },
+      showLabel: false,
+      showIcon: true,
+    },
     navigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
         const { routeName = '' } = navigation.state
@@ -91,15 +101,5 @@ export default createBottomTabNavigator(
         return props.defaultHandler(props.navigation)
       },
     }),
-    tabBarOptions: {
-      activeTintColor: $primaryTextColor,
-      inactiveTintColor: $secondaryTextColor,
-      style: {
-        height: 56,
-        backgroundColor: 'white',
-      },
-      showLabel: false,
-      showIcon: true,
-    },
   },
 )

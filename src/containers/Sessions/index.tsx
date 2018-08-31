@@ -44,9 +44,10 @@ class Sessions extends React.Component<{
           onPress={this.onNewSessionPress}
         >
           <IconText
-            source={Images.actionables.add}
+            source={Images.actions.add}
             textStyle={button.actionText}
-            style={container.row}
+            iconTintColor="white"
+            alignment="horizontal"
           >
             {I18n.t('caption_new_session')}
           </IconText>

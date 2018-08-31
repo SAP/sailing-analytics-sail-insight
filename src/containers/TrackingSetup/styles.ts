@@ -27,7 +27,7 @@ export default EStyleSheets.create({
     width: 66,
     height: 66,
     borderRadius: 33,
-    backgroundColor: '$actionButtonColor',
+    backgroundColor: '$importantHighlightColor',
     alignSelf: 'center',
     marginBottom: 32,
   },

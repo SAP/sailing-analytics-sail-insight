@@ -20,6 +20,13 @@ export const navigate = (routeName: string, params?: any) => {
   )
 }
 
+export const pop = (params?: any) => {
+  if (!navigator) {
+    return
+  }
+  navigator.dispatch(StackActions.popToTop(params))
+}
+
 export const navigateBack = (params?: any) => {
   if (!navigator) {
     return

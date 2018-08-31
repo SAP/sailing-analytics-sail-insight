@@ -17,7 +17,7 @@ class SplashScreen extends React.Component<{
     return (
       <View style={[container.main, styles.container]}>
         <View style={styles.logoContainer}>
-          <Image source={Images.corporateIdentity.sapBestRun} style={styles.logo}/>
+          <Image source={Images.corporateIdentity.sapTagLine} style={styles.logo}/>
         </View>
         <ActivityIndicator
           style={styles.activityIndicator}

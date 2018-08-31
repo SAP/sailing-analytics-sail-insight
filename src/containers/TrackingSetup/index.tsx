@@ -36,7 +36,7 @@ class TrackingSetup extends React.Component<{
               <Text style={styles.title}>TITLE</Text>
               <ImageButton
                 style={styles.edit}
-                source={Images.actionables.pen}
+                source={Images.actions.pen}
               />
             </View>
             <PropertyView
