@@ -9,13 +9,14 @@ import * as DeepLinking from 'integrations/DeepLinking'
 
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationTracking, updateTrackingStatus } from 'actions/locations'
-import AppNavigator from 'navigation/AppNavigator'
+import InitializationNavigator from 'navigation/InitializationNavigator'
 import * as LocationService from 'services/LocationService'
 import configureStore from 'store/configureStore'
 import { initStyles, recalculateStyles } from 'styles'
 import { container } from 'styles/commons'
 
 declare var module: any
+
 
 initStyles()
 
@@ -35,7 +36,7 @@ if (module.hot) {
 const rootComponent = () => (
   <PersistGate loading={null} persistor={persistor}>
     <View style={container.main}>
-      <AppNavigator />
+      <InitializationNavigator />
     </View>
   </PersistGate>
 )

@@ -16,13 +16,14 @@ export default EStyleSheet.create({
     alignSelf: 'stretch',
     flexGrow: 1,
   },
-  row: {
-    flexDirection: 'row',
-  },
   logo: {
     height: 30,
     width: 60,
     resizeMode: 'contain',
     marginLeft: 16,
+  },
+  mediumHorizontalMargin: {
+    marginLeft: '12%',
+    marginRight: '12%',
   },
 })

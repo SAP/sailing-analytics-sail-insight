@@ -2,11 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { initializeApp } from 'actions/app'
+
 import * as NavigationService from './NavigationService'
-import MainNavigator from './navigators/MainNavigator'
+import AppNavigator from './navigators/AppNavigator'
 
 
-class AppNavigator extends React.Component<{
+class InitializationNavigator extends React.Component<{
   initializeApp: () => void,
 } > {
 
@@ -20,12 +21,8 @@ class AppNavigator extends React.Component<{
   }
 
   public render() {
-    return (
-      <MainNavigator
-        ref={this.handleNavigatorRef}
-      />
-    )
+    return <AppNavigator ref={this.handleNavigatorRef}/>
   }
 }
 
-export default connect(null, { initializeApp })(AppNavigator)
+export default connect(null, { initializeApp })(InitializationNavigator)

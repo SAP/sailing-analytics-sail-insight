@@ -11,3 +11,6 @@ export const navigateToRegattaDetail = (params: any) => NavigationService.naviga
 export const navigateToAppSettings = () => NavigationService.navigate(Screens.AppSettings)
 export const navigateToTracking = (params: any) => NavigationService.navigate(Screens.Tracking, params)
 export const navigateToTrackingSetup = (session: Session) => NavigationService.navigate(Screens.TrackingSetup, session)
+export const navigateToUserRegistration = () => NavigationService.navigate(Screens.Register)
+export const navigateToUserRegistrationCredentials = () => NavigationService.navigate(Screens.RegisterCredentials)
+export const navigateToUserRegistrationBoat = () => NavigationService.navigateWithReset(Screens.RegisterBoat)

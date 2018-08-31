@@ -15,7 +15,7 @@ export default EStyleSheets.create({
     marginLeft: '$sideMargin',
     marginRight: '$sideMargin',
     resizeMode: 'contain',
-    height: 150,
+    height: 300,
     flex: 1,
   },
   activityIndicator: {

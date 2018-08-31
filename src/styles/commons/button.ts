@@ -1,6 +1,8 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
+  $textButtonTextColor: '$primaryButtonColor',
+  $textButtonTextFontSize: 16,
   action: {
     backgroundColor: '$primaryButtonColor',
     padding: 8,
@@ -15,12 +17,12 @@ export default EStyleSheet.create({
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
+    elevation: 1,
   },
   actionFullWidth: {
     backgroundColor: '$primaryButtonColor',
-    width: '96%',
-    alignSelf: 'center',
-    height: 80,
+    alignSelf: 'stretch',
+    height: 56,
     borderRadius: '$actionButtonBorderRadius',
   },
   actionText: {
@@ -28,8 +30,13 @@ export default EStyleSheet.create({
     fontSize: 20,
   },
   textButtonText: {
-    color: '$primaryButtonColor',
-    fontSize: 16,
+    color: '$textButtonTextColor',
+    fontSize: '$textButtonTextFontSize',
+  },
+  textButtonSecondaryText: {
+    color: '$textButtonTextColor',
+    fontSize: '$textButtonTextFontSize',
+    fontWeight: '300',
   },
   modalBack: {
     color: '$primaryButtonColor',
@@ -39,5 +46,12 @@ export default EStyleSheet.create({
     tintColor: '$primaryButtonColor',
     width: 26,
     height: 26,
+  },
+  actionIconNavBar: {
+    tintColor: '$primaryTextColor',
+    width: '$defaultIconSize',
+    height: '$defaultIconSize',
+    marginLeft: 20,
+    marginRight: 20,
   },
 })

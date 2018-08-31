@@ -3,6 +3,8 @@
   "title_regattas": "Regattas",
   "title_check_in": "SAP Sail InSight",
   "title_app_settings": "Settings",
+  "title_your_account": "Your account",
+  "title_your_boat": "Your Boat",
 
   "text_more_information_at": "More information at",
   "text_device_id": "Device id",
@@ -19,7 +21,22 @@
   "text_team_name": "Team name",
   "text_privacy_setting": "Privacy setting",
   "text_empty_value_placeholder": "<EMPTY>",
-
+  "text_register_claim_01": "Experience sailing together. Become better through ",
+  "text_register_claim_02": "smart analytics.",
+  "text_register_credentials_claim_01": "Get the best out of your smartphone to become ",
+  "text_register_credentials_claim_02": "a better sailor.",
+  "text_register_boat_claim_01": "Refine your tracking data with your ",
+  "text_register_boat_claim_02": "boat specifics.",
+  "text_your_name": "Your name",
+  "text_placeholder_your_email": "Your e-mail address",
+  "text_placeholder_enter_password": "Enter a password",
+  "text_registration_create_account": "Create an account with your e-mail adress",
+  "text_placeholder_boat_name": "Boat name",
+  "text_placeholder_boat_class": "Boat class",
+  "text_placeholder_sail_number": "Sail number",
+  "text_registration_boat_class_hint": "Enter first letter or number. E.g. \"4\"",
+  "text_registration_sail_number_hint": "E.g. GER123",
+  
   "caption_cancel": "Back",
   "caption_qr_scanner": "Scan QR-Code",
   "caption_start_tracking": "Start tracking",
@@ -41,6 +58,14 @@
   "caption_new_session": "New session",
   "caption_start": "Start",
   "caption_share_session": "Share this session",
+  "caption_lets_go": "Let's go!",
+  "caption_login": "Login",
+  "caption_need_help": "Need help?",
+  "caption_create_account": "Create your account",
+  "caption_add_boat": "Add your boat",
+  "caption_skip": "Skip",
 
-  "error_unkown": "Unknown error"
+  "error_unkown": "Unknown error",
+  "error_field_required": "Field is required.",
+  "error_field_invalid_email": "No valid e-mail address."
 }

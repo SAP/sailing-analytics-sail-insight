@@ -2,22 +2,28 @@
 export default {
   corporateIdentity: {
     sapSailingLogo: require('./img/app_icon_sap_us_sailing.png'),
-    sapBestRun: require('./img/sap_best_run_logo.png'),
+    sapTagLine: require('./img/ci/logo-sap-tagline.png'),
   },
-  actionables: {
-    add: require('./img/add_icon.png'),
-    settings: require('./img/settings_icon.png'),
-    recordColored: require('./img/placeholder_icon.png'), // TODO: replace
-    pen: require('./img/placeholder_icon.png'), // TODO: replace
+  header: {
+    sailors: require('./img/header_sailors_01.png'),
+  },
+  actions: {
+    add: require('./img/icons/icon-plus.png'),
+    settings: require('./img/icons/icon-settings.png'),
+    recordColored: require('./img/icons/icon-start.png'), // TODO: replace
+    pen: require('./img/icons/icon-edit.png'),
+    visibility: require('./img/icons/icon-visibility.png'),
+    visibilityOff: require('./img/icons/icon-visibility-off.png'),
+    help: require('./img/icons/icon-help.png'),
   },
   tabs: {
-    tracking: require('./img/placeholder_icon.png'), // TODO: replace
-    account: require('./img/placeholder_icon.png'), // TODO: replace
-    sessions: require('./img/placeholder_icon.png'), // TODO: replace
-    join: require('./img/placeholder_icon.png'), // TODO: replace
+    tracking: require('./img/icons/icon-start.png'),
+    account: require('./img/icons/icon-account-outlined.png'),
+    sessions: require('./img/icons/icon-session.png'),
+    join: require('./img/icons/icon-scan.png'),
   },
   info: {
-    boat: require('./img/placeholder_icon.png'), // TODO: replace
-    location: require('./img/placeholder_icon.png'), // TODO: replace
+    boat: require('./img/icons/icon-boat.png'),
+    location: require('./img/icons/icon-place.png'),
   },
 }
