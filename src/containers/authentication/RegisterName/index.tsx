@@ -7,7 +7,7 @@ import Images from '@assets/Images'
 import { FORM_KEY_NAME, REGISTRATION_FORM_NAME } from 'forms/registration'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
-import { navigateToUserRegistrationCredentials } from 'navigation'
+import { navigateToUserRegistrationCredentials, navitateToLogin } from 'navigation'
 import { getFieldError } from 'selectors/form'
 import { $primaryButtonColor } from 'styles/colors'
 import { button, container, text } from 'styles/commons'
@@ -31,6 +31,10 @@ class RegisterName extends React.Component<{
     if (this.props.isStepValid) {
       navigateToUserRegistrationCredentials()
     }
+  }
+
+  public onLoginPress = () => {
+    navitateToLogin()
   }
 
   public render() {
@@ -65,7 +69,9 @@ class RegisterName extends React.Component<{
           >
             {I18n.t('caption_lets_go')}
           </TextButton>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.onLoginPress}
+          >
             <IconText
               style={styles.loginButton}
               source={Images.tabs.account}

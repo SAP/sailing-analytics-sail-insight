@@ -27,6 +27,8 @@
   "text_register_credentials_claim_02": "ein besserer Segler zu werden.",
   "text_register_boat_claim_01": "Verfeinere deine Tracking-Daten mit deinen ",
   "text_register_boat_claim_02": "Bootsspezifikationen.",
+  "text_login_claim_01": "Willkommen zurück bei ",
+  "text_login_claim_02": "SAP Sail InSight.",
   "text_your_name": "Dein Name",
   "text_placeholder_your_email": "Deine E-Mail-Adresse",
   "text_placeholder_enter_password": "Passwort eingeben",
