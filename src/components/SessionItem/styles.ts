@@ -1,7 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
-  container: {
+  detailContainer: {
     paddingLeft: '$containerFixedMargin',
     paddingRight: '$containerFixedMargin',
     paddingTop: '$containerFixedSmallMargin',
@@ -41,5 +41,10 @@ export default EStyleSheets.create({
   },
   trackingImage: {
     tintColor: '$importantHighlightColor',
+  },
+  coverImage: {
+    height: 176,
+    width: '100%',
+    resizeMode: 'cover',
   },
 })

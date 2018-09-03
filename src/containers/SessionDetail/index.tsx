@@ -25,7 +25,7 @@ import styles from './styles'
 
 
 @connectActionSheet
-class RegattaDetail extends React.Component<{
+class SessionDetail extends React.Component<{
   checkOut: (checkIn: CheckIn) => void,
   startLocationTracking: (leaderboardName: string, eventId: string) => void,
   stopLocationTracking: () => void,
@@ -128,4 +128,4 @@ export default connect(mapStateToProps, {
   checkOut,
   startLocationTracking,
   stopLocationTracking,
-})(RegattaDetail)
+})(SessionDetail)

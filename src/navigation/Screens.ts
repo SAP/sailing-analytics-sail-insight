@@ -5,7 +5,7 @@ export const Tracks = 'Tracks'
 export const QRScanner = 'QRScanner'
 export const CheckIn = 'CheckIn'
 export const CheckInNavigator = 'CheckInNavigator'
-export const RegattaDetail = 'RegattaDetail'
+export const SessionDetail = 'SessionDetail'
 export const AppSettings = 'AppSettings'
 export const UserProfile = 'UserProfile'
 

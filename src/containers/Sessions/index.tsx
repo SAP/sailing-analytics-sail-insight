@@ -7,14 +7,14 @@ import Images from '@assets/Images'
 import { navigateToTrackingSetup } from 'navigation'
 import { button, container } from 'styles/commons'
 
-import RegattaList from 'components/RegattaList'
-
-import IconText from 'components/IconText'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheet, StyleSheetType } from 'helpers/types'
 import I18n from 'i18n'
 import { generateNewSession } from 'services/SessionService'
 import styles from './styles'
+
+import IconText from 'components/IconText'
+import SessionList from 'components/SessionList'
 
 
 @connectActionSheet
@@ -23,37 +23,62 @@ class Sessions extends React.Component<{
   navigation: any,
   showActionSheetWithOptions: ShowActionSheet,
 } > {
+
+  public state = {
+    hideAddButton: false,
+  }
+
   public componentDidMount() {
     this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
   }
 
-  public onNewSessionPress = () => {
-    navigateToTrackingSetup(generateNewSession())
-  }
-
-  public onOptionsPressed = () => {
-    this.props.showActionSheetWithOptions(...settingsActionSheetOptions)
+  public renderAddItem() {
+    return !this.state.hideAddButton && (
+      <TouchableOpacity
+          style={[button.actionRectangular, styles.addButton]}
+          onPress={this.onNewSessionPress}
+      >
+        <IconText
+          source={Images.actions.add}
+          textStyle={button.actionText}
+          iconTintColor="white"
+          alignment="horizontal"
+        >
+          {I18n.t('caption_new_session')}
+        </IconText>
+      </TouchableOpacity>
+    )
   }
 
   public render() {
     return (
       <View style={container.list}>
-        <RegattaList style={container.list} />
-        <TouchableOpacity
-          style={[button.actionRectangular, styles.addButton]}
-          onPress={this.onNewSessionPress}
-        >
-          <IconText
-            source={Images.actions.add}
-            textStyle={button.actionText}
-            iconTintColor="white"
-            alignment="horizontal"
-          >
-            {I18n.t('caption_new_session')}
-          </IconText>
-        </TouchableOpacity>
+        <SessionList
+          style={container.list}
+          onScrollBeginDrag={this.hideAdd}
+          onScrollEndDrag={this.showAdd}
+          onMomentumScrollBegin={this.hideAdd}
+          onMomentumScrollEnd={this.showAdd}
+        />
+        {this.renderAddItem()}
       </View>
     )
+  }
+
+  protected onNewSessionPress = () => {
+    navigateToTrackingSetup(generateNewSession())
+  }
+
+  protected onOptionsPressed = () => {
+    this.props.showActionSheetWithOptions(...settingsActionSheetOptions)
+  }
+
+  protected showAdd = () => {
+    this.setState({ hideAddButton: false })
+  }
+
+  protected hideAdd = () => {
+    this.setState({ hideAddButton: true })
   }
 }
 
