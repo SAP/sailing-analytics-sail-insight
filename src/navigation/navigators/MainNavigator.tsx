@@ -5,7 +5,7 @@ import * as Screens from 'navigation/Screens'
 import { navigation } from 'styles/commons'
 
 import HeaderTitle from 'components/HeaderTitle'
-import RegattaDetail from 'containers/RegattaDetail'
+import SessionDetail from 'containers/SessionDetail'
 import SplashScreen from 'containers/SplashScreen'
 
 import MainTabNavigator from './MainTabNavigator'
@@ -25,8 +25,8 @@ export default createStackNavigator(
         header: null,
       },
     },
-    [Screens.RegattaDetail]: {
-      screen: RegattaDetail,
+    [Screens.SessionDetail]: {
+      screen: SessionDetail,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
