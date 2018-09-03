@@ -8,9 +8,10 @@ import { button, navigation } from 'styles/commons'
 
 import GradientNavigationBar from 'components/GradientNavigationBar'
 import ImageButton from 'components/ImageButton'
-import RegisterBoat from 'containers/registration/RegisterBoat'
-import RegisterCredentials from 'containers/registration/RegisterCredentials'
-import RegisterName from 'containers/registration/RegisterName'
+import Login from 'containers/authentication/Login'
+import RegisterBoat from 'containers/authentication/RegisterBoat'
+import RegisterCredentials from 'containers/authentication/RegisterCredentials'
+import RegisterName from 'containers/authentication/RegisterName'
 
 
 const navHeaderTransparentProps = {
@@ -44,6 +45,13 @@ export default createStackNavigator(
       screen: RegisterBoat,
       navigationOptions: () => ({
         title: I18n.t('title_your_boat'),
+      }),
+    },
+    [Screens.Login]: {
+      screen: Login,
+      navigationOptions: () => ({
+        ...navHeaderTransparentProps,
+        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
       }),
     },
   },

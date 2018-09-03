@@ -14,3 +14,4 @@ export const navigateToTrackingSetup = (session: Session) => NavigationService.n
 export const navigateToUserRegistration = () => NavigationService.navigate(Screens.Register)
 export const navigateToUserRegistrationCredentials = () => NavigationService.navigate(Screens.RegisterCredentials)
 export const navigateToUserRegistrationBoat = () => NavigationService.navigateWithReset(Screens.RegisterBoat)
+export const navitateToLogin = () => NavigationService.navigate(Screens.Login)

@@ -19,8 +19,9 @@ export const Tracking = 'Tracking'
 export const TrackingSetup = 'TrackingSetup'
 export const TrackingSetupAction = 'TrackingSetupAction'
 
-// register
+// auth
 export const Register = 'Register'
 export const RegisterName = 'RegisterName'
 export const RegisterCredentials = 'RegisterCredentials'
 export const RegisterBoat = 'RegisterBoat'
+export const Login = 'Login'
