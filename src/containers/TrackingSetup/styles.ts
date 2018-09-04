@@ -24,17 +24,8 @@ export default EStyleSheets.create({
     marginTop: 12,
   },
   startButton: {
-    width: 66,
-    height: 66,
-    borderRadius: 33,
     backgroundColor: '$importantHighlightColor',
-    alignSelf: 'center',
     marginBottom: 32,
-  },
-  startButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
   shareContainer: {
     marginTop: 40,

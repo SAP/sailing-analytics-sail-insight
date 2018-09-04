@@ -26,4 +26,8 @@ export default EStyleSheet.create({
     marginLeft: '12%',
     marginRight: '12%',
   },
+  mediumHorizontalPadding: {
+    paddingLeft: '12%',
+    paddingRight: '12%',
+  },
 })

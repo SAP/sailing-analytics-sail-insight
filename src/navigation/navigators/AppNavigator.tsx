@@ -1,15 +1,12 @@
 import React from 'react'
-import { Image } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
 
 import I18n from 'i18n'
 
-import Images from '@assets/Images'
-import { container, navigation as navigationStyles } from 'styles/commons'
+import { navigation as navigationStyles } from 'styles/commons'
 
 import * as Screens from 'navigation/Screens'
 
-import HeaderTitle from 'components/HeaderTitle'
 import ModalBackButton from 'components/ModalBackButton'
 import Tracking from 'containers/Tracking'
 import TrackingSetup from 'containers/TrackingSetup'
@@ -18,8 +15,6 @@ import CheckInNavigator from './CheckInNavigator'
 import MainNavigator from './MainNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 
-
-const logoHeaderLeft = () => <Image style={container.logo} source={Images.corporateIdentity.sapSailingLogo} />
 
 export default createStackNavigator(
   {
@@ -38,16 +33,10 @@ export default createStackNavigator(
     },
     [Screens.Tracking]: {
       screen: Tracking,
-      navigationOptions: ({ navigation }: any) => ({
-        headerLeft: logoHeaderLeft,
+      navigationOptions: {
         gesturesEnabled: false,
-        headerTitle: (
-          <HeaderTitle
-            firstLine={navigation.state.params.heading}
-            secondLine={navigation.state.params.subHeading}
-          />
-        ),
-      }),
+        header: null,
+      },
     },
     [Screens.TrackingSetup]: {
       screen: TrackingSetup,

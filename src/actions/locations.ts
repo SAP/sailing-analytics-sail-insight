@@ -18,10 +18,12 @@ export const updateTrackedEventId = createAction('UPDATE_TRACKED_EVENT_ID')
 export const removeTrackedRegatta = createAction('REMOVE_TRACKED_REGATTA')
 export const updateTrackedRegatta = createAction('UPDATE_TRACKED_REGATTA')
 export const updateUnsentGpsFixCount = createAction('UPDATE_UNSENT_GPS_FIX_COUNT')
+export const updateTrackingStatistics = createAction('UPDATE_TRACKING_STATISTICS')
 export const updateLocationAccuracy = createAction('UPDATE_LOCATION_ACCURACY')
 export const updateSpeedInKnots = createAction('UPDATE_SPEED_IN_KNOTS')
 export const updateStartedAt = createAction('UPDATE_STARTED_AT')
 export const updateHeadingInDeg = createAction('UPDATE_HEADING_IN_DEG')
+export const updateDistance = createAction('UPDATE_DISTANCE')
 
 export const startLocationTracking = (
   leaderboardName: string,
@@ -69,15 +71,7 @@ export const handleLocation = (gpsFix: GPSFix) => async (dispatch: Dispatch, get
     GpsFixService.storeGPSFix(serverUrl, gpsFix)
   }
   await dispatch(updateUnsentGpsFixCount(GpsFixService.unsentGpsFixCount()))
-  if (gpsFix.accuracy) {
-    await dispatch(updateLocationAccuracy(gpsFix.accuracy))
-  }
-  if (gpsFix.speedInKnots && gpsFix.speedInKnots > -1) {
-    await dispatch(updateSpeedInKnots(gpsFix.speedInKnots))
-  }
-  if (gpsFix.bearingInDeg && gpsFix.bearingInDeg > -1) {
-    await dispatch(updateHeadingInDeg(gpsFix.bearingInDeg))
-  }
+  await dispatch(updateTrackingStatistics(gpsFix))
 }
 
 export const initLocationTracking = () => async (dispatch: Dispatch) => {

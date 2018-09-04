@@ -15,6 +15,8 @@ export default {
     visibility: require('./img/icons/icon-visibility.png'),
     visibilityOff: require('./img/icons/icon-visibility-off.png'),
     help: require('./img/icons/icon-help.png'),
+    arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
+
   },
   tabs: {
     tracking: require('./img/icons/icon-start.png'),
