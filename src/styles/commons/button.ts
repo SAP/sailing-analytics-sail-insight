@@ -29,6 +29,18 @@ export default EStyleSheet.create({
     color: 'white',
     fontSize: 20,
   },
+  trackingActionText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 20,
+    letterSpacing: -0.5,
+  },
+  trackingAction: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignSelf: 'center',
+  },
   textButtonText: {
     color: '$textButtonTextColor',
     fontSize: '$textButtonTextFontSize',

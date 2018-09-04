@@ -24,5 +24,6 @@ export const getLocationStats = (state: any = {}) => {
     speedInKnots: data.speedInKnots,
     startedAt: data.startedAt,
     headingInDeg: data.headingInDeg,
+    distance: data.distance,
   }
 }

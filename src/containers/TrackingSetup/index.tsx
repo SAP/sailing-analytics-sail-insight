@@ -82,8 +82,8 @@ class TrackingSetup extends React.Component<{
           </View>
         </View>
         <TextButton
-          style={styles.startButton}
-          textStyle={styles.startButtonText}
+          style={[button.trackingAction, styles.startButton]}
+          textStyle={button.trackingActionText}
         >
           {I18n.t('caption_start').toUpperCase()}
         </TextButton>

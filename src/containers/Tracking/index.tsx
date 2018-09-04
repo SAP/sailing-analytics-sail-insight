@@ -1,22 +1,22 @@
 import React from 'react'
-import { Alert } from 'react-native'
+import { Alert, Image, View } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
 
-import GradientContainer from 'components/GradientContainer'
-import Text from 'components/Text'
-import TextButton from 'components/TextButton'
-
-import { buttons, container } from 'styles/commons'
-import styles from './styles'
-
+import Images from '@assets/Images'
 import {  stopLocationTracking } from 'actions/locations'
 import { durationText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateBack, navigateToAppSettings } from 'navigation'
+import { navigateBack } from 'navigation'
 import { getLocationStats, getLocationTrackingStatus } from 'selectors/location'
+import { button, container } from 'styles/commons'
+import styles from './styles'
+
+import TextButton from 'components/TextButton'
+import TrackingProperty from 'components/TrackingProperty'
+import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 
 
 class Tracking extends React.Component<{
@@ -27,17 +27,11 @@ class Tracking extends React.Component<{
 } > {
   public state = {
     isLoading: false,
-    durationText: '-',
+    durationText: '00:00:00',
   }
 
   public componentDidMount() {
-    const { checkInData } = this.props
-    this.props.navigation.setParams({
-      heading: checkInData.event && checkInData.event.name,
-      subHeading: checkInData.leaderboardName,
-      onOptionsPressed: this.onOptionsPressed,
-    })
-    timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 500)
+    timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 1000)
     KeepAwake.activate()
   }
 
@@ -49,10 +43,6 @@ class Tracking extends React.Component<{
   public handleTimerEvent = () => {
     const { trackingStats } = this.props
     this.setState({ durationText: durationText(trackingStats.startedAt) })
-  }
-
-  public onOptionsPressed = () => {
-    navigateToAppSettings()
   }
 
   public onStopTrackingPress = async () => {
@@ -67,34 +57,72 @@ class Tracking extends React.Component<{
     }
   }
 
+  public onSetWindPress = () => {
+    // TODO: navigate to set wind
+  }
+
   public render() {
     const { trackingStats }: any = this.props
+
+    const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(2) : '-'
+    const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(2)}°` : '-'
+    const distance = trackingStats.distance ? trackingStats.distance.toFixed(2) : 0
+
     return (
-      <GradientContainer style={container.main}>
-        <Text style={styles.informationItem}>
-          {`${I18n.t('text_tracking_time')}: ${this.state.durationText}`}
-        </Text>
-        <Text style={styles.informationItem}>
-          {`${I18n.t('text_accuracy')}: ${trackingStats.locationAccuracy}`}
-        </Text>
-        <Text style={styles.informationItem}>
-          {`${I18n.t('text_speed_knots')}: ${trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(2) : '-'}`}
-        </Text>
-        <Text style={styles.informationItem}>
-          {`${I18n.t('text_bearing_deg')}: ${trackingStats.headingInDeg ? trackingStats.headingInDeg.toFixed(2) : '-'}`}
-        </Text>
-        <Text style={styles.informationItem}>
-          {`${I18n.t('text_unsent_gps_fixes')}: ${trackingStats.unsentGpsFixCount || 0}`}
-        </Text>
+      <View style={[container.main]}>
+        <View style={[container.mediumHorizontalMargin, styles.container]}>
+          <View style={[container.stretchContent]}>
+            <TrackingPropertyAutoFit
+              style={styles.dynamicPropertyContainer}
+              title={I18n.t('text_tracking_sog')}
+              value={speedOverGround}
+              unit={I18n.t('text_tracking_unit_knots')}
+            />
+            <TrackingPropertyAutoFit
+              style={[styles.dynamicPropertyContainer, styles.property]}
+              title={I18n.t('text_tracking_cog')}
+              value={courseOverGround}
+            />
+          </View>
+          <View style={styles.propertyRow}>
+            <View>
+              <TrackingProperty
+                title={I18n.t('text_tracking_time')}
+                value={this.state.durationText}
+              />
+              <TrackingProperty
+                style={styles.property}
+                title={I18n.t('text_tracking_distance')}
+                value={distance}
+                unit={I18n.t('text_tracking_unit_meters')}
+              />
+            </View>
+            <View>
+              <TrackingProperty
+                title={I18n.t('text_tracking_wind')}
+                value={I18n.t('caption_set_wind').toUpperCase()}
+                onPress={this.onSetWindPress}
+              />
+              <TrackingProperty
+                style={styles.property}
+                title={I18n.t('text_tracking_gps_accuracy')}
+                value={trackingStats.locationAccuracy}
+                unit={I18n.t('text_tracking_unit_meters')}
+              />
+            </View>
+          </View>
+        </View>
+
         <TextButton
-          textStyle={button.actionText}
-          style={[button.actionFullWidth, styles.stopButton]}
+          style={[button.trackingAction, styles.stopButton]}
+          textStyle={button.trackingActionText}
           onPress={this.onStopTrackingPress}
           isLoading={this.state.isLoading}
         >
-          {I18n.t('caption_stop_tracking')}
+          {I18n.t('caption_stop').toUpperCase()}
         </TextButton>
-      </GradientContainer>
+        <Image style={styles.tagLine} source={Images.corporateIdentity.sapTagLine}/>
+      </View>
     )
   }
 }
