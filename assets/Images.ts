@@ -28,4 +28,9 @@ export default {
     boat: require('./img/icons/icon-boat.png'),
     location: require('./img/icons/icon-place.png'),
   },
+  animations: {
+    waveLoadingIndicator: require('./img/animations/wave_loading.json'),
+    waveLoadingIndicatorGif: require('./img/animations/wave_loading.gif'),
+    waveLoadingIndicatorBackground: require('./img/animations/wave_loading_background.png'),
+  },
 }
