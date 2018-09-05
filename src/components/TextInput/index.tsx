@@ -32,6 +32,8 @@ class TextInput extends React.Component<{
   secureTextEntry?: boolean,
   onChangeText?: (text: string) => void,
   inputRef?: (ref: any) => void,
+  onFocus?: () => void,
+  onBlur?: () => void,
 
   keyboardType?: string,
   returnKeyType?: string,
@@ -42,6 +44,7 @@ class TextInput extends React.Component<{
     text: this.props.value || '',
     height: 0,
     isEntrySecured: true,
+    isFocused: false,
   }
 
   private input?: any
@@ -71,6 +74,16 @@ class TextInput extends React.Component<{
     }
   }
 
+  public handleInputFocus = () => {
+    if (this.props.onFocus) { this.props.onFocus() }
+    this.setState({ isFocused: true })
+  }
+
+  public handleInputBlur = () => {
+    if (this.props.onBlur) { this.props.onBlur() }
+    this.setState({ isFocused: false })
+  }
+
   public render() {
     const {
       placeholder,
@@ -87,11 +100,13 @@ class TextInput extends React.Component<{
       ...additionalProps
     } = this.props
 
+    const { height, isFocused, text: stateText, isEntrySecured } = this.state
+
     const heightStyle = autoGrow && {
       height: Math.max(
         // get(inputStyle, 'height') || DEFAULT_BAR_HEIGHT,
         DEFAULT_BAR_HEIGHT,
-        this.state.height,
+        height,
       ),
     }
 
@@ -102,9 +117,8 @@ class TextInput extends React.Component<{
       maskTypeProps.type = maskType
     }
 
-    const showEntrySecuredToggle = secureTextEntry && !!this.state.text && this.state.text !== ''
-    const isFocused = (this.input && this.input.isFocused())
-    const showTopPlaceholder = placeholder  && (!isEmpty(this.state.text) || isFocused)
+    const showEntrySecuredToggle = secureTextEntry && !!stateText && stateText !== ''
+    const showTopPlaceholder = placeholder  && (!isEmpty(stateText) || isFocused)
     const assistiveText = error || hint
 
     return (
@@ -125,14 +139,16 @@ class TextInput extends React.Component<{
                 onContentSizeChange={this.contentSizeChanged}
                 onChangeText={this.onChangeText}
                 ref={this.handleInputRef}
-                value={this.state.text}
+                value={stateText}
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
-                secureTextEntry={secureTextEntry && this.state.isEntrySecured}
+                secureTextEntry={secureTextEntry && isEntrySecured}
                 placeholderTextColor={$secondaryTextColor}
                 placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}
+                onFocus={this.handleInputFocus}
+                onBlur={this.handleInputBlur}
               />
             </View>
             {
@@ -143,7 +159,7 @@ class TextInput extends React.Component<{
               >
                 <Image
                   style={styles.visibilityIcon}
-                  source={this.state.isEntrySecured ? Images.actions.visibility : Images.actions.visibilityOff}
+                  source={isEntrySecured ? Images.actions.visibility : Images.actions.visibilityOff}
                 />
               </TouchableOpacity>
             }
