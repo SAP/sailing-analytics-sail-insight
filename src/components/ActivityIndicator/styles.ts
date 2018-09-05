@@ -1,7 +1,7 @@
 export default {
-  spinnerStyle: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  activityIndicatorItem: {
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'center',
   },
 }

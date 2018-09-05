@@ -1,6 +1,6 @@
 import { StyleSheetType } from 'helpers/types'
 import { isEmpty, isNumber, isString } from 'lodash'
-import React, { ComponentType } from 'react'
+import React from 'react'
 import {
   Image as RNImage,
   ImageBackground as RNImageBackground,
@@ -13,7 +13,6 @@ import FastImage from 'react-native-fast-image'
 
 class Image extends React.Component<{
   source: ImageSourcePropType,
-  children?: ComponentType,
   style?: StyleSheetType,
   disableCache?: boolean,
 } > {

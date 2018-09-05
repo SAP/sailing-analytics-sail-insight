@@ -103,7 +103,8 @@ class TextInput extends React.Component<{
     }
 
     const showEntrySecuredToggle = secureTextEntry && !!this.state.text && this.state.text !== ''
-    const showTopPlaceholder = placeholder  && !isEmpty(this.state.text)
+    const isFocused = (this.input && this.input.isFocused())
+    const showTopPlaceholder = placeholder  && (!isEmpty(this.state.text) || isFocused)
     const assistiveText = error || hint
 
     return (
@@ -129,7 +130,7 @@ class TextInput extends React.Component<{
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && this.state.isEntrySecured}
                 placeholderTextColor={$secondaryTextColor}
-                placeholder={placeholder}
+                placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}
               />

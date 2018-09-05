@@ -18,10 +18,14 @@ export default EStyleSheets.create({
     height: 300,
     flex: 1,
   },
-  activityIndicator: {
+  activityIndicatorContainer: {
     position: 'absolute',
     bottom: 0,
     alignSelf: 'center',
-    marginBottom: '25%',
+    marginBottom: '20%',
+  },
+  activityIndicator: {
+    width: 80,
+    height: 80,
   },
 })
