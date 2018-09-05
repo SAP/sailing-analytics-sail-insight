@@ -22,7 +22,6 @@ import TopTabNavigator from './TopTabNavigator'
 
 export default createBottomTabNavigator(
   {
-    [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.Sessions]: TopTabNavigator(
       {
         [Screens.UserSessions]: Sessions,
@@ -30,6 +29,7 @@ export default createBottomTabNavigator(
       },
       { initialRouteName: Screens.UserSessions },
     ),
+    [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.CheckIn]: CheckIn,
     [Screens.Account]: TopTabNavigator(
       {
