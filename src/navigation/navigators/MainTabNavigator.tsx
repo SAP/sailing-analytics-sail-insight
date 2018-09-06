@@ -29,6 +29,13 @@ export default createBottomTabNavigator(
       },
       { initialRouteName: Screens.UserSessions },
     ),
+    [Screens.Sessions]: TopTabNavigator(
+      {
+        [Screens.UserSessions]: Sessions,
+        [Screens.Tracks]: Tracks,
+      },
+      { initialRouteName: Screens.UserSessions },
+    ),
     [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.CheckIn]: CheckIn,
     [Screens.Account]: TopTabNavigator(

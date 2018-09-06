@@ -1,4 +1,4 @@
-import Session from 'models/Session'
+import { CheckIn, Session } from 'models'
 import * as  NavigationService from './NavigationService'
 import * as Screens from './Screens'
 
@@ -15,3 +15,5 @@ export const navigateToUserRegistration = () => NavigationService.navigate(Scree
 export const navigateToUserRegistrationCredentials = () => NavigationService.navigate(Screens.RegisterCredentials)
 export const navigateToUserRegistrationBoat = () => NavigationService.navigateWithReset(Screens.RegisterBoat)
 export const navitateToLogin = () => NavigationService.navigate(Screens.Login)
+export const navigateToJoinRegatta = (params: CheckIn) => NavigationService.navigate(Screens.JoinRegatta, params)
+export const navigateToSessions = () => NavigationService.navigate(Screens.Sessions)

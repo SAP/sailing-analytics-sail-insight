@@ -10,7 +10,8 @@ import I18n from 'i18n'
 import { navigateToUserRegistrationCredentials, navitateToLogin } from 'navigation'
 import { getFieldError } from 'selectors/form'
 import { $primaryButtonColor } from 'styles/colors'
-import { button, container, text } from 'styles/commons'
+import { button, container, image, text } from 'styles/commons'
+import { registration } from 'styles/components'
 import { $containerFixedMargin } from 'styles/dimensions'
 import styles from './styles'
 
@@ -43,16 +44,16 @@ class RegisterName extends React.Component<{
         extraHeight={$containerFixedMargin * 3}
       >
         <View style={container.stretchContent}>
-          <Image style={styles.headerImage} source={Images.header.sailors}/>
-          <Image style={styles.tagLine} source={Images.corporateIdentity.sapTagLine}/>
-          <View style={styles.textContainer}>
-            <Text style={[text.claim, styles.claim, container.mediumHorizontalMargin]}>
+          <Image style={image.headerMedium} source={Images.header.sailors}/>
+          <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
+          <View style={[registration.topContainer(), styles.textContainer]}>
+            <Text style={registration.claim()}>
               <Text>{I18n.t('text_register_claim_01')}</Text>
               <Text style={text.claimHighlighted}>{I18n.t('text_register_claim_02')}</Text>
             </Text>
           </View>
         </View>
-        <View style={styles.bottomContainer}>
+        <View style={registration.bottomContainer()}>
           <Field
             label={I18n.t('text_your_name')}
             name={FORM_KEY_NAME}
@@ -63,7 +64,7 @@ class RegisterName extends React.Component<{
             onSubmitEditing={this.onSubmit}
           />
           <TextButton
-            style={[button.actionFullWidth, container.mediumHorizontalMargin, styles.nextButton]}
+            style={registration.nextButton()}
             textStyle={button.actionText}
             onPress={this.onSubmit}
           >
@@ -83,7 +84,7 @@ class RegisterName extends React.Component<{
             </IconText>
           </TouchableOpacity>
           <TextButton
-            style={styles.help}
+            style={registration.lowerButton()}
             textStyle={button.textButtonSecondaryText}
           >
             {I18n.t('caption_need_help')}

@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import { FORM_KEY_EMAIL, FORM_KEY_PASSWORD } from 'forms/registration'
 import I18n from 'i18n'
-import { button, container, text } from 'styles/commons'
+import { button, container, image, text } from 'styles/commons'
+import { registration } from 'styles/components'
 import { $containerFixedMargin } from 'styles/dimensions'
 import styles from './styles'
 
@@ -53,20 +54,19 @@ class Login extends React.Component<{
         extraHeight={$containerFixedMargin * 3}
       >
         <View style={container.stretchContent}>
-          <Image style={styles.headerImage} source={Images.header.sailors}/>
-          <Image style={styles.tagLine} source={Images.corporateIdentity.sapTagLine}/>
-          <View style={styles.textContainer}>
-            <Text style={[text.claim, styles.claim, container.mediumHorizontalMargin]}>
+          <Image style={image.headerMedium} source={Images.header.sailors}/>
+          <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
+          <View style={[registration.topContainer(), styles.textContainer]}>
+            <Text style={registration.claim()}>
               <Text>{I18n.t('text_login_claim_01')}</Text>
               <Text style={text.claimHighlighted}>{I18n.t('text_login_claim_02')}</Text>
             </Text>
           </View>
         </View>
-        <View style={styles.bottomContainer}>
+        <View style={registration.bottomContainer()}>
           <TextInput
             value={this.state.email}
             onChangeText={this.onEmailChange}
-            style={container.mediumHorizontalMargin}
             placeholder={I18n.t('text_placeholder_your_email')}
             keyboardType={'email-address'}
             returnKeyType="next"
@@ -76,7 +76,7 @@ class Login extends React.Component<{
           <TextInput
             value={this.state.password}
             onChangeText={this.onPasswordChange}
-            style={[container.mediumHorizontalMargin, styles.password]}
+            style={styles.password}
             placeholder={I18n.t('text_placeholder_enter_password')}
             keyboardType={'default'}
             returnKeyType="go"
@@ -85,7 +85,7 @@ class Login extends React.Component<{
             inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}
           />
           <TextButton
-            style={[button.actionFullWidth, container.mediumHorizontalMargin, styles.nextButton]}
+            style={registration.nextButton()}
             textStyle={button.actionText}
             onPress={this.onSubmit}
           >
@@ -97,9 +97,4 @@ class Login extends React.Component<{
   }
 }
 
-const mapStateToProps = (state: any, props: any) => ({
-})
-
-export default connect(
-  mapStateToProps,
-)(Login)
+export default connect()(Login)

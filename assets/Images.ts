@@ -16,7 +16,6 @@ export default {
     visibilityOff: require('./img/icons/icon-visibility-off.png'),
     help: require('./img/icons/icon-help.png'),
     arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
-
   },
   tabs: {
     tracking: require('./img/icons/icon-start.png'),
@@ -27,6 +26,7 @@ export default {
   info: {
     boat: require('./img/icons/icon-boat.png'),
     location: require('./img/icons/icon-place.png'),
+    coloredBoat: require('./img/colored_boat.png'),
   },
   animations: {
     waveLoadingIndicator: require('./img/animations/wave_loading.json'),

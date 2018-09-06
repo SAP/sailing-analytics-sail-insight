@@ -31,15 +31,22 @@ const collectCheckInData = (checkInData: CheckIn) => async (dispatch: Dispatch) 
 export const addCheckIn = createAction('ADD_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 
-export const checkIn = (url: string) => async (dispatch: Dispatch) => {
+export const fetchCheckIn = (url: string) => async (dispatch: Dispatch) => {
   const data: CheckIn | null = CheckInService.extractData(url)
   if (!data) {
     throw new CheckInException('could not extract data.')
   }
   await dispatch(collectCheckInData(data))
+  return data
+}
+
+export const checkIn = (data?: CheckIn) => async (dispatch: Dispatch) => {
+  if (!data) {
+    throw new CheckInException('data is missing')
+  }
   const body = CheckInService.checkInDeviceMappingData(data)
   await api(data.serverUrl).startDeviceMapping(data.leaderboardName, body)
-  dispatch(addCheckIn(data))
+  return dispatch(addCheckIn(data))
 }
 
 export const checkOut = (data: CheckIn) => async (dispatch: Dispatch) => {

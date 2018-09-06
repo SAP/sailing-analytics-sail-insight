@@ -12,7 +12,7 @@ import { TextInputMask } from 'react-native-masked-text'
 
 import Images from '@assets/Images'
 import I18n from 'i18n'
-import { $secondaryTextColor } from 'styles/colors'
+import { $importantHighlightColor, $secondaryTextColor } from 'styles/colors'
 import { text } from 'styles/commons'
 import styles, { DEFAULT_BAR_HEIGHT } from './styles'
 
@@ -143,7 +143,7 @@ class TextInput extends React.Component<{
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && isEntrySecured}
-                placeholderTextColor={$secondaryTextColor}
+                placeholderTextColor={error ? $importantHighlightColor : $secondaryTextColor}
                 placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}

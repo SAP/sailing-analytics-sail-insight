@@ -21,6 +21,7 @@ import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
+import { registration } from 'styles/components'
 
 
 class RegisterBoat extends React.Component<{
@@ -56,13 +57,13 @@ class RegisterBoat extends React.Component<{
       <ScrollContentView
         extraHeight={$containerFixedMargin * 3}
       >
-        <View style={container.stretchContent}>
-          <Text style={[text.claim, styles.claim, container.mediumHorizontalMargin]}>
+        <View style={[container.stretchContent, container.mediumHorizontalMargin]}>
+          <Text style={registration.claim()}>
             <Text>{I18n.t('text_register_boat_claim_01')}</Text>
             <Text style={text.claimHighlighted}>{I18n.t('text_register_boat_claim_02')}</Text>
           </Text>
         </View>
-        <View style={styles.bottomContainer}>
+        <View style={registration.bottomContainer()}>
           <Field
             label={I18n.t('text_placeholder_boat_name')}
             name={FORM_KEY_BOAT_NAME}
@@ -98,14 +99,14 @@ class RegisterBoat extends React.Component<{
             inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
           />
           <TextButton
-            style={[button.actionFullWidth, container.mediumHorizontalMargin, styles.nextButton]}
+            style={registration.nextButton()}
             textStyle={button.actionText}
             onPress={this.onSubmit}
           >
             {I18n.t('caption_add_boat')}
           </TextButton>
           <TextButton
-            style={styles.skip}
+            style={registration.lowerButton()}
             textStyle={button.textButtonSecondaryText}
             onPress={this.onSkip}
           >

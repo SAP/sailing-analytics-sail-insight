@@ -9,6 +9,7 @@ import I18n from 'i18n'
 import { navigateToUserRegistrationBoat } from 'navigation'
 import { getFieldError } from 'selectors/form'
 import { button, container, text } from 'styles/commons'
+import { registration } from 'styles/components'
 import { $containerFixedMargin } from 'styles/dimensions'
 import styles from './styles'
 
@@ -46,16 +47,16 @@ class RegisterCredentials extends React.Component<{
       <ScrollContentView
         extraHeight={$containerFixedMargin * 3}
       >
-        <View style={container.stretchContent}>
-          <Text style={[text.claim, styles.claim, container.mediumHorizontalMargin]}>
+        <View style={[container.stretchContent, container.mediumHorizontalMargin]}>
+          <Text style={registration.claim()}>
             <Text>{I18n.t('text_register_credentials_claim_01')}</Text>
             <Text style={text.claimHighlighted}>{I18n.t('text_register_credentials_claim_02')}</Text>
           </Text>
-          <Text style={[container.mediumHorizontalMargin, styles.taskText]}>
+          <Text style={styles.taskText}>
             {I18n.t('text_registration_create_account')}
           </Text>
         </View>
-        <View style={styles.bottomContainer}>
+        <View style={registration.bottomContainer()}>
           <Field
             label={I18n.t('text_placeholder_your_email')}
             name={FORM_KEY_EMAIL}
@@ -79,7 +80,7 @@ class RegisterCredentials extends React.Component<{
             inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}
           />
           <TextButton
-            style={[button.actionFullWidth, container.mediumHorizontalMargin, styles.nextButton]}
+            style={registration.nextButton()}
             textStyle={button.actionText}
             onPress={this.onSubmit}
           >
