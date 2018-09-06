@@ -26,7 +26,8 @@ export default EStyleSheets.create({
   },
   tagLine: {
     height: 56,
-    alignSelf: 'stretch',
+    width: '100%',
+    // alignSelf: 'stretch',
     resizeMode: 'contain',
     marginBottom: 20,
     marginTop: 8,

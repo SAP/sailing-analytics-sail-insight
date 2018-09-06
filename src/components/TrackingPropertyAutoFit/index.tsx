@@ -6,17 +6,19 @@ import {
 import { StyleSheetType } from 'helpers/types'
 
 import TrackingProperty from 'components/TrackingProperty'
+import { responsiveFontSize } from 'helpers/screen'
 
 
-const TITLE_PERCENTAGE = 0.27
-const VALUE_PERCENTAGE = 0.95 - TITLE_PERCENTAGE
-const VALUE_TO_UNIT = 0.5
+const valuePercentage = (titlePercentage: number) => 0.95 - titlePercentage
+const VALUE_TO_UNIT = 0.36
 
 class TrackingPropertyAutoFit extends React.Component<{
   style?: StyleSheetType,
   title: string,
   value: string,
   unit?: string,
+  titlePercentage?: number,
+  tendency?: 'up' | 'down',
 } > {
 
   public state = { containerHeight: undefined }
@@ -33,24 +35,23 @@ class TrackingPropertyAutoFit extends React.Component<{
     this.setState({ containerHeight: nativeEvent.layout.height })
   }
 
-  public responsiveFontSize = (percentage: number, height: number) => {
-    return Math.sqrt((height * height)) * percentage
-  }
-
   public fontSizes = (height?: number) => {
     if (!height) {
       return {}
     }
-    const valueFontSize = this.responsiveFontSize(VALUE_PERCENTAGE, height)
+    const { titlePercentage = 0.18 } = this.props
+    const valueSize = responsiveFontSize(valuePercentage(titlePercentage), height)
+    const titleSize = responsiveFontSize(titlePercentage, height)
+    const unitSize = valueSize * VALUE_TO_UNIT
     return {
-      valueFontSize,
-      titleFontSize: this.responsiveFontSize(TITLE_PERCENTAGE, height),
-      unitFontSize: valueFontSize * VALUE_TO_UNIT,
+      valueFontSize: Math.min(valueSize, 70),
+      titleFontSize: Math.min(titleSize, 20),
+      unitFontSize: unitSize,
     }
   }
 
   public render() {
-    const { style, title, value, unit } = this.props
+    const { style, title, value, unit, ...remainingProps } = this.props
     const fontSizes = this.fontSizes(this.state.containerHeight)
     return (
       <View
@@ -62,6 +63,7 @@ class TrackingPropertyAutoFit extends React.Component<{
           value={value}
           unit={unit}
           {...fontSizes}
+          {...remainingProps}
         />
       </View>
     )

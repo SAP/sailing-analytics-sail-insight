@@ -1,16 +1,20 @@
 import React from 'react'
+import { Image, TouchableOpacity } from 'react-native'
 
-import TextButton from 'components/TextButton'
+import Images from '@assets/Images'
 import { StyleSheetType } from 'helpers/types'
 import I18n from 'i18n'
 import { navigateBack } from 'navigation'
 import { button } from 'styles/commons'
 import styles from './styles'
 
+import TextButton from 'components/TextButton'
+
 
 class ModalBackButton extends React.Component<{
   style?: StyleSheetType,
   onPress?: () => void,
+  type?: 'icon' | 'text',
 }> {
 
   public render() {
@@ -18,9 +22,10 @@ class ModalBackButton extends React.Component<{
       style,
       children,
       onPress,
+      type = 'text',
       ...props
     } = this.props
-    return (
+    return type === 'text' ? (
       <TextButton
         style={[styles.back, style]}
         textStyle={button.modalBack}
@@ -29,6 +34,13 @@ class ModalBackButton extends React.Component<{
       >
         {children || I18n.t('caption_cancel')}
       </TextButton >
+    ) : (
+      <TouchableOpacity
+        style={[styles.back, style]}
+        onPress={onPress || navigateBack}
+      >
+        <Image style={button.actionIconNavBar} source={Images.actions.close}/>
+      </TouchableOpacity>
     )
   }
 }

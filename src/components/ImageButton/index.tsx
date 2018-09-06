@@ -14,6 +14,7 @@ class ImageButton extends React.Component<{
   onPress?: () => void,
   circular?: boolean,
   autoWidth?: boolean,
+  activeOpacity?: number,
 } > {
   public state = {
     borderRadius: $defaultImageButtonSize / 2,
@@ -39,6 +40,7 @@ class ImageButton extends React.Component<{
       imageStyle,
       source,
       onPress,
+      ...remainingProps
     } = this.props
 
     const touchableStyle = [
@@ -53,6 +55,7 @@ class ImageButton extends React.Component<{
         onLayout={this.handleContentSizeChange}
         style={touchableStyle}
         onPress={onPress}
+        {...remainingProps}
       >
         <Image
           source={source}
