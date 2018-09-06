@@ -6,5 +6,6 @@ export const $importantHighlightColor = '#D0021B'
 
 export const $primaryTextColor = 'black'
 export const $secondaryTextColor = '#777777'
+export const $detailsTextColor = '#333333'
 
 export const $primaryActiveColor = '#F0AB00'

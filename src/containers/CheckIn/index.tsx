@@ -1,55 +1,49 @@
 import React from 'react'
-import { View } from 'react-native'
-import { connect } from 'react-redux'
+import { Image, View } from 'react-native'
 
-import { checkIn } from 'actions/checkIn'
-import Logger from 'helpers/Logger'
+import Images from '@assets/Images'
 import I18n from 'i18n'
-import { navigateBack, navigateToQRScanner } from 'navigation'
-import { button, container } from 'styles/commons'
-
-import TextButton from 'components/TextButton'
-
+import { navigateToQRScanner } from 'navigation'
+import { button, container, text } from 'styles/commons'
 import styles from './styles'
+
+import ScrollContentView from 'components/ScrollContentView'
+import Text from 'components/Text'
+import TextButton from 'components/TextButton'
 
 
 class CheckIn extends React.Component<{
   checkIn: any,
 } > {
-  public state = {
-    isLoading: false,
-  }
-
-  public onSuccess = async (url: string) => {
-    this.setState({ isLoading: true })
-    try {
-      await this.props.checkIn(url)
-      navigateBack()
-    } catch (err) {
-      Logger.debug(err)
-    } finally {
-      this.setState({ isLoading: false })
-    }
-  }
-
   public onQRPress = () => {
-    navigateToQRScanner({ onSuccess: this.onSuccess })
+    navigateToQRScanner()
   }
 
   public render() {
     return (
-      <View style={[container.main, styles.container]}>
+      <ScrollContentView>
+        <View style={container.stretchContent}>
+          <Image
+            style={styles.boat}
+            source={Images.info.coloredBoat}
+          />
+          <Text style={[text.claim, styles.claim, container.mediumHorizontalMargin]}>
+            <Text>{I18n.t('text_join_and_track')}</Text>
+          </Text>
+          <Text style={[container.mediumHorizontalMargin, text.propertyValue, styles.claim]}>
+            {I18n.t('text_join_code_on_confirmation')}
+          </Text>
+        </View>
         <TextButton
+          style={[button.actionFullWidth, container.mediumHorizontalMargin, styles.qrButton]}
           textStyle={button.actionText}
-          style={button.actionFullWidth}
           onPress={this.onQRPress}
-          isLoading={this.state.isLoading}
         >
           {I18n.t('caption_qr_scanner')}
         </TextButton>
-      </View>
+      </ScrollContentView>
     )
   }
 }
 
-export default connect(null, { checkIn })(CheckIn)
+export default CheckIn

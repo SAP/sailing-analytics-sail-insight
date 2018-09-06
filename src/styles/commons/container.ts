@@ -30,4 +30,8 @@ export default EStyleSheet.create({
     paddingLeft: '12%',
     paddingRight: '12%',
   },
+  registerBottomContainer: {
+    paddingTop: '$containerFixedMargin',
+    paddingBottom: 37,
+  },
 })

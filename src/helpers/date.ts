@@ -67,3 +67,10 @@ export const dateFromToText = (startValue: string | number, endValue: string | n
   const startFormat = startDate.year() === endDate.year() ? cleanYearFromFormat(dateFormat) : dateFormat
   return `${startDate.format(startFormat)} - ${endDate.format(dateFormat)}`
 }
+
+export const dateTimeText = (dateValue: string | number) => {
+  const supportedLocale = getSupportedLocale(I18n.locale)
+  const formatData = defaultDateFormat(supportedLocale)
+  const { timeFormat, dateFormat } = formatData
+  return moment(dateValue).locale(supportedLocale).format(`${dateFormat} - ${timeFormat}`)
+}

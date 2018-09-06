@@ -11,7 +11,8 @@ import ModalBackButton from 'components/ModalBackButton'
 import Tracking from 'containers/Tracking'
 import TrackingSetup from 'containers/TrackingSetup'
 
-import CheckInNavigator from './CheckInNavigator'
+import JoinRegatta from 'containers/JoinRegatta'
+import QRScanner from 'containers/QRScanner'
 import MainNavigator from './MainNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 
@@ -19,12 +20,6 @@ import RegistrationNavigator from './RegistrationNavigator'
 export default createStackNavigator(
   {
     [Screens.Main]: { screen: MainNavigator, navigationOptions: { header: null } },
-    [Screens.CheckInNavigator]: {
-      screen: CheckInNavigator,
-      navigationOptions: {
-        header: null,
-      },
-    },
     [Screens.Register]: {
       screen: RegistrationNavigator,
       navigationOptions: {
@@ -45,6 +40,20 @@ export default createStackNavigator(
         headerLeft: null,
         headerRight: <ModalBackButton/>,
       }),
+    },
+    [Screens.QRScanner]: {
+      screen: QRScanner,
+      navigationOptions: () => ({
+        title: I18n.t('title_regattas'),
+        headerRight: <ModalBackButton/>,
+        headerLeft: null,
+      }),
+    },
+    [Screens.JoinRegatta]: {
+      screen: JoinRegatta,
+      navigationOptions: {
+        header: null,
+      },
     },
   },
   {

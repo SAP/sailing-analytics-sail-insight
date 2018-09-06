@@ -1,13 +1,18 @@
-export const Splash = 'Splash'
 export const Main = 'Main'
-export const UserSessions = 'UserSessions'
 export const Tracks = 'Tracks'
-export const QRScanner = 'QRScanner'
-export const CheckIn = 'CheckIn'
-export const CheckInNavigator = 'CheckInNavigator'
-export const SessionDetail = 'SessionDetail'
 export const AppSettings = 'AppSettings'
 export const UserProfile = 'UserProfile'
+
+// sessions
+export const UserSessions = 'UserSessions'
+export const SessionDetail = 'SessionDetail'
+export const Splash = 'Splash'
+
+// join
+export const CheckIn = 'CheckIn'
+export const CheckInNavigator = 'CheckInNavigator'
+export const QRScanner = 'QRScanner'
+export const JoinRegatta = 'JoinRegatta'
 
 // tabs
 export const MainTabs = 'MainTabs'

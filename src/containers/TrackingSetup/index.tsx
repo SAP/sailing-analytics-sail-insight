@@ -12,7 +12,7 @@ import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
-import Session from 'models/Session'
+import { Session } from 'models'
 import { connect } from 'react-redux'
 import { getBoat } from 'selectors/boat'
 

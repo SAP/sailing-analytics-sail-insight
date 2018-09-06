@@ -37,7 +37,7 @@ class SessionItem extends React.Component<{
   public render() {
     const {
       style,
-      regatta,
+      regatta = {},
     } = this.props
 
     const eventImage = getEventPreviewImageUrl(regatta.event)
@@ -51,7 +51,7 @@ class SessionItem extends React.Component<{
           <View style={styles.detailContainer}>
             <View>
               <Text style={styles.nameText}>
-                {regatta && regatta.leaderboard && regatta.leaderboard.name}
+                {regatta.leaderboard && (regatta.leaderboard.displayName || regatta.leaderboard.name)}
               </Text>
               <View style={[styles.line, styles.textMargins]}>
                 <Text
@@ -78,7 +78,7 @@ class SessionItem extends React.Component<{
                   iconTintColor={$secondaryTextColor}
                   alignment="horizontal"
                 >
-                  {'LOCATION'/*TODO: fill data*/}
+                  {regatta.event && regatta.event.venue && regatta.event.venue.name}
                 </IconText>
               </View>
               <ImageButton

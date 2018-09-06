@@ -25,7 +25,7 @@ class FormTextInput extends React.Component<{
 
     return (
       <TextInput
-        style={[container.mediumHorizontalMargin, style]}
+        style={style}
         placeholder={label}
         error={showError ? error : undefined}
         onChangeText={onChange}
