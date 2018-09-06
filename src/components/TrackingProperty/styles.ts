@@ -1,19 +1,15 @@
-import { Dimensions } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 
-const { height, width } = Dimensions.get('window')
-
-
-export const responsiveFontSize = (f) => {
-  return Math.sqrt((height * height) + (width * width)) * (f / 100)
-}
-
 export default EStyleSheet.create({
-  container: {
-  },
   valueContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  innerValueContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexGrow: 1,
   },
   title: {
     color: '$secondaryTextColor',
@@ -37,5 +33,21 @@ export default EStyleSheet.create({
     height: '$defaultIconSize',
     tintColor: '$primaryTextColor',
     resizeMode: 'contain',
+  },
+  tendencyIconContainer: {
+    width: 0,
+    height: 0,
+  },
+  tendencyIcon: {
+    tintColor: 'white',
+    resizeMode: 'contain',
+    width: '100%',
+    height: '100%',
+  },
+  tendencyIconUp: {
+    backgroundColor: '$improvementColor',
+  },
+  tendencyIconDown: {
+    backgroundColor: '$declineColor',
   },
 })

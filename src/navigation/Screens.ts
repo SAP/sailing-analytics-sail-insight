@@ -23,6 +23,7 @@ export const Sessions = 'Sessions'
 export const Tracking = 'Tracking'
 export const TrackingSetup = 'TrackingSetup'
 export const TrackingSetupAction = 'TrackingSetupAction'
+export const ManeuverMonitor = 'ManeuverMonitor'
 
 // auth
 export const Register = 'Register'

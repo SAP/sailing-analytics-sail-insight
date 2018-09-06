@@ -19,7 +19,11 @@ class TrackingProperty extends React.Component<{
   valueFontSize?: number,
   unitFontSize?: number,
   onPress?: () => void,
+  tendency?: 'up' | 'down',
 } > {
+
+  public state: {valueContainerHeight?: number} = { valueContainerHeight: undefined }
+
   public render() {
     const {
       style,
@@ -30,28 +34,74 @@ class TrackingProperty extends React.Component<{
       valueFontSize,
       unitFontSize,
       onPress,
+      tendency,
     } = this.props
+
+    const tendencyIconSize = this.state.valueContainerHeight && (this.state.valueContainerHeight * 0.6)
+    const tendencyIconStyle = tendencyIconSize && {
+      padding: tendencyIconSize / 4,
+      width: tendencyIconSize,
+      height: tendencyIconSize,
+      borderRadius: tendencyIconSize / 2,
+    }
+
     return (
       <TouchableOpacity
-        style={[styles.container, style]}
+        style={style}
         onPress={onPress}
         disabled={!onPress}
       >
-        <Text style={[styles.title, titleFontSize && { fontSize: titleFontSize }]}>
+        <Text
+          style={[styles.title, titleFontSize && { fontSize: titleFontSize }]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
           {title && title.toUpperCase()}
         </Text>
-        <View style={styles.valueContainer}>
-          <Text style={[styles.value, valueFontSize && { fontSize: valueFontSize }]}>
-            {value}
-            {
-              unit &&
-              <Text style={[styles.unit, unitFontSize && { fontSize: unitFontSize }]}>{` ${unit.toUpperCase()}`}</Text>
-            }
-          </Text>
-          {onPress && <Image source={Images.actions.arrowRight} style={styles.actionIcon}/>}
+        <View style={styles.valueContainer} onLayout={this.onValueContainerLayout}>
+          <View style={styles.innerValueContainer}>
+            <Text style={[styles.value, valueFontSize && { fontSize: valueFontSize }]}>
+              {value}
+              {
+                unit &&
+                <Text
+                  style={[styles.unit, unitFontSize && { fontSize: unitFontSize }]}
+                >
+                  {` ${unit.toUpperCase()}`}
+                </Text>
+              }
+            </Text>
+            {onPress && <Image source={Images.actions.arrowRight} style={styles.actionIcon}/>}
+          </View>
+          {
+            tendency &&
+            <View
+              style={[
+                styles.tendencyIconContainer,
+                tendency === 'up' ? styles.tendencyIconUp : styles.tendencyIconDown,
+                tendencyIconStyle,
+              ]}
+            >
+              <Image
+                style={styles.tendencyIcon}
+                source={tendency === 'up' ? Images.info.arrowUp : Images.info.arrowDown}
+              />
+            </View>
+          }
         </View>
       </TouchableOpacity>
     )
+  }
+
+  private onValueContainerLayout = ({ nativeEvent }: any = {}) => {
+    if (
+      !nativeEvent ||
+      !nativeEvent.layout ||
+      !nativeEvent.layout.height
+    ) {
+      return
+    }
+    this.setState({ valueContainerHeight: nativeEvent.layout.height })
   }
 }
 

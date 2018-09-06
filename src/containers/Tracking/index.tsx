@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, Image, View } from 'react-native'
+import { Alert, View } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
@@ -9,15 +9,18 @@ import {  stopLocationTracking } from 'actions/locations'
 import { durationText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateBack } from 'navigation'
+import { navigateBack, navigateToManeuverMonitor } from 'navigation'
 import { getLocationStats, getLocationTrackingStatus } from 'selectors/location'
 import { button, container } from 'styles/commons'
 import styles from './styles'
 
+import ImageButton from 'components/ImageButton'
 import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 
+
+const EMPTY_VALUE = '-'
 
 class Tracking extends React.Component<{
   navigation: any,
@@ -64,8 +67,8 @@ class Tracking extends React.Component<{
   public render() {
     const { trackingStats }: any = this.props
 
-    const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(2) : '-'
-    const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(2)}°` : '-'
+    const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(2) : EMPTY_VALUE
+    const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(2)}°` : EMPTY_VALUE
     const distance = trackingStats.distance ? trackingStats.distance.toFixed(2) : 0
 
     return (
@@ -106,7 +109,7 @@ class Tracking extends React.Component<{
               <TrackingProperty
                 style={styles.property}
                 title={I18n.t('text_tracking_gps_accuracy')}
-                value={trackingStats.locationAccuracy}
+                value={trackingStats.locationAccuracy || EMPTY_VALUE}
                 unit={I18n.t('text_tracking_unit_meters')}
               />
             </View>
@@ -121,7 +124,12 @@ class Tracking extends React.Component<{
         >
           {I18n.t('caption_stop').toUpperCase()}
         </TextButton>
-        <Image style={styles.tagLine} source={Images.corporateIdentity.sapTagLine}/>
+        <ImageButton
+          style={styles.tagLine}
+          source={Images.corporateIdentity.sapTagLine}
+          onPress={navigateToManeuverMonitor}
+          activeOpacity={1.0}
+        />
       </View>
     )
   }

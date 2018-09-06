@@ -17,3 +17,4 @@ export const navigateToUserRegistrationBoat = () => NavigationService.navigateWi
 export const navitateToLogin = () => NavigationService.navigate(Screens.Login)
 export const navigateToJoinRegatta = (params: CheckIn) => NavigationService.navigate(Screens.JoinRegatta, params)
 export const navigateToSessions = () => NavigationService.navigate(Screens.Sessions)
+export const navigateToManeuverMonitor = () => NavigationService.navigate(Screens.ManeuverMonitor)
