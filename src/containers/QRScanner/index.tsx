@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 
 import { fetchCheckIn } from 'actions/checkIn'
 import Logger from 'helpers/Logger'
-import { getUnknownErrorMessage } from 'helpers/texts'
+import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
+import I18n from 'i18n'
 import { navigateBack, navigateToJoinRegatta } from 'navigation'
 import { container } from 'styles/commons'
 import styles from './styles'
@@ -48,8 +49,14 @@ class QRScanner extends React.Component<{
       navigateToJoinRegatta(checkIn)
     } catch (err) {
       Logger.debug(err)
-      Alert.alert(getUnknownErrorMessage())
-      this.reactivateScanner()
+      Alert.alert(
+        getErrorTitle(),
+        getErrorDisplayMessage(err),
+        [
+          { text: I18n.t('caption_ok'), onPress: this.reactivateScanner },
+        ],
+        { cancelable: false },
+      )
     } finally {
       this.setState({ isLoading: false })
     }

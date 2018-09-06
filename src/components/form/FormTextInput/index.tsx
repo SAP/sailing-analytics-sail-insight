@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { StyleSheetType } from 'helpers/types'
-import { container } from 'styles/commons'
 
 import TextInput from 'components/TextInput'
 

@@ -13,6 +13,7 @@ const getTranslation = (translationKey: string, defaultMessage?: string, params?
     result
 }
 
+export const ERROR_TITLE_KEY = 'title'
 export const UNKNOWN_ERROR_KEY = 'unknown'
 export const UNKNOWN_ERROR_KEY_WITH_CODE = 'error_with_code'
 
@@ -26,7 +27,9 @@ export const getErrorMessage = (key: string, defaultMessage?: string, translatio
     result
 }
 
-export const getUnknownErrorMessage = (errorCode?: string) => (errorCode ?
+export const getErrorTitle = () => I18n.t(`${ERROR_TRANSLATION_PREFIX}${ERROR_TITLE_KEY}`)
+
+export const getUnknownErrorMessage = (errorCode?: string | number) => (errorCode ?
   getTranslation(UNKNOWN_ERROR_KEY_WITH_CODE, undefined, { code: errorCode }) :
   getErrorMessage(UNKNOWN_ERROR_KEY)
 )
@@ -34,7 +37,7 @@ export const getUnknownErrorMessage = (errorCode?: string) => (errorCode ?
 export const getErrorDisplayMessage = (exception: any) => {
   if (get(exception, 'name') === ApiException.NAME) {
     const errorKey = get(exception, 'message')
-    return getErrorMessage(errorKey, getUnknownErrorMessage(get(exception, 'status')))
+    return getErrorMessage(errorKey, getUnknownErrorMessage((exception as ApiException).status))
   }
   return getUnknownErrorMessage()
 }

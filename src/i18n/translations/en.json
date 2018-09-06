@@ -48,6 +48,7 @@
   "text_join_and_track": "Use SAP Sail InSight to join and track a regatta",
   "text_join_code_on_confirmation": "The QR code is on your confirmation of participation",
   
+  "caption_ok": "OK",
   "caption_cancel": "Back",
   "caption_qr_scanner": "Scan QR-Code",
   "caption_start_tracking": "Start tracking",
@@ -79,7 +80,8 @@
   "caption_set_wind": "Set wind",
   "caption_join_race": "Join race",
 
-  "error_unkown": "Unknown error",
-  "error_field_required": "Field is required.",
+  "error_title": "An error occurred",
+  "error_unknown" : "Oops, something went wrong here.\nPlease try again!",
+  "error_with_code" : "Oops, something went wrong here.\nPlease try again! ({{code}})",  "error_field_required": "Field is required.",
   "error_field_invalid_email": "No valid e-mail address."
 }
