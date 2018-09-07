@@ -1,8 +1,11 @@
+import { get } from 'lodash'
 import React from 'react'
 import { View } from 'react-native'
+import VersionNumber from 'react-native-version-number'
 
 import Text from 'components/Text'
 
+import ScrollContentView from 'components/ScrollContentView'
 import I18n from 'i18n'
 import { getDeviceId } from 'services/CheckInService'
 import { container } from 'styles/commons'
@@ -15,16 +18,21 @@ class AppSettings extends React.Component<{
 
   public render() {
     return (
-      <View style={container.main}>
-        <View style={styles.item}>
-          <Text>
-            {I18n.t('text_device_id')}
-          </Text>
-          <Text>
-            {getDeviceId()}
-          </Text>
+      <ScrollContentView>
+        <View style={container.stretchContent}>
+          <View style={styles.item}>
+            <Text>
+              {I18n.t('text_device_id')}
+            </Text>
+            <Text>
+              {getDeviceId()}
+            </Text>
+          </View>
         </View>
-      </View>
+        <Text>
+          {`v${get(VersionNumber, 'appVersion')}.${get(VersionNumber, 'buildVersion')}`}
+        </Text>
+      </ScrollContentView>
     )
   }
 }
