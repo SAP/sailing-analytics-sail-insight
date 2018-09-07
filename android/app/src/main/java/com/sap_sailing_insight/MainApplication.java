@@ -3,6 +3,7 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.apsl.versionnumber.RNVersionNumberPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
@@ -38,6 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNVersionNumberPackage(),
             new LottiePackage(),
             new FastImageViewPackage(),
             new KCKeepAwakePackage(),
