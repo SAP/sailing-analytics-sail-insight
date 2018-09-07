@@ -1,0 +1,10 @@
+export const SESSION_FORM_NAME = 'session'
+
+export const FORM_KEY_NAME = 'name'
+export const FORM_KEY_TRACK_NAME = 'trackName'
+export const FORM_KEY_BOAT_NAME = 'boatName'
+export const FORM_KEY_PASSWORD = 'password'
+export const FORM_KEY_BOAT_CLASS = 'boatClass'
+export const FORM_KEY_SAIL_NUMBER = 'sailNumber'
+export const FORM_KEY_TEAM_NAME = 'teamName'
+export const FORM_KEY_PRIVACY_SETTING = 'privacySetting'

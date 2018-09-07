@@ -3,16 +3,16 @@ import { createBottomTabNavigator } from 'react-navigation'
 
 import IconText from 'components/IconText'
 import AppSettings from 'containers/AppSettings'
-import CheckIn from 'containers/CheckIn'
-import Sessions from 'containers/Sessions'
-import TrackingSetup from 'containers/TrackingSetup'
-import Tracks from 'containers/Tracks'
+import CheckIn from 'containers/session/CheckIn'
+import Sessions from 'containers/session/Sessions'
+import TrackingSetup from 'containers/tracking/TrackingSetup'
+import Tracks from 'containers/tracking/Tracks'
 import UserProfile from 'containers/UserProfile'
 
 import Images from '@assets/Images'
 import { getTabItemTitleTranslationKey } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToTrackingSetup } from 'navigation'
+import { navigateToNewSession } from 'navigation'
 import * as Screens from 'navigation/Screens'
 import { generateNewSession } from 'services/SessionService'
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
@@ -102,7 +102,7 @@ export default createBottomTabNavigator(
         }
         switch (navigation.state.routeName) {
           case Screens.TrackingSetupAction:
-            navigateToTrackingSetup(generateNewSession())
+            navigateToNewSession(generateNewSession())
             return
         }
         return props.defaultHandler(props.navigation)

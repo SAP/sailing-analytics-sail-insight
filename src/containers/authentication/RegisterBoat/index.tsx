@@ -17,6 +17,7 @@ import { button, container, text } from 'styles/commons'
 import { $containerFixedMargin } from 'styles/dimensions'
 import styles from './styles'
 
+import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
@@ -24,14 +25,11 @@ import TextButton from 'components/TextButton'
 import { registration } from 'styles/components'
 
 
-class RegisterBoat extends React.Component<{
+class RegisterBoat extends TextInputForm<{
   navigation: any,
   valid?: boolean,
   isStepValid: boolean,
 } > {
-
-  public inputs: any = {}
-
   public onSkip() {
     navigateBack()
   }
@@ -41,15 +39,6 @@ class RegisterBoat extends React.Component<{
       // TODO: update API user with boat information and create boat
       // TODO: navigate back, finalize form
     }
-  }
-
-  public handleInputRef = (name: string) => (ref: any) => {
-    this.inputs[name] = ref
-  }
-
-  public handleOnSubmit = (nextName: string) => () => {
-    const nextInput = this.inputs[nextName]
-    return nextInput && nextInput.focus && nextInput.focus()
   }
 
   public render() {

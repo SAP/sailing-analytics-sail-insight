@@ -6,6 +6,7 @@ import { Session } from 'models'
 export const generateNewSession = (/*add params*/) => {
   // TODO: implement
   return new Session(
+    'My Session 01',
     'myTracking',
     '123',
     'TEST123',

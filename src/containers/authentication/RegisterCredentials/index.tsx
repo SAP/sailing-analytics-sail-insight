@@ -13,33 +13,23 @@ import { registration } from 'styles/components'
 import { $containerFixedMargin } from 'styles/dimensions'
 import styles from './styles'
 
+import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
 
-class RegisterCredentials extends React.Component<{
+class RegisterCredentials extends TextInputForm<{
   navigation: any,
   valid?: boolean,
   isStepValid: boolean,
 } > {
-  public inputs: any = {}
-
   public onSubmit = () => {
     if (this.props.isStepValid) {
       // TODO: API create user, reset navigation to remove previous steps
       navigateToUserRegistrationBoat()
     }
-  }
-
-  public handleInputRef = (name: string) => (ref: any) => {
-    this.inputs[name] = ref
-  }
-
-  public handleOnSubmit = (nextName: string) => () => {
-    const nextInput = this.inputs[nextName]
-    return nextInput && nextInput.focus && nextInput.focus()
   }
 
   public render() {
