@@ -5,7 +5,7 @@ import * as Screens from 'navigation/Screens'
 import { navigation } from 'styles/commons'
 
 import HeaderTitle from 'components/HeaderTitle'
-import SessionDetail from 'containers/SessionDetail'
+import SessionDetail from 'containers/session/SessionDetail'
 import SplashScreen from 'containers/SplashScreen'
 
 import MainTabNavigator from './MainTabNavigator'

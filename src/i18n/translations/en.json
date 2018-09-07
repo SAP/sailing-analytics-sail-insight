@@ -6,6 +6,7 @@
   "title_your_account": "Your account",
   "title_your_boat": "Your Boat",
   "title_maneuver_monitor": "Maneuver Monitor",
+  "title_edit_session": "Edit",
 
   "text_more_information_at": "More information at",
   "text_device_id": "Device id",
@@ -58,6 +59,10 @@
   "text_maneuver_avg_rate": "Avg rate",
   "text_maneuver_speed": "Speed",
   "text_maneuver_turn": "Turn",
+  "text_placeholder_session_name": "Session name",
+  "text_edit_session_claim_01": "Refine your session with your ",
+  "text_edit_session_claim_02": "track and boat specifics.",
+  
   
   "caption_ok": "OK",
   "caption_cancel": "Back",
@@ -90,6 +95,7 @@
   "caption_stop": "Stop",
   "caption_set_wind": "Set wind",
   "caption_join_race": "Join race",
+  "caption_accept": "Accept",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",

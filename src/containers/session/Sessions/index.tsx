@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native'
 
 
 import Images from '@assets/Images'
-import { navigateToTrackingSetup } from 'navigation'
+import { navigateToNewSession } from 'navigation'
 import { button, container } from 'styles/commons'
 
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
@@ -66,7 +66,7 @@ class Sessions extends React.Component<{
   }
 
   protected onNewSessionPress = () => {
-    navigateToTrackingSetup(generateNewSession())
+    navigateToNewSession(generateNewSession())
   }
 
   protected onOptionsPressed = () => {

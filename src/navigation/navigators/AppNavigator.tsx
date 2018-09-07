@@ -9,13 +9,13 @@ import { navigation as navigationStyles } from 'styles/commons'
 import * as Screens from 'navigation/Screens'
 
 import ModalBackButton from 'components/ModalBackButton'
-import JoinRegatta from 'containers/JoinRegatta'
-import ManeuverMonitor from 'containers/ManeuverMonitor'
-import QRScanner from 'containers/QRScanner'
-import Tracking from 'containers/Tracking'
-import TrackingSetup from 'containers/TrackingSetup'
+import JoinRegatta from 'containers/session/JoinRegatta'
+import QRScanner from 'containers/session/QRScanner'
+import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
+import Tracking from 'containers/tracking/Tracking'
 
 import MainNavigator from './MainNavigator'
+import NewSessionNavigator from './NewSessionNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 
 
@@ -28,20 +28,13 @@ export default createStackNavigator(
         header: null,
       },
     },
+    [Screens.NewSession]: { screen: NewSessionNavigator, navigationOptions: { header: null } },
     [Screens.Tracking]: {
       screen: Tracking,
       navigationOptions: {
         gesturesEnabled: false,
         header: null,
       },
-    },
-    [Screens.TrackingSetup]: {
-      screen: TrackingSetup,
-      navigationOptions: () => ({
-        title: I18n.t('caption_new_session'),
-        headerLeft: null,
-        headerRight: <ModalBackButton/>,
-      }),
     },
     [Screens.QRScanner]: {
       screen: QRScanner,
