@@ -12,19 +12,19 @@ import {
 } from 'actions/locations'
 import { distanceInM } from 'helpers/physics'
 import { GPSFix } from 'models'
-
-
-export const STATUS_KEY = 'status'
-export const LEADERBOARD_NAME_KEY = 'leaderboardName'
-export const EVENT_ID_KEY = 'eventId'
-export const UNSENT_GPS_FIXES_KEY = 'unsentGpsFixCount'
-export const LOCATION_ACCURACY_KEY = 'locationAccuracy'
-export const SPEED_IN_KNOTS_KEY = 'speedInKnots'
-export const START_AT_KEY = 'startAt'
-export const HEADING_IN_DEG_KEY = 'headingInDeg'
-export const DISTANCE_KEY = 'distance'
-export const LAST_LATITUDE_KEY = 'lastLatitude'
-export const LAST_LONGITUDE_KEY = 'lastLongitude'
+import {
+  DISTANCE_KEY,
+  EVENT_ID_KEY,
+  HEADING_IN_DEG_KEY,
+  LAST_LATITUDE_KEY,
+  LAST_LONGITUDE_KEY,
+  LEADERBOARD_NAME_KEY,
+  LOCATION_ACCURACY_KEY,
+  SPEED_IN_KNOTS_KEY,
+  START_AT_KEY,
+  STATUS_KEY,
+  UNSENT_GPS_FIXES_KEY,
+} from './config'
 
 
 const initialState = {

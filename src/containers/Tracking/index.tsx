@@ -10,7 +10,7 @@ import { durationText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { navigateBack, navigateToManeuverMonitor } from 'navigation'
-import { getLocationStats, getLocationTrackingStatus } from 'selectors/location'
+import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { button, container } from 'styles/commons'
 import styles from './styles'
 
@@ -25,7 +25,7 @@ const EMPTY_VALUE = '-'
 class Tracking extends React.Component<{
   navigation: any,
   stopLocationTracking: () => void,
-  trackingStats: any,
+  trackingStats: LocationStats,
   checkInData: any,
 } > {
   public state = {
