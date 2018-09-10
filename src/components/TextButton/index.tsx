@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity } from 'react-native'
 
-import Spinner from 'components/ActivityIndicator'
+import ActivityIndicator from 'components/ActivityIndicator'
 import Text from 'components/Text'
 
 import { StyleSheetType } from 'helpers/types'
@@ -15,10 +15,18 @@ class TextButton extends React.Component<{
   isLoading?: boolean,
   disabled?: boolean,
   onPress?: () => void,
+  loadingColor?: string,
 } > {
 
   public renderSpinner() {
-    return <Spinner style={styles.spinnerStyle} size="small" />
+    const props = this.props.loadingColor && { color: this.props.loadingColor }
+    return (
+      <ActivityIndicator
+        style={styles.spinnerStyle}
+        size="small"
+        {...props}
+      />
+    )
   }
 
   public renderText() {

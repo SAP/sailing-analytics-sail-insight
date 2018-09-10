@@ -1,17 +1,20 @@
 import React from 'react'
-import { View } from 'react-native'
+import { Alert, View } from 'react-native'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
 import { button, container } from 'styles/commons'
 import styles from './styles'
 
+import { shareSessionFromForm } from 'actions/sessions'
 import * as sessionForm from 'forms/session'
+import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { Session } from 'models'
 import { navigateToEditSession } from 'navigation'
 import { connect } from 'react-redux'
 import { getBoat } from 'selectors/boat'
+import { $primaryButtonColor } from 'styles/colors'
 
 
 import ImageButton from 'components/ImageButton'
@@ -26,7 +29,21 @@ class TrackingSetup extends React.Component<{
   navigation: any,
   session: Session,
   boat: any,
+  shareSessionFromForm: (formName: string) => void,
 } > {
+
+  public state = { isShareSheetLoading: false }
+
+  public onSharePress = async () => {
+    await this.setState({ isShareSheetLoading: true })
+    try {
+      await this.props.shareSessionFromForm(sessionForm.SESSION_FORM_NAME)
+    } catch (err) {
+      Alert.alert(getUnknownErrorMessage())
+    } finally {
+      this.setState({ isShareSheetLoading: false })
+    }
+  }
 
   public renderProperty({ label, input: { value } }: any) {
     return (
@@ -97,6 +114,9 @@ class TrackingSetup extends React.Component<{
             <TextButton
               style={styles.shareButton}
               textStyle={button.textButtonText}
+              onPress={this.onSharePress}
+              isLoading={this.state.isShareSheetLoading}
+              loadingColor={$primaryButtonColor}
             >
               {I18n.t('caption_share_session')}
             </TextButton>
@@ -134,6 +154,7 @@ const mapStateToProps = (state: any, props: any) => {
 
 export default connect(
   mapStateToProps,
+  { shareSessionFromForm },
 )(reduxForm({
   form: sessionForm.SESSION_FORM_NAME,
   destroyOnUnmount: true,
