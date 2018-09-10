@@ -164,7 +164,6 @@ android {
 
 dependencies {
     compile project(':react-native-version-number')
-    implementation project(':lottie-react-native')
     implementation project(':react-native-fast-image')
     implementation project(':react-native-keep-awake')
     implementation project(':react-native-background-fetch')

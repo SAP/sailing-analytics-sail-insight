@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.apsl.versionnumber.RNVersionNumberPackage;
-import com.airbnb.android.react.lottie.LottiePackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
@@ -40,7 +39,6 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNVersionNumberPackage(),
-            new LottiePackage(),
             new FastImageViewPackage(),
             new KCKeepAwakePackage(),
             new RNBackgroundFetchPackage(),
