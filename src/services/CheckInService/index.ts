@@ -1,11 +1,11 @@
-import { CheckIn, GPSFix } from 'models'
 import querystring from 'query-string'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
-import uuidv5 from 'uuid/v5'
 
-const UUID_NAMESPACE = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
+import { getDeviceUuid } from 'helpers/uuid'
+import { CheckIn, GPSFix } from 'models'
+
 
 const UrlPropertyNames = {
   BoatId: 'boat_id',
@@ -33,9 +33,7 @@ export const BodyKeys = {
 }
 
 
-const createUuid = (id: string) => uuidv5(id, UUID_NAMESPACE)
-
-export const getDeviceId = () => createUuid(DeviceInfo.getUniqueID())
+export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueID())
 
 export const extractData = (url: string) => {
   if (!url) {
@@ -114,7 +112,7 @@ const gpsFixPostItem = (fix: GPSFix) => fix && ({
 })
 
 export const gpsFixPostData = (fixes: GPSFix[]) => fixes && ({
-  [BodyKeys.DeviceUUID]: createUuid(DeviceInfo.getUniqueID()),
+  [BodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueID()),
   [BodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
 })
 

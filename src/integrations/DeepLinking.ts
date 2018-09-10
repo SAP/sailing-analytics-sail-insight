@@ -2,6 +2,7 @@ import branch from 'react-native-branch'
 
 import Logger from 'helpers/Logger'
 import { DeepLinkListener } from 'helpers/types'
+import { getSharingUuid } from 'helpers/uuid'
 
 
 const listeners: DeepLinkListener[] = []
@@ -27,3 +28,57 @@ export const removeListener = (listener: DeepLinkListener) => {
 
 export const lastLinkParams = branch.getLatestReferringParams
 export const installLinkParams = branch.getFirstReferringParams
+
+
+// sharing
+
+export interface SharingData {
+  title: string,
+  contentDescription: string,
+  contentImageUrl?: string,
+  contentMetadata?: {customMetaData: any},
+}
+
+export interface ShareOptions {
+  messageHeader: string,
+  messageBody: string,
+}
+
+export interface Shareable {
+  branchUniversalObject: any,
+  linkProperties: any,
+  shareOptions: any,
+}
+
+export const createSharingData = async (data: SharingData, shareOptions: ShareOptions) => {
+  const branchUniversalObject = await branch.createBranchUniversalObject(
+    getSharingUuid(),
+    data,
+  )
+
+  const linkProperties = { feature: 'share' }
+
+  return {
+    branchUniversalObject,
+    linkProperties,
+    shareOptions,
+  }
+}
+
+export const showShareSheet = async (sharingData: Shareable) => {
+  const { branchUniversalObject, shareOptions, linkProperties } = sharingData
+  if (!branchUniversalObject) {
+    return
+  }
+
+  const { completed, error } = await branchUniversalObject.showShareSheet(
+    shareOptions,
+    linkProperties,
+  )
+  if (error) {
+    Logger.debug('Share session error:', error)
+  }
+  if (completed) {
+    branchUniversalObject.release()
+  }
+}
