@@ -12,3 +12,4 @@ export const $secondaryTextColor = '#777777'
 export const $detailsTextColor = '#333333'
 
 export const $primaryActiveColor = '#F0AB00'
+export const $primaryInactiveColor = '#D9D9D9'

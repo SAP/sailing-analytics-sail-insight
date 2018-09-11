@@ -3,8 +3,9 @@ import { createStackNavigator } from 'react-navigation'
 
 import Images from '@assets/Images'
 import I18n from 'i18n'
+import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
-import { button, navigation } from 'styles/commons'
+import { button } from 'styles/commons'
 
 import GradientNavigationBar from 'components/GradientNavigationBar'
 import ImageButton from 'components/ImageButton'
@@ -59,6 +60,6 @@ export default createStackNavigator(
     initialRouteName: Screens.RegisterName,
     mode: 'card',
     headerMode: 'screen',
-    navigationOptions: { headerTitleStyle: navigation.headerTitle },
+    navigationOptions: () => commons.headerNavigationOptions,
   },
 )

@@ -12,7 +12,7 @@ import Text from 'components/Text'
 
 class TrackingProperty extends React.Component<{
   style?: StyleSheetType,
-  title: string,
+  title?: string,
   value: string,
   unit?: string,
   titleFontSize?: number,
@@ -51,13 +51,16 @@ class TrackingProperty extends React.Component<{
         onPress={onPress}
         disabled={!onPress}
       >
-        <Text
-          style={[styles.title, titleFontSize && { fontSize: titleFontSize }]}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
-          {title && title.toUpperCase()}
-        </Text>
+        {
+          title &&
+          <Text
+            style={[styles.title, titleFontSize && { fontSize: titleFontSize }]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {title && title.toUpperCase()}
+          </Text>
+        }
         <View style={styles.valueContainer} onLayout={this.onValueContainerLayout}>
           <View style={styles.innerValueContainer}>
             <Text style={[styles.value, valueFontSize && { fontSize: valueFontSize }]}>

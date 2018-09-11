@@ -22,10 +22,12 @@ export const Account = 'Account'
 export const Sessions = 'Sessions'
 
 // tracking
+export const TrackingNavigator = 'TrackingNavigator'
 export const Tracking = 'Tracking'
 export const TrackingSetup = 'TrackingSetup'
 export const TrackingSetupAction = 'TrackingSetupAction'
 export const ManeuverMonitor = 'ManeuverMonitor'
+export const SetWind = 'SetWind'
 
 // auth
 export const Register = 'Register'

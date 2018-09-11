@@ -9,7 +9,7 @@ import TrackingProperty from 'components/TrackingProperty'
 import { responsiveFontSize } from 'helpers/screen'
 
 
-const valuePercentage = (titlePercentage: number) => 0.95 - titlePercentage
+const valuePercentage = (titlePercentage: number) => 0.90 - titlePercentage
 const VALUE_TO_UNIT = 0.36
 
 class TrackingPropertyAutoFit extends React.Component<{

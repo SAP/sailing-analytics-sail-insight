@@ -9,7 +9,7 @@ import {  stopLocationTracking } from 'actions/locations'
 import { durationText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateBack, navigateToManeuverMonitor } from 'navigation'
+import { navigateBack, navigateToManeuverMonitor, navigateToSetWind } from 'navigation'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { button, container } from 'styles/commons'
 import styles from './styles'
@@ -61,7 +61,7 @@ class Tracking extends React.Component<{
   }
 
   public onSetWindPress = () => {
-    // TODO: navigate to set wind
+    navigateToSetWind()
   }
 
   public render() {

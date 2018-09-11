@@ -2,8 +2,8 @@ import React from 'react'
 import { createStackNavigator } from 'react-navigation'
 
 import I18n from 'i18n'
+import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
-import { navigation } from 'styles/commons'
 
 import ModalBackButton from 'components/ModalBackButton'
 import EditSession from 'containers/session/EditSession'
@@ -30,6 +30,6 @@ export default createStackNavigator(
     initialRouteName: Screens.TrackingSetup,
     mode: 'card',
     headerMode: 'screen',
-    navigationOptions: { headerTitleStyle: navigation.headerTitle },
+    navigationOptions: () => commons.headerNavigationOptions,
   },
 )
