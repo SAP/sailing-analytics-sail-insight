@@ -55,15 +55,18 @@ export const checkOut = (data: CheckIn) => async (dispatch: Dispatch) => {
   await dispatch(removeCheckIn(data))
 }
 
-export const insertTestCheckIns = () => (dispatch: Dispatch) => {
+export const insertTestCheckIns = () => async (dispatch: Dispatch) => {
   // tslint:disable-next-line
   const testUrl1 = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'
   // tslint:disable-next-line
   const testUrl2 = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel+Massenstart+2&competitor_id=5d57168f-6f62-4551-8312-d13ab5f2eb83'
   // tslint:disable-next-line
   const testUrl3 = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=2779a422-63e8-492c-a648-7c17bffa64f4&leaderboard_name=Havel-Massenstart-03&competitor_id=3947cddd-f52b-43b2-9390-cd54b9eb9f12'
+  // tslint:disable-next-line
+  const testUrl4 = 'https://dev.sapsailing.com/tracking/checkin?event_id=3c9ddca7-d5e4-4c24-8e31-49747efc9972&leaderboard_name=Dorians+Havelregatta+01&competitor_id=9141957d-3e53-4512-9a9b-5f52c9233900'
 
   // dispatch(checkIn(testUrl1))
   // dispatch(checkIn(testUrl2))
   // dispatch(checkIn(testUrl3))
+  // dispatch(checkIn(await dispatch(fetchCheckIn(testUrl4))))
 }

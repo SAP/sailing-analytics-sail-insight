@@ -1,8 +1,8 @@
 import React from 'react'
 import { createStackNavigator } from 'react-navigation'
 
+import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
-import { navigation } from 'styles/commons'
 
 import HeaderTitle from 'components/HeaderTitle'
 import SessionDetail from 'containers/session/SessionDetail'
@@ -41,6 +41,6 @@ export default createStackNavigator(
     initialRouteName: Screens.Splash,
     mode: 'card',
     headerMode: 'screen',
-    navigationOptions: { headerTitleStyle: navigation.headerTitle },
+    navigationOptions: () => commons.headerNavigationOptions,
   },
 )

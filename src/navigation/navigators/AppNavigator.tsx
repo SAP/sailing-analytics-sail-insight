@@ -3,20 +3,18 @@ import { createStackNavigator } from 'react-navigation'
 
 import I18n from 'i18n'
 
-import { $primaryBackgroundColor } from 'styles/colors'
-import { navigation as navigationStyles } from 'styles/commons'
-
+import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 
 import ModalBackButton from 'components/ModalBackButton'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
-import Tracking from 'containers/tracking/Tracking'
 
 import MainNavigator from './MainNavigator'
 import NewSessionNavigator from './NewSessionNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
+import TrackingNavigator from './TrackingNavigator'
 
 
 export default createStackNavigator(
@@ -29,13 +27,7 @@ export default createStackNavigator(
       },
     },
     [Screens.NewSession]: { screen: NewSessionNavigator, navigationOptions: { header: null } },
-    [Screens.Tracking]: {
-      screen: Tracking,
-      navigationOptions: {
-        gesturesEnabled: false,
-        header: null,
-      },
-    },
+    [Screens.TrackingNavigator]: { screen: TrackingNavigator, navigationOptions: { header: null } },
     [Screens.QRScanner]: {
       screen: QRScanner,
       navigationOptions: () => ({
@@ -63,11 +55,6 @@ export default createStackNavigator(
     initialRouteName: Screens.Main,
     mode: 'modal',
     headerMode: 'screen',
-    navigationOptions: (options: any) => ({
-      headerTitleStyle: navigationStyles.headerTitle,
-      headerStyle: {
-        backgroundColor: $primaryBackgroundColor,
-      },
-    }),
+    navigationOptions: () => commons.headerNavigationOptions,
   },
 )

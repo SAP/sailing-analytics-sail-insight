@@ -7,6 +7,7 @@
   "title_your_boat": "Dein Boot",
   "title_maneuver_monitor": "Manöver-Monitor",
   "title_edit_session": "Bearbeiten",
+  "title_set_wind": "Wind setzen",
   
   "text_more_information_at" : "Mehr Informationen auf",
   "text_device_id": "Geräte-ID",
@@ -98,6 +99,8 @@
   "caption_set_wind": "Wind",
   "caption_join_race": "Teilnehmen",
   "caption_accept": "Übernehmen",
+  "caption_angle": "Winkel",
+  "caption_speed": "Geschwindigkeit",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Upsi, da ist was schief gegangen.\nBitte versuche es nochmal!",
