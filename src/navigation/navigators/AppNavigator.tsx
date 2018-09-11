@@ -27,7 +27,10 @@ export default createStackNavigator(
       },
     },
     [Screens.NewSession]: { screen: NewSessionNavigator, navigationOptions: { header: null } },
-    [Screens.TrackingNavigator]: { screen: TrackingNavigator, navigationOptions: { header: null } },
+    [Screens.TrackingNavigator]: {
+      screen: TrackingNavigator,
+      navigationOptions: { header: null, gesturesEnabled: false },
+    },
     [Screens.QRScanner]: {
       screen: QRScanner,
       navigationOptions: () => ({
