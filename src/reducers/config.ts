@@ -3,6 +3,7 @@ export const ENTITIES_REDUCER_NAME = 'entities'
 export const LOCATION_TRACKING_REDUCER_NAME = 'locationTracking'
 export const NETWORK_REDUCER_NAME = 'network'
 export const FORM_REDUCER_NAME = 'form'
+export const ONBOARDING_REDUCER_NAME = 'onboarding'
 
 
 // location tracking reducer
@@ -17,3 +18,9 @@ export const HEADING_IN_DEG_KEY = 'headingInDeg'
 export const DISTANCE_KEY = 'distance'
 export const LAST_LATITUDE_KEY = 'lastLatitude'
 export const LAST_LONGITUDE_KEY = 'lastLongitude'
+
+
+export const OnboardingReducerKeys = {
+  JOIN_DISMISSED_AT_KEY: 'joinRegattaDismissedAt',
+  ACCOUNT_DISMISSED_AT_KEY: 'createAccountDismissedAt',
+}

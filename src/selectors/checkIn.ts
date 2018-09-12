@@ -1,4 +1,4 @@
-import { values } from 'lodash'
+import { isEmpty, values } from 'lodash'
 import { createSelector } from 'reselect'
 
 import { CheckIn } from 'models'
@@ -46,6 +46,11 @@ export const getCheckInList = createSelector(
       ...(checkIn.markId && { mark: markEntity && markEntity[checkIn.markId] }),
     })
   },
+)
+
+export const isCheckInListEmpty = createSelector(
+  getCheckInList,
+  (checkInList: any[]) => isEmpty(checkInList),
 )
 
 export const getTrackedEvent = createSelector(

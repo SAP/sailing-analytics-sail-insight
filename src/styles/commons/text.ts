@@ -15,7 +15,7 @@ export default EStyleSheet.create({
   },
   claim: {
     alignSelf: 'stretch',
-    fontSize: 20,
+    fontSize: '$claimFontSize',
     fontWeight: 'bold',
   },
   claimHighlighted: {

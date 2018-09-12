@@ -48,7 +48,9 @@ export default EStyleSheets.create({
     height: 45,
     padding: 10.5,
     borderRadius: 22.5,
-    borderColor: 'black',
+    resizeMode: 'contain',
+    tintColor: '$secondaryButtonColor',
+    borderColor: '$secondaryButtonColor',
     borderWidth: 2,
   },
 })

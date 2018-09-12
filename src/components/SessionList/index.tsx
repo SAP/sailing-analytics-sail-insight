@@ -20,6 +20,7 @@ class SessionList extends React.Component<{
   onScrollEndDrag?: () => void,
   onMomentumScrollBegin?: () => void,
   onMomentumScrollEnd?: () => void,
+  renderHeader?: any,
 } > {
 
   public componentDidMount() {

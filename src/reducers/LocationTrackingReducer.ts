@@ -11,6 +11,7 @@ import {
   updateUnsentGpsFixCount,
 } from 'actions/locations'
 import { distanceInM } from 'helpers/physics'
+import { itemUpdateHandler } from 'helpers/reducers'
 import { GPSFix } from 'models'
 import {
   DISTANCE_KEY,
@@ -40,11 +41,6 @@ const initialState = {
   [LAST_LATITUDE_KEY]: null,
   [LAST_LONGITUDE_KEY]: null,
 }
-
-const itemUpdateHandler = (itemKey: string) => (state: any = {}, action: any) => ({
-  ...state,
-  [itemKey]: action && action.payload,
-})
 
 const reducer = handleActions(
   {

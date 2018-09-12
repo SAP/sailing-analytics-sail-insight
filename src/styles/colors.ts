@@ -2,6 +2,7 @@ export const $primaryBackgroundColor = 'white'
 export const $secondaryBackgroundColor = '#EEEEEE'
 
 export const $primaryButtonColor = '#008FD3'
+export const $secondaryButtonColor = 'black'
 export const $importantHighlightColor = '#D0021B'
 
 export const $improvementColor = '#7ED321'
