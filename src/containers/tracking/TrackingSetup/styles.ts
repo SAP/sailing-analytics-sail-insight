@@ -16,10 +16,6 @@ export default EStyleSheets.create({
     width: '$defaultIconSize',
     height: '$defaultIconSize',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
   keyValue: {
     marginTop: 12,
   },

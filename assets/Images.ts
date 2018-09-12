@@ -29,6 +29,7 @@ export default {
     boat: require('./img/icons/icon-boat.png'),
     location: require('./img/icons/icon-place.png'),
     coloredBoat: require('./img/colored_boat.png'),
+    coloredUser: require('./img/colored_user.png'),
     arrowUp: require('./img/icons/icon-arrow-up.png'),
     arrowDown: require('./img/icons/icon-arrow-down.png'),
   },

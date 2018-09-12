@@ -66,6 +66,10 @@
   "text_share_session_description" : "Hey! Join me for a ride! Where?: {{venue}}.",
   "text_share_session_message_header" : "Du solltest mit mir segeln gehen",
   "text_share_session_message_body" : "Hey!\nIch gehe segeln. Mach doch mit! \n\nKlicke auf den Link, um weitere Details zu sehen: ",
+  "text_empty_sessions_join_title": "Verwende SAP Sail InSight, um an einer Regatta teilzunehmen und sie zu tracken",
+  "text_empty_sessions_join_text": "Nutze den QR-Code-Scanner, um teilzunehmen.",
+  "text_empty_sessions_account_title": "Willst du dich selbst tracken?",
+  "text_empty_sessions_account_text": "Registriere dich und erfahre, was SAP Sail InSight alles kann.",
 
   "caption_ok": "OK",
   "caption_cancel": "Abbrechen",
@@ -101,6 +105,8 @@
   "caption_accept": "Übernehmen",
   "caption_angle": "Winkel",
   "caption_speed": "Geschwindigkeit",
+  "caption_join_regatta": "Nimm an einer Regatta teil",
+  "caption_create_free_account": "Kostenloses Konto erstellen",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Upsi, da ist was schief gegangen.\nBitte versuche es nochmal!",

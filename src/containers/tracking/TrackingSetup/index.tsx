@@ -3,7 +3,7 @@ import { Alert, View } from 'react-native'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
-import { button, container } from 'styles/commons'
+import { button, container, text } from 'styles/commons'
 import styles from './styles'
 
 import { shareSessionFromForm } from 'actions/sessions'
@@ -57,7 +57,7 @@ class TrackingSetup extends React.Component<{
 
   public renderTitle({ input: { value } }: any) {
     return (
-      <Text style={styles.title}>{value}</Text>
+      <Text style={text.claim}>{value}</Text>
     )
   }
 

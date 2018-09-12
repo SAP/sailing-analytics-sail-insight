@@ -27,12 +27,12 @@ export default EStyleSheet.create({
   },
   actionText: {
     color: 'white',
-    fontSize: 20,
+    fontSize: '$claimFontSize',
   },
   trackingActionText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: '$claimFontSize',
     letterSpacing: -0.5,
   },
   trackingAction: {

@@ -13,6 +13,7 @@ import I18n from 'i18n'
 import { generateNewSession } from 'services/SessionService'
 import styles from './styles'
 
+import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import IconText from 'components/IconText'
 import SessionList from 'components/SessionList'
 
@@ -50,6 +51,10 @@ class Sessions extends React.Component<{
     )
   }
 
+  public renderHeader() {
+    return <EmptySessionsHeader/>
+  }
+
   public render() {
     return (
       <View style={container.list}>
@@ -59,6 +64,7 @@ class Sessions extends React.Component<{
           onScrollEndDrag={this.showAdd}
           onMomentumScrollBegin={this.hideAdd}
           onMomentumScrollEnd={this.showAdd}
+          renderHeader={this.renderHeader}
         />
         {this.renderAddItem()}
       </View>
