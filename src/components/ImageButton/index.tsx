@@ -1,17 +1,14 @@
 import React from 'react'
-import { Image, TouchableOpacity } from 'react-native'
+import { Image, ImageProps, ImageStyle,  TouchableOpacity } from 'react-native'
 
+import { OnPressType } from 'helpers/types'
 import { $defaultImageButtonSize } from 'styles/dimensions'
-
-import { ImageSource, StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 
-class ImageButton extends React.Component<{
-  style?: StyleSheetType,
-  imageStyle?: StyleSheetType,
-  source?: ImageSource,
-  onPress?: () => void,
+class ImageButton extends React.Component<ImageProps & {
+  imageStyle?: ImageStyle,
+  onPress?: OnPressType,
   circular?: boolean,
   autoWidth?: boolean,
   activeOpacity?: number,
@@ -40,6 +37,7 @@ class ImageButton extends React.Component<{
       imageStyle,
       source,
       onPress,
+      activeOpacity,
       ...remainingProps
     } = this.props
 
@@ -55,11 +53,12 @@ class ImageButton extends React.Component<{
         onLayout={this.handleContentSizeChange}
         style={touchableStyle}
         onPress={onPress}
-        {...remainingProps}
+        activeOpacity={activeOpacity}
       >
         <Image
           source={source}
           style={[styles.imageStyle, imageStyle]}
+          {...remainingProps}
         />
       </TouchableOpacity>
     )

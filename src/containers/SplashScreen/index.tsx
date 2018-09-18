@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, View } from 'react-native'
+import { Image, View, ViewProps } from 'react-native'
 
 import Images from '@assets/Images'
 import { container } from 'styles/commons'
@@ -8,9 +8,7 @@ import styles from './styles'
 import WaveActivityIndicator from 'components/WaveActivityIndicator'
 
 
-class SplashScreen extends React.Component<{
-  navigation: any,
-} > {
+class SplashScreen extends React.Component<ViewProps> {
 
   public render() {
     return (

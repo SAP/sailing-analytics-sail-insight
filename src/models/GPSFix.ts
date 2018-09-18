@@ -1,3 +1,13 @@
+export const ApiBodyKeys = {
+  Fixes: 'fixes',
+  Course: 'course',
+  Latitude: 'latitude',
+  Longitude: 'longitude',
+  Speed: 'speed',
+  Timestamp: 'timestamp',
+  DeviceUUID: 'deviceUuid',
+}
+
 export default class GPSFix {
   public speedInKnots: number | null
   public bearingInDeg: number | null

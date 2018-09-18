@@ -5,32 +5,8 @@ import parse from 'url-parse'
 
 import { getDeviceUuid } from 'helpers/uuid'
 import { CheckIn, GPSFix } from 'models'
-
-
-const UrlPropertyNames = {
-  BoatId: 'boat_id',
-  EventId: 'event_id',
-  LeaderboardName: 'leaderboard_name',
-  CompetitorId: 'competitor_id',
-  MarkId: 'mark_id',
-}
-
-export const BodyKeys = {
-  BoatId: 'boatId',
-  CompetitorId: 'competitorId',
-  DeviceType: 'deviceType',
-  DeviceUUID: 'deviceUuid',
-  Fixes: 'fixes',
-  FixesCourse: 'course',
-  FixesLatitude: 'latitude',
-  FixesLongitude: 'longitude',
-  FixesSpeed: 'speed',
-  FixesTimestamp: 'timestamp',
-  FromMillis: 'fromMillis',
-  MarkId: 'markId',
-  PushDeviceID: 'pushDeviceId',
-  ToMillis: 'toMillis',
-}
+import { ApiBodyKeys as CheckInBodyKeys } from 'models/CheckIn'
+import { ApiBodyKeys as GPSFixBodyKeys } from 'models/GPSFix'
 
 
 export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueID())
@@ -48,17 +24,8 @@ export const extractData = (url: string) => {
     return null
   }
 
-  const checkIn = new CheckIn(
-    serverUrl,
-    queryData[UrlPropertyNames.EventId],
-    queryData[UrlPropertyNames.LeaderboardName],
-    false,
-    queryData[UrlPropertyNames.CompetitorId],
-    queryData[UrlPropertyNames.BoatId],
-    queryData[UrlPropertyNames.MarkId],
-  )
-
-  return checkIn.isValid() ? checkIn : null
+  const checkIn = CheckIn.createInstanceFromUrl(serverUrl, queryData)
+  return checkIn && checkIn.isValid() ? checkIn : null
 }
 
 export const checkInDeviceMappingData = (checkInData: CheckIn) => {
@@ -72,13 +39,13 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
   } = checkInData
 
   const body = {
-    [BodyKeys.DeviceType]: Platform.OS,
-    [BodyKeys.DeviceUUID]: getDeviceId(),
-    [BodyKeys.FromMillis]: new Date().getTime(),
-    [BodyKeys.PushDeviceID]: '',
-    ...(boatId && { [BodyKeys.BoatId]: boatId }),
-    ...(competitorId && { [BodyKeys.CompetitorId]: competitorId }),
-    ...(markId && { [BodyKeys.MarkId]: markId }),
+    [CheckInBodyKeys.DeviceType]: Platform.OS,
+    [CheckInBodyKeys.DeviceUUID]: getDeviceId(),
+    [CheckInBodyKeys.FromMillis]: new Date().getTime(),
+    [CheckInBodyKeys.PushDeviceID]: '',
+    ...(boatId && { [CheckInBodyKeys.BoatId]: boatId }),
+    ...(competitorId && { [CheckInBodyKeys.CompetitorId]: competitorId }),
+    ...(markId && { [CheckInBodyKeys.MarkId]: markId }),
   }
   return body
 }
@@ -94,26 +61,26 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   } = checkInData
 
   const body = {
-    [BodyKeys.DeviceUUID]: getDeviceId(),
-    [BodyKeys.ToMillis]: new Date().getTime(),
-    ...(boatId && { [BodyKeys.BoatId]: boatId }),
-    ...(competitorId && { [BodyKeys.CompetitorId]: competitorId }),
-    ...(markId && { [BodyKeys.MarkId]: markId }),
+    [CheckInBodyKeys.DeviceUUID]: getDeviceId(),
+    [CheckInBodyKeys.ToMillis]: new Date().getTime(),
+    ...(boatId && { [CheckInBodyKeys.BoatId]: boatId }),
+    ...(competitorId && { [CheckInBodyKeys.CompetitorId]: competitorId }),
+    ...(markId && { [CheckInBodyKeys.MarkId]: markId }),
   }
   return body
 }
 
 const gpsFixPostItem = (fix: GPSFix) => fix && ({
-  [BodyKeys.FixesLatitude]: fix.latitude,
-  [BodyKeys.FixesLongitude]: fix.longitude,
-  [BodyKeys.FixesTimestamp]: fix.timeMillis,
-  [BodyKeys.FixesCourse]: fix.bearingInDeg || 0,
-  [BodyKeys.FixesSpeed]: fix.speedInKnots || 0,
+  [GPSFixBodyKeys.Latitude]: fix.latitude,
+  [GPSFixBodyKeys.Longitude]: fix.longitude,
+  [GPSFixBodyKeys.Timestamp]: fix.timeMillis,
+  [GPSFixBodyKeys.Course]: fix.bearingInDeg || 0,
+  [GPSFixBodyKeys.Speed]: fix.speedInKnots || 0,
 })
 
 export const gpsFixPostData = (fixes: GPSFix[]) => fixes && ({
-  [BodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueID()),
-  [BodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
+  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueID()),
+  [GPSFixBodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
 })
 
 export const eventUrl = (checkInData: any) =>

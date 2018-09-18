@@ -1,15 +1,15 @@
 import React from 'react'
+import { ViewStyle } from 'react-native'
 import RNSlider from 'react-native-slider'
 
-import { StyleSheetType } from 'helpers/types'
 import { $primaryInactiveColor, $primaryTextColor } from 'styles/colors'
 import styles from './styles'
 
 
 class Slider extends React.Component<{
-  style?: StyleSheetType,
-  thumbStyle?: StyleSheetType,
-  trackStyle?: StyleSheetType,
+  style?: ViewStyle,
+  thumbStyle?: ViewStyle,
+  trackStyle?: ViewStyle,
   thumbTintColor?: string,
   minimumTrackTintColor?: string,
   maximumTrackTintColor?: string,

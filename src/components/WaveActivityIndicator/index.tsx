@@ -1,18 +1,15 @@
 import React from 'react'
 import {
-  View,
+  View, ViewProps,
 } from 'react-native'
 
 import Images from '@assets/Images'
-import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 import Image from 'components/Image'
 
 
-class WaveActivityIndicator extends React.Component<{
-  style?: StyleSheetType,
-} > {
+class WaveActivityIndicator extends React.Component<ViewProps> {
   public static defaultProps = {
     size: 'small',
   }

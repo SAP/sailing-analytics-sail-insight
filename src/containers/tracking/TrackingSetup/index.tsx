@@ -26,7 +26,6 @@ import TextButton from 'components/TextButton'
 
 
 class TrackingSetup extends React.Component<{
-  navigation: any,
   session: Session,
   boat: any,
   shareSessionFromForm: (formName: string) => void,
@@ -73,7 +72,7 @@ class TrackingSetup extends React.Component<{
                 component={this.renderTitle}
               />
               <ImageButton
-                style={styles.edit}
+                style={button.secondaryActionIcon}
                 source={Images.actions.pen}
                 onPress={this.onEditPress}
               />
@@ -159,5 +158,5 @@ export default connect(
   form: sessionForm.SESSION_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
-})(TrackingSetup))
+})((props: any) => <TrackingSetup {...props}/>))
 

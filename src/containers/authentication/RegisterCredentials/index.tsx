@@ -21,7 +21,6 @@ import TextButton from 'components/TextButton'
 
 
 class RegisterCredentials extends TextInputForm<{
-  navigation: any,
   valid?: boolean,
   isStepValid: boolean,
 } > {
@@ -30,6 +29,10 @@ class RegisterCredentials extends TextInputForm<{
       // TODO: API create user, reset navigation to remove previous steps
       navigateToUserRegistrationBoat()
     }
+  }
+
+  public renderField(props: any) {
+    return <FormTextInput {...props}/>
   }
 
   public render() {
@@ -50,7 +53,7 @@ class RegisterCredentials extends TextInputForm<{
           <Field
             label={I18n.t('text_placeholder_your_email')}
             name={FORM_KEY_EMAIL}
-            component={FormTextInput}
+            component={this.renderField}
             validate={[validateRequired, validateEmail]}
             keyboardType={'email-address'}
             returnKeyType="next"
@@ -61,7 +64,7 @@ class RegisterCredentials extends TextInputForm<{
             style={styles.password}
             label={I18n.t('text_placeholder_enter_password')}
             name={FORM_KEY_PASSWORD}
-            component={FormTextInput}
+            component={this.renderField}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="go"
@@ -94,4 +97,4 @@ export default connect(
   form: REGISTRATION_FORM_NAME,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
-})(RegisterCredentials))
+})((props: any) => <RegisterCredentials {...props}/>))

@@ -1,15 +1,12 @@
 import React from 'react'
 import {
-  Text as RText,
+  Text as RText, TextProps,
 } from 'react-native'
 
-import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 
-class Text extends React.Component<{
-  style?: StyleSheetType,
-} > {
+class Text extends React.Component<TextProps> {
   public render() {
     const { children, style, ...remainingProps } = this.props
     return (

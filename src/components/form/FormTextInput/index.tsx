@@ -1,14 +1,12 @@
 import React from 'react'
-
-import { StyleSheetType } from 'helpers/types'
+import { ViewProps } from 'react-native'
 
 import TextInput from 'components/TextInput'
 
 
-class FormTextInput extends React.Component<{
+class FormTextInput extends React.Component<ViewProps & {
   firstLine?: string,
   secondLine?: string,
-  style?: StyleSheetType,
   label?: string,
   input?: any,
   meta?: any,

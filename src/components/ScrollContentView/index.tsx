@@ -1,17 +1,10 @@
 import React from 'react'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView, KeyboardAwareScrollViewProps } from 'react-native-keyboard-aware-scroll-view'
 
-import { StyleSheetType } from 'helpers/types'
 import { container } from 'styles/commons'
 
 
-class ScrollContentView extends React.Component<{
-  style?: StyleSheetType,
-  contentContainerStyle?: StyleSheetType,
-  bounces?: boolean,
-  extraHeight?: number,
-}> {
-
+class ScrollContentView extends React.Component<KeyboardAwareScrollViewProps> {
   public render() {
     const {
       children,

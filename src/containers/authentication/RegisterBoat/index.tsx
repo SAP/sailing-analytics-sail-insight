@@ -26,7 +26,6 @@ import { registration } from 'styles/components'
 
 
 class RegisterBoat extends TextInputForm<{
-  navigation: any,
   valid?: boolean,
   isStepValid: boolean,
 } > {
@@ -39,6 +38,10 @@ class RegisterBoat extends TextInputForm<{
       // TODO: update API user with boat information and create boat
       // TODO: navigate back, finalize form
     }
+  }
+
+  public renderField(props: any) {
+    return <FormTextInput {...props}/>
   }
 
   public render() {
@@ -56,7 +59,7 @@ class RegisterBoat extends TextInputForm<{
           <Field
             label={I18n.t('text_placeholder_boat_name')}
             name={FORM_KEY_BOAT_NAME}
-            component={FormTextInput}
+            component={this.renderField}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
@@ -67,7 +70,7 @@ class RegisterBoat extends TextInputForm<{
             style={styles.inputMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={FORM_KEY_BOAT_CLASS}
-            component={FormTextInput}
+            component={this.renderField}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
@@ -79,7 +82,7 @@ class RegisterBoat extends TextInputForm<{
             style={styles.inputMargin}
             label={I18n.t('text_placeholder_sail_number')}
             name={FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
+            component={this.renderField}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="go"
@@ -120,4 +123,4 @@ export default connect(
   form: REGISTRATION_FORM_NAME,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
-})(RegisterBoat))
+})((props: any) => <RegisterBoat {...props}/>))

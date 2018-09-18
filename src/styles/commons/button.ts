@@ -3,6 +3,8 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 export default EStyleSheet.create({
   $textButtonTextColor: '$primaryButtonColor',
   $textButtonTextFontSize: 16,
+  $actionIconPadding: 4,
+  $actionIconSizeAddition: '$actionIconPadding*2',
   action: {
     backgroundColor: '$primaryButtonColor',
     padding: 8,
@@ -65,5 +67,11 @@ export default EStyleSheet.create({
     height: '$defaultIconSize',
     marginLeft: 20,
     marginRight: 20,
+  },
+  secondaryActionIcon: {
+    tintColor: '$secondaryButtonColor',
+    width: '$defaultIconSize+$actionIconSizeAddition',
+    height: '$defaultIconSize+$actionIconSizeAddition',
+    padding: '$actionIconPadding',
   },
 })

@@ -12,10 +12,6 @@ export default EStyleSheets.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  edit: {
-    width: '$defaultIconSize',
-    height: '$defaultIconSize',
-  },
   keyValue: {
     marginTop: 12,
   },

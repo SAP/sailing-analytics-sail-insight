@@ -1,19 +1,19 @@
-import { StyleSheetType } from 'helpers/types'
 import { isEmpty, isNumber, isString } from 'lodash'
 import React from 'react'
 import {
   Image as RNImage,
   ImageBackground as RNImageBackground,
-  ImageSourcePropType,
+  ImageProps,
+  ImageStyle,
   StyleSheet,
   View,
+  ViewProps,
 } from 'react-native'
-import FastImage from 'react-native-fast-image'
+import FastImage, { FastImageProperties } from 'react-native-fast-image'
 
 
-class Image extends React.Component<{
-  source: ImageSourcePropType,
-  style?: StyleSheetType,
+class Image extends React.Component<ViewProps & FastImageProperties & ImageProps & {
+  style?: ImageStyle | any,
   disableCache?: boolean,
 } > {
 

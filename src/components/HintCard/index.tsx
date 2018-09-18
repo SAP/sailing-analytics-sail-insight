@@ -1,8 +1,7 @@
 import React from 'react'
-import { Image, View } from 'react-native'
+import { Image, ImageSourcePropType, View, ViewProps } from 'react-native'
 
 import Images from '@assets/Images'
-import { ImageSource, StyleSheetType } from 'helpers/types'
 import { button, container, text as textStyles } from 'styles/commons'
 import { registration } from 'styles/components'
 import styles from './styles'
@@ -12,9 +11,8 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
 
-class HintCard extends React.Component<{
-  style?: StyleSheetType,
-  imageSource: ImageSource,
+class HintCard extends React.Component<ViewProps & {
+  imageSource: ImageSourcePropType,
   onPress?: () => void,
   onCancelPress?: () => void,
   title?: string,

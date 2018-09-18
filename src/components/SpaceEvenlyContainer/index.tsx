@@ -1,15 +1,11 @@
-import { get } from 'lodash'
+import { get, isArray } from 'lodash'
 import React from 'react'
-import { View } from 'react-native'
+import { View, ViewProps } from 'react-native'
 
-import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 
-class SpaceEvenlyContainer extends React.Component<{
-  style?: StyleSheetType,
-  children: any[],
-} > {
+class SpaceEvenlyContainer extends React.Component<ViewProps> {
   public state = {
     maxWidth: 20,
     maxHeight: 20,
@@ -49,7 +45,7 @@ class SpaceEvenlyContainer extends React.Component<{
     const { children, style, ...remaining } = this.props
     return (
       <View style={[styles.defaultContainer, style]} {...remaining}>
-        {children && children.map(this.renderChild)}
+        {isArray(children) ? children.map(this.renderChild) : children}
       </View>
     )
   }

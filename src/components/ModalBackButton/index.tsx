@@ -1,8 +1,7 @@
 import React from 'react'
-import { Image, TouchableOpacity } from 'react-native'
+import { Image, TouchableOpacity, ViewProps } from 'react-native'
 
 import Images from '@assets/Images'
-import { StyleSheetType } from 'helpers/types'
 import I18n from 'i18n'
 import { navigateBack } from 'navigation'
 import { button } from 'styles/commons'
@@ -11,8 +10,7 @@ import styles from './styles'
 import TextButton from 'components/TextButton'
 
 
-class ModalBackButton extends React.Component<{
-  style?: StyleSheetType,
+class ModalBackButton extends React.Component<ViewProps & {
   onPress?: () => void,
   type?: 'icon' | 'text',
 }> {

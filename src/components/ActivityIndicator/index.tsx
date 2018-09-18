@@ -1,26 +1,17 @@
 import React from 'react'
 import {
   ActivityIndicator,
+  ActivityIndicatorProps,
   View,
 } from 'react-native'
 
 
-import styles from './styles'
-
-class Spinner extends React.Component<{
-  size?: number | 'small' | 'large',
-  style?: any,
-  color?: string,
-} > {
-  public static defaultProps = {
-    size: 'small',
-  }
-
+class Spinner extends React.Component<ActivityIndicatorProps> {
   public render() {
-    const { size, style, color } = this.props
+    const { style, color, ...remainingProps } = this.props
     return (
-      <View style={[styles.spinnerStyle, style]}>
-        <ActivityIndicator size={size} color={color || 'white'} />
+      <View style={style}>
+        <ActivityIndicator color={color || 'white'} {...remainingProps} />
       </View>
     )
   }

@@ -10,6 +10,14 @@ const DEFAULT_HEADERS = {
   'Cache-Control': 'no-cache',
 }
 
+export type Signer = (url: string, method: string, headers: any, body?: any) => any
+
+export interface RequestOptions {
+  method?: string
+  signer?: Signer
+  body?: any,
+}
+
 /**
  * Platform specific headers update because RN appends charset in Android HTTP client,
  * the charset has to be appended before signing otherwise SignatureDoesNotMatch occurs
@@ -28,10 +36,13 @@ const getPlatformHeaders = (headers: any = {}) => {
   }
 }
 
-const defaultSignedHeaders = (url: string, method: string, headers: any, body?: any) => headers
+const defaultSignedHeaders: Signer = (url: string, method: string, headers: any, body?: any) => headers
 
 // eslint-disable-next-line import/prefer-default-export
-export const request = async (url: any, { method = 'GET', signer = defaultSignedHeaders, body = null } = {}) => {
+export const request = async (
+  url: any,
+  { method = 'GET', signer = defaultSignedHeaders, body = null }: RequestOptions = {},
+) => {
   const data = body ? { body: JSON.stringify(body) } : {}
   const fetchOptions = {
     method,

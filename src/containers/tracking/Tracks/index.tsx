@@ -1,18 +1,38 @@
 import React from 'react'
-import { View } from 'react-native'
+import { ListViewDataSource, View } from 'react-native'
+import { connect } from 'react-redux'
 
+import { getListViewDataSource } from 'helpers/utils'
+import { getUserTracks } from 'selectors/checkIn'
 import { container } from 'styles/commons'
+
+import ListView from 'components/ListView'
+import TrackItem from 'components/session/TrackItem'
 
 
 class Tracks extends React.Component<{
-  navigation: any,
+  dataSource: ListViewDataSource,
 } > {
+
+
+  public renderItem(track: any) {
+    return <TrackItem track={track}/>
+  }
 
   public render() {
     return (
-      <View style={container.main}/>
+      <View style={container.list}>
+        <ListView
+          dataSource={this.props.dataSource}
+          renderRow={this.renderItem}
+        />
+      </View>
     )
   }
 }
 
-export default Tracks
+const mapStateToProps = (state: any) => ({
+  dataSource: getListViewDataSource(getUserTracks(state)),
+})
+
+export default connect(mapStateToProps)(Tracks)

@@ -1,20 +1,18 @@
 import React from 'react'
-import { TouchableOpacity } from 'react-native'
+import { TextStyle, TouchableOpacity, ViewProps } from 'react-native'
+
+import { OnPressType } from 'helpers/types'
+import styles from './styles'
 
 import ActivityIndicator from 'components/ActivityIndicator'
 import Text from 'components/Text'
 
-import { StyleSheetType } from 'helpers/types'
-import styles from './styles'
 
-
-class TextButton extends React.Component<{
-  style?: any,
-  children?: any,
-  textStyle?: StyleSheetType,
+class TextButton extends React.Component<ViewProps & {
+  textStyle?: TextStyle,
   isLoading?: boolean,
   disabled?: boolean,
-  onPress?: () => void,
+  onPress?: OnPressType,
   loadingColor?: string,
 } > {
 
