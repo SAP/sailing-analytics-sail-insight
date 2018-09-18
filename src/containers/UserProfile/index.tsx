@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ViewProps } from 'react-native'
 
 import { navigateToUserRegistration } from 'navigation'
 import { container } from 'styles/commons'
@@ -7,9 +7,7 @@ import { container } from 'styles/commons'
 import TextButton from 'components/TextButton'
 
 
-class UserProfile extends React.Component<{
-  navigation: any,
-} > {
+class UserProfile extends React.Component<ViewProps> {
 
   public render() {
     // TODO: remove register button

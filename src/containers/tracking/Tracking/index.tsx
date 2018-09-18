@@ -23,7 +23,6 @@ import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 const EMPTY_VALUE = '-'
 
 class Tracking extends React.Component<{
-  navigation: any,
   stopLocationTracking: () => void,
   trackingStats: LocationStats,
   checkInData: any,

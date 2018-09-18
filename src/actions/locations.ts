@@ -3,7 +3,7 @@ import { createAction } from 'redux-actions'
 
 import api from 'api'
 import Logger from 'helpers/Logger'
-import { Dispatch } from 'helpers/types'
+import { DispatchType } from 'helpers/types'
 import { GPSFix } from 'models'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import * as CheckInService from 'services/CheckInService'
@@ -27,8 +27,8 @@ export const updateDistance = createAction('UPDATE_DISTANCE')
 
 export const startLocationTracking = (
   leaderboardName: string,
-  eventId: string,
-) => async (dispatch: Dispatch) => {
+  eventId?: string,
+) => async (dispatch: DispatchType) => {
   try {
     await dispatch(updateTrackedRegatta({
       leaderboardName,
@@ -44,14 +44,14 @@ export const startLocationTracking = (
   }
 }
 
-export const stopLocationTracking = () => async (dispatch: Dispatch) => {
+export const stopLocationTracking = () => async (dispatch: DispatchType) => {
   await LocationService.changePace(false)
   await LocationService.stop()
   GpsFixService.stopGPSFixUpdatesWhenSynced()
   dispatch(removeTrackedRegatta())
 }
 
-export const handleLocation = (gpsFix: GPSFix) => async (dispatch: Dispatch, getState: () => any) => {
+export const handleLocation = (gpsFix: GPSFix) => async (dispatch: DispatchType, getState: () => any) => {
   if (!gpsFix) {
     return
   }
@@ -74,7 +74,7 @@ export const handleLocation = (gpsFix: GPSFix) => async (dispatch: Dispatch, get
   await dispatch(updateTrackingStatistics(gpsFix))
 }
 
-export const initLocationTracking = () => async (dispatch: Dispatch) => {
+export const initLocationTracking = () => async (dispatch: DispatchType) => {
   const enabled = await LocationService.isEnabled()
   const status = enabled ?
   LocationService.LocationTrackingStatus.RUNNING :

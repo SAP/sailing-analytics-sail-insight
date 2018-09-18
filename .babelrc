@@ -1,9 +1,10 @@
 {
   "presets": [
-    "react-native"
+    "module:metro-react-native-babel-preset"
   ],
   "plugins": [
-    ["transform-inline-environment-variables"],
+    [ "@babel/plugin-proposal-decorators", { "legacy": true } ],
+    [ "transform-inline-environment-variables" ],
     [
       "module-resolver", 
       {

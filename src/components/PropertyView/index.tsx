@@ -1,18 +1,17 @@
 import React from 'react'
 import {
-  View,
+  View, ViewProps,
 } from 'react-native'
 
-
-import Text from 'components/Text'
-import { StyleSheetType } from 'helpers/types'
 import { text } from 'styles/commons'
 import styles from './styles'
 
-class PropertyView extends React.Component<{
+import Text from 'components/Text'
+
+
+class PropertyView extends React.Component<ViewProps & {
   propertyKey?: string,
   propertyValue?: string,
-  style?: StyleSheetType,
 } > {
   public render() {
     const {

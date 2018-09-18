@@ -1,13 +1,17 @@
-import I18n, { SupportedLocales } from 'i18n'
 import {
   get,
   head,
   isNumber,
   isString,
 } from 'lodash'
+import momentDurationSetup from 'moment-duration-format'
 import moment from 'moment/min/moment-with-locales'
+
+import I18n, { SupportedLocales } from 'i18n'
 import Logger from './Logger'
 
+
+momentDurationSetup(moment)
 
 // default format = 'dddd, MMMM DD, YYYY  ·  hh:mm a'
 const defaultLocale = SupportedLocales.en
@@ -58,12 +62,22 @@ export const dateText = (dateValue: string | number, format = 'LL') => {
   return moment(dateValue).locale(supportedLocale).format(get(defaultDateFormat(supportedLocale, format), 'dateFormat'))
 }
 
-export const dateFromToText = (startValue: string | number, endValue: string | number, format = 'L') => {
+export const dateFromToText = (
+  startValue?: string | number,
+  endValue?: string | number,
+  format = 'L',
+  omitSameDay: boolean = true,
+) => {
+  if (!startValue) { return null }
+
   const supportedLocale = getSupportedLocale(I18n.locale)
   const dateFormat = get(defaultDateFormat(supportedLocale, format), 'dateFormat')
 
   const startDate = moment(startValue).locale(supportedLocale)
   const endDate =  moment(endValue).locale(supportedLocale)
+  if (!endValue || (omitSameDay && startDate.isSame(endDate, 'day'))) {
+    return startDate.format(dateFormat)
+  }
   const startFormat = startDate.year() === endDate.year() ? cleanYearFromFormat(dateFormat) : dateFormat
   return `${startDate.format(startFormat)} - ${endDate.format(dateFormat)}`
 }
@@ -73,4 +87,9 @@ export const dateTimeText = (dateValue: string | number) => {
   const formatData = defaultDateFormat(supportedLocale)
   const { timeFormat, dateFormat } = formatData
   return moment(dateValue).locale(supportedLocale).format(`${dateFormat} - ${timeFormat}`)
+}
+
+export const timeText = (seconds: number) => {
+  const duration = moment.duration(seconds, 'seconds')
+  return duration.format('hh:mm:ss')
 }

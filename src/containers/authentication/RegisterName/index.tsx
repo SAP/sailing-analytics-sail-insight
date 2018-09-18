@@ -23,7 +23,6 @@ import TextButton from 'components/TextButton'
 
 
 class RegisterName extends React.Component<{
-  navigation: any,
   valid?: boolean,
   isStepValid: boolean,
 } > {
@@ -36,6 +35,10 @@ class RegisterName extends React.Component<{
 
   public onLoginPress = () => {
     navitateToLogin()
+  }
+
+  public renderField(props: any) {
+    return <FormTextInput {...props}/>
   }
 
   public render() {
@@ -57,7 +60,7 @@ class RegisterName extends React.Component<{
           <Field
             label={I18n.t('text_your_name')}
             name={FORM_KEY_NAME}
-            component={FormTextInput}
+            component={this.renderField}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
@@ -107,4 +110,4 @@ export default connect(
   destroyOnUnmount: false,
   initialValues: {},
   forceUnregisterOnUnmount: true,
-})(RegisterName))
+})((props: any) => <RegisterName {...props}/>))

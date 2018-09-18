@@ -15,7 +15,6 @@ import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFul
 
 
 class QRScanner extends React.Component<{
-  navigation: any,
   fetchCheckIn: (url: string) => any,
 } > {
   public state = {

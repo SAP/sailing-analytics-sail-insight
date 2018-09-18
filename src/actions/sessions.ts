@@ -1,4 +1,4 @@
-import { Dispatch } from 'helpers/types'
+import { DispatchType } from 'helpers/types'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { Session } from 'models'
@@ -28,7 +28,7 @@ export const shareSession = (session: Session) => async () => {
   return showShareSheet(await createSharingData(sharingData, shareOptions))
 }
 
-export const shareSessionFromForm = (formName: string) => async (dispatch: Dispatch, getState: () => any) => {
+export const shareSessionFromForm = (formName: string) => async (dispatch: DispatchType, getState: () => any) => {
   const sessionValues = getValues(formName)(getState())
   return dispatch(shareSession(formValuesToSession(sessionValues)))
 }

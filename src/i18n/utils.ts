@@ -17,6 +17,7 @@ export const pluralizationTranslation = (translationKey: string, values: any) =>
     return I18n.t(translationKey, values)
   }
   let mode
+  // tslint:disable-next-line prefer-for-of
   for (let i = 0; i < valueKeys.length; i += 1) {
     const value = values[valueKeys[i]]
     if (isNumber(value)) {

@@ -1,3 +1,7 @@
 export { default as GPSFix } from './GPSFix'
 export { default as CheckIn } from './CheckIn'
 export { default as Session } from './Session'
+export { default as Event } from './Event'
+export { default as Competitor } from './Competitor'
+export { default as Leaderboard } from './Leaderboard'
+export { default as Race } from './Race'

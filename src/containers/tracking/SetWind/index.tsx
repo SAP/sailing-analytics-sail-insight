@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ViewProps } from 'react-native'
 
 import Images from '@assets/Images'
 import { degToCompass, speedToWindClassification } from 'helpers/physics'
@@ -17,9 +17,7 @@ import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 
 
-class SetWind extends React.Component<{
-  navigation: any,
-} > {
+class SetWind extends React.Component<ViewProps> {
 
   public state: {windAngleInDeg: number, windSpeedInKnots: number} = {
     windAngleInDeg: 180,

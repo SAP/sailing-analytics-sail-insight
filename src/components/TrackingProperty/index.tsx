@@ -1,23 +1,21 @@
 import React from 'react'
 import {
-  Image, TouchableOpacity, View,
+  Image, TextStyle, TouchableOpacity, View, ViewProps,
 } from 'react-native'
 
 import Images from '@assets/Images'
-import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 import Text from 'components/Text'
 
 
-class TrackingProperty extends React.Component<{
-  style?: StyleSheetType,
+class TrackingProperty extends React.Component<ViewProps & {
   title?: string,
   value: string,
   unit?: string,
-  titleFontSize?: number,
-  valueFontSize?: number,
-  unitFontSize?: number,
+  titleStyle?: TextStyle,
+  valueStyle?: TextStyle,
+  unitStyle?: TextStyle,
   onPress?: () => void,
   tendency?: 'up' | 'down',
 } > {
@@ -30,9 +28,9 @@ class TrackingProperty extends React.Component<{
       title,
       value,
       unit,
-      titleFontSize,
-      valueFontSize,
-      unitFontSize,
+      titleStyle,
+      valueStyle,
+      unitStyle,
       onPress,
       tendency,
     } = this.props
@@ -54,7 +52,7 @@ class TrackingProperty extends React.Component<{
         {
           title &&
           <Text
-            style={[styles.title, titleFontSize && { fontSize: titleFontSize }]}
+            style={[styles.title, titleStyle]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
@@ -63,12 +61,12 @@ class TrackingProperty extends React.Component<{
         }
         <View style={styles.valueContainer} onLayout={this.onValueContainerLayout}>
           <View style={styles.innerValueContainer}>
-            <Text style={[styles.value, valueFontSize && { fontSize: valueFontSize }]}>
+            <Text style={[styles.value, valueStyle]}>
               {value}
               {
                 unit &&
                 <Text
-                  style={[styles.unit, unitFontSize && { fontSize: unitFontSize }]}
+                  style={[styles.unit, unitStyle]}
                 >
                   {` ${unit.toUpperCase()}`}
                 </Text>

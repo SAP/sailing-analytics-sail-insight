@@ -1,17 +1,16 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { Header } from 'react-navigation'
+import { Header, HeaderProps } from 'react-navigation'
 
 import styles from './styles'
 
 
-class GradientNavigationBar extends React.Component<{
+class GradientNavigationBar extends React.Component<HeaderProps & {
   transparent: boolean,
-  mode: any,
 } > {
   public render() {
-    const { transparent, mode, ...remainingProps } = this.props
+    const { transparent, ...remainingProps } = this.props
     return (
       <View >
         <LinearGradient

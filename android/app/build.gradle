@@ -74,7 +74,7 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     entryFile: "index.js",
-//    bundleInDebug: true
+    bundleInDebug: true
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -101,8 +101,8 @@ android {
         applicationId "com.dlabs.sailing"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

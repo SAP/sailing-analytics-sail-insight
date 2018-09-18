@@ -1,5 +1,14 @@
-export type StyleSheetType = number | any[] | any
-export type ImageSource = number | string | any
-export type Dispatch = (action: any) => any
-export type DeepLinkListener = (params: any) => void
-export type ShowActionSheet = (...args: any[]) => void
+import { GestureResponderEvent } from 'react-native'
+
+
+export type DispatchType = (action: any) => any
+export type GetStateType = () => any
+export type DeepLinkListenerType = (params: any) => void
+export type ShowActionSheetType = (...args: any[]) => void
+export type OnPressType = (event: GestureResponderEvent) => void
+export type RenderRowType = (
+  rowData: any,
+  sectionID: string | number,
+  rowID: string | number,
+  highlightRow?: boolean,
+) => React.ReactElement<any>

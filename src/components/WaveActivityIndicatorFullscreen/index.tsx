@@ -2,17 +2,15 @@ import React from 'react'
 import {
   StyleSheet,
   View,
+  ViewProps,
 } from 'react-native'
 
-import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 import WaveActivityIndicator from 'components/WaveActivityIndicator'
 
 
-class WaveActivityIndicatorFullscreen extends React.Component<{
-  style?: StyleSheetType,
-} > {
+class WaveActivityIndicatorFullscreen extends React.Component<ViewProps> {
   public static defaultProps = {
     size: 'small',
   }

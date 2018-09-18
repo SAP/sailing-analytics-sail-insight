@@ -48,14 +48,20 @@ const jsonDataArray = async (response: any) => {
  */
 const requestWithHandler = (dataHandler?: (response: any) => any) => async (
   url: string,
-  options?: any,
-  dataSchema?: any,
+  allOptions: RequestHandlerOptions = {},
 ) => {
+  const { dataSchema, processData, ...options } = allOptions
   const response = await networking.request(url, options)
-  const data = await defaultResponseHandler(dataHandler)(response)
+  let data = await defaultResponseHandler(dataHandler)(response)
+  data = processData ? processData(data) : data
   return dataSchema && data ? normalize(data, dataSchema) : data
 }
 
+
+export interface RequestHandlerOptions extends networking.RequestOptions {
+  dataSchema?: any
+  processData?: (data: any) => any
+}
 
 export const dataRequest = requestWithHandler(jsonData)
 export const request = requestWithHandler()

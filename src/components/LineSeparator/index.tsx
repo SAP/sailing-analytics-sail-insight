@@ -1,17 +1,12 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, ViewProps } from 'react-native'
 
-import { StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
 
-class LineSeparator extends React.Component<{
-  style?: StyleSheetType,
-} > {
+class LineSeparator extends React.Component<ViewProps> {
   public render() {
     const { style } = this.props
-
-
     return (
       <View style={[styles.separator, style]}/>
     )

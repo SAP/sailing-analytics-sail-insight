@@ -1,33 +1,48 @@
 import { get } from 'lodash'
 import React from 'react'
-import { View } from 'react-native'
+import { Alert, TouchableWithoutFeedback, View, ViewProps } from 'react-native'
 import VersionNumber from 'react-native-version-number'
+import { connect } from 'react-redux'
 
-import Text from 'components/Text'
-
-import ScrollContentView from 'components/ScrollContentView'
+import { insertTestCheckIns } from 'actions/checkIn'
 import I18n from 'i18n'
 import { getDeviceId } from 'services/CheckInService'
 import { container } from 'styles/commons'
 import styles from './styles'
 
+import ScrollContentView from 'components/ScrollContentView'
+import Text from 'components/Text'
 
-class AppSettings extends React.Component<{
-  navigation: any,
-} > {
+
+class AppSettings extends React.Component<ViewProps & {
+  insertTestCheckIns: () => void,
+}> {
+
+  public connectTestCheckIns = async () => {
+    try {
+      await this.props.insertTestCheckIns()
+      Alert.alert('inserted.')
+    } catch (err) {
+      Alert.alert(err)
+    }
+  }
 
   public render() {
     return (
       <ScrollContentView>
         <View style={container.stretchContent}>
-          <View style={styles.item}>
-            <Text>
-              {I18n.t('text_device_id')}
-            </Text>
-            <Text>
-              {getDeviceId()}
-            </Text>
-          </View>
+          <TouchableWithoutFeedback
+            onLongPress={this.connectTestCheckIns}
+          >
+            <View style={styles.item}>
+              <Text>
+                {I18n.t('text_device_id')}
+              </Text>
+              <Text>
+                {getDeviceId()}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
         <Text>
           {`v${get(VersionNumber, 'appVersion')}.${get(VersionNumber, 'buildVersion')}`}
@@ -37,4 +52,4 @@ class AppSettings extends React.Component<{
   }
 }
 
-export default AppSettings
+export default connect(null, { insertTestCheckIns })(AppSettings)

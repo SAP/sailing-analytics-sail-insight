@@ -2,10 +2,8 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
   detailContainer: {
-    paddingLeft: '$containerFixedMargin',
-    paddingRight: '$containerFixedMargin',
-    paddingTop: '$containerFixedSmallMargin',
-    paddingBottom: '$containerFixedSmallMargin',
+    paddingHorizontal: '$containerFixedMargin',
+    paddingVertical: '$containerFixedSmallMargin',
     backgroundColor: 'white',
     marginBottom: '$containerFixedSmallMargin',
   },
@@ -39,6 +37,11 @@ export default EStyleSheets.create({
     width: 49,
     height: 49,
   },
+  settingsButton: {
+    width: 49,
+    height: 49,
+    padding: 12.5,
+  },
   trackingImage: {
     tintColor: '$importantHighlightColor',
   },
@@ -46,5 +49,8 @@ export default EStyleSheets.create({
     height: 176,
     width: '100%',
     resizeMode: 'cover',
+  },
+  basicInfoContainer: {
+    flexGrow: 1,
   },
 })

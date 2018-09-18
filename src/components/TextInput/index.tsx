@@ -1,17 +1,17 @@
-import { StyleSheetType } from 'helpers/types'
 import { get, isEmpty } from 'lodash'
 import React from 'react'
 import {
   Image,
   TextInput as RNTextInput,
+  TextInputProps,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  ViewProps,
 } from 'react-native'
 import { TextInputMask } from 'react-native-masked-text'
 
 import Images from '@assets/Images'
-import I18n from 'i18n'
 import { $importantHighlightColor, $secondaryTextColor } from 'styles/colors'
 import { text } from 'styles/commons'
 import styles, { DEFAULT_BAR_HEIGHT } from './styles'
@@ -19,8 +19,7 @@ import styles, { DEFAULT_BAR_HEIGHT } from './styles'
 import Text from 'components/Text'
 
 
-class TextInput extends React.Component<{
-  style?: StyleSheetType,
+class TextInput extends React.Component<ViewProps & TextInputProps & {
   value?: string,
   placeholder?: string,
   error?: string,
@@ -34,10 +33,6 @@ class TextInput extends React.Component<{
   inputRef?: (ref: any) => void,
   onFocus?: () => void,
   onBlur?: () => void,
-
-  keyboardType?: string,
-  returnKeyType?: string,
-  onSubmitEditing?: () => void,
 }> {
 
   public state = {

@@ -17,7 +17,6 @@ import TextInput from 'components/TextInput'
 
 
 class Login extends React.Component<{
-  navigation: any,
   valid?: boolean,
   isStepValid: boolean,
 } > {

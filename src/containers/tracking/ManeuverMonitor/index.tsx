@@ -11,7 +11,6 @@ import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 
 
 class ManeuverMonitor extends React.Component<{
-  navigation: any,
   stopLocationTracking: () => void,
   trackingStats: any,
   checkInData: any,

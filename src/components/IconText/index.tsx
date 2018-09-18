@@ -1,19 +1,23 @@
 import React from 'react'
 import {
-  Image, View,
+  Image,
+  ImageSourcePropType,
+  ImageStyle,
+  TextStyle,
+  View,
+  ViewProps,
 } from 'react-native'
 
-import Text from 'components/Text'
-import { ImageSource, StyleSheetType } from 'helpers/types'
 import styles from './styles'
 
+import Text from 'components/Text'
 
-class IconText extends React.Component<{
-  style?: StyleSheetType,
-  iconStyle?: StyleSheetType,
+
+class IconText extends React.Component<ViewProps & {
+  iconStyle?: ImageStyle | ImageStyle[],
   iconTintColor?: string | null,
-  textStyle?: StyleSheetType,
-  source?: ImageSource,
+  textStyle?: TextStyle | TextStyle[],
+  source: ImageSourcePropType,
   iconPosition?: 'first' | 'second',
   alignment?: 'horizontal' | 'vertical',
 } > {

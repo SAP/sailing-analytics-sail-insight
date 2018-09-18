@@ -1,9 +1,7 @@
 import React from 'react'
 import {
-  View,
+  View, ViewProps,
 } from 'react-native'
-
-import { StyleSheetType } from 'helpers/types'
 
 import TrackingProperty from 'components/TrackingProperty'
 import { responsiveFontSize } from 'helpers/screen'
@@ -12,8 +10,7 @@ import { responsiveFontSize } from 'helpers/screen'
 const valuePercentage = (titlePercentage: number) => 0.90 - titlePercentage
 const VALUE_TO_UNIT = 0.36
 
-class TrackingPropertyAutoFit extends React.Component<{
-  style?: StyleSheetType,
+class TrackingPropertyAutoFit extends React.Component<ViewProps & {
   title: string,
   value: string,
   unit?: string,
@@ -35,7 +32,7 @@ class TrackingPropertyAutoFit extends React.Component<{
     this.setState({ containerHeight: nativeEvent.layout.height })
   }
 
-  public fontSizes = (height?: number) => {
+  public textStyles = (height?: number) => {
     if (!height) {
       return {}
     }
@@ -44,15 +41,15 @@ class TrackingPropertyAutoFit extends React.Component<{
     const titleSize = responsiveFontSize(titlePercentage, height)
     const unitSize = valueSize * VALUE_TO_UNIT
     return {
-      valueFontSize: Math.min(valueSize, 70),
-      titleFontSize: Math.min(titleSize, 20),
-      unitFontSize: unitSize,
+      valueStyle: { fontSize: Math.min(valueSize, 70) },
+      titleStyle: { fontSize: Math.min(titleSize, 20) },
+      unitFontSize: { fontSize: unitSize },
     }
   }
 
   public render() {
     const { style, title, value, unit, ...remainingProps } = this.props
-    const fontSizes = this.fontSizes(this.state.containerHeight)
+    const textStyles = this.textStyles(this.state.containerHeight)
     return (
       <View
         style={style}
@@ -62,7 +59,7 @@ class TrackingPropertyAutoFit extends React.Component<{
           title={title}
           value={value}
           unit={unit}
-          {...fontSizes}
+          {...textStyles}
           {...remainingProps}
         />
       </View>

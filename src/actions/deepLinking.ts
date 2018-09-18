@@ -1,5 +1,5 @@
 import Logger from 'helpers/Logger'
-import { Dispatch } from 'helpers/types'
+import { DispatchType } from 'helpers/types'
 import * as DeepLinking from 'integrations/DeepLinking'
 import { checkIn } from './checkIn'
 
@@ -16,12 +16,12 @@ const getDeepLinkAction = (linkParams: any, options = {}) => {
   return null
 }
 
-export const performDeepLink = (linkParams: any) => (dispatch: Dispatch) => {
+export const performDeepLink = (linkParams: any) => (dispatch: DispatchType) => {
   const deepLinkAction = getDeepLinkAction(linkParams)
   return deepLinkAction && dispatch(deepLinkAction)
 }
 
-export const handleAppStartDeepLink = () => async (dispatch: Dispatch) => {
+export const handleAppStartDeepLink = () => async (dispatch: DispatchType) => {
   try {
     const deepLinkAction = getDeepLinkAction(
       await DeepLinking.lastLinkParams(),

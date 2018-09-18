@@ -20,9 +20,12 @@ import TextButton from 'components/TextButton'
 
 
 class EditSession extends TextInputForm<{
-  navigation: any,
   valid?: boolean,
 } > {
+  public renderField(props: any) {
+    return <FormTextInput {...props}/>
+  }
+
   public render() {
     return (
       <ScrollContentView
@@ -38,7 +41,7 @@ class EditSession extends TextInputForm<{
           <Field
             label={I18n.t('text_placeholder_session_name')}
             name={sessionForm.FORM_KEY_NAME}
-            component={FormTextInput}
+            component={this.renderField}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
@@ -49,7 +52,7 @@ class EditSession extends TextInputForm<{
             style={styles.inputMargin}
             label={I18n.t('text_track_name')}
             name={sessionForm.FORM_KEY_TRACK_NAME}
-            component={FormTextInput}
+            component={this.renderField}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
@@ -60,8 +63,7 @@ class EditSession extends TextInputForm<{
             style={styles.inputMargin}
             label={I18n.t('text_placeholder_boat_name')}
             name={sessionForm.FORM_KEY_BOAT_NAME}
-            component={FormTextInput}
-            // validate={[validateRequired]}
+            component={this.renderField}
             keyboardType={'default'}
             returnKeyType="next"
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_SAIL_NUMBER)}
@@ -71,8 +73,7 @@ class EditSession extends TextInputForm<{
             style={styles.inputMargin}
             label={I18n.t('text_placeholder_sail_number')}
             name={sessionForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
-            // validate={[validateRequired]}
+            component={this.renderField}
             keyboardType={'default'}
             returnKeyType="next"
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_BOAT_CLASS)}
@@ -82,8 +83,7 @@ class EditSession extends TextInputForm<{
             style={styles.inputMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
-            component={FormTextInput}
-            // validate={[validateRequired]}
+            component={this.renderField}
             keyboardType={'default'}
             returnKeyType="next"
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_TEAM_NAME)}
@@ -93,8 +93,7 @@ class EditSession extends TextInputForm<{
             style={styles.inputMargin}
             label={I18n.t('text_team_name')}
             name={sessionForm.FORM_KEY_TEAM_NAME}
-            component={FormTextInput}
-            // validate={[validateRequired]}
+            component={this.renderField}
             keyboardType={'default'}
             returnKeyType="next"
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_PRIVACY_SETTING)}
@@ -104,8 +103,7 @@ class EditSession extends TextInputForm<{
             style={styles.inputMargin}
             label={I18n.t('text_privacy_setting')}
             name={sessionForm.FORM_KEY_PRIVACY_SETTING}
-            component={FormTextInput}
-            // validate={[validateRequired]}
+            component={this.renderField}
             keyboardType={'default'}
             returnKeyType="next"
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_PRIVACY_SETTING)}
@@ -131,4 +129,4 @@ export default connect()(reduxForm({
   form: sessionForm.SESSION_FORM_NAME,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
-})(EditSession))
+})((props: any) => <EditSession {...props}/>))

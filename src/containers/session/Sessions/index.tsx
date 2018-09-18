@@ -1,6 +1,7 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { ListViewDataSource, TouchableOpacity, View, ViewProps } from 'react-native'
+import { connect } from 'react-redux'
 
 
 import Images from '@assets/Images'
@@ -8,21 +9,25 @@ import { navigateToNewSession } from 'navigation'
 import { button, container } from 'styles/commons'
 
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
-import { ShowActionSheet, StyleSheetType } from 'helpers/types'
+import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
 import { generateNewSession } from 'services/SessionService'
 import styles from './styles'
 
+import { getListViewDataSource } from 'helpers/utils'
+import { NavigationScreenProps } from 'react-navigation'
+import { getCheckInList } from 'selectors/checkIn'
+
 import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import IconText from 'components/IconText'
-import SessionList from 'components/SessionList'
+import ListView from 'components/ListView'
+import SessionItem from 'components/session/SessionItem'
 
 
 @connectActionSheet
-class Sessions extends React.Component<{
-  style?: StyleSheetType,
-  navigation: any,
-  showActionSheetWithOptions: ShowActionSheet,
+class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
+  showActionSheetWithOptions: ShowActionSheetType,
+  dataSource: ListViewDataSource,
 } > {
 
   public state = {
@@ -55,16 +60,22 @@ class Sessions extends React.Component<{
     return <EmptySessionsHeader/>
   }
 
+  public renderItem(regatta: any) {
+    return <SessionItem regatta={regatta}/>
+  }
+
   public render() {
+
     return (
       <View style={container.list}>
-        <SessionList
-          style={container.list}
+        <ListView
+          dataSource={this.props.dataSource}
           onScrollBeginDrag={this.hideAdd}
           onScrollEndDrag={this.showAdd}
           onMomentumScrollBegin={this.hideAdd}
           onMomentumScrollEnd={this.showAdd}
           renderHeader={this.renderHeader}
+          renderRow={this.renderItem}
         />
         {this.renderAddItem()}
       </View>
@@ -88,4 +99,8 @@ class Sessions extends React.Component<{
   }
 }
 
-export default Sessions
+const mapStateToProps = (state: any) => ({
+  dataSource: getListViewDataSource(getCheckInList(state)),
+})
+
+export default connect(mapStateToProps)(Sessions)

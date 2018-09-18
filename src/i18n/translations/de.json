@@ -58,6 +58,8 @@
   "text_maneuver_change": "Veränderung",
   "text_maneuver_max_rate": "Max. rate",
   "text_maneuver_avg_rate": "Durchschn. Rate",
+  "text_maneuver_max_speed": "Geschw. (max)",
+  "text_maneuver_avg_speed": "Geschw. (avg)",
   "text_maneuver_speed": "Geschwindigkeit",
   "text_maneuver_turn": "Turn",
   "text_placeholder_session_name": "Session-Name",
@@ -70,6 +72,8 @@
   "text_empty_sessions_join_text": "Nutze den QR-Code-Scanner, um teilzunehmen.",
   "text_empty_sessions_account_title": "Willst du dich selbst tracken?",
   "text_empty_sessions_account_text": "Registriere dich und erfahre, was SAP Sail InSight alles kann.",
+  "text_not_implemented_yet": "Noch nicht implementiert.",
+  "text_tracking_maneuvers": "Manöver",
 
   "caption_ok": "OK",
   "caption_cancel": "Abbrechen",

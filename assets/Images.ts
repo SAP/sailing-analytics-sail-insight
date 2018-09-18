@@ -18,6 +18,8 @@ export default {
     help: require('./img/icons/icon-help.png'),
     arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
     close: require('./img/icons/icon-cross.png'),
+    expandLess: require('./img/icons/icon-arrow-expand-less.png'),
+    expandMore: require('./img/icons/icon-arrow-expand-more.png'),
   },
   tabs: {
     tracking: require('./img/icons/icon-start.png'),
@@ -32,6 +34,10 @@ export default {
     coloredUser: require('./img/colored_user.png'),
     arrowUp: require('./img/icons/icon-arrow-up.png'),
     arrowDown: require('./img/icons/icon-arrow-down.png'),
+    distance: require('./img/icons/icon-distance.png'),
+    time: require('./img/icons/icon-watch.png'),
+    maneuvers: require('./img/icons/icon-maneuvers.png'),
+    wind: require('./img/icons/icon-wind.png'),
   },
   animations: {
     waveLoadingIndicator: require('./img/animations/wave_loading.json'),

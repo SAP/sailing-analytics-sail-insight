@@ -25,8 +25,7 @@ import TextButton from 'components/TextButton'
 
 
 class JoinRegatta extends React.Component<{
-  navigation: any,
-  checkInData?: CheckIn,
+  checkInData: CheckIn,
   leaderboard?: any,
   event?: any,
   checkIn: (c: CheckIn) => any,

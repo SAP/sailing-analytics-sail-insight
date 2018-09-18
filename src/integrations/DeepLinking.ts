@@ -1,11 +1,11 @@
 import branch from 'react-native-branch'
 
 import Logger from 'helpers/Logger'
-import { DeepLinkListener } from 'helpers/types'
+import { DeepLinkListenerType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
 
 
-const listeners: DeepLinkListener[] = []
+const listeners: DeepLinkListenerType[] = []
 
 const handleEvent = ({ error, params }: any) => {
   if (error) {
@@ -18,8 +18,8 @@ const handleEvent = ({ error, params }: any) => {
 
 export const initialize = () => branch.subscribe(handleEvent)
 
-export const addListener = (listener: DeepLinkListener) => listeners.push(listener)
-export const removeListener = (listener: DeepLinkListener) => {
+export const addListener = (listener: DeepLinkListenerType) => listeners.push(listener)
+export const removeListener = (listener: DeepLinkListenerType) => {
   const index = listeners.indexOf(listener)
   if (index !== -1) {
     listeners.splice(index, 1)
