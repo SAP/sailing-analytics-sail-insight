@@ -4,9 +4,9 @@ import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 
 import { getDeviceUuid } from 'helpers/uuid'
-import { CheckIn, GPSFix } from 'models'
-import { ApiBodyKeys as CheckInBodyKeys } from 'models/CheckIn'
-import { ApiBodyKeys as GPSFixBodyKeys } from 'models/GPSFix'
+import { CheckIn, PositionFix, Race, Session } from 'models'
+import { ApiBodyKeys as CheckInBodyKeys, urlParamsToCheckIn } from 'models/CheckIn'
+import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 
 
 export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueID())
@@ -24,8 +24,8 @@ export const extractData = (url: string) => {
     return null
   }
 
-  const checkIn = CheckIn.createInstanceFromUrl(serverUrl, queryData)
-  return checkIn && checkIn.isValid() ? checkIn : null
+  const checkIn = urlParamsToCheckIn(serverUrl, queryData)
+  return checkIn
 }
 
 export const checkInDeviceMappingData = (checkInData: CheckIn) => {
@@ -70,7 +70,7 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   return body
 }
 
-const gpsFixPostItem = (fix: GPSFix) => fix && ({
+const gpsFixPostItem = (fix: PositionFix) => fix && ({
   [GPSFixBodyKeys.Latitude]: fix.latitude,
   [GPSFixBodyKeys.Longitude]: fix.longitude,
   [GPSFixBodyKeys.Timestamp]: fix.timeMillis,
@@ -78,7 +78,7 @@ const gpsFixPostItem = (fix: GPSFix) => fix && ({
   [GPSFixBodyKeys.Speed]: fix.speedInKnots || 0,
 })
 
-export const gpsFixPostData = (fixes: GPSFix[]) => fixes && ({
+export const gpsFixPostData = (fixes: PositionFix[]) => fixes && ({
   [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueID()),
   [GPSFixBodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
 })
@@ -89,6 +89,11 @@ export const eventUrl = (checkInData: any) =>
 
 export const leaderboardUrl = (checkInData: any) =>
   checkInData &&
-  // tslint:disable-next-line
+  // tslint:disable-next-line max-line-length
   `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
 
+export const raceUrl = (session: CheckIn, race: Race) =>
+  session &&
+  race.name &&
+  // tslint:disable-next-line max-line-length
+  `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${escape(session.leaderboardName)}&raceName=${escape(race.name)}&leaderboardName=${escape(session.leaderboardName)}&eventId=${escape(session.eventId)}&mode=FULL_ANALYSIS`

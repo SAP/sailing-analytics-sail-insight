@@ -2,8 +2,10 @@ import React from 'react'
 import { ListViewDataSource, View } from 'react-native'
 import { connect } from 'react-redux'
 
+import { openTrackDetails } from 'actions/navigation'
 import { getListViewDataSource } from 'helpers/utils'
-import { getUserTracks } from 'selectors/checkIn'
+import { Race } from 'models'
+import { getUserRaces } from 'selectors/race'
 import { container } from 'styles/commons'
 
 import ListView from 'components/ListView'
@@ -12,11 +14,15 @@ import TrackItem from 'components/session/TrackItem'
 
 class Tracks extends React.Component<{
   dataSource: ListViewDataSource,
+  openTrackDetails: (race: Race) => void,
 } > {
 
+  public onTrackPress = (race: Race) => () => {
+    this.props.openTrackDetails(race)
+  }
 
-  public renderItem(track: any) {
-    return <TrackItem track={track}/>
+  public renderItem = (track: Race) => {
+    return <TrackItem onPress={this.onTrackPress(track)} track={track}/>
   }
 
   public render() {
@@ -32,7 +38,7 @@ class Tracks extends React.Component<{
 }
 
 const mapStateToProps = (state: any) => ({
-  dataSource: getListViewDataSource(getUserTracks(state)),
+  dataSource: getListViewDataSource(getUserRaces(state)),
 })
 
-export default connect(mapStateToProps)(Tracks)
+export default connect(mapStateToProps, { openTrackDetails })(Tracks)

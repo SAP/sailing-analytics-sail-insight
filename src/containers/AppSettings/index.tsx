@@ -19,12 +19,23 @@ class AppSettings extends React.Component<ViewProps & {
 }> {
 
   public connectTestCheckIns = async () => {
-    try {
-      await this.props.insertTestCheckIns()
-      Alert.alert('inserted.')
-    } catch (err) {
-      Alert.alert(err)
-    }
+    Alert.alert(
+      'Debug: Test check-ins',
+      'Insert test check-ins?',
+      [
+        { text: I18n.t('caption_cancel'), style: 'cancel' },
+        {
+          text: I18n.t('caption_ok'), onPress: async () => {
+            try {
+              await this.props.insertTestCheckIns()
+            } catch (err) {
+              Alert.alert(err)
+            }
+          },
+        },
+      ],
+      { cancelable: true },
+    )
   }
 
   public render() {

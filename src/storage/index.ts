@@ -1,5 +1,5 @@
 import Logger from 'helpers/Logger'
-import { GPSFix } from 'models'
+import { PositionFix } from 'models'
 import realm from './realm'
 import { BASE_URL_PROPERTY_NAME, GPS_FIX_PROPERTY_NAME, GPS_FIX_REQUEST_SCHEMA_NAME } from './schemas'
 
@@ -18,7 +18,7 @@ const read = (type: string) => (options?: {
   return result
 }
 
-export const writeGPSFixRequest = (url: string, gpsFix: GPSFix) => {
+export const writeGPSFixRequest = (url: string, gpsFix: PositionFix) => {
   try {
     realm.write(() => {
       realm.create(

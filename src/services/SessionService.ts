@@ -8,7 +8,7 @@ import {
   FORM_KEY_TEAM_NAME,
   FORM_KEY_TRACK_NAME,
 } from 'forms/session'
-import { Session } from 'models'
+import { TrackingSession } from 'models'
 
 
 export class SessionException extends Error {
@@ -23,14 +23,14 @@ export class SessionException extends Error {
 
 export const generateNewSession = (/*add params*/) => {
   // TODO: implement
-  return new Session(
-    'My Session 01',
-    'myTracking',
-    '123',
-    'TEST123',
-    'Sail Team No.1',
-    'public',
-  )
+  return {
+    name: 'My Session 01',
+    trackName: 'myTracking',
+    sailNumber: '123',
+    boatName: 'TEST123',
+    teamName: 'Sail Team No.1',
+    privacySetting: 'public',
+  } as TrackingSession
 }
 
 export const getEventImageUrl = (event: any, tag?: string | string[]) => {
@@ -49,11 +49,11 @@ export const getEventPreviewImageUrl = (event: any) => getEventImageUrl(event, [
 
 export const getEventLogoImageUrl = (event: any) => getEventImageUrl(event, 'Logo')
 
-export const formValuesToSession = (values: any) => values && new Session(
-  values[FORM_KEY_NAME],
-  values[FORM_KEY_TRACK_NAME],
-  values[FORM_KEY_BOAT_NAME],
-  values[FORM_KEY_SAIL_NUMBER],
-  values[FORM_KEY_TEAM_NAME],
-  values[FORM_KEY_PRIVACY_SETTING],
-)
+export const formValuesToSession = (values: any) => values && ({
+  name: values[FORM_KEY_NAME],
+  trackName: values[FORM_KEY_TRACK_NAME],
+  boatName: values[FORM_KEY_BOAT_NAME],
+  sailNumber: values[FORM_KEY_SAIL_NUMBER],
+  teamName: values[FORM_KEY_TEAM_NAME],
+  privacySetting: values[FORM_KEY_PRIVACY_SETTING],
+} as TrackingSession)

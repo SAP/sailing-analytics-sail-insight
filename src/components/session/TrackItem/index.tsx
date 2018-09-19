@@ -5,31 +5,27 @@ import {
 
 import Images from '@assets/Images'
 import { dateFromToText } from 'helpers/date'
+import { OnPressType } from 'helpers/types'
+import I18n from 'i18n'
 import { Race } from 'models'
+
+import { $secondaryTextColor } from 'styles/colors'
 import { button } from 'styles/commons'
 import styles from './styles'
 
+
 import IconText from 'components/IconText'
 import ImageButton from 'components/ImageButton'
+import LineSeparator from 'components/LineSeparator'
 import TrackInfo from 'components/session/TrackInfo'
 import Text from 'components/Text'
-import I18n from 'i18n'
-import { $secondaryTextColor } from 'styles/colors'
-import LineSeparator from '../../LineSeparator'
 
 
 class TrackItem extends React.Component<ViewProps & {
   track: Race,
+  onPress?: OnPressType,
 } > {
   public state = { isCollapsed: true }
-
-  public onStartTrackingPress = () => {
-    // TODO: start Tracking
-  }
-
-  public onItempPress = () => {
-    // TODO: implement
-  }
 
   public handleCollapseExpand = () => {
     this.setState({ isCollapsed: !this.state.isCollapsed })
@@ -78,33 +74,31 @@ class TrackItem extends React.Component<ViewProps & {
     } = this.props
 
     return (
-      <View style={[styles.container, style]}>
-        <View style={styles.line}>
-          <View style={styles.basicInfoContainer}>
-            <Text style={styles.nameText}>
-              {track.name}
-            </Text>
-            <View style={[styles.line, styles.textMargins]}>
-              <Text
-                style={styles.dateText}
-              >
-                {dateFromToText(track.startDate, track.endDate)}
+      <TouchableOpacity onPress={this.props.onPress}>
+        <View style={[styles.container, style]}>
+          <View style={styles.line}>
+            <View style={styles.basicInfoContainer}>
+              <Text style={styles.nameText}>
+                {track.name}
               </Text>
-              <Text
-                style={styles.dateText}
-              >
-                {dateFromToText(track.startDate, track.endDate, 'LT', false)}
-              </Text>
+              <View style={[styles.line, styles.textMargins]}>
+                <Text style={styles.dateText}>
+                  {dateFromToText(track.startDate, track.endDate)}
+                </Text>
+                <Text style={styles.dateText}>
+                  {dateFromToText(track.startDate, track.endDate, 'LT', false)}
+                </Text>
+              </View>
             </View>
+            <ImageButton
+              style={[button.secondaryActionIcon, styles.iconButton]}
+              source={this.state.isCollapsed ? Images.actions.expandMore : Images.actions.expandLess}
+              onPress={this.handleCollapseExpand}
+            />
           </View>
-          <ImageButton
-            style={[button.secondaryActionIcon, styles.iconButton]}
-            source={this.state.isCollapsed ? Images.actions.expandMore : Images.actions.expandLess}
-            onPress={this.handleCollapseExpand}
-          />
+          {this.renderMore()}
         </View>
-        {this.renderMore()}
-      </View>
+      </TouchableOpacity>
     )
   }
 }

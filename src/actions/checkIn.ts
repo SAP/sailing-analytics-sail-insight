@@ -7,24 +7,35 @@ import * as CheckInService from 'services/CheckInService'
 import { fetchEntityAction } from 'helpers/actions'
 import { DispatchType } from 'helpers/types'
 import CheckInException from 'services/CheckInService/CheckInException'
+import { fetchAllRaces, fetchRegatta } from './regattas'
 
 
-const collectCheckInData = (checkInData: CheckIn) => async (dispatch: DispatchType) => {
+export const collectCheckInData = (checkInData: CheckIn) => async (dispatch: DispatchType) => {
   if (!checkInData) {
     return
   }
+  const {
+    eventId,
+    leaderboardName,
+    competitorId,
+    markId,
+    boatId,
+  } = checkInData
   const apiCalls = api(checkInData.serverUrl)
 
-  await dispatch(fetchEntityAction(apiCalls.requestEvent)(checkInData.eventId))
-  await dispatch(fetchEntityAction(apiCalls.requestLeaderboard)(checkInData.leaderboardName))
-  if (checkInData.competitorId) {
-    await dispatch(fetchEntityAction(apiCalls.requestCompetitor)(checkInData.competitorId))
+  await dispatch(fetchEntityAction(apiCalls.requestEvent)(eventId))
+  await dispatch(fetchEntityAction(apiCalls.requestLeaderboard)(leaderboardName))
+  await dispatch(fetchRegatta(leaderboardName))
+  await dispatch(fetchAllRaces(leaderboardName))
+
+  if (competitorId) {
+    await dispatch(fetchEntityAction(apiCalls.requestCompetitor)(competitorId))
   }
-  if (checkInData.markId) {
-    await dispatch(fetchEntityAction(apiCalls.requestMark)(checkInData.leaderboardName, checkInData.markId))
+  if (markId) {
+    await dispatch(fetchEntityAction(apiCalls.requestMark)(leaderboardName, markId))
   }
-  if (checkInData.boatId) {
-    await dispatch(fetchEntityAction(apiCalls.requestBoat)(checkInData.boatId))
+  if (boatId) {
+    await dispatch(fetchEntityAction(apiCalls.requestBoat)(boatId))
   }
 }
 

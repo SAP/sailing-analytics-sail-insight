@@ -8,20 +8,16 @@ export const ApiBodyKeys = {
   TrackingEndDate: 'endOfTracking-ms',
 }
 
-export const mapResToModel: (m: any) => Race | void = (map: any) => {
-  if (!map) {
-    return undefined
-  }
-  return {
-    id: map[ApiBodyKeys.Id],
-    name: map[ApiBodyKeys.Name],
-    startDate: map[ApiBodyKeys.StartDate],
-    endDate: map[ApiBodyKeys.EndDate],
-    trackingStartDate: map[ApiBodyKeys.TrackingStartDate],
-    trackingEndDate: map[ApiBodyKeys.TrackingEndDate],
-    regattaName: map[ApiBodyKeys.Regatta],
-  }
-}
+export const mapResToRace = (map: any) => map && ({
+  id: map[ApiBodyKeys.Id],
+  name: map[ApiBodyKeys.Name],
+  startDate: map[ApiBodyKeys.StartDate],
+  endDate: map[ApiBodyKeys.EndDate],
+  trackingStartDate: map[ApiBodyKeys.TrackingStartDate],
+  trackingEndDate: map[ApiBodyKeys.TrackingEndDate],
+  regattaName: map[ApiBodyKeys.Regatta],
+} as Race)
+
 
 export default interface Race {
   id?: string

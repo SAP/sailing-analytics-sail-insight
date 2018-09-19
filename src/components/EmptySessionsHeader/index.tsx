@@ -6,8 +6,8 @@ import Images from '@assets/Images'
 import { dismissCreateAccountOnboarding, dismissJoinRegattaOnboarding } from 'actions/onboarding'
 import I18n from 'i18n'
 import { navigateToCheckIn, navigateToUserRegistration } from 'navigation'
-import { isCheckInListEmpty } from 'selectors/checkIn'
 import { isCreateAccountDismissalExpired, isJoinRegattaDismissalExpired } from 'selectors/onboarding'
+import { isSessionListEmpty } from 'selectors/session'
 import styles from './styles'
 
 import HintCard from 'components/HintCard'
@@ -75,7 +75,7 @@ class EmptySessionsHeader extends React.Component<{
 }
 
 const mapStateToProps = (state: any) => ({
-  showHints: isCheckInListEmpty(state),
+  showHints: isSessionListEmpty(state),
   showJoinRegatta: isJoinRegattaDismissalExpired(state),
   showCreateAccount: isCreateAccountDismissalExpired(state), // TODO: add existing account condition
 })

@@ -28,6 +28,7 @@ export const TrackingSetup = 'TrackingSetup'
 export const TrackingSetupAction = 'TrackingSetupAction'
 export const ManeuverMonitor = 'ManeuverMonitor'
 export const SetWind = 'SetWind'
+export const TrackDetails = 'TrackDetails'
 
 // auth
 export const Register = 'Register'

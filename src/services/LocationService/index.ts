@@ -4,7 +4,7 @@ import BackgroundGeolocation from 'react-native-background-geolocation'
 import { isPlatformAndroid } from 'helpers/environment'
 import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
-import { GPSFix } from 'models'
+import { PositionFix } from 'models'
 
 
 const LOG_TAG = '[BG_LOCATION]'
@@ -63,15 +63,14 @@ const handleLocation = async (location: any = {}) => {
   }
 
   const momentTime = timestamp ? moment(timestamp) : moment()
-
-  const gpsFix = new GPSFix(
-    coords.latitude,
-    coords.longitude,
-    momentTime.valueOf(),
-    metersPerSecondsToKnots(coords.speed),
-    coords.heading,
-  )
-  gpsFix.accuracy = coords.accuracy
+  const gpsFix: PositionFix = {
+    latitude: coords.latitude,
+    longitude: coords.longitude,
+    timeMillis: momentTime.valueOf(),
+    speedInKnots: metersPerSecondsToKnots(coords.speed),
+    bearingInDeg: coords.heading,
+    accuracy: coords.accuracy,
+  }
 
   await Promise.all(locationListeners.map(listener => listener && listener(gpsFix)))
 }

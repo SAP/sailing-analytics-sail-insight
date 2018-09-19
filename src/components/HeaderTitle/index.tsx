@@ -18,7 +18,6 @@ class HeaderTitle extends React.Component<ViewProps & {
       secondLine,
     } = this.props
 
-
     return (
       <View style={[styles.container, style]}>
         <Text style={styles.heading}>
