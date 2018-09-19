@@ -1,24 +1,29 @@
 import React from 'react'
-import { Image, ImageProps, ImageStyle,  TouchableOpacity } from 'react-native'
+import { Image, ImageProps, ImageStyle } from 'react-native'
 
-import { OnPressType } from 'helpers/types'
 import { $defaultImageButtonSize } from 'styles/dimensions'
 import styles from './styles'
 
+import BaseButton from 'components/base/BaseButton'
 
-class ImageButton extends React.Component<ImageProps & {
+
+class ImageButton extends BaseButton<ImageProps & {
   imageStyle?: ImageStyle,
-  onPress?: OnPressType,
   circular?: boolean,
   autoWidth?: boolean,
   activeOpacity?: number,
 } > {
+
+  public static defaultProps = {
+    loadingColor: 'black',
+  }
   public state = {
     borderRadius: $defaultImageButtonSize / 2,
     width: $defaultImageButtonSize,
+
   }
 
-  public handleContentSizeChange = (event: any) => {
+  protected handleContentSizeChanged = (event: any) => {
     const height = event && event.nativeEvent && event.nativeEvent.layout && event.nativeEvent.layout.height
     if (!height) {
       return
@@ -29,7 +34,21 @@ class ImageButton extends React.Component<ImageProps & {
     })
   }
 
-  public render() {
+  protected getTouchableStyle = () => {
+    const {
+      circular,
+      autoWidth,
+      style,
+    } = this.props
+    return [
+      styles.containerStyle,
+      circular && { borderRadius: this.state.borderRadius },
+      autoWidth && { width: this.state.width },
+      style,
+    ]
+  }
+
+  protected renderContent = () => {
     const {
       circular,
       autoWidth,
@@ -38,29 +57,15 @@ class ImageButton extends React.Component<ImageProps & {
       source,
       onPress,
       activeOpacity,
+      isLoading,
       ...remainingProps
     } = this.props
-
-    const touchableStyle = [
-      styles.containerStyle,
-      circular && { borderRadius: this.state.borderRadius },
-      autoWidth && { width: this.state.width },
-      style,
-    ]
-
     return (
-      <TouchableOpacity
-        onLayout={this.handleContentSizeChange}
-        style={touchableStyle}
-        onPress={onPress}
-        activeOpacity={activeOpacity}
-      >
-        <Image
-          source={source}
-          style={[styles.imageStyle, imageStyle]}
-          {...remainingProps}
-        />
-      </TouchableOpacity>
+      <Image
+        source={source}
+        style={[styles.imageStyle, imageStyle]}
+        {...remainingProps}
+      />
     )
   }
 }

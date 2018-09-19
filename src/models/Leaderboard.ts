@@ -13,37 +13,34 @@ export const ApiBodyKeys = {
   ShardingLeaderboardName: 'ShardingLeaderboardName',
 }
 
-export default class Leaderboard {
-  public static createInstance(map: any) {
-    if (!map) {
-      return undefined
-    }
-    const newInstance = new Leaderboard()
-    newInstance.name = map[ApiBodyKeys.Name]
-    newInstance.displayName = map[ApiBodyKeys.DisplayName]
-    newInstance.resultTimepoint = map[ApiBodyKeys.ResultTimepoint]
-    newInstance.resultState = map[ApiBodyKeys.ResultState]
-    newInstance.type = map[ApiBodyKeys.Type]
-    newInstance.canBoatsOfCompetitorsChangePerRace = map[ApiBodyKeys.CanBoatsOfCompetitorsChangePerRace]
-    newInstance.maxCompetitorsCount = map[ApiBodyKeys.MaxCompetitorsCount]
-    newInstance.scoringComment = map[ApiBodyKeys.ScoringComment]
-    newInstance.lastScoringUpdate = map[ApiBodyKeys.LastScoringUpdate]
-    newInstance.columnNames = map[ApiBodyKeys.ColumnNames]
-    newInstance.competitors = map[ApiBodyKeys.Competitors]
-    newInstance.ShardingLeaderboardName = map[ApiBodyKeys.ShardingLeaderboardName]
-    return newInstance
-  }
+export const mapResToLeaderboard = (map: any) => map && ({
+  name : map[ApiBodyKeys.Name],
+  displayName : map[ApiBodyKeys.DisplayName],
+  resultTimepoint : map[ApiBodyKeys.ResultTimepoint],
+  resultState : map[ApiBodyKeys.ResultState],
+  type : map[ApiBodyKeys.Type],
+  canBoatsOfCompetitorsChangePerRace : map[ApiBodyKeys.CanBoatsOfCompetitorsChangePerRace],
+  maxCompetitorsCount : map[ApiBodyKeys.MaxCompetitorsCount],
+  scoringComment : map[ApiBodyKeys.ScoringComment],
+  lastScoringUpdate : map[ApiBodyKeys.LastScoringUpdate],
+  columnNames : map[ApiBodyKeys.ColumnNames],
+  competitors : map[ApiBodyKeys.Competitors],
+  ShardingLeaderboardName : map[ApiBodyKeys.ShardingLeaderboardName],
+} as Leaderboard)
 
-  public name?: string
-  public displayName?: string
-  public resultTimepoint?: string
-  public resultState?: string
-  public type?: string
-  public canBoatsOfCompetitorsChangePerRace?: boolean
-  public maxCompetitorsCount?: number
-  public scoringComment?: string
-  public lastScoringUpdate?: number
-  public columnNames?: string[]
-  public competitors?: any[]
-  public ShardingLeaderboardName?: string
+
+export default interface Leaderboard {
+  name?: string
+  displayName?: string
+  resultTimepoint?: string
+  resultState?: string
+  type?: string
+  canBoatsOfCompetitorsChangePerRace?: boolean
+  maxCompetitorsCount?: number
+  scoringComment?: string
+  lastScoringUpdate?: number
+  columnNames?: string[]
+  competitors?: any[]
+  ShardingLeaderboardName?: string
 }
+

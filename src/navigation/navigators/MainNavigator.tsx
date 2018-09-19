@@ -5,6 +5,7 @@ import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 
 import HeaderTitle from 'components/HeaderTitle'
+import WebView from 'components/WebView'
 import SessionDetail from 'containers/session/SessionDetail'
 import SplashScreen from 'containers/SplashScreen'
 
@@ -34,6 +35,12 @@ export default createStackNavigator(
             secondLine={navigationProps.state.params.subHeading}
           />
         ),
+      }),
+    },
+    [Screens.TrackDetails]: {
+      screen: WebView,
+      navigationOptions: ({ navigation: navigationProps }: any) => ({
+        headerTitle: 'Track Details',
       }),
     },
   },

@@ -3,31 +3,34 @@ import {
   TouchableOpacity, ViewProps,
 } from 'react-native'
 
+import { OnPressType } from 'helpers/types'
+import { Session } from 'models'
 import { navigateToSessionDetail } from 'navigation'
 
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 
 
 class SessionItem extends React.Component<ViewProps & {
-  regatta: any,
+  session: Session,
+  onTrackingPress?: OnPressType,
 } > {
-  public onStartTrackingPress = () => {
-    // TODO: start Tracking
-  }
-
-  public onItempPress = () => navigateToSessionDetail(this.props.regatta)
+  public onItempPress = () => navigateToSessionDetail(this.props.session)
 
   public render() {
     const {
       style,
-      regatta = {},
+      session,
     } = this.props
 
     return (
       <TouchableOpacity
         onPress={this.onItempPress}
       >
-        <SessionInfoDisplay style={style} session={regatta}/>
+        <SessionInfoDisplay
+          style={style}
+          session={session}
+          onTrackingPress={this.props.onTrackingPress}
+        />
       </TouchableOpacity>
     )
   }

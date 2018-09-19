@@ -14,39 +14,36 @@ export const ApiBodyKeys = {
   SailorsInfoWebsiteURLs: 'sailorsInfoWebsiteURLs',
 }
 
-export default class Event {
-  public static createInstance(map: any) {
-    if (!map) {
-      return undefined
-    }
-    const newInstance = new Event()
-    newInstance.id = map[ApiBodyKeys.Id]
-    newInstance.name = map[ApiBodyKeys.Name]
-    newInstance.description = map[ApiBodyKeys.Description]
-    newInstance.officialWebsiteURL = map[ApiBodyKeys.OfficialWebsiteURL]
-    newInstance.baseURL = map[ApiBodyKeys.BaseURL]
-    newInstance.startDate = map[ApiBodyKeys.StartDate]
-    newInstance.endDate = map[ApiBodyKeys.EndDate]
-    newInstance.venue = map[ApiBodyKeys.Venue]
-    newInstance.leaderboardGroups = map[ApiBodyKeys.LeaderboardGroups]
-    newInstance.imageSizes = map[ApiBodyKeys.ImageSizes]
-    newInstance.images = map[ApiBodyKeys.Images]
-    newInstance.videos = map[ApiBodyKeys.Videos]
-    newInstance.sailorsInfoWebsiteURLs = map[ApiBodyKeys.SailorsInfoWebsiteURLs]
-    return newInstance
-  }
 
-  public id?: string
-  public name?: string
-  public description?: string
-  public officialWebsiteURL?: string
-  public baseURL?: string
-  public startDate?: number
-  public endDate?: number
-  public venue?: {name?: string}
-  public leaderboardGroups?: any[]
-  public imageSizes?: any[]
-  public images?: any[]
-  public videos?: any[]
-  public sailorsInfoWebsiteURLs?: string
+export const mapResToEvent = (map: any) => map && ({
+  id : map[ApiBodyKeys.Id],
+  name : map[ApiBodyKeys.Name],
+  description : map[ApiBodyKeys.Description],
+  officialWebsiteURL : map[ApiBodyKeys.OfficialWebsiteURL],
+  baseURL : map[ApiBodyKeys.BaseURL],
+  startDate : map[ApiBodyKeys.StartDate],
+  endDate : map[ApiBodyKeys.EndDate],
+  venue : map[ApiBodyKeys.Venue],
+  leaderboardGroups : map[ApiBodyKeys.LeaderboardGroups],
+  imageSizes : map[ApiBodyKeys.ImageSizes],
+  images : map[ApiBodyKeys.Images],
+  videos : map[ApiBodyKeys.Videos],
+  sailorsInfoWebsiteURLs : map[ApiBodyKeys.SailorsInfoWebsiteURLs],
+} as Event)
+
+
+export default interface Event {
+  id?: string
+  name?: string
+  description?: string
+  officialWebsiteURL?: string
+  baseURL?: string
+  startDate?: number
+  endDate?: number
+  venue?: {name?: string}
+  leaderboardGroups?: any[]
+  imageSizes?: any[]
+  images?: any[]
+  videos?: any[]
+  sailorsInfoWebsiteURLs?: string
 }

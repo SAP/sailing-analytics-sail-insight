@@ -1,28 +1,8 @@
-export default class Session {
-  constructor(
-    public name: string,
-    public trackName: string,
-    public boatName: string,
-    public sailNumber: string,
-    public teamName: string,
-    public privacySetting: string,
-  ) {
-    this.name = name
-    this.trackName = trackName
-    this.boatName = boatName
-    this.sailNumber = sailNumber
-    this.teamName = teamName
-    this.privacySetting = privacySetting
-  }
+import { CheckIn, Competitor, Event, Leaderboard, Regatta } from 'models'
 
-  public toPlainObject() {
-    return {
-      name: this.name,
-      trackName: this.trackName,
-      boatName: this.boatName,
-      sailNumber: this.sailNumber,
-      teamName: this.teamName,
-      privacySetting: this.privacySetting,
-    }
-  }
+export default interface Session extends CheckIn {
+  regatta?: Regatta,
+  event?: Event,
+  competitor?: Competitor
+  leaderboard?: Leaderboard
 }

@@ -8,6 +8,7 @@ import Images from '@assets/Images'
 import { navigateToNewSession } from 'navigation'
 import { button, container } from 'styles/commons'
 
+import { openLocationTracking } from 'actions/locations'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
@@ -15,8 +16,9 @@ import { generateNewSession } from 'services/SessionService'
 import styles from './styles'
 
 import { getListViewDataSource } from 'helpers/utils'
+import { CheckIn, Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
-import { getCheckInList } from 'selectors/checkIn'
+import { getSessionList } from 'selectors/session'
 
 import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import IconText from 'components/IconText'
@@ -28,6 +30,7 @@ import SessionItem from 'components/session/SessionItem'
 class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   showActionSheetWithOptions: ShowActionSheetType,
   dataSource: ListViewDataSource,
+  openLocationTracking: (checkIn: CheckIn) => void,
 } > {
 
   public state = {
@@ -37,6 +40,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   public componentDidMount() {
     this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
   }
+
+  public onTrackingPress = (checkIn: CheckIn) => () => this.props.openLocationTracking(checkIn)
 
   public renderAddItem() {
     return !this.state.hideAddButton && (
@@ -60,8 +65,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     return <EmptySessionsHeader/>
   }
 
-  public renderItem(regatta: any) {
-    return <SessionItem regatta={regatta}/>
+  public renderItem = (session: Session) => {
+    return <SessionItem onTrackingPress={this.onTrackingPress(session)} session={session}/>
   }
 
   public render() {
@@ -100,7 +105,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 }
 
 const mapStateToProps = (state: any) => ({
-  dataSource: getListViewDataSource(getCheckInList(state)),
+  dataSource: getListViewDataSource(getSessionList(state)),
 })
 
-export default connect(mapStateToProps)(Sessions)
+export default connect(mapStateToProps, { openLocationTracking })(Sessions)

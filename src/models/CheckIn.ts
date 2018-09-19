@@ -1,5 +1,3 @@
-import { Competitor, Event, Leaderboard } from 'models'
-
 export const ApiBodyKeys = {
   EventId: 'eventId',
   BoatId: 'boatId',
@@ -23,56 +21,33 @@ export const UrlPropertyNames = {
   MarkId: 'mark_id',
 }
 
-export default class CheckIn {
+export const mapResToModel = (map: any) => map && ({
+  serverUrl: map[ApiBodyKeys.ServerUrl],
+  eventId: map[ApiBodyKeys.EventId],
+  leaderboardName: map[ApiBodyKeys.LeaderboardName],
+  isTraining: map[ApiBodyKeys.IsTraining],
+  competitorId: map[ApiBodyKeys.CompetitorId],
+  boatId: map[ApiBodyKeys.BoatId],
+  markId: map[ApiBodyKeys.MarkId],
+} as CheckIn)
 
-  public static createInstanceFromUrl(serverUrl: string, queryData: any) {
-    if (!serverUrl || !queryData) {
-      return undefined
-    }
-    const newInstance = new CheckIn()
-    newInstance.serverUrl = serverUrl
-    newInstance.eventId = queryData[UrlPropertyNames.EventId]
-    newInstance.leaderboardName = queryData[UrlPropertyNames.LeaderboardName]
-    newInstance.isTraining = false
-    newInstance.competitorId = queryData[UrlPropertyNames.CompetitorId]
-    newInstance.boatId = queryData[UrlPropertyNames.BoatId]
-    newInstance.markId = queryData[UrlPropertyNames.MarkId]
-    return newInstance
+export const urlParamsToCheckIn = (serverUrl: string, queryData: any) => serverUrl && queryData && ({
+  serverUrl,
+  leaderboardName : queryData[UrlPropertyNames.LeaderboardName],
+  eventId : queryData[UrlPropertyNames.EventId],
+  isTraining : false,
+  competitorId : queryData[UrlPropertyNames.CompetitorId],
+  boatId : queryData[UrlPropertyNames.BoatId],
+  markId : queryData[UrlPropertyNames.MarkId],
+} as CheckIn)
 
-  }
 
-  public static createInstance(map: any) {
-    if (!map) {
-      return null
-    }
-    const newInstance = new CheckIn()
-    newInstance.competitorId = map[ApiBodyKeys.CompetitorId]
-    newInstance.serverUrl = map[ApiBodyKeys.ServerUrl]
-    newInstance.eventId = map[ApiBodyKeys.EventId]
-    newInstance.leaderboardName = map[ApiBodyKeys.LeaderboardName]
-    newInstance.isTraining = map[ApiBodyKeys.IsTraining]
-    newInstance.competitorId = map[ApiBodyKeys.CompetitorId]
-    newInstance.boatId = map[ApiBodyKeys.BoatId]
-    newInstance.markId = map[ApiBodyKeys.MarkId]
-    return newInstance
-  }
-
-  public event?: Event
-  public competior?: Competitor
-  public leaderboard?: Leaderboard
-
-  public serverUrl?: string
-  public eventId?: string
-  public leaderboardName?: string | any
-  public isTraining?: boolean = false
-  public competitorId?: string
-  public boatId?: string
-  public markId?: string
-
-  public isValid() {
-    return this.serverUrl &&
-      this.eventId &&
-      this.leaderboardName &&
-      (this.competitorId || this.boatId || this.markId)
-  }
+export default interface CheckIn extends Object {
+  serverUrl: string
+  leaderboardName: string
+  eventId: string
+  isTraining: boolean
+  competitorId?: string
+  boatId?: string
+  markId?: string
 }

@@ -3,7 +3,7 @@ import { fetchEntityAction } from 'helpers/actions'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { Race } from 'models'
 import { getServerUrl } from 'selectors/checkIn'
-import { getRaces } from 'selectors/regatta'
+import { getRaces } from 'selectors/race'
 
 
 export const fetchRegatta = (regattaName: string) => async (dispatch: DispatchType, getState: GetStateType) => {

@@ -12,7 +12,8 @@ import {
 } from 'actions/locations'
 import { distanceInM } from 'helpers/physics'
 import { itemUpdateHandler } from 'helpers/reducers'
-import { GPSFix } from 'models'
+import { PositionFix } from 'models'
+import { isPositionFix } from 'models/PositionFix'
 import {
   DISTANCE_KEY,
   EVENT_ID_KEY,
@@ -65,8 +66,8 @@ const reducer = handleActions(
       ...initialState,
     }),
     [updateTrackingStatistics as any]: (state: any = {}, action: any = {}) => {
-      let gpsFix: GPSFix
-      if (!(action.payload instanceof GPSFix)) {
+      let gpsFix: PositionFix
+      if (!isPositionFix(action.payload)) {
         return state
       }
       gpsFix = action.payload

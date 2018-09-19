@@ -1,3 +1,4 @@
+import { size } from 'lodash'
 import React from 'react'
 import {
   View,
@@ -6,7 +7,9 @@ import {
 
 import Images from '@assets/Images'
 import { dateFromToText } from 'helpers/date'
+import { OnPressType } from 'helpers/types'
 import I18n from 'i18n'
+import { Session } from 'models'
 import { getEventPreviewImageUrl } from 'services/SessionService'
 import { $secondaryTextColor } from 'styles/colors'
 import { button, image, text } from 'styles/commons'
@@ -16,22 +19,36 @@ import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
 import Text from 'components/Text'
-import { CheckIn } from 'models'
 
 
 class SessionInfoDisplay extends React.Component<ViewProps & {
-  session: CheckIn,
+  session: Session,
   eventImageSize?: 'large' | 'medium',
-  onTrackingPress?: () => void,
-  onSettingsPress?: () => void,
+  onTrackingPress?: OnPressType,
+  onSettingsPress?: OnPressType,
 } > {
+
+  public state = { isTrackingLoading: false }
+
+  public onTrackingPress = async (event: any) => {
+    if (!this.props.onTrackingPress) {
+      return
+    }
+    try {
+      await this.setState({ isTrackingLoading: true })
+      await this.props.onTrackingPress(event)
+    } catch (err) {
+      throw err
+    } finally {
+      this.setState({ isTrackingLoading: false })
+    }
+  }
 
   public render() {
     const {
       style,
       session,
       eventImageSize,
-      onTrackingPress,
       onSettingsPress,
     } = this.props
 
@@ -58,7 +75,7 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                   {dateFromToText(session.event && session.event.startDate, session.event && session.event.endDate)}
                 </Text>
                 <Text style={[text.propertyName, styles.tracksText]}>{`${I18n.t('text_tracks').toUpperCase()}:`}</Text>
-                <Text style={styles.tracksCountText}>{0/*TODO: fill data*/}</Text>
+                <Text style={styles.tracksCountText}>{size(session.regatta && session.regatta.races)}</Text>
               </View>
             </View>
             {
@@ -77,7 +94,7 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                 iconTintColor={$secondaryTextColor}
                 alignment="horizontal"
               >
-                {I18n.t('text_empty_value_placeholder')/*TODO: fill data*/}
+                {(session.regatta && session.regatta.boatClass) || I18n.t('text_empty_value_placeholder')}
               </IconText>
               <IconText
                 style={styles.textMargins}
@@ -92,7 +109,8 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
               source={Images.actions.recordColored}
               style={styles.trackingButton}
               imageStyle={styles.trackingImage}
-              onPress={onTrackingPress}
+              isLoading={this.state.isTrackingLoading}
+              onPress={this.onTrackingPress}
             />
           </View>
         </View>

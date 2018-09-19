@@ -1,4 +1,4 @@
-import { CheckIn, Session } from 'models'
+import { CheckIn, Session, TrackingSession } from 'models'
 import * as  NavigationService from './NavigationService'
 import * as Screens from './Screens'
 
@@ -7,10 +7,10 @@ export const navigateBack = NavigationService.navigateBack
 export const initialNavigation = () => NavigationService.navigateWithReset(Screens.MainTabs)
 export const navigateToQRScanner = () => NavigationService.navigate(Screens.QRScanner)
 export const navigateToCheckIn = () => NavigationService.navigate(Screens.CheckIn)
-export const navigateToSessionDetail = (params: any) => NavigationService.navigate(Screens.SessionDetail, params)
+export const navigateToSessionDetail = (params: Session) => NavigationService.navigate(Screens.SessionDetail, params)
 export const navigateToAppSettings = () => NavigationService.navigate(Screens.AppSettings)
 export const navigateToTracking = (params: any) => NavigationService.navigate(Screens.Tracking, params)
-export const navigateToNewSession = (session: Session) => NavigationService.navigate(Screens.NewSession, session)
+export const navigateToNewSession = (param: TrackingSession) => NavigationService.navigate(Screens.NewSession, param)
 export const navigateToUserRegistration = () => NavigationService.navigate(Screens.Register)
 export const navigateToUserRegistrationCredentials = () => NavigationService.navigate(Screens.RegisterCredentials)
 export const navigateToUserRegistrationBoat = () => NavigationService.navigateWithReset(Screens.RegisterBoat)
@@ -20,3 +20,4 @@ export const navigateToSessions = () => NavigationService.navigate(Screens.Sessi
 export const navigateToManeuverMonitor = () => NavigationService.navigate(Screens.ManeuverMonitor)
 export const navigateToEditSession = (session: Session) => NavigationService.navigate(Screens.EditSession, session)
 export const navigateToSetWind = () => NavigationService.navigate(Screens.SetWind)
+export const navigateToTrackDetails = (url?: string) => NavigationService.navigate(Screens.TrackDetails, url)

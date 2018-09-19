@@ -11,33 +11,29 @@ export const ApiBodyKeys = {
   RaceScores: 'raceScores',
 }
 
-export default class Competitor {
-  public static createInstance(map?: any) {
-    if (!map) {
-      return undefined
-    }
-    const newInstance = new Competitor()
-    newInstance.name = map[ApiBodyKeys.Name]
-    newInstance.shortName = map[ApiBodyKeys.ShortName]
-    newInstance.id = map[ApiBodyKeys.Id]
-    newInstance.sailId = map[ApiBodyKeys.SailId]
-    newInstance.nationality = map[ApiBodyKeys.Nationality]
-    newInstance.countryCode = map[ApiBodyKeys.CountryCode]
-    newInstance.rank = map[ApiBodyKeys.Rank]
-    newInstance.carriedPoints = map[ApiBodyKeys.CarriedPoints]
-    newInstance.netPoints = map[ApiBodyKeys.NetPoints]
-    newInstance.raceScores = map[ApiBodyKeys.RaceScores]
-    return newInstance
-  }
+export const mapResToCompetitor = (map: any) => map && ({
+  name: map[ApiBodyKeys.Name],
+  shortName: map[ApiBodyKeys.ShortName],
+  id: map[ApiBodyKeys.Id],
+  sailId: map[ApiBodyKeys.SailId],
+  nationality: map[ApiBodyKeys.Nationality],
+  countryCode: map[ApiBodyKeys.CountryCode],
+  rank: map[ApiBodyKeys.Rank],
+  carriedPoints: map[ApiBodyKeys.CarriedPoints],
+  netPoints: map[ApiBodyKeys.NetPoints],
+  raceScores: map[ApiBodyKeys.RaceScores],
+} as Competitor)
 
-  public name?: string
-  public shortName?: string
-  public id?: string
-  public sailId?: string
-  public nationality?: string
-  public countryCode?: string
-  public rank?: number
-  public carriedPoints?: any
-  public netPoints?: string[]
-  public raceScores?: any
+
+export default interface Competitor {
+  name?: string
+  shortName?: string
+  id?: string
+  sailId?: string
+  nationality?: string
+  countryCode?: string
+  rank?: number
+  carriedPoints?: any
+  netPoints?: string[]
+  raceScores?: any
 }

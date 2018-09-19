@@ -5,47 +5,41 @@ import { Alert, Linking, ListViewDataSource, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 
-import { checkIn, checkOut } from 'actions/checkIn'
-import { container } from 'styles/commons'
 
-import {
-  startLocationTracking,
-  stopLocationTracking,
-} from 'actions/locations'
+import { checkOut, collectCheckInData } from 'actions/checkIn'
+import {  openLocationTracking } from 'actions/locations'
+import { openTrackDetails } from 'actions/navigation'
+import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { settingsWithCheckoutActionSheetOptions } from 'helpers/actionSheets'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { getListViewDataSource, notImplementedYetAlert } from 'helpers/utils'
 import I18n from 'i18n'
-import { CheckIn } from 'models'
-import { navigateBack, navigateToTracking } from 'navigation'
-import { getSessionTracks } from 'selectors/checkIn'
-import { getLocationTrackingStatus } from 'selectors/location'
+import { CheckIn, Race, Session } from 'models'
+import { navigateBack } from 'navigation'
+import { getRaces } from 'selectors/race'
 import * as CheckInService from 'services/CheckInService'
-import { LocationTrackingStatus } from 'services/LocationService'
+
+import { container } from 'styles/commons'
 import styles from './styles'
 
-import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import ListView from 'components/ListView'
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 import TrackInfo from 'components/session/TrackInfo'
 import TrackItem from 'components/session/TrackItem'
 import Text from 'components/Text'
-import { getRaces } from 'selectors/regatta'
 
 
 const TRACKS_DATA_KEY = 'tracks'
 
 @connectActionSheet
 class SessionDetail extends React.Component<NavigationScreenProps & {
+  openTrackDetails: (race: Race) => void,
   checkOut: (checkIn: CheckIn) => void,
-  startLocationTracking: (leaderboardName: string, eventId?: string) => void,
-  stopLocationTracking: () => void,
-  locationTrackingStatus?: string,
-  checkInData: CheckIn,
+  openLocationTracking: (checkIn: CheckIn) => void,
+  checkInData: Session,
   showActionSheetWithOptions: any,
   trackDataSource: ListViewDataSource,
-  fetchRegatta: (n: string) => void,
-  fetchAllRaces: (n: string) => void,
+  collectCheckInData: (c: CheckIn) => void,
 } > {
 
   public state = {
@@ -59,8 +53,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
       subHeading: checkInData.leaderboardName,
       onOptionsPressed: this.onOptionsPressed,
     })
-    this.props.fetchRegatta(checkInData.leaderboardName)
-    this.props.fetchAllRaces(checkInData.leaderboardName)
+    this.props.collectCheckInData(checkInData)
   }
 
   public onCheckoutPressed = async () => {
@@ -79,13 +72,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   public onTrackingPress = async () => {
     await this.setState({ isLoading: true })
     try {
-      if (this.props.locationTrackingStatus === LocationTrackingStatus.RUNNING) {
-        await this.props.stopLocationTracking()
-      } else {
-        const { checkInData } = this.props
-        await this.props.startLocationTracking(checkInData.leaderboardName, checkInData.eventId)
-        navigateToTracking(checkInData)
-      }
+      await this.props.openLocationTracking(this.props.checkInData)
     } catch (err) {
       Alert.alert(getUnknownErrorMessage())
     } finally {
@@ -101,8 +88,12 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
     Linking.openURL(CheckInService.leaderboardUrl(this.props.checkInData))
   }
 
-  public renderItem = (track: any) => {
-    return <TrackItem track={track}/>
+  public onTrackPress = (race: Race) => () => {
+    this.props.openTrackDetails(race)
+  }
+
+  public renderItem = (track: Race) => {
+    return <TrackItem onPress={this.onTrackPress(track)} track={track}/>
   }
 
   public onSettingsPress = () => {
@@ -162,17 +153,15 @@ const mapStateToProps = (state: any, props: any) => {
   const checkInData = props.navigation.state.params
   return {
     checkInData,
-    locationTrackingStatus: getLocationTrackingStatus(state),
     trackDataSource: getListViewDataSource({
-      [TRACKS_DATA_KEY]: getRaces(checkInData.leaderboardName)(state),
+      [TRACKS_DATA_KEY]: getRaces(checkInData.leaderboardName)(state) || [],
     }),
   }
 }
 
 export default connect(mapStateToProps, {
   checkOut,
-  startLocationTracking,
-  stopLocationTracking,
-  fetchRegatta,
-  fetchAllRaces,
+  openLocationTracking,
+  collectCheckInData,
+  openTrackDetails,
 })(SessionDetail)
