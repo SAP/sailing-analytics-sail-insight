@@ -20,6 +20,15 @@ export const isPositionFix = (arg: any): arg is PositionFix => {
   return arg.latitude !== undefined
 }
 
+export const PersistanceSchema = {
+  latitude: 'double',
+  longitude: 'double',
+  timeMillis: 'double',
+  speedInKnots: 'double?',
+  bearingInDeg: 'double?',
+  accuracy: 'double?',
+}
+
 export default interface PositionFix {
   speedInKnots: number | null
   bearingInDeg: number | null

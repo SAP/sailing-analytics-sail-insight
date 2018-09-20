@@ -2,9 +2,10 @@ import React from 'react'
 import { TouchableOpacity, ViewProps, ViewStyle } from 'react-native'
 
 import { OnPressType } from 'helpers/types'
-import styles from './styles'
 
 import ActivityIndicator from 'components/ActivityIndicator'
+
+import styles from './styles'
 
 
 abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & ViewProps & {
