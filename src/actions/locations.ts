@@ -10,6 +10,7 @@ import { CheckIn, PositionFix } from 'models'
 import { navigateToTracking } from 'navigation'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
+import { getBulkGpsSetting } from 'selectors/settings'
 import * as CheckInService from 'services/CheckInService'
 import * as GpsFixService from 'services/GPSFixService'
 import * as LocationService from 'services/LocationService'
@@ -28,6 +29,17 @@ export const updateSpeedInKnots = createAction('UPDATE_SPEED_IN_KNOTS')
 export const updateStartedAt = createAction('UPDATE_STARTED_AT')
 export const updateHeadingInDeg = createAction('UPDATE_HEADING_IN_DEG')
 export const updateDistance = createAction('UPDATE_DISTANCE')
+
+const sendGpsFix = async (serverUrl: string, postBody: any) => {
+  try {
+    await api(serverUrl).sendGpsFixes(postBody)
+    return true
+  } catch (err) {
+    Logger.debug(err)
+    return false
+  }
+}
+
 
 export const startLocationTracking = (
   leaderboardName: string,
@@ -59,8 +71,8 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   if (!gpsFix) {
     return
   }
-
-  const serverUrl = getTrackedCheckInBaseUrl(getState())
+  const state = getState()
+  const serverUrl = getTrackedCheckInBaseUrl(state)
   if (!serverUrl) {
     throw new LocationTrackingException('missing event baseUrl')
   }
@@ -68,10 +80,7 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   if (!postData) {
     throw new LocationTrackingException('gpsFix creation failed')
   }
-  try {
-    await api(serverUrl).sendGpsFixes(postData)
-  } catch (err) {
-    Logger.debug(err)
+  if (getBulkGpsSetting(state) || !(await sendGpsFix(serverUrl, postData))) {
     GpsFixService.storeGPSFix(serverUrl, gpsFix)
   }
   await dispatch(updateUnsentGpsFixCount(GpsFixService.unsentGpsFixCount()))

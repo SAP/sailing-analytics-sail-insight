@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { initializeApp } from 'actions/app'
+import { initializeApp } from 'actions/appLoading'
 
 import * as NavigationService from './NavigationService'
 import AppNavigator from './navigators/AppNavigator'

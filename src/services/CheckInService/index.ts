@@ -4,7 +4,7 @@ import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 
 import { getDeviceUuid } from 'helpers/uuid'
-import { CheckIn, PositionFix, Race, Session } from 'models'
+import { CheckIn, PositionFix, Race } from 'models'
 import { ApiBodyKeys as CheckInBodyKeys, urlParamsToCheckIn } from 'models/CheckIn'
 import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 

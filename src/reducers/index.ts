@@ -9,12 +9,14 @@ import {
   LOCATION_TRACKING_REDUCER_NAME,
   NETWORK_REDUCER_NAME,
   ONBOARDING_REDUCER_NAME,
+  SETTINGS_REDUCER_NAME,
 } from './config'
 
 import CheckInReducer from './CheckInReducer'
 import EntityReducer from './EntityReducer'
 import LocationTrackingReducer from './LocationTrackingReducer'
 import OnboardingReducer from './OnboardingReducer'
+import SettingsReducer from './SettingsReducer'
 
 
 interface RootReducer {
@@ -24,6 +26,7 @@ interface RootReducer {
   [LOCATION_TRACKING_REDUCER_NAME]: any,
   [FORM_REDUCER_NAME]: any,
   [ONBOARDING_REDUCER_NAME]: any,
+  [SETTINGS_REDUCER_NAME]: any,
 }
 
 const reducer: RootReducer = {
@@ -33,6 +36,7 @@ const reducer: RootReducer = {
   [ENTITIES_REDUCER_NAME]: EntityReducer,
   [FORM_REDUCER_NAME]: formReducer,
   [ONBOARDING_REDUCER_NAME]: OnboardingReducer,
+  [SETTINGS_REDUCER_NAME]: SettingsReducer,
 }
 
 const reducers = combineReducers(reducer)

@@ -78,6 +78,7 @@
   "text_tracking_alert_already_running_message": "A tracking session is running already. Do you really want to start tracking?",
   "text_tracking_alert_stop_confirmation_title": "Please confirm",
   "text_tracking_alert_stop_confirmation_message": "Do you really want to stop tracking?",
+  "text_setting_gps_bulk": "GPS updates are sent every {{timeInSeconds}} seconds.",
   
   "caption_ok": "OK",
   "caption_cancel": "Cancel",
@@ -116,6 +117,7 @@
   "caption_speed": "Speed",
   "caption_join_regatta": "Join a regatta",
   "caption_create_free_account": "Create a free account now",
+  "caption_setting_bulk_gps": "Battery saving mode",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",

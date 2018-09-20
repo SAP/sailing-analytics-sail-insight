@@ -1,66 +1,76 @@
 import { get } from 'lodash'
 import React from 'react'
-import { Alert, TouchableWithoutFeedback, View, ViewProps } from 'react-native'
+import { TouchableWithoutFeedback, View, ViewProps } from 'react-native'
 import VersionNumber from 'react-native-version-number'
 import { connect } from 'react-redux'
 
-import { insertTestCheckIns } from 'actions/checkIn'
+import { showTestCheckInAlert } from 'actions/appDebug'
+import { updateGpsBulkSetting } from 'actions/settings'
 import I18n from 'i18n'
+import { getBulkGpsSetting } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
+
+import EditItemSwitch from 'components/EditItemSwitch'
+import LineSeparator from 'components/LineSeparator'
+import ScrollContentView from 'components/ScrollContentView'
+import Text from 'components/Text'
+import TitleLabel from 'components/TitleLabel'
+
 import { container } from 'styles/commons'
 import styles from './styles'
 
-import ScrollContentView from 'components/ScrollContentView'
-import Text from 'components/Text'
-
 
 class AppSettings extends React.Component<ViewProps & {
-  insertTestCheckIns: () => void,
+  showTestCheckInAlert: () => void,
+  updateGpsBulkSetting: (value: boolean) => void,
+  bulkGpsSetting: boolean,
 }> {
-
-  public connectTestCheckIns = async () => {
-    Alert.alert(
-      'Debug: Test check-ins',
-      'Insert test check-ins?',
-      [
-        { text: I18n.t('caption_cancel'), style: 'cancel' },
-        {
-          text: I18n.t('caption_ok'), onPress: async () => {
-            try {
-              await this.props.insertTestCheckIns()
-            } catch (err) {
-              Alert.alert(err)
-            }
-          },
-        },
-      ],
-      { cancelable: true },
-    )
-  }
 
   public render() {
     return (
       <ScrollContentView>
         <View style={container.stretchContent}>
-          <TouchableWithoutFeedback
-            onLongPress={this.connectTestCheckIns}
+          {this.renderDeviceId()}
+          <LineSeparator/>
+          <EditItemSwitch
+            style={styles.item}
+            title={I18n.t('caption_setting_bulk_gps')}
+            switchValue={this.props.bulkGpsSetting}
+            onSwitchValueChange={this.props.updateGpsBulkSetting}
           >
-            <View style={styles.item}>
-              <Text>
-                {I18n.t('text_device_id')}
-              </Text>
-              <Text>
-                {getDeviceId()}
-              </Text>
-            </View>
-          </TouchableWithoutFeedback>
+            {I18n.t('text_setting_gps_bulk', { timeInSeconds: 5 })}
+          </EditItemSwitch>
         </View>
-        <Text>
-          {`v${get(VersionNumber, 'appVersion')}.${get(VersionNumber, 'buildVersion')}`}
-        </Text>
+        {this.renderVersionNumber()}
       </ScrollContentView>
+    )
+  }
+
+  protected renderVersionNumber = () => {
+    return (
+      <Text style={styles.item}>
+        {`v${get(VersionNumber, 'appVersion')}.${get(VersionNumber, 'buildVersion')}`}
+      </Text>
+    )
+  }
+
+  protected renderDeviceId = () => {
+    return (
+      <TouchableWithoutFeedback
+        onLongPress={this.props.showTestCheckInAlert}
+      >
+        <View style={styles.item}>
+          <TitleLabel title={I18n.t('text_device_id')}>
+            {getDeviceId()}
+          </TitleLabel>
+        </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
 
-export default connect(null, { insertTestCheckIns })(AppSettings)
+const mapStateToProps = (state: any) => ({
+  bulkGpsSetting: getBulkGpsSetting(state),
+})
+
+export default connect(mapStateToProps, { showTestCheckInAlert, updateGpsBulkSetting })(AppSettings)

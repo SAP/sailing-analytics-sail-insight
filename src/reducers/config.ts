@@ -4,6 +4,7 @@ export const LOCATION_TRACKING_REDUCER_NAME = 'locationTracking'
 export const NETWORK_REDUCER_NAME = 'network'
 export const FORM_REDUCER_NAME = 'form'
 export const ONBOARDING_REDUCER_NAME = 'onboarding'
+export const SETTINGS_REDUCER_NAME = 'settings'
 
 
 // location tracking reducer
@@ -23,4 +24,8 @@ export const LAST_LONGITUDE_KEY = 'lastLongitude'
 export const OnboardingReducerKeys = {
   JOIN_DISMISSED_AT_KEY: 'joinRegattaDismissedAt',
   ACCOUNT_DISMISSED_AT_KEY: 'createAccountDismissedAt',
+}
+
+export const SettingsReducerKeys = {
+  BULK_GPS_UPDATE: 'bulkGpsUpdate',
 }

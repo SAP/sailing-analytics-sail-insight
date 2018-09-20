@@ -20,6 +20,55 @@ import { tab } from 'styles/commons'
 import TopTabNavigator from './TopTabNavigator'
 
 
+const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
+  const { routeName = '' } = navigation.state
+  let icon
+  switch (routeName) {
+    case Screens.TrackingSetupAction:
+      icon = Images.tabs.tracking
+      break
+    case Screens.Sessions:
+      icon = Images.tabs.sessions
+      break
+    case Screens.CheckIn:
+      icon = Images.tabs.join
+      break
+    case Screens.Account:
+      icon = Images.tabs.account
+      break
+  }
+
+  const iconTintColor = focused ? $primaryActiveColor : tintColor
+
+  return (
+    <IconText
+      iconStyle={[tab.tabItemIcon, { tintColor: iconTintColor }]}
+      textStyle={[tab.bottomTabItemText, { color: tintColor }]}
+      source={icon}
+      iconTintColor={iconTintColor}
+      iconPosition="first"
+    >
+      {I18n.t(getTabItemTitleTranslationKey(routeName))}
+    </IconText>
+  )
+}
+
+const onTabBarPress = (navigation: any) => (props: any = {}) => {
+  if (!props.defaultHandler || !props.navigation) {
+    return
+  }
+  if (!props.navigation.state) {
+    return props.defaultHandler(navigation)
+  }
+  switch (navigation.state.routeName) {
+    case Screens.TrackingSetupAction:
+      navigateToNewSession(generateNewSession())
+      return
+  }
+  return props.defaultHandler(props.navigation)
+}
+
+
 export default createBottomTabNavigator(
   {
     [Screens.Sessions]: TopTabNavigator(
@@ -54,52 +103,8 @@ export default createBottomTabNavigator(
       showIcon: true,
     },
     navigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName = '' } = navigation.state
-        let icon
-        switch (routeName) {
-          case Screens.TrackingSetupAction:
-            icon = Images.tabs.tracking
-            break
-          case Screens.Sessions:
-            icon = Images.tabs.sessions
-            break
-          case Screens.CheckIn:
-            icon = Images.tabs.join
-            break
-          case Screens.Account:
-            icon = Images.tabs.account
-            break
-        }
-
-        const iconTintColor = focused ? $primaryActiveColor : tintColor
-
-        return (
-          <IconText
-            iconStyle={[tab.tabItemIcon, { tintColor: iconTintColor }]}
-            textStyle={[tab.bottomTabItemText, { color: tintColor }]}
-            source={icon}
-            iconTintColor={iconTintColor}
-            iconPosition="first"
-          >
-            {I18n.t(getTabItemTitleTranslationKey(routeName))}
-          </IconText>
-        )
-      },
-      tabBarOnPress: (props: any = {}) => {
-        if (!props.defaultHandler || !props.navigation) {
-          return
-        }
-        if (!props.navigation.state) {
-          return props.defaultHandler(navigation)
-        }
-        switch (navigation.state.routeName) {
-          case Screens.TrackingSetupAction:
-            navigateToNewSession(generateNewSession())
-            return
-        }
-        return props.defaultHandler(props.navigation)
-      },
+      tabBarIcon: getTabBarIcon(navigation),
+      tabBarOnPress:  onTabBarPress(navigation),
     }),
   },
 )

@@ -11,13 +11,14 @@ import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { navigateBack, navigateToManeuverMonitor, navigateToSetWind } from 'navigation'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
-import { button, container } from 'styles/commons'
-import styles from './styles'
 
 import ImageButton from 'components/ImageButton'
 import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
+
+import { button, container } from 'styles/commons'
+import styles from './styles'
 
 
 const EMPTY_VALUE = '-'

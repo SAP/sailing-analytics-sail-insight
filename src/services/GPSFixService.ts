@@ -2,14 +2,16 @@ import { keys } from 'lodash'
 
 import api from 'api'
 import Logger from 'helpers/Logger'
-import { GPSFix } from 'models'
+import { PositionFix } from 'models'
 import { deleteGPSFixRequests, readGPSFixRequests, writeGPSFixRequest } from 'storage'
 import { BASE_URL_PROPERTY_NAME, GPS_FIX_PROPERTY_NAME } from 'storage/schemas'
+
 import * as BackgroundTaskService from './BackgroundTaskService'
 import * as CheckInService from './CheckInService'
 // import * as LocationService from './LocationService'
 
-const UPDATE_TIME_INTERVAL_IN_MILLIS = 15000
+
+const UPDATE_TIME_INTERVAL_IN_MILLIS = 5000
 
 let stopWhenSynced = false
 
@@ -39,7 +41,7 @@ export const syncFixes = async () => {
   }
 }
 
-export const storeGPSFix = (serverUrl: string, gpsFix: GPSFix) =>
+export const storeGPSFix = (serverUrl: string, gpsFix: PositionFix) =>
   serverUrl && gpsFix && writeGPSFixRequest(serverUrl, gpsFix)
 
 export const unsentGpsFixCount = () => {

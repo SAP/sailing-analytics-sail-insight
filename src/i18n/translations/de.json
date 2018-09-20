@@ -74,6 +74,7 @@
   "text_empty_sessions_account_text": "Registriere dich und erfahre, was SAP Sail InSight alles kann.",
   "text_not_implemented_yet": "Noch nicht implementiert.",
   "text_tracking_maneuvers": "Manöver",
+  "text_setting_gps_bulk": "GPS-Updates werden alle {{timeInSeconds}} Sekunden verschickt.",
 
   "caption_ok": "OK",
   "caption_cancel": "Abbrechen",
@@ -112,6 +113,7 @@
   "caption_speed": "Geschwindigkeit",
   "caption_join_regatta": "Nimm an einer Regatta teil",
   "caption_create_free_account": "Kostenloses Konto erstellen",
+  "caption_setting_bulk_gps": "Batteriesparmodus",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Upsi, da ist was schief gegangen.\nBitte versuche es nochmal!",
