@@ -53,7 +53,7 @@ class JoinRegatta extends React.Component<{
       <ScrollContentView>
         <View style={container.stretchContent}>
           <Image style={image.headerLarge} source={eventImageUrl || Images.header.sailors}/>
-          {logoImageUrl && <Image style={styles.logo} source={logoImageUrl}/>}
+          {logoImageUrl && <Image style={[image.logoAbsoluteLeft, styles.logo]} source={logoImageUrl}/>}
           <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
           <View style={[styles.textContainer, registration.topContainer()]}>
             <Text style={registration.claim()}>

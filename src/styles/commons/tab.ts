@@ -10,6 +10,7 @@ export default EStyleSheet.create({
   topTabItemText: {
     fontFamily: '$tabFontFamily',
     fontSize: '$topTabItemFontSize',
+    fontWeight: '300',
   },
   tabItemIcon: {
     width: 24,

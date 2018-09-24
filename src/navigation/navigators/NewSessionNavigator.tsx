@@ -28,8 +28,7 @@ export default createStackNavigator(
   },
   {
     initialRouteName: Screens.TrackingSetup,
-    mode: 'card',
-    headerMode: 'screen',
+    ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },
 )

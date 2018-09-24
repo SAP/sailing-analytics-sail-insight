@@ -1,7 +1,11 @@
 export const Main = 'Main'
 export const Tracks = 'Tracks'
+
+// user
 export const AppSettings = 'AppSettings'
 export const UserProfile = 'UserProfile'
+export const UserBoats = 'UserBoats'
+export const BoatDetails = 'BoatDetails'
 
 // sessions
 export const UserSessions = 'UserSessions'

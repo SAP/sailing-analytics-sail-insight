@@ -56,8 +56,8 @@ export default createStackNavigator(
   },
   {
     initialRouteName: Screens.Main,
+    ...commons.stackNavigatorConfig,
     mode: 'modal',
-    headerMode: 'screen',
     navigationOptions: () => commons.headerNavigationOptions,
   },
 )

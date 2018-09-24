@@ -7,7 +7,7 @@ import styles from './styles'
 import BaseButton from 'components/base/BaseButton'
 
 
-class ImageButton extends BaseButton<ImageProps & {
+class ImageButton<P = {}> extends BaseButton<P & ImageProps & {
   imageStyle?: ImageStyle,
   circular?: boolean,
   autoWidth?: boolean,
@@ -41,7 +41,7 @@ class ImageButton extends BaseButton<ImageProps & {
       style,
     } = this.props
     return [
-      styles.containerStyle,
+      styles.container,
       circular && { borderRadius: this.state.borderRadius },
       autoWidth && { width: this.state.width },
       style,
@@ -63,7 +63,7 @@ class ImageButton extends BaseButton<ImageProps & {
     return (
       <Image
         source={source}
-        style={[styles.imageStyle, imageStyle]}
+        style={[styles.image, imageStyle]}
         {...remainingProps}
       />
     )

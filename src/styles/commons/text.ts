@@ -6,6 +6,10 @@ export default EStyleSheet.create({
     fontWeight: '500',
     color: '$secondaryTextColor',
   },
+  itemName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   propertyValue: {
     fontSize: 16,
     fontWeight: '300',

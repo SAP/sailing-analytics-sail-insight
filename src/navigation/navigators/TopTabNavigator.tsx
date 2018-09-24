@@ -2,10 +2,11 @@ import React from 'react'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 
-import Text from 'components/Text'
 import { platformSelect } from 'helpers/environment'
-import { getTabItemTitleTranslationKey } from 'helpers/texts'
-import I18n from 'i18n'
+import { getTabItemTitleTranslation } from 'helpers/texts'
+
+import Text from 'components/Text'
+
 import {
   $primaryActiveColor,
   $primaryTextColor,
@@ -28,7 +29,7 @@ export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTa
         <Text
           style={[tab.topTabItemText, { color: tintColor }]}
         >
-          {I18n.t(getTabItemTitleTranslationKey(navigation.state.routeName)).toUpperCase()}
+          {getTabItemTitleTranslation(navigation.state.routeName).toUpperCase()}
         </Text>
       ),
     }),

@@ -32,20 +32,16 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
-        maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url "$rootDir/../node_modules/react-native/android"
-        }
+
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        maven { url "$rootDir/../node_modules/react-native/android" }
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
-        maven {
-            url "$rootDir/../node_modules/react-native-background-geolocation/android/libs"
-        }
-        maven {
-            url "$rootDir/../node_modules/react-native-background-fetch/android/libs"
-        }
+        maven { url "$rootDir/../node_modules/react-native-background-geolocation/android/libs" }
+        maven { url "$rootDir/../node_modules/react-native-background-fetch/android/libs" }
+        maven { url "https://jitpack.io" }
     }
 }
 

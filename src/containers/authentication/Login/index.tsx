@@ -69,6 +69,7 @@ class Login extends React.Component<{
             placeholder={I18n.t('text_placeholder_your_email')}
             keyboardType={'email-address'}
             returnKeyType="next"
+            autoCapitalize="none"
             onSubmitEditing={this.handleOnSubmit(FORM_KEY_PASSWORD)}
             inputRef={this.handleInputRef(FORM_KEY_EMAIL)}
           />

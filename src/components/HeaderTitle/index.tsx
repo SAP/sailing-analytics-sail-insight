@@ -3,9 +3,11 @@ import {
   View, ViewProps,
 } from 'react-native'
 
-
 import Text from 'components/Text'
+
+import { navigation } from 'styles/commons'
 import styles from './styles'
+
 
 class HeaderTitle extends React.Component<ViewProps & {
   firstLine?: string,
@@ -20,12 +22,15 @@ class HeaderTitle extends React.Component<ViewProps & {
 
     return (
       <View style={[styles.container, style]}>
-        <Text style={styles.heading}>
+        <Text style={!secondLine ? navigation.headerTitle : styles.heading}>
           {firstLine}
         </Text>
-        <Text style={styles.subHeading}>
-          {secondLine}
-        </Text>
+        {
+          secondLine &&
+          <Text style={styles.subHeading}>
+            {secondLine}
+          </Text>
+        }
       </View>
     )
   }

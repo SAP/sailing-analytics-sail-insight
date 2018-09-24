@@ -8,9 +8,9 @@ import {
   ViewProps,
 } from 'react-native'
 
-import styles from './styles'
-
 import Text from 'components/Text'
+
+import styles from './styles'
 
 
 class IconText extends React.Component<ViewProps & {
@@ -42,9 +42,7 @@ class IconText extends React.Component<ViewProps & {
         source={source}
       />
     )
-    const text = (
-      <Text style={[styles.baseText, textStyle]}>{children}</Text>
-    )
+    const text = <Text style={[styles.baseText, textStyle]}>{children}</Text>
     const separator = <View style={styles.separator} />
 
     return iconPosition === 'second' ? (

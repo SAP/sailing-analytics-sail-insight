@@ -1,10 +1,19 @@
-import { $primaryBackgroundColor } from 'styles/colors'
+import { NavigationParams, StackNavigatorConfig } from 'react-navigation'
+
+import { $headerTintColor, $primaryBackgroundColor } from 'styles/colors'
 import { navigation as navigationStyles } from 'styles/commons'
 
 
-export const headerNavigationOptions: any = {
+export const headerNavigationOptions: NavigationParams = {
   headerTitleStyle: navigationStyles.headerTitle,
+  headerTintColor: $headerTintColor,
   headerStyle: {
     backgroundColor: $primaryBackgroundColor,
   },
+}
+
+export const stackNavigatorConfig: StackNavigatorConfig = {
+  mode: 'card',
+  headerMode: 'screen',
+  headerLayoutPreset: 'center',
 }

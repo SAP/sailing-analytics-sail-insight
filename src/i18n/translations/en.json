@@ -38,6 +38,7 @@
   "text_placeholder_boat_name": "Boat name",
   "text_placeholder_boat_class": "Boat class",
   "text_placeholder_sail_number": "Sail number",
+  "text_placeholder_sail_color": "Sail color",
   "text_registration_boat_class_hint": "Enter first letter or number. E.g. \"4\"",
   "text_registration_sail_number_hint": "E.g. GER123",
   "text_tracking_sog": "SOG",
@@ -79,7 +80,8 @@
   "text_tracking_alert_stop_confirmation_title": "Please confirm",
   "text_tracking_alert_stop_confirmation_message": "Do you really want to stop tracking?",
   "text_setting_gps_bulk": "GPS updates are sent every {{timeInSeconds}} seconds.",
-  
+  "text_tag_current_boat": "Current",
+
   "caption_ok": "OK",
   "caption_cancel": "Cancel",
   "caption_back": "Back",
@@ -99,8 +101,10 @@
   "caption_tab_usersessions": "My sessions",
   "caption_tab_tracks": "All tracks",
   "caption_tab_userprofile": "My Profile",
+  "caption_tab_userboats": "My Boats",
   "caption_tab_appsettings": "Settings",
   "caption_new_session": "New session",
+  "caption_new_boat": "New boat",
   "caption_start": "Start",
   "caption_share_session": "Share this session",
   "caption_lets_go": "Let's go!",
@@ -118,6 +122,8 @@
   "caption_join_regatta": "Join a regatta",
   "caption_create_free_account": "Create a free account now",
   "caption_setting_bulk_gps": "Battery saving mode",
+  "caption_open_photos" : "Open photos",
+  "caption_take_photo" : "Take a photo",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",

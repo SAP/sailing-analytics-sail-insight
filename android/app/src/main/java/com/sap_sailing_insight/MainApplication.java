@@ -3,6 +3,7 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.apsl.versionnumber.RNVersionNumberPackage;
 import com.dylanvann.fastimage.FastImageViewPackage;
 import com.corbt.keepawake.KCKeepAwakePackage;
@@ -38,6 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PickerPackage(),
             new RNVersionNumberPackage(),
             new FastImageViewPackage(),
             new KCKeepAwakePackage(),
@@ -50,7 +52,8 @@ public class MainApplication extends Application implements ReactApplication {
             new LinearGradientPackage(),
             new RNI18nPackage(),
             new RNBranchPackage(),
-            new RNCameraPackage()
+            new RNCameraPackage(),
+            new ShowAppSettingsPackage()
       );
     }
 
