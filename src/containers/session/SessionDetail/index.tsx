@@ -1,7 +1,7 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import { isEmpty } from 'lodash'
 import React from 'react'
-import { Alert, Linking, ListViewDataSource, View } from 'react-native'
+import { Alert, Linking, SectionList, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 
@@ -9,10 +9,9 @@ import { connect } from 'react-redux'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import {  openLocationTracking } from 'actions/locations'
 import { openTrackDetails } from 'actions/navigation'
-import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { settingsWithCheckoutActionSheetOptions } from 'helpers/actionSheets'
 import { getUnknownErrorMessage } from 'helpers/texts'
-import { getListViewDataSource, notImplementedYetAlert } from 'helpers/utils'
+import { listKeyExtractor, notImplementedYetAlert } from 'helpers/utils'
 import I18n from 'i18n'
 import { CheckIn, Race, Session } from 'models'
 import { navigateBack } from 'navigation'
@@ -22,7 +21,6 @@ import * as CheckInService from 'services/CheckInService'
 import { container } from 'styles/commons'
 import styles from './styles'
 
-import ListView from 'components/ListView'
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 import TrackInfo from 'components/session/TrackInfo'
 import TrackItem from 'components/session/TrackItem'
@@ -38,7 +36,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   openLocationTracking: (checkIn: CheckIn) => void,
   checkInData: Session,
   showActionSheetWithOptions: any,
-  trackDataSource: ListViewDataSource,
+  tracks: Race[],
   collectCheckInData: (c: CheckIn) => void,
 } > {
 
@@ -92,8 +90,8 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
     this.props.openTrackDetails(race)
   }
 
-  public renderItem = (track: Race) => {
-    return <TrackItem onPress={this.onTrackPress(track)} track={track}/>
+  public renderItem = ({ item }: any) => {
+    return <TrackItem onPress={this.onTrackPress(item)} track={item}/>
   }
 
   public onSettingsPress = () => {
@@ -106,7 +104,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
       <View
         style={[
           styles.header,
-          this.props.trackDataSource.getRowCount() > 0 ? styles.headerWithTracks : undefined,
+          this.props.tracks.length > 0 ? styles.headerWithTracks : undefined,
         ]}
       >
         <SessionInfoDisplay
@@ -120,13 +118,13 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
     )
   }
 
-  public renderSectionHeader = (data: any, category: any) => {
+  public renderSectionHeader = ({ section: { title, data } }: any) => {
     return (
       <View style={styles.sectionHeaderContainer}>
         {
           !isEmpty(data) &&
           <Text style={styles.sectionHeader}>
-            {category === TRACKS_DATA_KEY ? I18n.t('text_tracks').toUpperCase() : category}
+            {title === TRACKS_DATA_KEY ? I18n.t('text_tracks').toUpperCase() : title}
           </Text>
         }
       </View>
@@ -134,15 +132,16 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   }
 
   public render() {
-    const { trackDataSource } = this.props
+    const { tracks } = this.props
     return (
       <View style={container.list}>
-        <ListView
-          bounces={trackDataSource.getRowCount() > 0}
-          dataSource={trackDataSource}
-          renderRow={this.renderItem}
-          renderHeader={this.renderSessionDetails}
+        <SectionList
+          bounces={tracks.length > 0}
+          sections={[{ title: TRACKS_DATA_KEY, data: tracks }]}
+          renderItem={this.renderItem}
+          ListHeaderComponent={this.renderSessionDetails}
           renderSectionHeader={this.renderSectionHeader}
+          keyExtractor={listKeyExtractor}
         />
       </View>
     )
@@ -153,9 +152,7 @@ const mapStateToProps = (state: any, props: any) => {
   const checkInData = props.navigation.state.params
   return {
     checkInData,
-    trackDataSource: getListViewDataSource({
-      [TRACKS_DATA_KEY]: getRaces(checkInData.leaderboardName)(state) || [],
-    }),
+    tracks: getRaces(checkInData.leaderboardName)(state) || [],
   }
 }
 

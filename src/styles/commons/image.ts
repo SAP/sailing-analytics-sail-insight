@@ -6,16 +6,24 @@ const windowHeight = Dimensions.get('window').height
 export default EStyleSheets.create({
   $tagLineHeight: 56,
   $tagLineRatio: 3.318,
+  $logoSize: 80,
+  $headerWidth: '100%',
+  $headerResizeMode: 'cover',
 
   headerMedium: {
-    width: '100%',
+    width: '$headerWidth',
+    resizeMode: '$headerResizeMode',
     height: windowHeight * 0.26,
-    resizeMode: 'cover',
+  },
+  headerMediumLarge: {
+    width: '$headerWidth',
+    resizeMode: '$headerResizeMode',
+    height: windowHeight * 0.30,
   },
   headerLarge: {
-    width: '100%',
+    width: '$headerWidth',
+    resizeMode: '$headerResizeMode',
     height: windowHeight * 0.39,
-    resizeMode: 'cover',
   },
   tagLine: {
     height: '$tagLineHeight',
@@ -23,5 +31,23 @@ export default EStyleSheets.create({
     resizeMode: 'contain',
     width: '$tagLineHeight*$tagLineRatio',
     marginRight: '$containerFixedMargin',
+  },
+  logoAbsoluteLeft: {
+    width: '$logoSize',
+    height: '$logoSize',
+    resizeMode: 'contain',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    marginLeft: 15,
+    marginTop: 12,
+  },
+  absoluteLowerRight: {
+    resizeMode: 'contain',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    marginRight: 15,
+    marginBottom: 12,
   },
 })

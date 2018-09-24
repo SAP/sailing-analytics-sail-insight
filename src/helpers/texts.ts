@@ -44,5 +44,5 @@ export const getErrorDisplayMessage = (exception: any) => {
 
 export const getCaptionTranslationKey = (suffix: string) => `caption_${suffix}`
 
-export const getTabItemTitleTranslationKey = (routeName: string) =>
-  getCaptionTranslationKey(`tab_${routeName.toLowerCase()}`)
+export const getTabItemTitleTranslation = (routeName: string) =>
+  I18n.t(getCaptionTranslationKey(`tab_${routeName.toLowerCase()}`))

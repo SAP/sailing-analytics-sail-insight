@@ -57,6 +57,7 @@ class RegisterCredentials extends TextInputForm<{
             validate={[validateRequired, validateEmail]}
             keyboardType={'email-address'}
             returnKeyType="next"
+            autoCapitalize="none"
             onSubmitEditing={this.handleOnSubmit(FORM_KEY_PASSWORD)}
             inputRef={this.handleInputRef(FORM_KEY_EMAIL)}
           />

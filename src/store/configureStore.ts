@@ -6,13 +6,13 @@ import { persistReducer, persistStore } from 'redux-persist'
 import ReduxThunk from 'redux-thunk'
 
 import Reducers from 'reducers'
-import { NETWORK_REDUCER_NAME } from 'reducers/config'
+import { FORM_REDUCER_NAME, NETWORK_REDUCER_NAME } from 'reducers/config'
 
 
 const persistConfig = {
   key: 'root',
   debounce: 1000,
-  blacklist: [NETWORK_REDUCER_NAME],
+  blacklist: [NETWORK_REDUCER_NAME, FORM_REDUCER_NAME],
   storage: AsyncStorage,
 }
 

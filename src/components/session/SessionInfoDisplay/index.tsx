@@ -58,14 +58,14 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
         {
           eventImage &&
           <Image
-            style={eventImageSize === 'large' ? image.headerLarge : image.headerMedium}
+            style={eventImageSize === 'large' ? image.headerMediumLarge : image.headerMedium}
             source={eventImage}
           />
         }
         <View style={styles.detailContainer}>
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
-              <Text style={styles.nameText}>
+              <Text style={text.itemName}>
                 {session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name)}
               </Text>
               <View style={[styles.line, styles.textMargins]}>

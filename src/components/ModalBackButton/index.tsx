@@ -13,6 +13,8 @@ import TextButton from 'components/TextButton'
 class ModalBackButton extends React.Component<ViewProps & {
   onPress?: () => void,
   type?: 'icon' | 'text',
+  dropShadow?: boolean,
+  iconColor?: string,
 }> {
 
   public render() {
@@ -21,6 +23,8 @@ class ModalBackButton extends React.Component<ViewProps & {
       children,
       onPress,
       type = 'text',
+      dropShadow,
+      iconColor,
       ...props
     } = this.props
     return type === 'text' ? (
@@ -34,10 +38,13 @@ class ModalBackButton extends React.Component<ViewProps & {
       </TextButton >
     ) : (
       <TouchableOpacity
-        style={[styles.back, style]}
+        style={[styles.back, dropShadow ? styles.elevation : undefined, style]}
         onPress={onPress || navigateBack}
       >
-        <Image style={button.actionIconNavBar} source={Images.actions.close}/>
+        <Image
+          style={[button.actionIconNavBar, iconColor && { tintColor: iconColor }]}
+          source={Images.actions.close}
+        />
       </TouchableOpacity>
     )
   }

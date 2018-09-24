@@ -7,10 +7,6 @@ import * as sessionForm from 'forms/session'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import { navigateBack } from 'navigation'
-import { button, container, text } from 'styles/commons'
-import { registration } from 'styles/components'
-import { $containerFixedMargin } from 'styles/dimensions'
-import styles from './styles'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
@@ -18,15 +14,22 @@ import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
+import { button, container, input, text } from 'styles/commons'
+import { registration } from 'styles/components'
+import { $containerFixedMargin } from 'styles/dimensions'
+
 
 class EditSession extends TextInputForm<{
   valid?: boolean,
 } > {
-  public renderField(props: any) {
-    return <FormTextInput {...props}/>
-  }
 
   public render() {
+
+    const commonProps = {
+      keyboardType: 'default',
+      returnKeyType: 'next',
+    }
+
     return (
       <ScrollContentView
         extraHeight={$containerFixedMargin * 3}
@@ -41,72 +44,64 @@ class EditSession extends TextInputForm<{
           <Field
             label={I18n.t('text_placeholder_session_name')}
             name={sessionForm.FORM_KEY_NAME}
-            component={this.renderField}
             validate={[validateRequired]}
-            keyboardType={'default'}
-            returnKeyType="next"
+            component={this.renderField}
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_TRACK_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
+            {...commonProps}
           />
           <Field
-            style={styles.inputMargin}
+            style={input.topMargin}
             label={I18n.t('text_track_name')}
             name={sessionForm.FORM_KEY_TRACK_NAME}
-            component={this.renderField}
             validate={[validateRequired]}
-            keyboardType={'default'}
-            returnKeyType="next"
+            component={this.renderField}
             onSubmitEditing={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TRACK_NAME)}
           />
           <Field
-            style={styles.inputMargin}
+            style={input.topMargin}
             label={I18n.t('text_placeholder_boat_name')}
             name={sessionForm.FORM_KEY_BOAT_NAME}
             component={this.renderField}
-            keyboardType={'default'}
-            returnKeyType="next"
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_SAIL_NUMBER)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
+            {...commonProps}
           />
           <Field
-            style={styles.inputMargin}
+            style={input.topMargin}
             label={I18n.t('text_placeholder_sail_number')}
             name={sessionForm.FORM_KEY_SAIL_NUMBER}
             component={this.renderField}
-            keyboardType={'default'}
-            returnKeyType="next"
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_BOAT_CLASS)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            {...commonProps}
           />
           <Field
-            style={styles.inputMargin}
+            style={input.topMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
             component={this.renderField}
-            keyboardType={'default'}
-            returnKeyType="next"
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_TEAM_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
+            {...commonProps}
           />
           <Field
-            style={styles.inputMargin}
+            style={input.topMargin}
             label={I18n.t('text_team_name')}
             name={sessionForm.FORM_KEY_TEAM_NAME}
             component={this.renderField}
-            keyboardType={'default'}
-            returnKeyType="next"
             onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_PRIVACY_SETTING)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
+            {...commonProps}
           />
           <Field
-            style={styles.inputMargin}
+            style={input.topMargin}
             label={I18n.t('text_privacy_setting')}
             name={sessionForm.FORM_KEY_PRIVACY_SETTING}
             component={this.renderField}
-            keyboardType={'default'}
-            returnKeyType="next"
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_PRIVACY_SETTING)}
+            {...commonProps}
           />
           <TextButton
             style={registration.nextButton()}
@@ -118,6 +113,9 @@ class EditSession extends TextInputForm<{
         </View>
       </ScrollContentView >
     )
+  }
+  protected renderField(props: any) {
+    return <FormTextInput {...props}/>
   }
 
   private onSubmit = () => {

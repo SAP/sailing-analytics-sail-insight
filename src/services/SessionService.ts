@@ -24,8 +24,8 @@ export class SessionException extends Error {
 export const generateNewSession = (/*add params*/) => {
   // TODO: implement
   return {
-    name: 'My Session 01',
-    trackName: 'myTracking',
+    name: 'Mock Session 01',
+    trackName: 'myMockTracking',
     sailNumber: '123',
     boatName: 'TEST123',
     teamName: 'Sail Team No.1',

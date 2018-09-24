@@ -6,6 +6,7 @@ export default {
   },
   header: {
     sailors: require('./img/header_sailors_01.png'),
+    boat: require('./img/boat_placeholder.png'),
   },
   actions: {
     add: require('./img/icons/icon-plus.png'),
@@ -20,6 +21,7 @@ export default {
     close: require('./img/icons/icon-cross.png'),
     expandLess: require('./img/icons/icon-arrow-expand-less.png'),
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
+    pickImage: require('./img/icons/icon-camera.png'),
   },
   tabs: {
     tracking: require('./img/icons/icon-start.png'),
@@ -38,6 +40,7 @@ export default {
     time: require('./img/icons/icon-watch.png'),
     maneuvers: require('./img/icons/icon-maneuvers.png'),
     wind: require('./img/icons/icon-wind.png'),
+    error: require('./img/icons/icon-error.png'),
   },
   animations: {
     waveLoadingIndicator: require('./img/animations/wave_loading.json'),

@@ -18,11 +18,6 @@ export default EStyleSheets.create({
   logo: {
     width: 80,
     height: 80,
-    resizeMode: 'contain',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    marginLeft: 15,
     marginTop: 12 + getStatusBarHeight(true),
   },
 })

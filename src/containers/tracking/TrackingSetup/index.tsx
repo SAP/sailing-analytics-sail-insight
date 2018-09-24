@@ -10,7 +10,7 @@ import { shareSessionFromForm } from 'actions/sessions'
 import * as sessionForm from 'forms/session'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { Session } from 'models'
+import { Session, TrackingSession } from 'models'
 import { navigateToEditSession } from 'navigation'
 import { connect } from 'react-redux'
 import { getBoat } from 'selectors/boat'
@@ -136,7 +136,7 @@ class TrackingSetup extends React.Component<{
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const session: Session = props.navigation.state.params
+  const session: TrackingSession = props.navigation.state.params
   const boat = getBoat(session && session.boatName)(state)
   return {
     initialValues: {

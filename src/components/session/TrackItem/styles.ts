@@ -16,10 +16,6 @@ export default EStyleSheets.create({
   textMargins: {
     marginTop: '$textFixedMargin',
   },
-  nameText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   moreContainer: {
     marginTop: '$containerFixedMargin',
   },

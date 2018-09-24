@@ -10,7 +10,7 @@ import I18n from 'i18n'
 import { Race } from 'models'
 
 import { $secondaryTextColor } from 'styles/colors'
-import { button } from 'styles/commons'
+import { button, text } from 'styles/commons'
 import styles from './styles'
 
 
@@ -78,7 +78,7 @@ class TrackItem extends React.Component<ViewProps & {
         <View style={[styles.container, style]}>
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
-              <Text style={styles.nameText}>
+              <Text style={text.itemName}>
                 {track.name}
               </Text>
               <View style={[styles.line, styles.textMargins]}>

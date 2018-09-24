@@ -1,22 +1,24 @@
 import React from 'react'
 import { createBottomTabNavigator } from 'react-navigation'
 
+import Images from '@assets/Images'
+import { getTabItemTitleTranslation } from 'helpers/texts'
+import { navigateToNewSession } from 'navigation'
+import * as Screens from 'navigation/Screens'
+import { generateNewSession } from 'services/SessionService'
+
 import IconText from 'components/IconText'
 import AppSettings from 'containers/AppSettings'
 import CheckIn from 'containers/session/CheckIn'
 import Sessions from 'containers/session/Sessions'
 import TrackingSetup from 'containers/tracking/TrackingSetup'
 import Tracks from 'containers/tracking/Tracks'
-import UserProfile from 'containers/UserProfile'
+import UserBoats from 'containers/user/UserBoats'
+import UserProfile from 'containers/user/UserProfile'
 
-import Images from '@assets/Images'
-import { getTabItemTitleTranslationKey } from 'helpers/texts'
-import I18n from 'i18n'
-import { navigateToNewSession } from 'navigation'
-import * as Screens from 'navigation/Screens'
-import { generateNewSession } from 'services/SessionService'
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
+
 import TopTabNavigator from './TopTabNavigator'
 
 
@@ -39,16 +41,17 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
   }
 
   const iconTintColor = focused ? $primaryActiveColor : tintColor
+  const focusStyle = focused ? { fontWeight: 'bold' } : undefined
 
   return (
     <IconText
       iconStyle={[tab.tabItemIcon, { tintColor: iconTintColor }]}
-      textStyle={[tab.bottomTabItemText, { color: tintColor }]}
+      textStyle={[tab.bottomTabItemText, { color: tintColor }, focusStyle]}
       source={icon}
       iconTintColor={iconTintColor}
       iconPosition="first"
     >
-      {I18n.t(getTabItemTitleTranslationKey(routeName))}
+      {getTabItemTitleTranslation(routeName)}
     </IconText>
   )
 }
@@ -83,6 +86,7 @@ export default createBottomTabNavigator(
     [Screens.Account]: TopTabNavigator(
       {
         [Screens.UserProfile]: UserProfile,
+        [Screens.UserBoats]: UserBoats,
         [Screens.AppSettings]: AppSettings,
       },
       { initialRouteName: Screens.UserProfile },

@@ -5,14 +5,17 @@ import Images from '@assets/Images'
 import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
-import { button } from 'styles/commons'
 
 import GradientNavigationBar from 'components/GradientNavigationBar'
 import ImageButton from 'components/ImageButton'
+import ModalBackButton from 'components/ModalBackButton'
 import Login from 'containers/authentication/Login'
 import RegisterBoat from 'containers/authentication/RegisterBoat'
 import RegisterCredentials from 'containers/authentication/RegisterCredentials'
 import RegisterName from 'containers/authentication/RegisterName'
+
+import { $headerTintColor } from 'styles/colors'
+import { button } from 'styles/commons'
 
 
 const navHeaderTransparentProps = {
@@ -31,6 +34,7 @@ export default createStackNavigator(
       navigationOptions: () => ({
         ...navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
       }),
     },
     [Screens.RegisterCredentials]: {
@@ -58,8 +62,7 @@ export default createStackNavigator(
   },
   {
     initialRouteName: Screens.RegisterName,
-    mode: 'card',
-    headerMode: 'screen',
+    ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },
 )

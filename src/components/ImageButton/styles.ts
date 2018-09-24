@@ -2,12 +2,12 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 
 
 export default EStyleSheet.create({
-  containerStyle: {
+  container: {
     width: '$defaultImageButtonSize',
     height: '$defaultImageButtonSize',
     overflow: 'hidden',
   },
-  imageStyle: {
+  image: {
     width: null,
     height: null,
     flex: 1,
