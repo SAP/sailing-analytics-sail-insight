@@ -5,15 +5,16 @@ import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import { FORM_KEY_EMAIL, FORM_KEY_PASSWORD } from 'forms/registration'
 import I18n from 'i18n'
-import { button, container, image, text } from 'styles/commons'
-import { registration } from 'styles/components'
-import { $containerFixedMargin } from 'styles/dimensions'
-import styles from './styles'
 
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
+
+import { button, container, image, text } from 'styles/commons'
+import { registration } from 'styles/components'
+import { $extraSpacingScrollContent } from 'styles/dimensions'
+import styles from './styles'
 
 
 class Login extends React.Component<{
@@ -49,9 +50,7 @@ class Login extends React.Component<{
 
   public render() {
     return (
-      <ScrollContentView
-        extraHeight={$containerFixedMargin * 3}
-      >
+      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
           <Image style={image.headerMedium} source={Images.header.sailors}/>
           <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>

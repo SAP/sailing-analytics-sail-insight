@@ -13,9 +13,6 @@ import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import { navigateBack } from 'navigation'
 import { getFieldError } from 'selectors/form'
-import { button, container, text } from 'styles/commons'
-import { $containerFixedMargin } from 'styles/dimensions'
-import styles from './styles'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
@@ -23,6 +20,10 @@ import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import { registration } from 'styles/components'
+
+import { button, container, text } from 'styles/commons'
+import { $extraSpacingScrollContent } from 'styles/dimensions'
+import styles from './styles'
 
 
 class RegisterBoat extends TextInputForm<{
@@ -46,9 +47,7 @@ class RegisterBoat extends TextInputForm<{
 
   public render() {
     return (
-      <ScrollContentView
-        extraHeight={$containerFixedMargin * 3}
-      >
+      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={[container.stretchContent, container.mediumHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_register_boat_claim_01')}</Text>

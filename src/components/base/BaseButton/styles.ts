@@ -7,7 +7,7 @@ export default EStyleSheet.create({
     justifyContent: 'center',
   },
   spinnerStyle: {
-    marginLeft: '$containerFixedSmallMargin*2',
-    marginRight: '$containerFixedSmallMargin*2',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
 })

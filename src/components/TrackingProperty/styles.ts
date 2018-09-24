@@ -13,7 +13,7 @@ export default EStyleSheet.create({
   },
   title: {
     color: '$secondaryTextColor',
-    fontSize: 12,
+    fontSize: '$regularFontSize',
     fontWeight: '500',
     letterSpacing: -0.3,
   },
@@ -24,7 +24,7 @@ export default EStyleSheet.create({
     letterSpacing: -0.8,
   },
   unit: {
-    fontSize: 16,
+    fontSize: '$largeFontSize',
     fontWeight: 'bold',
     letterSpacing: -0.08,
   },

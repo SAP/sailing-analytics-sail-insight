@@ -7,13 +7,13 @@ export default EStyleSheets.create({
     marginBottom: '10%',
   },
   sliderCaptionContainer: {
-    marginTop: 18,
+    marginTop: '$smallSpacing+2',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignSelf: 'stretch',
   },
   title: {
-    fontSize: 12,
+    fontSize: '$regularFontSize',
     fontWeight: '500',
     letterSpacing: -0.1,
     color: '$secondaryTextColor',
@@ -21,11 +21,11 @@ export default EStyleSheets.create({
   metaDisplay: {
     marginTop: 10,
     backgroundColor: '$secondaryBackgroundColor',
-    paddingLeft: 8,
-    paddingRight: 8,
-    paddingTop: 4,
-    paddingBottom: 4,
-    fontSize: 13.75,
+    paddingLeft: '$tinySpacing',
+    paddingRight: '$tinySpacing',
+    paddingTop: '$microSpacing',
+    paddingBottom: '$microSpacing',
+    fontSize: '$regularLargeFontSize',
     fontWeight: '500',
     letterSpacing: 0.25,
     borderRadius: 4,
@@ -33,7 +33,7 @@ export default EStyleSheets.create({
   },
   infoContainer: {
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: '$tinySpacing',
   },
   controlsContainer: {
     justifyContent: 'space-around',

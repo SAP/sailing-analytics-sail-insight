@@ -6,7 +6,7 @@ export default EStyleSheets.create({
     marginTop: 25,
   },
   informationItem: {
-    padding: '$containerFixedSmallMargin',
+    padding: '$tinySpacing',
   },
   propertyRow: {
     marginTop: 11,
@@ -21,7 +21,7 @@ export default EStyleSheets.create({
     flex: 0.33,
   },
   sectionTitle: {
-    fontSize: 12,
+    fontSize: '$regularFontSize',
     fontWeight: '500',
     letterSpacing: 2.04,
     alignSelf: 'center',

@@ -16,7 +16,7 @@ import TextButton from 'components/TextButton'
 
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
-import { $containerFixedMargin } from 'styles/dimensions'
+import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 
 class EditSession extends TextInputForm<{
@@ -31,9 +31,7 @@ class EditSession extends TextInputForm<{
     }
 
     return (
-      <ScrollContentView
-        extraHeight={$containerFixedMargin * 3}
-      >
+      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={[container.stretchContent, container.mediumHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_edit_session_claim_01')}</Text>

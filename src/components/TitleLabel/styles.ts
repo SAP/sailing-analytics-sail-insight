@@ -2,11 +2,11 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
   title: {
-    fontSize: '$subParagraphFontSize',
+    fontSize: '$smallFontSize',
     fontWeight: 'bold',
   },
   text: {
-    marginTop: '$textFixedMargin',
-    fontSize: '$paragraphFontSize',
+    marginTop: '$microSpacing',
+    fontSize: '$regularLargeFontSize',
   },
 })

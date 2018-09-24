@@ -1,11 +1,12 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 import { button, container, text } from 'styles/commons'
+import { $baseSpacing } from 'styles/dimensions'
 
 const styles = EStyleSheet.create({
   claim: { marginTop: '7.5 %' },
   bottomContainer: {
-    paddingTop: '$containerFixedMargin',
+    paddingTop: '$smallSpacing',
     paddingBottom: 37,
   },
   nextButton: { marginTop: 32 },
@@ -29,6 +30,6 @@ export default {
     styles.nextButton,
   ],
   lowerButton: () => ({
-    marginTop: 24,
+    marginTop: $baseSpacing,
   }),
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch, ViewProps  } from 'react-native'
+import { Platform, Switch, ViewProps  } from 'react-native'
 
 import EditItem from 'components/EditItem'
 
@@ -27,10 +27,13 @@ class EditItemSwitch extends React.Component<ViewProps & {
 
   public renderSwitch = () => {
     const { switchValue, isLoading } = this.props
+    const switchProps = Platform.OS !== 'android' ? {
+      trackColor: { true: $primaryButtonColor, false: $secondaryBackgroundColor },
+      tintColor: $primaryButtonColor,
+    } : {}
     return (
       <Switch
-        trackColor={{ true: $primaryButtonColor, false: $secondaryBackgroundColor }}
-        tintColor={$primaryButtonColor}
+        {...switchProps}
         onValueChange={this.valueChanged}
         value={isLoading ? this.state.tempValue : switchValue}
       />

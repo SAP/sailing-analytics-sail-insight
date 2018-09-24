@@ -9,11 +9,11 @@ export default EStyleSheets.create({
     flex: 0.5,
   },
   propertyValue: {
-    fontSize: 20,
+    fontSize: '$titleFontSize',
     fontWeight: '300',
   },
   propertyUnit: {
-    fontSize: 12,
+    fontSize: '$regularFontSize',
     fontWeight: '300',
   },
   lineMargin: {

@@ -31,12 +31,12 @@ export default EStyleSheet.create({
     paddingRight: 5,
     paddingBottom: 1,
     color: '$primaryTextColor',
-    fontSize: 16,
+    fontSize: '$largeFontSize',
     paddingVertical: 0, // remove Android default padding
   },
   title: {
     color: '$secondaryTextColor',
-    fontSize: 12,
+    fontSize: '$regularFontSize',
     position: 'absolute',
     top: 0,
     left: 0,
@@ -57,7 +57,7 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   securedToggleBtnText: {
-    fontSize: 12,
+    fontSize: '$regularFontSize',
   },
   visibilityIcon: {
     width: '$defaultIconSize',

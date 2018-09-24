@@ -2,12 +2,14 @@ import React from 'react'
 import { View } from 'react-native'
 
 import I18n from 'i18n'
-import { container } from 'styles/commons'
-import styles from './styles'
 
 import Text from 'components/Text'
 import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
+
+import { container } from 'styles/commons'
+import { $largeFontSize, $microFontSize, $regularFontSize } from 'styles/fonts'
+import styles from './styles'
 
 
 class ManeuverMonitor extends React.Component<{
@@ -28,9 +30,9 @@ class ManeuverMonitor extends React.Component<{
     const turnAvgRate = '9.07°'
 
     const propertyProps = {
-      titleFontSize: 12,
-      valueFontSize: 16,
-      unitFontSize: 8,
+      titleFontSize: $regularFontSize,
+      valueFontSize: $largeFontSize,
+      unitFontSize: $microFontSize,
     }
 
     return (

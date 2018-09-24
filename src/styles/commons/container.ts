@@ -20,18 +20,18 @@ export default EStyleSheet.create({
     height: 30,
     width: 60,
     resizeMode: 'contain',
-    marginLeft: 16,
+    marginLeft: '$smallSpacing',
   },
   mediumHorizontalMargin: {
-    marginLeft: '12%',
-    marginRight: '12%',
+    marginLeft: '$largeRelativeSpacing',
+    marginRight: '$largeRelativeSpacing',
   },
   mediumHorizontalPadding: {
-    paddingLeft: '12%',
-    paddingRight: '12%',
+    paddingLeft: '$largeRelativeSpacing',
+    paddingRight: '$largeRelativeSpacing',
   },
   registerBottomContainer: {
-    paddingTop: '$containerFixedMargin',
+    paddingTop: '$smallSpacing',
     paddingBottom: 37,
   },
 })

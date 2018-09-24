@@ -30,7 +30,7 @@ export default EStyleSheets.create({
     alignSelf: 'flex-end',
     resizeMode: 'contain',
     width: '$tagLineHeight*$tagLineRatio',
-    marginRight: '$containerFixedMargin',
+    marginRight: '$smallSpacing',
   },
   logoAbsoluteLeft: {
     width: '$logoSize',

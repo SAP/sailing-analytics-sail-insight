@@ -14,7 +14,7 @@ export default EStyleSheets.create({
   },
   detailButton: {
     flex: 1,
-    margin: '$containerFixedSmallMargin',
+    margin: '$tinySpacing',
   },
   header: {
     backgroundColor: '$primaryBackgroundColor',
@@ -23,14 +23,14 @@ export default EStyleSheets.create({
     marginBottom: 15,
   },
   sectionHeader: {
-    fontSize: 16,
+    fontSize: '$largeFontSize',
     fontWeight: '500',
-    marginTop: 15,
-    marginBottom: 15,
-    marginLeft: 14,
+    marginTop: '$smallSpacing-1',
+    marginBottom: '$smallSpacing-1',
+    marginLeft: '$smallSpacing-2',
     color: '$secondaryTextColor',
   },
   sidePadding: {
-    paddingHorizontal: '$containerFixedMargin',
+    paddingHorizontal: '$smallSpacing',
   },
 })

@@ -2,12 +2,13 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 
 export default EStyleSheets.create({
+  $shareSpacing: '$smallSpacing+4',
   infoContainer: {
-    marginLeft: '$containerFixedMargin',
-    marginRight: '$containerFixedMargin',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   titleRow: {
-    marginTop: '$containerFixedMargin',
+    marginTop: '$smallSpacing',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -24,7 +25,7 @@ export default EStyleSheets.create({
     marginBottom: 32,
   },
   shareButton: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: '$shareSpacing',
+    marginBottom: '$shareSpacing',
   },
 })

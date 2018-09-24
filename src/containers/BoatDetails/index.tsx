@@ -22,7 +22,7 @@ import TextButton from 'components/TextButton'
 
 import { button, container, input } from 'styles/commons'
 import { registration } from 'styles/components'
-import { $containerFixedMargin } from 'styles/dimensions'
+import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 
 class BoatDetails extends TextInputForm<ViewProps & NavigationScreenProps & {
@@ -33,9 +33,7 @@ class BoatDetails extends TextInputForm<ViewProps & NavigationScreenProps & {
     const commonProps = this.getCommonFieldProps()
 
     return (
-      <ScrollContentView
-        extraHeight={$containerFixedMargin * 3}
-      >
+      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
           <Field
             name={boatForm.FORM_KEY_IMAGE}
