@@ -16,7 +16,7 @@ export default EStyleSheet.create({
     height: '$defaultIconSize',
   },
   title: {
-    fontSize: 12,
+    fontSize: '$regularFontSize',
     fontWeight: '500',
     color: '$secondaryTextColor',
   },

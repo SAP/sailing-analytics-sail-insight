@@ -14,10 +14,10 @@ export default EStyleSheets.create({
     ...headerTitleStyleProps,
   },
   heading: {
-    fontSize: '$paragraphFontSize',
+    fontSize: '$regularLargeFontSize',
     fontWeight: 'bold',
   },
   subHeading: {
-    fontSize: '$subParagraphFontSize',
+    fontSize: '$smallFontSize',
   },
 })

@@ -2,9 +2,10 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
   $textButtonTextColor: '$primaryButtonColor',
-  $textButtonTextFontSize: 16,
+  $textButtonTextFontSize: '$largeFontSize',
   $actionIconPadding: 4,
   $actionIconSizeAddition: '$actionIconPadding*2',
+  $navIconSpacing: '$smallSpacing+4',
   action: {
     backgroundColor: '$primaryButtonColor',
     padding: 8,
@@ -29,12 +30,12 @@ export default EStyleSheet.create({
   },
   actionText: {
     color: 'white',
-    fontSize: '$claimFontSize',
+    fontSize: '$titleFontSize',
   },
   trackingActionText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: '$claimFontSize',
+    fontSize: '$titleFontSize',
     letterSpacing: -0.5,
   },
   trackingAction: {
@@ -65,8 +66,8 @@ export default EStyleSheet.create({
     tintColor: '$primaryTextColor',
     width: '$defaultIconSize',
     height: '$defaultIconSize',
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: '$navIconSpacing',
+    marginRight: '$navIconSpacing',
   },
   secondaryActionIcon: {
     tintColor: '$secondaryButtonColor',

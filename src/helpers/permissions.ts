@@ -17,6 +17,7 @@ export const PERMISSION_AUTHORIZED = 'authorized'
 export const PERMISSION_UNDETERMINED = 'undetermined'
 export const PERMISSION_RESTRICTED = 'restricted'
 
+const SETTINGS_CTA_PERMISSION_STATE = Platform.OS === 'ios' ? PERMISSION_DENIED : PERMISSION_RESTRICTED
 
 export const openSettings = () => {
   if (Platform.OS === 'android') {
@@ -29,21 +30,17 @@ export const openSettings = () => {
 export const requestPermission = async (permissionType: string) =>
   await Permissions.request(permissionType) === PERMISSION_AUTHORIZED
 
-export const checkPermissionWithSettingsAlertFallback = async (
-  permissionType: string,
+export const checkPermissionWithSettingsCTA = async (
+  permission: string,
   alertTitle: string,
-  alertText: string,
+  alertMessage: string,
 ) => {
-  const permissionStateToShowSettingsAlert = Platform.OS === 'ios' ? PERMISSION_DENIED : PERMISSION_RESTRICTED
-
-  const permissionResult = await Permissions.check(permissionType)
-  if (permissionResult !== permissionStateToShowSettingsAlert) {
+  if (await Permissions.check(permission) !== SETTINGS_CTA_PERMISSION_STATE) {
     return true
   }
-
   Alert.alert(
     alertTitle,
-    alertText,
+    alertMessage,
     [
       { text: I18n.t('caption_cancel'), style: 'cancel' },
       { text: I18n.t('caption_settings'), onPress: openSettings },
@@ -54,23 +51,23 @@ export const checkPermissionWithSettingsAlertFallback = async (
 }
 
 export const requestPermissionsForImagePickerUsingCamera = async () =>
-  checkPermissionWithSettingsAlertFallback(
+  checkPermissionWithSettingsCTA(
     PermissionType.Camera,
-    I18n.t('caption_camera'),
-    I18n.t('text_missing_camera_permission_show_settings'),
+    I18n.t('caption_take_photo'),
+    I18n.t('text_permission_camera_settings_cta'),
   ) &&
-  await checkPermissionWithSettingsAlertFallback(
+  await checkPermissionWithSettingsCTA(
     PermissionType.Photo,
-    I18n.t('caption_library'),
-    I18n.t('text_missing_camera_permission_show_settings'),
+    I18n.t('caption_take_photo'),
+    I18n.t('text_permission_camera_settings_cta'),
   ) &&
   await requestPermission(PermissionType.Camera) &&
   requestPermission(PermissionType.Photo)
 
 export const requestPermissionsForImagePickerUsingPhotos = async () =>
-  await checkPermissionWithSettingsAlertFallback(
+  await checkPermissionWithSettingsCTA(
     PermissionType.Photo,
-    I18n.t('caption_library'),
-    I18n.t('text_missing_photo_permission_show_settings'),
+    I18n.t('caption_open_photos'),
+    I18n.t('text_permission_photo_gallery_settings_cta'),
   ) &&
   requestPermission(PermissionType.Photo)

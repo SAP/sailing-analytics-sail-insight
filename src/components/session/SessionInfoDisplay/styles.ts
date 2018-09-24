@@ -2,10 +2,10 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
   detailContainer: {
-    paddingHorizontal: '$containerFixedMargin',
-    paddingVertical: '$containerFixedSmallMargin',
+    paddingHorizontal: '$smallSpacing',
+    paddingVertical: '$tinySpacing',
     backgroundColor: 'white',
-    marginBottom: '$containerFixedSmallMargin',
+    marginBottom: '$tinySpacing',
   },
   innerContainer: {
     alignItems: 'center',
@@ -17,17 +17,17 @@ export default EStyleSheets.create({
     alignItems: 'center',
   },
   textMargins: {
-    marginTop: '$textFixedMargin',
+    marginTop: '$microSpacing',
   },
   dateText: {
-    fontSize: 12,
+    fontSize: '$regularFontSize',
   },
   tracksText: {
-    marginLeft: 6,
-    marginRight: 3,
+    marginLeft: '$microSpacing+2',
+    marginRight: '$microSpacing-1',
   },
   tracksCountText: {
-    fontSize: 12,
+    fontSize: '$regularFontSize',
   },
   trackingButton: {
     width: 49,

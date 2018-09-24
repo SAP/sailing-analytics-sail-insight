@@ -76,7 +76,7 @@ class ImagePickerButton extends React.Component<ImageProps & {
           case 0:
             return this.handleOpenPhotos()
           case 1:
-            return this.handleOpenCamera
+            return this.handleOpenCamera()
           default:
             return
         }

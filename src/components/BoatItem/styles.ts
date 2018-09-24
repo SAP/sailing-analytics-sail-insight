@@ -5,14 +5,14 @@ export default EStyleSheet.create({
   $logoSize: 80,
   container: {
     backgroundColor: '$primaryBackgroundColor',
-    marginBottom: '$containerFixedMargin',
+    marginBottom: '$smallSpacing',
   },
   textContainer: {
-    paddingHorizontal: '$containerFixedMargin',
+    paddingHorizontal: '$smallSpacing',
     paddingVertical: 18,
   },
   sailNumber: {
-    marginTop: 4,
+    marginTop: '$microSpacing',
   },
   lowerTextContainer: {
     flexDirection: 'row',
@@ -24,7 +24,7 @@ export default EStyleSheet.create({
     paddingHorizontal: 6,
     borderRadius: 4,
     backgroundColor: '$activeTagColor',
-    fontSize: 13.75,
+    fontSize: '$regularLargeFontSize',
     fontWeight: '500',
   },
   currentTagText: {

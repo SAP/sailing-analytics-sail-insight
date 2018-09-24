@@ -4,6 +4,6 @@ export default EStyleSheets.create({
   container: { flex: 1 },
   item: {
     backgroundColor: 'white',
-    padding: '$containerFixedSmallMargin',
+    padding: '$tinySpacing',
   },
 })

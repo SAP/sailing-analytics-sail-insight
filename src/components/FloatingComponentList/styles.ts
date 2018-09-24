@@ -5,6 +5,6 @@ export default EStyleSheets.create({
     position: 'absolute',
     bottom: 0,
     alignSelf: 'center',
-    margin: '$containerFixedMargin',
+    margin: '$smallSpacing',
   },
 })

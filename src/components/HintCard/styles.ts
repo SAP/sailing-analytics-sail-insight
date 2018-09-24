@@ -6,8 +6,8 @@ export default EStyleSheet.create({
     backgroundColor: '$primaryBackgroundColor',
   },
   innerContainer: {
-    marginTop: 40,
-    marginBottom: 44,
+    marginTop: '$largeSpacing-8',
+    marginBottom: '$largeSpacing-4',
   },
   closeButton: {
     width: '$defaultIconSize',
@@ -17,14 +17,14 @@ export default EStyleSheet.create({
     right: 0,
     resizeMode: 'contain',
     tintColor: '$secondaryButtonColor',
-    marginRight: 16,
-    marginTop: 24,
+    marginRight: '$smallSpacing',
+    marginTop: '$baseSpacing',
   },
   title: {
-    marginTop: 29,
+    marginTop: '$baseSpacing+5',
   },
   text: {
-    marginTop: 9,
+    marginTop: '$tinySpacing+1',
   },
   image: {
     resizeMode: 'contain',

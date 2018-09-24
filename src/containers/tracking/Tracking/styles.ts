@@ -17,7 +17,7 @@ export default EStyleSheets.create({
     backgroundColor: '$primaryTextColor',
   },
   informationItem: {
-    padding: '$containerFixedSmallMargin',
+    padding: '$tinySpacing',
   },
   propertyRow: {
     marginTop: topMargin,

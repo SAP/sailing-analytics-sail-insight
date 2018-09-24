@@ -3,8 +3,8 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 export default EStyleSheets.create({
   container: {
     backgroundColor: '$primaryBackgroundColor',
-    marginBottom: '$containerFixedMargin',
-    padding: '$containerFixedMargin',
+    marginBottom: '$smallSpacing',
+    padding: '$smallSpacing',
   },
   basicInfoContainer: {
     flexGrow: 1,
@@ -14,10 +14,10 @@ export default EStyleSheets.create({
     alignItems: 'center',
   },
   textMargins: {
-    marginTop: '$textFixedMargin',
+    marginTop: '$microSpacing',
   },
   moreContainer: {
-    marginTop: '$containerFixedMargin',
+    marginTop: '$smallSpacing',
   },
   iconButton: {
     width: 49,
@@ -31,6 +31,6 @@ export default EStyleSheets.create({
     marginVertical: 20,
   },
   dateText: {
-    marginRight: '$containerFixedMargin',
+    marginRight: '$smallSpacing',
   },
 })

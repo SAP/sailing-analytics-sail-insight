@@ -1,7 +1,7 @@
 import { isPlatformAndroid } from 'helpers/environment'
 import { Dimensions } from 'react-native'
 
-import { $claimFontSize, $defaultFontFamily } from 'styles/fonts'
+import { $defaultFontFamily, $titleFontSize } from 'styles/fonts'
 
 
 const screen = Dimensions.get('window')
@@ -14,7 +14,7 @@ export default {
     textAlign: 'center',
     alignSelf: 'center',
     fontFamily: $defaultFontFamily,
-    fontSize: $claimFontSize,
+    fontSize: $titleFontSize,
     fontWeight: '500',
     ...headerTitleStyleProps,
   },
@@ -22,6 +22,6 @@ export default {
     textAlign: 'center',
     alignSelf: 'center',
     ...headerTitleStyleProps,
-    fontSize: 13,
+    fontSize: '$regularLargeFontSize',
   },
 }

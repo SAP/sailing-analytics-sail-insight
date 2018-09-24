@@ -12,7 +12,7 @@ export default EStyleSheet.create({
     resizeMode: 'contain',
   },
   baseText: {
-    fontSize: 12,
+    fontSize: '$regularFontSize',
   },
   separator: {
     height: 4,
