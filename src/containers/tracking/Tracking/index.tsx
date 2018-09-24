@@ -17,6 +17,7 @@ import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 
+import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import { button, container } from 'styles/commons'
 import styles from './styles'
 
@@ -73,6 +74,7 @@ class Tracking extends React.Component<{
 
     return (
       <View style={[container.main]}>
+        <ConnectivityIndicator style={styles.connectivity}/>
         <View style={[container.mediumHorizontalMargin, styles.container]}>
           <View style={[container.stretchContent]}>
             <TrackingPropertyAutoFit

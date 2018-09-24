@@ -83,6 +83,8 @@
   "text_tag_current_boat": "Current",
   "text_permission_photo_gallery_settings_cta" : "We need access to your photo gallery so that you can select a picture. Please activate the permission in your settings.",
   "text_permission_camera_settings_cta" : "We need access to your camera and your photo gallery so that you can take a picture. Please activate the permission in your settings.",
+  "text_offline" : "offline",
+  "text_buffering" : "buffering",
 
   "caption_ok": "OK",
   "caption_cancel": "Cancel",

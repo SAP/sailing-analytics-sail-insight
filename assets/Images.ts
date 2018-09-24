@@ -5,7 +5,7 @@ export default {
     sapTagLine: require('./img/ci/logo-sap-tagline.png'),
   },
   header: {
-    sailors: require('./img/header_sailors_01.png'),
+    sailors: require('./img/header_small.png'),
     boat: require('./img/boat_placeholder.png'),
   },
   actions: {
