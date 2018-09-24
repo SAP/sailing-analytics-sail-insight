@@ -10,7 +10,10 @@ const topMargin = windowHeight * 0.057
 export default EStyleSheets.create({
   container: {
     flex: 1,
-    marginTop: 37 + getStatusBarHeight(skipAndroid),
+    marginTop: 37,
+  },
+  connectivity: {
+    marginTop: getStatusBarHeight(skipAndroid),
   },
   stopButton: {
     marginTop: 24,
