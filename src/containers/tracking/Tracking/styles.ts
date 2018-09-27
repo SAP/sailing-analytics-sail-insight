@@ -41,4 +41,15 @@ export default EStyleSheets.create({
   dynamicPropertyContainer: {
     flex: 0.5,
   },
+  rightPropertyContainer: {
+    marginLeft: '$tinySpacing',
+  },
+  windProperty: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
+  },
+  windValue: {
+    fontSize: 24,
+    marginBottom: 3,
+  },
 })

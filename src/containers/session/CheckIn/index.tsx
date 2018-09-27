@@ -27,15 +27,15 @@ class CheckIn extends React.Component<{
             style={styles.boat}
             source={Images.info.coloredBoat}
           />
-          <Text style={[text.claim, styles.claim, container.mediumHorizontalMargin]}>
+          <Text style={[text.claim, styles.claim, container.largeHorizontalMargin]}>
             <Text>{I18n.t('text_join_and_track')}</Text>
           </Text>
-          <Text style={[container.mediumHorizontalMargin, text.propertyValue, styles.claim]}>
+          <Text style={[container.largeHorizontalMargin, text.propertyValue, styles.claim]}>
             {I18n.t('text_join_code_on_confirmation')}
           </Text>
         </View>
         <TextButton
-          style={[button.actionFullWidth, container.mediumHorizontalMargin, styles.qrButton]}
+          style={[button.actionFullWidth, container.largeHorizontalMargin, styles.qrButton]}
           textStyle={button.actionText}
           onPress={this.onQRPress}
         >

@@ -1,38 +1,43 @@
-import { DISTANCE_KEY, HEADING_IN_DEG_KEY, LOCATION_ACCURACY_KEY, LOCATION_TRACKING_REDUCER_NAME, SPEED_IN_KNOTS_KEY, START_AT_KEY, UNSENT_GPS_FIXES_KEY } from 'reducers/config'
+import { LOCATION_TRACKING_REDUCER_NAME, LocationTrackingReducerKeys as Keys } from 'reducers/config'
 
 
 export interface LocationStats {
-  [LOCATION_ACCURACY_KEY]: number,
-  [UNSENT_GPS_FIXES_KEY]: number,
-  [SPEED_IN_KNOTS_KEY]: number,
-  [START_AT_KEY]: string,
-  [HEADING_IN_DEG_KEY]: number,
-  [DISTANCE_KEY]: number,
+  locationAccuracy?: number,
+  unsentGpsFixCount?: number,
+  speedInKnots?: number,
+  startedAt?: string,
+  headingInDeg?: number,
+  distance?: number,
 }
 
 export const getLocationTrackingStatus = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] && state[LOCATION_TRACKING_REDUCER_NAME].status
+  state[LOCATION_TRACKING_REDUCER_NAME] &&
+  state[LOCATION_TRACKING_REDUCER_NAME][Keys.STATUS_KEY]
 
 export const getTrackedEventId = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] && state[LOCATION_TRACKING_REDUCER_NAME].eventId
+  state[LOCATION_TRACKING_REDUCER_NAME] &&
+  state[LOCATION_TRACKING_REDUCER_NAME][Keys.EVENT_ID_KEY]
 
 export const getTrackedLeaderboardName = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] && state[LOCATION_TRACKING_REDUCER_NAME].leaderboardName
+  state[LOCATION_TRACKING_REDUCER_NAME] &&
+  state[LOCATION_TRACKING_REDUCER_NAME][Keys.LEADERBOARD_NAME_KEY]
 
 export const getUnsentGpsFixCount = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] && state[LOCATION_TRACKING_REDUCER_NAME].unsentGpsFixCount
+  state[LOCATION_TRACKING_REDUCER_NAME] &&
+  state[LOCATION_TRACKING_REDUCER_NAME][Keys.UNSENT_GPS_FIXES_KEY]
 
 export const getLocationAccuracy = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] && state[LOCATION_TRACKING_REDUCER_NAME].locationAccuracy
+  state[LOCATION_TRACKING_REDUCER_NAME] &&
+  state[LOCATION_TRACKING_REDUCER_NAME][Keys.LOCATION_ACCURACY_KEY]
 
 export const getLocationStats: (state: any) => LocationStats = (state: any = {}) => {
   const data = state[LOCATION_TRACKING_REDUCER_NAME]
   return data && {
-    [LOCATION_ACCURACY_KEY]: data.locationAccuracy,
-    [UNSENT_GPS_FIXES_KEY]: data.unsentGpsFixCount,
-    [SPEED_IN_KNOTS_KEY]: data.speedInKnots,
-    [START_AT_KEY]: data.startedAt,
-    [HEADING_IN_DEG_KEY]: data.headingInDeg,
-    [DISTANCE_KEY]: data.distance,
+    locationAccuracy: data[Keys.LOCATION_ACCURACY_KEY],
+    unsentGpsFixCount: data[Keys.UNSENT_GPS_FIXES_KEY],
+    speedInKnots: data[Keys.SPEED_IN_KNOTS_KEY],
+    startedAt: data[Keys.START_AT_KEY],
+    headingInDeg: data[Keys.HEADING_IN_DEG_KEY],
+    distance: data[Keys.DISTANCE_KEY],
   }
 }

@@ -49,7 +49,7 @@ class SetWind extends React.Component<ViewProps> {
   public render() {
     const { windAngleInDeg, windSpeedInKnots } = this.state
     return (
-      <ScrollContentView style={container.mediumHorizontalPadding}>
+      <ScrollContentView style={container.largeHorizontalPadding}>
         <View style={[container.stretchContent, styles.controlsContainer]}>
           <View>
             {

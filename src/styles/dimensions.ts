@@ -11,6 +11,7 @@ export const $largeSpacing = 48
 export const $xLargeSpacing = 64
 
 export const $baseRelativeSpacing = '8%'
+export const $mediumRelativeSpacing = '10%'
 export const $largeRelativeSpacing = '12%'
 
 export const $extraSpacingScrollContent = $smallSpacing * 3

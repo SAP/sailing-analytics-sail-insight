@@ -34,7 +34,7 @@ class HintCard extends React.Component<ViewProps & {
     } = this.props
     return (
       <View style={[styles.container, style]}>
-        <View style={[container.mediumHorizontalMargin, styles.innerContainer, elementContainerStyle]}>
+        <View style={[container.largeHorizontalMargin, styles.innerContainer, elementContainerStyle]}>
           <View>
             <Image style={styles.image} source={imageSource}/>
             <Text style={[textStyles.claim, styles.title]}>{title}</Text>

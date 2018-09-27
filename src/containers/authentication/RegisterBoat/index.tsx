@@ -46,7 +46,7 @@ class RegisterBoat extends TextInputForm {
   public render() {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-        <View style={[container.stretchContent, container.mediumHorizontalMargin]}>
+        <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_register_boat_claim_01')}</Text>
             <Text style={text.claimHighlighted}>{I18n.t('text_register_boat_claim_02')}</Text>
