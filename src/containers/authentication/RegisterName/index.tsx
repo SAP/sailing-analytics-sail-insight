@@ -10,6 +10,7 @@ import I18n from 'i18n'
 import { navigateToUserRegistrationCredentials, navitateToLogin } from 'navigation'
 import { getFieldError } from 'selectors/form'
 
+import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
@@ -23,12 +24,9 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 import styles from './styles'
 
 
-class RegisterName extends React.Component<{
-  valid?: boolean,
-  isStepValid: boolean,
-} > {
-
+class RegisterName extends TextInputForm {
   public onSubmit = () => {
+    this.props.touch(FORM_KEY_NAME)
     if (this.props.isStepValid) {
       navigateToUserRegistrationCredentials()
     }
@@ -63,6 +61,7 @@ class RegisterName extends React.Component<{
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
+            inputRef={this.handleInputRef(FORM_KEY_NAME)}
             onSubmitEditing={this.onSubmit}
           />
           <TextButton
@@ -98,7 +97,7 @@ class RegisterName extends React.Component<{
 }
 
 const mapStateToProps = (state: any, props: any) => ({
-  isStepValid: !getFieldError(state, REGISTRATION_FORM_NAME, FORM_KEY_NAME),
+  isStepValid: !getFieldError(REGISTRATION_FORM_NAME, FORM_KEY_NAME)(state),
 })
 
 export default connect(
@@ -109,4 +108,4 @@ export default connect(
   destroyOnUnmount: false,
   initialValues: {},
   forceUnregisterOnUnmount: true,
-})((props: any) => <RegisterName {...props}/>))
+})(RegisterName))

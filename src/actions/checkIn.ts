@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions'
 
-import api from 'api'
+import { dataApi as api } from 'api'
 import { CheckIn } from 'models'
 import * as CheckInService from 'services/CheckInService'
 

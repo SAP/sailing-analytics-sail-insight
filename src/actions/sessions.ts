@@ -1,12 +1,12 @@
-import { DispatchType } from 'helpers/types'
+import { DispatchType, GetStateType } from 'helpers/types'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
-import { Session } from 'models'
-import { getValues } from 'selectors/form'
+import { TrackingSession } from 'models'
+import { getFormValues } from 'selectors/form'
 import { formValuesToSession, SessionException } from 'services/SessionService'
 
 
-export const shareSession = (session: Session) => async () => {
+export const shareSession = (session: TrackingSession) => async () => {
   if (!session) {
     throw new SessionException('empty session.')
   }
@@ -28,7 +28,7 @@ export const shareSession = (session: Session) => async () => {
   return showShareSheet(await createSharingData(sharingData, shareOptions))
 }
 
-export const shareSessionFromForm = (formName: string) => async (dispatch: DispatchType, getState: () => any) => {
-  const sessionValues = getValues(formName)(getState())
+export const shareSessionFromForm = (formName: string) => async (dispatch: DispatchType, getState: GetStateType) => {
+  const sessionValues = getFormValues(formName)(getState())
   return dispatch(shareSession(formValuesToSession(sessionValues)))
 }

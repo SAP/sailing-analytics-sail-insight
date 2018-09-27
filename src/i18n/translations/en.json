@@ -128,6 +128,7 @@
   "caption_setting_bulk_gps": "Battery saving mode",
   "caption_open_photos" : "Open photos",
   "caption_take_photo" : "Take a photo",
+  "caption_save" : "Save",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",

@@ -37,11 +37,11 @@ abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & 
     } = this.props
 
     const touchableStyle = this.getTouchableStyle()
-
+    const additionalStyle = disabled ? styles.disabled : undefined
     return (
       <TouchableOpacity
         onLayout={this.handleContentSizeChanged}
-        style={!touchableStyle || isLoading ? [styles.containerStyle, style] : touchableStyle}
+        style={[!touchableStyle || isLoading ? [styles.containerStyle, style] : [touchableStyle], additionalStyle]}
         disabled={isLoading || disabled}
         onPress={onPress}
       >

@@ -1,6 +1,6 @@
 import { keys } from 'lodash'
 
-import api from 'api'
+import { dataApi as api } from 'api'
 import Logger from 'helpers/Logger'
 import { PositionFix } from 'models'
 import { deleteGPSFixRequests, readGPSFixRequests, writeGPSFixRequest } from 'storage'

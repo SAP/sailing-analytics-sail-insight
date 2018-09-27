@@ -1,3 +1,5 @@
+export const Splash = 'Splash'
+export const App = 'App'
 export const Main = 'Main'
 export const Tracks = 'Tracks'
 
@@ -10,7 +12,6 @@ export const BoatDetails = 'BoatDetails'
 // sessions
 export const UserSessions = 'UserSessions'
 export const SessionDetail = 'SessionDetail'
-export const Splash = 'Splash'
 export const EditSession = 'EditSession'
 export const NewSession = 'NewSession'
 

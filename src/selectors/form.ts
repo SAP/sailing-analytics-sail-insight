@@ -1,9 +1,11 @@
 import { get } from 'lodash'
+import { getFormSyncErrors, getFormValues as getValues } from 'redux-form'
 
-import { FORM_REDUCER_NAME } from 'reducers/config'
 
+export const getFieldError = (formName: string, fieldName: string) => (state: any) =>
+  get(getFormSyncErrors(formName)(state), fieldName)
 
-export const getFieldError = (state: any, formName: string, fieldName: string) =>
-  get(state, `${FORM_REDUCER_NAME}.${formName}.syncErrors.${fieldName}`)
+export const getFormValues = (formName: string) => getValues(formName)
 
-export const getValues = (formName: string) => (state: any) => get(state, `${FORM_REDUCER_NAME}.${formName}.values`)
+export const getFormFieldValue = (formName: string, fieldName: string) => (state: any) =>
+  get(getFormValues(formName)(state), fieldName)

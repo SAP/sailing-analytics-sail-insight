@@ -9,6 +9,7 @@ import Reducers from 'reducers'
 import { FORM_REDUCER_NAME, NETWORK_REDUCER_NAME } from 'reducers/config'
 
 
+const initialState = {}
 const persistConfig = {
   key: 'root',
   debounce: 1000,
@@ -16,17 +17,15 @@ const persistConfig = {
   storage: AsyncStorage,
 }
 
-export default (initialState = {}) => {
-  const enhancers = composeWithDevTools(applyMiddleware(
-    createNetworkMiddleware(),
-    ReduxThunk,
-  ))
+const enhancers = composeWithDevTools(applyMiddleware(
+  createNetworkMiddleware(),
+  ReduxThunk,
+))
 
-  const persistedReducer = persistReducer(persistConfig, Reducers)
-  const store = createStore(persistedReducer, initialState, enhancers)
+const persistedReducer = persistReducer(persistConfig, Reducers)
+const store = createStore(persistedReducer, initialState, enhancers)
 
-  return {
-    store,
-    persistor: persistStore(store),
-  }
+export default {
+  store,
+  persistor: persistStore(store),
 }

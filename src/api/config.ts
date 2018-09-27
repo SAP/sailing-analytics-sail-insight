@@ -1,13 +1,19 @@
-import Logger from 'helpers/Logger'
+import querystring from 'query-string'
 
 
-let apiRoot = 'https://d-labs.sapsailing.com'
-const ApiSuffix = '/sailingserver/api/v1'
+const API_ROOT = 'https://my.sapsailing.com'
+const API_SUFFIX_SECURITY = '/security/api/restsecurity'
+const API_SUFFIX = '/sailingserver/api/v1'
 
-
-export const getUrl = (path: string) => `${apiRoot}${ApiSuffix}${path}`
-
-export const setApiRoot = (url: string) => {
-  apiRoot = url
-  Logger.debug(`SET TO ${url}`)
+const getPathWithParams = (path: string, params?: any) => {
+  if (!params) {
+    return path
+  }
+  return `${path}?${querystring.stringify(params)}`
 }
+
+
+export const urlGenerator = (apiRoot?: string, apiSuffix?: string) => (path: string, params?: any) =>
+  `${apiRoot || API_ROOT}${apiSuffix || API_SUFFIX}${getPathWithParams(path, params)}`
+
+export const getSecurityUrl = urlGenerator(API_ROOT, API_SUFFIX_SECURITY)

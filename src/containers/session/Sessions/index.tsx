@@ -11,6 +11,7 @@ import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
 import { generateNewSession } from 'services/SessionService'
 
+import { authBasedNewSession } from 'actions/auth'
 import { CheckIn, Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getSessionList } from 'selectors/session'
@@ -26,6 +27,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   showActionSheetWithOptions: ShowActionSheetType,
   sessions: Session[],
   openLocationTracking: (checkIn: CheckIn) => void,
+  authBasedNewSession: () => void,
 } > {
 
   public state = {
@@ -38,7 +40,13 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 
   public onTrackingPress = (checkIn: CheckIn) => () => this.props.openLocationTracking(checkIn)
 
-  public renderAddItem = () => <AddButton onPress={this.onNewSessionPress}>{I18n.t('caption_new_session')}</AddButton>
+  public renderAddItem = () => (
+    <AddButton
+      onPress={this.props.authBasedNewSession}
+    >
+      {I18n.t('caption_new_session')}
+    </AddButton>
+  )
 
   public renderHeader() {
     return <EmptySessionsHeader/>
@@ -72,4 +80,4 @@ const mapStateToProps = (state: any) => ({
   sessions: getSessionList(state),
 })
 
-export default connect(mapStateToProps, { openLocationTracking })(Sessions)
+export default connect(mapStateToProps, { openLocationTracking, authBasedNewSession })(Sessions)

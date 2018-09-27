@@ -2,13 +2,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { initializeApp } from 'actions/appLoading'
+import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 
 import * as NavigationService from './NavigationService'
-import AppNavigator from './navigators/AppNavigator'
+import SplashNavigator from './navigators/SplashNavigator'
 
 
 class InitializationNavigator extends React.Component<{
   initializeApp: () => void,
+  isLoggedIn: boolean,
 } > {
 
   public initializeAppFlow = () => {
@@ -21,8 +23,18 @@ class InitializationNavigator extends React.Component<{
   }
 
   public render() {
-    return <AppNavigator ref={this.handleNavigatorRef}/>
+    const { isLoggedIn } = this.props
+    return (
+      <SplashNavigator
+        screenProps={{ isLoggedIn }}
+        ref={this.handleNavigatorRef}
+      />
+    )
   }
 }
 
-export default connect(null, { initializeApp })(InitializationNavigator)
+const mapStateToProps = (state: any) => ({
+  isLoggedIn: isLoggedInSelector(state),
+})
+
+export default connect(mapStateToProps, { initializeApp })(InitializationNavigator)

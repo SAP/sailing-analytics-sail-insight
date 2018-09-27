@@ -4,10 +4,11 @@ import { Image, TouchableOpacity, ViewProps } from 'react-native'
 import Images from '@assets/Images'
 import I18n from 'i18n'
 import { navigateBack } from 'navigation'
-import { button } from 'styles/commons'
-import styles from './styles'
 
 import TextButton from 'components/TextButton'
+
+import { button } from 'styles/commons'
+import styles from './styles'
 
 
 class ModalBackButton extends React.Component<ViewProps & {

@@ -1,8 +1,10 @@
 import { DispatchType } from 'helpers/types'
 import { initialNavigation } from 'navigation'
 
+import { checkCurrentAuthSession } from './auth'
 
-export const initializeApp = () => (dispatch: DispatchType) => {
-  // TODO: check if authenticated, etc.
-  setTimeout(initialNavigation, 1000) // TODO: remove
+
+export const initializeApp = () => async (dispatch: DispatchType) => {
+  await dispatch(checkCurrentAuthSession())
+  setTimeout(initialNavigation, 1000)
 }

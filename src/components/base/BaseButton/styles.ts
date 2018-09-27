@@ -10,4 +10,8 @@ export default EStyleSheet.create({
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
   },
+  disabled: {
+    opacity: 0.3,
+    backgroundColor: '$secondaryTextColor',
+  },
 })

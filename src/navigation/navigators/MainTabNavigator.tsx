@@ -3,12 +3,15 @@ import { createBottomTabNavigator } from 'react-navigation'
 
 import Images from '@assets/Images'
 import { getTabItemTitleTranslation } from 'helpers/texts'
-import { navigateToNewSession } from 'navigation'
+import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
 import * as Screens from 'navigation/Screens'
+import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { generateNewSession } from 'services/SessionService'
+import reduxStore from 'store'
 
 import IconText from 'components/IconText'
 import AppSettings from 'containers/AppSettings'
+import RegisterPrompt from 'containers/authentication/RegisterPrompt'
 import CheckIn from 'containers/session/CheckIn'
 import Sessions from 'containers/session/Sessions'
 import TrackingSetup from 'containers/tracking/TrackingSetup'
@@ -19,6 +22,7 @@ import UserProfile from 'containers/user/UserProfile'
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 
+import AuthNavigatorWrapper from './AuthNavigatorWrapper'
 import TopTabNavigator from './TopTabNavigator'
 
 
@@ -65,10 +69,27 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
   }
   switch (navigation.state.routeName) {
     case Screens.TrackingSetupAction:
-      navigateToNewSession(generateNewSession())
-      return
+      const isLoggedIn = isLoggedInSelector(reduxStore.store.getState())
+      return isLoggedIn ? navigateToNewSession(generateNewSession()) : navigateToUserRegistration()
+    default:
+      return props.defaultHandler(props.navigation)
   }
-  return props.defaultHandler(props.navigation)
+}
+
+const getUserAccountNavigator = (isLoggedIn: boolean) => {
+  return TopTabNavigator(
+    isLoggedIn ?
+    {
+      [Screens.UserProfile]: UserProfile,
+      [Screens.UserBoats]: UserBoats,
+      [Screens.AppSettings]: AppSettings,
+    } :
+    {
+      [Screens.UserProfile]: RegisterPrompt,
+      [Screens.AppSettings]: AppSettings,
+    },
+    { initialRouteName: Screens.UserProfile },
+  )
 }
 
 
@@ -83,14 +104,7 @@ export default createBottomTabNavigator(
     ),
     [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.CheckIn]: CheckIn,
-    [Screens.Account]: TopTabNavigator(
-      {
-        [Screens.UserProfile]: UserProfile,
-        [Screens.UserBoats]: UserBoats,
-        [Screens.AppSettings]: AppSettings,
-      },
-      { initialRouteName: Screens.UserProfile },
-    ),
+    [Screens.Account]: AuthNavigatorWrapper(getUserAccountNavigator),
   },
   {
     initialRouteName: Screens.Sessions,

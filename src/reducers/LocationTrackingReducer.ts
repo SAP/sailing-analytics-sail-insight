@@ -14,55 +14,44 @@ import { distanceInM } from 'helpers/physics'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { PositionFix } from 'models'
 import { isPositionFix } from 'models/PositionFix'
-import {
-  DISTANCE_KEY,
-  EVENT_ID_KEY,
-  HEADING_IN_DEG_KEY,
-  LAST_LATITUDE_KEY,
-  LAST_LONGITUDE_KEY,
-  LEADERBOARD_NAME_KEY,
-  LOCATION_ACCURACY_KEY,
-  SPEED_IN_KNOTS_KEY,
-  START_AT_KEY,
-  STATUS_KEY,
-  UNSENT_GPS_FIXES_KEY,
-} from './config'
+
+import {  LocationTrackingReducerKeys as Keys } from './config'
 
 
 const initialState = {
-  [STATUS_KEY]: null,
-  [LEADERBOARD_NAME_KEY]: null,
-  [EVENT_ID_KEY]: null,
-  [UNSENT_GPS_FIXES_KEY]: null,
-  [LOCATION_ACCURACY_KEY]: null,
-  [SPEED_IN_KNOTS_KEY]: null,
-  [START_AT_KEY]: null,
-  [HEADING_IN_DEG_KEY]: null,
-  [DISTANCE_KEY]: 0,
-  [LAST_LATITUDE_KEY]: null,
-  [LAST_LONGITUDE_KEY]: null,
+  [Keys.STATUS_KEY]: null,
+  [Keys.LEADERBOARD_NAME_KEY]: null,
+  [Keys.EVENT_ID_KEY]: null,
+  [Keys.UNSENT_GPS_FIXES_KEY]: null,
+  [Keys.LOCATION_ACCURACY_KEY]: null,
+  [Keys.SPEED_IN_KNOTS_KEY]: null,
+  [Keys.START_AT_KEY]: null,
+  [Keys.HEADING_IN_DEG_KEY]: null,
+  [Keys.DISTANCE_KEY]: 0,
+  [Keys.LAST_LATITUDE_KEY]: null,
+  [Keys.LAST_LONGITUDE_KEY]: null,
 }
 
 const reducer = handleActions(
   {
-    [updateTrackingStatus as any]: itemUpdateHandler(STATUS_KEY),
-    [updateTrackedLeaderboard as any]: itemUpdateHandler(LEADERBOARD_NAME_KEY),
-    [updateTrackedEventId as any]: itemUpdateHandler(EVENT_ID_KEY),
-    [updateUnsentGpsFixCount as any]: itemUpdateHandler(UNSENT_GPS_FIXES_KEY),
-    [updateStartedAt as any]: itemUpdateHandler(START_AT_KEY),
+    [updateTrackingStatus as any]: itemUpdateHandler(Keys.STATUS_KEY),
+    [updateTrackedLeaderboard as any]: itemUpdateHandler(Keys.LEADERBOARD_NAME_KEY),
+    [updateTrackedEventId as any]: itemUpdateHandler(Keys.EVENT_ID_KEY),
+    [updateUnsentGpsFixCount as any]: itemUpdateHandler(Keys.UNSENT_GPS_FIXES_KEY),
+    [updateStartedAt as any]: itemUpdateHandler(Keys.START_AT_KEY),
     [updateTrackedRegatta as any]: (state: any = {}, action: any) =>
       !action || !action.payload ?
         state :
         ({
           ...state,
-          [EVENT_ID_KEY]: action.payload.eventId,
-          [LEADERBOARD_NAME_KEY]: action.payload.leaderboardName,
-          [UNSENT_GPS_FIXES_KEY]: null,
-          [LOCATION_ACCURACY_KEY]: null,
+          [Keys.EVENT_ID_KEY]: action.payload.eventId,
+          [Keys.LEADERBOARD_NAME_KEY]: action.payload.leaderboardName,
+          [Keys.UNSENT_GPS_FIXES_KEY]: null,
+          [Keys.LOCATION_ACCURACY_KEY]: null,
         }),
     [removeTrackedRegatta as any]: (state: any = {}) => ({
       ...state,
-      [STATUS_KEY]: state.status,
+      [Keys.STATUS_KEY]: state.status,
       ...initialState,
     }),
     [updateTrackingStatistics as any]: (state: any = {}, action: any = {}) => {
@@ -77,17 +66,17 @@ const reducer = handleActions(
         state.distance :
         state.distance + distanceInM(lastLatitude, lastLongitude, gpsFix.latitude, gpsFix.longitude)
       const optionals = {
-        ...(gpsFix.accuracy && { [LOCATION_ACCURACY_KEY]: gpsFix.accuracy }),
-        ...(gpsFix.speedInKnots && gpsFix.speedInKnots > -1 && { [SPEED_IN_KNOTS_KEY]: gpsFix.speedInKnots }),
-        ...(gpsFix.bearingInDeg && gpsFix.bearingInDeg > -1 && { [HEADING_IN_DEG_KEY]: gpsFix.bearingInDeg }),
+        ...(gpsFix.accuracy && { [Keys.LOCATION_ACCURACY_KEY]: gpsFix.accuracy }),
+        ...(gpsFix.speedInKnots && gpsFix.speedInKnots > -1 && { [Keys.SPEED_IN_KNOTS_KEY]: gpsFix.speedInKnots }),
+        ...(gpsFix.bearingInDeg && gpsFix.bearingInDeg > -1 && { [Keys.HEADING_IN_DEG_KEY]: gpsFix.bearingInDeg }),
       }
 
       return ({
         ...state,
         ...optionals,
-        [DISTANCE_KEY]: distance,
-        [LAST_LATITUDE_KEY]: gpsFix.latitude,
-        [LAST_LONGITUDE_KEY]: gpsFix.longitude,
+        [Keys.DISTANCE_KEY]: distance,
+        [Keys.LAST_LATITUDE_KEY]: gpsFix.latitude,
+        [Keys.LAST_LONGITUDE_KEY]: gpsFix.longitude,
       })
     },
   },

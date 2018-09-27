@@ -10,6 +10,10 @@ const styles = EStyleSheet.create({
     paddingBottom: 37,
   },
   nextButton: { marginTop: 32 },
+  errorTextSpacing: {
+    alignSelf: 'center',
+    marginTop: '$tinySpacing',
+  },
 })
 
 export default {
@@ -32,4 +36,8 @@ export default {
   lowerButton: () => ({
     marginTop: $baseSpacing,
   }),
+  errorText: () => [
+    text.error,
+    styles.errorTextSpacing,
+  ],
 }

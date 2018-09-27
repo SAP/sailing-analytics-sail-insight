@@ -12,7 +12,7 @@ import * as boatForm from 'forms/boat'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import { Boat } from 'models'
-import { getValues } from 'selectors/form'
+import { getFormValues } from 'selectors/form'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormImagePicker from 'components/form/FormImagePicker'
@@ -25,9 +25,11 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 
-class BoatDetails extends TextInputForm<ViewProps & NavigationScreenProps & {
-  boatName: string,
-}> {
+interface Props extends ViewProps, NavigationScreenProps {
+  boatName?: boolean,
+}
+
+class BoatDetails extends TextInputForm<Props> {
 
   public render() {
     const commonProps = this.getCommonFieldProps()
@@ -47,7 +49,7 @@ class BoatDetails extends TextInputForm<ViewProps & NavigationScreenProps & {
             name={boatForm.FORM_KEY_NAME}
             component={this.renderField}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_NAME)}
-            onSubmitEditing={this.handleOnSubmit(boatForm.FORM_KEY_SAIL_NUMBER)}
+            onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_SAIL_NUMBER)}
             {...commonProps}
           />
           <Field
@@ -56,7 +58,7 @@ class BoatDetails extends TextInputForm<ViewProps & NavigationScreenProps & {
             name={boatForm.FORM_KEY_SAIL_NUMBER}
             component={this.renderField}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_SAIL_NUMBER)}
-            onSubmitEditing={this.handleOnSubmit(boatForm.FORM_KEY_BOAT_CLASS)}
+            onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_BOAT_CLASS)}
             {...commonProps}
           />
           <Field
@@ -65,7 +67,7 @@ class BoatDetails extends TextInputForm<ViewProps & NavigationScreenProps & {
             name={boatForm.FORM_KEY_BOAT_CLASS}
             component={this.renderField}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_BOAT_CLASS)}
-            onSubmitEditing={this.handleOnSubmit(boatForm.FORM_KEY_SAIL_COLOR)}
+            onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_SAIL_COLOR)}
             {...commonProps}
           />
           <Field
@@ -111,12 +113,12 @@ const mapStateToProps = (state: any, props: any) => {
       [boatForm.FORM_KEY_SAIL_COLOR]: boat.sailColor,
       [boatForm.FORM_KEY_BOAT_CLASS]: boat.boatClass,
     },
-    boatName: get(getValues(boatForm.FORM_KEY_SAIL_NUMBER)(state), boatForm.BOAT_FORM_NAME),
+    boatName: get(getFormValues(boatForm.FORM_KEY_SAIL_NUMBER)(state), boatForm.BOAT_FORM_NAME),
   }
 }
 
-export default connect(mapStateToProps)(reduxForm({
+export default connect(mapStateToProps)(reduxForm<{}, Props>({
   form: boatForm.BOAT_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
-})((props: any) => <BoatDetails {...props}/>))
+})(BoatDetails))

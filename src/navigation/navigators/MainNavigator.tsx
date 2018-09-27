@@ -10,7 +10,6 @@ import HeaderTitle from 'components/HeaderTitle'
 import WebView from 'components/WebView'
 import BoatDetails from 'containers/BoatDetails'
 import SessionDetail from 'containers/session/SessionDetail'
-import SplashScreen from 'containers/SplashScreen'
 
 import MainTabNavigator from './MainTabNavigator'
 
@@ -20,12 +19,6 @@ const boatDetailsHeader = connect((state: any) =>
 
 export default createStackNavigator(
   {
-    [Screens.Splash]: {
-      screen: SplashScreen,
-      navigationOptions: {
-        header: null,
-      },
-    },
     [Screens.MainTabs]: {
       screen: MainTabNavigator,
       navigationOptions: {
@@ -57,7 +50,7 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.Splash,
+    initialRouteName: Screens.MainTabs,
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },
