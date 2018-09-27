@@ -1,11 +1,15 @@
+import { isEmpty } from 'lodash'
 import React from 'react'
 import { Image, View } from 'react-native'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
+import { login } from 'actions/auth'
 import { FORM_KEY_EMAIL, FORM_KEY_PASSWORD } from 'forms/registration'
 import I18n from 'i18n'
+import { navigateToMain } from 'navigation'
 
+import TextInputForm from 'components/base/TextInputForm'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
@@ -17,38 +21,38 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 import styles from './styles'
 
 
-class Login extends React.Component<{
-  valid?: boolean,
-  isStepValid: boolean,
-} > {
-  public inputs: any = {}
-
+class Login extends TextInputForm<{
+  login: (u: string, p: string) => any,
+}> {
   public state = {
     email: '',
     password: '',
+    isLoading: false,
+    error: null,
   }
 
-  public onSubmit = () => {
+  public onSubmit = async () => {
+    this.setState({ error: null })
     const { email, password } = this.state
-    if (!email || !password) {
+    if (isEmpty(email) || isEmpty(password)) {
       return
     }
-    // TODO: login request and actions
-  }
-
-  public handleInputRef = (name: string) => (ref: any) => {
-    this.inputs[name] = ref
-  }
-
-  public handleOnSubmit = (nextName: string) => () => {
-    const nextInput = this.inputs[nextName]
-    return nextInput && nextInput.focus && nextInput.focus()
+    try {
+      this.setState({ isLoading: true })
+      await this.props.login(email, password)
+      navigateToMain()
+    } catch (err) {
+      this.setState({ error: err && err.message })
+    } finally {
+      this.setState({ isLoading: false })
+    }
   }
 
   public onEmailChange = (newValue: string) => this.setState({ email: newValue })
   public onPasswordChange = (newValue: string) => this.setState({ password: newValue })
 
   public render() {
+    const { error, isLoading } = this.state
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
@@ -69,7 +73,7 @@ class Login extends React.Component<{
             keyboardType={'email-address'}
             returnKeyType="next"
             autoCapitalize="none"
-            onSubmitEditing={this.handleOnSubmit(FORM_KEY_PASSWORD)}
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_PASSWORD)}
             inputRef={this.handleInputRef(FORM_KEY_EMAIL)}
           />
           <TextInput
@@ -83,10 +87,12 @@ class Login extends React.Component<{
             secureTextEntry={true}
             inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}
           />
+          {error && <Text style={registration.errorText()}>{error}</Text>}
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
             onPress={this.onSubmit}
+            isLoading={isLoading}
           >
             {I18n.t('caption_lets_go')}
           </TextButton>
@@ -96,4 +102,4 @@ class Login extends React.Component<{
   }
 }
 
-export default connect()(Login)
+export default connect(null, { login })(Login)

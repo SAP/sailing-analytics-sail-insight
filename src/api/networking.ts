@@ -1,21 +1,13 @@
+import { isString } from 'lodash'
 
 import { DEV_MODE, isPlatformAndroid } from 'helpers/environment'
 import Logger from 'helpers/Logger'
-import { isString } from 'lodash'
 
 
 const DEFAULT_HEADERS = {
   // Accept: 'application/json',
   'Content-Type': 'application/json',
   'Cache-Control': 'no-cache',
-}
-
-export type Signer = (url: string, method: string, headers: any, body?: any) => any
-
-export interface RequestOptions {
-  method?: string
-  signer?: Signer
-  body?: any,
 }
 
 /**
@@ -36,9 +28,21 @@ const getPlatformHeaders = (headers: any = {}) => {
   }
 }
 
-const defaultSignedHeaders: Signer = (url: string, method: string, headers: any, body?: any) => headers
+export interface SignerOptions {
+  url?: string,
+  method?: string,
+  headers?: any,
+  body?: any
+}
+export interface RequestOptions {
+  method?: string
+  signer?: Signer
+  body?: any,
+}
+export type Signer = (data: SignerOptions) => any
 
-// eslint-disable-next-line import/prefer-default-export
+const defaultSignedHeaders: Signer = (options: SignerOptions) => options.headers
+
 export const request = async (
   url: any,
   { method = 'GET', signer = defaultSignedHeaders, body = null }: RequestOptions = {},
@@ -47,12 +51,11 @@ export const request = async (
   const fetchOptions = {
     method,
     // headers: getPlatformHeaders(await signer(url, method, DEFAULT_HEADERS, data.body)),
-    headers: await signer(url, method, DEFAULT_HEADERS, data.body),
+    headers: await signer({ url, method, headers: DEFAULT_HEADERS, body: data.body }),
     ...data,
   }
   let response
   try {
-    // eslint-disable-next-line no-undef
     response = await fetch(
       url,
       fetchOptions,

@@ -1,21 +1,16 @@
 import React from 'react'
 import { Alert, View } from 'react-native'
+import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
-import { button, container, text } from 'styles/commons'
-import styles from './styles'
-
 import { shareSessionFromForm } from 'actions/sessions'
 import * as sessionForm from 'forms/session'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { Session, TrackingSession } from 'models'
 import { navigateToEditSession } from 'navigation'
-import { connect } from 'react-redux'
 import { getBoat } from 'selectors/boat'
-import { $primaryButtonColor } from 'styles/colors'
-
 
 import ImageButton from 'components/ImageButton'
 import LineSeparator from 'components/LineSeparator'
@@ -23,6 +18,10 @@ import PropertyView from 'components/PropertyView'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
+
+import { $primaryButtonColor } from 'styles/colors'
+import { button, container, text } from 'styles/commons'
+import styles from './styles'
 
 
 class TrackingSetup extends React.Component<{

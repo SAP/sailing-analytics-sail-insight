@@ -4,7 +4,8 @@ import * as Screens from './Screens'
 
 
 export const navigateBack = NavigationService.navigateBack
-export const initialNavigation = () => NavigationService.navigateWithReset(Screens.MainTabs)
+export const initialNavigation = () => NavigationService.navigate(Screens.App)
+export const navigateToMain = () => NavigationService.navigate(Screens.Main)
 export const navigateToQRScanner = () => NavigationService.navigate(Screens.QRScanner)
 export const navigateToCheckIn = () => NavigationService.navigate(Screens.CheckIn)
 export const navigateToSessionDetail = (params: Session) => NavigationService.navigate(Screens.SessionDetail, params)

@@ -1,41 +1,55 @@
 import { normalize } from 'normalizr'
 
-import Logger from 'helpers/Logger'
+import ApiDataException from './ApiDataException'
+import ApiException from './ApiException'
+import AuthException from './AuthException'
 import * as networking from './networking'
 
-import ApiException from './ApiException'
+const STATUS_NOT_FOUND = 404
+const STATUS_UNAUTHORIZED = 401
 
+const ERR_NOT_FOUND = 'not_found'
+const ERR_UNAUTHORIZED = 'unauthorized'
+const ERR_UNKNOWN = 'unknown_error'
+
+const getData = async (dataHandler?: (r: any) => any, response?: any) => {
+  try {
+    return dataHandler ? await dataHandler(response) : response
+  } catch (err) {
+    throw new ApiDataException(err)
+  }
+}
+
+const getErrorData = async (response: any) => response && await response.text()
 
 const defaultResponseHandler = (dataHandler?: (response: any) => any) => async (response: any) => {
   if (!response) {
     return null
   }
   if (!response.ok) {
-    let data = null
-    if (response.status === 404) {
-      data = { message: 'NOT FOUND' }
+    let data: any = response.status === STATUS_NOT_FOUND ? ERR_NOT_FOUND : undefined
+    try {
+      data = await getErrorData(response)
+    } catch (err) {
+      data = response
     }
-    if (dataHandler) {
-      data = await dataHandler(response)
+
+    switch (response.status) {
+      case STATUS_UNAUTHORIZED:
+        throw new AuthException(data || ERR_UNAUTHORIZED, response.status)
+      default:
+        throw new ApiException(
+          data || ERR_UNKNOWN,
+          response.status,
+          data,
+        )
     }
-    throw new ApiException(data && (data.message || data.detail || 'unknown_error'), response.status, data)
+
   }
-  try {
-    return dataHandler ? dataHandler(response) : response
-  } catch (err) {
-    Logger.debug('JSON Response error:', err)
-  }
-  return null
+  return getData(dataHandler, response)
 }
 
-const jsonData = async (response: any) => {
-  try {
-    return await response.json()
-  } catch (err) {
-    Logger.debug('JSON Response error:', err)
-    return err
-  }
-}
+const jsonData = async (response: any) => response.json()
 
 const jsonDataArray = async (response: any) => {
   const data = await jsonData(response)
@@ -50,17 +64,17 @@ const requestWithHandler = (dataHandler?: (response: any) => any) => async (
   url: string,
   allOptions: RequestHandlerOptions = {},
 ) => {
-  const { dataSchema, processData, ...options } = allOptions
+  const { dataSchema, dataProcessor, ...options } = allOptions
   const response = await networking.request(url, options)
   let data = await defaultResponseHandler(dataHandler)(response)
-  data = processData ? processData(data) : data
+  data = dataProcessor ? dataProcessor(data) : data
   return dataSchema && data ? normalize(data, dataSchema) : data
 }
 
 
 export interface RequestHandlerOptions extends networking.RequestOptions {
   dataSchema?: any
-  processData?: (data: any) => any
+  dataProcessor?: (data: any) => any
 }
 
 export const dataRequest = requestWithHandler(jsonData)

@@ -2,7 +2,7 @@ import moment from 'moment'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
-import api from 'api'
+import { dataApi as api } from 'api'
 import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'
 import I18n from 'i18n'
@@ -67,7 +67,7 @@ export const stopLocationTracking = () => async (dispatch: DispatchType) => {
   dispatch(removeTrackedRegatta())
 }
 
-export const handleLocation = (gpsFix: PositionFix) => async (dispatch: DispatchType, getState: () => any) => {
+export const handleLocation = (gpsFix: PositionFix) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!gpsFix) {
     return
   }

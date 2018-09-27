@@ -4,11 +4,11 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import {
+  BOAT_FORM_NAME,
   FORM_KEY_BOAT_CLASS,
-  FORM_KEY_BOAT_NAME,
+  FORM_KEY_NAME,
   FORM_KEY_SAIL_NUMBER,
-  REGISTRATION_FORM_NAME,
-} from 'forms/registration'
+} from 'forms/boat'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import { navigateBack } from 'navigation'
@@ -26,15 +26,13 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 import styles from './styles'
 
 
-class RegisterBoat extends TextInputForm<{
-  valid?: boolean,
-  isStepValid: boolean,
-} > {
+class RegisterBoat extends TextInputForm {
   public onSkip() {
     navigateBack()
   }
 
   public onSubmit = () => {
+    this.props.touch(FORM_KEY_NAME, FORM_KEY_BOAT_CLASS, FORM_KEY_SAIL_NUMBER)
     if (this.props.isStepValid) {
       // TODO: update API user with boat information and create boat
       // TODO: navigate back, finalize form
@@ -57,13 +55,13 @@ class RegisterBoat extends TextInputForm<{
         <View style={registration.bottomContainer()}>
           <Field
             label={I18n.t('text_placeholder_boat_name')}
-            name={FORM_KEY_BOAT_NAME}
+            name={FORM_KEY_NAME}
             component={this.renderField}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmit(FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(FORM_KEY_BOAT_NAME)}
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_CLASS)}
+            inputRef={this.handleInputRef(FORM_KEY_NAME)}
           />
           <Field
             style={styles.inputMargin}
@@ -73,7 +71,7 @@ class RegisterBoat extends TextInputForm<{
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmit(FORM_KEY_SAIL_NUMBER)}
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
             hint={I18n.t('text_registration_boat_class_hint')}
             inputRef={this.handleInputRef(FORM_KEY_BOAT_CLASS)}
           />
@@ -111,15 +109,15 @@ class RegisterBoat extends TextInputForm<{
 
 const mapStateToProps = (state: any, props: any) => ({
   isStepValid:
-    !getFieldError(state, REGISTRATION_FORM_NAME, FORM_KEY_BOAT_CLASS) &&
-    !getFieldError(state, REGISTRATION_FORM_NAME, FORM_KEY_SAIL_NUMBER) &&
-    !getFieldError(state, REGISTRATION_FORM_NAME, FORM_KEY_BOAT_NAME),
+    !getFieldError(BOAT_FORM_NAME, FORM_KEY_BOAT_CLASS)(state) &&
+    !getFieldError(BOAT_FORM_NAME, FORM_KEY_SAIL_NUMBER)(state) &&
+    !getFieldError(BOAT_FORM_NAME, FORM_KEY_NAME)(state),
 })
 
 export default connect(
   mapStateToProps,
 )(reduxForm({
-  form: REGISTRATION_FORM_NAME,
+  form: BOAT_FORM_NAME,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
-})((props: any) => <RegisterBoat {...props}/>))
+})(RegisterBoat))

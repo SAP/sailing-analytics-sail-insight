@@ -1,10 +1,20 @@
 import React from 'react'
+import { InjectedFormProps } from 'redux-form'
 
-class TextInputForm<P = {}, S = {}, SS = any> extends React.Component<P, S, SS> {
+interface Props {
+  valid?: boolean,
+  isStepValid?: boolean,
+}
+
+class TextInputForm<P = {}, S = {}, SS = any> extends React.Component<
+  P & Props & InjectedFormProps<{}, P & Props>,
+  S,
+  SS
+> {
 
   protected inputs: any = {}
 
-  protected handleOnSubmit = (nextName: string) => () => {
+  protected handleOnSubmitInput = (nextName: string) => () => {
     const nextInput = this.inputs[nextName]
     return nextInput && nextInput.focus && nextInput.focus()
   }

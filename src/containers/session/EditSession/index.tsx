@@ -19,9 +19,7 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 
-class EditSession extends TextInputForm<{
-  valid?: boolean,
-} > {
+class EditSession extends TextInputForm {
 
   public render() {
 
@@ -44,7 +42,7 @@ class EditSession extends TextInputForm<{
             name={sessionForm.FORM_KEY_NAME}
             validate={[validateRequired]}
             component={this.renderField}
-            onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_TRACK_NAME)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TRACK_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
             {...commonProps}
           />
@@ -62,7 +60,7 @@ class EditSession extends TextInputForm<{
             label={I18n.t('text_placeholder_boat_name')}
             name={sessionForm.FORM_KEY_BOAT_NAME}
             component={this.renderField}
-            onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
             {...commonProps}
           />
@@ -71,7 +69,7 @@ class EditSession extends TextInputForm<{
             label={I18n.t('text_placeholder_sail_number')}
             name={sessionForm.FORM_KEY_SAIL_NUMBER}
             component={this.renderField}
-            onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_BOAT_CLASS)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
             {...commonProps}
           />
@@ -80,7 +78,7 @@ class EditSession extends TextInputForm<{
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
             component={this.renderField}
-            onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_TEAM_NAME)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
             {...commonProps}
           />
@@ -89,7 +87,7 @@ class EditSession extends TextInputForm<{
             label={I18n.t('text_team_name')}
             name={sessionForm.FORM_KEY_TEAM_NAME}
             component={this.renderField}
-            onSubmitEditing={this.handleOnSubmit(sessionForm.FORM_KEY_PRIVACY_SETTING)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_PRIVACY_SETTING)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             {...commonProps}
           />
@@ -125,4 +123,4 @@ export default connect()(reduxForm({
   form: sessionForm.SESSION_FORM_NAME,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
-})((props: any) => <EditSession {...props}/>))
+})(EditSession))

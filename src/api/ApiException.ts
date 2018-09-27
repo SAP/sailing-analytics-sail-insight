@@ -5,8 +5,8 @@ class ApiException extends Error {
 
   constructor(message: string, status: number, data: any) {
     super(message)
-    this.message = message
     this.name = ApiException.NAME
+    this.message = message
     this.data = data
     this.status = status
   }

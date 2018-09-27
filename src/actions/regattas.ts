@@ -1,4 +1,4 @@
-import api from 'api'
+import { dataApi as api } from 'api'
 import { fetchEntityAction } from 'helpers/actions'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { Race } from 'models'

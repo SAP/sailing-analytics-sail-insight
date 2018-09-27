@@ -11,7 +11,7 @@ import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationTracking, updateTrackingStatus } from 'actions/locations'
 import InitializationNavigator from 'navigation/InitializationNavigator'
 import * as LocationService from 'services/LocationService'
-import configureStore from 'store/configureStore'
+import reduxStore from 'store'
 import { initStyles, recalculateStyles } from 'styles'
 import { container } from 'styles/commons'
 
@@ -20,7 +20,7 @@ declare var module: any
 
 initStyles()
 
-const { store, persistor } = configureStore()
+const { store, persistor } = reduxStore
 
 // enable hot module replacement for reducers
 if (module.hot) {
