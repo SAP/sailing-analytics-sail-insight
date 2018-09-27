@@ -56,7 +56,7 @@ class UserProfile extends TextInputForm<Props> {
             component={FormImagePicker}
             placeholder={Images.header.sailors}
           />
-          <View style={container.mediumHorizontalMargin}>
+          <View style={container.largeHorizontalMargin}>
             <Field
               style={input.topMargin}
               label={I18n.t('text_your_name')}

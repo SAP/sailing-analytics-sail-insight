@@ -30,7 +30,7 @@ class EditSession extends TextInputForm {
 
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-        <View style={[container.stretchContent, container.mediumHorizontalMargin]}>
+        <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_edit_session_claim_01')}</Text>
             <Text style={text.claimHighlighted}>{I18n.t('text_edit_session_claim_02')}</Text>

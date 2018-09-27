@@ -23,6 +23,7 @@ import styles from './styles'
 
 
 const EMPTY_VALUE = '-'
+const EMPTY_DURATION_TEXT = '00:00:00'
 
 class Tracking extends React.Component<{
   stopLocationTracking: () => void,
@@ -31,7 +32,7 @@ class Tracking extends React.Component<{
 } > {
   public state = {
     isLoading: false,
-    durationText: '00:00:00',
+    durationText: EMPTY_DURATION_TEXT,
   }
 
   public componentDidMount() {
@@ -93,7 +94,7 @@ class Tracking extends React.Component<{
             <View>
               <TrackingProperty
                 title={I18n.t('text_tracking_time')}
-                value={this.state.durationText}
+                value={this.state.durationText || EMPTY_DURATION_TEXT}
               />
               <TrackingProperty
                 style={styles.property}
@@ -102,11 +103,13 @@ class Tracking extends React.Component<{
                 unit={I18n.t('text_tracking_unit_meters')}
               />
             </View>
-            <View>
+            <View style={styles.rightPropertyContainer}>
               <TrackingProperty
+                style={styles.windProperty}
                 title={I18n.t('text_tracking_wind')}
                 value={I18n.t('caption_set_wind').toUpperCase()}
                 onPress={this.onSetWindPress}
+                valueStyle={styles.windValue}
               />
               <TrackingProperty
                 style={styles.property}

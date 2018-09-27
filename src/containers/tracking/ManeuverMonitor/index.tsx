@@ -8,7 +8,6 @@ import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 
 import { container } from 'styles/commons'
-import { $largeFontSize, $microFontSize, $regularFontSize } from 'styles/fonts'
 import styles from './styles'
 
 
@@ -30,14 +29,14 @@ class ManeuverMonitor extends React.Component<{
     const turnAvgRate = '9.07°'
 
     const propertyProps = {
-      titleFontSize: $regularFontSize,
-      valueFontSize: $largeFontSize,
-      unitFontSize: $microFontSize,
+      titleStyle: styles.lowerTitle,
+      valueStyle: styles.lowerValue,
+      unitStyle: styles.lowerUnit,
     }
 
     return (
       <View style={container.main}>
-        <View style={[container.mediumHorizontalMargin, container.stretchContent, styles.container]}>
+        <View style={[container.largeHorizontalMargin, container.stretchContent, styles.container]}>
           <TrackingPropertyAutoFit
             style={styles.dynamicPropertyContainer}
             title={I18n.t('text_maneuver_cog_change')}
@@ -61,7 +60,7 @@ class ManeuverMonitor extends React.Component<{
         <View style={styles.lowerValueContainer}>
           <Text style={styles.sectionTitle}>{I18n.t('text_maneuver_speed').toUpperCase()}</Text>
           <View style={styles.separator}/>
-          <View style={[container.mediumHorizontalMargin, styles.propertyRow]}>
+          <View style={[container.largeHorizontalMargin, styles.propertyRow]}>
             <TrackingProperty
               title={I18n.t('text_maneuver_enter')}
               value={speedEnter}
@@ -83,7 +82,7 @@ class ManeuverMonitor extends React.Component<{
           </View>
           <Text style={styles.sectionTitle}>{I18n.t('text_maneuver_turn').toUpperCase()}</Text>
           <View style={styles.separator}/>
-          <View style={[container.mediumHorizontalMargin, styles.propertyRow]}>
+          <View style={[container.largeHorizontalMargin, styles.propertyRow]}>
             <TrackingProperty
               title={I18n.t('text_maneuver_max_rate')}
               value={turnMaxRate}

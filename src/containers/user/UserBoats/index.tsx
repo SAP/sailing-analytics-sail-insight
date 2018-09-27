@@ -37,7 +37,7 @@ class UserBoats extends React.Component<ViewProps & {
 }
 
 const mapStateToProps = (state: any) => ({
-  boats: getBoatsMock(state),
+  boats: getBoatsMock(),
 })
 
 export default connect(mapStateToProps)(UserBoats)

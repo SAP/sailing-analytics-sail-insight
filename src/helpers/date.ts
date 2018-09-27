@@ -52,7 +52,10 @@ const cleanYearFromFormat = (format: string) => {
 }
 
 
-export const durationText = (startDateText: string) => {
+export const durationText = (startDateText?: string) => {
+  if (!startDateText) {
+    return
+  }
   const diff = moment() - moment(startDateText)
   return moment.utc(moment.duration(diff).asMilliseconds()).format('HH:mm:ss')
 }

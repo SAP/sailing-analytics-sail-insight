@@ -35,4 +35,13 @@ export default EStyleSheets.create({
   lowerValueContainer: {
     marginTop: 20,
   },
+  lowerTitle: {
+    fontSize: '$regularFontSize',
+  },
+  lowerValue: {
+    fontSize: '$largeFontSize',
+  },
+  lowerUnit: {
+    fontSize: '$microFontSize',
+  },
 })

@@ -22,11 +22,11 @@ export default {
     styles.claim,
   ],
   topContainer: () => [
-    container.mediumHorizontalMargin,
+    container.largeHorizontalMargin,
     { alignSelf: 'stretch' },
   ],
   bottomContainer: () => [
-    container.mediumHorizontalMargin,
+    container.largeHorizontalMargin,
     styles.bottomContainer,
   ],
   nextButton: () => [

@@ -23,10 +23,14 @@ export default EStyleSheet.create({
     marginLeft: '$smallSpacing',
   },
   mediumHorizontalMargin: {
+    marginLeft: '$mediumRelativeSpacing',
+    marginRight: '$mediumRelativeSpacing',
+  },
+  largeHorizontalMargin: {
     marginLeft: '$largeRelativeSpacing',
     marginRight: '$largeRelativeSpacing',
   },
-  mediumHorizontalPadding: {
+  largeHorizontalPadding: {
     paddingLeft: '$largeRelativeSpacing',
     paddingRight: '$largeRelativeSpacing',
   },
