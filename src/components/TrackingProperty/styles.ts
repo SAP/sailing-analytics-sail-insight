@@ -1,6 +1,10 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
+  titleLeftContainer: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
   valueContainer: {
     flexDirection: 'row',
     alignItems: 'center',

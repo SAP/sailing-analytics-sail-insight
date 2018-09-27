@@ -85,6 +85,8 @@
   "text_permission_camera_settings_cta" : "We need access to your camera and your photo gallery so that you can take a picture. Please activate the permission in your settings.",
   "text_offline" : "offline",
   "text_buffering" : "buffering",
+  "text_upwind": "Upwind:",
+  "text_downwind": "Downwind:",
 
   "caption_ok": "OK",
   "caption_cancel": "Cancel",

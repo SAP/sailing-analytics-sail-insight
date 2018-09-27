@@ -25,4 +25,9 @@ export default EStyleSheets.create({
   topSeparator: {
     marginBottom: '$separatorVerticalMargin',
   },
+  leftTitle: {
+    marginRight: '$microSpacing',
+    color: '$primaryTextColor',
+    fontWeight: '300',
+  },
 })
