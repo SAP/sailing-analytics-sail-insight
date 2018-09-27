@@ -18,6 +18,7 @@ class TrackingProperty extends React.Component<ViewProps & {
   unitStyle?: TextStyle,
   onPress?: () => void,
   tendency?: 'up' | 'down',
+  titlePosition?: 'top' | 'left',
 } > {
 
   public state: {valueContainerHeight?: number} = { valueContainerHeight: undefined }
@@ -33,6 +34,7 @@ class TrackingProperty extends React.Component<ViewProps & {
       unitStyle,
       onPress,
       tendency,
+      titlePosition = 'top',
     } = this.props
 
     const tendencyIconSize = this.state.valueContainerHeight && (this.state.valueContainerHeight * 0.6)
@@ -43,9 +45,11 @@ class TrackingProperty extends React.Component<ViewProps & {
       borderRadius: tendencyIconSize / 2,
     }
 
+    const containerStyle = titlePosition === 'left' ? styles.titleLeftContainer : undefined
+
     return (
       <TouchableOpacity
-        style={style}
+        style={[containerStyle, style]}
         onPress={onPress}
         disabled={!onPress}
       >

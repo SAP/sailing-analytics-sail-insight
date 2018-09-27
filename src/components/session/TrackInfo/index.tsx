@@ -25,8 +25,7 @@ class TrackInfo extends React.Component<ViewProps & {
   public renderProperty(options: any) {
     return (
       <TrackingProperty
-        value={options.value}
-        unit={options.unit}
+        {...options}
         valueStyle={styles.propertyValue}
         unitStyle={styles.propertyUnit}
         key={JSON.stringify(options)}
@@ -108,14 +107,38 @@ class TrackInfo extends React.Component<ViewProps & {
           {this.renderItem(
             I18n.t('text_maneuver_avg_speed'),
             undefined,
-            this.renderProperty({ value: trackInfo.avgSpeed.upwind, unit: I18n.t('text_tracking_unit_knots') }),
-            this.renderProperty({ value: trackInfo.avgSpeed.downwind, unit: I18n.t('text_tracking_unit_knots') }),
+            this.renderProperty({
+              title: I18n.t('text_upwind'),
+              value: trackInfo.avgSpeed.upwind,
+              unit: I18n.t('text_tracking_unit_knots'),
+              titlePosition: 'left',
+              titleStyle: styles.leftTitle,
+            }),
+            this.renderProperty({
+              title: I18n.t('text_downwind'),
+              value: trackInfo.avgSpeed.downwind,
+              unit: I18n.t('text_tracking_unit_knots'),
+              titlePosition: 'left',
+              titleStyle: styles.leftTitle,
+            }),
           )}
           {this.renderItem(
             I18n.t('text_maneuver_max_speed'),
             undefined,
-            this.renderProperty({ value: trackInfo.maxSpeed.upwind, unit: I18n.t('text_tracking_unit_knots') }),
-            this.renderProperty({ value: trackInfo.maxSpeed.downwind, unit: I18n.t('text_tracking_unit_knots') }),
+            this.renderProperty({
+              title: I18n.t('text_upwind'),
+              value: trackInfo.maxSpeed.upwind,
+              unit: I18n.t('text_tracking_unit_knots'),
+              titlePosition: 'left',
+              titleStyle: styles.leftTitle,
+            }),
+            this.renderProperty({
+              title: I18n.t('text_downwind'),
+              value: trackInfo.maxSpeed.downwind,
+              unit: I18n.t('text_tracking_unit_knots'),
+              titlePosition: 'left',
+              titleStyle: styles.leftTitle,
+            }),
           )}
         </View>
       </View>
