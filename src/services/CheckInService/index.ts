@@ -3,6 +3,8 @@ import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 
+import { getApiServerUrl } from 'api/config'
+import { CreateEventResponse } from 'api/endpoints/types'
 import { getDeviceUuid } from 'helpers/uuid'
 import { CheckIn, PositionFix, Race } from 'models'
 import { ApiBodyKeys as CheckInBodyKeys, urlParamsToCheckIn } from 'models/CheckIn'
@@ -97,3 +99,12 @@ export const raceUrl = (session: CheckIn, race: Race) =>
   race.name &&
   // tslint:disable-next-line max-line-length
   `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${escape(session.leaderboardName)}&raceName=${escape(race.name)}&leaderboardName=${escape(session.leaderboardName)}&eventId=${escape(session.eventId)}&mode=FULL_ANALYSIS`
+
+export const eventCreationResponseToCheckIn = (response: CreateEventResponse) => response && ({
+  eventId: response.eventid,
+  leaderboardName: response.leaderboard,
+  regattaName: response.regatta,
+  isTraining: false,
+  serverUrl: getApiServerUrl(),
+  isSelfTracking: true,
+} as CheckIn)

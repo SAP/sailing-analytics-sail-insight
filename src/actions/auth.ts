@@ -2,11 +2,12 @@ import { createAction } from 'redux-actions'
 
 import { authApi } from 'api'
 import AuthException from 'api/AuthException'
+import { withToken } from 'helpers/actions'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { ApiAccessToken, User } from 'models'
 import { mapUserToRes } from 'models/User'
 import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
-import { getAccessToken, isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { generateNewSession } from 'services/SessionService'
 
 
@@ -21,8 +22,6 @@ const handleAccessToken = (dataPromise?: Promise<ApiAccessToken>) => async (disp
   await dispatch(updateToken(data && data.accessToken))
   await dispatch(fetchCurrentUser())
 }
-
-export const authToken = () => (dispatch: DispatchType, getState: GetStateType) => getAccessToken(getState())
 
 export const checkCurrentAuthSession = () => async (dispatch: DispatchType) => {
   try {
@@ -40,24 +39,17 @@ export const register: RegisterActionType = (email: string, password: string, na
 export const login = (email: string, password: string) =>
   handleAccessToken(authApi.accessToken(email, password))
 
-export const fetchCurrentUser = () => async (dispatch: DispatchType) => {
-  const token = dispatch(authToken())
-  if (!token) {
-    throw new AuthException()
-  }
-  dispatch(updateCurrentUserInformation(await authApi.user(token)))
-}
+export const fetchCurrentUser = () => withToken(async (
+  token: string,
+  dispatch: DispatchType,
+) => dispatch(updateCurrentUserInformation(await authApi.user(token))))
 
 export const authBasedNewSession = () => (dispatch: DispatchType, getState: GetStateType) => {
   const isLoggedIn = isLoggedInSelector(getState())
   return isLoggedIn ? navigateToNewSession(generateNewSession()) : navigateToUserRegistration()
 }
 
-export const updateUser = (user: User) => async (dispatch: DispatchType) => {
-  const token = dispatch(authToken())
-  if (!token) {
-    throw new AuthException()
-  }
+export const updateUser = (user: User) => withToken(async (token: string, dispatch: DispatchType) => {
   await authApi.updateUser(token, mapUserToRes(user))
   dispatch(fetchCurrentUser())
-}
+})

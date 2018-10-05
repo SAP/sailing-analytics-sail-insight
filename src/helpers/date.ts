@@ -8,6 +8,7 @@ import momentDurationSetup from 'moment-duration-format'
 import moment from 'moment/min/moment-with-locales'
 
 import I18n, { SupportedLocales } from 'i18n'
+
 import Logger from './Logger'
 
 
@@ -85,7 +86,7 @@ export const dateFromToText = (
   return `${startDate.format(startFormat)} - ${endDate.format(dateFormat)}`
 }
 
-export const dateTimeText = (dateValue: string | number) => {
+export const dateTimeText = (dateValue: string | number | Date) => {
   const supportedLocale = getSupportedLocale(I18n.locale)
   const formatData = defaultDateFormat(supportedLocale)
   const { timeFormat, dateFormat } = formatData
@@ -96,3 +97,8 @@ export const timeText = (seconds: number) => {
   const duration = moment.duration(seconds, 'seconds')
   return duration.format('hh:mm:ss')
 }
+
+export const getNowAsMillis = (addValue?: number, category?: 'y' | 'd' | 'm' | 's' | 'ms') => (
+  addValue && category ?
+  moment().add(addValue, category) : moment()
+).valueOf()

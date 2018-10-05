@@ -1,17 +1,27 @@
 import React from 'react'
 import { Alert, View } from 'react-native'
 import { connect } from 'react-redux'
+import { ActionFunctionAny } from 'redux-actions'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
-import { shareSessionFromForm } from 'actions/sessions'
+import { removeCheckIn } from 'actions/checkIn'
+import {
+  createSessionCreationQueue,
+  generateSessionNameWithUserPrefix,
+  shareSessionFromForm,
+} from 'actions/sessions'
+import { startTracking, StartTrackingAction } from 'actions/tracking'
 import * as sessionForm from 'forms/session'
-import { getUnknownErrorMessage } from 'helpers/texts'
+import { ActionQueue } from 'helpers/actions'
+import Logger from 'helpers/Logger'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { Session, TrackingSession } from 'models'
-import { navigateToEditSession } from 'navigation'
-import { getBoat } from 'selectors/boat'
+import { CheckInUpdate, TrackingSession } from 'models'
+import { navigateBack, navigateToEditSession } from 'navigation'
+import { getCustomScreenParamData } from 'navigation/utils'
 
+import TextInputForm from 'components/base/TextInputForm'
 import ImageButton from 'components/ImageButton'
 import LineSeparator from 'components/LineSeparator'
 import PropertyView from 'components/PropertyView'
@@ -21,45 +31,43 @@ import TextButton from 'components/TextButton'
 
 import { $primaryButtonColor } from 'styles/colors'
 import { button, container, text } from 'styles/commons'
+import { registration } from 'styles/components'
 import styles from './styles'
 
 
-class TrackingSetup extends React.Component<{
-  session: Session,
-  boat: any,
-  shareSessionFromForm: (formName: string) => void,
-} > {
+interface Props {
+  sessionName?: string
+  shareSessionFromForm: (formName: string) => void
+  generateSessionNameWithUserPrefix: (name: string) => any
+  createSessionCreationQueue: (session: TrackingSession) => any
+  startTracking: StartTrackingAction
+  removeCheckIn: ActionFunctionAny<any>
+}
 
-  public state = { isShareSheetLoading: false }
+class TrackingSetup extends TextInputForm<Props> {
 
-  public onSharePress = async () => {
-    await this.setState({ isShareSheetLoading: true })
-    try {
-      await this.props.shareSessionFromForm(sessionForm.SESSION_FORM_NAME)
-    } catch (err) {
-      Alert.alert(getUnknownErrorMessage())
-    } finally {
-      this.setState({ isShareSheetLoading: false })
+  public state = {
+    isShareSheetLoading: false,
+    creationError: null,
+    isCreationLoading: false,
+  }
+
+  protected creationQueue?: ActionQueue
+  protected session?: TrackingSession
+
+  public componentWillUnmount() {
+    if (this.props.submitSucceeded || !this.session) {
+      return
     }
-  }
-
-  public renderProperty({ label, input: { value } }: any) {
-    return (
-      <PropertyView
-        style={styles.keyValue}
-        propertyKey={label}
-        propertyValue={value || I18n.t('text_empty_value_placeholder')}
-      />
-    )
-  }
-
-  public renderTitle({ input: { value } }: any) {
-    return (
-      <Text style={text.claim}>{value}</Text>
-    )
+    this.props.removeCheckIn({ leaderboardName: this.session.name } as CheckInUpdate)
   }
 
   public render() {
+    const {
+      isCreationLoading,
+      isShareSheetLoading,
+      creationError,
+    } = this.state
     return (
       <ScrollContentView>
         <View style={container.stretchContent}>
@@ -113,7 +121,7 @@ class TrackingSetup extends React.Component<{
               style={styles.shareButton}
               textStyle={button.textButtonText}
               onPress={this.onSharePress}
-              isLoading={this.state.isShareSheetLoading}
+              isLoading={isShareSheetLoading}
               loadingColor={$primaryButtonColor}
             >
               {I18n.t('caption_share_session')}
@@ -121,9 +129,12 @@ class TrackingSetup extends React.Component<{
             <LineSeparator/>
           </View>
         </View>
+        {creationError && <Text style={registration.errorText()}>{creationError}</Text>}
         <TextButton
-          style={[button.trackingAction, styles.startButton]}
+          style={[button.trackingAction, styles.startButton, styles.keyValue]}
           textStyle={button.trackingActionText}
+          onPress={this.props.handleSubmit(this.onSubmit)}
+          isLoading={isCreationLoading}
         >
           {I18n.t('caption_start').toUpperCase()}
         </TextButton>
@@ -131,31 +142,72 @@ class TrackingSetup extends React.Component<{
     )
   }
 
-  private onEditPress = () => navigateToEditSession(this.props.session)
-}
+  protected onSharePress = async () => {
+    await this.setState({ isShareSheetLoading: true })
+    try {
+      await this.props.shareSessionFromForm(sessionForm.SESSION_FORM_NAME)
+    } catch (err) {
+      Alert.alert(getErrorDisplayMessage(err))
+    } finally {
+      this.setState({ isShareSheetLoading: false })
+    }
+  }
 
-const mapStateToProps = (state: any, props: any) => {
-  const session: TrackingSession = props.navigation.state.params
-  const boat = getBoat(session && session.boatName)(state)
-  return {
-    initialValues: {
-      [sessionForm.FORM_KEY_NAME]: session.name,
-      [sessionForm.FORM_KEY_TRACK_NAME]: session.trackName,
-      [sessionForm.FORM_KEY_BOAT_NAME]: session.boatName,
-      [sessionForm.FORM_KEY_SAIL_NUMBER]: session.sailNumber,
-      [sessionForm.FORM_KEY_PRIVACY_SETTING]: session.privacySetting,
-      [sessionForm.FORM_KEY_TEAM_NAME]: session.teamName,
-      [sessionForm.FORM_KEY_BOAT_CLASS]: boat && boat.name,
-    },
+  protected renderProperty({ label, input: { value } }: any) {
+    return (
+      <PropertyView
+        style={styles.keyValue}
+        propertyKey={label}
+        propertyValue={value || I18n.t('text_empty_value_placeholder')}
+      />
+    )
+  }
+
+  protected renderTitle({ input: { value } }: any) {
+    return <Text style={text.claim}>{value}</Text>
+  }
+
+  protected onEditPress = () => navigateToEditSession()
+
+  protected onSubmit = async (values: any) => {
+    this.session = sessionForm.trackingSessionFromFormValues(values)
+    this.session.name = this.props.generateSessionNameWithUserPrefix(this.session.name)
+    if (!this.creationQueue) {
+      this.creationQueue = this.props.createSessionCreationQueue(this.session) as ActionQueue
+    }
+    try {
+      await this.setState({ isCreationLoading: true, creationError: null })
+      await this.creationQueue.execute()
+      navigateBack()
+      this.props.startTracking(this.session.name, { ignoreSelfTracking: true })
+      return true
+    } catch (err) {
+      Logger.debug('Creation queue error: ', err)
+      this.setState({ creationError: getErrorDisplayMessage(err) })
+      return false
+    } finally {
+      this.setState({ isCreationLoading: false })
+    }
   }
 }
 
+const mapStateToProps = (state: any, props: any) => ({
+  initialValues: sessionForm.formValuesFromTrackingSession(getCustomScreenParamData(props)),
+})
+
+
 export default connect(
   mapStateToProps,
-  { shareSessionFromForm },
-)(reduxForm({
+  {
+    shareSessionFromForm,
+    generateSessionNameWithUserPrefix,
+    createSessionCreationQueue,
+    startTracking,
+    removeCheckIn,
+  },
+)(reduxForm<{}, Props>({
   form: sessionForm.SESSION_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
-})((props: any) => <TrackingSetup {...props}/>))
-
+  enableReinitialize: true,
+})(TrackingSetup))

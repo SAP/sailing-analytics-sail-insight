@@ -1,8 +1,10 @@
-import { get } from 'lodash'
-
 import ApiException from 'api/ApiException'
+import { STATUS_UNAUTHORIZED } from 'api/constants'
 import I18n from 'i18n'
 import { MISSING_PREFIX } from 'i18n/utils'
+
+import { ErrorCodes } from './errors'
+
 
 const ERROR_TRANSLATION_PREFIX = 'error_'
 
@@ -35,9 +37,18 @@ export const getUnknownErrorMessage = (errorCode?: string | number) => (errorCod
 )
 
 export const getErrorDisplayMessage = (exception: any) => {
-  if (get(exception, 'name') === ApiException.NAME) {
-    const errorKey = get(exception, 'message')
-    return getErrorMessage(errorKey, getUnknownErrorMessage((exception as ApiException).status))
+  if (!exception || (!exception.name && !exception.baseTypeName)) {
+    return getUnknownErrorMessage()
+  }
+  if (exception.name === ApiException.NAME || exception.baseTypeName === ApiException.NAME) {
+    const error = exception as ApiException
+    const errorKey = error.message
+    switch (error.status) {
+      case STATUS_UNAUTHORIZED:
+        return I18n.t(ErrorCodes.UNAUTHORIZED)
+      default:
+        return getErrorMessage(errorKey, getUnknownErrorMessage(error.status))
+    }
   }
   return getUnknownErrorMessage()
 }

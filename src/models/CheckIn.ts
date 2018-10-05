@@ -41,13 +41,23 @@ export const urlParamsToCheckIn = (serverUrl: string, queryData: any) => serverU
   markId : queryData[UrlPropertyNames.MarkId],
 } as CheckIn)
 
-
-export default interface CheckIn extends Object {
-  serverUrl: string
+export interface CheckInUpdate {
   leaderboardName: string
-  eventId: string
-  isTraining: boolean
+  serverUrl?: string
+  regattaName?: string
+  eventId?: string
+  isTraining?: boolean
   competitorId?: string
   boatId?: string
   markId?: string
+  isSelfTracking?: boolean
+  currentTrackName?: string
+  currentFleet?: string
+  trackPrefix?: string
+}
+
+export default interface CheckIn extends CheckInUpdate {
+  serverUrl: string
+  regattaName: string
+  eventId: string
 }

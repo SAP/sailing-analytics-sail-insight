@@ -1,19 +1,42 @@
 import querystring from 'query-string'
+import format from 'string-format'
 
 
-const API_ROOT = 'https://my.sapsailing.com'
+const SERVER_URL = 'https://d-labs.sapsailing.com'
 const API_SUFFIX_SECURITY = '/security/api/restsecurity'
 const API_SUFFIX = '/sailingserver/api/v1'
 
-const getPathWithParams = (path: string, params?: any) => {
-  if (!params) {
+const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
+  if (!urlOptions) {
     return path
   }
-  return `${path}?${querystring.stringify(params)}`
+  let generatedPath = path
+  if (urlOptions.pathParams) {
+    generatedPath = escape(format(path, ...urlOptions.pathParams))
+  }
+  return urlOptions.urlParams ?
+    `${generatedPath}?${querystring.stringify(urlOptions.urlParams)}` :
+    generatedPath
 }
 
 
-export const urlGenerator = (apiRoot?: string, apiSuffix?: string) => (path: string, params?: any) =>
-  `${apiRoot || API_ROOT}${apiSuffix || API_SUFFIX}${getPathWithParams(path, params)}`
+export interface UrlOptions {
+  urlParams?: any
+  pathParams?: string[]
+}
 
-export const getSecurityUrl = urlGenerator(API_ROOT, API_SUFFIX_SECURITY)
+export const urlGenerator = (apiRoot?: string, apiSuffix?: string) => (path: string) => (options?: UrlOptions) =>
+  `${apiRoot || SERVER_URL}${apiSuffix || API_SUFFIX}${getPathWithParams(path, options)}`
+
+export const getSecurityUrl = urlGenerator(SERVER_URL, API_SUFFIX_SECURITY)
+
+export const HttpMethods = {
+  POST: 'POST',
+  GET: 'GET',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+}
+
+export type BodyType = 'x-www-form-urlencoded' | 'json'
+
+export const getApiServerUrl = () => SERVER_URL

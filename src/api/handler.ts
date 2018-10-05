@@ -3,20 +3,15 @@ import { normalize } from 'normalizr'
 import ApiDataException from './ApiDataException'
 import ApiException from './ApiException'
 import AuthException from './AuthException'
+import { ERR_NOT_FOUND, ERR_UNAUTHORIZED, ERR_UNKNOWN, STATUS_NOT_FOUND, STATUS_UNAUTHORIZED } from './constants'
 import * as networking from './networking'
 
-const STATUS_NOT_FOUND = 404
-const STATUS_UNAUTHORIZED = 401
-
-const ERR_NOT_FOUND = 'not_found'
-const ERR_UNAUTHORIZED = 'unauthorized'
-const ERR_UNKNOWN = 'unknown_error'
 
 const getData = async (dataHandler?: (r: any) => any, response?: any) => {
   try {
     return dataHandler ? await dataHandler(response) : response
   } catch (err) {
-    throw new ApiDataException(err)
+    throw ApiDataException.create(err)
   }
 }
 
@@ -36,9 +31,9 @@ const defaultResponseHandler = (dataHandler?: (response: any) => any) => async (
 
     switch (response.status) {
       case STATUS_UNAUTHORIZED:
-        throw new AuthException(data || ERR_UNAUTHORIZED, response.status)
+        throw AuthException.create(data || ERR_UNAUTHORIZED)
       default:
-        throw new ApiException(
+        throw ApiException.create(
           data || ERR_UNKNOWN,
           response.status,
           data,

@@ -17,9 +17,6 @@ import TrackingProperty from 'components/TrackingProperty'
 
 class TrackInfo extends React.Component<ViewProps & {
   trackInfo?: any,
-  eventImageSize?: 'large' | 'medium',
-  onTrackingPress?: () => void,
-  onSettingsPress?: () => void,
 } > {
 
   public renderProperty(options: any) {

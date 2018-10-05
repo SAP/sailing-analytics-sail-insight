@@ -7,14 +7,15 @@ import { connect } from 'react-redux'
 
 
 import { checkOut, collectCheckInData } from 'actions/checkIn'
-import {  openLocationTracking } from 'actions/locations'
 import { openTrackDetails } from 'actions/navigation'
+import {  startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsWithCheckoutActionSheetOptions } from 'helpers/actionSheets'
 import { getUnknownErrorMessage } from 'helpers/texts'
-import { listKeyExtractor, notImplementedYetAlert } from 'helpers/utils'
+import { listKeyExtractor } from 'helpers/utils'
 import I18n from 'i18n'
 import { CheckIn, Race, Session } from 'models'
 import { navigateBack } from 'navigation'
+import { getCustomScreenParamData } from 'navigation/utils'
 import { getRaces } from 'selectors/race'
 import * as CheckInService from 'services/CheckInService'
 
@@ -25,6 +26,7 @@ import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 import TrackInfo from 'components/session/TrackInfo'
 import TrackItem from 'components/session/TrackItem'
 import Text from 'components/Text'
+import { getSession } from 'selectors/session'
 
 
 const TRACKS_DATA_KEY = 'tracks'
@@ -32,12 +34,12 @@ const TRACKS_DATA_KEY = 'tracks'
 @connectActionSheet
 class SessionDetail extends React.Component<NavigationScreenProps & {
   openTrackDetails: (race: Race) => void,
-  checkOut: (checkIn: CheckIn) => void,
-  openLocationTracking: (checkIn: CheckIn) => void,
-  checkInData: Session,
+  checkOut: (checkIn?: CheckIn) => void,
+  startTracking: StartTrackingAction,
+  session?: Session,
   showActionSheetWithOptions: any,
   tracks: Race[],
-  collectCheckInData: (c: CheckIn) => void,
+  collectCheckInData: (c?: CheckIn) => void,
 } > {
 
   public state = {
@@ -45,18 +47,17 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   }
 
   public componentDidMount() {
-    const { checkInData } = this.props
+    const { session } = this.props
     this.props.navigation.setParams({
-      heading: checkInData.event && checkInData.event.name,
-      subHeading: checkInData.leaderboardName,
+      heading: session && (session.userStrippedDisplayName || session.leaderboardName),
       onOptionsPressed: this.onOptionsPressed,
     })
-    this.props.collectCheckInData(checkInData)
+    this.props.collectCheckInData(session)
   }
 
   public onCheckoutPressed = async () => {
     try {
-      await this.props.checkOut(this.props.checkInData)
+      await this.props.checkOut(this.props.session)
       navigateBack()
     } catch (err) {
       Alert.alert(getUnknownErrorMessage())
@@ -70,7 +71,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   public onTrackingPress = async () => {
     await this.setState({ isLoading: true })
     try {
-      await this.props.openLocationTracking(this.props.checkInData)
+      await this.props.startTracking(this.props.session)
     } catch (err) {
       Alert.alert(getUnknownErrorMessage())
     } finally {
@@ -79,11 +80,11 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   }
 
   public onEventPress = () => {
-    Linking.openURL(CheckInService.eventUrl(this.props.checkInData))
+    Linking.openURL(CheckInService.eventUrl(this.props.session))
   }
 
   public onLeaderboardPress = () => {
-    Linking.openURL(CheckInService.leaderboardUrl(this.props.checkInData))
+    Linking.openURL(CheckInService.leaderboardUrl(this.props.session))
   }
 
   public onTrackPress = (race: Race) => () => {
@@ -94,12 +95,11 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
     return <TrackItem onPress={this.onTrackPress(item)} track={item}/>
   }
 
-  public onSettingsPress = () => {
-    // TODO: navigate to session settings
-    notImplementedYetAlert()
-  }
-
   public renderSessionDetails = () => {
+    const { session } = this.props
+    if (!session) {
+      return <View/>
+    }
     return (
       <View
         style={[
@@ -108,9 +108,8 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
         ]}
       >
         <SessionInfoDisplay
-          session={this.props.checkInData}
+          session={session}
           eventImageSize="large"
-          onSettingsPress={this.onSettingsPress}
           onTrackingPress={this.onTrackingPress}
         />
         <TrackInfo style={styles.sidePadding}/>
@@ -149,16 +148,16 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const checkInData = props.navigation.state.params
+  const leaderboardName = getCustomScreenParamData(props)
   return {
-    checkInData,
-    tracks: getRaces(checkInData.leaderboardName)(state) || [],
+    session: getSession(leaderboardName)(state),
+    tracks: getRaces(leaderboardName)(state) || [],
   }
 }
 
 export default connect(mapStateToProps, {
   checkOut,
-  openLocationTracking,
+  startTracking,
   collectCheckInData,
   openTrackDetails,
 })(SessionDetail)

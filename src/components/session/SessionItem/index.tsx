@@ -14,7 +14,7 @@ class SessionItem extends React.Component<ViewProps & {
   session: Session,
   onTrackingPress?: OnPressType,
 } > {
-  public onItempPress = () => navigateToSessionDetail(this.props.session)
+  public onItempPress = () => navigateToSessionDetail(this.props.session.leaderboardName)
 
   public render() {
     const {

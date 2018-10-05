@@ -25,28 +25,29 @@ const reducer = handleActions(
       if (!entities) {
         return state
       }
-
       const newState = { ...state }
+
       keys(entities).forEach((entityTypeKey) => {
         const entityType = state[entityTypeKey] || {}
         newState[entityTypeKey] = { ...entityType }
+
         keys(entities[entityTypeKey]).forEach((entityKey) => {
           set(
-          newState,
-          `${entityTypeKey}.${entityKey}`,
-          mergeWith(
-            get(state, `${entityTypeKey}.${entityKey}`, {}),
-            entities[entityTypeKey][entityKey],
-            entityMergeCustomizer,
-          ),
-        )
+            newState,
+            [entityTypeKey, entityKey],
+            mergeWith(
+              get(state, [entityTypeKey, entityKey]) || {},
+              entities[entityTypeKey][entityKey],
+              entityMergeCustomizer,
+            ),
+          )
         })
       })
       return newState
     },
     [removeEntity as any]: (state: any = {}, action: any) => {
       const { entityType, id } = action.payload
-      if (!get(state, `[${entityType}][${id}]`)) {
+      if (!get(state, [entityType, id])) {
         return state
       }
       const { [`${id}`]: removed, ...rest } = state[entityType]

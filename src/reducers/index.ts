@@ -35,8 +35,8 @@ interface RootReducer {
 const reducer: RootReducer = {
   [AUTH_REDUCER_NAME]: AuthReducer,
   [ENTITIES_REDUCER_NAME]: EntityReducer,
-  [FORM_REDUCER_NAME]: formReducer,
   [CHECK_IN_REDUCER_NAME]: CheckInReducer,
+  [FORM_REDUCER_NAME]: formReducer,
   [LOCATION_TRACKING_REDUCER_NAME]: LocationTrackingReducer,
   [ONBOARDING_REDUCER_NAME]: OnboardingReducer,
   [SETTINGS_REDUCER_NAME]: SettingsReducer,

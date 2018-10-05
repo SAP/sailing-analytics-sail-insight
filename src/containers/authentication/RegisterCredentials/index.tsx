@@ -32,26 +32,6 @@ class RegisterCredentials extends TextInputForm<Props> {
     isLoading: false,
   }
 
-  public onSubmit = async (values: any) => {
-    try {
-      this.setState({ isLoading: true, error: null })
-      await this.props.register(
-        values[registrationForm.FORM_KEY_EMAIL],
-        values[registrationForm.FORM_KEY_PASSWORD],
-        values[registrationForm.FORM_KEY_NAME],
-      )
-      navigateToUserRegistrationBoat()
-    } catch (err) {
-      this.setState({ error: err.message })
-    } finally {
-      this.setState({ isLoading: false })
-    }
-  }
-
-  public renderField(props: any) {
-    return <FormTextInput {...props}/>
-  }
-
   public render() {
     const { error, isLoading } = this.state
     return (
@@ -101,6 +81,26 @@ class RegisterCredentials extends TextInputForm<Props> {
         </View>
       </ScrollContentView >
     )
+  }
+
+  protected onSubmit = async (values: any) => {
+    try {
+      this.setState({ isLoading: true, error: null })
+      await this.props.register(
+        values[registrationForm.FORM_KEY_EMAIL],
+        values[registrationForm.FORM_KEY_PASSWORD],
+        values[registrationForm.FORM_KEY_NAME],
+      )
+      navigateToUserRegistrationBoat()
+    } catch (err) {
+      this.setState({ error: err.message })
+    } finally {
+      this.setState({ isLoading: false })
+    }
+  }
+
+  protected renderField(props: any) {
+    return <FormTextInput {...props}/>
   }
 }
 

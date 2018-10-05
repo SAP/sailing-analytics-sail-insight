@@ -1,5 +1,6 @@
 import { DispatchType } from 'helpers/types'
 import { get, isArray } from 'lodash'
+import { normalize } from 'normalizr'
 import { createAction } from 'redux-actions'
 
 
@@ -28,3 +29,5 @@ export const receivePaginatedEntities = (payload: any) => async (dispatch: Dispa
     result: getIdsAsArray(payload.data),
   }
 }
+
+export const receiveNotNormalizedEntities = (data: any, schema: any) => receiveEntities(normalize(data, schema))

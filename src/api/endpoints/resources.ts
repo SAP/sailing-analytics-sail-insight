@@ -1,6 +1,4 @@
-import format from 'string-format'
-
-import { urlGenerator } from 'api/config'
+import { HttpMethods, urlGenerator, UrlOptions } from 'api/config'
 import { dataRequest, listRequest, request } from 'api/handler'
 import {
   boatSchema,
@@ -30,54 +28,54 @@ const apiEndpoints = (serverUrl: string) => {
   }
 }
 
-const deviceMapping = (path: string) => (leaderboardName: string, data: any) => request(
-  format(path, escape(leaderboardName)),
-  { method: 'POST', body: data },
+const deviceMapping = (endpoint: (options?: UrlOptions) => string) => (leaderboardName: string, data: any) => request(
+  endpoint({ pathParams: [leaderboardName] }),
+  { method: HttpMethods.POST, body: data },
 )
 
 
 export default (serverUrl: string) => {
   const endpoints = apiEndpoints(serverUrl)
   return {
-    requestRegattas: () => listRequest(endpoints.regatta),
+    requestRegattas: () => listRequest(endpoints.regatta()),
     requestRegatta: (regattaName: string) => dataRequest(
-      `${endpoints.regatta}/${regattaName}`,
+      `${endpoints.regatta()}/${escape(regattaName)}`,
       { dataSchema: regattaSchema },
     ),
     requestRaces: (regattaName: string) => dataRequest(
-      format(endpoints.regattaRaces, regattaName),
+      endpoints.regattaRaces({ pathParams: [regattaName] }),
       { dataSchema: regattaSchema },
     ),
     requestRace: (regattaName: string, raceName: string, raceId?: string) => dataRequest(
-      format(endpoints.regattaRaceTimes, regattaName, raceName),
+      endpoints.regattaRaceTimes({ pathParams: [regattaName, raceName] }),
       {
         dataSchema: raceSchema,
         dataProcessor: raceId ? ((data: any) => data && { ...data, id: raceId }) : undefined,
       },
     ),
-    requestLeaderboards: () => listRequest(endpoints.leaderboards, { dataSchema: leaderboardSchema }),
+    requestLeaderboards: () => listRequest(endpoints.leaderboards(), { dataSchema: leaderboardSchema }),
     requestLeaderboard: (leaderboardName: string) => dataRequest(
-      `${endpoints.leaderboards}/${escape(leaderboardName)}`,
+      `${endpoints.leaderboards()}/${escape(leaderboardName)}`,
       { dataSchema: leaderboardSchema },
     ),
-    requestEvent: (eventId: string) => dataRequest(`${endpoints.events}/${eventId}`, { dataSchema: eventSchema }),
+    requestEvent: (eventId: string) => dataRequest(`${endpoints.events()}/${eventId}`, { dataSchema: eventSchema }),
     requestCompetitor: (competitorId: string) => dataRequest(
-      `${endpoints.competitors}/${competitorId}`,
+      `${endpoints.competitors()}/${competitorId}`,
       { dataSchema: competitorSchema },
     ),
     requestMark: (leaderboardName: string, id: string) => dataRequest(
-      `${format(endpoints.marks, leaderboardName)}/${id}`,
+      `${endpoints.marks({ pathParams: [leaderboardName] })}/${id}`,
       { dataSchema: markSchema },
     ),
     requestBoat: (id: string) => dataRequest(
-      `${endpoints.boats}/${id}`,
+      `${endpoints.boats()}/${id}`,
       { dataSchema: boatSchema },
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),
     sendGpsFixes: (gpsFixes: any) => request(
-      endpoints.gpsFixes,
-      { method: 'POST', body: gpsFixes },
+      endpoints.gpsFixes(),
+      { method: HttpMethods.POST, body: gpsFixes },
     ),
   }
 }

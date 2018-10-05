@@ -7,7 +7,7 @@ import { $defaultFontFamily, $titleFontSize } from 'styles/fonts'
 const screen = Dimensions.get('window')
 const headerTitleStyleProps = isPlatformAndroid ?
   { /* flexGrow: 1 */ } :
-  { width: screen.width }
+  { /* width: screen.width */ }
 
 export default {
   headerTitle: {
