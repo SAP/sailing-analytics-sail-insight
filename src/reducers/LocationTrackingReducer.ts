@@ -2,6 +2,8 @@ import { handleActions } from 'redux-actions'
 
 import {
   removeTrackedRegatta,
+  updateLastWindCourse,
+  updateLastWindSpeed,
   updateStartedAt,
   updateTrackedEventId,
   updateTrackedLeaderboard,
@@ -30,6 +32,8 @@ const initialState = {
   [Keys.DISTANCE_KEY]: 0,
   [Keys.LAST_LATITUDE_KEY]: null,
   [Keys.LAST_LONGITUDE_KEY]: null,
+  [Keys.LAST_WIND_DIRECTION]: null,
+  [Keys.LAST_WIND_SPEED_IN_KNOTS]: null,
 }
 
 const reducer = handleActions(
@@ -38,6 +42,8 @@ const reducer = handleActions(
     [updateTrackedLeaderboard as any]: itemUpdateHandler(Keys.LEADERBOARD_NAME_KEY),
     [updateTrackedEventId as any]: itemUpdateHandler(Keys.EVENT_ID_KEY),
     [updateUnsentGpsFixCount as any]: itemUpdateHandler(Keys.UNSENT_GPS_FIXES_KEY),
+    [updateLastWindCourse as any]: itemUpdateHandler(Keys.LAST_WIND_DIRECTION),
+    [updateLastWindSpeed as any]: itemUpdateHandler(Keys.LAST_WIND_SPEED_IN_KNOTS),
     [updateStartedAt as any]: itemUpdateHandler(Keys.START_AT_KEY),
     [updateTrackedRegatta as any]: (state: any = {}, action: any) =>
       !action || !action.payload ?

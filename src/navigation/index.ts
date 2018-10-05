@@ -1,4 +1,4 @@
-import { Boat, CheckIn, Session, TrackingSession } from 'models'
+import { Boat, CheckIn, Session, TrackingSession, WindFix } from 'models'
 import * as  NavigationService from './NavigationService'
 import * as Screens from './Screens'
 
@@ -15,8 +15,8 @@ export const navigateToUserRegistrationBoat = () => NavigationService.navigateWi
 export const navitateToLogin = () => NavigationService.navigate(Screens.Login)
 export const navigateToSessions = () => NavigationService.navigate(Screens.Sessions)
 export const navigateToManeuverMonitor = () => NavigationService.navigate(Screens.ManeuverMonitor)
-export const navigateToSetWind = () => NavigationService.navigate(Screens.SetWind)
 
+export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
 export const navigateToTracking = (data: any) => NavigationService.navigate(Screens.Tracking, { data })
 export const navigateToNewSession = (data: TrackingSession) => NavigationService.navigate(Screens.NewSession, { data })

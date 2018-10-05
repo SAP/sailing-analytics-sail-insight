@@ -8,7 +8,7 @@ import { getEventEntity } from './event'
 import { getTrackedEventId, getTrackedLeaderboardName } from './location'
 
 
-export const getActiveCheckIns = (state: any) =>
+export const getActiveCheckInEntity = (state: any) =>
   state && state[CHECK_IN_REDUCER_NAME] && state[CHECK_IN_REDUCER_NAME].active
 
 
@@ -27,10 +27,16 @@ export const getTrackedEvent = createSelector(
   (eventId, eventEntity) => eventEntity && mapResToEvent(eventEntity[eventId]),
 )
 
-export const getTrackedCheckInBaseUrl = (state: any = {}) => {
-  const checkIn = getCheckInByLeaderboardName(getTrackedLeaderboardName(state))(state)
-  return checkIn && checkIn.serverUrl
-}
+export const getTrackedCheckIn = createSelector(
+  getActiveCheckInEntity,
+  getTrackedLeaderboardName,
+  (checkInEntity = {}, leaderboardName) => checkInEntity[leaderboardName] as CheckIn,
+)
+
+export const getTrackedCheckInBaseUrl = createSelector(
+  getTrackedCheckIn,
+  checkIn => checkIn && checkIn.serverUrl,
+)
 
 export const getServerUrl = (leaderboardName?: string) => (state: any) => {
   const checkIn = getCheckInByLeaderboardName(leaderboardName)(state)

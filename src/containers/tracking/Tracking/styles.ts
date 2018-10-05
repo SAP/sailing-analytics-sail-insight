@@ -52,4 +52,7 @@ export default EStyleSheets.create({
     fontSize: 24,
     marginBottom: 3,
   },
+  singleValue: {
+    justifyContent: 'flex-end',
+  },
 })

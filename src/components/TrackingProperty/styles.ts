@@ -38,11 +38,11 @@ export default EStyleSheet.create({
     tintColor: '$primaryTextColor',
     resizeMode: 'contain',
   },
-  tendencyIconContainer: {
+  rightIconContainer: {
     width: 0,
     height: 0,
   },
-  tendencyIcon: {
+  rightIcon: {
     tintColor: 'white',
     resizeMode: 'contain',
     width: '100%',

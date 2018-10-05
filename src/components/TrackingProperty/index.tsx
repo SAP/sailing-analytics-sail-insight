@@ -1,6 +1,11 @@
 import React from 'react'
 import {
-  Image, TextStyle, TouchableOpacity, View, ViewProps,
+  Image,
+  ImageSourcePropType,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewProps,
 } from 'react-native'
 
 import Images from '@assets/Images'
@@ -19,6 +24,7 @@ class TrackingProperty extends React.Component<ViewProps & {
   onPress?: () => void,
   tendency?: 'up' | 'down',
   titlePosition?: 'top' | 'left',
+  rightIcon?: ImageSourcePropType,
 } > {
 
   public state: {valueContainerHeight?: number} = { valueContainerHeight: undefined }
@@ -33,17 +39,8 @@ class TrackingProperty extends React.Component<ViewProps & {
       valueStyle,
       unitStyle,
       onPress,
-      tendency,
       titlePosition = 'top',
     } = this.props
-
-    const tendencyIconSize = this.state.valueContainerHeight && (this.state.valueContainerHeight * 0.6)
-    const tendencyIconStyle = tendencyIconSize && {
-      padding: tendencyIconSize / 4,
-      width: tendencyIconSize,
-      height: tendencyIconSize,
-      borderRadius: tendencyIconSize / 2,
-    }
 
     const containerStyle = titlePosition === 'left' ? styles.titleLeftContainer : undefined
 
@@ -78,24 +75,45 @@ class TrackingProperty extends React.Component<ViewProps & {
             </Text>
             {onPress && <Image source={Images.actions.arrowRight} style={styles.actionIcon}/>}
           </View>
-          {
-            tendency &&
-            <View
-              style={[
-                styles.tendencyIconContainer,
-                tendency === 'up' ? styles.tendencyIconUp : styles.tendencyIconDown,
-                tendencyIconStyle,
-              ]}
-            >
-              <Image
-                style={styles.tendencyIcon}
-                source={tendency === 'up' ? Images.info.arrowUp : Images.info.arrowDown}
-              />
-            </View>
-          }
+          {this.renderIcon()}
         </View>
       </TouchableOpacity>
     )
+  }
+
+  protected renderIcon = () => {
+    const {
+      tendency,
+      rightIcon,
+    } = this.props
+
+    const iconSize = this.state.valueContainerHeight && (this.state.valueContainerHeight * 0.6)
+    const iconStyle = iconSize && {
+      padding: iconSize / 4,
+      width: iconSize,
+      height: iconSize,
+    }
+    const tendencyIconStyle = iconSize && {
+      borderRadius: iconSize / 2,
+    }
+
+    return tendency || rightIcon ? (
+      <View
+        style={[
+          styles.rightIconContainer,
+          iconStyle,
+          tendency && ([
+            tendencyIconStyle,
+            tendency === 'up' ? styles.tendencyIconUp : styles.tendencyIconDown,
+          ]),
+        ]}
+      >
+        <Image
+          style={styles.rightIcon}
+          source={rightIcon || (tendency === 'up' ? Images.info.arrowUp : Images.info.arrowDown)}
+        />
+      </View>
+    ) : null
   }
 
   private onValueContainerLayout = ({ nativeEvent }: any = {}) => {

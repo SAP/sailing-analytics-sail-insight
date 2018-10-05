@@ -8,6 +8,10 @@ export interface LocationStats {
   startedAt?: string,
   headingInDeg?: number,
   distance?: number,
+  lastLatitude?: number,
+  lastLongitude?: number,
+  lastWindDirection?: number,
+  lastWindSpeedInKnots?: number,
 }
 
 export const getLocationTrackingStatus = (state: any = {}) =>
@@ -39,5 +43,9 @@ export const getLocationStats: (state: any) => LocationStats = (state: any = {})
     startedAt: data[Keys.START_AT_KEY],
     headingInDeg: data[Keys.HEADING_IN_DEG_KEY],
     distance: data[Keys.DISTANCE_KEY],
+    lastLatitude: data[Keys.LAST_LATITUDE_KEY],
+    lastLongitude: data[Keys.LAST_LONGITUDE_KEY],
+    lastWindDirection: data[Keys.LAST_WIND_DIRECTION],
+    lastWindSpeedInKnots: data[Keys.LAST_WIND_SPEED_IN_KNOTS],
   }
 }

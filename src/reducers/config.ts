@@ -20,6 +20,8 @@ export const LocationTrackingReducerKeys = {
   DISTANCE_KEY: 'distance',
   LAST_LATITUDE_KEY: 'lastLatitude',
   LAST_LONGITUDE_KEY: 'lastLongitude',
+  LAST_WIND_DIRECTION: 'lastWindCourse',
+  LAST_WIND_SPEED_IN_KNOTS: 'lastWindSpeedInKnots',
 }
 
 export const OnboardingReducerKeys = {

@@ -1,12 +1,15 @@
 import React from 'react'
-import { View, ViewProps } from 'react-native'
+import { Alert, View, ViewProps } from 'react-native'
+import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
+import { sendWind, SendWindAction } from 'actions/wind'
 import { degToCompass, speedToWindClassification } from 'helpers/physics'
+import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { button, container } from 'styles/commons'
-import { registration } from 'styles/components'
-import styles from './styles'
+import { WindFix } from 'models'
+import { navigateBack } from 'navigation'
+import { getCustomScreenParamData } from 'navigation/utils'
 
 import ImageButton from 'components/ImageButton'
 import ScrollContentView from 'components/ScrollContentView'
@@ -16,38 +19,34 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 
+import { button, container } from 'styles/commons'
+import { registration } from 'styles/components'
+import styles from './styles'
 
-class SetWind extends React.Component<ViewProps> {
 
-  public state: {windAngleInDeg: number, windSpeedInKnots: number} = {
-    windAngleInDeg: 180,
-    windSpeedInKnots: 12,
-  }
+class SetWind extends React.Component<ViewProps & {
+  sendWind: SendWindAction,
+  initialWindFix?: WindFix,
+}> {
 
-  public onSetWindPress = () => {
-    // TODO: set wind and return to tracking screen
-  }
-
-  public handleAngleChange = (value: number) => {
-    this.setState({ windAngleInDeg:  value })
-  }
-
-  public handleSpeedChange = (addition: number) => () => {
-    this.setState({ windSpeedInKnots: this.state.windSpeedInKnots + addition })
+  public state = {
+    windAngleInDeg: (this.props.initialWindFix && this.props.initialWindFix.directionInDeg) || 180,
+    windSpeedInKnots: (this.props.initialWindFix && this.props.initialWindFix.speedInKnots) || 12,
+    isLoading: false,
   }
 
   public renderInfoContainer(title: string, value: string, meta: string, valueUnit?: string) {
     return (
       <View style={styles.infoContainer}>
         <Text style={styles.title}>{title.toLocaleUpperCase()}</Text>
-        <TrackingProperty value={value} valueFontSize={56} unit={valueUnit}/>
+        <TrackingProperty value={value} valueStyle={styles.infoValue} unit={valueUnit}/>
         <Text style={styles.metaDisplay}>{meta}</Text>
       </View>
     )
   }
 
   public render() {
-    const { windAngleInDeg, windSpeedInKnots } = this.state
+    const { windAngleInDeg, windSpeedInKnots, isLoading } = this.state
     return (
       <ScrollContentView style={container.largeHorizontalPadding}>
         <View style={[container.stretchContent, styles.controlsContainer]}>
@@ -98,6 +97,7 @@ class SetWind extends React.Component<ViewProps> {
             style={registration.nextButton()}
             textStyle={button.actionText}
             onPress={this.onSetWindPress}
+            isLoading={isLoading}
           >
             {I18n.t('caption_done')}
           </TextButton>
@@ -105,6 +105,31 @@ class SetWind extends React.Component<ViewProps> {
       </ScrollContentView>
     )
   }
+
+  protected onSetWindPress = async () => {
+    const { windSpeedInKnots, windAngleInDeg } = this.state
+    try {
+      this.setState({ isLoading: true })
+      await this.props.sendWind(windAngleInDeg, windSpeedInKnots)
+      navigateBack()
+    } catch (err) {
+      Alert.alert(getUnknownErrorMessage())
+    } finally {
+      this.setState({ isLoading: false })
+    }
+  }
+
+  protected handleAngleChange = (value: number) => {
+    this.setState({ windAngleInDeg:  value })
+  }
+
+  protected handleSpeedChange = (addition: number) => () => {
+    this.setState({ windSpeedInKnots: this.state.windSpeedInKnots + addition })
+  }
 }
 
-export default SetWind
+const mapStateToProps = (state: any, props: any) => ({
+  initialWindFix: getCustomScreenParamData(props),
+})
+
+export default connect(mapStateToProps, { sendWind })(SetWind)
