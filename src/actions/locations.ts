@@ -25,6 +25,8 @@ export const updateSpeedInKnots = createAction('UPDATE_SPEED_IN_KNOTS')
 export const updateStartedAt = createAction('UPDATE_STARTED_AT')
 export const updateHeadingInDeg = createAction('UPDATE_HEADING_IN_DEG')
 export const updateDistance = createAction('UPDATE_DISTANCE')
+export const updateLastWindCourse = createAction('UPDATE_WIND_COURSE')
+export const updateLastWindSpeed = createAction('UPDATE_WIND_SPEED')
 
 const sendGpsFix = async (serverUrl: string, postBody: any) => {
   try {

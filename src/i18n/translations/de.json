@@ -89,6 +89,7 @@
   "text_downwind": "Downwind:",
   "text_session": "Session",
   "text_mock_track_name": "Mein Track",
+  "text_set_wind_missing_data": "Fehlende Positionsdaten, bitte versuche es später noch einmal.",
 
   "caption_ok": "OK",
   "caption_cancel": "Abbrechen",
@@ -114,7 +115,7 @@
   "caption_new_session": "Neue Session",
   "caption_new_boat": "Neues Boot",
   "caption_start": "Start",
-  "caption_share_session": "Teile diese Session",
+  "caption_share_session": "Freunde einladen",
   "caption_lets_go": "Auf geht's!",
   "caption_login": "Login",
   "caption_need_help": "Benötigst du Hilfe?",

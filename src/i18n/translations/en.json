@@ -89,6 +89,7 @@
   "text_downwind": "Downwind:",
   "text_session": "Session",
   "text_mock_track_name": "My Track",
+  "text_set_wind_missing_data": "Missing location data, please try again later.",
 
   "caption_ok": "OK",
   "caption_cancel": "Cancel",
@@ -114,7 +115,7 @@
   "caption_new_session": "New session",
   "caption_new_boat": "New boat",
   "caption_start": "Start",
-  "caption_share_session": "Share this session",
+  "caption_share_session": "Invite friends",
   "caption_lets_go": "Let's go!",
   "caption_login": "Login",
   "caption_need_help": "Need help?",

@@ -53,4 +53,7 @@ export default EStyleSheets.create({
     borderColor: '$secondaryButtonColor',
     borderWidth: 2,
   },
+  infoValue: {
+    fontSize: 56,
+  },
 })

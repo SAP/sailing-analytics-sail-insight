@@ -94,3 +94,26 @@ export interface CompetitorResponseData {
   timeOnTimeFactor?: string
   timeOnDistanceAllowanceInSecondsPerNauticalMile?: string
 }
+
+
+export interface WindBodyData {
+  position: {
+    latitude_deg: number,
+    longitude_deg: number,
+  },
+  timepoint: number,
+  direction: number,
+  speedinknots: number,
+}
+
+interface WindRegattaData {
+  regattaName: string
+  raceName: string
+}
+
+export interface WindBody {
+  windData: WindBodyData[]
+  regattaNamesAndRaceNames: WindRegattaData[]
+  windSourceType: string
+  windSourceId: string
+}

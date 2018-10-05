@@ -9,7 +9,7 @@ import { ApiBodyKeys as RegattaApiKeys } from 'models/Regatta'
 import { removeUserPrefix } from 'services/SessionService'
 
 import { getUserInfo } from './auth'
-import { getActiveCheckIns, getCheckInByLeaderboardName } from './checkIn'
+import { getActiveCheckInEntity, getCheckInByLeaderboardName } from './checkIn'
 import { getEntities } from './entity'
 import { getEventEntity } from './event'
 import { getRegatta, getRegattaEntity } from './regatta'
@@ -69,7 +69,7 @@ export const getRaces = (regattaName: string): (n: string) => Race[] => createSe
 
 // TODO: check if user was tracking a sessions Track?
 export const getUserRaces = createSelector(
-  getActiveCheckIns,
+  getActiveCheckInEntity,
   getRegattaEntity,
   getEventEntity,
   getRaceEntity,

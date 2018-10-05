@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { durationText } from 'helpers/date'
+import { degToCompass } from 'helpers/physics'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
@@ -47,33 +48,12 @@ class Tracking extends React.Component<{
     KeepAwake.deactivate()
   }
 
-  public handleTimerEvent = () => {
-    const { trackingStats } = this.props
-    this.setState({ durationText: durationText(trackingStats.startedAt) })
-  }
-
-  public onStopTrackingPress = async () => {
-    await this.setState({ isLoading: true })
-    try {
-      await this.props.stopTracking(this.props.checkInData)
-      navigateBack()
-    } catch (err) {
-      Alert.alert(getUnknownErrorMessage())
-    } finally {
-      this.setState({ isLoading: false })
-    }
-  }
-
-  public onSetWindPress = () => {
-    navigateToSetWind()
-  }
-
   public render() {
-    const { trackingStats }: any = this.props
+    const { trackingStats, checkInData } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(2) : EMPTY_VALUE
     const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(2)}°` : EMPTY_VALUE
-    const distance = trackingStats.distance ? trackingStats.distance.toFixed(2) : 0
+    const distance = trackingStats.distance ? trackingStats.distance.toFixed(2) : '0'
 
     return (
       <View style={[container.main]}>
@@ -105,18 +85,26 @@ class Tracking extends React.Component<{
                 unit={I18n.t('text_tracking_unit_meters')}
               />
             </View>
-            <View style={styles.rightPropertyContainer}>
-              <TrackingProperty
-                style={styles.windProperty}
-                title={I18n.t('text_tracking_wind')}
-                value={I18n.t('caption_set_wind').toUpperCase()}
-                onPress={this.onSetWindPress}
-                valueStyle={styles.windValue}
-              />
+            <View
+              style={[
+                styles.rightPropertyContainer,
+                checkInData.isSelfTracking ? undefined : styles.singleValue,
+              ]}
+            >
+              {
+                !checkInData.isSelfTracking ? null :
+                <TrackingProperty
+                  style={styles.windProperty}
+                  title={I18n.t('text_tracking_wind')}
+                  onPress={this.onSetWindPress}
+                  valueStyle={styles.windValue}
+                  {...this.createWindProps()}
+                />
+              }
               <TrackingProperty
                 style={styles.property}
                 title={I18n.t('text_tracking_gps_accuracy')}
-                value={trackingStats.locationAccuracy || EMPTY_VALUE}
+                value={`${trackingStats.locationAccuracy || EMPTY_VALUE}`}
                 unit={I18n.t('text_tracking_unit_meters')}
               />
             </View>
@@ -140,12 +128,55 @@ class Tracking extends React.Component<{
       </View>
     )
   }
+
+  protected handleTimerEvent = () => {
+    const { trackingStats } = this.props
+    this.setState({ durationText: durationText(trackingStats.startedAt) })
+  }
+
+  protected onStopTrackingPress = async () => {
+    await this.setState({ isLoading: true })
+    try {
+      await this.props.stopTracking(this.props.checkInData)
+      navigateBack()
+    } catch (err) {
+      Alert.alert(getUnknownErrorMessage())
+    } finally {
+      this.setState({ isLoading: false })
+    }
+  }
+
+  protected onSetWindPress = () => {
+    const { trackingStats } = this.props
+    if (!trackingStats || !trackingStats.lastLatitude || !trackingStats.lastLongitude) {
+      Alert.alert(
+        I18n.t('caption_set_wind'),
+        I18n.t('text_set_wind_missing_data'),
+      )
+      return
+    }
+    navigateToSetWind({
+      speedInKnots: trackingStats.lastWindSpeedInKnots,
+      directionInDeg: trackingStats.lastWindDirection,
+    })
+  }
+
+  protected createWindProps() {
+    const { trackingStats } = this.props
+    if (!trackingStats || !trackingStats.lastWindDirection || !trackingStats.lastWindSpeedInKnots) {
+      return { value: I18n.t('caption_set_wind').toUpperCase() }
+    }
+    return {
+      value: `${degToCompass(trackingStats.lastWindDirection)} ${Math.round(trackingStats.lastWindSpeedInKnots)}`,
+      unit: I18n.t('text_tracking_unit_knots'),
+    }
+  }
 }
 
 const mapStateToProps = (state: any, props: any) => ({
   locationTrackingStatus: getLocationTrackingStatus(state),
   trackingStats: getLocationStats(state) || {},
-  checkInData: getCustomScreenParamData(props),
+  checkInData: getCustomScreenParamData(props) as CheckIn,
 })
 
 export default connect(mapStateToProps, { stopTracking })(Tracking)

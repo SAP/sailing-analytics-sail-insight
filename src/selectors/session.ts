@@ -9,7 +9,7 @@ import { mapResToRegatta } from 'models/Regatta'
 import { removeUserPrefix } from 'services/SessionService'
 
 import { getUserInfo } from './auth'
-import { getActiveCheckIns, getCheckInByLeaderboardName } from './checkIn'
+import { getActiveCheckInEntity, getCheckInByLeaderboardName } from './checkIn'
 import { getCompetitorEntity } from './competitor'
 import { getEventEntity } from './event'
 import { getLeaderboardEntity } from './leaderboard'
@@ -44,7 +44,7 @@ const buildSession = (
 
 
 export const getSessionList = createSelector(
-  getActiveCheckIns,
+  getActiveCheckInEntity,
   getEventEntity,
   getLeaderboardEntity,
   getRegattaEntity,

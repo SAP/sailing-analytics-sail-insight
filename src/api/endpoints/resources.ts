@@ -1,4 +1,18 @@
+import { tokenSigner } from 'api/authorization'
 import { HttpMethods, urlGenerator, UrlOptions } from 'api/config'
+import {
+  AddRaceColumnResponseData,
+  AddRaceColumnsBody,
+  CompetitorBody,
+  CompetitorResponseData,
+  CreateEventBody,
+  CreateEventResponseData,
+  SetTrackingTimesBody,
+  StartTrackingBody,
+  StopTrackingBody,
+  WindBody,
+  WindBodyData,
+} from 'api/endpoints/types'
 import { dataRequest, listRequest, request } from 'api/handler'
 import {
   boatSchema,
@@ -25,6 +39,13 @@ const apiEndpoints = (serverUrl: string) => {
     marks: getUrl('/leaderboards/{0}/marks'),
     startDeviceMapping: getUrl('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrl('/leaderboards/{0}/device_mappings/end'),
+    createEvent: getUrl('/events/createEvent'),
+    addRaceColumns: getUrl('/regattas/{0}/addracecolumns'),
+    startTracking: getUrl('/leaderboards/{0}/starttracking'),
+    stopTracking: getUrl('/leaderboards/{0}/stoptracking'),
+    setTrackingTimes: getUrl('/leaderboards/{0}/settrackingtimes'),
+    createAndAddCompetitor: getUrl('/regattas/{0}/competitors/createandadd'),
+    putWind: getUrl('/wind/putWind'),
   }
 }
 
@@ -76,6 +97,67 @@ export default (serverUrl: string) => {
     sendGpsFixes: (gpsFixes: any) => request(
       endpoints.gpsFixes(),
       { method: HttpMethods.POST, body: gpsFixes },
+    ),
+    createEvent: (token: string, body: CreateEventBody) => dataRequest(
+      endpoints.createEvent(),
+      {
+        body,
+        method: HttpMethods.POST,
+        bodyType: 'x-www-form-urlencoded',
+        signer: tokenSigner(token),
+      },
+    ) as Promise<CreateEventResponseData>,
+    addRaceColumns: (token: string, regattaName: string, data?: AddRaceColumnsBody) => dataRequest(
+      endpoints.addRaceColumns({ urlParams: data, pathParams: [regattaName] }),
+      {
+        method: HttpMethods.POST,
+        signer: tokenSigner(token),
+      },
+    ) as Promise<AddRaceColumnResponseData[]>,
+    startTracking: (token: string, leaderboardName: string, data: StartTrackingBody) => dataRequest(
+      endpoints.startTracking({ pathParams: [leaderboardName], urlParams: data }),
+      {
+        method: HttpMethods.POST,
+        signer: tokenSigner(token),
+      },
+    ),
+    stopTracking: (token: string, leaderboardName: string, data?: StopTrackingBody) => dataRequest(
+      endpoints.stopTracking({ pathParams: [leaderboardName], urlParams: data }),
+      {
+        method: HttpMethods.POST,
+        signer: tokenSigner(token),
+      },
+    ),
+    setTrackingTimes: (token: string, leaderboardName: string, data: SetTrackingTimesBody) => dataRequest(
+      endpoints.setTrackingTimes({ pathParams: [leaderboardName], urlParams: data }),
+      {
+        method: HttpMethods.POST,
+        signer: tokenSigner(token),
+      },
+    ),
+    createAndAddCompetitor: (token: string, regattaName: string, data?: CompetitorBody) => dataRequest(
+      endpoints.createAndAddCompetitor({ pathParams: [regattaName], urlParams: data }),
+      { method: HttpMethods.POST, signer: tokenSigner(token) },
+    ) as Promise<CompetitorResponseData>,
+    sendWindFix: (
+      token: string,
+      regattaName: string,
+      raceName: string,
+      windFix: WindBodyData,
+      sourceId: string,
+      sourceType: string = 'WEB',
+    ) => request(
+      endpoints.putWind(),
+      {
+        method: HttpMethods.PUT,
+        signer: tokenSigner(token),
+        body: {
+          windSourceType: sourceType,
+          windSourceId: sourceId,
+          windData: [windFix],
+          regattaNamesAndRaceNames: [{ raceName, regattaName }],
+        } as WindBody,
+      },
     ),
   }
 }
