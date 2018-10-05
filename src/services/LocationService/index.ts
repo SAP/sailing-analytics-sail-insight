@@ -23,7 +23,8 @@ const config = {
   heartbeatInterval: 15, // in seconds
   stopOnStillActivity: false,
   // debug
-  debug: __DEV__,
+  debug: false,
+  // debug: __DEV__,
   logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
   logMaxDays: 2,
   // iOS:

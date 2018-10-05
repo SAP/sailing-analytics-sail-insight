@@ -1,3 +1,5 @@
+import { TrackingDisplayable } from 'models/base'
+
 export const ApiBodyKeys = {
   Name: 'name',
   Id: 'id',
@@ -19,7 +21,7 @@ export const mapResToRace = (map: any) => map && ({
 } as Race)
 
 
-export default interface Race {
+export default interface Race extends TrackingDisplayable {
   id?: string
   name?: string
   regattaName?: string
@@ -34,4 +36,6 @@ export default interface Race {
   avgSpeedDownwind?: number
   maxSpeedUpwind?: number
   maxSpeedDownwind?: number
+  venueName?: string
+  boatClass?: string
 }

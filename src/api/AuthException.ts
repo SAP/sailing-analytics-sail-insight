@@ -1,12 +1,17 @@
-class AuthException extends Error {
+import ApiException from './ApiException'
+
+class AuthException extends ApiException {
   public static NAME = 'AuthException'
 
-  constructor(
-    message?: string,
-    public code?: string,
-  ) {
+  public static create(message: string) {
+    const newInstance = new AuthException(message)
+    newInstance.status = 401
+    return newInstance
+  }
+
+  protected constructor(message: string) {
     super(message)
-    this.code = code
+    this.name = AuthException.NAME
   }
 }
 

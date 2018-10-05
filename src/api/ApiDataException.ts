@@ -1,10 +1,16 @@
-class ApiDataException extends Error {
+import ApiException from './ApiException'
+
+
+class ApiDataException extends ApiException {
   public static NAME = 'ApiDataException'
 
-  constructor(message: string) {
+  public static create(message: string) {
+    return new ApiDataException(message)
+  }
+
+  protected constructor(message: string) {
     super(message)
     this.name = ApiDataException.NAME
-    this.message = message
   }
 }
 

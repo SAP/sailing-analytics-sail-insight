@@ -5,19 +5,21 @@ import timer from 'react-native-timer'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
-import {  stopLocationTracking } from 'actions/locations'
+import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { durationText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
+import { CheckIn } from 'models'
 import { navigateBack, navigateToManeuverMonitor, navigateToSetWind } from 'navigation'
+import { getCustomScreenParamData } from 'navigation/utils'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 
+import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import ImageButton from 'components/ImageButton'
 import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 
-import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import { button, container } from 'styles/commons'
 import styles from './styles'
 
@@ -26,9 +28,9 @@ const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
 
 class Tracking extends React.Component<{
-  stopLocationTracking: () => void,
+  stopTracking: StopTrackingAction,
   trackingStats: LocationStats,
-  checkInData: any,
+  checkInData: CheckIn,
 } > {
   public state = {
     isLoading: false,
@@ -53,7 +55,7 @@ class Tracking extends React.Component<{
   public onStopTrackingPress = async () => {
     await this.setState({ isLoading: true })
     try {
-      await this.props.stopLocationTracking()
+      await this.props.stopTracking(this.props.checkInData)
       navigateBack()
     } catch (err) {
       Alert.alert(getUnknownErrorMessage())
@@ -143,7 +145,7 @@ class Tracking extends React.Component<{
 const mapStateToProps = (state: any, props: any) => ({
   locationTrackingStatus: getLocationTrackingStatus(state),
   trackingStats: getLocationStats(state) || {},
-  checkInData: props.navigation.state.params,
+  checkInData: getCustomScreenParamData(props),
 })
 
-export default connect(mapStateToProps, { stopLocationTracking })(Tracking)
+export default connect(mapStateToProps, { stopTracking })(Tracking)

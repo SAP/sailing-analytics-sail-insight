@@ -2,6 +2,7 @@ import React from 'react'
 import { View, WebView as RNWebView } from 'react-native'
 import { connect } from 'react-redux'
 
+import { getCustomScreenParamData } from 'navigation/utils'
 import { container } from 'styles/commons'
 import styles from './styles'
 
@@ -23,7 +24,7 @@ class WebView extends React.Component<{
 }
 
 const mapStateToProps = (state: any, props: any) => ({
-  url: props.navigation.state.params,
+  url: getCustomScreenParamData(props),
 })
 
 

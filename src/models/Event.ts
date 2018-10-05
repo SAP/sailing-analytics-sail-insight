@@ -12,6 +12,7 @@ export const ApiBodyKeys = {
   Images: 'images',
   Videos: 'videos',
   SailorsInfoWebsiteURLs: 'sailorsInfoWebsiteURLs',
+  VenueName: 'name',
 }
 
 

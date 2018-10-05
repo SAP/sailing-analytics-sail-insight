@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import { navigateToNewSession } from 'navigation'
 
-import { openLocationTracking } from 'actions/locations'
+import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
@@ -26,7 +26,7 @@ import SessionItem from 'components/session/SessionItem'
 class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   showActionSheetWithOptions: ShowActionSheetType,
   sessions: Session[],
-  openLocationTracking: (checkIn: CheckIn) => void,
+  startTracking: StartTrackingAction,
   authBasedNewSession: () => void,
 } > {
 
@@ -38,7 +38,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
   }
 
-  public onTrackingPress = (checkIn: CheckIn) => () => this.props.openLocationTracking(checkIn)
+  public onTrackingPress = (checkIn: CheckIn) => () => this.props.startTracking(checkIn)
 
   public renderAddItem = () => (
     <AddButton
@@ -80,4 +80,4 @@ const mapStateToProps = (state: any) => ({
   sessions: getSessionList(state),
 })
 
-export default connect(mapStateToProps, { openLocationTracking, authBasedNewSession })(Sessions)
+export default connect(mapStateToProps, { startTracking, authBasedNewSession })(Sessions)

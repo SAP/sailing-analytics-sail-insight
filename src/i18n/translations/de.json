@@ -87,6 +87,8 @@
   "text_buffering" : "Zwischenspeichern",
   "text_upwind": "Upwind:",
   "text_downwind": "Downwind:",
+  "text_session": "Session",
+  "text_mock_track_name": "Mein Track",
 
   "caption_ok": "OK",
   "caption_cancel": "Abbrechen",
@@ -136,5 +138,7 @@
   "error_unknown" : "Upsi, da ist was schief gegangen.\nBitte versuche es nochmal!",
   "error_with_code" : "Upsi, da ist was schief gegangen.\nBitte versuche es nochmal! ({{code}})",
   "error_field_required": "Feld ist erforderlich.",
-  "error_field_invalid_email": "Keine gültige E-Mail-Adresse."
+  "error_field_invalid_email": "Keine gültige E-Mail-Adresse.",
+  "error_data_retrieval": "Datenabruf fehlgeschlagen.",
+  "error_unauthorized": "Authorisierung fehlgeschlagen."
 }

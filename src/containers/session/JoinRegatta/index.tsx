@@ -12,6 +12,7 @@ import { dateTimeText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { CheckIn } from 'models'
 import { navigateToSessions } from 'navigation'
+import { getCustomScreenParamData } from 'navigation/utils'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
@@ -93,7 +94,7 @@ class JoinRegatta extends React.Component<{
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const checkInData: CheckIn = props.navigation.state.params || {}
+  const checkInData: CheckIn = getCustomScreenParamData(props) || {}
   return {
     checkInData,
     event: getEvent(checkInData.eventId)(state),

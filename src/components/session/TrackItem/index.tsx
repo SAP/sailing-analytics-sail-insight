@@ -24,6 +24,7 @@ import Text from 'components/Text'
 class TrackItem extends React.Component<ViewProps & {
   track: Race,
   onPress?: OnPressType,
+  onSettingsPress?: () => void,
 } > {
   public state = { isCollapsed: true }
 
@@ -35,6 +36,7 @@ class TrackItem extends React.Component<ViewProps & {
     if (this.state.isCollapsed) {
       return undefined
     }
+    const { track } = this.props
     return (
       <View style={styles.moreContainer}>
         <LineSeparator/>
@@ -45,7 +47,7 @@ class TrackItem extends React.Component<ViewProps & {
               iconTintColor={$secondaryTextColor}
               alignment="horizontal"
             >
-              {I18n.t('text_empty_value_placeholder')/*TODO: fill data*/}
+              {track.boatClass || I18n.t('text_empty_value_placeholder')}
             </IconText>
             <IconText
               style={styles.textMargins}
@@ -53,14 +55,14 @@ class TrackItem extends React.Component<ViewProps & {
               iconTintColor={$secondaryTextColor}
               alignment="horizontal"
             >
-              {I18n.t('text_empty_value_placeholder')/*TODO: fill data*/}
+              {track.venueName || I18n.t('text_empty_value_placeholder')}
             </IconText>
           </View>
-          <ImageButton
+          {this.props.onSettingsPress && <ImageButton
             style={[button.secondaryActionIcon, styles.iconButton]}
             imageStyle={styles.settingsButton}
             source={Images.actions.settings}
-          />
+          />}
         </View>
         <TrackInfo/>
       </View>
@@ -79,14 +81,20 @@ class TrackItem extends React.Component<ViewProps & {
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
               <Text style={text.itemName}>
-                {track.name}
+                {track.userStrippedDisplayName || track.name}
               </Text>
               <View style={[styles.line, styles.textMargins]}>
                 <Text style={styles.dateText}>
-                  {dateFromToText(track.startDate, track.endDate)}
+                  {
+                    dateFromToText(track.startDate, track.endDate) ||
+                    dateFromToText(track.trackingStartDate, track.trackingEndDate)
+                  }
                 </Text>
                 <Text style={styles.dateText}>
-                  {dateFromToText(track.startDate, track.endDate, 'LT', false)}
+                  {
+                    dateFromToText(track.startDate, track.endDate, 'LT', false) ||
+                    dateFromToText(track.trackingStartDate, track.trackingEndDate, 'LT', false)
+                  }
                 </Text>
               </View>
             </View>

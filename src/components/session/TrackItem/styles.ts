@@ -7,7 +7,7 @@ export default EStyleSheets.create({
     padding: '$smallSpacing',
   },
   basicInfoContainer: {
-    flexGrow: 1,
+    flex: 1,
   },
   line: {
     flexDirection: 'row',

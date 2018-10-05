@@ -11,14 +11,15 @@ import { OnPressType } from 'helpers/types'
 import I18n from 'i18n'
 import { Session } from 'models'
 import { getEventPreviewImageUrl } from 'services/SessionService'
-import { $secondaryTextColor } from 'styles/colors'
-import { button, image, text } from 'styles/commons'
-import styles from './styles'
 
 import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
 import Text from 'components/Text'
+
+import { $secondaryTextColor } from 'styles/colors'
+import { button, image, text } from 'styles/commons'
+import styles from './styles'
 
 
 class SessionInfoDisplay extends React.Component<ViewProps & {
@@ -66,7 +67,10 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
               <Text style={text.itemName}>
-                {session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name)}
+                {
+                  session.userStrippedDisplayName ||
+                  (session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name))
+                }
               </Text>
               <View style={[styles.line, styles.textMargins]}>
                 <Text

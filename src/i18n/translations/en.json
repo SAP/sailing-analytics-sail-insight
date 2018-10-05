@@ -87,6 +87,8 @@
   "text_buffering" : "buffering",
   "text_upwind": "Upwind:",
   "text_downwind": "Downwind:",
+  "text_session": "Session",
+  "text_mock_track_name": "My Track",
 
   "caption_ok": "OK",
   "caption_cancel": "Cancel",
@@ -134,6 +136,9 @@
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",
-  "error_with_code" : "Oops, something went wrong here.\nPlease try again! ({{code}})",  "error_field_required": "Field is required.",
-  "error_field_invalid_email": "No valid e-mail address."
+  "error_with_code" : "Oops, something went wrong here.\nPlease try again! ({{code}})",  
+  "error_field_required": "Field is required.",
+  "error_field_invalid_email": "No valid e-mail address.",
+  "error_data_retrieval": "Retrieving data failed.",
+  "error_unauthorized": "Authorization failed."
 }

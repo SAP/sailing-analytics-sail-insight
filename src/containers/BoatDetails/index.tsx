@@ -12,6 +12,7 @@ import * as boatForm from 'forms/boat'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import { Boat } from 'models'
+import { getCustomScreenParamData } from 'navigation/utils'
 import { getFormValues } from 'selectors/form'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -105,7 +106,7 @@ class BoatDetails extends TextInputForm<Props> {
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const boat = props.navigation.state.params as Boat
+  const boat = getCustomScreenParamData(props) as Boat
   return {
     initialValues: {
       [boatForm.FORM_KEY_NAME]: boat.name,

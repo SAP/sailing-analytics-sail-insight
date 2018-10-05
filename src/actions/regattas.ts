@@ -6,8 +6,11 @@ import { getServerUrl } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
 
 
-export const fetchRegatta = (regattaName: string) => async (dispatch: DispatchType, getState: GetStateType) => {
-  const serverUrl = getServerUrl(regattaName)(getState())
+export const fetchRegatta = (
+  regattaName: string,
+  forcedServerUrl?: string,
+) => async (dispatch: DispatchType, getState: GetStateType) => {
+  const serverUrl = forcedServerUrl || getServerUrl(regattaName)(getState())
   if (!serverUrl) {
     return
   }
@@ -24,9 +27,12 @@ export const fetchRegattaRace =
     await dispatch(fetchEntityAction(api(serverUrl).requestRace)(regattaName, raceName))
   }
 
-export const fetchAllRaces = (regattaName?: string) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const fetchAllRaces = (
+  regattaName?: string,
+  forcedServerUrl?: string,
+) => async (dispatch: DispatchType, getState: GetStateType) => {
   const state = getState()
-  const serverUrl = getServerUrl(regattaName)(state)
+  const serverUrl = forcedServerUrl || getServerUrl(regattaName)(state)
   if (!serverUrl || !regattaName) {
     return
   }
@@ -34,8 +40,17 @@ export const fetchAllRaces = (regattaName?: string) => async (dispatch: Dispatch
   if (!races) {
     return
   }
-  const raceEntityAction = fetchEntityAction(api(serverUrl).requestRace)
+  const raceEntityAction = fetchEntityAction(api(forcedServerUrl || serverUrl).requestRace)
   return Promise.all(races.map((race: Race) => {
     return race && dispatch(raceEntityAction(regattaName, race.name, race.id))
   }))
+}
+
+export type FetchRegattaAndRacesAction = (regattaName?: string) => any
+export const fetchRegattaAndRaces: FetchRegattaAndRacesAction = regattaName => async (dispatch: DispatchType) => {
+  if (!regattaName) {
+    return
+  }
+  await dispatch(fetchRegatta(regattaName))
+  await dispatch(fetchAllRaces(regattaName))
 }

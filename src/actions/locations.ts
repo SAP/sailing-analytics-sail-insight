@@ -1,15 +1,11 @@
 import moment from 'moment'
-import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
 import { dataApi as api } from 'api'
 import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'
-import I18n from 'i18n'
-import { CheckIn, PositionFix } from 'models'
-import { navigateToTracking } from 'navigation'
+import { PositionFix } from 'models'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
-import { getLocationTrackingStatus } from 'selectors/location'
 import { getBulkGpsSetting } from 'selectors/settings'
 import * as CheckInService from 'services/CheckInService'
 import * as GpsFixService from 'services/GPSFixService'
@@ -95,40 +91,3 @@ export const initLocationTracking = () => async (dispatch: DispatchType) => {
   dispatch(updateTrackingStatus(status))
 }
 
-export const openLocationTracking = (checkInData: CheckIn) =>  async (
-  dispatch: DispatchType,
-  getState: GetStateType,
-) => new Promise(async (resolve, reject) => {
-  const locationTrackingStatus = getLocationTrackingStatus(getState())
-
-  if (locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING) {
-    Alert.alert(
-      I18n.t('text_tracking_alert_already_running_title'),
-      I18n.t('text_tracking_alert_already_running_message'),
-      [
-        { text: I18n.t('caption_cancel'), style: 'cancel' },
-        {
-          text: I18n.t('caption_ok'), onPress: async () => {
-            try {
-              await dispatch(stopLocationTracking())
-              await dispatch(startLocationTracking(checkInData.leaderboardName, checkInData.eventId))
-              navigateToTracking(checkInData)
-              resolve()
-            } catch (err) {
-              reject(err)
-            }
-          },
-        },
-      ],
-      { cancelable: true },
-    )
-  } else {
-    try {
-      await dispatch(startLocationTracking(checkInData.leaderboardName, checkInData.eventId))
-      navigateToTracking(checkInData)
-      resolve()
-    } catch (err) {
-      reject(err)
-    }
-  }
-})

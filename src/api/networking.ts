@@ -1,11 +1,13 @@
 import { isString } from 'lodash'
+import querystring from 'query-string'
 
+import { Signer } from 'api/authorization'
+import { BodyType, HttpMethods } from 'api/config'
 import { DEV_MODE, isPlatformAndroid } from 'helpers/environment'
 import Logger from 'helpers/Logger'
 
 
 const DEFAULT_HEADERS = {
-  // Accept: 'application/json',
   'Content-Type': 'application/json',
   'Cache-Control': 'no-cache',
 }
@@ -28,30 +30,47 @@ const getPlatformHeaders = (headers: any = {}) => {
   }
 }
 
-export interface SignerOptions {
-  url?: string,
-  method?: string,
-  headers?: any,
-  body?: any
-}
 export interface RequestOptions {
   method?: string
   signer?: Signer
   body?: any,
+  bodyType?: BodyType
 }
-export type Signer = (data: SignerOptions) => any
 
-const defaultSignedHeaders: Signer = (options: SignerOptions) => options.headers
+const getBody = (type: BodyType, body: any) => {
+  switch (type) {
+    case 'x-www-form-urlencoded':
+      return querystring.stringify(body)
+    default:
+      return JSON.stringify(body)
+  }
+}
+
+const getHeaders = async (url: string, method: string, body: any, bodyType: BodyType, signer?: Signer) => {
+  const headers = {
+    ...DEFAULT_HEADERS,
+    'Content-Type': bodyType === 'x-www-form-urlencoded' ?
+      'application/x-www-form-urlencoded;charset=UTF-8' :
+      'application/json',
+  }
+  return signer ? await signer({ body, url, method, headers }) : headers
+}
 
 export const request = async (
   url: any,
-  { method = 'GET', signer = defaultSignedHeaders, body = null }: RequestOptions = {},
-) => {
-  const data = body ? { body: JSON.stringify(body) } : {}
+  options: RequestOptions = {},
+  ) => {
+  const {
+    method = HttpMethods.GET,
+    body = null,
+    bodyType = 'json',
+    signer,
+  } = options
+
+  const data = body && { body: getBody(bodyType, body) }
   const fetchOptions = {
     method,
-    // headers: getPlatformHeaders(await signer(url, method, DEFAULT_HEADERS, data.body)),
-    headers: await signer({ url, method, headers: DEFAULT_HEADERS, body: data.body }),
+    headers: await getHeaders(url, method, body, bodyType, signer),
     ...data,
   }
   let response

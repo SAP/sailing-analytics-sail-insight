@@ -11,6 +11,7 @@ import { isSessionListEmpty } from 'selectors/session'
 import styles from './styles'
 
 import HintCard from 'components/HintCard'
+import { isLoggedIn } from 'selectors/auth'
 
 
 class EmptySessionsHeader extends React.Component<{
@@ -77,7 +78,7 @@ class EmptySessionsHeader extends React.Component<{
 const mapStateToProps = (state: any) => ({
   showHints: isSessionListEmpty(state),
   showJoinRegatta: isJoinRegattaDismissalExpired(state),
-  showCreateAccount: isCreateAccountDismissalExpired(state), // TODO: add existing account condition
+  showCreateAccount: isCreateAccountDismissalExpired(state) && !isLoggedIn(state),
 })
 
 export default connect(mapStateToProps, {

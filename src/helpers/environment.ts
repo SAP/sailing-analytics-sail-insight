@@ -8,3 +8,5 @@ export const platformSelect = (android: any, ios: any) => Platform.select({
   ios,
   android,
 })
+
+// console.disableYellowBox = true
