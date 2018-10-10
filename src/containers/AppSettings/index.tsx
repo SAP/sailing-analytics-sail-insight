@@ -1,14 +1,16 @@
 import { get } from 'lodash'
 import React from 'react'
-import { TouchableWithoutFeedback, View, ViewProps } from 'react-native'
+import { Alert, TouchableWithoutFeedback, View, ViewProps } from 'react-native'
 import VersionNumber from 'react-native-version-number'
 import { connect } from 'react-redux'
 
 import { showTestCheckInAlert } from 'actions/appDebug'
 import { updateGpsBulkSetting } from 'actions/settings'
+import { getApiServerUrl } from 'api/config'
 import I18n from 'i18n'
 import { getBulkGpsSetting } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
+import { UPDATE_TIME_INTERVAL_IN_MILLIS } from 'services/GPSFixService'
 
 import EditItemSwitch from 'components/EditItemSwitch'
 import LineSeparator from 'components/LineSeparator'
@@ -38,7 +40,7 @@ class AppSettings extends React.Component<ViewProps & {
             switchValue={this.props.bulkGpsSetting}
             onSwitchValueChange={this.props.updateGpsBulkSetting}
           >
-            {I18n.t('text_setting_gps_bulk', { timeInSeconds: 5 })}
+            {I18n.t('text_setting_gps_bulk', { timeInSeconds: UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
           </EditItemSwitch>
         </View>
         {this.renderVersionNumber()}
@@ -46,11 +48,19 @@ class AppSettings extends React.Component<ViewProps & {
     )
   }
 
+  protected showServerUrl() {
+    Alert.alert('Self tracking server', getApiServerUrl())
+  }
+
   protected renderVersionNumber = () => {
     return (
-      <Text style={styles.item}>
-        {`v${get(VersionNumber, 'appVersion')}.${get(VersionNumber, 'buildVersion')}`}
-      </Text>
+      <TouchableWithoutFeedback
+        onLongPress={this.showServerUrl}
+      >
+        <Text style={styles.item}>
+          {`v${get(VersionNumber, 'appVersion')}.${get(VersionNumber, 'buildVersion')}`}
+        </Text>
+      </TouchableWithoutFeedback>
     )
   }
 

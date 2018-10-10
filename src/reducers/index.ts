@@ -11,6 +11,7 @@ import {
   NETWORK_REDUCER_NAME,
   ONBOARDING_REDUCER_NAME,
   SETTINGS_REDUCER_NAME,
+  USER_REDUCER_NAME,
 } from './config'
 
 import AuthReducer from './AuthReducer'
@@ -19,6 +20,7 @@ import EntityReducer from './EntityReducer'
 import LocationTrackingReducer from './LocationTrackingReducer'
 import OnboardingReducer from './OnboardingReducer'
 import SettingsReducer from './SettingsReducer'
+import UserReducer from './UserReducer'
 
 
 interface RootReducer {
@@ -30,10 +32,12 @@ interface RootReducer {
   [FORM_REDUCER_NAME]: any,
   [ONBOARDING_REDUCER_NAME]: any,
   [SETTINGS_REDUCER_NAME]: any,
+  [USER_REDUCER_NAME]: any,
 }
 
 const reducer: RootReducer = {
   [AUTH_REDUCER_NAME]: AuthReducer,
+  [USER_REDUCER_NAME]: UserReducer,
   [ENTITIES_REDUCER_NAME]: EntityReducer,
   [CHECK_IN_REDUCER_NAME]: CheckInReducer,
   [FORM_REDUCER_NAME]: formReducer,

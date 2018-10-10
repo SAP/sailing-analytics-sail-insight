@@ -9,7 +9,6 @@ import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
-import { generateNewSession } from 'services/SessionService'
 
 import { authBasedNewSession } from 'actions/auth'
 import { CheckIn, Session } from 'models'
@@ -67,9 +66,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     )
   }
 
-  protected onNewSessionPress = () => {
-    navigateToNewSession(generateNewSession())
-  }
+  protected onNewSessionPress = () => navigateToNewSession()
 
   protected onOptionsPressed = () => {
     this.props.showActionSheetWithOptions(...settingsActionSheetOptions)

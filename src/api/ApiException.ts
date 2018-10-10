@@ -5,7 +5,7 @@ class ApiException extends Error {
     const newInstance = new ApiException(message)
     newInstance.status = status
     newInstance.data = data
-    return
+    return newInstance
   }
   public baseTypeName: string = ApiException.NAME
   public data?: any

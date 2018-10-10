@@ -13,4 +13,7 @@ export default EStyleSheets.create({
     flex: 0.58,
     marginLeft: 8,
   },
+  error: {
+    color: '$importantHighlightColor',
+  },
 })

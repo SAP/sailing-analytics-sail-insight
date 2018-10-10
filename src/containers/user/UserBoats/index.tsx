@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 
 import I18n from 'i18n'
 import { Boat } from 'models'
-import { getBoatsMock } from 'selectors/boat'
+import { navigateToBoatDetails } from 'navigation'
+import { getLastUsedBoat, getUserBoats } from 'selectors/user'
 
 import AddButton from 'components/AddButton'
 import BoatItem from 'components/BoatItem'
@@ -13,6 +14,7 @@ import FloatingComponentList from 'components/FloatingComponentList'
 
 class UserBoats extends React.Component<ViewProps & {
   boats: Boat[],
+  lastUsedBoat?: Boat,
 }> {
 
   public render() {
@@ -26,18 +28,25 @@ class UserBoats extends React.Component<ViewProps & {
   }
 
   protected onNewBoatPress = () => {
-    // TODO: open new boat screen
+    navigateToBoatDetails()
   }
 
   protected renderAddItem = () => <AddButton onPress={this.onNewBoatPress}>{I18n.t('caption_new_boat')}</AddButton>
 
-  protected renderItem({ item }: any) {
-    return <BoatItem boat={item}/>
+  protected renderItem = ({ item }: {item: Boat}) => {
+    const { lastUsedBoat } = this.props
+    return (
+      <BoatItem
+        lastUsed={lastUsedBoat && lastUsedBoat.name === item.name}
+        boat={item}
+      />
+    )
   }
 }
 
 const mapStateToProps = (state: any) => ({
-  boats: getBoatsMock(),
+  boats: getUserBoats(state),
+  lastUsedBoat: getLastUsedBoat(state),
 })
 
 export default connect(mapStateToProps)(UserBoats)

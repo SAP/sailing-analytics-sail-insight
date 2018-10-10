@@ -1,4 +1,4 @@
-import { keys, orderBy } from 'lodash'
+import { keys } from 'lodash'
 import { createSelector } from 'reselect'
 
 import { RACE_ENTITY_NAME } from 'api/schemas'
@@ -8,6 +8,7 @@ import Race, { ApiBodyKeys as RaceApiKeys, mapResToRace } from 'models/Race'
 import { ApiBodyKeys as RegattaApiKeys } from 'models/Regatta'
 import { removeUserPrefix } from 'services/SessionService'
 
+import { getOrderListFunction } from 'helpers/utils'
 import { getUserInfo } from './auth'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from './checkIn'
 import { getEntities } from './entity'
@@ -15,7 +16,7 @@ import { getEventEntity } from './event'
 import { getRegatta, getRegattaEntity } from './regatta'
 
 
-const orderRaces = (races: Race[]) => orderBy(races, ['startDate'], ['desc'])
+const orderRaces = getOrderListFunction<Race>(['startDate', 'trackingStartDate'], 'desc')
 
 const buildRace = (
   apiRace: any,

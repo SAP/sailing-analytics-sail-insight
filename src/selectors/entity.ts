@@ -1,4 +1,5 @@
 import { get, keys } from 'lodash'
+import { ENTITIES_REDUCER_NAME } from 'reducers/config'
 
 /**
  * Transform one entitiy from an object of entities into a single object with an ID parameter
@@ -23,7 +24,11 @@ const omitEntityId = (payload: any, idParam = 'id') => (entityId: string) => ({
  *
  * @returns {object} - object of entities or empty array
  */
-export const getEntities = (state: any, type: string) => get(state.entities, type)
+export const getEntities = (
+  state: any = {},
+  type: string | string[],
+  reducerName = ENTITIES_REDUCER_NAME,
+) => get(state[reducerName], type)
 
 /**
  * Returns all entities of a certain type from the store as an array,
@@ -33,12 +38,16 @@ export const getEntities = (state: any, type: string) => get(state.entities, typ
  * @param {string} type - Entity type to filter by
  * @param {string} idParam  - parameter to use to save the keys (IDs) default is 'id'
  */
-export const getEntityArrayByType = (state: any, type: string, idParam?: string) => {
-  const entities = getEntities(state, type)
+export const getEntityArrayByType = (
+  state: any,
+  type: string | string[],
+  options?: {idParam?: string, reducerName?: string},
+) => {
+  const entities = getEntities(state, type, options && options.reducerName)
 
   if (entities) {
     return keys(entities)
-      .map(omitEntityId(entities, idParam))
+      .map(omitEntityId(entities, options && options.idParam))
   }
 
   return []

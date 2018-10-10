@@ -3,19 +3,18 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 export default EStyleSheet.create({
   $textButtonTextColor: '$primaryButtonColor',
   $textButtonTextFontSize: '$largeFontSize',
-  $actionIconPadding: 4,
-  $actionIconSizeAddition: '$actionIconPadding*2',
+  $actionIconSizeAddition: '$microSpacing*2',
   $navIconSpacing: '$smallSpacing+4',
   action: {
     backgroundColor: '$primaryButtonColor',
-    padding: 8,
+    padding: '$tinySpacing',
     width: 50,
     height: 50,
   },
   actionRectangular: {
     backgroundColor: '$primaryButtonColor',
     padding: 12,
-    borderRadius: 6,
+    borderRadius: '$baseBorderRadius',
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.5,
@@ -26,7 +25,7 @@ export default EStyleSheet.create({
     backgroundColor: '$primaryButtonColor',
     alignSelf: 'stretch',
     height: 56,
-    borderRadius: '$actionButtonBorderRadius',
+    borderRadius: '$baseBorderRadius',
   },
   actionText: {
     color: 'white',
@@ -73,6 +72,6 @@ export default EStyleSheet.create({
     tintColor: '$secondaryButtonColor',
     width: '$defaultIconSize+$actionIconSizeAddition',
     height: '$defaultIconSize+$actionIconSizeAddition',
-    padding: '$actionIconPadding',
+    padding: '$microSpacing',
   },
 })

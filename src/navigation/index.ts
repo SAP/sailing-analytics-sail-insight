@@ -19,10 +19,10 @@ export const navigateToManeuverMonitor = () => NavigationService.navigate(Screen
 export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
 export const navigateToTracking = (data: any) => NavigationService.navigate(Screens.Tracking, { data })
-export const navigateToNewSession = (data: TrackingSession) => NavigationService.navigate(Screens.NewSession, { data })
+export const navigateToNewSession = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSession, { data })
 export const navigateToJoinRegatta = (data: CheckIn) => NavigationService.navigate(Screens.JoinRegatta, { data })
 export const navigateToTrackDetails = (data?: string) => NavigationService.navigate(Screens.TrackDetails, { data })
-export const navigateToBoatDetails = (data: Boat) => NavigationService.navigate(Screens.BoatDetails, { data })
+export const navigateToBoatDetails = (data?: Boat) => NavigationService.navigate(Screens.BoatDetails, { data })
 
 export const navigateToEditSession = (data?: Session) => NavigationService.navigate(
   Screens.EditSession,

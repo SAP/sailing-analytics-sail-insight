@@ -1,4 +1,4 @@
-import { isArray, isObject } from 'lodash'
+import { isArray, isMatch, isObject, orderBy } from 'lodash'
 import { Alert, ListView } from 'react-native'
 
 import I18n from 'i18n'
@@ -41,4 +41,15 @@ export const extractResizeModeFromStyle: (s: any) => {resizeMode?: any, stripped
   return {
     stripped: style,
   }
+}
+
+export const hasSameValues = (objA: any, objB: any) => {
+  if (!objA || !objB) {
+    return false
+  }
+  return isMatch(objA, objB)
+}
+
+export function getOrderListFunction<Type = any>(valueKeys: string[], order?: 'asc' | 'desc') {
+  return (list: Type[]) => orderBy(list, valueKeys, [order as string])
 }

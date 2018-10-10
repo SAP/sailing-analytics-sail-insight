@@ -22,6 +22,7 @@ import SessionException from 'services/SessionService/SessionException'
 
 import { checkInDevice, collectCheckInData, updateCheckIn } from 'actions/checkIn'
 import { receiveNotNormalizedEntities } from 'actions/entities'
+import { saveBoat } from 'actions/user'
 
 
 export const shareSession = (session: TrackingSession) => async () => {
@@ -158,5 +159,9 @@ export const createSessionCreationQueue = (session: TrackingSession) => (dispatc
     createNewTrack(session.name, session.trackName),
     ActionQueue.createItemUsingPreviousResult(startTrackRaceColumnHandler(session)),
     checkInDevice(session.name),
+    saveBoat(
+      { name: session.boatName, boatClass: session.boatClass, sailNumber: session.sailNumber },
+      { updateLastUsed: true },
+    ),
   ],
 )

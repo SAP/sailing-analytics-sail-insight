@@ -1,19 +1,21 @@
-import { get } from 'lodash'
 import React from 'react'
 import {
-  View, ViewProps,
+  Alert, KeyboardType, ReturnKeyType, View, ViewProps,
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
+import { deleteBoat, DeleteBoatAction, saveBoat, SaveBoatAction } from 'actions/user'
 import * as boatForm from 'forms/boat'
-import { validateRequired } from 'forms/validators'
+import { ComparisonValidatorViewProps, validateNameExists, validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import { Boat } from 'models'
+import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
-import { getFormValues } from 'selectors/form'
+import { getFormFieldValue } from 'selectors/form'
+import { getUserBoatNames } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormImagePicker from 'components/form/FormImagePicker'
@@ -26,15 +28,30 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 
-interface Props extends ViewProps, NavigationScreenProps {
-  boatName?: boolean,
+interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
+  formBoatName?: string
+  paramBoatName?: string
+  saveBoat: SaveBoatAction
+  deleteBoat: DeleteBoatAction
 }
 
 class BoatDetails extends TextInputForm<Props> {
 
-  public render() {
-    const commonProps = this.getCommonFieldProps()
+  private commonProps = {
+    validate: [validateRequired],
+    keyboardType: 'default' as KeyboardType,
+    returnKeyType: 'next' as ReturnKeyType,
+    autoCorrect: false,
+  }
 
+  public componentDidMount() {
+    this.props.navigation.setParams({
+      onOptionsPressed: this.deleteBoat,
+      paramBoatName: this.props.paramBoatName,
+    })
+  }
+
+  public render() {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
@@ -48,56 +65,80 @@ class BoatDetails extends TextInputForm<Props> {
           <Field
             label={I18n.t('text_placeholder_boat_name')}
             name={boatForm.FORM_KEY_NAME}
-            component={this.renderField}
+            component={FormTextInput}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_NAME)}
             onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_SAIL_NUMBER)}
-            {...commonProps}
+            {...this.commonProps}
+            validate={[validateRequired, validateNameExists]}
           />
           <Field
             style={input.topMargin}
             label={I18n.t('text_placeholder_sail_number')}
             name={boatForm.FORM_KEY_SAIL_NUMBER}
-            component={this.renderField}
+            component={FormTextInput}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_SAIL_NUMBER)}
             onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_BOAT_CLASS)}
-            {...commonProps}
+            {...this.commonProps}
           />
           <Field
             style={input.topMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={boatForm.FORM_KEY_BOAT_CLASS}
-            component={this.renderField}
+            component={FormTextInput}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_BOAT_CLASS)}
             onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_SAIL_COLOR)}
-            {...commonProps}
+            {...this.commonProps}
           />
           <Field
             style={input.topMargin}
             label={I18n.t('text_placeholder_sail_color')}
             name={boatForm.FORM_KEY_SAIL_COLOR}
-            component={this.renderField}
+            component={FormTextInput}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_SAIL_COLOR)}
-            {...commonProps}
+            {...this.commonProps}
+            validate={undefined}
           />
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
+            onPress={this.props.handleSubmit(this.onSavePress)}
           >
-            {I18n.t('caption_accept')}
+            {I18n.t('caption_save')}
           </TextButton>
         </View>
       </ScrollContentView>
     )
   }
 
-  protected getCommonFieldProps = () => ({
-    validate: [validateRequired],
-    keyboardType: 'default',
-    returnKeyType: 'next',
-  })
+  protected deleteBoat = () => {
+    const { deleteBoat: deleteBoatAction, formBoatName } = this.props
+    if (!formBoatName) {
+      return
+    }
+    Alert.alert(
+      I18n.t('caption_delete'),
+      I18n.t('text_confirm_delete_boat'),
+      [
+        { text: I18n.t('caption_cancel'), style: 'cancel' },
+        {
+          text: I18n.t('caption_ok'), onPress: async () => {
+            deleteBoatAction(formBoatName)
+            navigateBack()
+          },
+        },
+      ],
+      { cancelable: true },
+    )
+  }
 
-  protected renderField(props: any) {
-    return <FormTextInput {...props}/>
+  protected onSavePress = (values: any) => {
+    const boat = boatForm.boatFromFormValues(values)
+    if (!boat) {
+      return false
+    }
+    this.props.saveBoat(boat, { replaceBoatName: this.props.paramBoatName })
+    navigateBack()
+    return true
   }
 
   protected updateScreenTitle = (title: string) => {
@@ -106,19 +147,24 @@ class BoatDetails extends TextInputForm<Props> {
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const boat = getCustomScreenParamData(props) as Boat
+  const boat: Boat | undefined = getCustomScreenParamData(props)
+  const formBoatName = getFormFieldValue(boatForm.BOAT_FORM_NAME, boatForm.FORM_KEY_NAME)(state)
+  const paramBoatName = boat && boat.name
   return {
-    initialValues: {
+    formBoatName,
+    paramBoatName,
+    comparisonValue: getUserBoatNames(state),
+    ignoredValue: paramBoatName,
+    initialValues: boat && {
       [boatForm.FORM_KEY_NAME]: boat.name,
       [boatForm.FORM_KEY_SAIL_NUMBER]: boat.sailNumber,
       [boatForm.FORM_KEY_SAIL_COLOR]: boat.sailColor,
       [boatForm.FORM_KEY_BOAT_CLASS]: boat.boatClass,
     },
-    boatName: get(getFormValues(boatForm.FORM_KEY_SAIL_NUMBER)(state), boatForm.BOAT_FORM_NAME),
-  }
+  } as ComparisonValidatorViewProps
 }
 
-export default connect(mapStateToProps)(reduxForm<{}, Props>({
+export default connect(mapStateToProps, { saveBoat, deleteBoat })(reduxForm<{}, Props>({
   form: boatForm.BOAT_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,

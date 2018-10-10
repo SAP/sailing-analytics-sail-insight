@@ -24,7 +24,7 @@ export const collectCheckInData = (checkInData?: CheckIn) => async (dispatch: Di
     competitorId,
     markId,
     boatId,
-    regattaName,
+    regattaName = checkInData.leaderboardName,
     serverUrl,
   } = checkInData
   const apiCalls = api(serverUrl)

@@ -36,10 +36,6 @@ class RegisterName extends TextInputForm {
     navitateToLogin()
   }
 
-  public renderField(props: any) {
-    return <FormTextInput {...props}/>
-  }
-
   public render() {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
@@ -57,7 +53,7 @@ class RegisterName extends TextInputForm {
           <Field
             label={I18n.t('text_your_name')}
             name={FORM_KEY_NAME}
-            component={this.renderField}
+            component={FormTextInput}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"

@@ -70,7 +70,7 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
   switch (navigation.state.routeName) {
     case Screens.TrackingSetupAction:
       const isLoggedIn = isLoggedInSelector(reduxStore.store.getState())
-      return isLoggedIn ? navigateToNewSession(generateNewSession()) : navigateToUserRegistration()
+      return isLoggedIn ? navigateToNewSession() : navigateToUserRegistration()
     default:
       return props.defaultHandler(props.navigation)
   }

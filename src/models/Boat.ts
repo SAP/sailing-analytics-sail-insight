@@ -16,13 +16,12 @@ export const mapResToBoat = (map: any) => map && ({
   imageUrl: map[ApiBodyKeys.ImageUrl],
 } as Boat)
 
-
 export default interface Boat {
-  name?: string,
-  sailNumber?: string
-  boatClass?: string
+  name: string,
+  sailNumber: string
+  boatClass: string
   sailColor?: string
-  isDefault?: boolean
   imageUrl?: string
+  lastUsed?: number
 }
 

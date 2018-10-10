@@ -1,4 +1,6 @@
 import { TrackingSession } from 'models'
+import { validateRequired } from './validators'
+
 
 export const SESSION_FORM_NAME = 'session'
 
@@ -29,3 +31,17 @@ export const formValuesFromTrackingSession = (session: TrackingSession) => sessi
   [FORM_KEY_TEAM_NAME]: session.teamName,
   [FORM_KEY_BOAT_NAME]: session.boatName,
 })
+
+export const validate = (values: any = {}) => {
+  const errors: any = {}
+
+  errors[FORM_KEY_NAME] = validateRequired(values[FORM_KEY_NAME])
+  errors[FORM_KEY_TRACK_NAME] = validateRequired(values[FORM_KEY_TRACK_NAME])
+  errors[FORM_KEY_BOAT_CLASS] = validateRequired(values[FORM_KEY_BOAT_CLASS])
+  errors[FORM_KEY_SAIL_NUMBER] = validateRequired(values[FORM_KEY_SAIL_NUMBER])
+  errors[FORM_KEY_PRIVACY_SETTING] = validateRequired(values[FORM_KEY_PRIVACY_SETTING])
+  errors[FORM_KEY_TEAM_NAME] = validateRequired(values[FORM_KEY_TEAM_NAME])
+  errors[FORM_KEY_BOAT_NAME] = validateRequired(values[FORM_KEY_BOAT_NAME])
+
+  return errors
+}

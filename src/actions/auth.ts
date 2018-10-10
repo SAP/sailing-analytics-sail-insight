@@ -46,7 +46,7 @@ export const fetchCurrentUser = () => withToken(async (
 
 export const authBasedNewSession = () => (dispatch: DispatchType, getState: GetStateType) => {
   const isLoggedIn = isLoggedInSelector(getState())
-  return isLoggedIn ? navigateToNewSession(generateNewSession()) : navigateToUserRegistration()
+  return isLoggedIn ? navigateToNewSession() : navigateToUserRegistration()
 }
 
 export const updateUser = (user: User) => withToken(async (token: string, dispatch: DispatchType) => {

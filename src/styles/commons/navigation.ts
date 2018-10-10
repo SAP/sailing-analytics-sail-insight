@@ -1,4 +1,4 @@
-import { isPlatformAndroid } from 'helpers/environment'
+import { isPlatformAndroid } from 'environment'
 import { Dimensions } from 'react-native'
 
 import { $defaultFontFamily, $titleFontSize } from 'styles/fonts'

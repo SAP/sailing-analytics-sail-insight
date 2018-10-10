@@ -25,4 +25,10 @@ export default EStyleSheet.create({
   claimHighlighted: {
     color: '$primaryActiveColor',
   },
+  assistiveText: {
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
+    marginTop: 2,
+    color: '$secondaryTextColor',
+  },
 })
