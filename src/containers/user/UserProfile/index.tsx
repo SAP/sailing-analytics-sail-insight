@@ -61,7 +61,7 @@ class UserProfile extends TextInputForm<Props> {
               style={input.topMargin}
               label={I18n.t('text_your_name')}
               name={userForm.FORM_KEY_NAME}
-              component={this.renderField}
+              component={FormTextInput}
               validate={[validateRequired]}
               keyboardType="default"
               returnKeyType="next"
@@ -100,10 +100,6 @@ class UserProfile extends TextInputForm<Props> {
     } finally {
       this.setState({ isLoading: false })
     }
-  }
-
-  protected renderField(props: any) {
-    return <FormTextInput {...props}/>
   }
 }
 

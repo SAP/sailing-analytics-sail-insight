@@ -2,7 +2,7 @@ import React from 'react'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { createMaterialTopTabNavigator } from 'react-navigation'
 
-import { platformSelect } from 'helpers/environment'
+import { platformSelect } from 'environment'
 import { getTabItemTitleTranslation } from 'helpers/texts'
 
 import Text from 'components/Text'

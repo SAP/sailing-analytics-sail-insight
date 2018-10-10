@@ -1,4 +1,4 @@
-import { isPlatformAndroid } from 'helpers/environment'
+import { isPlatformAndroid } from 'environment'
 
 export const $defaultFontFamily = isPlatformAndroid ? 'bentonsans_regular' : 'BentonSans Regular'
 export const $defaultBoldFontFamily = isPlatformAndroid ? 'bentonsans_bold' : 'BentonSans Bold'

@@ -3,7 +3,7 @@ import querystring from 'query-string'
 
 import { Signer } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
-import { DEV_MODE, isPlatformAndroid } from 'helpers/environment'
+import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
 
 

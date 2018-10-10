@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import { login } from 'actions/auth'
 import { FORM_KEY_EMAIL, FORM_KEY_PASSWORD } from 'forms/registration'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { navigateToMain } from 'navigation'
 
@@ -42,7 +43,7 @@ class Login extends TextInputForm<{
       await this.props.login(email, password)
       navigateToMain()
     } catch (err) {
-      this.setState({ error: err && err.message })
+      this.setState({ error: getErrorDisplayMessage(err) })
     } finally {
       this.setState({ isLoading: false })
     }

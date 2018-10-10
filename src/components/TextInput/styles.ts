@@ -6,17 +6,15 @@ export const DEFAULT_BAR_HEIGHT = 30
 
 export default EStyleSheet.create({
   $defaultBarHeight: DEFAULT_BAR_HEIGHT,
-  $containerPadding: 16,
   container: {
     backgroundColor: '$secondaryBackgroundColor',
-    borderRadius: 6,
+    borderRadius: '$baseBorderRadius',
     flexDirection: 'row',
-    paddingLeft: '$containerPadding',
-    paddingRight: '$containerPadding',
+    paddingHorizontal: '$smallSpacing',
   },
   containerNoTitle: {
-    paddingTop: '$containerPadding',
-    paddingBottom: '$containerPadding',
+    paddingTop: '$smallSpacing',
+    paddingBottom: '$smallSpacing',
   },
   containerWithTitle: {
     paddingTop: 20,
@@ -42,12 +40,6 @@ export default EStyleSheet.create({
     left: 0,
     alignSelf: 'center',
     paddingTop: 3,
-  },
-  assistiveText: {
-    marginLeft: '$containerPadding',
-    marginRight: '$containerPadding',
-    marginTop: 2,
-    color: '$secondaryTextColor',
   },
   securedToggleBtn: {
     alignSelf: 'stretch',

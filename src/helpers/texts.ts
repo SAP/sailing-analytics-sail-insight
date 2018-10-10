@@ -19,7 +19,8 @@ export const ERROR_TITLE_KEY = 'title'
 export const UNKNOWN_ERROR_KEY = 'unknown'
 export const UNKNOWN_ERROR_KEY_WITH_CODE = 'error_with_code'
 
-export const getErrorMessage = (key: string, defaultMessage?: string, translationPrefix?: string) => {
+export const getErrorMessage = (translationKey: string, defaultMessage?: string, translationPrefix?: string) => {
+  const key = translationKey.toLowerCase()
   if (!translationPrefix) {
     return getTranslation(`${ERROR_TRANSLATION_PREFIX}${key}`, defaultMessage)
   }

@@ -22,7 +22,7 @@ export default EStyleSheet.create({
   currentTag: {
     paddingVertical: 3,
     paddingHorizontal: 6,
-    borderRadius: 4,
+    borderRadius: '$smallBorderRadius',
     backgroundColor: '$activeTagColor',
     fontSize: '$regularLargeFontSize',
     fontWeight: '500',

@@ -11,7 +11,7 @@ import * as CheckInService from './CheckInService'
 // import * as LocationService from './LocationService'
 
 
-const UPDATE_TIME_INTERVAL_IN_MILLIS = 5000
+export const UPDATE_TIME_INTERVAL_IN_MILLIS = 3000
 
 let stopWhenSynced = false
 

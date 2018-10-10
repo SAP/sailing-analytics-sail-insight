@@ -6,6 +6,7 @@ import { Field, reduxForm } from 'redux-form'
 import { register, RegisterActionType } from 'actions/auth'
 import * as registrationForm from 'forms/registration'
 import { validateEmail, validateRequired } from 'forms/validators'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { navigateToUserRegistrationBoat } from 'navigation'
 
@@ -49,7 +50,7 @@ class RegisterCredentials extends TextInputForm<Props> {
           <Field
             label={I18n.t('text_placeholder_your_email')}
             name={registrationForm.FORM_KEY_EMAIL}
-            component={this.renderField}
+            component={FormTextInput}
             validate={[validateRequired, validateEmail]}
             keyboardType={'email-address'}
             returnKeyType="next"
@@ -61,7 +62,7 @@ class RegisterCredentials extends TextInputForm<Props> {
             style={styles.password}
             label={I18n.t('text_placeholder_enter_password')}
             name={registrationForm.FORM_KEY_PASSWORD}
-            component={this.renderField}
+            component={FormTextInput}
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="go"
@@ -93,14 +94,10 @@ class RegisterCredentials extends TextInputForm<Props> {
       )
       navigateToUserRegistrationBoat()
     } catch (err) {
-      this.setState({ error: err.message })
+      this.setState({ error: getErrorDisplayMessage(err) })
     } finally {
       this.setState({ isLoading: false })
     }
-  }
-
-  protected renderField(props: any) {
-    return <FormTextInput {...props}/>
   }
 }
 

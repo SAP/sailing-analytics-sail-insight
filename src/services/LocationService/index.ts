@@ -1,7 +1,7 @@
 import moment from 'moment'
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
-import { isPlatformAndroid } from 'helpers/environment'
+import { isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'

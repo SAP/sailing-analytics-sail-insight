@@ -1,10 +1,8 @@
 import querystring from 'query-string'
 import format from 'string-format'
 
+import { AUTH_API_PREFIX, DATA_API_PREFIX, SERVER_URL } from 'environment'
 
-const SERVER_URL = 'https://d-labs.sapsailing.com'
-const API_SUFFIX_SECURITY = '/security/api/restsecurity'
-const API_SUFFIX = '/sailingserver/api/v1'
 
 const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
   if (!urlOptions) {
@@ -26,9 +24,9 @@ export interface UrlOptions {
 }
 
 export const urlGenerator = (apiRoot?: string, apiSuffix?: string) => (path: string) => (options?: UrlOptions) =>
-  `${apiRoot || SERVER_URL}${apiSuffix || API_SUFFIX}${getPathWithParams(path, options)}`
+  `${apiRoot || SERVER_URL}${apiSuffix || DATA_API_PREFIX}${getPathWithParams(path, options)}`
 
-export const getSecurityUrl = urlGenerator(SERVER_URL, API_SUFFIX_SECURITY)
+export const getSecurityUrl = urlGenerator(SERVER_URL, AUTH_API_PREFIX)
 
 export const HttpMethods = {
   POST: 'POST',

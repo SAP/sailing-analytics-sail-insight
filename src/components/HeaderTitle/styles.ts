@@ -1,6 +1,6 @@
 import { Dimensions } from 'react-native'
 
-import { isPlatformAndroid } from 'helpers/environment'
+import { isPlatformAndroid } from 'environment'
 import EStyleSheets from 'react-native-extended-stylesheet'
 
 const screen = Dimensions.get('window')

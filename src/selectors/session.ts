@@ -24,9 +24,6 @@ const buildSession = (
   competitorEntity: any,
   userInfo: any,
 ) => {
-  if (!checkIn) {
-    return
-  }
   const result: Session = { ...checkIn }
   result.event = eventEntity && mapResToEvent(eventEntity[checkIn.eventId])
   result.leaderboard = leaderboardEntity && mapResToLeaderboard(leaderboardEntity[checkIn.leaderboardName])

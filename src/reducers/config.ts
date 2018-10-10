@@ -6,6 +6,7 @@ export const FORM_REDUCER_NAME = 'form'
 export const ONBOARDING_REDUCER_NAME = 'onboarding'
 export const SETTINGS_REDUCER_NAME = 'settings'
 export const AUTH_REDUCER_NAME = 'auth'
+export const USER_REDUCER_NAME = 'user'
 
 
 export const LocationTrackingReducerKeys = {
@@ -36,4 +37,9 @@ export const SettingsReducerKeys = {
 export const AuthReducerKeys = {
   TOKEN: 'accessToken',
   USER: 'user',
+}
+
+export const UserReducerKeys = {
+  CURRENT_BOAT: 'currentBoat',
+  BOATS: 'boats',
 }

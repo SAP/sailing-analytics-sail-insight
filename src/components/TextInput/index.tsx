@@ -3,37 +3,39 @@ import React from 'react'
 import {
   Image,
   TextInput as RNTextInput,
-  TextInputProps,
+  TextInputProps as RNTextInputProps,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
   ViewProps,
+  ViewStyle,
 } from 'react-native'
-import { TextInputMask } from 'react-native-masked-text'
+import {  TextInputMask } from 'react-native-masked-text'
 
 import Images from '@assets/Images'
+
+import Text from 'components/Text'
+
 import { $importantHighlightColor, $secondaryTextColor } from 'styles/colors'
 import { text } from 'styles/commons'
 import styles, { DEFAULT_BAR_HEIGHT } from './styles'
 
-import Text from 'components/Text'
 
+export interface TextInputProps {
+  error?: string
+  hint?: string
+  maskType?: string
+  maxLines?: number
+  autoGrow?: boolean
+  secureTextEntry?: boolean
+  inputRef?: (ref: any) => void
+  onFocus?: () => void
+  onBlur?: () => void
+  containerStyle?: ViewStyle
+  highlight?: boolean
+}
 
-class TextInput extends React.Component<ViewProps & TextInputProps & {
-  value?: string,
-  placeholder?: string,
-  error?: string,
-  hint?: string,
-  maskType?: string,
-  maxLines?: number,
-  autoGrow?: boolean,
-  multiline?: boolean,
-  secureTextEntry?: boolean,
-  onChangeText?: (text: string) => void,
-  inputRef?: (ref: any) => void,
-  onFocus?: () => void,
-  onBlur?: () => void,
-}> {
+class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInputProps> {
 
   public state = {
     text: this.props.value || '',
@@ -43,41 +45,6 @@ class TextInput extends React.Component<ViewProps & TextInputProps & {
   }
 
   private input?: any
-
-  public contentSizeChanged = (event: any) => {
-    this.setState({ height: event.nativeEvent.contentSize.height })
-  }
-
-  public entrySecuredToggled = () => {
-    this.setState({ isEntrySecured: !this.state.isEntrySecured })
-  }
-
-  public handleInputRef = (ref: any) => {
-    const { maskType, inputRef } = this.props
-    this.input = maskType ? get(ref, 'refs.$input-text') || ref : ref
-    return inputRef && inputRef(this.input)
-  }
-
-  public onChangeText = (textValue: string) => {
-    this.setState({ text: textValue })
-    if (this.props.onChangeText) { this.props.onChangeText(textValue) }
-  }
-
-  public onContainerPress = () => {
-    if (this.input && this.input.focus) {
-      this.input.focus()
-    }
-  }
-
-  public handleInputFocus = () => {
-    if (this.props.onFocus) { this.props.onFocus() }
-    this.setState({ isFocused: true })
-  }
-
-  public handleInputBlur = () => {
-    if (this.props.onBlur) { this.props.onBlur() }
-    this.setState({ isFocused: false })
-  }
 
   public render() {
     const {
@@ -92,6 +59,8 @@ class TextInput extends React.Component<ViewProps & TextInputProps & {
       secureTextEntry,
       inputRef,
       style,
+      containerStyle,
+      highlight,
       ...additionalProps
     } = this.props
 
@@ -113,22 +82,24 @@ class TextInput extends React.Component<ViewProps & TextInputProps & {
     }
 
     const showEntrySecuredToggle = secureTextEntry && !!stateText && stateText !== ''
-    const showTopPlaceholder = placeholder  && (!isEmpty(stateText) || isFocused)
+    const showTopPlaceholder = placeholder && (!isEmpty(additionalProps.value) || isFocused)
     const assistiveText = error || hint
+    const isHighlighted = error || highlight
+    const highlightStyle = isHighlighted ? text.error : undefined
 
     return (
       <View style={style}>
         <TouchableWithoutFeedback
           onPress={this.onContainerPress}
         >
-          <View style={[styles.container]}>
+          <View style={[styles.container, containerStyle]}>
             <View
               style={[
                 styles.inputContainer,
                 showTopPlaceholder ? styles.containerWithTitle : styles.containerNoTitle,
               ]}
             >
-              {showTopPlaceholder && <Text style={[styles.title, error && text.error]}>{placeholder}</Text>}
+              {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
               <ComponentType
                 style={[styles.input, heightStyle]}
                 onContentSizeChange={this.contentSizeChanged}
@@ -138,7 +109,7 @@ class TextInput extends React.Component<ViewProps & TextInputProps & {
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && isEntrySecured}
-                placeholderTextColor={error ? $importantHighlightColor : $secondaryTextColor}
+                placeholderTextColor={isHighlighted ? $importantHighlightColor : $secondaryTextColor}
                 placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}
@@ -160,10 +131,45 @@ class TextInput extends React.Component<ViewProps & TextInputProps & {
             }
           </View>
         </TouchableWithoutFeedback>
-        {assistiveText && <Text style={[styles.assistiveText, error && text.error]}>{assistiveText}</Text>}
+        {assistiveText && <Text style={[text.assistiveText, highlightStyle]}>{assistiveText}</Text>}
       </View>
 
     )
+  }
+
+  protected contentSizeChanged = (event: any) => {
+    this.setState({ height: event.nativeEvent.contentSize.height })
+  }
+
+  protected entrySecuredToggled = () => {
+    this.setState({ isEntrySecured: !this.state.isEntrySecured })
+  }
+
+  protected handleInputRef = (ref: any) => {
+    const { maskType, inputRef } = this.props
+    this.input = maskType ? get(ref, 'refs.$input-text') || ref : ref
+    return inputRef && inputRef(this.input)
+  }
+
+  protected onChangeText = (textValue: string) => {
+    this.setState({ text: textValue })
+    if (this.props.onChangeText) { this.props.onChangeText(textValue) }
+  }
+
+  protected onContainerPress = () => {
+    if (this.input && this.input.focus) {
+      this.input.focus()
+    }
+  }
+
+  protected handleInputFocus = () => {
+    if (this.props.onFocus) { this.props.onFocus() }
+    this.setState({ isFocused: true })
+  }
+
+  protected handleInputBlur = () => {
+    if (this.props.onBlur) { this.props.onBlur() }
+    this.setState({ isFocused: false })
   }
 }
 

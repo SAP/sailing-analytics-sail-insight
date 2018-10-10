@@ -28,7 +28,7 @@ export default EStyleSheets.create({
     fontSize: '$regularLargeFontSize',
     fontWeight: '500',
     letterSpacing: 0.25,
-    borderRadius: 4,
+    borderRadius: '$smallBorderRadius',
     overflow: 'hidden',
   },
   infoContainer: {

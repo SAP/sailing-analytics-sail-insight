@@ -2,7 +2,7 @@
 
 import { isUndefined, keys } from 'lodash'
 
-import { DEV_MODE } from './environment'
+import { DEV_MODE } from 'environment'
 
 
 const envAction = (logAction: ((...args: any[]) => void)) => (DEV_MODE ? logAction : () => {})

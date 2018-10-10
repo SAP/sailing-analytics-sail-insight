@@ -2,21 +2,21 @@ import { includes, intersection, isEmpty, isString } from 'lodash'
 
 import { dateTimeText } from 'helpers/date'
 import I18n from 'i18n'
-import { TrackingSession, User } from 'models'
+import { Boat, TrackingSession, User } from 'models'
 
 
 const getUserSessionPrefix = (username: string) => `<${username}>`
 
-export const generateNewSession = (/*add params*/) => {
+export const generateNewSession = (boat?: Boat) => {
   // TODO: implement prefill from current boat
   return {
     name: generateNewSessionName(),
     trackName: generateNewTrackName(),
-    sailNumber: '123',
-    boatName: 'TEST123',
-    boatClass: 'Optimist',
-    teamName: 'Sail Team No.1',
+    teamName: I18n.t('text_default_value_team_name'),
     privacySetting: 'public',
+    boatClass: (boat && boat.boatClass),
+    boatName: (boat && boat.name) || I18n.t('text_default_value_boat_name'),
+    sailNumber: (boat && boat.sailNumber) || I18n.t('text_default_value_sail_number'),
   } as TrackingSession
 }
 

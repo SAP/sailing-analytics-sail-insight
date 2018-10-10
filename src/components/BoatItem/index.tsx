@@ -17,11 +17,12 @@ import styles from './styles'
 
 class BoatItem extends React.Component<ViewProps & {
   boat: Boat,
+  lastUsed?: boolean,
 } > {
   public onItempPress = () => navigateToBoatDetails(this.props.boat)
 
   public render() {
-    const { boat } = this.props
+    const { boat, lastUsed } = this.props
 
     // TODO: replace with real images
     const logoImageUrl = Images.header.boat
@@ -44,9 +45,11 @@ class BoatItem extends React.Component<ViewProps & {
           <View style={styles.lowerTextContainer}>
             <Text style={[text.propertyValue, styles.sailNumber]}>{boat.sailNumber}</Text>
             {
-              !boat.isDefault ? undefined : (
+              !lastUsed ? undefined : (
                 <View style={styles.currentTag}>
-                  <Text style={styles.currentTagText}>{I18n.t('text_tag_current_boat')}</Text>
+                  <Text style={styles.currentTagText}>
+                    {boat.lastUsed ? I18n.t('text_last_used_boat') : I18n.t('text_tag_current_boat')}
+                  </Text>
                 </View>
               )
             }
