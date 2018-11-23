@@ -44,7 +44,10 @@ const defaultResponseHandler = (dataHandler?: (response: any) => any) => async (
   return getData(dataHandler, response)
 }
 
-const jsonData = async (response: any) => response.json()
+const jsonData = async (response: any) => {
+  const text = await response.text()
+  return text && JSON.parse(text)
+}
 
 const jsonDataArray = async (response: any) => {
   const data = await jsonData(response)

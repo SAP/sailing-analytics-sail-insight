@@ -4,10 +4,11 @@ import { head, isEmpty } from 'lodash'
 interface ActionQueueItem {
   action: any
   isUsingPreviousResult: boolean
+  ignoreException: boolean
 }
 
 const isQueueItem = (p: any): p is ActionQueueItem =>
-  p.hasOwnProperty('isUsingPreviousResult') && p.hasOwnProperty('action')
+  p.hasOwnProperty('isUsingPreviousResult') && p.hasOwnProperty('action') && p.hasOwnProperty('ignoreException')
 
 export default class ActionQueue {
 
@@ -17,14 +18,16 @@ export default class ActionQueue {
     return newQueue
   }
 
-  public static createItem(action: any, isUsingPreviousResult?: boolean) {
-    return {
-      action,
-      isUsingPreviousResult,
-    } as ActionQueueItem
-  }
+  public static createItem = (action: any, options?: {isUsingPreviousResult?: boolean, ignoreException?: boolean}) => ({
+    action,
+    isUsingPreviousResult: options ? options.isUsingPreviousResult : false,
+    ignoreException: options ? options.ignoreException : false,
+  } as ActionQueueItem)
 
-  public static createItemUsingPreviousResult = (action: any) => ActionQueue.createItem(action, true)
+  public static createItemUsingPreviousResult = (action: any) => ActionQueue.createItem(
+    action,
+    { isUsingPreviousResult: true },
+  )
 
   protected queue: ActionQueueItem[] = []
 
@@ -33,16 +36,21 @@ export default class ActionQueue {
   }
 
   public add(action: any | ActionQueueItem) {
-    this.queue.push(isQueueItem(action) ? action : { action, isUsingPreviousResult: false })
+    this.queue.push(isQueueItem(action) ? action : { action, isUsingPreviousResult: false, ignoreException: false })
   }
 
   public async execute() {
-    const firstItem = head(this.queue)
-    let nextAction = firstItem && firstItem.action
+    let nextItem: ActionQueueItem | undefined = head(this.queue)
+    let nextAction = nextItem && nextItem.action
     while (nextAction) {
-      const result = await this.dispatch(nextAction)
+      let result
+      if (nextItem && nextItem.ignoreException) {
+        try { result = await this.dispatch(nextAction) } catch (err) {}
+      } else {
+        result = await this.dispatch(nextAction)
+      }
       this.queue.shift()
-      const nextItem = this.prepareNextItem(head(this.queue), result)
+      nextItem = this.prepareNextItem(head(this.queue), result)
       nextAction = nextItem && nextItem.action
     }
   }

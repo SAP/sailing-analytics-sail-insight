@@ -79,19 +79,12 @@ class TrackingSetup extends TextInputForm<Props> {
       <ScrollContentView>
         <View style={container.stretchContent}>
           <View style={styles.infoContainer}>
-            <View style={styles.titleRow}>
-              <Field
-                label={I18n.t('text_track_name')}
-                name={sessionForm.FORM_KEY_NAME}
-                component={this.renderTitle}
-                {...this.commonProps}
-              />
-              <ImageButton
-                style={button.secondaryActionIcon}
-                source={Images.actions.pen}
-                onPress={this.onEditPress}
-              />
-            </View>
+            <Field
+              label={I18n.t('text_track_name')}
+              name={sessionForm.FORM_KEY_NAME}
+              component={this.renderTitle}
+              {...this.commonProps}
+            />
             <Field
               label={I18n.t('text_track_name')}
               name={sessionForm.FORM_KEY_TRACK_NAME}
@@ -178,8 +171,17 @@ class TrackingSetup extends TextInputForm<Props> {
     )
   }
 
-  protected renderTitle({ input: { value } }: any) {
-    return <Text style={text.claim}>{value}</Text>
+  protected renderTitle = ({ input: { value } }: any) => {
+    return (
+      <View style={styles.titleRow}>
+        <Text style={[text.claim, styles.title]}>{value}</Text>
+        <ImageButton
+          style={button.secondaryActionIcon}
+          source={Images.actions.pen}
+          onPress={this.onEditPress}
+        />
+      </View>
+    )
   }
 
   protected onEditPress = () => navigateToEditSession()
@@ -194,7 +196,7 @@ class TrackingSetup extends TextInputForm<Props> {
       await this.setState({ isCreationLoading: true, creationError: null })
       await this.creationQueue.execute()
       navigateBack()
-      this.props.startTracking(this.session.name, { ignoreSelfTracking: true })
+      this.props.startTracking(this.session.name, { skipNewTrack: true })
       return true
     } catch (err) {
       Logger.debug('Creation queue error: ', err)

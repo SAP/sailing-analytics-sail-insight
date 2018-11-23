@@ -6,8 +6,7 @@ import { getTabItemTitleTranslation } from 'helpers/texts'
 import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
 import * as Screens from 'navigation/Screens'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { generateNewSession } from 'services/SessionService'
-import reduxStore from 'store'
+import { getStore } from 'store'
 
 import IconText from 'components/IconText'
 import AppSettings from 'containers/AppSettings'
@@ -69,7 +68,7 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
   }
   switch (navigation.state.routeName) {
     case Screens.TrackingSetupAction:
-      const isLoggedIn = isLoggedInSelector(reduxStore.store.getState())
+      const isLoggedIn = isLoggedInSelector(getStore().getState())
       return isLoggedIn ? navigateToNewSession() : navigateToUserRegistration()
     default:
       return props.defaultHandler(props.navigation)

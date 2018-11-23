@@ -2,13 +2,11 @@ import { createAction } from 'redux-actions'
 
 import { authApi } from 'api'
 import AuthException from 'api/AuthException'
-import { withToken } from 'helpers/actions'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { ApiAccessToken, User } from 'models'
 import { mapUserToRes } from 'models/User'
 import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { generateNewSession } from 'services/SessionService'
 
 
 export type RegisterActionType = (email: string, password: string, name: string) => any
@@ -39,17 +37,15 @@ export const register: RegisterActionType = (email: string, password: string, na
 export const login = (email: string, password: string) =>
   handleAccessToken(authApi.accessToken(email, password))
 
-export const fetchCurrentUser = () => withToken(async (
-  token: string,
-  dispatch: DispatchType,
-) => dispatch(updateCurrentUserInformation(await authApi.user(token))))
+export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
+  dispatch(updateCurrentUserInformation(await authApi.user()))
 
 export const authBasedNewSession = () => (dispatch: DispatchType, getState: GetStateType) => {
   const isLoggedIn = isLoggedInSelector(getState())
   return isLoggedIn ? navigateToNewSession() : navigateToUserRegistration()
 }
 
-export const updateUser = (user: User) => withToken(async (token: string, dispatch: DispatchType) => {
-  await authApi.updateUser(token, mapUserToRes(user))
+export const updateUser = (user: User) => async (dispatch: DispatchType) => {
+  await authApi.updateUser(mapUserToRes(user))
   dispatch(fetchCurrentUser())
-})
+}

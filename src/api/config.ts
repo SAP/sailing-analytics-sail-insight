@@ -1,7 +1,7 @@
 import querystring from 'query-string'
 import format from 'string-format'
 
-import { AUTH_API_PREFIX, DATA_API_PREFIX, SERVER_URL } from 'environment'
+import { AUTH_API_PREFIX, DATA_API_PREFIX, DATA_API_V2_PREFIX, RACE_API_PREFIX, SERVER_URL } from 'environment'
 
 
 const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
@@ -23,10 +23,15 @@ export interface UrlOptions {
   pathParams?: string[]
 }
 
-export const urlGenerator = (apiRoot?: string, apiSuffix?: string) => (path: string) => (options?: UrlOptions) =>
-  `${apiRoot || SERVER_URL}${apiSuffix || DATA_API_PREFIX}${getPathWithParams(path, options)}`
+const urlGenerator = (apiRoot: string, apiSuffix: string) => (path: string) => (options?: UrlOptions) =>
+  `${apiRoot}${apiSuffix}${getPathWithParams(path, options)}`
+
+export const getDataApiGenerator = (serverUrl?: string) => urlGenerator(serverUrl || SERVER_URL, DATA_API_PREFIX)
+export const getDataApiV2Generator = (serverUrl: string) => urlGenerator(serverUrl || SERVER_URL, DATA_API_V2_PREFIX)
+export const getRaceApiGenerator = (serverUrl: string) => urlGenerator(serverUrl || SERVER_URL, RACE_API_PREFIX)
 
 export const getSecurityUrl = urlGenerator(SERVER_URL, AUTH_API_PREFIX)
+
 
 export const HttpMethods = {
   POST: 'POST',

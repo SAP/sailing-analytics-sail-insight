@@ -1,8 +1,7 @@
 import { get, set } from 'lodash'
-import moment from 'moment'
 import { Action } from 'redux-actions'
 
-import { getNowAsMillis } from './date'
+import { currentTimestampAsText, getNowAsMillis } from './date'
 
 
 export const itemUpdateHandler = (itemKey: string) => (state: any = {}, action: Action<any>) => ({
@@ -17,7 +16,7 @@ const createTimestampHandler = (generateTimeStamp: () => any) => (itemPath: stri
   }
   return set(newState, itemPath, generateTimeStamp())
 }
-export const timestampUpdateHandler = createTimestampHandler(() => moment().utc().format())
+export const timestampUpdateHandler = createTimestampHandler(() => currentTimestampAsText())
 export const unixTimestampUpdateHandler = createTimestampHandler(getNowAsMillis())
 
 

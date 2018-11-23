@@ -94,15 +94,20 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
+def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.dlabs.sailing'
+def _appName = System.getenv("ANDROID_APP_NAME") ?: 'sap_sailing_insight'
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "1") as Integer
+def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.0"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.dlabs.sailing"
+        applicationId _applicationId
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.0.0"
+        versionCode _versionCode
+        versionName _versionName
         vectorDrawables.useSupportLibrary = true // for react-native-crop-picker
         multiDexEnabled true
         ndk {
@@ -118,7 +123,11 @@ android {
         }
     }
     buildTypes {
+        debug {
+            resValue "string", "app_name", _appName
+        }
         release {
+            resValue "string", "app_name", _appName
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

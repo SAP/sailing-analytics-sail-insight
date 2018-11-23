@@ -14,4 +14,10 @@ export const platformSelect = (android: any, ios: any) => Platform.select({
   android,
 })
 
-export { SERVER_URL, AUTH_API_PREFIX, DATA_API_PREFIX } from 'environment/init'
+export {
+  SERVER_URL,
+  AUTH_API_PREFIX,
+  DATA_API_PREFIX,
+  RACE_API_PREFIX,
+  DATA_API_V2_PREFIX,
+} from 'environment/init'

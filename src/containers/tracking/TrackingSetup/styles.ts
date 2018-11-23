@@ -12,6 +12,10 @@ export default EStyleSheets.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    alignSelf: 'stretch',
+  },
+  title: {
+    flex: 1,
   },
   keyValue: {
     marginTop: 12,
