@@ -66,7 +66,7 @@ class RegisterCredentials extends TextInputForm<Props> {
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="go"
-            onSubmitEditing={this.onSubmit}
+            onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
             secureTextEntry={true}
             inputRef={this.handleInputRef(registrationForm.FORM_KEY_PASSWORD)}
           />

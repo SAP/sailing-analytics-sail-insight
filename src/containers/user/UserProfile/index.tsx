@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
-import { fetchCurrentUser, removeAuthInfo, updateUser } from 'actions/auth'
+import { removeAuthInfo, updateUser } from 'actions/auth'
+import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
 import { validateRequired } from 'forms/validators'
 import { getUnknownErrorMessage } from 'helpers/texts'
@@ -30,7 +31,7 @@ interface Props {
   user: User,
   formFullName?: string,
   removeAuthInfo: () => void,
-  fetchCurrentUser: () => void,
+  fetchUserInfo: () => void,
   updateUser: (u: User) => void,
 }
 
@@ -42,7 +43,7 @@ class UserProfile extends TextInputForm<Props> {
 
   // TODO: remove logout button
   public componentDidMount() {
-    this.props.fetchCurrentUser()
+    this.props.fetchUserInfo()
   }
 
   public render() {
@@ -116,7 +117,7 @@ const mapStateToProps = (state: any) => {
 
 export default connect(
   mapStateToProps,
-  { removeAuthInfo, fetchCurrentUser, updateUser },
+  { removeAuthInfo, fetchUserInfo, updateUser },
 )(reduxForm<{}, Props>({
   form: userForm.USER_FORM_NAME,
   destroyOnUnmount: true,

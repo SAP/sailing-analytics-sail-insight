@@ -1,3 +1,6 @@
+import { isNumber } from 'lodash'
+
+
 export const ApiBodyKeys = {
   Fixes: 'fixes',
   Course: 'course',
@@ -19,6 +22,11 @@ export const PositionFix = (map: any) => map && ({
 export const isPositionFix = (arg: any): arg is PositionFix => {
   return arg.latitude !== undefined
 }
+
+export const isValidPositionFix = (position: PositionFix) =>
+  position &&
+  isNumber(position.latitude) &&
+  isNumber(position.longitude)
 
 export const PersistanceSchema = {
   latitude: 'double',

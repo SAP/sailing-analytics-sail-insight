@@ -5,6 +5,10 @@ export interface CreateEventBody {
   numberofraces?: number
 }
 
+export interface UpdateEventBody {
+  enddateasmillis: number
+}
+
 export interface AddRaceColumnsBody {
   prefix?: string
   numberofraces?: number
@@ -116,4 +120,28 @@ export interface WindBody {
   regattaNamesAndRaceNames: WindRegattaData[]
   windSourceType: string
   windSourceId: string
+}
+
+type RaceLogClass = 'RaceLogStartTimeEvent' | 'RaceLogRaceStatusEvent'
+type RaceLogRaceStatus =
+  'UNKNOWN' |
+  'UNSCHEDULED' |
+  'PRESCHEDULED' |
+  'SCHEDULED' |
+  'STARTPHASE' |
+  'RUNNING' |
+  'FINISHING' |
+  'FINISHED'
+export interface RaceLogOptions {
+  '@class': RaceLogClass
+  id: number | string
+  createdAt: number
+  passId: number
+  competitors: any[]
+  nextStatus: RaceLogRaceStatus
+  startTime?: number
+  author?: string
+  authorPriority?: number
+  finishTime?: number
+  timestamp: number
 }

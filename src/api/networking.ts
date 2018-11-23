@@ -1,7 +1,7 @@
 import { isString } from 'lodash'
 import querystring from 'query-string'
 
-import { Signer } from 'api/authorization'
+import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
@@ -64,7 +64,7 @@ export const request = async (
     method = HttpMethods.GET,
     body = null,
     bodyType = 'json',
-    signer,
+    signer = tokenSigner,
   } = options
 
   const data = body && { body: getBody(bodyType, body) }

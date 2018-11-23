@@ -7,12 +7,14 @@ import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { durationText } from 'helpers/date'
+import Logger from 'helpers/Logger'
 import { degToCompass } from 'helpers/physics'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { navigateBack, navigateToManeuverMonitor, navigateToSetWind } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
+import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
@@ -140,6 +142,7 @@ class Tracking extends React.Component<{
       await this.props.stopTracking(this.props.checkInData)
       navigateBack()
     } catch (err) {
+      Logger.debug(err)
       Alert.alert(getUnknownErrorMessage())
     } finally {
       this.setState({ isLoading: false })
@@ -176,7 +179,7 @@ class Tracking extends React.Component<{
 const mapStateToProps = (state: any, props: any) => ({
   locationTrackingStatus: getLocationTrackingStatus(state),
   trackingStats: getLocationStats(state) || {},
-  checkInData: getCustomScreenParamData(props) as CheckIn,
+  checkInData: getCheckInByLeaderboardName((getCustomScreenParamData(props) as CheckIn).leaderboardName)(state),
 })
 
 export default connect(mapStateToProps, { stopTracking })(Tracking)

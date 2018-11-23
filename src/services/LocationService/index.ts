@@ -1,7 +1,7 @@
-import moment from 'moment'
 import BackgroundGeolocation from 'react-native-background-geolocation'
 
-import { isPlatformAndroid } from 'environment'
+import { DEV_MODE, isPlatformAndroid } from 'environment'
+import { getNowAsMillis, getTimestampAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'
@@ -52,24 +52,23 @@ BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
 
 BackgroundGeolocation.on(LOCATION_KEY, async (location: any) => {
   Log('ON_LOCATION', location)
-  await handleLocation(location)
+  await handleGeolocation(location)
 })
 
 BackgroundGeolocation.on(HEARTBEAT_KEY, (params: any) => Log('Heartbeat', params))
 
-const handleLocation = async (location: any = {}) => {
+const handleGeolocation = async (location: any = {}) => {
   const { coords, timestamp } = location
   if (!coords) {
     return
   }
 
-  const momentTime = timestamp ? moment(timestamp) : moment()
   const gpsFix: PositionFix = {
     latitude: coords.latitude,
     longitude: coords.longitude,
-    timeMillis: momentTime.valueOf(),
-    speedInKnots: metersPerSecondsToKnots(coords.speed),
-    bearingInDeg: coords.heading,
+    timeMillis: DEV_MODE ? getNowAsMillis() : getTimestampAsMillis(timestamp),
+    speedInKnots: metersPerSecondsToKnots(Math.max(0, coords.speed)),
+    bearingInDeg: Math.max(0, coords.heading),
     accuracy: coords.accuracy,
   }
 

@@ -2,6 +2,7 @@ import { head, isString } from 'lodash'
 import { Alert } from 'react-native'
 
 import { AddRaceColumnResponseData } from 'api/endpoints/types'
+import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 import I18n from 'i18n'
@@ -11,26 +12,41 @@ import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import * as LocationService from 'services/LocationService'
 
-import { startLocationTracking, stopLocationTracking } from './locations'
+import { startLocationUpdates, stopLocationUpdates } from './locations'
 import { fetchRegattaAndRaces } from './regattas'
-import { createNewTrack, startTrack, stopTrack } from './sessions'
+import { updateEventEndTime } from './sessions'
+import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from './tracks'
 
 
 const start = (
   data: CheckIn,
-  options: { stopBeforeTracking?: boolean, createTrack?: boolean } = {},
+  options: { shouldClean?: boolean, shouldCreateTrack?: boolean } = {},
 ) => async (dispatch: DispatchType) => {
-  if (options.stopBeforeTracking) {
-    await dispatch(stopLocationTracking())
+  const { shouldClean, shouldCreateTrack } = options
+  if (shouldClean) {
+    await dispatch(stopLocationUpdates())
   }
-  if (options.createTrack && data.trackPrefix) {
+  let newTrack
+  if (shouldCreateTrack && data.trackPrefix) {
     const result: AddRaceColumnResponseData[] = await dispatch(createNewTrack(data.leaderboardName, data.trackPrefix))
-    const newTrack = head(result)
+    newTrack = head(result)
     if (newTrack) {
       await dispatch(startTrack(data.leaderboardName, newTrack.racename, newTrack.seriesname))
     }
   }
-  await dispatch(startLocationTracking(data.leaderboardName, data.eventId))
+  const trackName =  (newTrack && newTrack.racename) || data.currentTrackName
+  if (data.isSelfTracking && trackName && data.currentFleet) {
+    try {
+      await dispatch(setRaceStartTime(
+        data.leaderboardName,
+        trackName,
+        data.currentFleet,
+      ))
+    } catch (err) {
+      Logger.debug(err)
+    }
+  }
+  await dispatch(startLocationUpdates(data.leaderboardName, data.eventId))
 }
 
 export type StopTrackingAction = (data?: CheckIn) => any
@@ -38,14 +54,16 @@ export const stopTracking: StopTrackingAction = data => async (dispatch: Dispatc
   if (!data) {
     return
   }
-  await dispatch(stopLocationTracking())
-  if (data.isSelfTracking) {
+  await dispatch(stopLocationUpdates())
+  if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
     await dispatch(stopTrack(data.leaderboardName, data.currentTrackName, data.currentFleet))
+    await dispatch(setRaceEndTime(data.leaderboardName, data.currentTrackName, data.currentFleet))
+    await dispatch(updateEventEndTime(data.leaderboardName, data.eventId))
   }
   dispatch(fetchRegattaAndRaces(data.regattaName))
 }
 
-export type StartTrackingAction = (data?: CheckIn | string, options?: { ignoreSelfTracking?: boolean }) => any
+export type StartTrackingAction = (data?: CheckIn | string, options?: { skipNewTrack?: boolean }) => any
 export const startTracking: StartTrackingAction = (data, options = {}) =>  async (
   dispatch: DispatchType,
   getState: GetStateType,
@@ -55,7 +73,7 @@ export const startTracking: StartTrackingAction = (data, options = {}) =>  async
     Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
     return
   }
-  const shouldCreateNewTrack = !options.ignoreSelfTracking && checkInData.isSelfTracking
+  const shouldCreateTrack = !options.skipNewTrack && checkInData.isSelfTracking
   return new Promise(async (resolve, reject) => {
     const locationTrackingStatus = getLocationTrackingStatus(getState())
 
@@ -68,7 +86,7 @@ export const startTracking: StartTrackingAction = (data, options = {}) =>  async
           {
             text: I18n.t('caption_ok'), onPress: async () => {
               try {
-                await dispatch(start(checkInData, { stopBeforeTracking: true, createTrack: shouldCreateNewTrack }))
+                await dispatch(start(checkInData, { shouldCreateTrack, shouldClean: true }))
                 navigateToTracking(checkInData)
                 resolve()
               } catch (err) {
@@ -81,7 +99,7 @@ export const startTracking: StartTrackingAction = (data, options = {}) =>  async
       )
     } else {
       try {
-        await dispatch(start(checkInData, { createTrack: shouldCreateNewTrack }))
+        await dispatch(start(checkInData, { shouldCreateTrack }))
         navigateToTracking(checkInData)
         resolve()
       } catch (err) {

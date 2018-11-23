@@ -1,7 +1,7 @@
 import { get, set } from 'lodash'
 import { handleActions } from 'redux-actions'
 
-import { addOrUpdateUserBoat, boatWasUsed, removeBoat } from 'actions/user'
+import { addOrUpdateUserBoat, boatWasUsed, removeBoat, updateBoats } from 'actions/user'
 import { getNowAsMillis } from 'helpers/date'
 
 import { removeEntity } from 'helpers/reducers'
@@ -15,6 +15,15 @@ const initialState = {
 
 const reducer = handleActions(
   {
+    [updateBoats as any]: (state: any = {}, action?: any) => {
+      if (!action) {
+        return state
+      }
+      return {
+        ...state,
+        [UserReducerKeys.BOATS]: action.payload || {},
+      }
+    },
     [addOrUpdateUserBoat as any]: (state: any = {}, action?: any) => {
       if (!action || !action.payload || !action.payload.name) {
         return state

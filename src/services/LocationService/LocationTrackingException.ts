@@ -5,7 +5,6 @@ export default class LocationTrackingException extends Error {
 
   constructor(message: string, data?: any) {
     super(message)
-    this.message = message
     this.name = LocationTrackingException.NAME
     this.data = data
   }

@@ -1,4 +1,6 @@
 import { BodyType } from 'api/config'
+import { getAccessToken } from 'selectors/auth'
+import { getStore } from 'store'
 
 
 export interface SignerOptions {
@@ -13,10 +15,13 @@ export interface RequestOptions {
   body?: any,
   bodyType?: BodyType
 }
-export type Signer = (data: SignerOptions) => any
+export type Signer = ((data: SignerOptions) => any) | null
 
 
-export const tokenSigner = (token: string) => (options: SignerOptions = {}) => ({
-  ...options.headers,
-  Authorization: `Bearer ${token}`,
-})
+export const tokenSigner = (options: SignerOptions = {}) => {
+  const token = getAccessToken(getStore().getState())
+  return {
+    ...options.headers,
+    ...(token && { Authorization: `Bearer ${token}` }),
+  }
+}

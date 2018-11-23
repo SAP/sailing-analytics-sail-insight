@@ -30,4 +30,4 @@ export const receivePaginatedEntities = (payload: any) => async (dispatch: Dispa
   }
 }
 
-export const receiveNotNormalizedEntities = (data: any, schema: any) => receiveEntities(normalize(data, schema))
+export const normalizeAndReceiveEntities = (data: any, schema: any) => receiveEntities(normalize(data, schema))

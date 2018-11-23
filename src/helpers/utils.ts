@@ -53,3 +53,5 @@ export const hasSameValues = (objA: any, objB: any) => {
 export function getOrderListFunction<Type = any>(valueKeys: string[], order?: 'asc' | 'desc') {
   return (list: Type[]) => orderBy(list, valueKeys, [order as string])
 }
+
+export const spreadableList = (condition: any, ...params: any[]) => condition ? params : []

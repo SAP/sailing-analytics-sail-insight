@@ -1,31 +1,43 @@
-import { AsyncStorage } from 'react-native'
-import { createNetworkMiddleware } from 'react-native-offline'
-import { applyMiddleware, createStore } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
-import { persistReducer, persistStore } from 'redux-persist'
-import ReduxThunk from 'redux-thunk'
+import { createStore } from 'redux'
+import { persistStore } from 'redux-persist'
 
-import Reducers from 'reducers'
-import { FORM_REDUCER_NAME, NETWORK_REDUCER_NAME } from 'reducers/config'
+/**
+ * Ensure that this file does not have any other dependencies
+ * to prevent circular dependencies.
+ */
 
+let store: any
+let persistor: any
 
-const initialState = {}
-const persistConfig = {
-  key: 'root',
-  debounce: 1000,
-  blacklist: [NETWORK_REDUCER_NAME, FORM_REDUCER_NAME],
-  storage: AsyncStorage,
+export const initializeStore = (reducer: any, ...options: any[]) => {
+  if (store) {
+    throw new Error('The stores has already been initialized.')
+  }
+  store = createStore(reducer, ...options)
+  return store
 }
 
-const enhancers = composeWithDevTools(applyMiddleware(
-  createNetworkMiddleware(),
-  ReduxThunk,
-))
+export const initializePersistor = () => {
+  if (persistor) {
+    throw new Error('The persistor has already been initialized.')
+  }
+  if (!store) {
+    throw new Error('The store has not been initialized.')
+  }
+  persistor = persistStore(store)
+  return persistor
+}
 
-const persistedReducer = persistReducer(persistConfig, Reducers)
-const store = createStore(persistedReducer, initialState, enhancers)
+export const getStore = () => {
+  if (!store) {
+    throw new Error('The store has not been initialized.')
+  }
+  return store
+}
 
-export default {
-  store,
-  persistor: persistStore(store),
+export const getPersistor = () => {
+  if (!persistor) {
+    throw new Error('The persistor has not been initialized.')
+  }
+  return persistor
 }

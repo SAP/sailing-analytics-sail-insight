@@ -1,10 +1,11 @@
+import { countries } from 'country-data'
 import querystring from 'query-string'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 
 import { getApiServerUrl } from 'api/config'
-import { CreateEventResponse } from 'api/endpoints/types'
+import { CreateEventResponseData } from 'api/endpoints/types'
 import { getDeviceUuid } from 'helpers/uuid'
 import { CheckIn, PositionFix, Race } from 'models'
 import { ApiBodyKeys as CheckInBodyKeys, urlParamsToCheckIn } from 'models/CheckIn'
@@ -12,6 +13,15 @@ import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 
 
 export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueID())
+
+export const getDeviceCountryIOC = () => {
+  const deviceCountry = DeviceInfo.getDeviceCountry()
+  if (!deviceCountry) {
+    return
+  }
+  const country = countries[deviceCountry.toUpperCase()]
+  return country && country.ioc
+}
 
 export const extractData = (url: string) => {
   if (!url) {
@@ -100,7 +110,7 @@ export const raceUrl = (session: CheckIn, race: Race) =>
   // tslint:disable-next-line max-line-length
   `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${escape(session.leaderboardName)}&raceName=${escape(race.name)}&leaderboardName=${escape(session.leaderboardName)}&eventId=${escape(session.eventId)}&mode=FULL_ANALYSIS`
 
-export const eventCreationResponseToCheckIn = (response: CreateEventResponse) => response && ({
+export const eventCreationResponseToCheckIn = (response: CreateEventResponseData) => response && ({
   eventId: response.eventid,
   leaderboardName: response.leaderboard,
   regattaName: response.regatta,

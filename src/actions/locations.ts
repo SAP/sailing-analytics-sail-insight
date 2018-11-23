@@ -1,10 +1,11 @@
-import moment from 'moment'
 import { createAction } from 'redux-actions'
 
-import { dataApi as api } from 'api'
+import { dataApi } from 'api'
+import { currentTimestampAsText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { PositionFix } from 'models'
+import { isValidPositionFix } from 'models/PositionFix'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getBulkGpsSetting } from 'selectors/settings'
 import * as CheckInService from 'services/CheckInService'
@@ -30,7 +31,8 @@ export const updateLastWindSpeed = createAction('UPDATE_WIND_SPEED')
 
 const sendGpsFix = async (serverUrl: string, postBody: any) => {
   try {
-    await api(serverUrl).sendGpsFixes(postBody)
+    const result = await dataApi(serverUrl).sendGpsFixes(postBody)
+    Logger.debug('GPS-Fix-Result: ', result)
     return true
   } catch (err) {
     Logger.debug(err)
@@ -39,7 +41,7 @@ const sendGpsFix = async (serverUrl: string, postBody: any) => {
 }
 
 
-export const startLocationTracking = (
+export const startLocationUpdates = (
   leaderboardName: string,
   eventId?: string,
 ) => async (dispatch: DispatchType) => {
@@ -51,14 +53,14 @@ export const startLocationTracking = (
     await LocationService.start()
     await LocationService.changePace(true)
     GpsFixService.startPeriodicalGPSFixUpdates()
-    dispatch(updateStartedAt(moment().utc().format()))
+    dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
     Logger.debug(err)
     dispatch(removeTrackedRegatta())
   }
 }
 
-export const stopLocationTracking = () => async (dispatch: DispatchType) => {
+export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
   await LocationService.changePace(false)
   await LocationService.stop()
   GpsFixService.stopGPSFixUpdatesWhenSynced()
@@ -74,6 +76,9 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   if (!serverUrl) {
     throw new LocationTrackingException('missing event baseUrl')
   }
+  if (!isValidPositionFix(gpsFix)) {
+    throw new LocationTrackingException('gps fix is invalid', gpsFix)
+  }
   const postData = CheckInService.gpsFixPostData([gpsFix])
   if (!postData) {
     throw new LocationTrackingException('gpsFix creation failed')
@@ -85,7 +90,7 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   await dispatch(updateTrackingStatistics(gpsFix))
 }
 
-export const initLocationTracking = () => async (dispatch: DispatchType) => {
+export const initLocationUpdates = () => async (dispatch: DispatchType) => {
   const enabled = await LocationService.isEnabled()
   const status = enabled ?
   LocationService.LocationTrackingStatus.RUNNING :

@@ -98,7 +98,21 @@ export const timeText = (seconds: number) => {
   return duration.format('hh:mm:ss')
 }
 
-export const getNowAsMillis = (addValue?: number, category?: 'y' | 'd' | 'm' | 's' | 'ms') => (
-  addValue && category ?
-  moment().add(addValue, category) : moment()
-).valueOf()
+export const getNowAsMillis = (addValue?: number, category?: 'y' | 'd' | 'm' | 's' | 'ms') => {
+  const momentTime = moment().utc() // TODO: check if utc instead of local value
+  return (addValue && category ? momentTime.add(addValue, category) : momentTime).valueOf()
+}
+
+export const getTimestampAsMillis = (timestamp?: string) => {
+  const momentValue = timestamp ? moment(timestamp) : moment()
+  return momentValue.utc().valueOf()
+}
+
+export const currentTimestampAsText = () => moment().utc().format()
+
+export const isExpired = (timestamp: string, limitInHours: number) => {
+  if (!timestamp) {
+    return true
+  }
+  return moment(timestamp).utc().add(limitInHours, 'hour').isBefore(moment().utc())
+}

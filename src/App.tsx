@@ -5,22 +5,27 @@ import { withNetworkConnectivity } from 'react-native-offline'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
+import 'store/init'
+
 import * as DeepLinking from 'integrations/DeepLinking'
 
 import { performDeepLink } from 'actions/deepLinking'
-import { handleLocation, initLocationTracking, updateTrackingStatus } from 'actions/locations'
+import { handleLocation, initLocationUpdates, updateTrackingStatus } from 'actions/locations'
+import Logger from 'helpers/Logger'
 import InitializationNavigator from 'navigation/InitializationNavigator'
 import * as LocationService from 'services/LocationService'
-import reduxStore from 'store'
+import { getPersistor, getStore } from 'store'
+
 import { initStyles, recalculateStyles } from 'styles'
 import { container } from 'styles/commons'
+
 
 declare var module: any
 
 
 initStyles()
-
-const { store, persistor } = reduxStore
+const store = getStore()
+const persistor = getPersistor()
 
 // enable hot module replacement for reducers
 if (module.hot) {
@@ -56,42 +61,15 @@ class App extends Component {
     this.initDeepLinks()
     DeepLinking.addListener(this.handleDeeplink)
     LocationService.addStatusListener(this.handleLocationTrackingStatus)
-    LocationService.addLocationListener(this.handleLocation)
-    store.dispatch(initLocationTracking())
+    LocationService.addLocationListener(this.handleGeolocation)
+    store.dispatch(initLocationUpdates())
   }
 
   public componentWillUnmount() {
     DeepLinking.removeListener(this.handleDeeplink)
     this.finalizeDeepLinks()
     LocationService.removeStatusListener(this.handleLocationTrackingStatus)
-    LocationService.removeLocationListener(this.handleLocation)
-  }
-
-  public initDeepLinks() {
-    this.deepLinkSubscriber = DeepLinking.initialize()
-  }
-
-  public finalizeDeepLinks() {
-    if (!this.deepLinkSubscriber) {
-      return
-    }
-    this.deepLinkSubscriber()
-    this.deepLinkSubscriber = null
-  }
-
-  public handleDeeplink = (params: any) => {
-    store.dispatch(performDeepLink(params))
-  }
-
-  public handleLocationTrackingStatus(state: any) {
-    const status = state && state.enabled ?
-    LocationService.LocationTrackingStatus.RUNNING :
-    LocationService.LocationTrackingStatus.STOPPED
-    store.dispatch(updateTrackingStatus(status))
-  }
-
-  public handleLocation(location: any) {
-    store.dispatch(handleLocation(location))
+    LocationService.removeLocationListener(this.handleGeolocation)
   }
 
   public render() {
@@ -102,6 +80,40 @@ class App extends Component {
         </ActionSheetProvider>
       </Provider>
     )
+  }
+
+  protected initDeepLinks() {
+    this.deepLinkSubscriber = DeepLinking.initialize()
+  }
+
+  protected finalizeDeepLinks() {
+    if (!this.deepLinkSubscriber) {
+      return
+    }
+    this.deepLinkSubscriber()
+    this.deepLinkSubscriber = null
+  }
+
+  protected handleDeeplink = (params: any) => {
+    store.dispatch(performDeepLink(params))
+  }
+
+  protected handleLocationTrackingStatus(state: any) {
+    const status = state && state.enabled ?
+    LocationService.LocationTrackingStatus.RUNNING :
+    LocationService.LocationTrackingStatus.STOPPED
+    store.dispatch(updateTrackingStatus(status))
+  }
+
+  protected async handleGeolocation(location: any) {
+    try {
+      await store.dispatch(handleLocation(location))
+    } catch (err) {
+      if (!err) {
+        return
+      }
+      Logger.debug(err.message, err.data)
+    }
   }
 }
 
