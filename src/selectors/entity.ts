@@ -4,16 +4,16 @@ import { ENTITIES_REDUCER_NAME } from 'reducers/config'
 /**
  * Transform one entitiy from an object of entities into a single object with an ID parameter
  *
- * @param {object} payload - object of entities for a certain type
+ * @param {object} entities - object of entities for a certain type
  * @param {string} idParam  - parameter to use to save the keys (IDs) default is 'id'
  *
  * @param {number} entityId - The ID of the entity you want returned.
  * This works well with .map on keys(<Object>)
  * @returns {object} - A new entity object with an ID according to @idParam
  */
-const omitEntityId = (payload: any, idParam = 'id') => (entityId: string) => ({
+const addEntityId = (entities: any, idParam = 'id') => (entityId: string) => ({
   [idParam]: entityId,
-  ...payload[entityId],
+  ...entities[entityId],
 })
 
 /**
@@ -41,13 +41,12 @@ export const getEntities = (
 export const getEntityArrayByType = (
   state: any,
   type: string | string[],
-  options?: {idParam?: string, reducerName?: string},
+  options: {idParam?: string, reducerName?: string, omitId?: boolean} = {},
 ) => {
-  const entities = getEntities(state, type, options && options.reducerName)
+  const entities = getEntities(state, type, options.reducerName)
 
   if (entities) {
-    return keys(entities)
-      .map(omitEntityId(entities, options && options.idParam))
+    return keys(entities).map(options.omitId ? entityId => entities[entityId] : addEntityId(entities, options.idParam))
   }
 
   return []
@@ -68,5 +67,5 @@ export const getEntityById = (state: any, type: string, id: string, idParam?: st
   if (!entities || !entities[id]) {
     return undefined
   }
-  return omitEntityId(entities, idParam)(id)
+  return addEntityId(entities, idParam)(id)
 }

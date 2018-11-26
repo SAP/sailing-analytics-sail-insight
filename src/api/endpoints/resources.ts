@@ -4,6 +4,7 @@ import {
   AddRaceColumnsBody,
   CompetitorBody,
   CompetitorResponseData,
+  CompetitorWithBoatBody,
   CreateEventBody,
   CreateEventResponseData,
   RaceLogOptions,
@@ -50,6 +51,7 @@ const apiEndpoints = (serverUrl: string) => {
     stopTracking: getUrlV1('/leaderboards/{0}/stoptracking'),
     setTrackingTimes: getUrlV1('/leaderboards/{0}/settrackingtimes'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
+    createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
     putWind: getUrlV1('/wind/putWind'),
     raceLog: getRaceUrl('/racelog'),
     preferences: getUrlV1('/preferences/{0}'),
@@ -89,6 +91,10 @@ export interface DataApi {
   stopTracking: (leaderboardName: string, data?: StopTrackingBody) => any
   setTrackingTimes: (leaderboardName: string, data: SetTrackingTimesBody) => any
   createAndAddCompetitor: (regattaName: string, data?: CompetitorBody) => Promise<CompetitorResponseData>
+  createAndAddCompetitorWithBoat: (
+    regattaName: string,
+    data?: CompetitorWithBoatBody,
+  ) => Promise<CompetitorResponseData>
   sendWindFix: (
     regattaName: string,
     raceName: string,
@@ -186,6 +192,10 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
     ),
     createAndAddCompetitor: (regattaName, data) => dataRequest(
       endpoints.createAndAddCompetitor({ pathParams: [regattaName], urlParams: data }),
+      { method: HttpMethods.POST },
+    ),
+    createAndAddCompetitorWithBoat: (regattaName, data) => dataRequest(
+      endpoints.createAndAddCompetitorWithBoat({ pathParams: [regattaName], urlParams: data }),
       { method: HttpMethods.POST },
     ),
     sendWindFix: (regattaName, raceName, windFix, sourceId, sourceType = 'WEB') => request(

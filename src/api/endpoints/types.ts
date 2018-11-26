@@ -23,7 +23,6 @@ interface BaseSetupTrackingBody {
   race_column: string
   fleet: string
 }
-
 export interface StartTrackingBody extends BaseSetupTrackingBody {
   trackWind?: boolean
   correctWindDirectionByMagneticDeclination?: boolean
@@ -34,6 +33,24 @@ export interface SetTrackingTimesBody extends BaseSetupTrackingBody {
   startoftrackingasmillis?: number,
   endoftracking?: Date,
   endoftrackingasmillis?: number,
+}
+
+
+interface BaseCompetitorBody {
+  nationalityIOC?: string,
+  timeontimefactor?: number,
+  timeondistanceallowancepernauticalmileasmillis?: number,
+  searchtag?: string,
+  competitorName?: string,
+  competitorEmail?: string,
+}
+export interface CompetitorBody extends BaseCompetitorBody {
+  boatclass: string,
+  sailid?: string,
+}
+
+export interface CompetitorWithBoatBody extends BaseCompetitorBody {
+  boatId: string,
 }
 
 export interface CompetitorBody {

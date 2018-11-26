@@ -34,20 +34,20 @@ export const leaderboardSchema = new schema.Entity(
   { idAttribute: 'name' },
 )
 
+export const boatSchema = new schema.Entity(
+  BOAT_ENTITY_NAME,
+  {},
+  { idAttribute: DEFAULT_ENTITY_ID_KEY },
+)
+
 export const competitorSchema = new schema.Entity(
   COMPETITOR_ENTITY_NAME,
-  {},
+  { boat: boatSchema },
   { idAttribute: DEFAULT_ENTITY_ID_KEY },
 )
 
 export const markSchema = new schema.Entity(
   MARK_ENTITY_NAME,
-  {},
-  { idAttribute: DEFAULT_ENTITY_ID_KEY },
-)
-
-export const boatSchema = new schema.Entity(
-  BOAT_ENTITY_NAME,
   {},
   { idAttribute: DEFAULT_ENTITY_ID_KEY },
 )

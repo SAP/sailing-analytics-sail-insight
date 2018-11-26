@@ -9,6 +9,7 @@ export const FORM_KEY_TRACK_NAME = 'trackName'
 export const FORM_KEY_BOAT_NAME = 'boatName'
 export const FORM_KEY_BOAT_CLASS = 'boatClass'
 export const FORM_KEY_SAIL_NUMBER = 'sailNumber'
+export const FORM_KEY_BOAT_ID = 'boatId'
 export const FORM_KEY_TEAM_NAME = 'teamName'
 export const FORM_KEY_PRIVACY_SETTING = 'privacySetting'
 
@@ -16,6 +17,7 @@ export const trackingSessionFromFormValues = (values: any) => values && ({
   boatClass: values[FORM_KEY_BOAT_CLASS],
   name: values[FORM_KEY_NAME],
   boatName: values[FORM_KEY_BOAT_NAME],
+  boatId: values[FORM_KEY_BOAT_ID],
   privacySetting: values[FORM_KEY_PRIVACY_SETTING],
   sailNumber: values[FORM_KEY_SAIL_NUMBER],
   teamName: values[FORM_KEY_TEAM_NAME],
@@ -30,6 +32,7 @@ export const formValuesFromTrackingSession = (session: TrackingSession) => sessi
   [FORM_KEY_PRIVACY_SETTING]: session.privacySetting,
   [FORM_KEY_TEAM_NAME]: session.teamName,
   [FORM_KEY_BOAT_NAME]: session.boatName,
+  [FORM_KEY_BOAT_ID]: session.boatId || null,
 })
 
 export const validate = (values: any = {}) => {

@@ -82,18 +82,38 @@ export const createUserAttachmentToSession = (regattaName: string, session: Trac
     if (!user) {
       throw new SessionException('user data missing.')
     }
-    const competitor = await dataApi.createAndAddCompetitor(
-      regattaName,
-      {
-        boatclass: session.boatClass,
-        sailid: session.sailNumber,
-        competitorName: user.fullName,
-        competitorEmail: user.email,
-        nationalityIOC: getDeviceCountryIOC(),
-      },
-    )
+    const baseValues = {
+      competitorName: user.fullName,
+      competitorEmail: user.email,
+      nationalityIOC: getDeviceCountryIOC(),
+    }
+    const competitor = session.boatId ?
+      await dataApi.createAndAddCompetitorWithBoat(
+        regattaName,
+        {
+          ...baseValues,
+          boatId: session.boatId,
+        },
+      ) :
+      await dataApi.createAndAddCompetitor(
+        regattaName,
+        {
+          ...baseValues,
+          boatclass: session.boatClass,
+          sailid: session.sailNumber,
+        },
+      )
     dispatch(normalizeAndReceiveEntities(competitor, competitorSchema))
     dispatch(updateCheckIn({ leaderboardName: regattaName, competitorId: competitor.id } as CheckInUpdate))
+    await dispatch(saveBoat(
+      {
+        name: session.boatName,
+        boatClass: session.boatClass,
+        sailNumber: session.sailNumber,
+        id: competitor && competitor.boat && competitor.boat.id,
+      },
+      { updateLastUsed: true },
+    ))
   },
 )
 
@@ -107,9 +127,5 @@ export const createSessionCreationQueue = (session: TrackingSession) => (dispatc
     createNewTrack(session.name, session.trackName),
     ActionQueue.createItemUsingPreviousResult(startTrackRaceColumnHandler(session)),
     checkInDevice(session.name),
-    saveBoat(
-      { name: session.boatName, boatClass: session.boatClass, sailNumber: session.sailNumber },
-      { updateLastUsed: true },
-    ),
   ],
 )

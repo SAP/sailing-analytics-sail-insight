@@ -1,10 +1,11 @@
-import { omit } from 'lodash'
+import { find, omit } from 'lodash'
 import { createAction } from 'redux-actions'
 
 import { fetchCurrentUser } from 'actions/auth'
 import { selfTrackingApi } from 'api'
-import { DispatchType } from 'helpers/types'
+import { DispatchType, GetStateType } from 'helpers/types'
 import { Boat } from 'models'
+import { getUserBoats } from 'selectors/user'
 
 
 const BOATS_PREFERENCE_KEY = 'boats'
@@ -47,3 +48,13 @@ export const deleteBoat: DeleteBoatAction = name => async (dispatch: DispatchTyp
 
 export const fetchUserInfo = () => async (dispatch: DispatchType) =>
   await dispatch(fetchCurrentUser()) && dispatch(fetchBoats())
+
+export const getBoatFromValues = (boat: any) => (dispatch: DispatchType, getState: GetStateType) => find(
+  getUserBoats(getState()),
+  boat,
+)
+
+export const updateBoatId = (boatValues: any, id: string) => async (dispatch: DispatchType, getState: GetStateType) => {
+  const boat = dispatch(getBoatFromValues(boatValues))
+  return boat && dispatch(saveBoat({ id, ...boat }))
+}

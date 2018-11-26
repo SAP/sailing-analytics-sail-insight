@@ -6,4 +6,5 @@ export default interface TrackingSession {
   sailNumber: string
   teamName: string
   privacySetting: string
+  boatId?: string
 }
