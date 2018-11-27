@@ -27,7 +27,7 @@ const getUserBoatEntities = (state: any = {}) => getEntities(state, UserReducerK
 export const getUserBoats = (state: any = {}) => orderBoatsLastUsedDesc(getEntityArrayByType(
   state,
   UserReducerKeys.BOATS,
-  { reducerName: USER_REDUCER_NAME },
+  { reducerName: USER_REDUCER_NAME, omitId: true },
 ))
 
 export const getUserBoatByFormBoatName = createSelector(

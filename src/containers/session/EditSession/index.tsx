@@ -63,7 +63,12 @@ class EditSession extends TextInputForm<Props> {
           <Fields
             style={input.topMargin}
             label={I18n.t('text_boat')}
-            names={[sessionForm.FORM_KEY_BOAT_NAME, sessionForm.FORM_KEY_BOAT_CLASS, sessionForm.FORM_KEY_SAIL_NUMBER]}
+            names={[
+              sessionForm.FORM_KEY_BOAT_NAME,
+              sessionForm.FORM_KEY_BOAT_CLASS,
+              sessionForm.FORM_KEY_SAIL_NUMBER,
+              sessionForm.FORM_KEY_BOAT_ID,
+            ]}
             component={FormBoatPicker}
             boats={this.props.boats}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}

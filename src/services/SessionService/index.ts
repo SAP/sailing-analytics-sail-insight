@@ -17,6 +17,7 @@ export const generateNewSession = (boat?: Boat) => {
     boatClass: (boat && boat.boatClass),
     boatName: (boat && boat.name) || I18n.t('text_default_value_boat_name'),
     sailNumber: (boat && boat.sailNumber) || I18n.t('text_default_value_sail_number'),
+    boatId: (boat && boat.id),
   } as TrackingSession
 }
 

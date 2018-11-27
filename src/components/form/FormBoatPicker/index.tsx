@@ -4,7 +4,7 @@ import { View, ViewProps } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
 
-import { FORM_KEY_BOAT_CLASS, FORM_KEY_BOAT_NAME, FORM_KEY_SAIL_NUMBER } from 'forms/session'
+import { FORM_KEY_BOAT_CLASS, FORM_KEY_BOAT_ID, FORM_KEY_BOAT_NAME, FORM_KEY_SAIL_NUMBER } from 'forms/session'
 import I18n from 'i18n'
 import { Boat } from 'models'
 
@@ -95,11 +95,13 @@ class FormBoatPicker extends React.Component<ViewProps & WrappedFieldProps & {
     const { input: { onChange: onChangeName } } = (this.props as any)[FORM_KEY_BOAT_NAME]
     const { input: { onChange: onChangeClass } } = (this.props as any)[FORM_KEY_BOAT_CLASS]
     const { input: { onChange: onChangeSailNumber } } = (this.props as any)[FORM_KEY_SAIL_NUMBER]
+    const { input: { onChange: onChangeBoatId } } = (this.props as any)[FORM_KEY_BOAT_ID]
 
     const boat = this.boatFromName(name)
     onChangeName(name || null)
     onChangeClass((boat && boat.boatClass) || null)
     onChangeSailNumber((boat && boat.sailNumber) || null)
+    onChangeBoatId((boat && boat.id) || null)
   }
 
   protected boatFromName = (name: string) => find(this.props.boats, { name })

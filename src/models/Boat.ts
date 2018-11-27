@@ -5,6 +5,7 @@ export const ApiBodyKeys = {
   SailColor: 'sailColor',
   IsDefault: 'isDefault',
   ImageUrl: 'imageUrl',
+  Id: 'id',
 }
 
 export const mapResToBoat = (map: any) => map && ({
@@ -14,6 +15,7 @@ export const mapResToBoat = (map: any) => map && ({
   sailColor: map[ApiBodyKeys.SailColor],
   isDefault: map[ApiBodyKeys.IsDefault],
   imageUrl: map[ApiBodyKeys.ImageUrl],
+  id: map[ApiBodyKeys.Id],
 } as Boat)
 
 export default interface Boat {
@@ -23,5 +25,6 @@ export default interface Boat {
   sailColor?: string
   imageUrl?: string
   lastUsed?: number
+  id?: string
 }
 
