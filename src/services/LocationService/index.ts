@@ -36,8 +36,8 @@ const config: Config = {
   allowIdenticalLocations: true,
   // notificationTitle: 'Background tracking',
   // notificationText: 'enabled',
-  locationUpdateInterval: 200,
-  fastestLocationUpdateInterval: 200,
+  locationUpdateInterval: 333,
+  fastestLocationUpdateInterval: 333,
   activityRecognitionInterval: 0,
 }
 
