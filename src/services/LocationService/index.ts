@@ -1,4 +1,4 @@
-import BackgroundGeolocation from 'react-native-background-geolocation'
+import BackgroundGeolocation, { Config } from 'react-native-background-geolocation'
 
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import { getNowAsMillis, getTimestampAsMillis } from 'helpers/date'
@@ -13,15 +13,16 @@ const STATUS_KEY = 'enabledchange'
 const MOTION_CHANGE_KEY = 'enabledchange'
 const LOCATION_KEY = 'location'
 
-const config = {
+const config: Config = {
   reset: true,
   desiredAccuracy: isPlatformAndroid ?
     BackgroundGeolocation.DESIRED_ACCURACY_HIGH :
     BackgroundGeolocation.DESIRED_ACCURACY_NAVIGATION,
-  distanceFilter: 2,
+  distanceFilter: 0, // no minimum travel distance before location update to increase accuracy
+  disableElasticity: true, // disable auto distanceFilter based on speed to increase accuracy
   stopOnTerminate: false,
   heartbeatInterval: 15, // in seconds
-  stopOnStillActivity: false,
+  stopOnStationary: false,
   // debug
   debug: false,
   // debug: __DEV__,
@@ -29,15 +30,15 @@ const config = {
   logMaxDays: 2,
   // iOS:
   locationAuthorizationRequest: 'Always',
-  stationaryRadius: 2,
+  stationaryRadius: 1,
   preventSuspend: true,
   // Android:
   allowIdenticalLocations: true,
   // notificationTitle: 'Background tracking',
   // notificationText: 'enabled',
-  interval: 2000,
-  fastestInterval: 2000,
-  activitiesInterval: 5000,
+  locationUpdateInterval: 200,
+  fastestLocationUpdateInterval: 200,
+  activityRecognitionInterval: 0,
 }
 
 const locationListeners: any[] = []
