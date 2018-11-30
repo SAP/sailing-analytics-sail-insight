@@ -52,7 +52,7 @@ BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
 })
 
 BackgroundGeolocation.on(LOCATION_KEY, async (location: any) => {
-  Log('ON_LOCATION', location)
+  // Log('ON_LOCATION', location)
   await handleGeolocation(location)
 })
 

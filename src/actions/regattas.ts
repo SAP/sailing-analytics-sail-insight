@@ -42,3 +42,16 @@ export const fetchRegattaAndRaces: FetchRegattaAndRacesAction = regattaName => a
   await dispatch(fetchRegatta(regattaName))
   await dispatch(fetchAllRaces(regattaName))
 }
+
+export const fetchRegattaRaceManeuvers = (race: Race, competitorId?: string) => withDataApi(race.regattaName)(
+  (dataApi) => {
+    if (!race || !race.regattaName || !race.name) {
+      return
+    }
+    return dataApi.requestManeuvers(
+      race.regattaName,
+      race.name,
+      { fromTime: race.startDate, ...(competitorId && { competitorId }) },
+    )
+  },
+)

@@ -1,12 +1,16 @@
+import { get } from 'lodash'
+
 import { getDataApiGenerator, getDataApiV2Generator, getRaceApiGenerator, HttpMethods, UrlOptions } from 'api/config'
 import {
   AddRaceColumnResponseData,
   AddRaceColumnsBody,
   CompetitorBody,
+  CompetitorManeuverItem,
   CompetitorResponseData,
   CompetitorWithBoatBody,
   CreateEventBody,
   CreateEventResponseData,
+  ManeuverChangeItem,
   RaceLogOptions,
   SetTrackingTimesBody,
   StartTrackingBody,
@@ -35,23 +39,24 @@ const apiEndpoints = (serverUrl: string) => {
     regatta: getUrlV1('/regattas'),
     regattaRaces: getUrlV1('/regattas/{0}/races'),
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
+    regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
+    addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
+    createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
+    createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
     leaderboards: getUrlV1('/leaderboards'),
     leaderboardsV2: getUrlV2('/leaderboards'),
+    marks: getUrlV1('/leaderboards/{0}/marks'),
+    startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
+    endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
+    startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
+    stopTracking: getUrlV1('/leaderboards/{0}/stoptracking'),
+    setTrackingTimes: getUrlV1('/leaderboards/{0}/settrackingtimes'),
     boats: getUrlV1('/boats'),
     events: getUrlV1('/events'),
     gpsFixes: getUrlV1('/gps_fixes'),
     competitors: getUrlV1('/competitors'),
-    marks: getUrlV1('/leaderboards/{0}/marks'),
-    startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
-    endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     createEvent: getUrlV1('/events/createEvent'),
     updateEvent: getUrlV1('/events/{0}/update'),
-    addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
-    startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
-    stopTracking: getUrlV1('/leaderboards/{0}/stoptracking'),
-    setTrackingTimes: getUrlV1('/leaderboards/{0}/settrackingtimes'),
-    createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
-    createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
     putWind: getUrlV1('/wind/putWind'),
     raceLog: getRaceUrl('/racelog'),
     preferences: getUrlV1('/preferences/{0}'),
@@ -83,7 +88,7 @@ export interface DataApi {
   requestBoat: (id: string) => any
   startDeviceMapping: (leaderboardName: string, data: any) => any
   stopDeviceMapping: (leaderboardName: string, data: any) => any
-  sendGpsFixes: (gpsFixes: any) => any
+  sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
   createEvent: (body: CreateEventBody) => Promise<CreateEventResponseData>
   updateEvent: (id: string, body: UpdateEventBody) => any
   addRaceColumns: (regattaName: string, data?: AddRaceColumnsBody) => Promise<AddRaceColumnResponseData[]>
@@ -111,6 +116,11 @@ export interface DataApi {
   requestPreference: (key: string) => any
   updatePreference: (key: string, body: any) => any
   removePreference: (key: string) => any
+  requestManeuvers: (
+    regattaName: string,
+    raceName: string,
+    filter?: {competitorId?: string, fromTime?: number},
+  ) => Promise<CompetitorManeuverItem[]>
 }
 
 
@@ -156,7 +166,7 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),
     sendGpsFixes: gpsFixes => dataRequest(
       endpoints.gpsFixes(),
-      { method: HttpMethods.POST, body: gpsFixes },
+      { method: HttpMethods.POST, body: gpsFixes, dataProcessor: data => get(data, 'maneuverchanged') },
     ),
     createEvent: body => dataRequest(
       endpoints.createEvent(),
@@ -224,6 +234,10 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
     removePreference: key => dataRequest(
       endpoints.preferences({ pathParams: [key] }),
       { method: HttpMethods.DELETE },
+    ),
+    requestManeuvers: (regattaName, raceName, filters) => dataRequest(
+      endpoints.regattaRaceManeuvers({ pathParams: [regattaName, raceName], urlParams: filters }),
+      { dataProcessor: data => get(data, 'bycompetitor') },
     ),
   }
 }
