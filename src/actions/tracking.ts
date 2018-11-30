@@ -1,17 +1,18 @@
-import { head, isString } from 'lodash'
+import { find, get, head, isString, orderBy } from 'lodash'
 import { Alert } from 'react-native'
 
-import { AddRaceColumnResponseData } from 'api/endpoints/types'
+import { AddRaceColumnResponseData, ManeuverChangeItem } from 'api/endpoints/types'
 import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
-import { navigateToTracking } from 'navigation'
-import { getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { navigateToManeuver, navigateToTracking } from 'navigation'
+import { getCheckInByLeaderboardName, getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import * as LocationService from 'services/LocationService'
 
+import { withDataApi } from 'helpers/actions'
 import { startLocationUpdates, stopLocationUpdates } from './locations'
 import { fetchRegattaAndRaces } from './regattas'
 import { updateEventEndTime } from './sessions'
@@ -87,7 +88,7 @@ export const startTracking: StartTrackingAction = (data, options = {}) =>  async
             text: I18n.t('caption_ok'), onPress: async () => {
               try {
                 await dispatch(start(checkInData, { shouldCreateTrack, shouldClean: true }))
-                navigateToTracking(checkInData)
+                navigateToTracking()
                 resolve()
               } catch (err) {
                 reject(err)
@@ -100,7 +101,7 @@ export const startTracking: StartTrackingAction = (data, options = {}) =>  async
     } else {
       try {
         await dispatch(start(checkInData, { shouldCreateTrack }))
-        navigateToTracking(checkInData)
+        navigateToTracking()
         resolve()
       } catch (err) {
         reject(err)
@@ -108,3 +109,47 @@ export const startTracking: StartTrackingAction = (data, options = {}) =>  async
     }
   })
 }
+
+export const handleManeuverChange = (maneuverChangeData?: ManeuverChangeItem[]) =>
+  withDataApi({ fromTracked: true })(async (dataApi, dispatch, getState) => {
+    const trackedCheckIn = getTrackedCheckIn(getState())
+    if (!maneuverChangeData || !trackedCheckIn || !trackedCheckIn.currentTrackName) {
+      return
+    }
+    const trackedRaceChangeData = find(
+      maneuverChangeData,
+      item =>
+      item.regattaName === trackedCheckIn.regattaName &&
+      item.raceName &&
+      trackedCheckIn.currentTrackName &&
+      item.raceName.includes(trackedCheckIn.currentTrackName),
+    ) as ManeuverChangeItem
+    if (!trackedRaceChangeData) {
+      return
+    }
+    try {
+      const competitorManeuvers = get(
+        find(
+          await dataApi.requestManeuvers(
+            trackedRaceChangeData.regattaName,
+            trackedRaceChangeData.raceName,
+            { competitorId: trackedCheckIn.competitorId },
+          ),
+          { competitor: trackedCheckIn.competitorId },
+        ),
+        'maneuvers',
+      )
+      const maneuver = head(orderBy(
+        competitorManeuvers,
+        'positionAndTime.unixtime',
+        'desc',
+      ))
+      if (!maneuver) {
+        return
+      }
+      navigateToManeuver(maneuver)
+    } catch (err) {
+      Logger.debug(err)
+    }
+  },
+)

@@ -12,9 +12,8 @@ import { degToCompass } from 'helpers/physics'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
-import { navigateBack, navigateToManeuverMonitor, navigateToSetWind } from 'navigation'
-import { getCustomScreenParamData } from 'navigation/utils'
-import { getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { navigateBack, navigateToSetWind } from 'navigation'
+import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
@@ -124,7 +123,6 @@ class Tracking extends React.Component<{
         <ImageButton
           style={styles.tagLine}
           source={Images.corporateIdentity.sapTagLine}
-          onPress={navigateToManeuverMonitor}
           activeOpacity={1.0}
         />
       </View>
@@ -176,10 +174,10 @@ class Tracking extends React.Component<{
   }
 }
 
-const mapStateToProps = (state: any, props: any) => ({
+const mapStateToProps = (state: any) => ({
   locationTrackingStatus: getLocationTrackingStatus(state),
   trackingStats: getLocationStats(state) || {},
-  checkInData: getCheckInByLeaderboardName((getCustomScreenParamData(props) as CheckIn).leaderboardName)(state),
+  checkInData: getTrackedCheckIn(state) || {},
 })
 
 export default connect(mapStateToProps, { stopTracking })(Tracking)

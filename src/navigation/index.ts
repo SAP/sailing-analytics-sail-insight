@@ -1,3 +1,4 @@
+import { Maneuver } from 'api/endpoints/types'
 import { Boat, CheckIn, Session, TrackingSession, WindFix } from 'models'
 import * as  NavigationService from './NavigationService'
 import * as Screens from './Screens'
@@ -14,11 +15,11 @@ export const navigateToUserRegistrationCredentials = () => NavigationService.nav
 export const navigateToUserRegistrationBoat = () => NavigationService.navigateWithReset(Screens.RegisterBoat)
 export const navitateToLogin = () => NavigationService.navigate(Screens.Login)
 export const navigateToSessions = () => NavigationService.navigate(Screens.Sessions)
-export const navigateToManeuverMonitor = () => NavigationService.navigate(Screens.ManeuverMonitor)
+export const navigateToTracking = () => NavigationService.navigate(Screens.Tracking)
 
+export const navigateToManeuver = (data?: Maneuver) => NavigationService.navigate(Screens.ManeuverMonitor, { data })
 export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
-export const navigateToTracking = (data: any) => NavigationService.navigate(Screens.Tracking, { data })
 export const navigateToNewSession = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSession, { data })
 export const navigateToJoinRegatta = (data: CheckIn) => NavigationService.navigate(Screens.JoinRegatta, { data })
 export const navigateToTrackDetails = (data?: string) => NavigationService.navigate(Screens.TrackDetails, { data })

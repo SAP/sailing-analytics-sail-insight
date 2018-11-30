@@ -1,5 +1,6 @@
 import { createAction } from 'redux-actions'
 
+import { handleManeuverChange } from 'actions/tracking'
 import { dataApi } from 'api'
 import { currentTimestampAsText } from 'helpers/date'
 import Logger from 'helpers/Logger'
@@ -29,14 +30,16 @@ export const updateDistance = createAction('UPDATE_DISTANCE')
 export const updateLastWindCourse = createAction('UPDATE_WIND_COURSE')
 export const updateLastWindSpeed = createAction('UPDATE_WIND_SPEED')
 
-const sendGpsFix = async (serverUrl: string, postBody: any) => {
+const sendGpsFix = async (serverUrl: string, postBody: any, dispatch: DispatchType) => {
+  let maneuverInfo
   try {
-    const result = await dataApi(serverUrl).sendGpsFixes(postBody)
-    Logger.debug('GPS-Fix-Result: ', result)
+    maneuverInfo = await dataApi(serverUrl).sendGpsFixes(postBody)
     return true
   } catch (err) {
     Logger.debug(err)
     return false
+  } finally {
+    dispatch(handleManeuverChange(maneuverInfo))
   }
 }
 
@@ -83,7 +86,7 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   if (!postData) {
     throw new LocationTrackingException('gpsFix creation failed')
   }
-  if (getBulkGpsSetting(state) || !(await sendGpsFix(serverUrl, postData))) {
+  if (getBulkGpsSetting(state) || !(await sendGpsFix(serverUrl, postData, dispatch))) {
     GpsFixService.storeGPSFix(serverUrl, gpsFix)
   }
   await dispatch(updateUnsentGpsFixCount(GpsFixService.unsentGpsFixCount()))

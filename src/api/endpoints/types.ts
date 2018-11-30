@@ -162,3 +162,42 @@ export interface RaceLogOptions {
   finishTime?: number
   timestamp: number
 }
+
+export interface ManeuverChangeItem {
+  raceName: string
+  regattaName: string
+}
+
+
+export interface Maneuver {
+  maneuverType: string
+  newTack: any
+  speedBeforeInKnots: number
+  cogBeforeInTrueDegrees: number
+  speedAfterInKnots: number
+  cogAfterInTrueDegrees: number
+  directionChangeInDegrees: number
+  maneuverLoss: {
+    geographicalMiles: number
+    seaMiles: number
+    nauticalMiles: number
+    meters: number
+    kilometers: number
+    centralAngleDeg: number
+    centralAngleRad: number,
+  }
+  positionAndTime: {
+    type: string
+    lat_deg: number
+    lon_deg: number
+    unixtime: number,
+  }
+  maxTurningRateInDegreesPerSecond: number
+  avgTurningRateInDegreesPerSecond: number
+  lowestSpeedInKnots: number
+  markPassing: boolean
+}
+export interface CompetitorManeuverItem {
+  competitor: string
+  maneuvers: Maneuver[]
+}

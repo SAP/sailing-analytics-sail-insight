@@ -1,7 +1,13 @@
+import { get, isNumber } from 'lodash'
 import React from 'react'
 import { View } from 'react-native'
+import timer from 'react-native-timer'
+import { connect } from 'react-redux'
 
+import { Maneuver } from 'api/endpoints/types'
 import I18n from 'i18n'
+import { navigateToTracking } from 'navigation'
+import { getCustomScreenParamData } from 'navigation/utils'
 
 import Text from 'components/Text'
 import TrackingProperty from 'components/TrackingProperty'
@@ -12,21 +18,40 @@ import styles from './styles'
 
 
 class ManeuverMonitor extends React.Component<{
-  stopLocationTracking: () => void,
-  trackingStats: any,
-  checkInData: any,
+  maneuver: Maneuver,
 } > {
-  public render() {
 
-    // TODO: use values from maneuver notification
-    const cogChange = '24°'
-    const maneuverLoss = 2.38.toString()
-    const lowestSpeed = 0.2.toString()
-    const speedEnter = 12.20.toString()
-    const speedEnd = 11.32.toString()
-    const speedChange = 9.56.toString()
-    const turnMaxRate = '23.25°'
-    const turnAvgRate = '9.07°'
+  private lastManeuverTimeInMillis: number | undefined
+
+  public componentDidMount() {
+    timer.setTimeout(this, 'maneuver_timer', this.handleTimerEvent, 10000)
+  }
+
+  public componentWillUnmount() {
+    timer.clearTimeout(this)
+  }
+
+  public componentWillReceiveProps() {
+    const newTime = get(this, 'props.maneuver.positionAndTime.unixtime')
+    if (this.lastManeuverTimeInMillis && newTime && this.lastManeuverTimeInMillis === newTime) {
+      this.updateTimer()
+    }
+    this.lastManeuverTimeInMillis = newTime
+  }
+
+  public render() {
+    const { maneuver } = this.props
+
+    const cogChange = `${this.toFixedFractionText(maneuver.cogAfterInTrueDegrees - maneuver.cogBeforeInTrueDegrees)}°`
+    const maneuverLoss = this.toFixedFractionText('maneuverLoss.meters')
+    const lowestSpeed = this.toFixedFractionText('lowestSpeedInKnots')
+    const speedEnter = this.toFixedFractionText('speedBeforeInKnots')
+    const speedEnd = this.toFixedFractionText('speedAfterInKnots')
+    const speedChange = speedEnter && speedEnd ?
+      this.toFixedFractionText(maneuver.speedAfterInKnots - maneuver.speedBeforeInKnots) :
+      undefined
+    const turnMaxRate = `${this.toFixedFractionText('maxTurningRateInDegreesPerSecond')}°`
+    const turnAvgRate = `${this.toFixedFractionText('avgTurningRateInDegreesPerSecond')}°`
 
     const propertyProps = {
       titleStyle: styles.lowerTitle,
@@ -47,14 +72,14 @@ class ManeuverMonitor extends React.Component<{
             title={I18n.t('text_maneuver_loss')}
             value={maneuverLoss}
             unit={I18n.t('text_tracking_unit_meters')}
-            tendency="down"
+            // tendency="down"
           />
           <TrackingPropertyAutoFit
             style={[styles.dynamicPropertyContainer, styles.property]}
             title={I18n.t('text_maneuver_lowest_speed')}
             value={lowestSpeed}
             unit={I18n.t('text_tracking_unit_knots')}
-            tendency="up"
+            // tendency="up"
           />
         </View>
         <View style={styles.lowerValueContainer}>
@@ -100,7 +125,27 @@ class ManeuverMonitor extends React.Component<{
       </View>
     )
   }
+
+  private updateTimer = () => {
+    timer.clearTimeout(this)
+    timer.setTimeout(this, 'maneuver_timer', this.handleTimerEvent, 10000)
+  }
+
+  private handleTimerEvent = () => {
+    navigateToTracking()
+  }
+
+  private toFixedFractionText = (value: string | number, fractionDigits?: number) => {
+    const { maneuver } = this.props
+    const num = isNumber(value) ? value : get(maneuver, value)
+    return num ?
+      num.toFixed(fractionDigits || 2).toString() :
+      undefined
+  }
 }
 
+const mapStateToProps = (state: any, props: any) => ({
+  maneuver: getCustomScreenParamData(props),
+})
 
-export default ManeuverMonitor
+export default connect(mapStateToProps)(ManeuverMonitor)
