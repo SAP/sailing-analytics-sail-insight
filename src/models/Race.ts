@@ -1,4 +1,5 @@
 import { TrackingDisplayable } from 'models/base'
+import RaceStats from 'models/RaceStats'
 
 export const ApiBodyKeys = {
   Name: 'name',
@@ -29,13 +30,8 @@ export default interface Race extends TrackingDisplayable {
   endDate?: number
   trackingStartDate: number
   trackingEndDate: number
-  distance?: number
-  windDirection?: number
-  windSpeed?: number
-  avgSpeedUpwind?: number
-  avgSpeedDownwind?: number
-  maxSpeedUpwind?: number
-  maxSpeedDownwind?: number
   venueName?: string
   boatClass?: string
+  columnName?: string
+  statistics?: RaceStats
 }

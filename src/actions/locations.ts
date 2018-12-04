@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions'
 
-import { handleManeuverChange } from 'actions/tracking'
+import { checkAndUpdateTrackingStartTime, handleManeuverChange } from 'actions/tracking'
 import { dataApi } from 'api'
 import { currentTimestampAsText } from 'helpers/date'
 import Logger from 'helpers/Logger'
@@ -77,7 +77,7 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   const state = getState()
   const serverUrl = getTrackedCheckInBaseUrl(state)
   if (!serverUrl) {
-    throw new LocationTrackingException('missing event baseUrl')
+    throw new LocationTrackingException('[LOCATION] missing event baseUrl')
   }
   if (!isValidPositionFix(gpsFix)) {
     throw new LocationTrackingException('gps fix is invalid', gpsFix)
@@ -91,6 +91,7 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   }
   await dispatch(updateUnsentGpsFixCount(GpsFixService.unsentGpsFixCount()))
   await dispatch(updateTrackingStatistics(gpsFix))
+  dispatch(checkAndUpdateTrackingStartTime(gpsFix))
 }
 
 export const initLocationUpdates = () => async (dispatch: DispatchType) => {

@@ -10,7 +10,7 @@ import { PositionFix } from 'models'
 const LOG_TAG = '[BG_LOCATION]'
 const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
-const MOTION_CHANGE_KEY = 'enabledchange'
+const MOTION_CHANGE_KEY = 'motionchange'
 const LOCATION_KEY = 'location'
 
 const config: Config = {
@@ -44,8 +44,6 @@ const config: Config = {
 const locationListeners: any[] = []
 
 const Log = (...args: any[]) => Logger.debug(LOG_TAG, ...args)
-
-BackgroundGeolocation.on(STATUS_KEY, (state: any) => Log(state.enabled ? 'Started.' : 'Stopped'))
 
 BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
   Log('Motion change:', status)

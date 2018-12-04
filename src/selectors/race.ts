@@ -1,4 +1,4 @@
-import { keys } from 'lodash'
+import { find, get, keys } from 'lodash'
 import { createSelector } from 'reselect'
 
 import { RACE_ENTITY_NAME } from 'api/schemas'
@@ -9,32 +9,64 @@ import { ApiBodyKeys as RegattaApiKeys } from 'models/Regatta'
 import { removeUserPrefix } from 'services/SessionService'
 
 import { getOrderListFunction } from 'helpers/utils'
+import { mapResToRaceStats } from 'models/RaceStats'
 import { getUserInfo } from './auth'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from './checkIn'
 import { getEntities } from './entity'
 import { getEventEntity } from './event'
+import { getLeaderboardEntity } from './leaderboard'
 import { getRegatta, getRegattaEntity } from './regatta'
 
 
 const orderRaces = getOrderListFunction<Race>(['startDate', 'trackingStartDate'], 'desc')
+
+const getRaceColumnNameFromRegatta = (race: Race, regatta: any, seriesName: string, fleetName: string = 'Default') => {
+  const series = find(get(regatta, 'series'), { name: seriesName })
+  const trackedRace = find(
+    get(find(get(series, 'trackedRaces.fleets'), { name: fleetName }), 'races'),
+    { trackedRaceName: race.name },
+  )
+  return get(trackedRace, 'name')
+}
+
+const getLeaderboardStats = (leaderboard: any, competitorId: string, columnName: string) => {
+  const competitor = find(get(leaderboard, 'competitors'), { id: competitorId })
+  const result = get(competitor, ['columns', columnName, 'data'])
+  return result
+}
 
 const buildRace = (
   apiRace: any,
   checkIn: CheckIn,
   eventEntity: any = {},
   regattaEntity: any = {},
+  leadernboardEntity: any = {},
   userInfo?: User,
 ) => {
   const race = mapResToRace(apiRace)
+  const columnName = race && race.regattaName && getRaceColumnNameFromRegatta(
+    race,
+    regattaEntity[race.regattaName],
+    'Default',
+    get(checkIn, 'currentFleet'),
+  )
+  const stats = checkIn && checkIn.competitorId && getLeaderboardStats(
+    get(leadernboardEntity, checkIn.leaderboardName),
+    checkIn.competitorId,
+    columnName,
+  )
   return race && race.regattaName ?
     {
       ...race,
-      boatClass: regattaEntity[race.regattaName] && regattaEntity[race.regattaName][RegattaApiKeys.BoatClass],
-      venueName: checkIn &&
-        eventEntity[checkIn.eventId] &&
-        eventEntity[checkIn.eventId] &&
-        eventEntity[checkIn.eventId][EventApiKeys.Venue][EventApiKeys.VenueName],
+      columnName,
+      boatClass: get(regattaEntity, [race.regattaName, RegattaApiKeys.BoatClass]),
+      venueName: get(eventEntity, [checkIn.eventId, EventApiKeys.Venue, EventApiKeys.VenueName]),
       userStrippedDisplayName: removeUserPrefix(userInfo, race.name),
+      statistics: stats && mapResToRaceStats({
+        ...stats,
+        columnName,
+        id: race.id,
+      }),
     } as Race :
     race
 }
@@ -48,6 +80,7 @@ export const getRaces = (regattaName: string): (n: string) => Race[] => createSe
   getRegattaEntity,
   getEventEntity,
   getRaceEntity,
+  getLeaderboardEntity,
   getUserInfo,
   (
     regattaData: any,
@@ -55,6 +88,7 @@ export const getRaces = (regattaName: string): (n: string) => Race[] => createSe
     regattaEntity: any = {},
     eventEntity: any = {},
     raceEntity: any = {},
+    leadernboardEntity: any = {},
     userInfo,
   ) =>
     regattaData &&
@@ -64,6 +98,7 @@ export const getRaces = (regattaName: string): (n: string) => Race[] => createSe
       checkIn,
       eventEntity,
       regattaEntity,
+      leadernboardEntity,
       userInfo,
     ))),
 )
