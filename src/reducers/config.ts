@@ -23,6 +23,7 @@ export const LocationTrackingReducerKeys = {
   LAST_LONGITUDE_KEY: 'lastLongitude',
   LAST_WIND_DIRECTION: 'lastWindCourse',
   LAST_WIND_SPEED_IN_KNOTS: 'lastWindSpeedInKnots',
+  WAS_TRACKING_START_TIME_UPDATED: 'wasTrackingStartTimeUpdated',
 }
 
 export const OnboardingReducerKeys = {

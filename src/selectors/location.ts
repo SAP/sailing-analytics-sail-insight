@@ -49,3 +49,7 @@ export const getLocationStats: (state: any) => LocationStats = (state: any = {})
     lastWindSpeedInKnots: data[Keys.LAST_WIND_SPEED_IN_KNOTS],
   }
 }
+
+export const wasTrackingStartTimeUpdated = (state: any) =>
+  state[LOCATION_TRACKING_REDUCER_NAME] &&
+  state[LOCATION_TRACKING_REDUCER_NAME][Keys.WAS_TRACKING_START_TIME_UPDATED]

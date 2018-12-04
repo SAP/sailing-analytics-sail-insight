@@ -93,9 +93,12 @@ export const dateTimeText = (dateValue: string | number | Date) => {
   return moment(dateValue).locale(supportedLocale).format(`${dateFormat} - ${timeFormat}`)
 }
 
-export const timeText = (seconds: number) => {
+export const timeText = (seconds?: number) => {
+  if (!seconds) {
+    return 0
+  }
   const duration = moment.duration(seconds, 'seconds')
-  return duration.format('hh:mm:ss')
+  return duration.format('hh:mm:ss', { trim: false })
 }
 
 export const getNowAsMillis = (addValue?: number, category?: 'y' | 'd' | 'm' | 's' | 'ms') => {
@@ -116,3 +119,5 @@ export const isExpired = (timestamp: string, limitInHours: number) => {
   }
   return moment(timestamp).utc().add(limitInHours, 'hour').isBefore(moment().utc())
 }
+
+export const getDurationInS = (start?: number, end?: number) => (start && end && ((end - start) / 60)) || 0

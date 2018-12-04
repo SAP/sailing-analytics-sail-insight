@@ -98,8 +98,8 @@ class App extends Component {
     store.dispatch(performDeepLink(params))
   }
 
-  protected handleLocationTrackingStatus(state: any) {
-    const status = state && state.enabled ?
+  protected handleLocationTrackingStatus(enabled: boolean) {
+    const status = enabled ?
     LocationService.LocationTrackingStatus.RUNNING :
     LocationService.LocationTrackingStatus.STOPPED
     store.dispatch(updateTrackingStatus(status))

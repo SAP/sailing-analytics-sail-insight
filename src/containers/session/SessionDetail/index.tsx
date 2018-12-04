@@ -11,7 +11,7 @@ import { openTrackDetails } from 'actions/navigation'
 import {  startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsWithCheckoutActionSheetOptions } from 'helpers/actionSheets'
 import { getUnknownErrorMessage } from 'helpers/texts'
-import { listKeyExtractor } from 'helpers/utils'
+import { getStatsFromTracks, listKeyExtractor } from 'helpers/utils'
 import I18n from 'i18n'
 import { CheckIn, Race, Session } from 'models'
 import { navigateBack } from 'navigation'
@@ -96,7 +96,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   }
 
   public renderSessionDetails = () => {
-    const { session } = this.props
+    const { session, tracks } = this.props
     if (!session) {
       return <View/>
     }
@@ -112,7 +112,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
           eventImageSize="large"
           onTrackingPress={this.onTrackingPress}
         />
-        <TrackInfo style={styles.sidePadding}/>
+        <TrackInfo stats={getStatsFromTracks(tracks)}  style={styles.sidePadding}/>
       </View>
     )
   }

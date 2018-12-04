@@ -12,6 +12,7 @@ import {
   updateTrackingStatus,
   updateUnsentGpsFixCount,
 } from 'actions/locations'
+import { updateTrackingStartTimeUpdateFlag } from 'actions/tracking'
 import { distanceInM } from 'helpers/physics'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { PositionFix } from 'models'
@@ -34,6 +35,7 @@ const initialState = {
   [Keys.LAST_LONGITUDE_KEY]: null,
   [Keys.LAST_WIND_DIRECTION]: null,
   [Keys.LAST_WIND_SPEED_IN_KNOTS]: null,
+  [Keys.WAS_TRACKING_START_TIME_UPDATED]: false,
 }
 
 const reducer = handleActions(
@@ -45,6 +47,7 @@ const reducer = handleActions(
     [updateLastWindCourse as any]: itemUpdateHandler(Keys.LAST_WIND_DIRECTION),
     [updateLastWindSpeed as any]: itemUpdateHandler(Keys.LAST_WIND_SPEED_IN_KNOTS),
     [updateStartedAt as any]: itemUpdateHandler(Keys.START_AT_KEY),
+    [updateTrackingStartTimeUpdateFlag as any]: itemUpdateHandler(Keys.WAS_TRACKING_START_TIME_UPDATED),
     [updateTrackedRegatta as any]: (state: any = {}, action: any) =>
       !action || !action.payload ?
         state :

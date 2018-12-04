@@ -32,7 +32,7 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
 
     const queue = ActionQueue.create(dispatch, [
       fetchEntityAction(dataApi.requestEvent)(eventId),
-      fetchEntityAction(dataApi.requestLeaderboard)(leaderboardName),
+      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName),
       fetchRegatta(regattaName, serverUrl),
       fetchAllRaces(regattaName, serverUrl),
       ...spreadableList(competitorId, ActionQueue.createItem(

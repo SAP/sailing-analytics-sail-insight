@@ -64,7 +64,7 @@ class TrackItem extends React.Component<ViewProps & {
             source={Images.actions.settings}
           />}
         </View>
-        <TrackInfo/>
+        <TrackInfo stats={track.statistics}/>
       </View>
     )
   }
