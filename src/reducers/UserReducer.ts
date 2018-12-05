@@ -3,14 +3,14 @@ import { handleActions } from 'redux-actions'
 
 import { addOrUpdateUserBoat, boatWasUsed, removeBoat, updateBoats } from 'actions/user'
 import { getNowAsMillis } from 'helpers/date'
-
 import { removeEntity } from 'helpers/reducers'
-import { UserReducerKeys } from './config'
+
+import { UserState } from './config'
 
 
-const initialState = {
-  [UserReducerKeys.CURRENT_BOAT]: null,
-  [UserReducerKeys.BOATS]: {},
+const initialState: UserState = {
+  currentBoat: null,
+  boats: {},
 }
 
 const reducer = handleActions(
@@ -21,35 +21,35 @@ const reducer = handleActions(
       }
       return {
         ...state,
-        [UserReducerKeys.BOATS]: action.payload || {},
+        boats: action.payload || {},
       }
     },
-    [addOrUpdateUserBoat as any]: (state: any = {}, action?: any) => {
+    [addOrUpdateUserBoat as any]: (state: UserState = {}, action?: any) => {
       if (!action || !action.payload || !action.payload.name) {
         return state
       }
       return {
         ...state,
-        [UserReducerKeys.BOATS]: {
-          ...state[UserReducerKeys.BOATS],
+        boats: {
+          ...state.boats,
           [action.payload.name]: action.payload,
         },
       }
     },
-    [boatWasUsed as any]: (state: any = {}, action?: any) => {
+    [boatWasUsed as any]: (state: UserState = {}, action?: any) => {
       if (!action || !action.payload) {
         return state
       }
-      const boat = get(state, [UserReducerKeys.BOATS, action.payload])
+      const boat = get(state.boats, action.payload)
       if (!boat) {
         return state
       }
       const newState = { ...state }
-      return set(newState, [UserReducerKeys.BOATS, action.payload, 'lastUsed'], getNowAsMillis())
+      return set(newState, ['boats', action.payload, 'lastUsed'], getNowAsMillis())
     },
     [removeBoat as any]: (state: any = {}, action?: any) => removeEntity(
       state,
-      { entityType: UserReducerKeys.BOATS, id: action.payload },
+      { entityType: 'boats', id: action.payload },
     ),
   },
   initialState,

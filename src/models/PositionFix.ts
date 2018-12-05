@@ -23,10 +23,17 @@ export const isPositionFix = (arg: any): arg is PositionFix => {
   return arg.latitude !== undefined
 }
 
-export const isValidPositionFix = (position: PositionFix) =>
+export const hasValidPosition = (position: PositionFix) =>
   position &&
   isNumber(position.latitude) &&
   isNumber(position.longitude)
+
+export const hasValidPositionAndCourse = (position: PositionFix) =>
+  hasValidPosition(position) &&
+  isNumber(position.speedInKnots) &&
+  isNumber(position.bearingInDeg) &&
+  position.bearingInDeg > 0 &&
+  position.speedInKnots > 0
 
 export const PersistanceSchema = {
   latitude: 'double',

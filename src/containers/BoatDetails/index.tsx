@@ -140,10 +140,6 @@ class BoatDetails extends TextInputForm<Props> {
     navigateBack()
     return true
   }
-
-  protected updateScreenTitle = (title: string) => {
-    this.props.navigation.setParams({ heading: title })
-  }
 }
 
 const mapStateToProps = (state: any, props: any) => {

@@ -1,4 +1,4 @@
-import { LOCATION_TRACKING_REDUCER_NAME, LocationTrackingReducerKeys as Keys } from 'reducers/config'
+import { RootState } from 'reducers/config'
 
 
 export interface LocationStats {
@@ -14,42 +14,42 @@ export interface LocationStats {
   lastWindSpeedInKnots?: number,
 }
 
-export const getLocationTrackingStatus = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] &&
-  state[LOCATION_TRACKING_REDUCER_NAME][Keys.STATUS_KEY]
+export const getLocationTrackingStatus = (state: RootState = {}) =>
+  state.locationTracking && state.locationTracking.status
 
-export const getTrackedEventId = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] &&
-  state[LOCATION_TRACKING_REDUCER_NAME][Keys.EVENT_ID_KEY]
+export const getTrackedEventId = (state: RootState = {}) =>
+  state.locationTracking && state.locationTracking.eventId
 
-export const getTrackedLeaderboardName = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] &&
-  state[LOCATION_TRACKING_REDUCER_NAME][Keys.LEADERBOARD_NAME_KEY]
+export const getTrackedLeaderboardName = (state: RootState = {}) =>
+  state.locationTracking && state.locationTracking.leaderboardName
 
-export const getUnsentGpsFixCount = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] &&
-  state[LOCATION_TRACKING_REDUCER_NAME][Keys.UNSENT_GPS_FIXES_KEY]
+export const getUnsentGpsFixCount = (state: RootState = {}) =>
+  state.locationTracking && state.locationTracking.unsentGpsFixCount
 
-export const getLocationAccuracy = (state: any = {}) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] &&
-  state[LOCATION_TRACKING_REDUCER_NAME][Keys.LOCATION_ACCURACY_KEY]
+export const getLocationAccuracy = (state: RootState = {}) =>
+  state.locationTracking && state.locationTracking.locationAccuracy
 
-export const getLocationStats: (state: any) => LocationStats = (state: any = {}) => {
-  const data = state[LOCATION_TRACKING_REDUCER_NAME]
+export const getLocationStats = (state: RootState = {}) => {
+  const data = state.locationTracking
   return data && {
-    locationAccuracy: data[Keys.LOCATION_ACCURACY_KEY],
-    unsentGpsFixCount: data[Keys.UNSENT_GPS_FIXES_KEY],
-    speedInKnots: data[Keys.SPEED_IN_KNOTS_KEY],
-    startedAt: data[Keys.START_AT_KEY],
-    headingInDeg: data[Keys.HEADING_IN_DEG_KEY],
-    distance: data[Keys.DISTANCE_KEY],
-    lastLatitude: data[Keys.LAST_LATITUDE_KEY],
-    lastLongitude: data[Keys.LAST_LONGITUDE_KEY],
-    lastWindDirection: data[Keys.LAST_WIND_DIRECTION],
-    lastWindSpeedInKnots: data[Keys.LAST_WIND_SPEED_IN_KNOTS],
-  }
+    locationAccuracy: data.locationAccuracy,
+    unsentGpsFixCount: data.unsentGpsFixCount,
+    speedInKnots: data.speedInKnots,
+    startedAt: data.startedAt,
+    headingInDeg: data.headingInDeg,
+    distance: data.distance,
+    lastLatitude: data.lastLatitude,
+    lastLongitude: data.lastLongitude,
+    lastWindDirection: data.lastWindCourse,
+    lastWindSpeedInKnots: data.lastWindSpeedInKnots,
+  } as LocationStats
 }
 
-export const wasTrackingStartTimeUpdated = (state: any) =>
-  state[LOCATION_TRACKING_REDUCER_NAME] &&
-  state[LOCATION_TRACKING_REDUCER_NAME][Keys.WAS_TRACKING_START_TIME_UPDATED]
+export const wasTrackingStartTimeUpdated = (state: RootState) =>
+  state.locationTracking && state.locationTracking.wasTrackingStartTimeUpdated
+
+export const getStartAutoCourseUpdateStatus = (state: RootState) =>
+  state.locationTracking && state.locationTracking.startAutoCourseUpdateStatus
+
+export const getValidGpsFixCount = (state: RootState) =>
+  state.locationTracking && state.locationTracking.validGpsFixCount

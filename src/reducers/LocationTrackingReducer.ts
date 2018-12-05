@@ -11,56 +11,60 @@ import {
   updateTrackingStatistics,
   updateTrackingStatus,
   updateUnsentGpsFixCount,
+  updateValidGpsFixCount,
 } from 'actions/locations'
-import { updateTrackingStartTimeUpdateFlag } from 'actions/tracking'
+import { updateStartAutoCourseStatus, updateTrackingStartTimeUpdateFlag } from 'actions/tracking'
 import { distanceInM } from 'helpers/physics'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { PositionFix } from 'models'
 import { isPositionFix } from 'models/PositionFix'
+import { LocationTrackingState } from './config'
 
-import {  LocationTrackingReducerKeys as Keys } from './config'
 
-
-const initialState = {
-  [Keys.STATUS_KEY]: null,
-  [Keys.LEADERBOARD_NAME_KEY]: null,
-  [Keys.EVENT_ID_KEY]: null,
-  [Keys.UNSENT_GPS_FIXES_KEY]: null,
-  [Keys.LOCATION_ACCURACY_KEY]: null,
-  [Keys.SPEED_IN_KNOTS_KEY]: null,
-  [Keys.START_AT_KEY]: null,
-  [Keys.HEADING_IN_DEG_KEY]: null,
-  [Keys.DISTANCE_KEY]: 0,
-  [Keys.LAST_LATITUDE_KEY]: null,
-  [Keys.LAST_LONGITUDE_KEY]: null,
-  [Keys.LAST_WIND_DIRECTION]: null,
-  [Keys.LAST_WIND_SPEED_IN_KNOTS]: null,
-  [Keys.WAS_TRACKING_START_TIME_UPDATED]: false,
+const initialState: LocationTrackingState = {
+  status: null,
+  leaderboardName: null,
+  eventId: null,
+  unsentGpsFixCount: null,
+  locationAccuracy: null,
+  speedInKnots: null,
+  startedAt: null,
+  headingInDeg: null,
+  distance: 0,
+  lastLatitude: null,
+  lastLongitude: null,
+  lastWindCourse: null,
+  lastWindSpeedInKnots: null,
+  wasTrackingStartTimeUpdated: false,
+  startAutoCourseUpdateStatus: 'MISSING',
+  validGpsFixCount: 0,
 }
 
 const reducer = handleActions(
   {
-    [updateTrackingStatus as any]: itemUpdateHandler(Keys.STATUS_KEY),
-    [updateTrackedLeaderboard as any]: itemUpdateHandler(Keys.LEADERBOARD_NAME_KEY),
-    [updateTrackedEventId as any]: itemUpdateHandler(Keys.EVENT_ID_KEY),
-    [updateUnsentGpsFixCount as any]: itemUpdateHandler(Keys.UNSENT_GPS_FIXES_KEY),
-    [updateLastWindCourse as any]: itemUpdateHandler(Keys.LAST_WIND_DIRECTION),
-    [updateLastWindSpeed as any]: itemUpdateHandler(Keys.LAST_WIND_SPEED_IN_KNOTS),
-    [updateStartedAt as any]: itemUpdateHandler(Keys.START_AT_KEY),
-    [updateTrackingStartTimeUpdateFlag as any]: itemUpdateHandler(Keys.WAS_TRACKING_START_TIME_UPDATED),
+    [updateTrackingStatus as any]: itemUpdateHandler('status'),
+    [updateTrackedLeaderboard as any]: itemUpdateHandler('leaderboardName'),
+    [updateTrackedEventId as any]: itemUpdateHandler('eventId'),
+    [updateUnsentGpsFixCount as any]: itemUpdateHandler('unsentGpsFixCount'),
+    [updateLastWindCourse as any]: itemUpdateHandler('lastWindCourse'),
+    [updateLastWindSpeed as any]: itemUpdateHandler('lastWindSpeedInKnots'),
+    [updateStartedAt as any]: itemUpdateHandler('startedAt'),
+    [updateTrackingStartTimeUpdateFlag as any]: itemUpdateHandler('wasTrackingStartTimeUpdated'),
+    [updateValidGpsFixCount as any]: itemUpdateHandler('validGpsFixCount'),
+    [updateStartAutoCourseStatus as any]: itemUpdateHandler('startAutoCourseUpdateStatus'),
     [updateTrackedRegatta as any]: (state: any = {}, action: any) =>
       !action || !action.payload ?
         state :
         ({
           ...state,
-          [Keys.EVENT_ID_KEY]: action.payload.eventId,
-          [Keys.LEADERBOARD_NAME_KEY]: action.payload.leaderboardName,
-          [Keys.UNSENT_GPS_FIXES_KEY]: null,
-          [Keys.LOCATION_ACCURACY_KEY]: null,
+          eventId: action.payload.eventId,
+          leaderboardName: action.payload.leaderboardName,
+          unsentGpsFixCount: null,
+          locationAccuracy: null,
         }),
     [removeTrackedRegatta as any]: (state: any = {}) => ({
       ...state,
-      [Keys.STATUS_KEY]: state.status,
+      status: state.status,
       ...initialState,
     }),
     [updateTrackingStatistics as any]: (state: any = {}, action: any = {}) => {
@@ -75,17 +79,17 @@ const reducer = handleActions(
         state.distance :
         state.distance + distanceInM(lastLatitude, lastLongitude, gpsFix.latitude, gpsFix.longitude)
       const optionals = {
-        ...(gpsFix.accuracy && { [Keys.LOCATION_ACCURACY_KEY]: gpsFix.accuracy }),
-        ...(gpsFix.speedInKnots && gpsFix.speedInKnots > -1 && { [Keys.SPEED_IN_KNOTS_KEY]: gpsFix.speedInKnots }),
-        ...(gpsFix.bearingInDeg && gpsFix.bearingInDeg > -1 && { [Keys.HEADING_IN_DEG_KEY]: gpsFix.bearingInDeg }),
+        ...(gpsFix.accuracy && { locationAccuracy: gpsFix.accuracy }),
+        ...(gpsFix.speedInKnots && gpsFix.speedInKnots > -1 && { speedInKnots: gpsFix.speedInKnots }),
+        ...(gpsFix.bearingInDeg && gpsFix.bearingInDeg > -1 && { headingInDeg: gpsFix.bearingInDeg }),
       }
 
       return ({
         ...state,
         ...optionals,
-        [Keys.DISTANCE_KEY]: distance,
-        [Keys.LAST_LATITUDE_KEY]: gpsFix.latitude,
-        [Keys.LAST_LONGITUDE_KEY]: gpsFix.longitude,
+        distance,
+        lastLatitude: gpsFix.latitude,
+        lastLongitude: gpsFix.longitude,
       })
     },
   },

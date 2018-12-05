@@ -170,7 +170,7 @@ export interface ManeuverChangeItem {
 
 
 export interface Maneuver {
-  maneuverType: string
+  maneuverType: 'HEAD_UP' | 'BEAR_AWAY' | 'TACK' | 'JIBE' | 'PENALTY_CIRCLE' | 'UNKNOWN'
   newTack: any
   speedBeforeInKnots: number
   cogBeforeInTrueDegrees: number

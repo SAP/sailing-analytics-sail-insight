@@ -6,6 +6,7 @@ import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 
+import HeaderTitle from 'components/HeaderTitle'
 import ModalBackButton from 'components/ModalBackButton'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
@@ -47,8 +48,13 @@ export default createStackNavigator(
     },
     [Screens.ManeuverMonitor]: {
       screen: ManeuverMonitor,
-      navigationOptions: () => ({
-        title: I18n.t('title_maneuver_monitor'),
+      navigationOptions: ({ navigation: navigationProps }: any) => ({
+        headerTitle: (
+          <HeaderTitle
+            firstLine={navigationProps.state.params.heading}
+            secondLine={navigationProps.state.params.subHeading}
+          />
+        ),
         headerRight: <ModalBackButton type="icon"/>,
         headerLeft: null,
       }),

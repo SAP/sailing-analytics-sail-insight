@@ -1,5 +1,5 @@
-import { SETTINGS_REDUCER_NAME, SettingsReducerKeys } from 'reducers/config'
+import { RootState } from 'reducers/config'
 
 
-export const getBulkGpsSetting = (state: any = {}) =>
-  state[SETTINGS_REDUCER_NAME] && state[SETTINGS_REDUCER_NAME][SettingsReducerKeys.BULK_GPS_UPDATE]
+export const getBulkGpsSetting = (state: RootState = {}) =>
+  state.settings && state.settings.bulkGpsUpdate

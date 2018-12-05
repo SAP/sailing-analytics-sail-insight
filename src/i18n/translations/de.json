@@ -152,5 +152,11 @@
   "error_field_invalid_email": "Keine gültige E-Mail-Adresse.",
   "error_data_retrieval": "Datenabruf fehlgeschlagen.",
   "error_unauthorized": "Authorisierung fehlgeschlagen.",
-  "error_user already exists": "Nutzer existiert bereits."
+  "error_user already exists": "Nutzer existiert bereits.",
+
+  "JIBE": "Halse",
+  "HEAD_UP": "Anluven",
+  "BEAR_AWAY": "Abfallen",
+  "TACK": "Wende",
+  "PENALTY_CIRCLE": "Strafkreis"
 }

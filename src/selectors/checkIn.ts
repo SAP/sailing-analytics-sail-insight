@@ -2,21 +2,21 @@ import { createSelector } from 'reselect'
 
 import { CheckIn } from 'models'
 import { mapResToEvent } from 'models/Event'
-import { CHECK_IN_REDUCER_NAME } from 'reducers/config'
+import { RootState } from 'reducers/config'
 
 import { getEventEntity } from './event'
 import { getTrackedEventId, getTrackedLeaderboardName } from './location'
 
 
-export const getActiveCheckInEntity = (state: any) =>
-  state && state[CHECK_IN_REDUCER_NAME] && state[CHECK_IN_REDUCER_NAME].active
+export const getActiveCheckInEntity = (state: RootState = {}) =>
+  state.checkIn && state.checkIn.active
 
 
-export const getCheckInByLeaderboardName = (leaderboardName?: string) => (state: any = {}) => {
+export const getCheckInByLeaderboardName = (leaderboardName?: string) => (state: RootState = {}) => {
   const data = leaderboardName &&
-    state[CHECK_IN_REDUCER_NAME] &&
-    state[CHECK_IN_REDUCER_NAME].active &&
-    state[CHECK_IN_REDUCER_NAME].active[leaderboardName]
+    state.checkIn &&
+    state.checkIn.active &&
+    state.checkIn.active[leaderboardName]
   return data as CheckIn
 }
 
