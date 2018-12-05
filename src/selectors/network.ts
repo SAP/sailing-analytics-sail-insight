@@ -1,5 +1,5 @@
-import { NETWORK_REDUCER_NAME } from 'reducers/config'
+import { RootState } from 'reducers/config'
 
 
-export const isNetworkConnected = (state: any = {}) =>
-  state[NETWORK_REDUCER_NAME] && state[NETWORK_REDUCER_NAME].isConnected
+export const isNetworkConnected = (state: RootState = {}) =>
+  state.network && state.network.isConnected

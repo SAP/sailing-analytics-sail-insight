@@ -1,5 +1,4 @@
 import { get, keys } from 'lodash'
-import { ENTITIES_REDUCER_NAME } from 'reducers/config'
 
 /**
  * Transform one entitiy from an object of entities into a single object with an ID parameter
@@ -27,7 +26,7 @@ const addEntityId = (entities: any, idParam = 'id') => (entityId: string) => ({
 export const getEntities = (
   state: any = {},
   type: string | string[],
-  reducerName = ENTITIES_REDUCER_NAME,
+  reducerName = 'entities',
 ) => get(state[reducerName], type)
 
 /**

@@ -2,6 +2,7 @@ import { get, isNumber } from 'lodash'
 import React from 'react'
 import { View } from 'react-native'
 import timer from 'react-native-timer'
+import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 
 import { Maneuver } from 'api/endpoints/types'
@@ -17,7 +18,7 @@ import { container } from 'styles/commons'
 import styles from './styles'
 
 
-class ManeuverMonitor extends React.Component<{
+class ManeuverMonitor extends React.Component<NavigationScreenProps & {
   maneuver: Maneuver,
 } > {
 
@@ -25,6 +26,11 @@ class ManeuverMonitor extends React.Component<{
 
   public componentDidMount() {
     timer.setTimeout(this, 'maneuver_timer', this.handleTimerEvent, 10000)
+    const { maneuver } = this.props
+    if (!maneuver) {
+      return
+    }
+    this.props.navigation.setParams({ heading: I18n.t(maneuver.maneuverType) || I18n.t('title_maneuver_monitor') })
   }
 
   public componentWillUnmount() {

@@ -1,7 +1,7 @@
 import { head } from 'lodash'
 import { createSelector } from 'reselect'
 
-import { USER_REDUCER_NAME, UserReducerKeys } from 'reducers/config'
+import { RootState } from 'reducers/config'
 
 import * as boatForm from 'forms/boat'
 import { Boat } from 'models'
@@ -23,11 +23,11 @@ const orderBoatsLastUsedDesc = (boats: Boat[]) => boats.sort((b1, b2) => {
   return b2.lastUsed - b1.lastUsed
 })
 
-const getUserBoatEntities = (state: any = {}) => getEntities(state, UserReducerKeys.BOATS, USER_REDUCER_NAME)
-export const getUserBoats = (state: any = {}) => orderBoatsLastUsedDesc(getEntityArrayByType(
+const getUserBoatEntities = (state: RootState = {}) => getEntities(state, 'boats', 'user')
+export const getUserBoats = (state: RootState = {}) => orderBoatsLastUsedDesc(getEntityArrayByType(
   state,
-  UserReducerKeys.BOATS,
-  { reducerName: USER_REDUCER_NAME, omitId: true },
+  'boats',
+  { reducerName: 'user', omitId: true },
 ))
 
 export const getUserBoatByFormBoatName = createSelector(

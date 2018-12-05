@@ -1,12 +1,12 @@
 import { createAction } from 'redux-actions'
 
-import { checkAndUpdateTrackingStartTime, handleManeuverChange } from 'actions/tracking'
+import { checkAndUpdateRaceSettings, handleManeuverChange } from 'actions/tracking'
 import { dataApi } from 'api'
 import { currentTimestampAsText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { PositionFix } from 'models'
-import { isValidPositionFix } from 'models/PositionFix'
+import { hasValidPosition } from 'models/PositionFix'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getBulkGpsSetting } from 'selectors/settings'
 import * as CheckInService from 'services/CheckInService'
@@ -29,6 +29,7 @@ export const updateHeadingInDeg = createAction('UPDATE_HEADING_IN_DEG')
 export const updateDistance = createAction('UPDATE_DISTANCE')
 export const updateLastWindCourse = createAction('UPDATE_WIND_COURSE')
 export const updateLastWindSpeed = createAction('UPDATE_WIND_SPEED')
+export const updateValidGpsFixCount = createAction('UPDATE_VALID_GPS_FIX_COUNT')
 
 const sendGpsFix = async (serverUrl: string, postBody: any, dispatch: DispatchType) => {
   let maneuverInfo
@@ -79,7 +80,7 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   if (!serverUrl) {
     throw new LocationTrackingException('[LOCATION] missing event baseUrl')
   }
-  if (!isValidPositionFix(gpsFix)) {
+  if (!hasValidPosition(gpsFix)) {
     throw new LocationTrackingException('gps fix is invalid', gpsFix)
   }
   const postData = CheckInService.gpsFixPostData([gpsFix])
@@ -91,7 +92,7 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   }
   await dispatch(updateUnsentGpsFixCount(GpsFixService.unsentGpsFixCount()))
   await dispatch(updateTrackingStatistics(gpsFix))
-  dispatch(checkAndUpdateTrackingStartTime(gpsFix))
+  dispatch(checkAndUpdateRaceSettings(gpsFix))
 }
 
 export const initLocationUpdates = () => async (dispatch: DispatchType) => {
