@@ -7,7 +7,6 @@ import {
 
 import Images from '@assets/Images'
 import { timeText } from 'helpers/date'
-import { degToCompass } from 'helpers/physics'
 import I18n from 'i18n'
 import { RaceStats } from 'models'
 import styles from './styles'
@@ -63,7 +62,7 @@ class TrackInfo extends React.Component<ViewProps & {
             I18n.t('text_tracking_distance'),
             Images.info.distance,
             this.renderProperty({
-              value: isNumber(stats.distanceInM) ? stats.distanceInM : 0,
+              value: isNumber(stats.distanceInM) ? Math.trunc(stats.distanceInM) : 0,
               unit: I18n.t('text_tracking_unit_meters') }),
           )}
         </View>
@@ -75,7 +74,7 @@ class TrackInfo extends React.Component<ViewProps & {
             //   value: maneuver.count,
             //   unit: maneuver.type,
             // })),
-            this.renderProperty({ value: isNumber(stats.numberOfManeuvers) ? stats.numberOfManeuvers : 0 }),
+            this.renderProperty({ value: isNumber(stats.numberOfManeuvers) ? Math.trunc(stats.numberOfManeuvers) : 0 }),
           )}
           {this.renderItem(
             I18n.t('text_tracking_wind'),
@@ -91,14 +90,18 @@ class TrackInfo extends React.Component<ViewProps & {
             undefined,
             this.renderProperty({
               title: I18n.t('text_upwind'),
-              value: stats.avgSpeedUpwindKts,
+              value: isNumber(stats.avgSpeedUpwindKts) ?
+                stats.avgSpeedUpwindKts.toFixed(2) :
+                stats.avgSpeedUpwindKts,
               unit: I18n.t('text_tracking_unit_knots'),
               titlePosition: 'left',
               titleStyle: styles.leftTitle,
             }),
             this.renderProperty({
               title: I18n.t('text_downwind'),
-              value: stats.avgSpeedDownwindKts,
+              value: isNumber(stats.avgSpeedDownwindKts) ?
+                stats.avgSpeedDownwindKts.toFixed(2) :
+                stats.avgSpeedDownwindKts,
               unit: I18n.t('text_tracking_unit_knots'),
               titlePosition: 'left',
               titleStyle: styles.leftTitle,
@@ -109,14 +112,18 @@ class TrackInfo extends React.Component<ViewProps & {
             undefined,
             this.renderProperty({
               title: I18n.t('text_upwind'),
-              value: stats.maxSpeedUpwindKts,
+              value: isNumber(stats.maxSpeedUpwindKts) ?
+                stats.maxSpeedUpwindKts.toFixed(2) :
+                stats.maxSpeedUpwindKts,
               unit: I18n.t('text_tracking_unit_knots'),
               titlePosition: 'left',
               titleStyle: styles.leftTitle,
             }),
             this.renderProperty({
               title: I18n.t('text_downwind'),
-              value: stats.maxSpeedDownwindKts,
+              value: isNumber(stats.maxSpeedDownwindKts) ?
+                stats.maxSpeedDownwindKts.toFixed(2) :
+                stats.maxSpeedDownwindKts,
               unit: I18n.t('text_tracking_unit_knots'),
               titlePosition: 'left',
               titleStyle: styles.leftTitle,
