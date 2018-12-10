@@ -50,7 +50,7 @@ export const withDataApi: DataApiInjector = (options = {}) => serverUrlAction =>
     serverUrl = checkIn && checkIn.serverUrl
   }
   if (!serverUrl) {
-    throw new CheckInException('server url not valid')
+    throw new CheckInException('Setup DataApi: server url invalid.')
   }
   return serverUrlAction(dataApi(serverUrl), dispatch, getState)
 }

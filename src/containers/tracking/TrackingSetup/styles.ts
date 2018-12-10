@@ -32,4 +32,8 @@ export default EStyleSheets.create({
     marginTop: '$shareSpacing',
     marginBottom: '$shareSpacing',
   },
+  disabledShareButton: {
+    color: '$primaryInactiveColor',
+    backgroundColor: 'transparent',
+  },
 })

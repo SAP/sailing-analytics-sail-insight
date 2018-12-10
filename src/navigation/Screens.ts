@@ -20,6 +20,7 @@ export const CheckIn = 'CheckIn'
 export const CheckInNavigator = 'CheckInNavigator'
 export const QRScanner = 'QRScanner'
 export const JoinRegatta = 'JoinRegatta'
+export const EditCompetitor = 'EditCompetitor'
 
 // tabs
 export const MainTabs = 'MainTabs'

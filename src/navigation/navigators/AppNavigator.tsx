@@ -12,6 +12,7 @@ import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
 
+import EditCompetitor from 'containers/session/EditCompetitor'
 import MainNavigator from './MainNavigator'
 import NewSessionNavigator from './NewSessionNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
@@ -42,6 +43,12 @@ export default createStackNavigator(
     },
     [Screens.JoinRegatta]: {
       screen: JoinRegatta,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    [Screens.EditCompetitor]: {
+      screen: EditCompetitor,
       navigationOptions: {
         header: null,
       },

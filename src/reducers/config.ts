@@ -3,7 +3,7 @@ import { AutoCourseUpdateState } from 'helpers/types'
 export interface RootState {
   auth?: any | AuthState
   network?: any
-  checkIn?: any
+  checkIn?: any | CheckInState
   entities?: any
   locationTracking?: any | LocationTrackingState
   form?: any
@@ -49,4 +49,9 @@ export interface AuthState {
 export interface UserState {
   currentBoat?: any | null
   boats?: any | null
+}
+
+export interface CheckInState {
+  active: any
+  isLoadingCheckIn: boolean
 }

@@ -101,7 +101,7 @@ export const timeText = (seconds?: number) => {
   return duration.format('hh:mm:ss', { trim: false })
 }
 
-export const getNowAsMillis = (addValue?: number, category?: 'y' | 'd' | 'm' | 's' | 'ms') => {
+export const getNowAsMillis = (addValue?: number, category?: 'y' | 'd' | 'm' | 's' | 'ms' | 'hour') => {
   const momentTime = moment().utc() // TODO: check if utc instead of local value
   return (addValue && category ? momentTime.add(addValue, category) : momentTime).valueOf()
 }

@@ -16,7 +16,10 @@ const handleEvent = ({ error, params }: any) => {
   listeners.forEach(listener => listener(params))
 }
 
-export const initialize = () => branch.subscribe(handleEvent)
+export const initialize = () => {
+  branch.skipCachedEvents()
+  branch.subscribe(handleEvent)
+}
 
 export const addListener = (listener: DeepLinkListenerType) => listeners.push(listener)
 export const removeListener = (listener: DeepLinkListenerType) => {
@@ -36,7 +39,7 @@ export interface SharingData {
   title: string,
   contentDescription: string,
   contentImageUrl?: string,
-  contentMetadata?: {customMetaData: any},
+  contentMetadata?: {customMetadata: any},
 }
 
 export interface ShareOptions {

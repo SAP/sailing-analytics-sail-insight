@@ -8,8 +8,9 @@ import Images from '@assets/Images'
 import { removeCheckIn } from 'actions/checkIn'
 import {
   createSessionCreationQueue,
+  CreateSessionCreationQueueAction,
   generateSessionNameWithUserPrefix,
-  shareSessionFromForm,
+  shareSessionRegatta,
 } from 'actions/sessions'
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import * as sessionForm from 'forms/session'
@@ -19,7 +20,7 @@ import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { CheckInUpdate, TrackingSession } from 'models'
-import { navigateBack, navigateToEditSession } from 'navigation'
+import { navigateToEditSession, navigateToMain } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getLastUsedBoat } from 'selectors/user'
 
@@ -40,9 +41,9 @@ import styles from './styles'
 
 interface Props {
   sessionName?: string
-  shareSessionFromForm: (formName: string) => void
+  shareSessionRegatta: (leaderboardName: string) => void
   generateSessionNameWithUserPrefix: (name: string) => any
-  createSessionCreationQueue: (session: TrackingSession) => any
+  createSessionCreationQueue: CreateSessionCreationQueueAction
   startTracking: StartTrackingAction
   removeCheckIn: ActionFunctionAny<any>
 }
@@ -51,12 +52,13 @@ class TrackingSetup extends TextInputForm<Props> {
 
   public state = {
     isShareSheetLoading: false,
-    creationError: null,
     isCreationLoading: false,
+    creationError: null,
+    disableActionButtons: false,
   }
 
   protected creationQueue?: ActionQueue
-  protected session?: TrackingSession
+  protected session?: TrackingSession | null
 
   private commonProps = {
     validate: [validateRequired],
@@ -74,6 +76,7 @@ class TrackingSetup extends TextInputForm<Props> {
       isCreationLoading,
       isShareSheetLoading,
       creationError,
+      disableActionButtons,
     } = this.state
     return (
       <ScrollContentView>
@@ -127,9 +130,11 @@ class TrackingSetup extends TextInputForm<Props> {
             <TextButton
               style={styles.shareButton}
               textStyle={button.textButtonText}
-              onPress={this.onSharePress}
+              onPress={this.props.handleSubmit(this.onShareSubmit)}
               isLoading={isShareSheetLoading}
               loadingColor={$primaryButtonColor}
+              disabled={disableActionButtons}
+              disabledStyle={styles.disabledShareButton}
             >
               {I18n.t('caption_share_session')}
             </TextButton>
@@ -140,24 +145,14 @@ class TrackingSetup extends TextInputForm<Props> {
         <TextButton
           style={[button.trackingAction, styles.startButton, styles.keyValue]}
           textStyle={button.trackingActionText}
-          onPress={this.props.handleSubmit(this.onSubmit)}
+          onPress={this.props.handleSubmit(this.onStartSubmit)}
           isLoading={isCreationLoading}
+          disabled={disableActionButtons}
         >
           {I18n.t('caption_start').toUpperCase()}
         </TextButton>
       </ScrollContentView>
     )
-  }
-
-  protected onSharePress = async () => {
-    await this.setState({ isShareSheetLoading: true })
-    try {
-      await this.props.shareSessionFromForm(sessionForm.SESSION_FORM_NAME)
-    } catch (err) {
-      Alert.alert(getErrorDisplayMessage(err))
-    } finally {
-      this.setState({ isShareSheetLoading: false })
-    }
   }
 
   protected renderProperty({ label, input: { value }, meta: { touched: showError, error } }: any) {
@@ -186,25 +181,57 @@ class TrackingSetup extends TextInputForm<Props> {
 
   protected onEditPress = () => navigateToEditSession()
 
-  protected onSubmit = async (values: any) => {
-    this.session = sessionForm.trackingSessionFromFormValues(values)
-    this.session.name = this.props.generateSessionNameWithUserPrefix(this.session.name)
-    if (!this.creationQueue) {
-      this.creationQueue = this.props.createSessionCreationQueue(this.session) as ActionQueue
-    }
+  protected createSession = async (
+    values: any,
+    options: {loadingFlagName?: string, isPublic?: boolean} = {},
+  ) => {
+    const session = sessionForm.trackingSessionFromFormValues(values)
+    session.name = this.props.generateSessionNameWithUserPrefix(session.name)
+    const actionQueue =
+      this.creationQueue ||
+      this.props.createSessionCreationQueue(session, { isPublic: options.isPublic }) as ActionQueue
     try {
-      await this.setState({ isCreationLoading: true, creationError: null })
-      await this.creationQueue.execute()
-      navigateBack()
-      this.props.startTracking(this.session.name, { skipNewTrack: true })
-      return true
+      this.setState({
+        ...(options.loadingFlagName && { [options.loadingFlagName]: true }),
+        creationError: null,
+        disableActionButtons: true,
+      })
+      await actionQueue.execute()
+      return session
     } catch (err) {
       Logger.debug('Creation queue error: ', err)
       this.setState({ creationError: getErrorDisplayMessage(err) })
-      return false
+      return null
     } finally {
-      this.setState({ isCreationLoading: false })
+      this.setState({
+        ...(options.loadingFlagName && { [options.loadingFlagName]: false }),
+        disableActionButtons: false,
+      })
     }
+  }
+
+  protected onShareSubmit = async (values: any) => {
+    await this.setState({ isShareSheetLoading: true })
+    this.session = this.session || await this.createSession(values, { isPublic: true })
+    try {
+      if (!this.session) { return }
+      await this.props.shareSessionRegatta(this.session.name)
+    } catch (err) {
+      Logger.debug(err)
+      Alert.alert(getErrorDisplayMessage(err))
+    } finally {
+      this.setState({ isShareSheetLoading: false })
+    }
+    return false
+  }
+
+  protected onStartSubmit = async (values: any) => {
+    this.session = this.session || await this.createSession(values, { loadingFlagName: 'isCreationLoading' })
+    if (!this.session) {
+      return
+    }
+    navigateToMain()
+    this.props.startTracking(this.session.name)
   }
 }
 
@@ -222,7 +249,7 @@ const mapStateToProps = (state: any, props: any) => {
 export default connect(
   mapStateToProps,
   {
-    shareSessionFromForm,
+    shareSessionRegatta,
     generateSessionNameWithUserPrefix,
     createSessionCreationQueue,
     startTracking,

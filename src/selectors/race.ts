@@ -60,7 +60,7 @@ const buildRace = (
       ...race,
       columnName,
       boatClass: get(regattaEntity, [race.regattaName, RegattaApiKeys.BoatClass]),
-      venueName: get(eventEntity, [checkIn.eventId, EventApiKeys.Venue, EventApiKeys.VenueName]),
+      venueName: get(eventEntity, [checkIn && checkIn.eventId, EventApiKeys.Venue, EventApiKeys.VenueName]),
       userStrippedDisplayName: removeUserPrefix(userInfo, race.name),
       statistics: stats && mapResToRaceStats({
         ...stats,
@@ -74,7 +74,7 @@ const buildRace = (
 
 export const getRaceEntity = (state: any) => getEntities(state, RACE_ENTITY_NAME)
 
-export const getRaces = (regattaName: string): (n: string) => Race[] => createSelector(
+export const getRaces = (regattaName: string) => createSelector(
   getRegatta(regattaName),
   getCheckInByLeaderboardName(regattaName),
   getRegattaEntity,
@@ -109,12 +109,14 @@ export const getUserRaces = createSelector(
   getRegattaEntity,
   getEventEntity,
   getRaceEntity,
+  getLeaderboardEntity,
   getUserInfo,
   (
     checkIns: any = {},
     regattaEntity: any = {},
     eventEntity: any = {},
     raceEntity: any = {},
+    leadernboardEntity: any = {},
     userInfo,
   ) => {
     return orderRaces(keys(raceEntity).map((id: string) => {
@@ -124,6 +126,7 @@ export const getUserRaces = createSelector(
         checkIns[apiRace && apiRace[RaceApiKeys.Regatta]],
         eventEntity,
         regattaEntity,
+        leadernboardEntity,
         userInfo,
       )
     }))

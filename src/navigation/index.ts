@@ -24,6 +24,7 @@ export const navigateToNewSession = (data?: TrackingSession) => NavigationServic
 export const navigateToJoinRegatta = (data: CheckIn) => NavigationService.navigate(Screens.JoinRegatta, { data })
 export const navigateToTrackDetails = (data?: string) => NavigationService.navigate(Screens.TrackDetails, { data })
 export const navigateToBoatDetails = (data?: Boat) => NavigationService.navigate(Screens.BoatDetails, { data })
+export const navigateToEditCompetitor = (data: CheckIn) => NavigationService.navigate(Screens.EditCompetitor, { data })
 
 export const navigateToEditSession = (data?: Session) => NavigationService.navigate(
   Screens.EditSession,

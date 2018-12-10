@@ -89,7 +89,7 @@ class TrackInfo extends React.Component<ViewProps & {
             I18n.t('text_maneuver_avg_speed'),
             undefined,
             this.renderProperty({
-              title: I18n.t('text_upwind'),
+              // title: I18n.t('text_upwind'),
               value: isNumber(stats.avgSpeedUpwindKts) ?
                 stats.avgSpeedUpwindKts.toFixed(2) :
                 stats.avgSpeedUpwindKts,
@@ -97,21 +97,21 @@ class TrackInfo extends React.Component<ViewProps & {
               titlePosition: 'left',
               titleStyle: styles.leftTitle,
             }),
-            this.renderProperty({
-              title: I18n.t('text_downwind'),
-              value: isNumber(stats.avgSpeedDownwindKts) ?
-                stats.avgSpeedDownwindKts.toFixed(2) :
-                stats.avgSpeedDownwindKts,
-              unit: I18n.t('text_tracking_unit_knots'),
-              titlePosition: 'left',
-              titleStyle: styles.leftTitle,
-            }),
+            // this.renderProperty({
+            //   title: I18n.t('text_downwind'),
+            //   value: isNumber(stats.avgSpeedDownwindKts) ?
+            //     stats.avgSpeedDownwindKts.toFixed(2) :
+            //     stats.avgSpeedDownwindKts,
+            //   unit: I18n.t('text_tracking_unit_knots'),
+            //   titlePosition: 'left',
+            //   titleStyle: styles.leftTitle,
+            // }),
           )}
           {this.renderItem(
             I18n.t('text_maneuver_max_speed'),
             undefined,
             this.renderProperty({
-              title: I18n.t('text_upwind'),
+              // title: I18n.t('text_upwind'),
               value: isNumber(stats.maxSpeedUpwindKts) ?
                 stats.maxSpeedUpwindKts.toFixed(2) :
                 stats.maxSpeedUpwindKts,
@@ -119,15 +119,15 @@ class TrackInfo extends React.Component<ViewProps & {
               titlePosition: 'left',
               titleStyle: styles.leftTitle,
             }),
-            this.renderProperty({
-              title: I18n.t('text_downwind'),
-              value: isNumber(stats.maxSpeedDownwindKts) ?
-                stats.maxSpeedDownwindKts.toFixed(2) :
-                stats.maxSpeedDownwindKts,
-              unit: I18n.t('text_tracking_unit_knots'),
-              titlePosition: 'left',
-              titleStyle: styles.leftTitle,
-            }),
+            // this.renderProperty({
+            //   title: I18n.t('text_downwind'),
+            //   value: isNumber(stats.maxSpeedDownwindKts) ?
+            //     stats.maxSpeedDownwindKts.toFixed(2) :
+            //     stats.maxSpeedDownwindKts,
+            //   unit: I18n.t('text_tracking_unit_knots'),
+            //   titlePosition: 'left',
+            //   titleStyle: styles.leftTitle,
+            // }),
           )}
         </View>
       </View>

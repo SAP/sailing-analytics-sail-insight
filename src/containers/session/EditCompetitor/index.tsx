@@ -3,11 +3,11 @@ import { KeyboardType, ReturnKeyType, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, Fields, reduxForm } from 'redux-form'
 
+import * as competitorForm from 'forms/competitor'
 import * as sessionForm from 'forms/session'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
-import { Boat } from 'models'
-import { navigateBack } from 'navigation'
+import { Boat, CheckIn, CompetitorInfo } from 'models'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormBoatPicker from 'components/form/FormBoatPicker'
@@ -16,7 +16,11 @@ import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
-import { getUserBoats } from 'selectors/user'
+import { registerCompetitorAndDevice } from 'actions/checkIn'
+import Logger from 'helpers/Logger'
+import { getCustomScreenParamData } from 'navigation/utils'
+import { getUserInfo } from 'selectors/auth'
+import { getLastUsedBoat, getUserBoats } from 'selectors/user'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
@@ -24,9 +28,13 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 interface Props {
   boats: Boat[]
+  registerCompetitorAndDevice: (data: any, values: any) => any
+  checkInData: CheckIn
 }
 
-class EditSession extends TextInputForm<Props> {
+class EditCompetitor extends TextInputForm<Props> {
+
+  public state = { isLoading: false }
 
   private commonProps = {
     keyboardType: 'default' as KeyboardType,
@@ -39,26 +47,18 @@ class EditSession extends TextInputForm<Props> {
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
-            <Text>{I18n.t('text_edit_session_claim_01')}</Text>
-            <Text style={text.claimHighlighted}>{I18n.t('text_edit_session_claim_02')}</Text>
+            <Text>{I18n.t('text_edit_competitor_claim_01')}</Text>
+            <Text style={text.claimHighlighted}>{I18n.t('text_edit_competitor_claim_02')}</Text>
           </Text>
         </View>
         <View style={registration.bottomContainer()}>
           <Field
-            label={I18n.t('text_placeholder_session_name')}
-            name={sessionForm.FORM_KEY_NAME}
-            component={FormTextInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TRACK_NAME)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
-            {...this.commonProps}
-          />
-          <Field
             style={input.topMargin}
-            label={I18n.t('text_track_name')}
-            name={sessionForm.FORM_KEY_TRACK_NAME}
+            label={I18n.t('text_your_name')}
+            name={'name'}
             component={FormTextInput}
             onSubmitEditing={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TRACK_NAME)}
+            inputRef={this.handleInputRef('name')}
           />
           <Fields
             style={input.topMargin}
@@ -102,18 +102,11 @@ class EditSession extends TextInputForm<Props> {
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             {...this.commonProps}
           />
-          {/* <Field
-            style={input.topMargin}
-            label={I18n.t('text_privacy_setting')}
-            name={sessionForm.FORM_KEY_PRIVACY_SETTING}
-            component={FormTextInput}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_PRIVACY_SETTING)}
-            {...this.commonProps}
-          /> */}
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
-            onPress={this.onSubmit}
+            onPress={this.props.handleSubmit(this.onSubmit)}
+            isLoading={this.state.isLoading}
           >
             {I18n.t('caption_accept')}
           </TextButton>
@@ -122,18 +115,43 @@ class EditSession extends TextInputForm<Props> {
     )
   }
 
-  private onSubmit = () => {
-    navigateBack()
+  private onSubmit = async (values: CompetitorInfo) => {
+    try {
+      this.setState({ isLoading: true })
+      await this.props.registerCompetitorAndDevice(this.props.checkInData, values)
+      return true
+    } catch (err) {
+      Logger.debug(err)
+      return false
+    } finally {
+      this.setState({ isLoading: false })
+    }
   }
 }
 
-const mapStateToProps = (state: any) => ({
-  boats: getUserBoats(state),
-})
+const mapStateToProps = (state: any, props: any) => {
+  const userInfo = getUserInfo(state)
+  const lastUsedBoat = getLastUsedBoat(state)
+  return {
+    initialValues: {
+      name: userInfo && userInfo.fullName,
+      ...(lastUsedBoat && {
+        boatClass: lastUsedBoat.boatClass,
+        boatId: lastUsedBoat.id,
+        boatName: lastUsedBoat.name,
+        sailNumber: lastUsedBoat.sailNumber,
+      }),
+      teamName: I18n.t('text_default_value_team_name'),
+    } as CompetitorInfo,
+    boats: getUserBoats(state),
+    checkInData: getCustomScreenParamData(props),
+  }
+}
 
-export default connect(mapStateToProps)(reduxForm<{}, Props>({
-  form: sessionForm.SESSION_FORM_NAME,
-  destroyOnUnmount: false,
+
+export default connect(mapStateToProps, { registerCompetitorAndDevice })(reduxForm<{}, Props>({
+  form: competitorForm.COMPETITOR_FORM_NAME,
+  destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
-  validate: sessionForm.validate,
-})(EditSession))
+  validate: competitorForm.validate,
+})(EditCompetitor))

@@ -25,12 +25,12 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>dlabssailing</string>
+				<string>comdlabssailingtracker</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>10</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -88,11 +88,11 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>branch_app_domain</key>
-	<string>wsy3.app.link</string>
+	<string>sailinsight20-app.sapsailing.com</string>
 	<key>branch_key</key>
 	<dict>
 		<key>live</key>
-		<string>key_live_jdx39oTEIOV5InIMLFJpWahmsseyKfej</string>
+		<string>key_live_dfPlye3KB3UqKx6h9FhdAmbbytkpdUuA</string>
 	</dict>
 </dict>
 </plist>

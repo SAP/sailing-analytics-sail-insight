@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, ViewProps, ViewStyle } from 'react-native'
+import { TextStyle, TouchableOpacity, ViewProps, ViewStyle } from 'react-native'
 
 import { OnPressType } from 'helpers/types'
 
@@ -13,6 +13,7 @@ abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & 
   disabled?: boolean,
   onPress?: OnPressType,
   loadingColor?: string,
+  disabledStyle?: TextStyle | ViewStyle,
 }, S, SS> {
 
   protected abstract renderContent: () => Element | JSX.Element
@@ -34,10 +35,11 @@ abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & 
       isLoading,
       disabled,
       onPress,
+      disabledStyle,
     } = this.props
 
     const touchableStyle = this.getTouchableStyle()
-    const additionalStyle = disabled ? styles.disabled : undefined
+    const additionalStyle = disabled ? [styles.disabled, disabledStyle] : undefined
     return (
       <TouchableOpacity
         onLayout={this.handleContentSizeChanged}

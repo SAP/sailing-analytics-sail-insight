@@ -11,7 +11,6 @@ import { checkIn } from 'actions/checkIn'
 import { dateTimeText } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { CheckIn } from 'models'
-import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
@@ -38,7 +37,6 @@ class JoinRegatta extends React.Component<{
     await this.setState({ isLoading: true })
     try {
       await this.props.checkIn(this.props.checkInData)
-      navigateToSessions()
     } catch (err) {
       Alert.alert(getUnknownErrorMessage())
     } finally {
@@ -50,6 +48,8 @@ class JoinRegatta extends React.Component<{
     const { event = {}, leaderboard = {} } = this.props
     const eventImageUrl = getEventPreviewImageUrl(event)
     const logoImageUrl = getEventLogoImageUrl(event)
+    let title = leaderboard.displayName || leaderboard.name
+    title = event.name !== title ? `${title}\n(${event.name})` : title
     return (
       <ScrollContentView>
         <View style={container.stretchContent}>
@@ -58,7 +58,7 @@ class JoinRegatta extends React.Component<{
           <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
           <View style={[styles.textContainer, registration.topContainer()]}>
             <Text style={registration.claim()}>
-              {`${leaderboard.displayName || leaderboard.name}\n(${event.name})`}
+              {title}
             </Text>
             <Text style={[text.propertyValue, styles.timeText]}>{dateTimeText(event.startDate)}</Text>
             <IconText

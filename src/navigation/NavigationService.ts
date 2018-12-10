@@ -34,7 +34,7 @@ export const navigateBack = (params?: any) => {
   navigator.dispatch(NavigationActions.back(params))
 }
 
-export const navigateWithReset = (route: string | string[] , index: number = 0) => {
+export const navigateWithReset = (route: string | string[] , index: number = 0, options?: {rootReset: boolean}) => {
   if (!navigator) {
     return
   }
@@ -44,5 +44,6 @@ export const navigateWithReset = (route: string | string[] , index: number = 0) 
   navigator.dispatch(StackActions.reset({
     index,
     actions: routes.map(routeName => NavigationActions.navigate({ routeName })),
+    ...(options && options.rootReset ? { key: null } : {}),
   }))
 }

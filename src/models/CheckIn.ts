@@ -13,12 +13,13 @@ export const ApiBodyKeys = {
   ServerUrl: 'serverUrl',
 }
 
-export const UrlPropertyNames = {
+export const InvitationUrlPropertyName = {
   BoatId: 'boat_id',
   EventId: 'event_id',
   LeaderboardName: 'leaderboard_name',
   CompetitorId: 'competitor_id',
   MarkId: 'mark_id',
+  Secret: 'secret',
 }
 
 export const mapResToModel = (map: any) => map && ({
@@ -33,12 +34,13 @@ export const mapResToModel = (map: any) => map && ({
 
 export const urlParamsToCheckIn = (serverUrl: string, queryData: any) => serverUrl && queryData && ({
   serverUrl,
-  leaderboardName : queryData[UrlPropertyNames.LeaderboardName],
-  eventId : queryData[UrlPropertyNames.EventId],
+  leaderboardName : queryData[InvitationUrlPropertyName.LeaderboardName],
+  eventId : queryData[InvitationUrlPropertyName.EventId],
   isTraining : false,
-  competitorId : queryData[UrlPropertyNames.CompetitorId],
-  boatId : queryData[UrlPropertyNames.BoatId],
-  markId : queryData[UrlPropertyNames.MarkId],
+  competitorId : queryData[InvitationUrlPropertyName.CompetitorId],
+  boatId : queryData[InvitationUrlPropertyName.BoatId],
+  markId : queryData[InvitationUrlPropertyName.MarkId],
+  secret : queryData[InvitationUrlPropertyName.Secret],
 } as CheckIn)
 
 export interface CheckInUpdate {
@@ -54,6 +56,7 @@ export interface CheckInUpdate {
   currentTrackName?: string
   currentFleet?: string
   trackPrefix?: string
+  secret?: string
 }
 
 export default interface CheckIn extends CheckInUpdate {
