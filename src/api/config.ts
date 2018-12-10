@@ -4,7 +4,7 @@ import format from 'string-format'
 import { AUTH_API_PREFIX, DATA_API_PREFIX, DATA_API_V2_PREFIX, RACE_API_PREFIX, SERVER_URL } from 'environment'
 
 
-const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
+export const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
   if (!urlOptions) {
     return path
   }
@@ -23,7 +23,7 @@ export interface UrlOptions {
   pathParams?: string[]
 }
 
-const urlGenerator = (apiRoot: string, apiSuffix: string) => (path: string) => (options?: UrlOptions) =>
+export const urlGenerator = (apiRoot: string, apiSuffix: string) => (path: string) => (options?: UrlOptions) =>
   `${apiRoot}${apiSuffix}${getPathWithParams(path, options)}`
 
 export const getDataApiGenerator = (serverUrl?: string) => urlGenerator(serverUrl || SERVER_URL, DATA_API_PREFIX)

@@ -4,11 +4,11 @@ import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 
-import { getApiServerUrl } from 'api/config'
+import { getApiServerUrl, getPathWithParams, urlGenerator } from 'api/config'
 import { CreateEventResponseData } from 'api/endpoints/types'
 import { getDeviceUuid } from 'helpers/uuid'
-import { CheckIn, PositionFix, Race } from 'models'
-import { ApiBodyKeys as CheckInBodyKeys, urlParamsToCheckIn } from 'models/CheckIn'
+import { CheckIn, PositionFix, Race, TrackingSession } from 'models'
+import { ApiBodyKeys as CheckInBodyKeys, CheckInUpdate, urlParamsToCheckIn } from 'models/CheckIn'
 import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 
 
@@ -110,11 +110,21 @@ export const raceUrl = (session: CheckIn, race: Race) =>
   // tslint:disable-next-line max-line-length
   `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${escape(session.leaderboardName)}&raceName=${escape(race.name)}&leaderboardName=${escape(session.leaderboardName)}&eventId=${escape(session.eventId)}&mode=FULL_ANALYSIS`
 
-export const eventCreationResponseToCheckIn = (response: CreateEventResponseData) => response && ({
+export const eventCreationResponseToCheckIn = (
+  response: CreateEventResponseData,
+  additionalProperties?: CheckInUpdate,
+) => response && ({
   eventId: response.eventid,
   leaderboardName: response.leaderboard,
   regattaName: response.regatta,
   isTraining: false,
   serverUrl: getApiServerUrl(),
   isSelfTracking: true,
+  trackPrefix: additionalProperties && additionalProperties.trackPrefix,
+  secret: additionalProperties && additionalProperties.secret,
 } as CheckIn)
+
+export const createCheckInUrl = (serverUrl: string, urlParams: any) => {
+  const url = urlGenerator(serverUrl, '')('')({ urlParams })
+  return url
+}

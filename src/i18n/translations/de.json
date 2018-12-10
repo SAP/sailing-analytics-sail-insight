@@ -66,7 +66,9 @@
   "text_placeholder_session_name": "Session-Name",
   "text_edit_session_claim_01": "Ergänze deine Session mit deinen ",
   "text_edit_session_claim_02": "Track- und Bootsspezifikationen.",
-  "text_share_session_description" : "Hey! Join me for a ride! Where?: {{venue}}.",
+  "text_edit_competitor_claim_01": "Ergänze deine Teilnahme mit deinen ",
+  "text_edit_competitor_claim_02": "Competitor- und Bootsinformationen.",
+  "text_share_session_description" : "Hey! Join me for a ride!",
   "text_share_session_message_header" : "Du solltest mit mir segeln gehen",
   "text_share_session_message_body" : "Hey!\nIch gehe segeln. Mach doch mit! \n\nKlicke auf den Link, um weitere Details zu sehen: ",
   "text_empty_sessions_join_title": "Verwende SAP Sail InSight, um an einer Regatta teilzunehmen und sie zu tracken",
@@ -152,6 +154,7 @@
   "error_field_invalid_email": "Keine gültige E-Mail-Adresse.",
   "error_data_retrieval": "Datenabruf fehlgeschlagen.",
   "error_unauthorized": "Authorisierung fehlgeschlagen.",
+  "error_forbidden": "Operation unzulässig.",
   "error_user already exists": "Nutzer existiert bereits.",
 
   "JIBE": "Halse",

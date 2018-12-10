@@ -3,6 +3,8 @@ export interface CreateEventBody {
   boatclassname: string
   venuename: string
   numberofraces?: number
+  competitorRegistrationType?: 'CLOSED' | 'OPEN_UNMODERATED' | 'OPEN_MODERATED'
+  secret?: string
 }
 
 export interface UpdateEventBody {
@@ -62,6 +64,8 @@ export interface CompetitorBody {
   searchtag?: string,
   competitorName?: string,
   competitorEmail?: string,
+  secret?: string
+  deviceUuid?: string
 }
 
 export interface CreateEventResponseData {

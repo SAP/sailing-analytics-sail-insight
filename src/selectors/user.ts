@@ -1,4 +1,4 @@
-import { head } from 'lodash'
+import { filter, head } from 'lodash'
 import { createSelector } from 'reselect'
 
 import { RootState } from 'reducers/config'
@@ -29,6 +29,11 @@ export const getUserBoats = (state: RootState = {}) => orderBoatsLastUsedDesc(ge
   'boats',
   { reducerName: 'user', omitId: true },
 ))
+
+export const getUserBoatsByClass = (boatClass: string) => createSelector(
+  getUserBoats,
+  (boats: Boat[]) => filter(boats, { boatClass }),
+)
 
 export const getUserBoatByFormBoatName = createSelector(
   getUserBoatEntities,

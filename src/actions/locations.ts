@@ -65,10 +65,12 @@ export const startLocationUpdates = (
 }
 
 export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
+  Logger.debug('Stopping Location updates...')
   await LocationService.changePace(false)
   await LocationService.stop()
   GpsFixService.stopGPSFixUpdatesWhenSynced()
   dispatch(removeTrackedRegatta())
+  Logger.debug('Location updates stopped.')
 }
 
 export const handleLocation = (gpsFix: PositionFix) => async (dispatch: DispatchType, getState: GetStateType) => {

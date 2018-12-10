@@ -42,3 +42,5 @@ export const getServerUrl = (leaderboardName?: string) => (state: any) => {
   const checkIn = getCheckInByLeaderboardName(leaderboardName)(state)
   return checkIn && checkIn.serverUrl
 }
+
+export const isLoadingCheckIn = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingCheckIn

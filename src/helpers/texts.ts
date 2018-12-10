@@ -1,5 +1,5 @@
 import ApiException from 'api/ApiException'
-import { STATUS_UNAUTHORIZED } from 'api/constants'
+import { STATUS_FORBIDDEN, STATUS_UNAUTHORIZED } from 'api/constants'
 import I18n from 'i18n'
 import { MISSING_PREFIX } from 'i18n/utils'
 
@@ -47,6 +47,8 @@ export const getErrorDisplayMessage = (exception: any) => {
     switch (error.status) {
       case STATUS_UNAUTHORIZED:
         return I18n.t(ErrorCodes.UNAUTHORIZED)
+      case STATUS_FORBIDDEN:
+        return I18n.t(ErrorCodes.FORBIDDEN)
       default:
         return getErrorMessage(errorKey, getUnknownErrorMessage(error.status))
     }

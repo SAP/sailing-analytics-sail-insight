@@ -14,7 +14,9 @@ import { getLocationTrackingStatus, getStartAutoCourseUpdateStatus, getValidGpsF
 import * as LocationService from 'services/LocationService'
 
 import { withDataApi } from 'helpers/actions'
+import { getNowAsMillis } from 'helpers/date'
 import { hasValidPositionAndCourse } from 'models/PositionFix'
+import { updateLoadingCheckInFlag } from './checkIn'
 import { startLocationUpdates, stopLocationUpdates, updateValidGpsFixCount } from './locations'
 import { fetchRegattaAndRaces } from './regattas'
 import { updateEventEndTime } from './sessions'
@@ -31,29 +33,36 @@ const setupAndStartTrack = (
   data: CheckIn,
   options: { shouldClean?: boolean, shouldCreateTrack?: boolean } = {},
 ) => async (dispatch: DispatchType) => {
-  const { shouldClean, shouldCreateTrack } = options
-  if (shouldClean) { await dispatch(stopLocationUpdates()) }
-  let newTrack
-  if (shouldCreateTrack && data.trackPrefix) {
-    const result: AddRaceColumnResponseData[] = await dispatch(createNewTrack(data.leaderboardName, data.trackPrefix))
-    newTrack = head(result)
-    if (newTrack) {
-      await dispatch(startTrack(data.leaderboardName, newTrack.racename, newTrack.seriesname))
+  try {
+    dispatch(updateLoadingCheckInFlag(true))
+    const { shouldClean, shouldCreateTrack } = options
+    if (shouldClean) { await dispatch(stopLocationUpdates()) }
+    let newTrack
+    if (shouldCreateTrack && data.trackPrefix) {
+      const result: AddRaceColumnResponseData[] = await dispatch(createNewTrack(data.leaderboardName, data.trackPrefix))
+      newTrack = head(result)
+      if (newTrack) {
+        await dispatch(startTrack(data.leaderboardName, newTrack.racename, newTrack.seriesname))
+      }
     }
-  }
-  const trackName =  (newTrack && newTrack.racename) || data.currentTrackName
-  if (data.isSelfTracking && trackName && data.currentFleet) {
-    try {
-      await dispatch(setRaceStartTime(
+    const trackName =  (newTrack && newTrack.racename) || data.currentTrackName
+    if (data.isSelfTracking && trackName && data.currentFleet) {
+      try {
+        await dispatch(setRaceStartTime(
         data.leaderboardName,
         trackName,
         data.currentFleet,
       ))
-    } catch (err) {
-      Logger.debug(err)
+      } catch (err) {
+        Logger.debug(err)
+      }
     }
+    await dispatch(startLocationUpdates(data.leaderboardName, data.eventId))
+  } catch (err) {
+    throw err
+  } finally {
+    dispatch(updateLoadingCheckInFlag(false))
   }
-  await dispatch(startLocationUpdates(data.leaderboardName, data.eventId))
 }
 
 const showRunningTrackingDialog = (successAction: () => void) => Alert.alert(
@@ -107,8 +116,8 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
   },
 )
 
-export type StartTrackingAction = (data?: CheckIn | string, options?: { skipNewTrack?: boolean }) => any
-export const startTracking: StartTrackingAction = (data, options = {}) =>  async (
+export type StartTrackingAction = (data?: CheckIn | string) => any
+export const startTracking: StartTrackingAction = data =>  async (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
@@ -117,17 +126,21 @@ export const startTracking: StartTrackingAction = (data, options = {}) =>  async
     Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
     return
   }
-  const shouldCreateTrack = !options.skipNewTrack && checkInData.isSelfTracking
   return new Promise(async (resolve, reject) => {
     if (await dispatch(isTrackingRunning())) {
       showRunningTrackingDialog(() => startTrackingScreen(
-        setupAndStartTrack(checkInData, { shouldCreateTrack, shouldClean: true }),
+        setupAndStartTrack(checkInData, { shouldCreateTrack: checkInData.isSelfTracking, shouldClean: true }),
         dispatch,
         resolve,
         reject,
       ))
     } else {
-      startTrackingScreen(setupAndStartTrack(checkInData, { shouldCreateTrack }), dispatch, resolve, reject)
+      startTrackingScreen(
+        setupAndStartTrack(checkInData, { shouldCreateTrack: checkInData.isSelfTracking }),
+        dispatch,
+        resolve,
+        reject,
+      )
     }
   })
 }
@@ -155,7 +168,7 @@ export const handleManeuverChange = (maneuverChangeData?: ManeuverChangeItem[]) 
           await dataApi.requestManeuvers(
             trackedRaceChangeData.regattaName,
             trackedRaceChangeData.raceName,
-            { competitorId: trackedCheckIn.competitorId },
+            { competitorId: trackedCheckIn.competitorId, fromTime: getNowAsMillis(-1, 'hour') },
           ),
           { competitor: trackedCheckIn.competitorId },
         ),

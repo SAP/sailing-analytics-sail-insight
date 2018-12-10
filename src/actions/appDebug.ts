@@ -20,13 +20,15 @@ export const insertTestCheckIns = () => async (dispatch: DispatchType) => {
   const testUrl5 = 'https://dev.sapsailing.com/tracking/checkin?event_id=cc6b60c9-ab0f-4664-bfd4-22342ff6210c&leaderboard_name=D-Labs+Test+Laser&competitor_id=ca548a34-889b-40ad-9685-1f6a856ccd9d'
   // tslint:disable-next-line
   const testUrl6 = 'https://my.sapsailing.com/tracking/checkin?event_id=4d104070-aa8a-4f07-8e8f-15ccf59f455e&leaderboard_name=Havel+2018-10-12&competitor_id=985e67e5-2734-4b5f-9d56-4e9e33f1a2f8'
+  // tslint:disable-next-line
+  const testUrlWithSecret = 'https://sailinsight-app.sapsailing.com/invite?checkinUrl=https%3A%2F%2Fmy.sapsailing.com%2Ftracking%2Fcheckin%3Fevent_id%3Dec2df810-fc2c-4584-b2f5-5f64fcd9317b%26leaderboard_name%3Ddk-session-regatta-18-12-06--1%26secret%3D5OY3T2677YIV6HIF1NY8'
 
   // dispatch(checkIn(testUrl1))
   // dispatch(checkIn(testUrl2))
   // dispatch(checkIn(testUrl3))
   // dispatch(checkIn(await dispatch(fetchCheckIn(testUrl4))))
   // dispatch(checkIn(await dispatch(fetchCheckIn(testUrl5))))
-  dispatch(checkIn(await dispatch(fetchCheckIn(testUrl6))))
+  dispatch(checkIn(await dispatch(fetchCheckIn(testUrlWithSecret))))
 }
 
 
