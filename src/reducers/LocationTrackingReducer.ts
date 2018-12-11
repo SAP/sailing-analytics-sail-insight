@@ -1,24 +1,26 @@
 import { handleActions } from 'redux-actions'
 
-import {
-  removeTrackedRegatta,
-  updateLastWindCourse,
-  updateLastWindSpeed,
-  updateStartedAt,
-  updateTrackedEventId,
-  updateTrackedLeaderboard,
-  updateTrackedRegatta,
-  updateTrackingStatistics,
-  updateTrackingStatus,
-  updateUnsentGpsFixCount,
-  updateValidGpsFixCount,
-} from 'actions/locations'
-import { updateStartAutoCourseStatus, updateTrackingStartTimeUpdateFlag } from 'actions/tracking'
 import { distanceInM } from 'helpers/physics'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { PositionFix } from 'models'
 import { isPositionFix } from 'models/PositionFix'
-import { LocationTrackingState } from './config'
+import { LocationTrackingState } from 'reducers/config'
+
+import {
+  removeTrackedRegatta,
+  updateLastWindCourse,
+  updateLastWindSpeed,
+  updateStartAutoCourseStatus,
+  updateStartedAt,
+  updateTrackedEventId,
+  updateTrackedLeaderboard,
+  updateTrackedRegatta,
+  updateTrackingStartTimeUpdateFlag,
+  updateTrackingStatistics,
+  updateTrackingStatus,
+  updateUnsentGpsFixCount,
+  updateValidGpsFixCount,
+} from 'actions/locationTrackingData'
 
 
 const initialState: LocationTrackingState = {

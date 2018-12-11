@@ -2,14 +2,15 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 
 export default EStyleSheets.create({
-  password: {
+  lowerTextInput: {
     marginTop: '$smallSpacing',
   },
+  taskTextSize: {
+    fontSize: '$regularLargeFontSize',
+  },
   taskText: {
-    fontSize: '$largeFontSize',
     fontWeight: '300',
-    lineHeight: 24,
-    marginTop: '$tinySpacing',
+    marginTop: '$smallSpacing',
     marginBottom: '$smallSpacing',
   },
 })

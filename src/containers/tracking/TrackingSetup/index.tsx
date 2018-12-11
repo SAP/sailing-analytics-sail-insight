@@ -187,16 +187,16 @@ class TrackingSetup extends TextInputForm<Props> {
   ) => {
     const session = sessionForm.trackingSessionFromFormValues(values)
     session.name = this.props.generateSessionNameWithUserPrefix(session.name)
-    const actionQueue =
-      this.creationQueue ||
-      this.props.createSessionCreationQueue(session, { isPublic: options.isPublic }) as ActionQueue
+    if (!this.creationQueue) {
+      this.creationQueue = this.props.createSessionCreationQueue(session, { isPublic: options.isPublic }) as ActionQueue
+    }
     try {
       this.setState({
         ...(options.loadingFlagName && { [options.loadingFlagName]: true }),
         creationError: null,
         disableActionButtons: true,
       })
-      await actionQueue.execute()
+      await this.creationQueue.execute()
       return session
     } catch (err) {
       Logger.debug('Creation queue error: ', err)

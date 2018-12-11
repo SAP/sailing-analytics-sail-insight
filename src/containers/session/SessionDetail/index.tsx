@@ -10,7 +10,7 @@ import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openTrackDetails } from 'actions/navigation'
 import {  startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsWithCheckoutActionSheetOptions } from 'helpers/actionSheets'
-import { getUnknownErrorMessage } from 'helpers/texts'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import { getStatsFromTracks, listKeyExtractor } from 'helpers/utils'
 import I18n from 'i18n'
 import { CheckIn, Race, Session } from 'models'
@@ -60,7 +60,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
       await this.props.checkOut(this.props.session)
       navigateBack()
     } catch (err) {
-      Alert.alert(getUnknownErrorMessage())
+      Alert.alert(getErrorDisplayMessage(err))
     }
   }
 
@@ -73,7 +73,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
     try {
       await this.props.startTracking(this.props.session)
     } catch (err) {
-      Alert.alert(getUnknownErrorMessage())
+      Alert.alert(getErrorDisplayMessage(err))
     } finally {
       this.setState({ isLoading: false })
     }

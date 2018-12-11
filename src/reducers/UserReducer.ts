@@ -5,7 +5,7 @@ import { addOrUpdateUserBoat, boatWasUsed, removeBoat, updateBoats } from 'actio
 import { getNowAsMillis } from 'helpers/date'
 import { removeEntity } from 'helpers/reducers'
 
-import { UserState } from './config'
+import { UserState } from 'reducers/config'
 
 
 const initialState: UserState = {

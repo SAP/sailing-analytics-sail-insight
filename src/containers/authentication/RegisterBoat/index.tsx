@@ -13,6 +13,7 @@ import {
 import { validateRequired } from 'forms/validators'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
+import { Boat } from 'models'
 import { navigateBack } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -75,7 +76,7 @@ class RegisterBoat extends TextInputForm<Props> {
             label={I18n.t('text_placeholder_sail_number')}
             name={FORM_KEY_SAIL_NUMBER}
             returnKeyType="go"
-            onSubmitEditing={this.onSubmit}
+            onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
             hint={I18n.t('text_registration_sail_number_hint')}
             inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
             {...this.commonProps}
@@ -111,7 +112,7 @@ class RegisterBoat extends TextInputForm<Props> {
         name: values[FORM_KEY_NAME],
         boatClass: values[FORM_KEY_BOAT_CLASS],
         sailNumber: values[FORM_KEY_SAIL_NUMBER],
-      })
+      } as Boat)
       navigateBack()
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
@@ -123,6 +124,6 @@ class RegisterBoat extends TextInputForm<Props> {
 
 export default connect(null, { saveBoat })(reduxForm<{}, Props>({
   form: BOAT_FORM_NAME,
-  destroyOnUnmount: false,
+  destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
 })(RegisterBoat))

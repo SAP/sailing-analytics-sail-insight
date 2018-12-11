@@ -2,8 +2,7 @@ import { handleActions } from 'redux-actions'
 
 import { updateGpsBulkSetting } from 'actions/settings'
 import { itemUpdateHandler } from 'helpers/reducers'
-
-import { SettingsState } from './config'
+import { SettingsState } from 'reducers/config'
 
 
 const initialState: SettingsState = {

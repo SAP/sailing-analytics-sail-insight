@@ -3,13 +3,15 @@ import { createAction } from 'redux-actions'
 import { authApi } from 'api'
 import AuthException from 'api/AuthException'
 import { DispatchType, GetStateType } from 'helpers/types'
+import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
+
 import { ApiAccessToken, User } from 'models'
 import { mapUserToRes } from 'models/User'
-import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
+
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 
 
-export type RegisterActionType = (email: string, password: string, name: string) => any
+export type RegisterActionType = (username: string, email: string, password: string, name: string) => any
 
 export const updateToken = createAction('UPDATE_TOKEN')
 export const updateCurrentUserInformation = createAction('UPDATE_CURRENT_USER_INFORMATION')
@@ -31,8 +33,8 @@ export const checkCurrentAuthSession = () => async (dispatch: DispatchType) => {
   }
 }
 
-export const register: RegisterActionType = (email: string, password: string, name: string) =>
-  handleAccessToken(authApi.register(email, password, name))
+export const register: RegisterActionType = (username, email, password, name) =>
+  handleAccessToken(authApi.register(username, email, password, name))
 
 export const login = (email: string, password: string) =>
   handleAccessToken(authApi.accessToken(email, password))

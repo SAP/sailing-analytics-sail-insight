@@ -17,3 +17,12 @@ export const stackNavigatorConfig: StackNavigatorConfig = {
   headerMode: 'screen',
   headerLayoutPreset: 'center',
 }
+
+export const navHeaderTransparentProps = {
+  headerTransparent: true,
+  headerStyle: {
+    backgroundColor: 'transparent',
+    borderBottomWidth: 0,
+    elevation: 0,
+  },
+}

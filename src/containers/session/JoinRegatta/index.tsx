@@ -9,7 +9,8 @@ import styles from './styles'
 
 import { checkIn } from 'actions/checkIn'
 import { dateTimeText } from 'helpers/date'
-import { getUnknownErrorMessage } from 'helpers/texts'
+import { getErrorDisplayMessage } from 'helpers/texts'
+import { openEmailToContact } from 'helpers/user'
 import { CheckIn } from 'models'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getEvent } from 'selectors/event'
@@ -38,7 +39,7 @@ class JoinRegatta extends React.Component<{
     try {
       await this.props.checkIn(this.props.checkInData)
     } catch (err) {
-      Alert.alert(getUnknownErrorMessage())
+      Alert.alert(getErrorDisplayMessage(err))
     } finally {
       this.setState({ isLoading: false })
     }
@@ -49,7 +50,7 @@ class JoinRegatta extends React.Component<{
     const eventImageUrl = getEventPreviewImageUrl(event)
     const logoImageUrl = getEventLogoImageUrl(event)
     let title = leaderboard.displayName || leaderboard.name
-    title = event.name !== title ? `${title}\n(${event.name})` : title
+    title = event.name && event.name !== title ? `${title}\n(${event.name})` : title
     return (
       <ScrollContentView>
         <View style={container.stretchContent}>
@@ -84,6 +85,7 @@ class JoinRegatta extends React.Component<{
           <TextButton
             style={registration.lowerButton()}
             textStyle={button.textButtonSecondaryText}
+            onPress={openEmailToContact}
           >
             {I18n.t('caption_need_help')}
           </TextButton>

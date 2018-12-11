@@ -10,6 +10,8 @@ import Images from '@assets/Images'
 import { deleteBoat, DeleteBoatAction, saveBoat, SaveBoatAction } from 'actions/user'
 import * as boatForm from 'forms/boat'
 import { ComparisonValidatorViewProps, validateNameExists, validateRequired } from 'forms/validators'
+import Logger from 'helpers/Logger'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { Boat } from 'models'
 import { navigateBack } from 'navigation'
@@ -36,6 +38,10 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
 }
 
 class BoatDetails extends TextInputForm<Props> {
+
+  public state = {
+    isLoading: false,
+  }
 
   private commonProps = {
     validate: [validateRequired],
@@ -102,6 +108,7 @@ class BoatDetails extends TextInputForm<Props> {
             style={registration.nextButton()}
             textStyle={button.actionText}
             onPress={this.props.handleSubmit(this.onSavePress)}
+            isLoading={this.state.isLoading}
           >
             {I18n.t('caption_save')}
           </TextButton>
@@ -131,14 +138,23 @@ class BoatDetails extends TextInputForm<Props> {
     )
   }
 
-  protected onSavePress = (values: any) => {
-    const boat = boatForm.boatFromFormValues(values)
-    if (!boat) {
+  protected onSavePress = async (values: any) => {
+    try {
+      this.setState({ isLoading: true })
+      const boat = boatForm.boatFromFormValues(values)
+      if (!boat) {
+        return false
+      }
+      await this.props.saveBoat(boat, { replaceBoatName: this.props.paramBoatName })
+      navigateBack()
+      return true
+    } catch (err) {
+      Logger.debug(err)
+      Alert.alert(getErrorDisplayMessage(err))
       return false
+    } finally {
+      this.setState({ isLoading: false })
     }
-    this.props.saveBoat(boat, { replaceBoatName: this.props.paramBoatName })
-    navigateBack()
-    return true
   }
 }
 

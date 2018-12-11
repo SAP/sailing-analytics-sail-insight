@@ -1,20 +1,20 @@
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
-import { CheckIn, CompetitorInfo } from 'models'
+import { CheckIn } from 'models'
+import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
-
-import { ActionQueue, fetchEntityAction, withDataApi } from 'helpers/actions'
-import { DispatchType } from 'helpers/types'
-import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import CheckInException from 'services/CheckInService/CheckInException'
 
+
+import { ActionQueue, fetchEntityAction, withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
+import { DispatchType } from 'helpers/types'
 import { spreadableList } from 'helpers/utils'
-import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
-import { fetchAllRaces, fetchRegatta } from './regattas'
-import { createUserAttachmentToSession } from './sessions'
+
+import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
+import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 
 
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
@@ -27,6 +27,7 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
       throw new CheckInException('missing data')
     }
     checkInData.regattaName = checkInData.regattaName || checkInData.leaderboardName
+    checkInData.leaderboardName = checkInData.leaderboardName || checkInData.regattaName
     const {
       eventId,
       leaderboardName,
@@ -38,7 +39,7 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
     } = checkInData
 
     const queue = ActionQueue.create(dispatch, [
-      fetchEntityAction(dataApi.requestEvent)(eventId),
+      ...spreadableList(eventId, fetchEntityAction(dataApi.requestEvent)(eventId)),
       fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName),
       fetchRegatta(regattaName, serverUrl),
       fetchAllRaces(regattaName, serverUrl),
@@ -83,21 +84,6 @@ export const checkIn = (data: CheckIn) => async (dispatch: DispatchType) => {
   }
 }
 
-export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo) =>
-  async (dispatch: DispatchType) => {
-    if (!data) {
-      throw new CheckInException('data is missing')
-    }
-    await dispatch(updateCheckIn(data))
-    try {
-      await dispatch(createUserAttachmentToSession(data.leaderboardName, competitorValues, data.secret))
-      navigateToSessions()
-    } catch (err) {
-      Logger.debug(err)
-      Alert.alert(getErrorDisplayMessage(err))
-    }
-  }
-
 export const registerDevice = (leaderboardName: string) => withDataApi({ leaderboard: leaderboardName })(
   async (dataApi, dispatch, getState) => {
     const checkInData = getCheckInByLeaderboardName(leaderboardName)(getState())
@@ -119,11 +105,11 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
   },
 )
 
-export const joinSessionInvitation = (url: string) => async (dispatch: DispatchType) => {
+export const joinSessionInvitation = (checkInUrl: string) => async (dispatch: DispatchType) => {
   let error: any
   try {
     dispatch(updateLoadingCheckInFlag(true))
-    const sessionCheckIn = await dispatch(fetchCheckIn(url))
+    const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
     navigateToJoinRegatta(sessionCheckIn)
   } catch (err) {
     Logger.debug(err)
@@ -135,5 +121,5 @@ export const joinSessionInvitation = (url: string) => async (dispatch: DispatchT
       setTimeout(async () => Alert.alert(getErrorDisplayMessage(error)), 800)
     }
   }
-
 }
+

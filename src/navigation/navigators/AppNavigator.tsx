@@ -5,14 +5,17 @@ import I18n from 'i18n'
 
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
+import { $headerTintColor } from 'styles/colors'
 
+import GradientNavigationBar from 'components/GradientNavigationBar'
 import HeaderTitle from 'components/HeaderTitle'
 import ModalBackButton from 'components/ModalBackButton'
+import Login from 'containers/authentication/Login'
+import EditCompetitor from 'containers/session/EditCompetitor'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
 
-import EditCompetitor from 'containers/session/EditCompetitor'
 import MainNavigator from './MainNavigator'
 import NewSessionNavigator from './NewSessionNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
@@ -63,6 +66,15 @@ export default createStackNavigator(
           />
         ),
         headerRight: <ModalBackButton type="icon"/>,
+        headerLeft: null,
+      }),
+    },
+    [Screens.ModalLogin]: {
+      screen: Login,
+      navigationOptions: () => ({
+        ...commons.navHeaderTransparentProps,
+        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
         headerLeft: null,
       }),
     },

@@ -1,35 +1,28 @@
-import { createAction } from 'redux-actions'
-
-import { checkAndUpdateRaceSettings, handleManeuverChange } from 'actions/tracking'
 import { dataApi } from 'api'
-import { currentTimestampAsText } from 'helpers/date'
-import Logger from 'helpers/Logger'
-import { DispatchType, GetStateType } from 'helpers/types'
 import { PositionFix } from 'models'
 import { hasValidPosition } from 'models/PositionFix'
-import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
-import { getBulkGpsSetting } from 'selectors/settings'
 import * as CheckInService from 'services/CheckInService'
 import * as GpsFixService from 'services/GPSFixService'
 import * as LocationService from 'services/LocationService'
 import LocationTrackingException from 'services/LocationService/LocationTrackingException'
 
+import { currentTimestampAsText } from 'helpers/date'
+import Logger from 'helpers/Logger'
+import { DispatchType, GetStateType } from 'helpers/types'
 
-export const updateTrackingStatus = createAction('UPDATE_LOCATION_TRACKING_STATUS')
-export const updateTrackedLeaderboard = createAction('UPDATE_TRACKED_LEADERBOARD')
-export const updateTrackedEventId = createAction('UPDATE_TRACKED_EVENT_ID')
-export const removeTrackedRegatta = createAction('REMOVE_TRACKED_REGATTA')
-export const updateTrackedRegatta = createAction('UPDATE_TRACKED_REGATTA')
-export const updateUnsentGpsFixCount = createAction('UPDATE_UNSENT_GPS_FIX_COUNT')
-export const updateTrackingStatistics = createAction('UPDATE_TRACKING_STATISTICS')
-export const updateLocationAccuracy = createAction('UPDATE_LOCATION_ACCURACY')
-export const updateSpeedInKnots = createAction('UPDATE_SPEED_IN_KNOTS')
-export const updateStartedAt = createAction('UPDATE_STARTED_AT')
-export const updateHeadingInDeg = createAction('UPDATE_HEADING_IN_DEG')
-export const updateDistance = createAction('UPDATE_DISTANCE')
-export const updateLastWindCourse = createAction('UPDATE_WIND_COURSE')
-export const updateLastWindSpeed = createAction('UPDATE_WIND_SPEED')
-export const updateValidGpsFixCount = createAction('UPDATE_VALID_GPS_FIX_COUNT')
+import {
+  removeTrackedRegatta,
+  updateStartedAt,
+  updateTrackedRegatta,
+  updateTrackingStatistics,
+  updateTrackingStatus,
+  updateUnsentGpsFixCount,
+} from 'actions/locationTrackingData'
+import { checkAndUpdateRaceSettings } from 'actions/sessionConfig'
+import { handleManeuverChange } from 'actions/sessions'
+import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
+import { getBulkGpsSetting } from 'selectors/settings'
+
 
 const sendGpsFix = async (serverUrl: string, postBody: any, dispatch: DispatchType) => {
   let maneuverInfo

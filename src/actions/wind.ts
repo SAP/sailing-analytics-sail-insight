@@ -1,10 +1,10 @@
 import { WindBodyData } from 'api/endpoints/types'
 import { withDataApi } from 'helpers/actions'
 import { getNowAsMillis } from 'helpers/date'
+
+import { updateLastWindCourse, updateLastWindSpeed } from 'actions/locationTrackingData'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationStats } from 'selectors/location'
-
-import { updateLastWindCourse, updateLastWindSpeed } from './locations'
 
 
 export type SendWindAction = (direction: number, speedInKnots: number) => any

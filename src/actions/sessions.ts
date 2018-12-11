@@ -1,25 +1,38 @@
-import { selfTrackingApi } from 'api'
+import { find, get, head, includes, orderBy } from 'lodash'
+import { Alert } from 'react-native'
 
+import { selfTrackingApi } from 'api'
 import AuthException from 'api/AuthException'
+import { ManeuverChangeItem } from 'api/endpoints/types'
 import { competitorSchema } from 'api/schemas'
-import { ActionQueue, withDataApi } from 'helpers/actions'
-import { getNowAsMillis } from 'helpers/date'
-import { DispatchType, GetStateType } from 'helpers/types'
+
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
-import { getUserInfo } from 'selectors/auth'
-import { createCheckInUrl, eventCreationResponseToCheckIn, getDeviceCountryIOC, getDeviceId } from 'services/CheckInService'
+import { navigateToManeuver, navigateToSessions } from 'navigation'
+
+import { eventCreationResponseToCheckIn, getDeviceCountryIOC, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
+import * as LocationService from 'services/LocationService'
 import { addUserPrefix } from 'services/SessionService'
 import SessionException from 'services/SessionService/SessionException'
 
+import { ActionQueue, withDataApi } from 'helpers/actions'
+import { getNowAsMillis } from 'helpers/date'
+import Logger from 'helpers/Logger'
+import { getErrorDisplayMessage } from 'helpers/texts'
+import { DispatchType, GetStateType } from 'helpers/types'
+import { addUrlParams } from 'helpers/utils'
+import { getSharingUuid } from 'helpers/uuid'
+
+
 import { collectCheckInData, registerDevice, updateCheckIn } from 'actions/checkIn'
+import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { saveBoat } from 'actions/user'
-import { getSharingUuid } from 'helpers/uuid'
-import { getCheckInByLeaderboardName } from 'selectors/checkIn'
-import { CHECK_IN_URL_KEY } from './deepLinking'
+import { getUserInfo } from 'selectors/auth'
+import { getCheckInByLeaderboardName, getTrackedCheckIn } from 'selectors/checkIn'
+import { getLocationTrackingStatus } from 'selectors/location'
 
 
 export const shareSession = (checkIn: CheckIn) => async () => {
@@ -33,7 +46,7 @@ export const shareSession = (checkIn: CheckIn) => async () => {
     // contentImageUrl: session.image,
     contentMetadata: {
       customMetadata: {
-        [CHECK_IN_URL_KEY]: createCheckInUrl(checkIn.serverUrl, {
+        [CHECK_IN_URL_KEY]: addUrlParams(checkIn.serverUrl, {
           event_id: checkIn.eventId,
           leaderboard_name: checkIn.leaderboardName,
           secret: checkIn.secret,
@@ -146,3 +159,64 @@ export const createSessionCreationQueue: CreateSessionCreationQueueAction = (ses
       registerDevice(session.name),
     ],
   )
+
+export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo) =>
+  async (dispatch: DispatchType) => {
+    if (!data) {
+      throw new CheckInException('data is missing')
+    }
+    await dispatch(updateCheckIn(data))
+    try {
+      await dispatch(createUserAttachmentToSession(data.leaderboardName, competitorValues, data.secret))
+      navigateToSessions()
+    } catch (err) {
+      Logger.debug(err)
+      Alert.alert(getErrorDisplayMessage(err))
+    }
+  }
+
+export const handleManeuverChange = (maneuverChangeData?: ManeuverChangeItem[]) =>
+  withDataApi({ fromTracked: true })(async (dataApi, dispatch, getState) => {
+    const trackedCheckIn = getTrackedCheckIn(getState())
+    if (!maneuverChangeData || !trackedCheckIn || !trackedCheckIn.currentTrackName) {
+      return
+    }
+    const trackedRaceChangeData = find(
+      maneuverChangeData,
+      item =>
+      item.regattaName === trackedCheckIn.regattaName &&
+      item.raceName &&
+      trackedCheckIn.currentTrackName &&
+      item.raceName.includes(trackedCheckIn.currentTrackName),
+    ) as ManeuverChangeItem
+    if (!trackedRaceChangeData) {
+      return
+    }
+    try {
+      const competitorManeuvers = get(
+        find(
+          await dataApi.requestManeuvers(
+            trackedRaceChangeData.regattaName,
+            trackedRaceChangeData.raceName,
+            { competitorId: trackedCheckIn.competitorId, fromTime: getNowAsMillis(-1, 'hour') },
+          ),
+          { competitor: trackedCheckIn.competitorId },
+        ),
+        'maneuvers',
+      )
+      const maneuver = head(orderBy(
+        competitorManeuvers,
+        'positionAndTime.unixtime',
+        'desc',
+      ))
+      if (!maneuver || !includes(['JIBE', 'TACK', 'PENALTY_CIRCLE'], maneuver.maneuverType)) {
+        return
+      }
+      const trackingStatus = getLocationTrackingStatus(getState())
+      if (trackingStatus !== LocationService.LocationTrackingStatus.RUNNING) { return }
+      navigateToManeuver(maneuver)
+    } catch (err) {
+      Logger.debug(err)
+    }
+  },
+)

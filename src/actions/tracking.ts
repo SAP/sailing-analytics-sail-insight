@@ -1,33 +1,25 @@
-import { find, get, head, includes, isString, orderBy } from 'lodash'
+import { head, isString } from 'lodash'
 import { Alert } from 'react-native'
-import { createAction } from 'redux-actions'
 
-import { AddRaceColumnResponseData, ManeuverChangeItem } from 'api/endpoints/types'
-import Logger from 'helpers/Logger'
-import { getUnknownErrorMessage } from 'helpers/texts'
-import { AutoCourseUpdateState, DispatchType, GetStateType } from 'helpers/types'
+import { AddRaceColumnResponseData } from 'api/endpoints/types'
 import I18n from 'i18n'
-import { CheckIn, PositionFix } from 'models'
-import { navigateToManeuver, navigateToTracking } from 'navigation'
-import { getCheckInByLeaderboardName, getTrackedCheckIn } from 'selectors/checkIn'
-import { getLocationTrackingStatus, getStartAutoCourseUpdateStatus, getValidGpsFixCount, wasTrackingStartTimeUpdated } from 'selectors/location'
+import { CheckIn } from 'models'
+import { navigateToTracking } from 'navigation'
+import { getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { getLocationTrackingStatus  } from 'selectors/location'
 import * as LocationService from 'services/LocationService'
 
 import { withDataApi } from 'helpers/actions'
-import { getNowAsMillis } from 'helpers/date'
-import { hasValidPositionAndCourse } from 'models/PositionFix'
-import { updateLoadingCheckInFlag } from './checkIn'
-import { startLocationUpdates, stopLocationUpdates, updateValidGpsFixCount } from './locations'
-import { fetchRegattaAndRaces } from './regattas'
-import { updateEventEndTime } from './sessions'
-import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from './tracks'
+import Logger from 'helpers/Logger'
+import { getUnknownErrorMessage } from 'helpers/texts'
+import { DispatchType, GetStateType } from 'helpers/types'
 
+import { updateLoadingCheckInFlag } from 'actions/checkIn'
+import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
+import { fetchRegattaAndRaces } from 'actions/regattas'
+import { updateEventEndTime } from 'actions/sessions'
+import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
 
-const TRACKING_START_TIME_FIX_LIMIT = 2
-const AUTOCOURSE_FIX_LIMIT = 8
-
-export const updateTrackingStartTimeUpdateFlag = createAction('UPDATE_TRACKING_START_TIME_UPDATED_FLAG')
-export const updateStartAutoCourseStatus = createAction('UPDATE_START_AUTO_COURSE_STATUS')
 
 const setupAndStartTrack = (
   data: CheckIn,
@@ -143,130 +135,4 @@ export const startTracking: StartTrackingAction = data =>  async (
       )
     }
   })
-}
-
-export const handleManeuverChange = (maneuverChangeData?: ManeuverChangeItem[]) =>
-  withDataApi({ fromTracked: true })(async (dataApi, dispatch, getState) => {
-    const trackedCheckIn = getTrackedCheckIn(getState())
-    if (!maneuverChangeData || !trackedCheckIn || !trackedCheckIn.currentTrackName) {
-      return
-    }
-    const trackedRaceChangeData = find(
-      maneuverChangeData,
-      item =>
-      item.regattaName === trackedCheckIn.regattaName &&
-      item.raceName &&
-      trackedCheckIn.currentTrackName &&
-      item.raceName.includes(trackedCheckIn.currentTrackName),
-    ) as ManeuverChangeItem
-    if (!trackedRaceChangeData) {
-      return
-    }
-    try {
-      const competitorManeuvers = get(
-        find(
-          await dataApi.requestManeuvers(
-            trackedRaceChangeData.regattaName,
-            trackedRaceChangeData.raceName,
-            { competitorId: trackedCheckIn.competitorId, fromTime: getNowAsMillis(-1, 'hour') },
-          ),
-          { competitor: trackedCheckIn.competitorId },
-        ),
-        'maneuvers',
-      )
-      const maneuver = head(orderBy(
-        competitorManeuvers,
-        'positionAndTime.unixtime',
-        'desc',
-      ))
-      if (!maneuver || !includes(['JIBE', 'TACK', 'PENALTY_CIRCLE'], maneuver.maneuverType)) {
-        return
-      }
-      const trackingStatus = getLocationTrackingStatus(getState())
-      if (trackingStatus !== LocationService.LocationTrackingStatus.RUNNING) { return }
-      navigateToManeuver(maneuver)
-    } catch (err) {
-      Logger.debug(err)
-    }
-  },
-)
-
-// WORKAROUND: adjust tracking start time for correct autocourse calculation via API,
-// race has to have GPS fixes (MUST contain valid COG/SOG) which took place BEFORE StartOfRace or StartOfTracking
-const checkAndUpdateTrackingStartTime = (gpsFix: PositionFix) => withDataApi({ fromTracked: true })(async(
-  dataApi,
-  dispatch,
-  getState,
-) => {
-  const state = getState()
-  const checkIn = getTrackedCheckIn(state)
-  const alreadyUpdated = wasTrackingStartTimeUpdated(state)
-  const validGpsFixCount = getValidGpsFixCount(state)
-  if (
-    validGpsFixCount < TRACKING_START_TIME_FIX_LIMIT ||
-    !hasValidPositionAndCourse(gpsFix) ||
-    alreadyUpdated ||
-    !checkIn ||
-    !checkIn.isSelfTracking ||
-    !checkIn.currentTrackName ||
-    !checkIn.currentFleet
-  ) {
-    return
-  }
-  try {
-    await dataApi.setTrackingTimes(
-      checkIn.regattaName,
-      {
-        fleet: checkIn.currentFleet,
-        race_column: checkIn.currentTrackName,
-      },
-    )
-    dispatch(updateTrackingStartTimeUpdateFlag(true))
-  } catch (err) {
-    Logger.debug(err)
-  }
-})
-
-const checkAndUpdateAutoCourse = (gpsFix: PositionFix) => withDataApi({ fromTracked: true })(async(
-  dataApi,
-  dispatch,
-  getState,
-) => {
-  const state = getState()
-  let validGpsFixCount = getValidGpsFixCount(state)
-
-  if (hasValidPositionAndCourse(gpsFix)) {
-    validGpsFixCount = validGpsFixCount + 1
-    dispatch(updateValidGpsFixCount(validGpsFixCount))
-  }
-
-  const checkIn = getTrackedCheckIn(state)
-  const updateStatus: AutoCourseUpdateState = getStartAutoCourseUpdateStatus(state)
-  if (
-    updateStatus !== 'MISSING' ||
-    validGpsFixCount < AUTOCOURSE_FIX_LIMIT ||
-    !checkIn ||
-    !checkIn.isSelfTracking ||
-    !checkIn.currentTrackName ||
-    !checkIn.currentFleet
-  ) {
-    return
-  }
-  try {
-    dispatch(updateStartAutoCourseStatus('IN_PROGRESS' as AutoCourseUpdateState))
-    await dataApi.createAutoCourse(checkIn.leaderboardName, checkIn.currentTrackName, checkIn.currentFleet)
-    dispatch(updateStartAutoCourseStatus('DONE' as AutoCourseUpdateState))
-  } catch (err) {
-    Logger.debug(err)
-    dispatch(updateStartAutoCourseStatus('MISSING' as AutoCourseUpdateState))
-  }
-})
-
-export const checkAndUpdateRaceSettings = (gpsFix: PositionFix) => async (dispatch: DispatchType) => {
-  try {
-    await dispatch(checkAndUpdateTrackingStartTime(gpsFix))
-    await dispatch(checkAndUpdateAutoCourse(gpsFix))
-  } catch (err) {
-    Logger.debug('CheckAndUpdateRaceSettings:', err)
-  }
 }

@@ -7,13 +7,14 @@ import { PersistGate } from 'redux-persist/integration/react'
 
 import 'store/init'
 
-import * as DeepLinking from 'integrations/DeepLinking'
-
-import { performDeepLink } from 'actions/deepLinking'
-import { handleLocation, initLocationUpdates, updateTrackingStatus } from 'actions/locations'
 import Logger from 'helpers/Logger'
+import * as DeepLinking from 'integrations/DeepLinking'
 import InitializationNavigator from 'navigation/InitializationNavigator'
 import * as LocationService from 'services/LocationService'
+
+import { performDeepLink } from 'actions/deepLinking'
+import { handleLocation, initLocationUpdates } from 'actions/locations'
+import { updateTrackingStatus } from 'actions/locationTrackingData'
 import { getPersistor, getStore } from 'store'
 
 import { initStyles, recalculateStyles } from 'styles'

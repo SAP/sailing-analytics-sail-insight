@@ -1,12 +1,11 @@
-import { get } from 'lodash'
 import React from 'react'
 import { Alert, TouchableWithoutFeedback, View, ViewProps } from 'react-native'
-import VersionNumber from 'react-native-version-number'
 import { connect } from 'react-redux'
 
 import { showTestCheckInAlert } from 'actions/appDebug'
 import { updateGpsBulkSetting } from 'actions/settings'
 import { getApiServerUrl } from 'api/config'
+import { getAppVersionText, openTerms } from 'helpers/user'
 import I18n from 'i18n'
 import { getBulkGpsSetting } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
@@ -16,9 +15,11 @@ import EditItemSwitch from 'components/EditItemSwitch'
 import LineSeparator from 'components/LineSeparator'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
+import TextButton from 'components/TextButton'
 import TitleLabel from 'components/TitleLabel'
 
-import { container } from 'styles/commons'
+import { button, container } from 'styles/commons'
+import { registration } from 'styles/components'
 import styles from './styles'
 
 
@@ -43,6 +44,7 @@ class AppSettings extends React.Component<ViewProps & {
             {I18n.t('text_setting_gps_bulk', { timeInSeconds: UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
           </EditItemSwitch>
         </View>
+        {this.renderTerms()}
         {this.renderVersionNumber()}
       </ScrollContentView>
     )
@@ -58,7 +60,7 @@ class AppSettings extends React.Component<ViewProps & {
         onLongPress={this.showServerUrl}
       >
         <Text style={styles.item}>
-          {`v${get(VersionNumber, 'appVersion')}.${get(VersionNumber, 'buildVersion')}`}
+          {getAppVersionText()}
         </Text>
       </TouchableWithoutFeedback>
     )
@@ -77,6 +79,19 @@ class AppSettings extends React.Component<ViewProps & {
       </TouchableWithoutFeedback>
     )
   }
+
+  protected renderTerms = () => {
+    return (
+      <TextButton
+        style={registration.lowerButton()}
+        textStyle={button.textButtonSecondaryText}
+        onPress={openTerms}
+      >
+        {I18n.t('title_eula')}
+      </TextButton>
+    )
+  }
+
 }
 
 const mapStateToProps = (state: any) => ({
