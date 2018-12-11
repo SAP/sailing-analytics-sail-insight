@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import { sendWind, SendWindAction } from 'actions/wind'
 import { degToCompass, speedToWindClassification } from 'helpers/physics'
-import { getUnknownErrorMessage } from 'helpers/texts'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { WindFix } from 'models'
 import { navigateBack } from 'navigation'
@@ -113,7 +113,7 @@ class SetWind extends React.Component<ViewProps & {
       await this.props.sendWind(windAngleInDeg, windSpeedInKnots)
       navigateBack()
     } catch (err) {
-      Alert.alert(getUnknownErrorMessage())
+      Alert.alert(getErrorDisplayMessage(err))
     } finally {
       this.setState({ isLoading: false })
     }

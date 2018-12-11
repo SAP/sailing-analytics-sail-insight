@@ -1,23 +1,23 @@
 import React from 'react'
-import { Image, TouchableOpacity, View } from 'react-native'
+import { Image, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
 import { FORM_KEY_NAME, REGISTRATION_FORM_NAME } from 'forms/registration'
 import { validateRequired } from 'forms/validators'
+import { openEmailToContact } from 'helpers/user'
 import I18n from 'i18n'
-import { navigateToUserRegistrationCredentials, navitateToLogin } from 'navigation'
+import { navigateToUserRegistrationCredentials } from 'navigation'
 import { getFieldError } from 'selectors/form'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
-import IconText from 'components/IconText'
+import LoginButton from 'components/LoginButton'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
-import { $primaryButtonColor } from 'styles/colors'
 import { button, container, image, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
@@ -30,10 +30,6 @@ class RegisterName extends TextInputForm {
     if (this.props.isStepValid) {
       navigateToUserRegistrationCredentials()
     }
-  }
-
-  public onLoginPress = () => {
-    navitateToLogin()
   }
 
   public render() {
@@ -67,22 +63,11 @@ class RegisterName extends TextInputForm {
           >
             {I18n.t('caption_lets_go')}
           </TextButton>
-          <TouchableOpacity
-            onPress={this.onLoginPress}
-          >
-            <IconText
-              style={styles.loginButton}
-              source={Images.tabs.account}
-              iconTintColor={$primaryButtonColor}
-              textStyle={button.textButtonSecondaryText}
-              alignment="horizontal"
-            >
-              {I18n.t('caption_login')}
-            </IconText>
-          </TouchableOpacity>
+          <LoginButton style={styles.loginButton}/>
           <TextButton
             style={registration.lowerButton()}
             textStyle={button.textButtonSecondaryText}
+            onPress={openEmailToContact}
           >
             {I18n.t('caption_need_help')}
           </TextButton>

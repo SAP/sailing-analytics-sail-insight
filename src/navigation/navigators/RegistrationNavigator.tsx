@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import React from 'react'
 import { createStackNavigator } from 'react-navigation'
 
@@ -18,31 +19,26 @@ import { $headerTintColor } from 'styles/colors'
 import { button } from 'styles/commons'
 
 
-const navHeaderTransparentProps = {
-  headerTransparent: true,
-  headerStyle: {
-    backgroundColor: 'transparent',
-    borderBottomWidth: 0,
-    elevation: 0,
-  },
-}
-
 export default createStackNavigator(
   {
     [Screens.RegisterName]: {
       screen: RegisterName,
       navigationOptions: () => ({
-        ...navHeaderTransparentProps,
+        ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
         headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
       }),
     },
     [Screens.RegisterCredentials]: {
       screen: RegisterCredentials,
-      navigationOptions: () => ({
+      navigationOptions: ({ navigation: navigationProps }: any) => ({
         title: I18n.t('title_your_account'),
         headerRight: (
-          <ImageButton style={button.actionIconNavBar} source={Images.actions.help}/>
+          <ImageButton
+            style={button.actionIconNavBar}
+            source={Images.actions.help}
+            onPress={get(navigationProps, 'state.params.onOptionsPressed')}
+          />
         ),
       }),
     },
@@ -55,7 +51,7 @@ export default createStackNavigator(
     [Screens.Login]: {
       screen: Login,
       navigationOptions: () => ({
-        ...navHeaderTransparentProps,
+        ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
       }),
     },

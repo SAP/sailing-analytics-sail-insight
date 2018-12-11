@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
 import { login } from 'actions/auth'
-import { FORM_KEY_EMAIL, FORM_KEY_PASSWORD } from 'forms/registration'
+import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { navigateToMain } from 'navigation'
@@ -26,7 +26,7 @@ class Login extends TextInputForm<{
   login: (u: string, p: string) => any,
 }> {
   public state = {
-    email: '',
+    username: '',
     password: '',
     isLoading: false,
     error: null,
@@ -34,13 +34,13 @@ class Login extends TextInputForm<{
 
   public onSubmit = async () => {
     this.setState({ error: null })
-    const { email, password } = this.state
-    if (isEmpty(email) || isEmpty(password)) {
+    const { username, password } = this.state
+    if (isEmpty(username) || isEmpty(password)) {
       return
     }
     try {
       this.setState({ isLoading: true })
-      await this.props.login(email, password)
+      await this.props.login(username, password)
       navigateToMain()
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
@@ -49,7 +49,7 @@ class Login extends TextInputForm<{
     }
   }
 
-  public onEmailChange = (newValue: string) => this.setState({ email: newValue })
+  public onUsernameChange = (newValue: string) => this.setState({ username: newValue })
   public onPasswordChange = (newValue: string) => this.setState({ password: newValue })
 
   public render() {
@@ -68,14 +68,14 @@ class Login extends TextInputForm<{
         </View>
         <View style={registration.bottomContainer()}>
           <TextInput
-            value={this.state.email}
-            onChangeText={this.onEmailChange}
-            placeholder={I18n.t('text_placeholder_your_email')}
-            keyboardType={'email-address'}
+            value={this.state.username}
+            onChangeText={this.onUsernameChange}
+            placeholder={I18n.t('text_placeholder_your_username')}
+            keyboardType={'default'}
             returnKeyType="next"
             autoCapitalize="none"
             onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_PASSWORD)}
-            inputRef={this.handleInputRef(FORM_KEY_EMAIL)}
+            inputRef={this.handleInputRef(FORM_KEY_USERNAME)}
           />
           <TextInput
             value={this.state.password}

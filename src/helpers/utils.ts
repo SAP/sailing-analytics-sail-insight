@@ -1,6 +1,7 @@
 import { isArray, isMatch, isNumber, isObject, orderBy } from 'lodash'
-import { Alert, ListView } from 'react-native'
+import { Alert, Linking, ListView } from 'react-native'
 
+import { urlGenerator } from 'api/config'
 import I18n from 'i18n'
 import { Race, RaceStats } from 'models'
 
@@ -104,3 +105,15 @@ export const getStatsFromTracks = (tracks: Race[]) => {
   } as RaceStats
   return result
 }
+
+export const openUrl = (url: string) => Linking.openURL(url)
+export const addUrlParams = (baseUrl: string, urlParams?: any) => urlGenerator(baseUrl, '')('')({ urlParams })
+
+export const openEmailTo = (email: string, subject?: string, body?: string) =>
+  Linking.openURL(addUrlParams(
+    `mailto:${email}`,
+    {
+      ...(subject && { subject }),
+      ...(body && { body }),
+    },
+  ))

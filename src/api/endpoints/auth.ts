@@ -21,8 +21,8 @@ export default {
     { dataProcessor: mapResToUser },
   ) as Promise<User>,
 
-  register: (email: string, password: string, fullName?: string) => dataRequest(
-    endpoints.createUser({ urlParams: { email, password, username: email, ...(fullName && { fullName }) } }),
+  register: (username: string, email: string, password: string, fullName?: string) => dataRequest(
+    endpoints.createUser({ urlParams: { email, password, username, ...(fullName && { fullName }) } }),
     { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
   ) as Promise<ApiAccessToken>,
 

@@ -2,13 +2,14 @@ import { head } from 'lodash'
 
 import ApiDataException from 'api/ApiDataException'
 import { AddRaceColumnResponseData } from 'api/endpoints/types'
+import { CheckInUpdate, TrackingSession } from 'models'
+
+import { withDataApi } from 'helpers/actions'
 import { getNowAsMillis } from 'helpers/date'
 import { ErrorCodes } from 'helpers/errors'
 import { getRaceLogUuid } from 'helpers/uuid'
-import { CheckInUpdate, TrackingSession } from 'models'
 
 import { updateCheckIn } from 'actions/checkIn'
-import { withDataApi } from 'helpers/actions'
 
 
 export const createNewTrack = (regattaName: string, trackName: string) => withDataApi({ leaderboard: regattaName })(

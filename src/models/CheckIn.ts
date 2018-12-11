@@ -1,3 +1,9 @@
+import { isEmpty, pick, values } from 'lodash'
+
+import { getApiServerUrl } from 'api/config'
+import { addUrlParams } from 'helpers/utils'
+
+
 export const ApiBodyKeys = {
   EventId: 'eventId',
   BoatId: 'boatId',
@@ -17,6 +23,7 @@ export const InvitationUrlPropertyName = {
   BoatId: 'boat_id',
   EventId: 'event_id',
   LeaderboardName: 'leaderboard_name',
+  RegattaName: 'regatta_name',
   CompetitorId: 'competitor_id',
   MarkId: 'mark_id',
   Secret: 'secret',
@@ -34,14 +41,28 @@ export const mapResToModel = (map: any) => map && ({
 
 export const urlParamsToCheckIn = (serverUrl: string, queryData: any) => serverUrl && queryData && ({
   serverUrl,
-  leaderboardName : queryData[InvitationUrlPropertyName.LeaderboardName],
-  eventId : queryData[InvitationUrlPropertyName.EventId],
-  isTraining : false,
-  competitorId : queryData[InvitationUrlPropertyName.CompetitorId],
-  boatId : queryData[InvitationUrlPropertyName.BoatId],
-  markId : queryData[InvitationUrlPropertyName.MarkId],
-  secret : queryData[InvitationUrlPropertyName.Secret],
+  leaderboardName: queryData[InvitationUrlPropertyName.LeaderboardName],
+  eventId: queryData[InvitationUrlPropertyName.EventId],
+  isTraining: false,
+  competitorId: queryData[InvitationUrlPropertyName.CompetitorId],
+  boatId: queryData[InvitationUrlPropertyName.BoatId],
+  markId: queryData[InvitationUrlPropertyName.MarkId],
+  secret: queryData[InvitationUrlPropertyName.Secret],
+  regattaName: queryData[InvitationUrlPropertyName.RegattaName],
 } as CheckIn)
+
+export const createCheckInUrlFromParams = (params: any = {}) => {
+  const invitationParameters = values(InvitationUrlPropertyName)
+  const relevantParams = pick(params, invitationParameters)
+  if (
+    isEmpty(relevantParams) ||
+    (!relevantParams[InvitationUrlPropertyName.RegattaName] &&
+    !relevantParams[InvitationUrlPropertyName.LeaderboardName])
+  ) {
+    return
+  }
+  return addUrlParams(getApiServerUrl(), relevantParams)
+}
 
 export interface CheckInUpdate {
   leaderboardName: string

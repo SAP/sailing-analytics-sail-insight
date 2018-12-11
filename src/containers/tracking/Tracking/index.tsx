@@ -9,7 +9,7 @@ import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { durationText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { degToCompass } from 'helpers/physics'
-import { getUnknownErrorMessage } from 'helpers/texts'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { navigateBack, navigateToSetWind } from 'navigation'
@@ -141,7 +141,7 @@ class Tracking extends React.Component<{
       navigateBack()
     } catch (err) {
       Logger.debug(err)
-      Alert.alert(getUnknownErrorMessage())
+      Alert.alert(getErrorDisplayMessage(err))
     } finally {
       this.setState({ isLoading: false })
     }

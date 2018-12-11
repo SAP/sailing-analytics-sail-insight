@@ -9,7 +9,7 @@ import { removeAuthInfo, updateUser } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
 import { validateRequired } from 'forms/validators'
-import { getUnknownErrorMessage } from 'helpers/texts'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import User from 'models/User'
 
@@ -19,12 +19,15 @@ import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
+import TitleLabel from 'components/TitleLabel'
 
 import { getUserInfo } from 'selectors/auth'
 import { getFormFieldValue } from 'selectors/form'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+
+import styles from './styles'
 
 
 interface Props {
@@ -67,11 +70,22 @@ class UserProfile extends TextInputForm<Props> {
               keyboardType="default"
               returnKeyType="next"
             />
-            <Text style={[text.propertyValue, input.topMargin]}>{user.email}</Text>
-            <Text style={[text.propertyValue, input.topMargin]}>{user.nationality}</Text>
+            <TitleLabel
+              style={input.topMargin}
+              title={I18n.t('text_username')}
+            >
+              <Text style={text.propertyValue}>{user.username}</Text>
+            </TitleLabel>
+            <TitleLabel
+              style={input.topMargin}
+              title={I18n.t('text_email')}
+            >
+              <Text style={text.propertyValue}>{user.email}</Text>
+            </TitleLabel>
+            {/* <Text style={[text.propertyValue, input.topMargin]}>{user.nationality}</Text> */}
           </View>
         </View>
-        <View style={registration.bottomContainer()}>
+        <View style={[registration.bottomContainer(), styles.bottomContainer]}>
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
@@ -82,7 +96,7 @@ class UserProfile extends TextInputForm<Props> {
             {I18n.t('caption_save')}
           </TextButton>
           <TextButton
-            style={{ padding: 20 }}
+            style={styles.logoutButton}
             onPress={this.props.removeAuthInfo}
           >
             Log out
@@ -97,7 +111,7 @@ class UserProfile extends TextInputForm<Props> {
       await this.setState({ isLoading: true })
       await this.props.updateUser({ ...this.props.user, fullName: values[userForm.FORM_KEY_NAME] } as User)
     } catch (err) {
-      Alert.alert(getUnknownErrorMessage())
+      Alert.alert(getErrorDisplayMessage(err))
     } finally {
       this.setState({ isLoading: false })
     }

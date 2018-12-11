@@ -4,10 +4,10 @@ import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import parse from 'url-parse'
 
-import { getApiServerUrl, getPathWithParams, urlGenerator } from 'api/config'
+import { getApiServerUrl } from 'api/config'
 import { CreateEventResponseData } from 'api/endpoints/types'
 import { getDeviceUuid } from 'helpers/uuid'
-import { CheckIn, PositionFix, Race, TrackingSession } from 'models'
+import { CheckIn, PositionFix, Race } from 'models'
 import { ApiBodyKeys as CheckInBodyKeys, CheckInUpdate, urlParamsToCheckIn } from 'models/CheckIn'
 import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 
@@ -124,7 +124,3 @@ export const eventCreationResponseToCheckIn = (
   secret: additionalProperties && additionalProperties.secret,
 } as CheckIn)
 
-export const createCheckInUrl = (serverUrl: string, urlParams: any) => {
-  const url = urlGenerator(serverUrl, '')('')({ urlParams })
-  return url
-}

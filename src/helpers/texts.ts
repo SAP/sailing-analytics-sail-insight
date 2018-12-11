@@ -1,5 +1,7 @@
+import { isString } from 'lodash'
+
 import ApiException from 'api/ApiException'
-import { STATUS_FORBIDDEN, STATUS_UNAUTHORIZED } from 'api/constants'
+import { STATUS_FORBIDDEN, STATUS_PRECONDITION_FAILED, STATUS_UNAUTHORIZED } from 'api/constants'
 import I18n from 'i18n'
 import { MISSING_PREFIX } from 'i18n/utils'
 
@@ -7,6 +9,7 @@ import { ErrorCodes } from './errors'
 
 
 const ERROR_TRANSLATION_PREFIX = 'error_'
+const USER_EXISTS_TEXT = 'user already exists'
 
 const getTranslation = (translationKey: string, defaultMessage?: string, params?: any) => {
   const result = I18n.t(translationKey, params)
@@ -49,6 +52,10 @@ export const getErrorDisplayMessage = (exception: any) => {
         return I18n.t(ErrorCodes.UNAUTHORIZED)
       case STATUS_FORBIDDEN:
         return I18n.t(ErrorCodes.FORBIDDEN)
+      case STATUS_PRECONDITION_FAILED:
+        return isString(errorKey) && errorKey.toLowerCase().includes(USER_EXISTS_TEXT) ?
+          I18n.t(ErrorCodes.USER_EXISTS) :
+          I18n.t(ErrorCodes.PRECONDITION_FAILED)
       default:
         return getErrorMessage(errorKey, getUnknownErrorMessage(error.status))
     }

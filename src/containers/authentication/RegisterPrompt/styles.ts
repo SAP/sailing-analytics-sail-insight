@@ -9,4 +9,8 @@ export default EStyleSheets.create({
     flex: 1,
     justifyContent: 'space-between',
   },
+  loginButton: {
+    alignSelf: 'center',
+    marginBottom: 32,
+  },
 })

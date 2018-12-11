@@ -1,8 +1,10 @@
 import Logger from 'helpers/Logger'
 import { DispatchType } from 'helpers/types'
 import * as DeepLinking from 'integrations/DeepLinking'
+import { createCheckInUrlFromParams } from 'models/CheckIn'
 
 import { joinSessionInvitation } from './checkIn'
+
 
 export const CHECK_IN_URL_KEY = 'checkinUrl'
 
@@ -12,6 +14,10 @@ const getDeepLinkAction = (linkParams: any) => {
   }
   if (linkParams[CHECK_IN_URL_KEY]) {
     return joinSessionInvitation(linkParams[CHECK_IN_URL_KEY])
+  }
+  const checkInUrl = createCheckInUrlFromParams(linkParams)
+  if (checkInUrl) {
+    return joinSessionInvitation(checkInUrl)
   }
   return null
 }

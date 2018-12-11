@@ -1,10 +1,11 @@
 import { find, omit } from 'lodash'
 import { createAction } from 'redux-actions'
 
-import { fetchCurrentUser } from 'actions/auth'
 import { selfTrackingApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { Boat } from 'models'
+
+import { fetchCurrentUser } from 'actions/auth'
 import { getUserBoats } from 'selectors/user'
 
 
@@ -19,18 +20,16 @@ export type SaveBoatAction = (
   boat: Boat,
   options?: {replaceBoatName?: string, updateLastUsed?: boolean},
 ) => any
-
-
 export const saveBoat: SaveBoatAction = (boat, options = {}) => async (dispatch: DispatchType) => {
   const boats = await selfTrackingApi.requestPreference(BOATS_PREFERENCE_KEY)
   const { updateLastUsed, replaceBoatName } = options
   const newBoats = {
-    ...boats,
+    ...(replaceBoatName ? omit(boats, replaceBoatName) : boats),
     [boat.name]: boat,
   }
   await selfTrackingApi.updatePreference(
     BOATS_PREFERENCE_KEY,
-    replaceBoatName ? omit(newBoats, [replaceBoatName]) : newBoats,
+    newBoats,
     )
   dispatch(updateBoats(newBoats))
   if (updateLastUsed) { dispatch(boatWasUsed(boat.name)) }
