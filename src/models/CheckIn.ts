@@ -75,6 +75,7 @@ export interface CheckInUpdate {
   markId?: string
   isSelfTracking?: boolean
   currentTrackName?: string
+  currentRaceName?: string
   currentFleet?: string
   trackPrefix?: string
   secret?: string

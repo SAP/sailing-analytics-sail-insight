@@ -25,7 +25,7 @@ export const sendWind: SendWindAction = (direction, speedInKnots) => withDataApi
 
     await dataApi.sendWindFix(
         checkIn.regattaName,
-        checkIn.currentTrackName,
+        checkIn.currentRaceName || checkIn.currentTrackName,
         {
           direction,
           speedinknots: speedInKnots,

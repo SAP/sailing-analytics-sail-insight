@@ -21,6 +21,7 @@ export const createNewTrack = (regattaName: string, trackName: string) => withDa
         leaderboardName: regattaName,
         currentTrackName: newTrack.racename,
         currentFleet: newTrack.seriesname,
+        currentRaceName: `${regattaName} ${newTrack.racename} ${newTrack.seriesname}`,
         trackPrefix: trackName,
       } as CheckInUpdate))
     }
