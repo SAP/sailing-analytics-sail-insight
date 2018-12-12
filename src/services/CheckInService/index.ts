@@ -6,6 +6,7 @@ import parse from 'url-parse'
 
 import { getApiServerUrl } from 'api/config'
 import { CreateEventResponseData } from 'api/endpoints/types'
+import { BRANCH_APP_DOMAIN } from 'environment'
 import { getDeviceUuid } from 'helpers/uuid'
 import { CheckIn, PositionFix, Race } from 'models'
 import { ApiBodyKeys as CheckInBodyKeys, CheckInUpdate, urlParamsToCheckIn } from 'models/CheckIn'
@@ -28,7 +29,7 @@ export const extractData = (url: string) => {
     return null
   }
   const parsedUrl = parse(url)
-  const serverUrl = parsedUrl && parsedUrl.origin
+  const serverUrl = url.includes(BRANCH_APP_DOMAIN) ? getApiServerUrl() : parsedUrl && parsedUrl.origin
 
   const parsedQuery = querystring.parseUrl(url)
   const queryData = parsedQuery && parsedQuery.query

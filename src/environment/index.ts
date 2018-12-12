@@ -20,4 +20,5 @@ export {
   DATA_API_PREFIX,
   RACE_API_PREFIX,
   DATA_API_V2_PREFIX,
+  BRANCH_APP_DOMAIN,
 } from 'environment/init'

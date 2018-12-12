@@ -105,7 +105,7 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
   },
 )
 
-export const joinSessionInvitation = (checkInUrl: string) => async (dispatch: DispatchType) => {
+export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: DispatchType) => {
   let error: any
   try {
     dispatch(updateLoadingCheckInFlag(true))
