@@ -13,6 +13,7 @@ const initialState = {}
 const persistConfig = {
   key: 'root',
   debounce: 1000,
+  timeout: 10000,
   blacklist: ['network', 'form'],
   storage: AsyncStorage,
 }

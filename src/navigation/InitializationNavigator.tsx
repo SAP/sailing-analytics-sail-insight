@@ -19,9 +19,8 @@ class InitializationNavigator extends React.Component<{
   showLoadingOverlay: boolean,
 } > {
 
-  public initializeAppFlow = () => {
-    this.props.initializeApp()
-  }
+  public initializeAppFlow = () => this.props.initializeApp()
+
 
   public handleNavigatorRef = (ref: any) => {
     NavigationService.setTopLevelNavigator(ref)
