@@ -94,8 +94,8 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
-def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.dlabs.sailing.android.insight'
-def _appName = System.getenv("ANDROID_APP_NAME") ?: 'sap_sailing_insight'
+def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.sailtracks.android.sailinginsight'
+def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sailing'
 def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "1") as Integer
 def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.0"
 
@@ -157,19 +157,19 @@ android {
                     branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_idPavc3PD7SCPu5i9qaV9aglyDgbmRyR",
                     branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight20-app.sapsailing.com",
                     branchIOTestMode: false,
-                    branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "comdlabssailingtracker",
+                    branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "comsailtrackssailinginsight",
             ]
         }
-        // insights {
-        //     dimension "default"
-        //     manifestPlaceholders = [
-        //         branchIOKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
-        //         branchIOTestKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
-        //         branchIOAppLink:"d-labs.app.link",
-        //         branchIOTestMode: false,
-        //         branchIOScheme: "comsapsailingtracker",
-        //     ]
-        // }
+         live {
+             dimension "default"
+             manifestPlaceholders = [
+                     branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_dfPlye3KB3UqKx6h9FhdAmbbytkpdUuA",
+                     branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_idPavc3PD7SCPu5i9qaV9aglyDgbmRyR",
+                     branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight20-app.sapsailing.com",
+                     branchIOTestMode: false,
+                     branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "comsailtrackssailinginsight",
+             ]
+         }
     }
 }
 

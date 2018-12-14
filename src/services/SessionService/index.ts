@@ -2,12 +2,12 @@ import { includes, intersection, isEmpty, isString } from 'lodash'
 
 import { dateTimeText } from 'helpers/date'
 import I18n from 'i18n'
-import { Boat, TrackingSession, User } from 'models'
+import { BoatTemplate, TrackingSession, User } from 'models'
 
 
 const getUserSessionPrefix = (username: string) => `<${username}>`
 
-export const generateNewSession = (boat?: Boat) => {
+export const generateNewSession = (boat?: BoatTemplate) => {
   // TODO: implement prefill from current boat
   return {
     name: generateNewSessionName(),

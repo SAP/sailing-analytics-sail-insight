@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import React from 'react'
 import { Alert, View } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
@@ -13,11 +14,15 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { navigateBack, navigateToSetWind } from 'navigation'
+import { getBoat } from 'selectors/boat'
 import { getTrackedCheckIn } from 'selectors/checkIn'
+import { getCompetitor } from 'selectors/competitor'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
+import { getMark } from 'selectors/mark'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import ImageButton from 'components/ImageButton'
+import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
@@ -33,6 +38,7 @@ class Tracking extends React.Component<{
   stopTracking: StopTrackingAction,
   trackingStats: LocationStats,
   checkInData: CheckIn,
+  trackedContextName?: string,
 } > {
   public state = {
     isLoading: false,
@@ -50,7 +56,7 @@ class Tracking extends React.Component<{
   }
 
   public render() {
-    const { trackingStats, checkInData } = this.props
+    const { trackingStats, checkInData, trackedContextName } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(2) : EMPTY_VALUE
     const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(2)}°` : EMPTY_VALUE
@@ -59,6 +65,7 @@ class Tracking extends React.Component<{
     return (
       <View style={[container.main]}>
         <ConnectivityIndicator style={styles.connectivity}/>
+        {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={[container.mediumHorizontalMargin, styles.container]}>
           <View style={[container.stretchContent]}>
             <TrackingPropertyAutoFit
@@ -174,10 +181,19 @@ class Tracking extends React.Component<{
   }
 }
 
-const mapStateToProps = (state: any) => ({
-  locationTrackingStatus: getLocationTrackingStatus(state),
-  trackingStats: getLocationStats(state) || {},
-  checkInData: getTrackedCheckIn(state) || {},
-})
+const mapStateToProps = (state: any) => {
+  const checkInData = getTrackedCheckIn(state) || {}
+  return {
+    checkInData,
+    locationTrackingStatus: getLocationTrackingStatus(state),
+    trackingStats: getLocationStats(state) || {},
+    trackedContextName: get(
+      getBoat(checkInData.boatId)(state) ||
+      getCompetitor(checkInData.competitorId)(state) ||
+      getMark(checkInData.markId)(state),
+      'name',
+    ),
+  }
+}
 
 export default connect(mapStateToProps, { stopTracking })(Tracking)

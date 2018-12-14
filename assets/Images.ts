@@ -42,6 +42,8 @@ export default {
     maneuvers: require('./img/icons/icon-maneuvers.png'),
     wind: require('./img/icons/icon-wind.png'),
     error: require('./img/icons/icon-error.png'),
+    mark: require('./img/icons/icon-mark.png'),
+    competitor: require('./img/icons/icon-account-filled.png'),
   },
   animations: {
     waveLoadingIndicator: require('./img/animations/wave_loading.json'),

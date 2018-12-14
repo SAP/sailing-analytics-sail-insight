@@ -6,6 +6,7 @@ export const $microSpacing = 4
 export const $tinySpacing = 8
 export const $smallSpacing = 16
 export const $baseSpacing = 24
+export const $mediumSpacing = 32
 export const $largeSpacing = 48
 export const $xLargeSpacing = 64
 

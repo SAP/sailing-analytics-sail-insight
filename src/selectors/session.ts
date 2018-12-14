@@ -8,11 +8,15 @@ import { mapResToLeaderboard } from 'models/Leaderboard'
 import { mapResToRegatta } from 'models/Regatta'
 import { removeUserPrefix } from 'services/SessionService'
 
+import { mapResToBoat } from 'models/Boat'
+import { mapResToMark } from 'models/Mark'
 import { getUserInfo } from './auth'
+import { getBoatEntity } from './boat'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from './checkIn'
 import { getCompetitorEntity } from './competitor'
 import { getEventEntity } from './event'
 import { getLeaderboardEntity } from './leaderboard'
+import { getMarkEntity } from './mark'
 import { getRegattaEntity } from './regatta'
 
 
@@ -22,6 +26,8 @@ const buildSession = (
   leaderboardEntity: any,
   regattaEntity: any,
   competitorEntity: any,
+  boatEntity: any,
+  markEntity: any,
   userInfo: any,
 ) => {
   const result: Session = { ...checkIn }
@@ -36,6 +42,8 @@ const buildSession = (
     userInfo,
     result.leaderboard && (result.leaderboard.displayName || result.leaderboard.displayName),
   )
+  result.boat = boatEntity && checkIn.boatId ? mapResToBoat(boatEntity[checkIn.boatId]) : undefined
+  result.mark = markEntity && checkIn.markId ? mapResToMark(markEntity[checkIn.markId]) : undefined
   return result
 }
 
@@ -46,6 +54,8 @@ export const getSessionList = createSelector(
   getLeaderboardEntity,
   getRegattaEntity,
   getCompetitorEntity,
+  getBoatEntity,
+  getMarkEntity,
   getUserInfo,
   (
     activeCheckIns,
@@ -53,6 +63,8 @@ export const getSessionList = createSelector(
     leaderboardEntity,
     regattaEntity,
     competitorEntity,
+    boatEntity,
+    markEntity,
     userInfo,
   ) => {
     if (!activeCheckIns) {
@@ -65,6 +77,8 @@ export const getSessionList = createSelector(
         leaderboardEntity,
         regattaEntity,
         competitorEntity,
+        boatEntity,
+        markEntity,
         userInfo,
       )),
     )
@@ -77,6 +91,8 @@ export const getSession = (leaderboardName: string) => createSelector(
   getLeaderboardEntity,
   getRegattaEntity,
   getCompetitorEntity,
+  getBoatEntity,
+  getMarkEntity,
   getUserInfo,
   (
     checkIn,
@@ -84,6 +100,8 @@ export const getSession = (leaderboardName: string) => createSelector(
     leaderboardEntity,
     regattaEntity,
     competitorEntity,
+    boatEntity,
+    markEntity,
     userInfo,
   ) => buildSession(
     checkIn,
@@ -91,6 +109,8 @@ export const getSession = (leaderboardName: string) => createSelector(
     leaderboardEntity,
     regattaEntity,
     competitorEntity,
+    boatEntity,
+    markEntity,
     userInfo,
   ),
 )

@@ -25,12 +25,12 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>comdlabssailingtracker</string>
+				<string>comsailtrackssailinginsight</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>

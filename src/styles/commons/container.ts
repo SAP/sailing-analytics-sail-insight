@@ -12,6 +12,10 @@ export default EStyleSheet.create({
   content: {
     flexGrow: 1,
   },
+  rowCentered: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   stretchContent: {
     alignSelf: 'stretch',
     flexGrow: 1,

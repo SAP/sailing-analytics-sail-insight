@@ -49,4 +49,11 @@ export default EStyleSheets.create({
   basicInfoContainer: {
     flexGrow: 1,
   },
+  infoItem: {
+    maxWidth: '50%',
+    marginRight: '$tinySpacing',
+  },
+  fullInfoItem: {
+    maxWidth: '100%',
+  },
 })

@@ -22,7 +22,11 @@ class HeaderTitle extends React.Component<ViewProps & {
 
     return (
       <View style={[styles.container, style]}>
-        <Text style={!secondLine ? navigation.headerTitle : styles.heading}>
+        <Text
+          style={[styles.baseHeading, !secondLine ? navigation.headerTitle : styles.heading]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
           {firstLine}
         </Text>
         {

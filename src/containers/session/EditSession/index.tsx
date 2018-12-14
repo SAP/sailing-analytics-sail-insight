@@ -6,7 +6,7 @@ import { Field, Fields, reduxForm } from 'redux-form'
 import * as sessionForm from 'forms/session'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
-import { Boat } from 'models'
+import { BoatTemplate } from 'models'
 import { navigateBack } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -23,7 +23,7 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 
 interface Props {
-  boats: Boat[]
+  boats: BoatTemplate[]
 }
 
 class EditSession extends TextInputForm<Props> {
