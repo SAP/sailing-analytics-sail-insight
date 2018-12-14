@@ -48,10 +48,14 @@ buck-out/
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/
-fastlane/
-*/fastlane/report.xml
-*/fastlane/Preview.html
-*/fastlane/screenshots
+fastlane/.env.dev
+fastlane/entitlements/dev.entitlements
+fastlane/.env.dev.secret
+fastlane/store_deploy.sh
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+
 
 # Bundle artifact
 *.jsbundle

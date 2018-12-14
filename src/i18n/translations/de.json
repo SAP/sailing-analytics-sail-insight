@@ -107,6 +107,7 @@
   "text_email_help_subject": "Ich benötige Hilfe ({{subject}} {{version}})",
   "text_email_help_body": "Problembeschreibung:",
   "text_register_grant_eula_01": "Mit der Registrierung akzeptierst du den ",
+  "text_register_grant_eula_join_01": "Mit der Teilnahme akzeptierst du den ",
   "text_register_grant_eula_02": "SAP SE Endnutzer-Lizenzvertrag",
 
   "caption_ok": "OK",
@@ -153,6 +154,7 @@
   "caption_take_photo" : "Foto aufnehmen",
   "caption_save" : "Speichern",
   "caption_delete" : "Löschen",
+  "caption_feedback_and_questions" : "Feedback und Fragen?",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",

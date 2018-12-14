@@ -1,6 +1,6 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
@@ -14,12 +14,12 @@ import I18n from 'i18n'
 import { navigateToUserRegistrationBoat } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
+import EulaLink from 'components/EulaLink'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
-import { openTerms } from 'helpers/user'
 import { button, container, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
@@ -98,16 +98,7 @@ class RegisterCredentials extends TextInputForm<Props> {
             secureTextEntry={true}
             inputRef={this.handleInputRef(registrationForm.FORM_KEY_PASSWORD)}
           />
-          <TouchableOpacity onPress={openTerms}>
-            <Text style={[styles.taskText, styles.taskTextSize]}>
-              <Text>
-                {I18n.t('text_register_grant_eula_01')}
-              </Text>
-              <Text style={[button.textButtonText, styles.taskTextSize]}>
-                {I18n.t('text_register_grant_eula_02')}
-              </Text>
-            </Text>
-          </TouchableOpacity>
+          <EulaLink/>
           {error && <Text style={registration.errorText()}>{error}</Text>}
           <TextButton
             style={registration.nextButton()}

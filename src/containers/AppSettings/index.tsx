@@ -2,10 +2,9 @@ import React from 'react'
 import { Alert, TouchableWithoutFeedback, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
-import { showTestCheckInAlert } from 'actions/appDebug'
 import { updateGpsBulkSetting } from 'actions/settings'
 import { getApiServerUrl } from 'api/config'
-import { getAppVersionText, openTerms } from 'helpers/user'
+import { getAppVersionText, openEmailToContact, openTerms } from 'helpers/user'
 import I18n from 'i18n'
 import { getBulkGpsSetting } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
@@ -24,7 +23,6 @@ import styles from './styles'
 
 
 class AppSettings extends React.Component<ViewProps & {
-  showTestCheckInAlert: () => void,
   updateGpsBulkSetting: (value: boolean) => void,
   bulkGpsSetting: boolean,
 }> {
@@ -44,7 +42,22 @@ class AppSettings extends React.Component<ViewProps & {
             {I18n.t('text_setting_gps_bulk', { timeInSeconds: UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
           </EditItemSwitch>
         </View>
-        {this.renderTerms()}
+        <View style={container.smallHorizontalMargin}>
+          <TextButton
+            style={registration.nextButton()}
+            textStyle={button.actionText}
+            onPress={openEmailToContact}
+          >
+            {I18n.t('caption_feedback_and_questions')}
+          </TextButton>
+          <TextButton
+            style={registration.nextButton()}
+            textStyle={button.actionText}
+            onPress={openTerms}
+          >
+            {I18n.t('title_eula')}
+          </TextButton>
+        </View>
         {this.renderVersionNumber()}
       </ScrollContentView>
     )
@@ -68,27 +81,11 @@ class AppSettings extends React.Component<ViewProps & {
 
   protected renderDeviceId = () => {
     return (
-      <TouchableWithoutFeedback
-        onLongPress={this.props.showTestCheckInAlert}
-      >
-        <View style={styles.item}>
-          <TitleLabel title={I18n.t('text_device_id')}>
-            {getDeviceId()}
-          </TitleLabel>
-        </View>
-      </TouchableWithoutFeedback>
-    )
-  }
-
-  protected renderTerms = () => {
-    return (
-      <TextButton
-        style={registration.lowerButton()}
-        textStyle={button.textButtonSecondaryText}
-        onPress={openTerms}
-      >
-        {I18n.t('title_eula')}
-      </TextButton>
+      <View style={styles.item}>
+        <TitleLabel title={I18n.t('text_device_id')}>
+          {getDeviceId()}
+        </TitleLabel>
+      </View>
     )
   }
 
@@ -98,4 +95,4 @@ const mapStateToProps = (state: any) => ({
   bulkGpsSetting: getBulkGpsSetting(state),
 })
 
-export default connect(mapStateToProps, { showTestCheckInAlert, updateGpsBulkSetting })(AppSettings)
+export default connect(mapStateToProps, { updateGpsBulkSetting })(AppSettings)
