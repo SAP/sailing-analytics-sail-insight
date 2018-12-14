@@ -60,6 +60,14 @@
 	<string>App requires motion tracking</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App requires photo library</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>App requires bluetooth</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>App requires calendar</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>App requires media library</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>App requires speech recognition</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>bentonsans_bold.otf</string>
