@@ -18,6 +18,7 @@ import { getLeaderboard } from 'selectors/leaderboard'
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
 import { registration } from 'styles/components'
 
+import EulaLink from 'components/EulaLink'
 import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ScrollContentView from 'components/ScrollContentView'
@@ -82,6 +83,7 @@ class JoinRegatta extends React.Component<{
           >
             {I18n.t('caption_join_race')}
           </TextButton>
+          <EulaLink mode="JOIN"/>
           <TextButton
             style={registration.lowerButton()}
             textStyle={button.textButtonSecondaryText}
@@ -105,3 +107,4 @@ const mapStateToProps = (state: any, props: any) => {
 }
 
 export default connect(mapStateToProps, { checkIn })(JoinRegatta)
+

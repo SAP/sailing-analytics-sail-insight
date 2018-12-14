@@ -1,0 +1,179 @@
+require 'dotenv'
+
+# Check Git Status
+
+lane :check_git_status do |options|
+  ensure_git_branch(
+    branch: "#{options[:name]}"
+  )
+  ensure_git_status_clean
+  git_pull
+
+end
+
+# SRC Environments
+
+lane :set_src_env do |options|
+  backup_file(path: 'src/environment/init/index.ts')
+  sh "cp ../src/environment/init/index.#{ENV['ENV']}.ts ../src/environment/init/index.ts"
+end
+
+before_all do |lane, options|
+  Dotenv.load(".env.#{ENV['ENV']}.secret")
+end
+
+after_all do |lane, options|
+  if File.exist?('../src/environment/init/index.ts.back')
+    restore_file(path: 'src/environment/init/index.ts')
+  end
+end
+
+error do |lane, exception, options|
+  if File.exist?('../src/environment/init/index.ts.back')
+    restore_file(path: 'src/environment/init/index.ts')
+  end
+end
+
+# IOS
+
+platform :ios do
+  error do |lane, exception, options|
+    path = "#{ENV['IOS_PROJECT_PATH']}/#{ENV['IOS_PLIST_PATH']}"
+    if File.exist?("../#{path}.back")
+      restore_file(path: path)
+    end
+  end
+
+  after_all do |lane, options|
+    path = "#{ENV['IOS_PROJECT_PATH']}/#{ENV['IOS_GOOGLE_SERVICE_INFO_PLIST_PATH']}"
+    if File.exist?("../#{path}.back")
+      restore_file(path: path)
+    end
+  end
+
+  lane :setup_entitlements do
+    path = "#{ENV['IOS_PROJECT_PATH']}/#{ENV['IOS_PROJECT_NAME']}/#{ENV['IOS_PROJECT_NAME']}.entitlements"
+    sh "cp #{ENV['IOS_ENTITLEMENTS_TEMPLATE_PATH']} ../#{path}"
+  end
+
+  lane :setup do |options|
+    produce(
+      app_name: ENV['IOS_APP_NAME'],
+      skip_itc: true
+    )
+    # match(
+    #   # readonly: true,
+    #   # force: true,
+    #   git_branch: ENV['MATCH_GIT_BRANCH'],
+    #   type: ENV['MATCH_TYPE'],
+    #   shallow_clone: true,
+    #   force_for_new_devices: true
+    # )
+  end
+
+  lane :setup_push do
+    pem
+  end
+
+  lane :build do |options|
+    setup
+    plist_full_path = "#{ENV['IOS_PROJECT_PATH']}/#{ENV['IOS_PLIST_PATH']}"
+    # setup_entitlements
+    set_src_env
+    backup_file(path: plist_full_path)
+    xcodeproj = "#{ENV['IOS_PROJECT_PATH']}/#{ENV['IOS_PROJECT_NAME']}.xcodeproj"
+    xcworkspace = "#{ENV['IOS_PROJECT_PATH']}/#{ENV['IOS_PROJECT_NAME']}.xcworkspace"
+    update_info_plist(
+      xcodeproj: xcodeproj,
+      plist_path: ENV['IOS_PLIST_PATH'],
+      block: lambda { |plist|
+        plist['CFBundleIdentifier'] = ENV['IOS_APP_ID']
+        plist['CFBundleName'] = ENV['IOS_APP_NAME']
+        plist['CFBundleDisplayName'] = ENV['IOS_APP_NAME']
+        plist['CFBundleShortVersionString'] = ENV['APP_VERSION_NAME']
+        plist['CFBundleVersion'] = ENV['CI_BUILD_NUMBER']
+        plist['branch_key']['live'] = ENV['BRANCH_IO_KEY']
+        plist['branch_app_domain'] = ENV['BRANCH_IO_APP_DOMAIN']
+        urlScheme = plist["CFBundleURLTypes"].find{|scheme| scheme["CFBundleURLSchemes"]}
+        urlScheme[:CFBundleURLSchemes] = [ ENV['BRANCH_IO_SCHEME'] ]
+      },
+    )
+    update_app_identifier(
+      xcodeproj: xcodeproj,
+      plist_path: ENV['IOS_PLIST_PATH'],
+      app_identifier: ENV['IOS_APP_ID']
+    )
+    update_project_team(
+      path: xcodeproj,
+      teamid: ENV['IOS_TEAM_ID']
+    )
+    profile_env_name = "match #{ENV['MATCH_TYPE_PROFILE_PREFIX']} #{ENV['IOS_APP_ID']}"
+    gymOptions = ({
+      verbose: true,
+      clean: true,
+      configuration: ENV['IOS_BUILD_CONFIGURATION'],
+      export_method: ENV['IOS_EXPORT_METHOD'],
+      export_team_id: ENV['IOS_TEAM_ID'],
+      # export_options: {
+      #   provisioningProfiles: {
+      #     "#{ENV['IOS_PROJECT_NAME']}" => profile_env_name,
+      #     "#{ENV['IOS_APP_ID']}" => profile_env_name,
+      #   }
+      # },
+      xcargs: '-allowProvisioningUpdates'
+    }).merge(
+      File.directory?("../#{xcworkspace}") ?
+        {workspace: xcworkspace} :
+        {project: xcodeproj}
+    )
+
+    print gymOptions
+
+    gym(gymOptions)
+    restore_file(path: plist_full_path)
+  end
+
+  lane :deploy_enterprise_store do |options|
+    build
+    sh 'cd .. && fastlane/store_deploy.sh "$IOS_IPA_PATH" "$APP_VERSION_NAME" "$LS_IOS_APP_ID" "$CI_BUILD_NUMBER"'
+  end
+
+  lane :deploy_to_itunes_connect do |options|
+    appstore({
+      force: true
+    })
+    pilot({
+      ipa: ENV['IOS_IPA_PATH'],
+      skip_waiting_for_build_processing: true,
+      skip_submission: true
+    })
+  end
+end
+
+#  ANDROID
+
+platform :android do
+  lane :build do |options|
+    set_src_env
+    gradle(
+      task: "assemble",
+      build_type: ENV['GRADLE_BUILD_TYPE'],
+      flavor: ENV['ENV'],
+      project_dir: ENV['ANDROID_PROJECT_DIR'],
+    )
+  end
+
+  lane :deploy_enterprise_store do |options|
+    build
+    sh 'cd .. && fastlane/store_deploy.sh "$ANDROID_APK_PATH" "$APP_VERSION_NAME" "$LS_ANDROID_APP_ID" "$CI_BUILD_NUMBER"'
+  end
+
+  lane :deploy_to_play_store do |options|
+    supply(
+      apk: ENV['ANDROID_APK_PATH'],
+      json_key: "fastlane/google_play.json",
+      package_name: ENV['ANDROID_APP_IDENTIFIER'],
+      track: 'beta'
+    )
+  end
+end

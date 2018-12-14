@@ -14,12 +14,14 @@ import { image } from 'styles/commons'
 
 class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
   placeholder?: any,
+  disabled?: boolean,
 } > {
 
   public render() {
     const {
       input,
       placeholder,
+      disabled,
     } = this.props
 
     const imageValue = get(input, 'value.path')
@@ -30,11 +32,11 @@ class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
         style={[image.headerMediumLarge, placeholderStyle]}
         source={imageValue || placeholder}
       >
-        <ImagePickerButton
+        {!disabled && <ImagePickerButton
           style={[image.absoluteLowerRight]}
           source={Images.actions.pickImage}
           onImage={this.handleImage}
-        />
+        />}
       </Image>
     )
   }

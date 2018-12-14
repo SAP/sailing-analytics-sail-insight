@@ -26,6 +26,10 @@ export default EStyleSheet.create({
     resizeMode: 'contain',
     marginLeft: '$smallSpacing',
   },
+  smallHorizontalMargin: {
+    marginLeft: '$baseRelativeSpacing',
+    marginRight: '$baseRelativeSpacing',
+  },
   mediumHorizontalMargin: {
     marginLeft: '$mediumRelativeSpacing',
     marginRight: '$mediumRelativeSpacing',

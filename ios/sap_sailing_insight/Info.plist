@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -44,6 +44,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>App requires media library</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>App requires bluetooth</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>App requires calendar</string>
 	<key>NSCameraUsageDescription</key>
 	<string>App requires camera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

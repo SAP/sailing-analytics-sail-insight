@@ -107,6 +107,7 @@
   "text_email_help_subject": "I need help with {{subject}} {{version}}",
   "text_email_help_body": "Problem description:",
   "text_register_grant_eula_01": "By registering you confirm to accept the ",
+  "text_register_grant_eula_join_01": "By joining you confirm to accept the ",
   "text_register_grant_eula_02": "SAP SE end user license agreement",
 
   "caption_ok": "OK",
@@ -153,6 +154,7 @@
   "caption_take_photo" : "Take a photo",
   "caption_save" : "Save",
   "caption_delete" : "Delete",
+  "caption_feedback_and_questions" : "Feedback and questions?",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",
