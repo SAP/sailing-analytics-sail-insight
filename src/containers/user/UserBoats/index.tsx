@@ -3,7 +3,7 @@ import { ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import I18n from 'i18n'
-import { Boat } from 'models'
+import { BoatTemplate } from 'models'
 import { navigateToBoatDetails } from 'navigation'
 import { getLastUsedBoat, getUserBoats } from 'selectors/user'
 
@@ -13,8 +13,8 @@ import FloatingComponentList from 'components/FloatingComponentList'
 
 
 class UserBoats extends React.Component<ViewProps & {
-  boats: Boat[],
-  lastUsedBoat?: Boat,
+  boats: BoatTemplate[],
+  lastUsedBoat?: BoatTemplate,
 }> {
 
   public render() {
@@ -33,7 +33,7 @@ class UserBoats extends React.Component<ViewProps & {
 
   protected renderAddItem = () => <AddButton onPress={this.onNewBoatPress}>{I18n.t('caption_new_boat')}</AddButton>
 
-  protected renderItem = ({ item }: {item: Boat}) => {
+  protected renderItem = ({ item }: {item: BoatTemplate}) => {
     const { lastUsedBoat } = this.props
     return (
       <BoatItem

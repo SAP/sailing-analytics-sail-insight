@@ -11,7 +11,7 @@ import styles from './styles'
 
 class WebView extends React.Component<{
   url: string,
-  withAuthToken?: boolean,
+  withAccessToken?: boolean,
   accessToken?: string,
 } > {
 
@@ -19,16 +19,17 @@ class WebView extends React.Component<{
     withAccessToken: true,
   }
 
+  public state = {}
+
   public render() {
-    const { url, withAuthToken, accessToken } = this.props
-    console.log(url, withAuthToken, accessToken)
+    const { url, accessToken } = this.props
     return (
       <View style={container.list}>
         <RNWebView
           onLoadStart={this.onLoadStart}
           source={{
             uri: url,
-            ...(withAuthToken && accessToken ? { headers: { Authorization: `Bearer ${accessToken}` } } : {}),
+            ...(accessToken ? { headers: { Authorization: `Bearer ${accessToken}` } } : {}),
           }}
           style={styles.web}
           scalesPageToFit={true}
@@ -37,7 +38,9 @@ class WebView extends React.Component<{
     )
   }
 
-  protected onLoadStart = (navState: any) => this.setState({ url: navState.nativeEvent.url })
+  protected onLoadStart = (navState: any) => {
+    this.setState({ url: navState.nativeEvent.url })
+  }
 }
 
 const mapStateToProps = (state: any, props: any) => ({

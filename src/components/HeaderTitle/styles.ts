@@ -11,7 +11,12 @@ export default EStyleSheets.create({
     alignItems: 'center',
     textAlign: 'center',
     alignSelf: 'center',
+    paddingRight: '$mediumSpacing',
+    paddingLeft: '$mediumSpacing',
     ...headerTitleStyleProps,
+  },
+  baseHeading: {
+    alignSelf: 'stretch',
   },
   heading: {
     fontSize: '$regularLargeFontSize',

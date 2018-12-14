@@ -4,13 +4,13 @@ import { createSelector } from 'reselect'
 import { RootState } from 'reducers/config'
 
 import * as boatForm from 'forms/boat'
-import { Boat } from 'models'
+import { BoatTemplate } from 'models'
 
 import { getEntities, getEntityArrayByType } from './entity'
 import { getFormFieldValue } from './form'
 
 
-const orderBoatsLastUsedDesc = (boats: Boat[]) => boats.sort((b1, b2) => {
+const orderBoatsLastUsedDesc = (boats: BoatTemplate[]) => boats.sort((b1, b2) => {
   if (!b1.lastUsed && !b2.lastUsed) {
     return 0
   }
@@ -32,7 +32,7 @@ export const getUserBoats = (state: RootState = {}) => orderBoatsLastUsedDesc(ge
 
 export const getUserBoatsByClass = (boatClass: string) => createSelector(
   getUserBoats,
-  (boats: Boat[]) => filter(boats, { boatClass }),
+  (boats: BoatTemplate[]) => filter(boats, { boatClass }),
 )
 
 export const getUserBoatByFormBoatName = createSelector(
@@ -43,7 +43,7 @@ export const getUserBoatByFormBoatName = createSelector(
 
 export const getUserBoatNames = createSelector(
   getUserBoats,
-  (userBoats = []) => userBoats.map((boat: Boat) => boat.name),
+  (userBoats = []) => userBoats.map((boat: BoatTemplate) => boat.name),
 )
 
 export const getLastUsedBoat = createSelector(

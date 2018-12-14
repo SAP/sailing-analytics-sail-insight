@@ -1,4 +1,4 @@
-import { CheckIn, Competitor, Event, Leaderboard, Regatta } from 'models'
+import { Boat, CheckIn, Competitor, Event, Leaderboard, Mark, Regatta } from 'models'
 import { TrackingDisplayable } from 'models/base'
 
 export default interface Session extends CheckIn, TrackingDisplayable {
@@ -6,4 +6,6 @@ export default interface Session extends CheckIn, TrackingDisplayable {
   event?: Event,
   competitor?: Competitor
   leaderboard?: Leaderboard
+  mark?: Mark
+  boat?: Boat
 }

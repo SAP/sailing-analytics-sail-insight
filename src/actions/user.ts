@@ -3,7 +3,7 @@ import { createAction } from 'redux-actions'
 
 import { selfTrackingApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
-import { Boat } from 'models'
+import { BoatTemplate } from 'models'
 
 import { fetchCurrentUser } from 'actions/auth'
 import { getUserBoats } from 'selectors/user'
@@ -17,7 +17,7 @@ export const removeBoat = createAction('REMOVE_BOAT')
 export const updateBoats = createAction('UPDATE_BOATS')
 
 export type SaveBoatAction = (
-  boat: Boat,
+  boat: BoatTemplate,
   options?: {replaceBoatName?: string, updateLastUsed?: boolean},
 ) => any
 export const saveBoat: SaveBoatAction = (boat, options = {}) => async (dispatch: DispatchType) => {

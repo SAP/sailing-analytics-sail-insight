@@ -1,7 +1,7 @@
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
-import { CheckIn } from 'models'
+import { CheckIn, CheckInUpdate } from 'models'
 import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -75,8 +75,17 @@ export const checkIn = (data: CheckIn) => async (dispatch: DispatchType) => {
     throw new CheckInException('data is missing')
   }
   dispatch(updateCheckIn(data))
-  if (data.competitorId) {
+  if (data.competitorId || data.markId || data.boatId) {
     await dispatch(registerDevice(data.leaderboardName))
+    const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
+    if (data.competitorId) {
+      update.trackingContext = 'COMPETITOR'
+    } else if (data.boatId) {
+      update.trackingContext = 'BOAT'
+    } else if (data.markId) {
+      update.trackingContext = 'MARK'
+    }
+    dispatch(updateCheckIn(update))
     navigateToSessions()
   }
   if (data.secret) {

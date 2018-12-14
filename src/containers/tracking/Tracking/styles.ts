@@ -55,4 +55,12 @@ export default EStyleSheets.create({
   singleValue: {
     justifyContent: 'flex-end',
   },
+  contextName: {
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
+    marginTop: '$tinySpacing',
+    color: '$secondaryTextColor',
+    fontSize: '$regularFontSize',
+    alignSelf: 'center',
+  },
 })

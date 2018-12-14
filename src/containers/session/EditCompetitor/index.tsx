@@ -9,7 +9,7 @@ import * as sessionForm from 'forms/session'
 import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
-import { Boat, CheckIn, CompetitorInfo } from 'models'
+import { BoatTemplate, CheckIn, CompetitorInfo } from 'models'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getUserInfo } from 'selectors/auth'
 import { getLastUsedBoat, getUserBoats } from 'selectors/user'
@@ -27,7 +27,7 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 
 interface Props {
-  boats: Boat[]
+  boats: BoatTemplate[]
   registerCompetitorAndDevice: (data: any, values: any) => any
   checkInData: CheckIn
 }

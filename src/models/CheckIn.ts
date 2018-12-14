@@ -29,6 +29,8 @@ export const InvitationUrlPropertyName = {
   Secret: 'secret',
 }
 
+export type TrackingContext = 'COMPETITOR' | 'BOAT' | 'MARK'
+
 export const mapResToModel = (map: any) => map && ({
   serverUrl: map[ApiBodyKeys.ServerUrl],
   eventId: map[ApiBodyKeys.EventId],
@@ -79,6 +81,7 @@ export interface CheckInUpdate {
   currentFleet?: string
   trackPrefix?: string
   secret?: string
+  trackingContext?: TrackingContext
 }
 
 export default interface CheckIn extends CheckInUpdate {

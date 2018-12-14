@@ -6,7 +6,7 @@ import { WrappedFieldProps } from 'redux-form'
 
 import { FORM_KEY_BOAT_CLASS, FORM_KEY_BOAT_ID, FORM_KEY_BOAT_NAME, FORM_KEY_SAIL_NUMBER } from 'forms/session'
 import I18n from 'i18n'
-import { Boat } from 'models'
+import { BoatTemplate } from 'models'
 
 import Text from 'components/Text'
 import TextInput from 'components/TextInput'
@@ -15,14 +15,14 @@ import { text } from 'styles/commons'
 import styles from './styles'
 
 
-const boatsToPickerItems = (boats: Boat[] = []) => boats.map(item => ({
+const boatsToPickerItems = (boats: BoatTemplate[] = []) => boats.map(item => ({
   label: item.name,
   value: item.name,
 }))
 
 class FormBoatPicker extends React.Component<ViewProps & WrappedFieldProps & {
   label: string,
-  boats: Boat[],
+  boats: BoatTemplate[],
 } > {
 
   public render() {

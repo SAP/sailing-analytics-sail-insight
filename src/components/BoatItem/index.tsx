@@ -4,7 +4,7 @@ import {
 } from 'react-native'
 
 import Images from '@assets/Images'
-import { Boat } from 'models'
+import { BoatTemplate } from 'models'
 import { navigateToBoatDetails } from 'navigation'
 
 import Image from 'components/Image'
@@ -16,7 +16,7 @@ import styles from './styles'
 
 
 class BoatItem extends React.Component<ViewProps & {
-  boat: Boat,
+  boat: BoatTemplate,
   lastUsed?: boolean,
 } > {
   public onItempPress = () => navigateToBoatDetails(this.props.boat)
