@@ -59,6 +59,7 @@ class UserProfile extends TextInputForm<Props> {
             name={userForm.FORM_KEY_IMAGE}
             component={FormImagePicker}
             placeholder={Images.header.sailors}
+            disabled={true}
           />
           <View style={container.largeHorizontalMargin}>
             <Field

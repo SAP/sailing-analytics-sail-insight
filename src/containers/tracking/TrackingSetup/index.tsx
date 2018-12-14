@@ -118,12 +118,12 @@ class TrackingSetup extends TextInputForm<Props> {
               component={this.renderProperty}
               {...this.commonProps}
             />
-            <Field
+            {/* <Field
               label={I18n.t('text_privacy_setting')}
               name={sessionForm.FORM_KEY_PRIVACY_SETTING}
               component={this.renderProperty}
               {...this.commonProps}
-            />
+            /> */}
           </View>
           <View style={styles.shareContainer}>
             <LineSeparator/>

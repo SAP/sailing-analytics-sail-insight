@@ -65,6 +65,7 @@ class BoatDetails extends TextInputForm<Props> {
             name={boatForm.FORM_KEY_IMAGE}
             component={FormImagePicker}
             placeholder={Images.header.boat}
+            disabled={true}
           />
         </View>
         <View style={registration.bottomContainer()}>
