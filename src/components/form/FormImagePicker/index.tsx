@@ -27,16 +27,25 @@ class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
     const imageValue = get(input, 'value.path')
     const placeholderStyle = !imageValue ? { backgroundColor: $placeholderBackgroundColor } : undefined
 
+    if (disabled) {
+      return (
+        <Image
+          style={[image.headerMediumLarge, placeholderStyle]}
+          source={imageValue || placeholder}
+        />
+      )
+    }
+
     return (
       <Image
         style={[image.headerMediumLarge, placeholderStyle]}
         source={imageValue || placeholder}
       >
-        {!disabled && <ImagePickerButton
+        <ImagePickerButton
           style={[image.absoluteLowerRight]}
           source={Images.actions.pickImage}
           onImage={this.handleImage}
-        />}
+        />
       </Image>
     )
   }
