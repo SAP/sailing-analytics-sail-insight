@@ -159,7 +159,7 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
       { dataSchema: markSchema },
     ),
     requestBoat: id => dataRequest(
-      `${endpoints.boats()}/${id}`,
+      `${endpoints.boats()}/ ${escape(id)}`,
       { dataSchema: boatSchema },
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),
