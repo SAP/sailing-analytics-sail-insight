@@ -6,7 +6,7 @@ import { CheckIn, User } from 'models'
 import { ApiBodyKeys as EventApiKeys } from 'models/Event'
 import Race, { ApiBodyKeys as RaceApiKeys, mapResToRace } from 'models/Race'
 import { ApiBodyKeys as RegattaApiKeys } from 'models/Regatta'
-import { removeUserPrefix } from 'services/SessionService'
+import { removeRegattaPrefix, removeUserPrefix } from 'services/SessionService'
 
 import { getOrderListFunction } from 'helpers/utils'
 import { mapResToRaceStats } from 'models/RaceStats'
@@ -62,6 +62,7 @@ const buildRace = (
       boatClass: get(regattaEntity, [race.regattaName, RegattaApiKeys.BoatClass]),
       venueName: get(eventEntity, [checkIn && checkIn.eventId, EventApiKeys.Venue, EventApiKeys.VenueName]),
       userStrippedDisplayName: removeUserPrefix(userInfo, race.name),
+      regattaStrippedDisplayName: removeRegattaPrefix(race.regattaName, race.name),
       statistics: stats && mapResToRaceStats({
         ...stats,
         columnName,

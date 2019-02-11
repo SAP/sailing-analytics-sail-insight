@@ -23,9 +23,14 @@ import Text from 'components/Text'
 
 class TrackItem extends React.Component<ViewProps & {
   track: Race,
+  showFullTrackName: boolean,
   onPress?: OnPressType,
   onSettingsPress?: () => void,
 } > {
+  public static defaultProps = {
+    showFullTrackName: true,
+  }
+
   public state = { isCollapsed: true }
 
   public handleCollapseExpand = () => {
@@ -73,6 +78,7 @@ class TrackItem extends React.Component<ViewProps & {
     const {
       style,
       track,
+      showFullTrackName,
     } = this.props
 
     return (
@@ -81,7 +87,8 @@ class TrackItem extends React.Component<ViewProps & {
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
               <Text style={text.itemName}>
-                {track.userStrippedDisplayName || track.name}
+                {showFullTrackName ?
+                    (track.userStrippedDisplayName || track.name) : (track.regattaStrippedDisplayName || track.name)}
               </Text>
               <View style={[styles.line, styles.textMargins]}>
                 <Text style={styles.dateText}>

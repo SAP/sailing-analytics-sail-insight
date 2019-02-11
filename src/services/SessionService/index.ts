@@ -58,3 +58,10 @@ export const addUserPrefix = (username: string, text: string) => {
   const sessionPrefix = getUserSessionPrefix(username)
   return text.indexOf(sessionPrefix) === 0 ? text : `${sessionPrefix} ${text}`
 }
+
+export const removeRegattaPrefix = (regattaName: string, raceName?: string) => {
+  if (!raceName) {
+    return
+  }
+  return raceName.replace(regattaName, '').trim()
+}
