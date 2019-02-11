@@ -18,7 +18,7 @@ import { getLeaderboardEntity } from './leaderboard'
 import { getRegatta, getRegattaEntity } from './regatta'
 
 
-const orderRaces = getOrderListFunction<Race>(['startDate', 'trackingStartDate'], 'desc')
+const orderRaces = getOrderListFunction<Race>(['trackingStartDate'], 'desc')
 
 const getRaceColumnNameFromRegatta = (race: Race, regatta: any, seriesName: string, fleetName: string = 'Default') => {
   const series = find(get(regatta, 'series'), { name: seriesName })
