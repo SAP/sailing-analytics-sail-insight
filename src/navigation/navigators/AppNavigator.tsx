@@ -11,6 +11,7 @@ import GradientNavigationBar from 'components/GradientNavigationBar'
 import HeaderTitle from 'components/HeaderTitle'
 import ModalBackButton from 'components/ModalBackButton'
 import Login from 'containers/authentication/Login'
+import PasswordReset from 'containers/authentication/PasswordReset'
 import EditCompetitor from 'containers/session/EditCompetitor'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
@@ -71,6 +72,15 @@ export default createStackNavigator(
     },
     [Screens.ModalLogin]: {
       screen: Login,
+      navigationOptions: () => ({
+        ...commons.navHeaderTransparentProps,
+        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
+        headerLeft: null,
+      }),
+    },
+    [Screens.PasswordReset]: {
+      screen: PasswordReset,
       navigationOptions: () => ({
         ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,

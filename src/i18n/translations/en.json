@@ -109,6 +109,12 @@
   "text_register_grant_eula_01": "By registering you confirm to accept the ",
   "text_register_grant_eula_join_01": "By joining you confirm to accept the ",
   "text_register_grant_eula_02": "SAP SE end user license agreement",
+  "text_passwort_reset_title" : "Reset password",
+  "text_passwort_reset_message" : "Please enter your username or e-mail address. We'll send you an email with further instructions on how to reset your password.",
+  "text_passwort_reset_or" : "or",
+  "text_passwort_reset_submit" : "Reset password now",
+  "text_passwort_reset_confirm_title" : "Please check your inbox",
+  "text_passwort_reset_confirm_message" : "If you have entered a valid username or valid email address, you will receive an email to reset your password shortly.",
 
   "caption_ok": "OK",
   "caption_cancel": "Cancel",
@@ -155,6 +161,7 @@
   "caption_save" : "Save",
   "caption_delete" : "Delete",
   "caption_feedback_and_questions" : "Feedback and questions?",
+  "caption_forgot_password": "Forgot password?",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",

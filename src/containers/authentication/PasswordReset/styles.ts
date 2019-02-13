@@ -6,10 +6,11 @@ export default EStyleSheets.create({
     flex: 1,
     justifyContent: 'center',
   },
-  password: {
+  email: {
     marginTop: 16,
   },
-  forgotPassword: {
+  message: {
     marginTop: 16,
+    fontSize: '$largeFontSize',
   },
 })

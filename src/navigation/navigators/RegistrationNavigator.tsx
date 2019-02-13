@@ -11,6 +11,7 @@ import GradientNavigationBar from 'components/GradientNavigationBar'
 import ImageButton from 'components/ImageButton'
 import ModalBackButton from 'components/ModalBackButton'
 import Login from 'containers/authentication/Login'
+import PasswordReset from 'containers/authentication/PasswordReset'
 import RegisterBoat from 'containers/authentication/RegisterBoat'
 import RegisterCredentials from 'containers/authentication/RegisterCredentials'
 import RegisterName from 'containers/authentication/RegisterName'
@@ -50,6 +51,13 @@ export default createStackNavigator(
     },
     [Screens.Login]: {
       screen: Login,
+      navigationOptions: () => ({
+        ...commons.navHeaderTransparentProps,
+        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+      }),
+    },
+    [Screens.PasswordReset]: {
+      screen: PasswordReset,
       navigationOptions: () => ({
         ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,

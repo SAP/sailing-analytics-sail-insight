@@ -109,6 +109,12 @@
   "text_register_grant_eula_01": "Mit der Registrierung akzeptierst du den ",
   "text_register_grant_eula_join_01": "Mit der Teilnahme akzeptierst du den ",
   "text_register_grant_eula_02": "SAP SE Endnutzer-Lizenzvertrag",
+  "text_passwort_reset_title" : "Passwort zurücksetzen",
+  "text_passwort_reset_message" : "Bitte gib deinen Benutzernamen oder deine E-Mail-Adresse ein. Wir senden dir dann eine E-Mail zum Zurücksetzen deines Passworts zu.",
+  "text_passwort_reset_or" : "oder",
+  "text_passwort_reset_submit" : "Jetzt Passwort zurücksetzen",
+  "text_passwort_reset_confirm_title" : "Prüfe deinen Posteingang",
+  "text_passwort_reset_confirm_message" : "Wenn du einen gültigen Benutzernamen oder eine gültige E-Mail-Adresse angegeben hast, dann erhälst du in Kürze eine E-Mail zum Zurücksetzen deines Passworts.",
 
   "caption_ok": "OK",
   "caption_cancel": "Abbrechen",
@@ -155,6 +161,7 @@
   "caption_save" : "Speichern",
   "caption_delete" : "Löschen",
   "caption_feedback_and_questions" : "Feedback und Fragen?",
+  "caption_forgot_password": "Passwort vergessen?",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",

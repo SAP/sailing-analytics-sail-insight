@@ -12,6 +12,7 @@ const endpoints = ({
   createUser: getSecurityUrl('/create_user'),
   user: getSecurityUrl('/user'),
   accessToken: getSecurityUrl('/access_token'),
+  forgotPassword: getSecurityUrl('/forgot_password'),
 })
 
 
@@ -34,5 +35,10 @@ export default {
   updateUser: (data: any) => request(
     endpoints.user({ urlParams: data }),
     { method: HttpMethods.PUT },
+  ),
+
+  requestPasswordReset: (username: string) => dataRequest(
+      endpoints.forgotPassword({ urlParams: { username } }),
+      { method: HttpMethods.POST },
   ),
 }
