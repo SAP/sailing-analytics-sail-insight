@@ -18,11 +18,13 @@ export default EStyleSheet.create({
   list: {
     backgroundColor: 'white',
     borderTopWidth: 0,
+    borderColor: '$primaryInactiveColor',
     margin: 10,
     marginTop: 0,
   },
   listItem: {
     borderTopWidth: 1,
+    borderColor: '$primaryInactiveColor',
     paddingLeft: 15,
     paddingTop: 6,
     height: 41,
