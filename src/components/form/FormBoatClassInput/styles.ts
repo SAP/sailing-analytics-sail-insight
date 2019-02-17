@@ -27,5 +27,13 @@ export default EStyleSheet.create({
     paddingTop: 6,
     height: 41,
   },
+  icon: {
+    height: 25,
+    width: 25,
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    resizeMode: 'contain',
+  },
 
 })

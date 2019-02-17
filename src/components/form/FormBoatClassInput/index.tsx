@@ -3,8 +3,9 @@ import React from 'react'
 import { TextInputProps as RNTextInputProps, TouchableOpacity, View, ViewProps } from 'react-native'
 import Autocomplete from 'react-native-autocomplete-input'
 import { WrappedFieldProps } from 'redux-form'
-import { selfTrackingApi } from '../../../api'
+import { assetApiEndpoint, selfTrackingApi } from '../../../api'
 import { BoatClassesdBody } from '../../../api/endpoints/types'
+import Image from '../../Image'
 import TextInput, { TextInputProps } from '../../TextInput'
 import styles from './styles'
 
@@ -78,13 +79,15 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     input.onChange(suggestionValue)
   }
 
-  protected renderItem = (item: any) => {
+  protected renderItem = (item: BoatClassesdBody) => {
+    const iconSource = item.iconUrl ? { uri: assetApiEndpoint(item.iconUrl)() } : ''
     return (
         <TouchableOpacity
             style={styles.listItem}
             onPress={this.setCurrentInput(item.name)}
         >
           <Text>{item.name}</Text>
+          {iconSource ? (<Image style={styles.icon} source={iconSource} />) : null}
         </TouchableOpacity>
     )
   }
