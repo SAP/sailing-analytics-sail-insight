@@ -25,6 +25,7 @@ import TextButton from 'components/TextButton'
 import { button, container, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
 import styles from './styles'
 
 
@@ -65,6 +66,7 @@ class RegisterBoat extends TextInputForm<Props> {
             style={styles.inputMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={FORM_KEY_BOAT_CLASS}
+            component={FormBoatClassInput}
             returnKeyType="next"
             onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
             hint={I18n.t('text_registration_boat_class_hint')}

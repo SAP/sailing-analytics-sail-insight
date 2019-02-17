@@ -28,6 +28,7 @@ import TextButton from 'components/TextButton'
 import { button, container, input } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+import FormBoatClassInput from '../../components/form/FormBoatClassInput'
 
 
 interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
@@ -91,7 +92,7 @@ class BoatDetails extends TextInputForm<Props> {
             style={input.topMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={boatForm.FORM_KEY_BOAT_CLASS}
-            component={FormTextInput}
+            component={FormBoatClassInput}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_BOAT_CLASS)}
             onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_SAIL_COLOR)}
             {...this.commonProps}

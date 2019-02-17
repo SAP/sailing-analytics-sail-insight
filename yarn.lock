@@ -890,6 +890,14 @@
   resolved "https://registry.yarnpkg.com/@types/query-string/-/query-string-6.1.0.tgz#5f721f9503bdf517d474c66cf4423da5dd2d5698"
   integrity sha512-6QxF7V3SkdyBRJ81GheWL9Nzr7uDrCZH0hkxdorNcXeBOeAPN5AUf1n9dpecaBOzxJAckWP4nIOeY1YxlhuMTQ==
 
+"@types/react-native-autocomplete-input@^3.5.1":
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/@types/react-native-autocomplete-input/-/react-native-autocomplete-input-3.5.1.tgz#38286633407c6627ca29d3faa1a3233395c1b69e"
+  integrity sha512-asqm2c96AEUNJHMVnZ4bTYK+nQbsTntpOdLotXVGWaz6yTI5hPG2S6Hl7hBgc4RpM8RALtzbxSEkvFGwsl23Ig==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
 "@types/react-native-loading-spinner-overlay@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@types/react-native-loading-spinner-overlay/-/react-native-loading-spinner-overlay-0.5.1.tgz#4dcbe9cc71763ea2b7e89533402734a70d6def59"
@@ -5785,6 +5793,13 @@ react-lifecycles-compat@^3, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-native-autocomplete-input@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-autocomplete-input/-/react-native-autocomplete-input-3.6.0.tgz#24d29d8c3e156a86771c1db0d58f2fa5611eee06"
+  integrity sha512-dHDpbazoECwA+pUc3S3qV6igf5+LLjJ/xox66cm0Wrf2nrNteH2wW38hfbi5zSNmtLkIePNTWQ6J49onZwzOiA==
+  dependencies:
+    prop-types "^15.5.10"
 
 react-native-background-fetch@~2.4.4:
   version "2.4.4"

@@ -20,6 +20,7 @@ import { getUserBoats } from 'selectors/user'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
 
 
 interface Props {
@@ -88,7 +89,7 @@ class EditSession extends TextInputForm<Props> {
             style={input.topMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
-            component={FormTextInput}
+            component={FormBoatClassInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
             {...this.commonProps}

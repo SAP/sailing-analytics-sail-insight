@@ -4,6 +4,7 @@ import { getDataApiGenerator, getDataApiV2Generator, getRaceApiGenerator, HttpMe
 import {
   AddRaceColumnResponseData,
   AddRaceColumnsBody,
+  BoatClassesdBody,
   CompetitorBody,
   CompetitorManeuverItem,
   CompetitorResponseData,
@@ -61,6 +62,7 @@ const apiEndpoints = (serverUrl: string) => {
     putWind: getUrlV1('/wind/putWind'),
     raceLog: getRaceUrl('/racelog'),
     preferences: getUrlV1('/preferences/{0}'),
+    boatClasses: getUrlV1('/boatclasses'),
   }
 }
 
@@ -122,6 +124,7 @@ export interface DataApi {
     raceName: string,
     filter?: {competitorId?: string, fromTime?: number},
   ) => Promise<CompetitorManeuverItem[]>
+  requestBoatClasses: () => Promise<BoatClassesdBody[]>
 }
 
 
@@ -243,6 +246,7 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
       endpoints.createAutoCourse({ pathParams: [leaderboardName], urlParams: { fleet, race_column: raceColumn } }),
       { method: HttpMethods.POST },
     ),
+    requestBoatClasses: () => listRequest(endpoints.boatClasses()),
   }
 }
 
