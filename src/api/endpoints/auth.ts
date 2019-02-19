@@ -1,5 +1,6 @@
 import { getSecurityUrl, HttpMethods } from 'api/config'
 import { dataRequest, request } from 'api/handler'
+import { isEmpty } from 'lodash'
 import {
   ApiAccessToken,
   User,
@@ -37,8 +38,9 @@ export default {
     { method: HttpMethods.PUT },
   ),
 
-  requestPasswordReset: (username: string) => dataRequest(
-      endpoints.forgotPassword({ urlParams: { username } }),
+  requestPasswordReset: (username: string, email: string) => dataRequest(
+      !isEmpty(username) ? endpoints.forgotPassword({ urlParams: { username } }) :
+          endpoints.forgotPassword({ urlParams: { email } }),
       { method: HttpMethods.POST },
-  ),
+    ),
 }

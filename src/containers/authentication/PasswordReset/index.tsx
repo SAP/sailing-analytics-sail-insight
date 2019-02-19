@@ -22,7 +22,7 @@ import styles from './styles'
 
 
 class PasswordReset extends TextInputForm<{
-  requestPasswordReset: (u: string) => any,
+  requestPasswordReset: (u: string, e: string) => any,
 }> {
   public state = {
     username: '',
@@ -39,7 +39,7 @@ class PasswordReset extends TextInputForm<{
     }
     try {
       this.setState({ isLoading: true })
-      await this.props.requestPasswordReset(username)
+      await this.props.requestPasswordReset(username, email)
     } catch (err) {
       // do not show any indication for error.
       // this.setState({ error: getErrorDisplayMessage(err) })
