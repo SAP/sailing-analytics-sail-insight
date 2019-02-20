@@ -51,6 +51,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
                 renderTextInput={this.renderTextInput}
                 renderItem={this.renderItem}
                 inputContainerStyle={styles.inputContainer}
+                listStyle={styles.list}
                 {...restInput}
                 {...additionalProps}
             />

@@ -21,6 +21,7 @@ export default EStyleSheet.create({
     borderColor: '$primaryInactiveColor',
     margin: 10,
     marginTop: 0,
+    position: 'relative',
   },
   listItem: {
     borderTopWidth: 1,
