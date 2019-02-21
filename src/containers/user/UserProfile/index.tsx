@@ -135,7 +135,7 @@ export default connect(
   { removeAuthInfo, fetchUserInfo, updateUser },
 )(reduxForm<{}, Props>({
   form: userForm.USER_FORM_NAME,
-  destroyOnUnmount: true,
+  destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
   enableReinitialize: true,
 })(UserProfile))
