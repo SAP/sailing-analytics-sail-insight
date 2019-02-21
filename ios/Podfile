@@ -26,6 +26,8 @@ target 'sap_sailing_insight' do
 
   pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
 
+  pod 'Firebase/Core'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing
