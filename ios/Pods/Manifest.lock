@@ -1,30 +1,30 @@
 PODS:
   - QBImagePickerController (3.4.0)
-  - React/Core (0.57.0):
-    - yoga (= 0.57.0.React)
-  - React/fishhook (0.57.0)
-  - React/RCTActionSheet (0.57.0):
+  - React/Core (0.57.1):
+    - yoga (= 0.57.1.React)
+  - React/fishhook (0.57.1)
+  - React/RCTActionSheet (0.57.1):
     - React/Core
-  - React/RCTAnimation (0.57.0):
+  - React/RCTAnimation (0.57.1):
     - React/Core
-  - React/RCTBlob (0.57.0):
+  - React/RCTBlob (0.57.1):
     - React/Core
-  - React/RCTGeolocation (0.57.0):
+  - React/RCTGeolocation (0.57.1):
     - React/Core
-  - React/RCTImage (0.57.0):
+  - React/RCTImage (0.57.1):
     - React/Core
     - React/RCTNetwork
-  - React/RCTLinkingIOS (0.57.0):
+  - React/RCTLinkingIOS (0.57.1):
     - React/Core
-  - React/RCTNetwork (0.57.0):
+  - React/RCTNetwork (0.57.1):
     - React/Core
-  - React/RCTSettings (0.57.0):
+  - React/RCTSettings (0.57.1):
     - React/Core
-  - React/RCTText (0.57.0):
+  - React/RCTText (0.57.1):
     - React/Core
-  - React/RCTVibration (0.57.0):
+  - React/RCTVibration (0.57.1):
     - React/Core
-  - React/RCTWebSocket (0.57.0):
+  - React/RCTWebSocket (0.57.1):
     - React/Core
     - React/fishhook
     - React/RCTBlob
@@ -32,8 +32,8 @@ PODS:
     - QBImagePickerController
     - React/Core
     - RSKImageCropper
-  - RSKImageCropper (2.1.0)
-  - yoga (0.57.0.React)
+  - RSKImageCropper (2.2.1)
+  - yoga (0.57.1.React)
 
 DEPENDENCIES:
   - React/Core (from `../node_modules/react-native`)
@@ -67,9 +67,9 @@ SPEC CHECKSUMS:
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
   RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
-  RSKImageCropper: 0d0c6d8525a2381f03fde32a47c6703817a2feed
+  RSKImageCropper: 98296ad26b41753f796b6898d015509598f13d97
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: 1314f18e03e805fe9d662a2d329beb31a80ba84b
+PODFILE CHECKSUM: 239edb02d68daa6d66cb694f3efd5f24b504925c
 
 COCOAPODS: 1.5.3
