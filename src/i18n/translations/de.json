@@ -85,7 +85,7 @@
   "text_tracking_alert_already_running_message": "Aktuelle Trackinginformationen vorhanden. Möchtest du wirklich das Tracking starten?",
   "text_tracking_alert_stop_confirmation_title": "Bitte bestätigen",
   "text_tracking_alert_stop_confirmation_message": "Möchtest du wirklich das Tracking beenden?",
-  "text_setting_gps_bulk": "GPS-Updates werden alle {{timeInSeconds}} Sekunden verschickt.",
+  "text_setting_gps_bulk": "Der Batteriesparmodus schont den Akku, indem die Positionsdaten nicht sofort, sondern nur alle {{timeInSeconds}} Sekunden verschickt werden. Dadurch wird die Genauigkeit des Trackings nicht beeinflusst. Wird das Tracking in Echtzeit verfolgt, so können Verzögerungen bei der Anzeige auf einem anderem Gerät auftreten sowie bei der Anzeige von Manövern.",
   "text_tag_current_boat": "Aktuell",
   "text_last_used_boat": "Zuletzt verwendet",
   "text_permission_photo_gallery_settings_cta" : "Wir benötigen Zugriff auf deine Fotogalerie, damit du ein Bild auswählen kannst. Bitte aktiviere die Berechtigung in deinen Einstellungen.",

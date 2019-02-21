@@ -85,7 +85,7 @@
   "text_tracking_alert_already_running_message": "A tracking session is running already. Do you really want to start tracking?",
   "text_tracking_alert_stop_confirmation_title": "Please confirm",
   "text_tracking_alert_stop_confirmation_message": "Do you really want to stop tracking?",
-  "text_setting_gps_bulk": "GPS updates are sent every {{timeInSeconds}} seconds.",
+  "text_setting_gps_bulk": "To help improve battery life, battery saver sends GPS updates only every {{timeInSeconds}} seconds instead of sending immediately. This does not impact tracking accuracy. In case of real-time tracking this option may add a delay when displaying maneuver feedback or when following the tracking on a different device.",
   "text_tag_current_boat": "Current",
   "text_last_used_boat": "Last used",
   "text_permission_photo_gallery_settings_cta" : "We need access to your photo gallery so that you can select a picture. Please activate the permission in your settings.",
