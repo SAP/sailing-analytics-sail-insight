@@ -13,6 +13,9 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* sap_sailing_insightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */; };
+		106D9AE02222FAFE00E2D930 /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D9ADF2222FAFE00E2D930 /* FIRAnalyticsConnector.framework */; };
+		106D9AE22222FB0800E2D930 /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D9AE12222FB0800E2D930 /* FirebaseInstanceID.framework */; };
+		106D9AE42222FB1100E2D930 /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D9AE32222FB1100E2D930 /* GoogleAppMeasurement.framework */; };
 		112BD3A5E9BD4180816F5686 /* bentonsans_extralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0509553113A14202829C6ACA /* bentonsans_extralight.otf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
@@ -119,6 +122,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = sap_sailing_insight;
+		};
+		106D9AD72222FA0C00E2D930 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 211DD8CBD13B43E6AA18340D /* RNFirebase.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNFirebase;
 		};
 		139105C01AF99BAD00B5F7CC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -528,6 +538,9 @@
 		038E7A07C1B14DC7BE95AF83 /* libc++.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		0509553113A14202829C6ACA /* bentonsans_extralight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = bentonsans_extralight.otf; path = ../assets/fonts/bentonsans_extralight.otf; sourceTree = "<group>"; };
 		08143EC286E14C4EAAE7443D /* libRealmReact.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRealmReact.a; sourceTree = "<group>"; };
+		106D9ADF2222FAFE00E2D930 /* FIRAnalyticsConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FIRAnalyticsConnector.framework; path = Pods/FirebaseAnalytics/Frameworks/FIRAnalyticsConnector.framework; sourceTree = "<group>"; };
+		106D9AE12222FB0800E2D930 /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = Pods/FirebaseInstanceID/Frameworks/FirebaseInstanceID.framework; sourceTree = "<group>"; };
+		106D9AE32222FB1100E2D930 /* GoogleAppMeasurement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleAppMeasurement.framework; path = Pods/GoogleAppMeasurement/Frameworks/GoogleAppMeasurement.framework; sourceTree = "<group>"; };
 		12BE2FDFD3D642FC85B4D15F /* RNVersionNumber.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVersionNumber.xcodeproj; path = "../node_modules/react-native-version-number/ios/RNVersionNumber.xcodeproj"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
@@ -654,6 +667,9 @@
 				8779224066C447DC852480EC /* libFastImage.a in Frameworks */,
 				6A784089C32041E780CC07F9 /* libRNVersionNumber.a in Frameworks */,
 				CAE64AE6B14D00CF86A17CE2 /* libPods-sap_sailing_insight.a in Frameworks */,
+				106D9AE22222FB0800E2D930 /* FirebaseInstanceID.framework in Frameworks */,
+				106D9AE42222FB1100E2D930 /* GoogleAppMeasurement.framework in Frameworks */,
+				106D9AE02222FAFE00E2D930 /* FIRAnalyticsConnector.framework in Frameworks */,
 				C19ED0248E4C4265896A66C5 /* libRNFirebase.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -749,6 +765,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		106D9A9E2222FA0C00E2D930 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				106D9AD82222FA0C00E2D930 /* libRNFirebase.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		139105B71AF99BAD00B5F7CC /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -834,6 +858,9 @@
 				592DF81AE4F3D27F4BFBD7F6 /* libPods-sap_sailing_insight-tvOS.a */,
 				2BDE9E0193E8C6E5DD7A7DAC /* libPods-sap_sailing_insight-tvOSTests.a */,
 				F72175598D7CBB3C030658FD /* libPods-sap_sailing_insightTests.a */,
+				106D9ADF2222FAFE00E2D930 /* FIRAnalyticsConnector.framework */,
+				106D9AE12222FB0800E2D930 /* FirebaseInstanceID.framework */,
+				106D9AE32222FB1100E2D930 /* GoogleAppMeasurement.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1347,6 +1374,10 @@
 					ProjectRef = 2D6E5187A071441F9CF99B8D /* RNDeviceInfo.xcodeproj */;
 				},
 				{
+					ProductGroup = 106D9A9E2222FA0C00E2D930 /* Products */;
+					ProjectRef = 211DD8CBD13B43E6AA18340D /* RNFirebase.xcodeproj */;
+				},
+				{
 					ProductGroup = 9814966D2108DD1B003994D2 /* Products */;
 					ProjectRef = 92547297E439449FB866EE18 /* RNI18n.xcodeproj */;
 				},
@@ -1403,6 +1434,13 @@
 			fileType = archive.ar;
 			path = libRCTVibration.a;
 			remoteRef = 00C302E31ABCB9EE00DB3ED1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		106D9AD82222FA0C00E2D930 /* libRNFirebase.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFirebase.a;
+			remoteRef = 106D9AD72222FA0C00E2D930 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		139105C11AF99BAD00B5F7CC /* libRCTSettings.a */ = {
@@ -2128,6 +2166,9 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-geolocation/ios/**",
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
+					"$(PROJECT_DIR)/Pods/FirebaseAnalytics/Frameworks",
+					"$(PROJECT_DIR)/Pods/FirebaseInstanceID/Frameworks",
+					"$(PROJECT_DIR)/Pods/GoogleAppMeasurement/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2175,6 +2216,9 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-geolocation/ios/**",
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
+					"$(PROJECT_DIR)/Pods/FirebaseAnalytics/Frameworks",
+					"$(PROJECT_DIR)/Pods/FirebaseInstanceID/Frameworks",
+					"$(PROJECT_DIR)/Pods/GoogleAppMeasurement/Frameworks",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
