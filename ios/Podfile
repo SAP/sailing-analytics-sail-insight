@@ -28,6 +28,9 @@ target 'sap_sailing_insight' do
 
   pod 'Firebase/Core'
 
+  pod 'Fabric', '~> 1.7.13'
+  pod 'Crashlytics', '~> 3.10.7'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing

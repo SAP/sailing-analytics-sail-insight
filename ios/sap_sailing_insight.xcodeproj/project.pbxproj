@@ -16,6 +16,9 @@
 		106D9AE02222FAFE00E2D930 /* FIRAnalyticsConnector.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D9ADF2222FAFE00E2D930 /* FIRAnalyticsConnector.framework */; };
 		106D9AE22222FB0800E2D930 /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D9AE12222FB0800E2D930 /* FirebaseInstanceID.framework */; };
 		106D9AE42222FB1100E2D930 /* GoogleAppMeasurement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D9AE32222FB1100E2D930 /* GoogleAppMeasurement.framework */; };
+		106D9AE62223141300E2D930 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 106D9AE52223141300E2D930 /* GoogleService-Info.plist */; };
+		106D9B462223168C00E2D930 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D9B452223168C00E2D930 /* Crashlytics.framework */; };
+		106D9B48222316B300E2D930 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 106D9B47222316B300E2D930 /* Fabric.framework */; };
 		112BD3A5E9BD4180816F5686 /* bentonsans_extralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0509553113A14202829C6ACA /* bentonsans_extralight.otf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
@@ -541,6 +544,9 @@
 		106D9ADF2222FAFE00E2D930 /* FIRAnalyticsConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FIRAnalyticsConnector.framework; path = Pods/FirebaseAnalytics/Frameworks/FIRAnalyticsConnector.framework; sourceTree = "<group>"; };
 		106D9AE12222FB0800E2D930 /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FirebaseInstanceID.framework; path = Pods/FirebaseInstanceID/Frameworks/FirebaseInstanceID.framework; sourceTree = "<group>"; };
 		106D9AE32222FB1100E2D930 /* GoogleAppMeasurement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleAppMeasurement.framework; path = Pods/GoogleAppMeasurement/Frameworks/GoogleAppMeasurement.framework; sourceTree = "<group>"; };
+		106D9AE52223141300E2D930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sap_sailing_insight/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		106D9B452223168C00E2D930 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = Pods/Crashlytics/iOS/Crashlytics.framework; sourceTree = "<group>"; };
+		106D9B47222316B300E2D930 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Pods/Fabric/iOS/Fabric.framework; sourceTree = "<group>"; };
 		12BE2FDFD3D642FC85B4D15F /* RNVersionNumber.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVersionNumber.xcodeproj; path = "../node_modules/react-native-version-number/ios/RNVersionNumber.xcodeproj"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
@@ -667,10 +673,12 @@
 				8779224066C447DC852480EC /* libFastImage.a in Frameworks */,
 				6A784089C32041E780CC07F9 /* libRNVersionNumber.a in Frameworks */,
 				CAE64AE6B14D00CF86A17CE2 /* libPods-sap_sailing_insight.a in Frameworks */,
+				C19ED0248E4C4265896A66C5 /* libRNFirebase.a in Frameworks */,
 				106D9AE22222FB0800E2D930 /* FirebaseInstanceID.framework in Frameworks */,
 				106D9AE42222FB1100E2D930 /* GoogleAppMeasurement.framework in Frameworks */,
 				106D9AE02222FAFE00E2D930 /* FIRAnalyticsConnector.framework in Frameworks */,
-				C19ED0248E4C4265896A66C5 /* libRNFirebase.a in Frameworks */,
+				106D9B462223168C00E2D930 /* Crashlytics.framework in Frameworks */,
+				106D9B48222316B300E2D930 /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -796,6 +804,7 @@
 		13B07FAE1A68108700A75B9A /* sap_sailing_insight */ = {
 			isa = PBXGroup;
 			children = (
+				106D9AE52223141300E2D930 /* GoogleService-Info.plist */,
 				98400D3621C03499002D36DE /* sap_sailing_insight.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -861,6 +870,8 @@
 				106D9ADF2222FAFE00E2D930 /* FIRAnalyticsConnector.framework */,
 				106D9AE12222FB0800E2D930 /* FirebaseInstanceID.framework */,
 				106D9AE32222FB1100E2D930 /* GoogleAppMeasurement.framework */,
+				106D9B452223168C00E2D930 /* Crashlytics.framework */,
+				106D9B47222316B300E2D930 /* Fabric.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1174,6 +1185,8 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				448F4D55367733BE71C62609 /* [CP] Copy Pods Resources */,
+				106D9B062223156400E2D930 /* ShellScript */,
+				106D9B44222315D500E2D930 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1844,6 +1857,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				106D9AE62223141300E2D930 /* GoogleService-Info.plist in Resources */,
 				2FA64DC712B54507B0BD87AC /* bentonsans_bold.otf in Resources */,
 				64C30A90795748E18B7ED10C /* bentonsans_regular.otf in Resources */,
 				112BD3A5E9BD4180816F5686 /* bentonsans_extralight.otf in Resources */,
@@ -1902,6 +1916,41 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		106D9B062223156400E2D930 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\"\n\n";
+		};
+		106D9B44222315D500E2D930 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/Fabric.framework/run\"\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2169,6 +2218,8 @@
 					"$(PROJECT_DIR)/Pods/FirebaseAnalytics/Frameworks",
 					"$(PROJECT_DIR)/Pods/FirebaseInstanceID/Frameworks",
 					"$(PROJECT_DIR)/Pods/GoogleAppMeasurement/Frameworks",
+					"$(PROJECT_DIR)/Pods/Crashlytics/iOS",
+					"$(PROJECT_DIR)/Pods/Fabric/iOS",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2191,6 +2242,10 @@
 				);
 				INFOPLIST_FILE = sap_sailing_insight/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2219,6 +2274,8 @@
 					"$(PROJECT_DIR)/Pods/FirebaseAnalytics/Frameworks",
 					"$(PROJECT_DIR)/Pods/FirebaseInstanceID/Frameworks",
 					"$(PROJECT_DIR)/Pods/GoogleAppMeasurement/Frameworks",
+					"$(PROJECT_DIR)/Pods/Crashlytics/iOS",
+					"$(PROJECT_DIR)/Pods/Fabric/iOS",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2241,6 +2298,10 @@
 				);
 				INFOPLIST_FILE = sap_sailing_insight/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
