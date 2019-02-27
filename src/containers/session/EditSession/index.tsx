@@ -137,6 +137,8 @@ const mapStateToProps = (state: any) => ({
 
 export default connect(mapStateToProps)(reduxForm<{}, Props>({
   form: sessionForm.SESSION_FORM_NAME,
+  enableReinitialize: false,
+  keepDirtyOnReinitialize: true,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true,
   validate: sessionForm.validate,
