@@ -121,14 +121,14 @@ class UserProfile extends TextInputForm<Props> {
 
   protected deleteUserDataAlert = () => {
     Alert.alert(
-        'Alert Title',
-        'My Alert Msg', [
+        I18n.t('user_profile_alert_label'),
+        I18n.t('user_profile_alert_text'), [
           {
-            text: 'Cancel',
+            text: I18n.t('caption_cancel'),
             onPress: () => Logger.debug('Cancel Pressed'),
             style: 'cancel',
           },
-          { text: 'OK', onPress: this.props.removeUserData },
+          { text: I18n.t('caption_ok'), onPress: this.props.removeUserData },
         ],
         { cancelable: false },
     )
