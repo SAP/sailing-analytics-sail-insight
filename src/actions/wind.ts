@@ -23,11 +23,13 @@ export const sendWind: SendWindAction = (direction, speedInKnots) => withDataApi
       throw new Error('missing data.')
     }
 
+    const rotatedWindForServer = (direction + 180) % 360
+
     await dataApi.sendWindFix(
         checkIn.regattaName,
         checkIn.currentRaceName || checkIn.currentTrackName,
         {
-          direction,
+          direction: rotatedWindForServer,
           speedinknots: speedInKnots,
           position: {
             latitude_deg: locationStats.lastLatitude,
