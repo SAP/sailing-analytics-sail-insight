@@ -12,6 +12,18 @@ export interface RootState {
   user?: any | UserState
 }
 
+export const rootInitialState: RootState = {
+  auth: null,
+  network: null,
+  checkIn: null,
+  entities: null,
+  locationTracking: null,
+  form: null,
+  onboarding: null,
+  settings: null,
+  user: null,
+}
+
 
 export interface LocationTrackingState {
   status: string | null
