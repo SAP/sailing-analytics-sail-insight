@@ -15,8 +15,8 @@ export type RegisterActionType = (username: string, email: string, password: str
 
 export const updateToken = createAction('UPDATE_TOKEN')
 export const updateCurrentUserInformation = createAction('UPDATE_CURRENT_USER_INFORMATION')
+export const removeAuthInfo = createAction('REMOVE_AUTH_INFO')
 export const removeUserData = createAction('REMOVE_USER_DATA')
-export const clearStore = createAction('REMOVE_ALL_DATA')
 
 const handleAccessToken = (dataPromise?: Promise<ApiAccessToken>) => async (dispatch: DispatchType) => {
   const data = await dataPromise

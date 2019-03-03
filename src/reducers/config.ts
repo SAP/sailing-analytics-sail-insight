@@ -1,5 +1,6 @@
 import { AutoCourseUpdateState } from 'helpers/types'
 
+
 export interface RootState {
   auth?: any | AuthState
   network?: any
@@ -10,18 +11,6 @@ export interface RootState {
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
-}
-
-export const rootInitialState: RootState = {
-  auth: null,
-  network: null,
-  checkIn: null,
-  entities: null,
-  locationTracking: null,
-  form: null,
-  onboarding: null,
-  settings: null,
-  user: null,
 }
 
 

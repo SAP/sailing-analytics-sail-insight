@@ -27,4 +27,14 @@ const reducer: RootState = {
 
 const reducers = combineReducers(reducer)
 
-export default reducers
+
+const rootReducer = (state: any, action: any) => {
+  let newState = state
+  if (action.type === 'REMOVE_USER_DATA') {
+    newState = reducer
+  }
+  return reducers(newState, action)
+}
+
+
+export default rootReducer
