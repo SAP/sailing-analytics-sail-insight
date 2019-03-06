@@ -133,7 +133,7 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
   return {
     requestRegattas: () => listRequest(endpoints.regatta()),
     requestRegatta: regattaName => dataRequest(
-      `${endpoints.regatta()}/${escape(regattaName)}`,
+      `${endpoints.regatta()}/${encodeURIComponent(regattaName)}`,
       { dataSchema: regattaSchema },
     ),
     requestRaces: regattaName => dataRequest(
@@ -162,7 +162,7 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
       { dataSchema: markSchema },
     ),
     requestBoat: id => dataRequest(
-      `${endpoints.boats()}/${escape(id)}`,
+      `${endpoints.boats()}/${encodeURIComponent(id)}`,
       { dataSchema: boatSchema },
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),

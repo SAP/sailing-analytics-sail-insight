@@ -10,7 +10,10 @@ export const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
   }
   let generatedPath = path
   if (urlOptions.pathParams) {
-    generatedPath = escape(format(path, ...urlOptions.pathParams))
+    for (let key in urlOptions.pathParams) {
+      urlOptions.pathParams[key] = encodeURIComponent(urlOptions.pathParams[key])
+    }
+    generatedPath = format(path, ...urlOptions.pathParams)
   }
   return urlOptions.urlParams ?
     `${generatedPath}?${querystring.stringify(urlOptions.urlParams)}` :
