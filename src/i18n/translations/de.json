@@ -178,6 +178,7 @@
   "error_user_already_exists": "Nutzer existiert bereits.",
   "error_precondition_failed": "Anfragenbedingung nicht erfüllt.",
   "error_field_invalid_username": "Der Benutzername sollte mindestens 3 Zeichen enthalten.",
+  "error_field_invalid_sessionname": "Der Session-Name darf folgende Zeichen nicht enthalten: /, \", ;, ?, [, ]",
 
   "JIBE": "Halse",
   "HEAD_UP": "Anluven",
