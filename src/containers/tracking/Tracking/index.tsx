@@ -10,7 +10,6 @@ import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { durationText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { degToCompass } from 'helpers/physics'
-import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { navigateBack, navigateToSetWind } from 'navigation'
@@ -43,6 +42,7 @@ class Tracking extends React.Component<{
   public state = {
     isLoading: false,
     durationText: EMPTY_DURATION_TEXT,
+    buttonText: I18n.t('caption_stop').toUpperCase(),
   }
 
   public componentDidMount() {
@@ -127,7 +127,7 @@ class Tracking extends React.Component<{
           onPress={this.onStopTrackingPress}
           isLoading={this.state.isLoading}
         >
-          {I18n.t('caption_stop').toUpperCase()}
+          {this.state.buttonText}
         </TextButton>
         <ImageButton
           style={styles.tagLine}
@@ -150,11 +150,13 @@ class Tracking extends React.Component<{
   protected onStopTrackingPress = async () => {
     await this.setState({ isLoading: true })
     try {
+      timer.clearInterval(this)
       await this.props.stopTracking(this.props.checkInData)
       navigateBack()
     } catch (err) {
-      Logger.debug(err)
-      Alert.alert(getErrorDisplayMessage(err))
+      Logger.debug('onStopTrackingPress Error', err)
+      this.setState({ buttonText: I18n.t('caption_resend').toUpperCase() })
+      Alert.alert(I18n.t('error_tracking_resend_info_title'), I18n.t('error_tracking_resend_info_text'))
     } finally {
       this.setState({ isLoading: false })
     }

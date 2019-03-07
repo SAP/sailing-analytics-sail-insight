@@ -151,6 +151,7 @@
   "caption_add_boat": "Dein Boot hinzufügen",
   "caption_skip": "Überspringen",
   "caption_stop": "Stopp",
+  "caption_resend": "Senden",
   "caption_set_wind": "Wind",
   "caption_join_race": "Teilnehmen",
   "caption_accept": "Übernehmen",
@@ -180,6 +181,8 @@
   "error_field_invalid_username": "Der Benutzername sollte mindestens 3 Zeichen enthalten.",
   "error_regatta_access_forbidden": "Du hast leider keinen Zugriff auf diese Regatta.",
   "error_field_invalid_sessionname": "Der Session-Name darf folgende Zeichen nicht enthalten: /, \", ;, ?, [, ]",
+  "error_tracking_resend_info_title" : "Tracking übertragen",
+  "error_tracking_resend_info_text" : "Dein Tracking wurde gestoppt! Es konnten jedoch nicht alle Daten übertragen werden. Bitte versuche es erneut.",
 
   "JIBE": "Halse",
   "HEAD_UP": "Anluven",
