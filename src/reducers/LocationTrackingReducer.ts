@@ -21,6 +21,7 @@ import {
   updateUnsentGpsFixCount,
   updateValidGpsFixCount,
 } from 'actions/locationTrackingData'
+import { removeUserData } from '../actions/auth'
 
 
 const initialState: LocationTrackingState = {
@@ -103,6 +104,7 @@ const reducer = handleActions(
         lastLongitude: gpsFix.longitude,
       })
     },
+    [removeUserData as any]: () => initialState,
   },
   initialState,
 )

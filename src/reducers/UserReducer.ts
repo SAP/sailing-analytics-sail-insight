@@ -6,6 +6,7 @@ import { getNowAsMillis } from 'helpers/date'
 import { removeEntity } from 'helpers/reducers'
 
 import { UserState } from 'reducers/config'
+import { removeUserData } from '../actions/auth'
 
 
 const initialState: UserState = {
@@ -51,6 +52,7 @@ const reducer = handleActions(
       state,
       { entityType: 'boats', id: action.payload },
     ),
+    [removeUserData as any]: () => initialState,
   },
   initialState,
 )
