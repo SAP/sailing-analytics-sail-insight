@@ -94,15 +94,6 @@ class BoatDetails extends TextInputForm<Props> {
             name={boatForm.FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_BOAT_CLASS)}
-            onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_SAIL_COLOR)}
-            {...this.commonProps}
-          />
-          <Field
-            style={input.topMargin}
-            label={I18n.t('text_placeholder_sail_color')}
-            name={boatForm.FORM_KEY_SAIL_COLOR}
-            component={FormTextInput}
-            inputRef={this.handleInputRef(boatForm.FORM_KEY_SAIL_COLOR)}
             {...this.commonProps}
           />
           <TextButton
@@ -171,7 +162,6 @@ const mapStateToProps = (state: any, props: any) => {
     initialValues: boat && {
       [boatForm.FORM_KEY_NAME]: boat.name,
       [boatForm.FORM_KEY_SAIL_NUMBER]: boat.sailNumber,
-      [boatForm.FORM_KEY_SAIL_COLOR]: boat.sailColor,
       [boatForm.FORM_KEY_BOAT_CLASS]: boat.boatClass,
     },
   } as ComparisonValidatorViewProps
