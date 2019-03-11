@@ -60,9 +60,9 @@ class Tracking extends React.Component<{
   public render() {
     const { trackingStats, checkInData, trackedContextName } = this.props
 
-    const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(2) : EMPTY_VALUE
-    const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(2)}°` : EMPTY_VALUE
-    const distance = trackingStats.distance ? trackingStats.distance.toFixed(2) : '0'
+    const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
+    const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(0)}°` : EMPTY_VALUE
+    const distance = trackingStats.distance ? trackingStats.distance.toFixed(0) : '0'
 
     return (
       <View style={[container.main]}>
