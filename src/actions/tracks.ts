@@ -36,7 +36,7 @@ export const startTrack = (regattaName: string, trackName: string, fleet: string
     {
       fleet,
       race_column: trackName,
-      endoftrackingasmillis: getNowAsMillis(1, 'd'),
+      startoftrackingasmillis: getNowAsMillis(),
     },
   ) &&
   await dataApi.startTracking(regattaName, { fleet, race_column: trackName }),
