@@ -17,6 +17,7 @@ export const ApiBodyKeys = {
   LeaderboardName: 'leaderboardName',
   IsTraining: 'isTraining',
   ServerUrl: 'serverUrl',
+  Secret: 'secret',
 }
 
 export const InvitationUrlPropertyName = {

@@ -49,6 +49,7 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
     boatId,
     competitorId,
     markId,
+    secret,
   } = checkInData
 
   const body = {
@@ -56,6 +57,7 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
     [CheckInBodyKeys.DeviceUUID]: getDeviceId(),
     [CheckInBodyKeys.FromMillis]: new Date().getTime(),
     [CheckInBodyKeys.PushDeviceID]: '',
+    [CheckInBodyKeys.Secret]: secret,
     ...(boatId && { [CheckInBodyKeys.BoatId]: boatId }),
     ...(competitorId && { [CheckInBodyKeys.CompetitorId]: competitorId }),
     ...(markId && { [CheckInBodyKeys.MarkId]: markId }),
