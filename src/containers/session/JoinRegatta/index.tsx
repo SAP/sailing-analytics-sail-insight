@@ -33,7 +33,10 @@ class JoinRegatta extends React.Component<{
   checkIn: (c: CheckIn) => any,
 } > {
 
-  public state = { isLoading: false }
+  public state = {
+    isLoading: false,
+    buttonText: I18n.t('caption_join_race'),
+  }
 
   public onJoinPress = async () => {
     await this.setState({ isLoading: true })
@@ -47,11 +50,19 @@ class JoinRegatta extends React.Component<{
   }
 
   public render() {
-    const { event = {}, leaderboard = {} } = this.props
+    const { event = {}, leaderboard = {}, checkInData } = this.props
     const eventImageUrl = getEventPreviewImageUrl(event)
     const logoImageUrl = getEventLogoImageUrl(event)
     let title = leaderboard.displayName || leaderboard.name
     title = event.name && event.name !== title ? `${title}\n(${event.name})` : title
+
+    if (checkInData.competitorId) {
+      this.state.buttonText = I18n.t('caption_join_race_as_competitor')
+    } else if (checkInData.boatId) {
+      this.state.buttonText = I18n.t('caption_join_race_as_boat')
+    } else if (checkInData.markId) {
+      this.state.buttonText = I18n.t('caption_join_race_as_mark')
+    }
     return (
       <ScrollContentView>
         <View style={container.stretchContent}>
@@ -81,7 +92,7 @@ class JoinRegatta extends React.Component<{
             onPress={this.onJoinPress}
             isLoading={this.state.isLoading}
           >
-            {I18n.t('caption_join_race')}
+            {this.state.buttonText}
           </TextButton>
           <EulaLink mode="JOIN"/>
           <TextButton
