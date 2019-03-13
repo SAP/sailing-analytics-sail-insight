@@ -24,19 +24,27 @@ export const getDeviceCountryIOC = () => {
   return country && country.ioc
 }
 
-export const extractData = (url: string) => {
+export const extractData = (url: string): any => {
   if (!url) {
     return null
   }
   const parsedUrl = parse(url)
-  const serverUrl = url.includes(BRANCH_APP_DOMAIN) ? getApiServerUrl() : parsedUrl && parsedUrl.origin
+  if (url.includes(BRANCH_APP_DOMAIN)) {
+    // parse branch.io based invitation and extract checkinUrl
+    const branchIoParsedQuery = querystring.parseUrl(url)
+    const branchIoQueryData = branchIoParsedQuery && branchIoParsedQuery.query
+    if (!branchIoQueryData) {
+      return null
+    }
+    return extractData(branchIoQueryData.checkinUrl)
+  }
+  const serverUrl = parsedUrl && parsedUrl.origin
 
-  const parsedQuery = querystring.parseUrl(decodeURIComponent(url))
+  const parsedQuery = querystring.parseUrl(url)
   const queryData = parsedQuery && parsedQuery.query
   if (!queryData) {
     return null
   }
-
   const checkIn = urlParamsToCheckIn(serverUrl, queryData)
   return checkIn
 }
