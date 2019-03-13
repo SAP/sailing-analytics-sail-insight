@@ -38,6 +38,7 @@ const apiEndpoints = (serverUrl: string) => {
   const getRaceUrl = getRaceApiGenerator(serverUrl)
   return {
     regatta: getUrlV1('/regattas'),
+    regattaDetails: getUrlV1('/regattas/{0}'),
     regattaRaces: getUrlV1('/regattas/{0}/races'),
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
@@ -46,17 +47,17 @@ const apiEndpoints = (serverUrl: string) => {
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
     leaderboard: getUrlV1('/leaderboards/{0}'),
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
-    marks: getUrlV1('/leaderboards/{0}/marks'),
+    marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
     stopTracking: getUrlV1('/leaderboards/{0}/stoptracking'),
     setTrackingTimes: getUrlV1('/leaderboards/{0}/settrackingtimes'),
     createAutoCourse: getUrlV1('/leaderboards/{0}/autocourse'),
-    boats: getUrlV1('/boats'),
+    boats: getUrlV1('/boats/{0}'),
     events: getUrlV1('/events'),
     gpsFixes: getUrlV1('/gps_fixes'),
-    competitors: getUrlV1('/competitors'),
+    competitors: getUrlV1('/competitors/{0}'),
     createEvent: getUrlV1('/events/createEvent'),
     updateEvent: getUrlV1('/events/{0}/update'),
     putWind: getUrlV1('/wind/putWind'),
@@ -71,23 +72,24 @@ const deviceMapping = (endpoint: (options?: UrlOptions) => string) => (leaderboa
   { method: HttpMethods.POST, body: data },
 )
 
-const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string) => dataRequest(
-  url({ pathParams: [leaderboardName], urlParams: { raceDetails: 'ALL' } }),
+// tslint:disable-next-line max-line-length
+const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string, secret: string) => dataRequest(
+  url({ pathParams: [leaderboardName], urlParams: { secret, raceDetails: 'ALL' } }),
   { dataSchema: leaderboardSchema },
 )
 
 type ApiFunction = () => any
 export interface DataApi {
   requestRegattas: ApiFunction
-  requestRegatta: (regattaName: string) => any
-  requestRaces: (regattaName: string) => any
-  requestRace: (regattaName: string, raceName: string, raceId?: string) => any
-  requestLeaderboard: (leaderboardName: string) => any
-  requestLeaderboardV2: (leaderboardName: string) => any
+  requestRegatta: (regattaName: string, secret?: string) => any
+  requestRaces: (regattaName: string, secret?: string) => any
+  requestRace: (regattaName: string, raceName: string, raceId?: string, secret?: string) => any
+  requestLeaderboard: (leaderboardName: string, secret?: string) => any
+  requestLeaderboardV2: (leaderboardName: string, secret?: string) => any
   requestEvent: (eventId: string) => any
-  requestCompetitor: (competitorId: string) => any
-  requestMark: (leaderboardName: string, id: string) => any
-  requestBoat: (id: string) => any
+  requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
+  requestMark: (leaderboardName: string, markId: string, secret?: string) => any
+  requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
   startDeviceMapping: (leaderboardName: string, data: any) => any
   stopDeviceMapping: (leaderboardName: string, data: any) => any
   sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
@@ -132,16 +134,16 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
   const endpoints = apiEndpoints(serverUrl)
   return {
     requestRegattas: () => listRequest(endpoints.regatta()),
-    requestRegatta: regattaName => dataRequest(
-      `${endpoints.regatta()}/${encodeURIComponent(regattaName)}`,
+    requestRegatta: (regattaName, secret) => dataRequest(
+        endpoints.regattaDetails({ pathParams: [regattaName], urlParams: { secret } }),
+        { dataSchema: regattaSchema },
+    ),
+    requestRaces: (regattaName, secret) => dataRequest(
+      endpoints.regattaRaces({ pathParams: [regattaName], urlParams: { secret } }),
       { dataSchema: regattaSchema },
     ),
-    requestRaces: regattaName => dataRequest(
-      endpoints.regattaRaces({ pathParams: [regattaName] }),
-      { dataSchema: regattaSchema },
-    ),
-    requestRace: (regattaName, raceName, raceId) => dataRequest(
-      endpoints.regattaRaceTimes({ pathParams: [regattaName, raceName] }),
+    requestRace: (regattaName, raceName, raceId, secret) => dataRequest(
+      endpoints.regattaRaceTimes({ pathParams: [regattaName, raceName], urlParams: { secret } }),
       {
         dataSchema: raceSchema,
         dataProcessor: raceId ? ((data: any) => data && { ...data, id: raceId }) : undefined,
@@ -153,17 +155,17 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
       `${endpoints.events()}/${eventId}`,
       { dataSchema: eventSchema },
     ),
-    requestCompetitor: competitorId => dataRequest(
-      `${endpoints.competitors()}/${competitorId}`,
-      { dataSchema: competitorSchema },
+    requestCompetitor: (leaderboardName, competitorId, secret) => dataRequest(
+        endpoints.competitors({ pathParams: [competitorId], urlParams: { leaderboardName, secret } }),
+        { dataSchema: competitorSchema },
     ),
-    requestMark: (leaderboardName, id) => dataRequest(
-      `${endpoints.marks({ pathParams: [leaderboardName] })}/${id}`,
-      { dataSchema: markSchema },
+    requestMark: (leaderboardName, markId, secret) => dataRequest(
+        endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }),
+        { dataSchema: markSchema },
     ),
-    requestBoat: id => dataRequest(
-      `${endpoints.boats()}/${encodeURIComponent(id)}`,
-      { dataSchema: boatSchema },
+    requestBoat: (leaderboardName, boatId, secret)  => dataRequest(
+        endpoints.boats({ pathParams: [boatId], urlParams: { leaderboardName, secret } }),
+        { dataSchema: boatSchema },
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),

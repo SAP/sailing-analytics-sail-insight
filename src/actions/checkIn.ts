@@ -36,23 +36,24 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
       boatId,
       regattaName,
       serverUrl,
+      secret,
     } = checkInData
 
     const queue = ActionQueue.create(dispatch, [
-      ...spreadableList(eventId, fetchEntityAction(dataApi.requestEvent)(eventId)),
-      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName),
-      fetchRegatta(regattaName, serverUrl),
-      fetchAllRaces(regattaName, serverUrl),
+      ...spreadableList(eventId, fetchEntityAction(dataApi.requestEvent)(eventId, secret)),
+      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName, secret),
+      fetchRegatta(regattaName, secret, serverUrl),
+      fetchAllRaces(regattaName, secret, serverUrl),
       ...spreadableList(competitorId, ActionQueue.createItem(
-        fetchEntityAction(dataApi.requestCompetitor)(competitorId),
+        fetchEntityAction(dataApi.requestCompetitor)(leaderboardName, competitorId, secret),
         { ignoreException: true },
       )),
       ...spreadableList(markId, ActionQueue.createItem(
-        fetchEntityAction(dataApi.requestMark)(leaderboardName, markId),
+        fetchEntityAction(dataApi.requestMark)(leaderboardName, markId, secret),
         { ignoreException: true },
       )),
       ...spreadableList(boatId, ActionQueue.createItem(
-        fetchEntityAction(dataApi.requestBoat)(boatId),
+        fetchEntityAction(dataApi.requestBoat)(leaderboardName, boatId, secret),
         { ignoreException: true },
       )),
     ])
