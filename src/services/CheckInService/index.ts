@@ -31,7 +31,7 @@ export const extractData = (url: string) => {
   const parsedUrl = parse(url)
   const serverUrl = url.includes(BRANCH_APP_DOMAIN) ? getApiServerUrl() : parsedUrl && parsedUrl.origin
 
-  const parsedQuery = querystring.parseUrl(url)
+  const parsedQuery = querystring.parseUrl(decodeURIComponent(url))
   const queryData = parsedQuery && parsedQuery.query
   if (!queryData) {
     return null
