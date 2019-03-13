@@ -29,6 +29,8 @@ export const extractData = (url: string): any => {
     return null
   }
   const parsedUrl = parse(url)
+  let serverUrl = parsedUrl && parsedUrl.origin
+
   if (url.includes(BRANCH_APP_DOMAIN)) {
     // parse branch.io based invitation and extract checkinUrl
     const branchIoParsedQuery = querystring.parseUrl(url)
@@ -36,9 +38,13 @@ export const extractData = (url: string): any => {
     if (!branchIoQueryData) {
       return null
     }
-    return extractData(branchIoQueryData.checkinUrl)
+    if (branchIoQueryData.checkinUrl) {
+      // contains complete checkin url
+      return extractData(branchIoQueryData.checkinUrl)
+    }
+    // extract parameters directly, only replace target server e.g. for publicInvite
+    serverUrl = branchIoQueryData.server
   }
-  const serverUrl = parsedUrl && parsedUrl.origin
 
   const parsedQuery = querystring.parseUrl(url)
   const queryData = parsedQuery && parsedQuery.query
