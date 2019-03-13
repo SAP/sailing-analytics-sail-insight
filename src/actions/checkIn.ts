@@ -89,7 +89,7 @@ export const checkIn = (data: CheckIn) => async (dispatch: DispatchType) => {
     dispatch(updateCheckIn(update))
     navigateToSessions()
   }
-  if (data.secret) {
+  if (!data.competitorId && !data.markId && !data.boatId) {
     navigateToEditCompetitor(data)
   }
 }
