@@ -119,13 +119,13 @@ export const eventUrl = (checkInData: any) =>
 export const leaderboardUrl = (checkInData: any) =>
   checkInData &&
   // tslint:disable-next-line max-line-length
-  `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
+  `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${encodeURIComponent(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
 
 export const raceUrl = (session: CheckIn, race: Race) =>
   session &&
   race.name &&
   // tslint:disable-next-line max-line-length
-  `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${escape(session.leaderboardName)}&raceName=${escape(race.name)}&leaderboardName=${escape(session.leaderboardName)}&eventId=${escape(session.eventId)}&mode=FULL_ANALYSIS`
+  `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${encodeURIComponent(session.leaderboardName)}&raceName=${encodeURIComponent(race.name)}&leaderboardName=${encodeURIComponent(session.leaderboardName)}&eventId=${encodeURIComponent(session.eventId)}&mode=FULL_ANALYSIS`
 
 export const eventCreationResponseToCheckIn = (
   response: CreateEventResponseData,
