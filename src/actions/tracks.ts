@@ -45,14 +45,14 @@ export const startTrack = (regattaName: string, trackName: string, fleet: string
 export type StopTrackAction = (regattaName: string, trackName: string, fleet: string) => any
 export const stopTrack: StopTrackAction = (regattaName, trackName, fleet) => withDataApi({ leaderboard: regattaName })(
   async dataApi => trackName && fleet &&
-  await dataApi.setTrackingTimes(
-    regattaName,
-    {
-      fleet,
-      race_column: trackName,
-      endoftrackingasmillis: getNowAsMillis(),
-    },
-  ) &&
+  // await dataApi.setTrackingTimes(
+  //   regattaName,
+  //   {
+  //     fleet,
+  //     race_column: trackName,
+  //     endoftrackingasmillis: getNowAsMillis(),
+  //   },
+  // ) &&
   await dataApi.stopTracking(regattaName, { fleet, race_column: trackName }),
 )
 
