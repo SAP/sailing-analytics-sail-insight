@@ -171,7 +171,12 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),
     sendGpsFixes: gpsFixes => dataRequest(
       endpoints.gpsFixes(),
-      { method: HttpMethods.POST, body: gpsFixes, dataProcessor: data => get(data, 'maneuverchanged') },
+      {
+        method: HttpMethods.POST,
+        body: gpsFixes,
+        dataProcessor:  data => get(data, 'maneuverchanged'),
+        timeout: 1000,
+      },
     ),
     createEvent: body => dataRequest(
       endpoints.createEvent(),

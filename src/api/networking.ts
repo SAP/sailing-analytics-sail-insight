@@ -34,7 +34,8 @@ export interface RequestOptions {
   method?: string
   signer?: Signer
   body?: any,
-  bodyType?: BodyType
+  bodyType?: BodyType,
+  timeout?: number,
 }
 
 const getBody = (type: BodyType, body: any) => {
@@ -65,11 +66,13 @@ export const request = async (
     body = null,
     bodyType = 'json',
     signer = tokenSigner,
+    timeout = 5000,
   } = options
 
   const data = body && { body: getBody(bodyType, body) }
   const fetchOptions = {
     method,
+    timeout,
     headers: await getHeaders(url, method, body, bodyType, signer),
     ...data,
   }
