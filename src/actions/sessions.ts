@@ -11,7 +11,7 @@ import { createSharingData, SharingData, showShareSheet } from 'integrations/Dee
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
 import { navigateToManeuver, navigateToSessions } from 'navigation'
 
-import { eventCreationResponseToCheckIn, getDeviceCountryIOC, getDeviceId } from 'services/CheckInService'
+import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
 import * as LocationService from 'services/LocationService'
 import { addUserPrefix } from 'services/SessionService'
@@ -107,13 +107,14 @@ export const createUserAttachmentToSession = (
     getState: GetStateType,
   ) => {
     const user = getUserInfo(getState())
-    if (!user || !competitorInfo.boatClass || !competitorInfo.sailNumber || !competitorInfo.boatName) {
+    if (!user || !competitorInfo.boatClass || !competitorInfo.sailNumber || !competitorInfo.boatName
+        || !competitorInfo.nationality) {
       throw new SessionException('user/boat data missing.')
     }
     const baseValues = {
       competitorName: user.fullName,
       competitorEmail: user.email,
-      nationalityIOC: getDeviceCountryIOC(),
+      nationalityIOC: competitorInfo.nationality,
     }
     const competitor = competitorInfo.boatId && !secret ?
       await dataApi.createAndAddCompetitorWithBoat(
