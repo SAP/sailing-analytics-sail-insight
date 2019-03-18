@@ -24,6 +24,9 @@ import TextButton from 'components/TextButton'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
+import { getDeviceCountryIOC } from '../../../services/CheckInService'
 
 
 interface Props {
@@ -88,10 +91,19 @@ class EditCompetitor extends TextInputForm<Props> {
             style={input.topMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
-            component={FormTextInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
+            component={FormBoatClassInput}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_NATIONALITY)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
             {...this.commonProps}
+          />
+          <Field
+              style={input.topMargin}
+              label={I18n.t('text_nationality')}
+              name={sessionForm.FORM_KEY_NATIONALITY}
+              component={FormNationalityPicker}
+              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
+              inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
+              {...this.commonProps}
           />
           <Field
             style={input.topMargin}
@@ -141,6 +153,7 @@ const mapStateToProps = (state: any, props: any) => {
         boatName: lastUsedBoat.name,
         sailNumber: lastUsedBoat.sailNumber,
       }),
+      nationality: getDeviceCountryIOC(),
       teamName: I18n.t('text_default_value_team_name'),
     } as CompetitorInfo,
     boats: getUserBoats(state),

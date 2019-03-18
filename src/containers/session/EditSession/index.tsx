@@ -102,6 +102,7 @@ class EditSession extends TextInputForm<Props> {
               label={I18n.t('text_nationality')}
               name={sessionForm.FORM_KEY_NATIONALITY}
               component={FormNationalityPicker}
+              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
               inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
               {...this.commonProps}
           />
