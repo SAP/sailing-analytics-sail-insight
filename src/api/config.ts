@@ -48,6 +48,6 @@ export const HttpMethods = {
   DELETE: 'DELETE',
 }
 
-export type BodyType = 'x-www-form-urlencoded' | 'json'
+export type BodyType = 'x-www-form-urlencoded' | 'json' | 'image'
 
 export const getApiServerUrl = () => SERVER_URL

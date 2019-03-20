@@ -20,7 +20,9 @@ import { getUserBoats } from 'selectors/user'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 
 
@@ -38,6 +40,11 @@ class EditSession extends TextInputForm<Props> {
   public render() {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
+        <Field
+          name={sessionForm.FORM_KEY_TEAM_IMAGE}
+          component={FormImagePicker}
+          placeholder={Images.header.sailors}
+        />
         <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_edit_session_claim_01')}</Text>

@@ -10,6 +10,7 @@ import ImagePickerButton from 'components/ImagePickerButton'
 
 import { $placeholderBackgroundColor } from 'styles/colors'
 import { image } from 'styles/commons'
+import Logger from '../../../helpers/Logger'
 
 
 class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
@@ -23,7 +24,8 @@ class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
       placeholder,
       disabled,
     } = this.props
-
+    Logger.debug('FormImagePicker', input)
+    // source from image picker
     const imageValue = get(input, 'value.path')
     const placeholderStyle = !imageValue ? { backgroundColor: $placeholderBackgroundColor } : undefined
 
