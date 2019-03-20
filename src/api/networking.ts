@@ -63,6 +63,13 @@ const getHeaders = async (url: string, method: string, body: any, bodyType: Body
   return signer ? await signer({ body, url, method, headers }) : headers
 }
 
+const timeoutPromise = (promise: Promise<Response>, timeout: number, error: string) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => { reject(error) }, timeout)
+    promise.then(resolve, reject)
+  })
+}
+
 export const request = async (
   url: any,
   options: RequestOptions = {},
@@ -84,10 +91,7 @@ export const request = async (
   }
   let response
   try {
-    response = await fetch(
-      url,
-      fetchOptions,
-    )
+    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
   } catch (err) {
     throw err
   } finally {
