@@ -1,19 +1,20 @@
-import { orderBy } from 'lodash'
+import { isEmpty, orderBy } from 'lodash'
 import React from 'react'
-import { TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
-import RNPickerSelect from 'react-native-picker-select'
+import { Picker, TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
 import { WrappedFieldProps } from 'redux-form'
 import { selfTrackingApi } from '../../../api'
 import { CountryCodeBody } from '../../../api/endpoints/types'
 
 import Text from 'components/Text'
-import TextInput, { TextInputProps } from 'components/TextInput'
+import { TextInputProps } from 'components/TextInput'
 
 import { text } from 'styles/commons'
+import I18n from '../../../i18n'
+import { DEFAULT_BAR_HEIGHT } from '../../TextInput/styles'
 import styles from './styles'
 
 interface State {
-  countryList: {},
+  countryList: any,
 }
 
 const countryToPickerItems = (countryList: CountryCodeBody[] = []) => countryList
@@ -45,44 +46,60 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
   public render() {
     const {
       label,
-      input: { name, onChange, ...restInput },
+      highlight,
+      input: { name, value, onChange, ...restInput },
       meta: { touched: showError, error },
       style,
       ...additionalProps
     } = this.props
 
-    const shouldHighlight = error && showError
-    const assistiveText = error && showError ? error : undefined
+    const heightStyle = { height: DEFAULT_BAR_HEIGHT }
 
+    const placeholder = I18n.t('text_nationality')
+
+    const shouldHighlight = error && showError
+    const showTopPlaceholder = placeholder && (!isEmpty(value))
+    const assistiveText = error && showError ? error : undefined
+    const isHighlighted = error || highlight
+    const highlightStyle = isHighlighted ? text.error : undefined
     return (
-        <View style={style}>
-          <View style={styles.container}>
-            <TextInput
-                style={styles.textInput}
-                placeholder={label}
-                onChangeText={onChange}
-                highlight={shouldHighlight}
+      <View style={style}>
+        <View style={[styles.container]}>
+            <View
+              style={[
+                styles.inputContainer,
+                showTopPlaceholder ? styles.containerWithTitle : styles.containerNoTitle,
+              ]}
+            >
+              {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
+
+              <Picker
+                style={[styles.input, heightStyle]}
+                onValueChange={this.onValueChange}
+                selectedValue={this.props.input.value}
                 {...restInput}
                 {...additionalProps}
-                editable={false}
-            />
-          <RNPickerSelect
-              items={this.state.countryList}
-              onValueChange={onChange}
-              style={{
-                inputIOS: styles.inputIOS,
-                inputAndroid: styles.inputAndroid,
-                underline: styles.underline,
-              }}
-              {...restInput}
-          />
+              >
+              { this.state.countryList.map((item: any) => (
+                <Picker.Item label={item.label} value={item.value} />),
+              )}
+              </Picker>
+            </View>
+            {
+              assistiveText &&
+              <Text style={[text.assistiveText, shouldHighlight ? text.error : undefined]}>{assistiveText}</Text>
+            }
           </View>
-          {
-            assistiveText &&
-            <Text style={[text.assistiveText, shouldHighlight ? text.error : undefined]}>{assistiveText}</Text>
-          }
-        </View>
+      </View>
     )
   }
+
+  protected onValueChange = (itemValue: any, itemPosition: number) => {
+    const {
+      input: { onChange },
+    } = this.props
+    onChange(itemValue)
+  }
 }
+
 export default FormNationalityPicker

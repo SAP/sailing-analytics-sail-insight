@@ -1,30 +1,39 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
-  inputIOS: {
-    fontSize: '$largeFontSize',
-    paddingVertical: '$smallSpacing',
-    paddingHorizontal: '$smallSpacing',
-    borderTopRightRadius: '$baseBorderRadius',
-    borderBottomRightRadius: '$baseBorderRadius',
-    backgroundColor: '$secondaryBackgroundColor',
-    color: '$primaryTextColor',
-    width: 30,
-  },
-  inputAndroid: {
-    width: 40,
-  },
-  underline: {
-    borderTopWidth: 0,
-    borderTopColor: 'transparent',
-  },
   container: {
     backgroundColor: '$secondaryBackgroundColor',
     borderRadius: '$baseBorderRadius',
     flexDirection: 'row',
-    alignItems: 'center',
+    paddingHorizontal: '$tinySpacing',
   },
-  textInput: {
+  containerNoTitle: {
+    paddingTop: '$smallSpacing',
+    paddingBottom: '$smallSpacing',
+  },
+  containerWithTitle: {
+    paddingTop: 20,
+    paddingBottom: 12,
+  },
+  inputContainer: {
     flex: 1,
+  },
+  input: {
+    alignSelf: 'stretch',
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingBottom: 1,
+    color: '$primaryTextColor',
+    fontSize: '$largeFontSize',
+    paddingVertical: 0, // remove Android default padding
+  },
+  title: {
+    color: '$secondaryTextColor',
+    fontSize: '$regularFontSize',
+    position: 'absolute',
+    top: 0,
+    left: '$tinySpacing',
+    alignSelf: 'center',
+    paddingTop: 3,
   },
 })
