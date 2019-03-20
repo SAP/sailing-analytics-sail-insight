@@ -34,6 +34,7 @@ import styles from './styles'
 interface Props {
   user: User,
   formFullName?: string,
+  formImageData?: string,
   removeUserData: () => void,
   fetchUserInfo: () => void,
   updateUser: (u: User) => void,
@@ -51,8 +52,9 @@ class UserProfile extends TextInputForm<Props> {
   }
 
   public render() {
-    const { user, formFullName } = this.props
-    const isSaveDisabled = isEmpty(formFullName) || (!isEmpty(user.fullName) && formFullName === user.fullName)
+    const { user, formFullName, formImageData } = this.props
+    const isSaveDisabled = isEmpty(formFullName) || ((!isEmpty(user.fullName) && formFullName === user.fullName) &&
+      (!isEmpty(user.imageData) && formImageData === user.imageData))
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
@@ -60,7 +62,6 @@ class UserProfile extends TextInputForm<Props> {
             name={userForm.FORM_KEY_IMAGE}
             component={FormImagePicker}
             placeholder={Images.header.sailors}
-            disabled={true}
           />
           <View style={container.largeHorizontalMargin}>
             <Field
@@ -111,7 +112,7 @@ class UserProfile extends TextInputForm<Props> {
   protected onSubmit = async (values: any) => {
     try {
       await this.setState({ isLoading: true })
-      await this.props.updateUser({ ...this.props.user, fullName: values[userForm.FORM_KEY_NAME] } as User)
+      await this.props.updateUser({ ...this.props.user, fullName: values[userForm.FORM_KEY_NAME], imageData: values[userForm.FORM_KEY_IMAGE] } as User)
     } catch (err) {
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
@@ -140,8 +141,10 @@ const mapStateToProps = (state: any) => {
   return {
     user,
     formFullName: getFormFieldValue(userForm.USER_FORM_NAME, userForm.FORM_KEY_NAME)(state),
+    formImageData: getFormFieldValue(userForm.USER_FORM_NAME, userForm.FORM_KEY_IMAGE)(state),
     initialValues: {
       [userForm.FORM_KEY_NAME]: user.fullName,
+      [userForm.FORM_KEY_IMAGE]: user.imageData,
     },
   }
 }

@@ -247,7 +247,7 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     initialValues: sessionParam ?
       sessionForm.formValuesFromTrackingSession(sessionParam) :
-      generateNewSession(lastUsedBoat),
+      generateNewSession(lastUsedBoat, state),
   }
 }
 

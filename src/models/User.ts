@@ -18,6 +18,7 @@ export const mapUserToRes = (user: User) => ({
   [ApiBodyKeys.Company]: user.company,
   [ApiBodyKeys.FullName]: user.fullName,
   [ApiBodyKeys.Email]: user.email,
+  // ignore imageData here
 })
 
 
@@ -27,4 +28,5 @@ export default interface User {
   fullName?: string
   email?: string
   nationality?: string
+  imageData?: string,
 }

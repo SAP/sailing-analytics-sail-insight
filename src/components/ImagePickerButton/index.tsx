@@ -67,6 +67,7 @@ class ImagePickerButton extends React.Component<ImageProps & {
         options: [
           I18n.t('caption_open_photos'),
           I18n.t('caption_take_photo'),
+          I18n.t('caption_clear_photo'),
           I18n.t('caption_cancel'),
         ],
         cancelButtonIndex: 2,
@@ -77,6 +78,8 @@ class ImagePickerButton extends React.Component<ImageProps & {
             return this.handleOpenPhotos()
           case 1:
             return this.handleOpenCamera()
+          case 2:
+            return this.handleClearPhoto()
           default:
             return
         }
@@ -123,6 +126,11 @@ class ImagePickerButton extends React.Component<ImageProps & {
       },
       200,
     )
+  }
+
+  protected handleClearPhoto = async () => {
+    const { onImage } = this.props
+    onImage(null)
   }
 }
 

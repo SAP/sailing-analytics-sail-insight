@@ -134,6 +134,9 @@ export const createUserAttachmentToSession = (
           ...(secret && { deviceUuid: getDeviceId() }),
         },
       )
+    if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
+      dataApi.uploadTeamImage(competitor.id, competitorInfo.teamImage.data, competitorInfo.teamImage.mime)
+    }
     dispatch(normalizeAndReceiveEntities(competitor, competitorSchema))
     dispatch(updateCheckIn({ leaderboardName: regattaName, competitorId: competitor.id } as CheckInUpdate))
     await dispatch(saveBoat(
@@ -156,6 +159,7 @@ export const createSessionCreationQueue: CreateSessionCreationQueueAction = (ses
       createEvent(session, options && options.isPublic),
       ActionQueue.createItemUsingPreviousResult((data: CheckIn) => collectCheckInData(data)),
       ActionQueue.createItemUsingPreviousResult((data: CheckIn) => updateCheckIn(data)),
+      // Important: TrackingSession is given as CompetitorInfo
       createUserAttachmentToSession(session.name, session),
       registerDevice(session.name),
     ],

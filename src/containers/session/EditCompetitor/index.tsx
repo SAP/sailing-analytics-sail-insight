@@ -24,7 +24,9 @@ import TextButton from 'components/TextButton'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import { getDeviceCountryIOC } from '../../../services/CheckInService'
 
@@ -48,6 +50,11 @@ class EditCompetitor extends TextInputForm<Props> {
   public render() {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
+        <Field
+          name={sessionForm.FORM_KEY_TEAM_IMAGE}
+          component={FormImagePicker}
+          placeholder={Images.header.sailors}
+        />
         <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_edit_competitor_claim_01')}</Text>
@@ -155,6 +162,7 @@ const mapStateToProps = (state: any, props: any) => {
       }),
       nationality: getDeviceCountryIOC(),
       teamName: I18n.t('text_default_value_team_name'),
+      teamImage: state.auth && state.auth.user && state.auth.user.imageData && state.auth.user.imageData,
     } as CompetitorInfo,
     boats: getUserBoats(state),
     checkInData: getCustomScreenParamData(props),

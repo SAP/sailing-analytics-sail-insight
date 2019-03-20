@@ -14,7 +14,19 @@ const initialState: AuthState = {
 const reducer = handleActions(
   {
     [updateToken as any]: itemUpdateHandler('accessToken'),
-    [updateCurrentUserInformation as any]: itemUpdateHandler('user'),
+    // [updateCurrentUserInformation as any]: itemUpdateHandler('user'),
+    [updateCurrentUserInformation as any]: (state: any = {}, action?: any) => {
+      if (!action) {
+        return state
+      }
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+      }
+    },
     [removeAuthInfo as any]: () => initialState,
     [removeUserData as any]: () => initialState,
   },
