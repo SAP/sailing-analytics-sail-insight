@@ -3,6 +3,7 @@ export default interface CompetitorInfo {
   boatClass?: string
   sailNumber?: string
   boatId?: string
+  nationality: string,
   teamName?: string
   name?: string
 }

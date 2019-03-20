@@ -9,6 +9,7 @@ import {
   CompetitorManeuverItem,
   CompetitorResponseData,
   CompetitorWithBoatBody,
+  CountryCodeBody,
   CreateEventBody,
   CreateEventResponseData,
   ManeuverChangeItem,
@@ -64,6 +65,7 @@ const apiEndpoints = (serverUrl: string) => {
     raceLog: getRaceUrl('/racelog'),
     preferences: getUrlV1('/preferences/{0}'),
     boatClasses: getUrlV1('/boatclasses'),
+    countryCodes: getUrlV1('/countrycodes'),
   }
 }
 
@@ -127,6 +129,7 @@ export interface DataApi {
     filter?: {competitorId?: string, fromTime?: number},
   ) => Promise<CompetitorManeuverItem[]>
   requestBoatClasses: () => Promise<BoatClassesdBody[]>
+  requestCountryCodes: () => Promise<CountryCodeBody[]>
 }
 
 
@@ -254,6 +257,7 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
       { method: HttpMethods.POST },
     ),
     requestBoatClasses: () => listRequest(endpoints.boatClasses()),
+    requestCountryCodes: () => listRequest(endpoints.countryCodes()),
   }
 }
 
