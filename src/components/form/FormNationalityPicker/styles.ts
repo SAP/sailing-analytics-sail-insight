@@ -5,7 +5,6 @@ export default EStyleSheet.create({
     backgroundColor: '$secondaryBackgroundColor',
     borderRadius: '$baseBorderRadius',
     flexDirection: 'row',
-    paddingHorizontal: '$tinySpacing',
   },
   containerNoTitle: {
     paddingTop: '$smallSpacing',
@@ -18,22 +17,26 @@ export default EStyleSheet.create({
   inputContainer: {
     flex: 1,
   },
-  input: {
-    alignSelf: 'stretch',
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingBottom: 1,
-    color: '$primaryTextColor',
-    fontSize: '$largeFontSize',
-    paddingVertical: 0, // remove Android default padding
-  },
   title: {
     color: '$secondaryTextColor',
     fontSize: '$regularFontSize',
     position: 'absolute',
     top: 0,
-    left: '$tinySpacing',
+    left: '$smallSpacing',
     alignSelf: 'center',
     paddingTop: 3,
   },
+  icon: {
+    top: 0,
+  },
+  inputIOS: {
+    fontSize: '$largeFontSize',
+    paddingHorizontal: '$smallSpacing',
+    backgroundColor: '$secondaryBackgroundColor',
+    color: '$primaryTextColor',
+
+  },
+  inputAndroid: {
+  },
+
 })

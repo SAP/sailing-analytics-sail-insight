@@ -1,6 +1,7 @@
 import { isEmpty, orderBy } from 'lodash'
 import React from 'react'
-import { Picker, TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
+import { TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
+import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
 import { selfTrackingApi } from '../../../api'
 import { CountryCodeBody } from '../../../api/endpoints/types'
@@ -10,8 +11,8 @@ import { TextInputProps } from 'components/TextInput'
 
 import { text } from 'styles/commons'
 import I18n from '../../../i18n'
-import { DEFAULT_BAR_HEIGHT } from '../../TextInput/styles'
 import styles from './styles'
+import TextInput from "../FormBoatPicker";
 
 interface State {
   countryList: any,
@@ -53,8 +54,6 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
       ...additionalProps
     } = this.props
 
-    const heightStyle = { height: DEFAULT_BAR_HEIGHT }
-
     const placeholder = I18n.t('text_nationality')
 
     const shouldHighlight = error && showError
@@ -73,17 +72,22 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
             >
               {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
 
-              <Picker
-                style={[styles.input, heightStyle]}
-                onValueChange={this.onValueChange}
-                selectedValue={this.props.input.value}
-                {...restInput}
-                {...additionalProps}
-              >
-              { this.state.countryList.map((item: any) => (
-                <Picker.Item label={item.label} value={item.value} />),
-              )}
-              </Picker>
+              <RNPickerSelect
+                  placeholder={{
+                    label: I18n.t('text_placeholder_nationality'),
+                    value: null,
+                  }}
+                  items={this.state.countryList}
+                  value={this.props.input.value}
+                  onValueChange={this.onValueChange}
+                  style={{
+                    inputIOS: styles.inputIOS,
+                    inputAndroid: styles.inputAndroid,
+                    icon: styles.icon,
+                  }}
+                  {...restInput}
+                  {...additionalProps}
+              />
             </View>
             {
               assistiveText &&
@@ -94,7 +98,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     )
   }
 
-  protected onValueChange = (itemValue: any, itemPosition: number) => {
+  protected onValueChange = (itemValue: any) => {
     const {
       input: { onChange },
     } = this.props
