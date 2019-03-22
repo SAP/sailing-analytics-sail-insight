@@ -19,17 +19,18 @@ import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
 import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
+import { getBulkGpsSetting } from '../selectors/settings'
 import { syncFixes } from '../services/GPSFixService'
 import { removeTrackedRegatta } from './locationTrackingData'
 
 
 const setupAndStartTrack = (
   data: CheckIn,
-  options: { shouldClean?: boolean, shouldCreateTrack?: boolean } = {},
+  options: { shouldClean?: boolean, shouldCreateTrack?: boolean, bulkTransfer: boolean } = { bulkTransfer : false },
 ) => async (dispatch: DispatchType) => {
   try {
     dispatch(updateLoadingCheckInFlag(true))
-    const { shouldClean, shouldCreateTrack } = options
+    const { shouldClean, shouldCreateTrack, bulkTransfer } = options
     if (shouldClean) { await dispatch(stopLocationUpdates()) }
     let newTrack
     if (shouldCreateTrack && data.trackPrefix) {
@@ -51,7 +52,7 @@ const setupAndStartTrack = (
         Logger.debug(err)
       }
     }
-    await dispatch(startLocationUpdates(data.leaderboardName, data.eventId))
+    dispatch(startLocationUpdates(bulkTransfer, data.leaderboardName, data.eventId))
   } catch (err) {
     throw err
   } finally {
@@ -100,7 +101,7 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
       return
     }
     dispatch(stopLocationUpdates())
-    await syncFixes()
+    await syncFixes(dispatch)
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
       await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
       await dispatch(stopTrack(data.leaderboardName, data.currentTrackName, data.currentFleet))
@@ -125,14 +126,21 @@ export const startTracking: StartTrackingAction = data =>  async (
   return new Promise(async (resolve, reject) => {
     if (await dispatch(isTrackingRunning())) {
       showRunningTrackingDialog(() => startTrackingScreen(
-        setupAndStartTrack(checkInData, { shouldCreateTrack: checkInData.isSelfTracking, shouldClean: true }),
+        setupAndStartTrack(checkInData, {
+          shouldCreateTrack: checkInData.isSelfTracking,
+          shouldClean: true,
+          bulkTransfer: getBulkGpsSetting(getState()),
+        }),
         dispatch,
         resolve,
         reject,
       ))
     } else {
       startTrackingScreen(
-        setupAndStartTrack(checkInData, { shouldCreateTrack: checkInData.isSelfTracking }),
+        setupAndStartTrack(checkInData, {
+          shouldCreateTrack: checkInData.isSelfTracking,
+          bulkTransfer: getBulkGpsSetting(getState()),
+        }),
         dispatch,
         resolve,
         reject,
