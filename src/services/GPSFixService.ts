@@ -13,7 +13,7 @@ import * as BackgroundTaskService from './BackgroundTaskService'
 import * as CheckInService from './CheckInService'
 
 
-export const DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS = 5000
+export const DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS = 1000
 export const BULK_UPDATE_TIME_INTERVAL_IN_MILLIS = 30000
 
 let stopWhenSynced = false
