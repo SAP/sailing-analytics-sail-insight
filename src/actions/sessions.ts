@@ -107,13 +107,13 @@ export const createUserAttachmentToSession = (
     getState: GetStateType,
   ) => {
     const user = getUserInfo(getState())
-    if (!user || !competitorInfo.boatClass || !competitorInfo.sailNumber || !competitorInfo.boatName
+    if (!competitorInfo.boatClass || !competitorInfo.sailNumber || !competitorInfo.boatName
         || !competitorInfo.nationality) {
       throw new SessionException('user/boat data missing.')
     }
     const baseValues = {
-      competitorName: user.fullName,
-      competitorEmail: user.email,
+      competitorName: competitorInfo.name,
+      competitorEmail: user && user.email,
       nationalityIOC: competitorInfo.nationality,
     }
     const competitor = competitorInfo.boatId && !secret ?
@@ -139,15 +139,17 @@ export const createUserAttachmentToSession = (
     }
     dispatch(normalizeAndReceiveEntities(competitor, competitorSchema))
     dispatch(updateCheckIn({ leaderboardName: regattaName, competitorId: competitor.id } as CheckInUpdate))
-    await dispatch(saveBoat(
-      {
-        name: competitorInfo.boatName,
-        boatClass: competitorInfo.boatClass,
-        sailNumber: competitorInfo.sailNumber,
-        id: competitor && competitor.boat && competitor.boat.id,
-      },
-      { updateLastUsed: true },
-    ))
+    if (user) {
+      await dispatch(saveBoat(
+        {
+          name: competitorInfo.boatName,
+          boatClass: competitorInfo.boatClass,
+          sailNumber: competitorInfo.sailNumber,
+          id: competitor && competitor.boat && competitor.boat.id,
+        },
+        { updateLastUsed: true },
+      ))
+    }
   },
 )
 
