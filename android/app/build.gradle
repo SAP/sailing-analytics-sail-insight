@@ -97,7 +97,7 @@ def enableProguardInReleaseBuilds = false
 
 def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.sailtracks.android.sailinginsight'
 def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
-def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "12") as Integer
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "13") as Integer
 def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.0"
 
 android {
