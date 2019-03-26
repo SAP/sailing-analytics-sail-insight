@@ -16,6 +16,7 @@ export default EStyleSheet.create({
   },
   inputContainer: {
     flex: 1,
+    paddingLeft: '$microSpacing',
   },
   title: {
     color: '$secondaryTextColor',
@@ -38,5 +39,8 @@ export default EStyleSheet.create({
   },
   inputAndroid: {
   },
-
+  underline: {
+    borderTopWidth: 0,
+    borderTopColor: 'transparent',
+  },
 })

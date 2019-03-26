@@ -12,10 +12,10 @@ import { TextInputProps } from 'components/TextInput'
 import { text } from 'styles/commons'
 import I18n from '../../../i18n'
 import styles from './styles'
-import TextInput from "../FormBoatPicker";
 
 interface State {
   countryList: any,
+  text: string,
 }
 
 const countryToPickerItems = (countryList: CountryCodeBody[] = []) => countryList
@@ -31,6 +31,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
 
   public readonly state: Readonly<State> = {
     countryList: [{ label: 'Germany', value: 'GER' }],
+    text: this.props.input.value || '',
   }
 
   public componentDidMount() {
@@ -48,16 +49,17 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     const {
       label,
       highlight,
-      input: { name, value, onChange, ...restInput },
       meta: { touched: showError, error },
       style,
       ...additionalProps
     } = this.props
 
+    const { text: stateText } = this.state
+
     const placeholder = I18n.t('text_nationality')
 
     const shouldHighlight = error && showError
-    const showTopPlaceholder = placeholder && (!isEmpty(value))
+    const showTopPlaceholder = placeholder && (!isEmpty(stateText))
     const assistiveText = error && showError ? error : undefined
     const isHighlighted = error || highlight
     const highlightStyle = isHighlighted ? text.error : undefined
@@ -78,14 +80,14 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                     value: null,
                   }}
                   items={this.state.countryList}
-                  value={this.props.input.value}
+                  value={stateText}
                   onValueChange={this.onValueChange}
                   style={{
                     inputIOS: styles.inputIOS,
                     inputAndroid: styles.inputAndroid,
+                    underline: styles.underline,
                     icon: styles.icon,
                   }}
-                  {...restInput}
                   {...additionalProps}
               />
             </View>
@@ -102,6 +104,8 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     const {
       input: { onChange },
     } = this.props
+    this.setState({ text: itemValue })
+
     onChange(itemValue)
   }
 }
