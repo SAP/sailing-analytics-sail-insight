@@ -112,7 +112,7 @@ export const createUserAttachmentToSession = (
       throw new SessionException('user/boat data missing.')
     }
     const baseValues = {
-      competitorName: competitorInfo.name,
+      competitorName: competitorInfo.teamName || competitorInfo.name,
       competitorEmail: user && user.email,
       nationalityIOC: competitorInfo.nationality,
     }
