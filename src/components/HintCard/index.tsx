@@ -26,6 +26,7 @@ class HintCard extends React.Component<ViewProps & {
       style,
       title,
       text,
+      children,
       imageSource,
       actionText,
       onPress,
@@ -47,6 +48,7 @@ class HintCard extends React.Component<ViewProps & {
           >
             {actionText}
           </TextButton>
+          {children}
         </View>
         {onCancelPress && <ImageButton
           style={styles.closeButton}
