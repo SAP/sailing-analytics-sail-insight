@@ -9,6 +9,7 @@ import {
   removeEntity,
 } from 'actions/entities'
 import { filterEntityByIds, omitEntityElementsBy } from 'helpers/filter'
+import { removeUserData } from '../actions/auth'
 
 
 const entityMergeCustomizer = (objValue: any, srcValue: any) => {
@@ -73,6 +74,7 @@ const reducer = handleActions(
         ...rest,
       }
     },
+    [removeUserData as any]: () => ({}),
   },
   {},
 )
