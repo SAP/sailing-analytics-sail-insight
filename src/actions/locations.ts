@@ -1,8 +1,6 @@
-import { dataApi } from 'api'
 import { PositionFix } from 'models'
 import { hasValidPosition } from 'models/PositionFix'
 import * as CheckInService from 'services/CheckInService'
-import { unsentGpsFixCount } from 'services/GPSFixService'
 import * as GpsFixService from 'services/GPSFixService'
 import * as LocationService from 'services/LocationService'
 import LocationTrackingException from 'services/LocationService/LocationTrackingException'
@@ -20,22 +18,7 @@ import {
   updateUnsentGpsFixCount,
 } from 'actions/locationTrackingData'
 import { checkAndUpdateRaceSettings } from 'actions/sessionConfig'
-import { handleManeuverChange } from 'actions/sessions'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
-
-
-const sendGpsFix = async (serverUrl: string, postBody: any, dispatch: DispatchType) => {
-  let maneuverInfo
-  try {
-    maneuverInfo = await dataApi(serverUrl).sendGpsFixes(postBody)
-    return true
-  } catch (err) {
-    Logger.debug(err)
-    return false
-  } finally {
-    dispatch(handleManeuverChange(maneuverInfo))
-  }
-}
 
 
 export const startLocationUpdates = (
@@ -44,16 +27,13 @@ export const startLocationUpdates = (
   eventId?: string,
 ) => async (dispatch: DispatchType) => {
   try {
-    await dispatch(updateTrackedRegatta({
-      leaderboardName,
-      eventId,
-    }))
+    await dispatch(updateTrackedRegatta({ leaderboardName, eventId }))
     await LocationService.start()
     await LocationService.changePace(true)
     GpsFixService.startPeriodicalGPSFixUpdates(bulkTransfer, dispatch)
     dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
-    Logger.debug(err)
+    Logger.error('Error during startLocationUpdates', err)
     dispatch(removeTrackedRegatta())
   }
 }
@@ -86,9 +66,6 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   if (!postData) {
     throw new LocationTrackingException('gpsFix creation failed')
   }
-  // if (getBulkGpsSetting(state) || !(await sendGpsFix(serverUrl, postData, dispatch))) {
-  //   GpsFixService.storeGPSFix(serverUrl, gpsFix)
-  // }
   GpsFixService.storeGPSFix(serverUrl, gpsFix)
   dispatch(updateUnsentGpsFixCount(GpsFixService.unsentGpsFixCount()))
   dispatch(updateTrackingStatistics(gpsFix))

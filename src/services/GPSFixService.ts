@@ -31,10 +31,8 @@ export const syncFixes = async (dispatch: DispatchType) => {
     urls[baseUrl].push(fixRequest[GPS_FIX_PROPERTY_NAME])
   })
 
-  Logger.debug('fixRequests', fixRequests)
   await Promise.all(keys(urls).map(async (url: string) => {
     const postData = CheckInService.gpsFixPostData(urls[url])
-    Logger.debug('postData', postData)
     try {
       let maneuverInfo
       try {
