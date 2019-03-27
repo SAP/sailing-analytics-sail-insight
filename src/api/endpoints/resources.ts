@@ -264,6 +264,7 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
         method: HttpMethods.POST,
         body: Buffer.from(base64ImageData, 'base64'),
         bodyType: 'image',
+        timeout: 60000,
       },
     ),
   }
