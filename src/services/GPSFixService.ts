@@ -46,14 +46,14 @@ export const syncFixes = async (dispatch: DispatchType) => {
         dispatch(handleManeuverChange(maneuverInfo))
         dispatch(updateUnsentGpsFixCount(unsentGpsFixCount()))
       }
-
-      if (stopWhenSynced) {
-        stopGPSFixUpdates()
-      }
     } catch (err) {
       Logger.debug(err)
     }
   }))
+
+  if (stopWhenSynced) {
+    stopGPSFixUpdates()
+  }
 }
 
 export const storeGPSFix = (serverUrl: string, gpsFix: PositionFix) =>
