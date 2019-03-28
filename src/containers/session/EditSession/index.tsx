@@ -56,8 +56,18 @@ class EditSession extends TextInputForm<Props> {
             label={I18n.t('text_placeholder_session_name')}
             name={sessionForm.FORM_KEY_NAME}
             component={FormTextInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TRACK_NAME)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
+            validate={[validateRequired]}
+            {...this.commonProps}
+          />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_team_name')}
+            name={sessionForm.FORM_KEY_TEAM_NAME}
+            component={FormTextInput}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TRACK_NAME)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -80,18 +90,8 @@ class EditSession extends TextInputForm<Props> {
             ]}
             component={FormBoatPicker}
             boats={this.props.boats}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            style={input.topMargin}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={sessionForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -100,8 +100,18 @@ class EditSession extends TextInputForm<Props> {
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_NATIONALITY)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
+            {...this.commonProps}
+          />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_placeholder_sail_number')}
+            name={sessionForm.FORM_KEY_SAIL_NUMBER}
+            component={FormTextInput}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_NATIONALITY)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
@@ -109,19 +119,8 @@ class EditSession extends TextInputForm<Props> {
               label={I18n.t('text_nationality')}
               name={sessionForm.FORM_KEY_NATIONALITY}
               component={FormNationalityPicker}
-              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
               inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
               {...this.commonProps}
-          />
-          <Field
-            style={input.topMargin}
-            label={I18n.t('text_team_name')}
-            name={sessionForm.FORM_KEY_TEAM_NAME}
-            component={FormTextInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_PRIVACY_SETTING)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
-            validate={[validateRequired]}
-            {...this.commonProps}
           />
           {/* <Field
             style={input.topMargin}
