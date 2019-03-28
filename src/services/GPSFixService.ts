@@ -65,7 +65,8 @@ export const startPeriodicalGPSFixUpdates = (bulkTransfer: boolean, dispatch: Di
   Logger.debug('[GPS-Fix] Transfer Manager started')
   stopWhenSynced = false
   const interval = bulkTransfer ? BULK_UPDATE_TIME_INTERVAL_IN_MILLIS : DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS
-  BackgroundTimer.runBackgroundTimer(syncFixes(dispatch), interval)
+  const callback = () => syncFixes(dispatch)
+  BackgroundTimer.runBackgroundTimer(callback, interval)
 }
 
 export const stopGPSFixUpdates = () => {
