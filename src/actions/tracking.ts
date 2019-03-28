@@ -24,83 +24,13 @@ import { syncFixes } from '../services/GPSFixService'
 import { removeTrackedRegatta } from './locationTrackingData'
 
 
-const setupAndStartTrack = (
-  data: CheckIn,
-  options: { shouldClean?: boolean, shouldCreateTrack?: boolean, bulkTransfer: boolean } = { bulkTransfer : false },
-) => async (dispatch: DispatchType) => {
-  try {
-    dispatch(updateLoadingCheckInFlag(true))
-    const { shouldClean, shouldCreateTrack, bulkTransfer } = options
-    if (shouldClean) { await dispatch(stopLocationUpdates()) }
-    let newTrack
-    if (shouldCreateTrack && data.trackPrefix) {
-      const result: AddRaceColumnResponseData[] = await dispatch(createNewTrack(data.leaderboardName, data.trackPrefix))
-      newTrack = head(result)
-      if (newTrack) {
-        await dispatch(startTrack(data.leaderboardName, newTrack.racename, newTrack.seriesname))
-      }
-    }
-    const trackName =  (newTrack && newTrack.racename) || data.currentTrackName
-    if (data.isSelfTracking && trackName && data.currentFleet) {
-      try {
-        await dispatch(setRaceStartTime(
-        data.leaderboardName,
-        trackName,
-        data.currentFleet,
-      ))
-      } catch (err) {
-        Logger.debug(err)
-      }
-    }
-    dispatch(startLocationUpdates(bulkTransfer, data.leaderboardName, data.eventId))
-  } catch (err) {
-    throw err
-  } finally {
-    dispatch(updateLoadingCheckInFlag(false))
-  }
-}
-
-const showRunningTrackingDialog = (successAction: () => void) => Alert.alert(
-  I18n.t('text_tracking_alert_already_running_title'),
-  I18n.t('text_tracking_alert_already_running_message'),
-  [
-    { text: I18n.t('caption_cancel'), style: 'cancel' },
-    { text: I18n.t('caption_ok'), onPress: successAction },
-  ],
-  { cancelable: true },
-)
-
-const startTrackingScreen = async (
-  action: any,
-  dispatch: DispatchType,
-  resolve?: () => void,
-  reject?: (err: any) => void,
-) => {
-  try {
-    await dispatch(action)
-    navigateToTracking()
-    if (resolve) {
-      resolve()
-    }
-  } catch (err) {
-    if (reject) {
-      reject(err)
-    }
-  }
-}
-
-const isTrackingRunning = () => async (dispatch: DispatchType, getState: GetStateType) => {
-  const trackingState = getLocationTrackingStatus(getState())
-  return trackingState === LocationService.LocationTrackingStatus.RUNNING || await LocationService.isEnabled()
-}
-
 export type StopTrackingAction = (data?: CheckIn) => any
 export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboard: data && data.regattaName })(
   async (dataApi, dispatch) => {
     if (!data) {
       return
     }
-    dispatch(stopLocationUpdates())
+    await dispatch(stopLocationUpdates())
     await syncFixes(dispatch)
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
       await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
@@ -123,28 +53,34 @@ export const startTracking: StartTrackingAction = data =>  async (
     Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
     return
   }
-  return new Promise(async (resolve, reject) => {
-    if (await dispatch(isTrackingRunning())) {
-      showRunningTrackingDialog(() => startTrackingScreen(
-        setupAndStartTrack(checkInData, {
-          shouldCreateTrack: checkInData.isSelfTracking,
-          shouldClean: true,
-          bulkTransfer: getBulkGpsSetting(getState()),
-        }),
-        dispatch,
-        resolve,
-        reject,
-      ))
-    } else {
-      startTrackingScreen(
-        setupAndStartTrack(checkInData, {
-          shouldCreateTrack: checkInData.isSelfTracking,
-          bulkTransfer: getBulkGpsSetting(getState()),
-        }),
-        dispatch,
-        resolve,
-        reject,
-      )
+
+  // TODO reset last tracking time and status
+  navigateToTracking()
+  // TODO clean realm DB
+  try {
+    dispatch(updateLoadingCheckInFlag(true))
+    const shouldCreateTrack = checkInData.isSelfTracking
+    const bulkTransfer = getBulkGpsSetting(getState())
+    let newTrack
+    if (shouldCreateTrack && checkInData.trackPrefix) {
+      const result: AddRaceColumnResponseData[] = await dispatch(createNewTrack(checkInData.leaderboardName, checkInData.trackPrefix))
+      newTrack = head(result)
+      if (newTrack) {
+        await dispatch(startTrack(checkInData.leaderboardName, newTrack.racename, newTrack.seriesname))
+      }
     }
-  })
+    const trackName =  (newTrack && newTrack.racename) || checkInData.currentTrackName
+    if (checkInData.isSelfTracking && trackName && checkInData.currentFleet) {
+      try {
+        await dispatch(setRaceStartTime(checkInData.leaderboardName, trackName, checkInData.currentFleet))
+      } catch (err) {
+        Logger.debug(err)
+      }
+    }
+    dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId))
+  } catch (err) {
+    throw err
+  } finally {
+    dispatch(updateLoadingCheckInFlag(false))
+  }
 }
