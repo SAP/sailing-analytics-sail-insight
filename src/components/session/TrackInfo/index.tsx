@@ -14,6 +14,7 @@ import styles from './styles'
 import LineSeparator from 'components/LineSeparator'
 import TrackInfoItem from 'components/session/TrackInfoItem'
 import TrackingProperty from 'components/TrackingProperty'
+import Text from 'components/Text'
 
 
 class TrackInfo extends React.Component<ViewProps & {
@@ -49,6 +50,18 @@ class TrackInfo extends React.Component<ViewProps & {
       stats = {},
     } = this.props
 
+    const statsAreValid = stats.timeTraveledInS && stats.timeTraveledInS > 0
+    if (!statsAreValid) {
+      return (
+        <View style={style}>
+          <LineSeparator style={styles.topSeparator}/>
+          <View style={[styles.line, styles.lineMargin]}>
+            <Text>{I18n.t('text_statistics_empty_state')}</Text>
+          </View>
+        </View>
+      )
+    }
+
     return (
       <View style={style}>
         <LineSeparator style={styles.topSeparator}/>
@@ -76,12 +89,14 @@ class TrackInfo extends React.Component<ViewProps & {
             // })),
             this.renderProperty({ value: isNumber(stats.numberOfManeuvers) ? Math.trunc(stats.numberOfManeuvers) : 0 }),
           )}
-          {this.renderItem(
-            I18n.t('text_tracking_wind'),
-            Images.info.wind,
-            // this.renderProperty({ value: degToCompass(trackInfo.wind.courseInDeg) }),
-            // this.renderProperty({ value: trackInfo.wind.speed, unit: I18n.t('text_tracking_unit_knots') }),
-          )}
+          { // TODO Wind data is not fetched from the API yet
+            //this.renderItem(
+              //I18n.t('text_tracking_wind'),
+              //Images.info.wind,
+              // this.renderProperty({ value: degToCompass(trackInfo.wind.courseInDeg) }),
+              // this.renderProperty({ value: trackInfo.wind.speed, unit: I18n.t('text_tracking_unit_knots') }),
+            //)
+          }
         </View>
         <LineSeparator style={styles.separatorMargin}/>
         <View style={[styles.line, styles.lineMargin]}>
