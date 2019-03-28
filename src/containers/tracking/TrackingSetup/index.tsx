@@ -144,6 +144,13 @@ class TrackingSetup extends TextInputForm<Props> {
             >
               {I18n.t('caption_share_session')}
             </TextButton>
+            <TextButton
+              style={[button.trackingAction, styles.betaButton]}
+              textStyle={styles.betaButtonText}
+              onPress={this.props.handleSubmit(this.showBetaAlert)}
+            >
+              {I18n.t('caption_beta_session')}
+            </TextButton>
             <LineSeparator/>
           </View>
         </View>
@@ -229,6 +236,10 @@ class TrackingSetup extends TextInputForm<Props> {
       this.setState({ isShareSheetLoading: false })
     }
     return false
+  }
+
+  protected showBetaAlert = () => {
+    Alert.alert(I18n.t('caption_beta_session'), I18n.t('text_beta_session'))
   }
 
   protected onStartSubmit = async (values: any) => {
