@@ -7,7 +7,7 @@ import { isPositionFix } from 'models/PositionFix'
 import { LocationTrackingState } from 'reducers/config'
 
 import {
-  removeTrackedRegatta,
+  removeTrackedRegatta, resetTrackingStatistics,
   updateLastWindCourse,
   updateLastWindSpeed,
   updateStartAutoCourseStatus,
@@ -104,6 +104,7 @@ const reducer = handleActions(
         lastLongitude: gpsFix.longitude,
       })
     },
+    [resetTrackingStatistics as any]: () =>  initialState,
     [removeUserData as any]: () => initialState,
   },
   initialState,

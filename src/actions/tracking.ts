@@ -23,7 +23,7 @@ import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack
 import { getBulkGpsSetting } from '../selectors/settings'
 import { syncFixes } from '../services/GPSFixService'
 import { deleteAllGPSFixRequests } from '../storage'
-import { removeTrackedRegatta } from './locationTrackingData'
+import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
 
 
 export type StopTrackingAction = (data?: CheckIn) => any
@@ -55,12 +55,14 @@ export const startTracking: StartTrackingAction = data =>  async (
     Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
     return
   }
+  dispatch(updateLoadingCheckInFlag(true))
+  dispatch(resetTrackingStatistics())
 
-  // TODO reset last tracking time and status
-  navigateToTracking()
   deleteAllGPSFixRequests()
+
+  navigateToTracking()
+
   try {
-    dispatch(updateLoadingCheckInFlag(true))
     const shouldCreateTrack = checkInData.isSelfTracking
     const bulkTransfer = getBulkGpsSetting(getState())
     let newTrack
