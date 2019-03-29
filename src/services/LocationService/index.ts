@@ -8,9 +8,9 @@ import { PositionFix } from 'models'
 
 
 const LOG_TAG = '[BG_LOCATION]'
-const HEARTBEAT_KEY = 'heartbeat'
+// const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
-const MOTION_CHANGE_KEY = 'motionchange'
+// const MOTION_CHANGE_KEY = 'motionchange'
 const LOCATION_KEY = 'location'
 
 const config: Config = {
@@ -47,18 +47,18 @@ const Log = (...args: any[]) => Logger.debug(LOG_TAG, ...args)
 
 
 export const registerEvents = () => {
-  BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
-    Log('Motion change:', status)
-  })
+  // BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
+  //   Log('Motion change:', status)
+  // })
 
   BackgroundGeolocation.on(LOCATION_KEY, async (location: any) => {
     // Log('Location:', location)
     await handleGeolocation(location)
   })
 
-  BackgroundGeolocation.on(HEARTBEAT_KEY, (params: any) => {
-    Log('Heartbeat', params)
-  })
+  // BackgroundGeolocation.on(HEARTBEAT_KEY, (params: any) => {
+  //   Log('Heartbeat', params)
+  // })
 }
 
 export const unregisterEvents = () => {
@@ -126,10 +126,10 @@ export const stop = () => new Promise<any>((resolve, reject) => {
   BackgroundGeolocation.stop(resolve, reject)
 })
 
-export const addHeartbeatListener = (listener: (status: any) => void) =>
-  BackgroundGeolocation.on(HEARTBEAT_KEY, listener)
-
-export const removeHeartbeatListener = (listener: (enabled: boolean) => void) =>
-  BackgroundGeolocation.un(HEARTBEAT_KEY, listener)
+// export const addHeartbeatListener = (listener: (status: any) => void) =>
+//   BackgroundGeolocation.on(HEARTBEAT_KEY, listener)
+//
+// export const removeHeartbeatListener = (listener: (enabled: boolean) => void) =>
+//   BackgroundGeolocation.un(HEARTBEAT_KEY, listener)
 
 export const changePace = (enabled: boolean) => BackgroundGeolocation.changePace(enabled)
