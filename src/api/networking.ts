@@ -79,7 +79,7 @@ export const request = async (
     body = null,
     bodyType = 'json',
     signer = tokenSigner,
-    timeout = 5000,
+    timeout = 10000,
   } = options
 
   const data = body && { body: getBody(bodyType, body) }
