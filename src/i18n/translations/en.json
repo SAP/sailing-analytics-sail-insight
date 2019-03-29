@@ -176,6 +176,8 @@
   "caption_delete" : "Delete",
   "caption_feedback_and_questions" : "Feedback and questions?",
   "caption_forgot_password": "Forgot password?",
+  "caption_beta_self_tracking": "Beta Feature",
+  "text_beta_self_tracking": "The start and finish lines are set by the backend automatically. We are currently working on a user friendly editor, so that you can adjust the lines. The statistics are calculated based on these lines and can only be shown if a valid start and end line was recognized by our system.",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",

@@ -5,7 +5,6 @@ import { Alert, Linking, SectionList, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 
-
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openTrackDetails } from 'actions/navigation'
 import {  startTracking, StartTrackingAction } from 'actions/tracking'
@@ -18,16 +17,16 @@ import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getRaces } from 'selectors/race'
 import * as CheckInService from 'services/CheckInService'
+import { getSession } from 'selectors/session'
 
-import { container } from 'styles/commons'
+import { container, button } from 'styles/commons'
 import styles from './styles'
 
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 import TrackInfo from 'components/session/TrackInfo'
 import TrackItem from 'components/session/TrackItem'
 import Text from 'components/Text'
-import { getSession } from 'selectors/session'
-
+import TextButton from 'components/TextButton'
 
 const TRACKS_DATA_KEY = 'tracks'
 
@@ -112,8 +111,24 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
           eventImageSize="large"
           onTrackingPress={this.onTrackingPress}
         />
+        { session.isSelfTracking &&
+          <TextButton
+            style={[button.trackingAction, styles.betaButton]}
+            textStyle={styles.betaButtonText}
+            onPress={this.showBetaAlert}
+          >
+            {I18n.t('caption_beta_session')}
+          </TextButton>
+        }
         <TrackInfo stats={getStatsFromTracks(tracks)}  style={styles.sidePadding}/>
       </View>
+    )
+  }
+
+  public showBetaAlert = () => {
+    Alert.alert(
+      I18n.t('caption_beta_self_tracking'),
+      I18n.t('text_beta_self_tracking')
     )
   }
 

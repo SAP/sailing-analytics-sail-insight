@@ -176,6 +176,8 @@
   "caption_delete" : "Löschen",
   "caption_feedback_and_questions" : "Feedback und Fragen?",
   "caption_forgot_password": "Passwort vergessen?",
+  "caption_beta_session": "Beta Feature",
+  "text_beta_session": "Das setzen von Start- und Ziellinie geschieht bisher automatisch im Backend. Wir arbeiten gerade an einem nutzerfreundlichen Editor dafür, so dass du diese Linien entsprechend anpassen kannst. Die Statistiken berechnen sich nur, wenn eine Start- und Ziellinie von unserem System auch richtig erkannt wurde.",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",
