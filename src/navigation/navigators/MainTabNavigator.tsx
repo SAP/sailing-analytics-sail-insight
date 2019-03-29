@@ -105,7 +105,8 @@ export default createBottomTabNavigator(
           activeTintColor: $primaryTextColor,
           inactiveTintColor: $secondaryTextColor,
           indicatorStyle: {
-            height: 0,
+            backgroundColor: 'white',
+            height: 3,
           },
           style: {
             backgroundColor: 'white',
