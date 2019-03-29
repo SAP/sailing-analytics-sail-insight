@@ -6,13 +6,15 @@ import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { navigateToTracking } from 'navigation'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
-import { getLocationTrackingStatus  } from 'selectors/location'
+//import { getLocationTrackingStatus  } from 'selectors/location'
+import { getRaces } from 'selectors/race'
 import * as LocationService from 'services/LocationService'
 
 import { withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
+import { getNowAsMillis } from 'helpers/date'
 
 import { updateLoadingCheckInFlag } from 'actions/checkIn'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
@@ -62,14 +64,29 @@ export const startTracking: StartTrackingAction = data =>  async (
     const shouldCreateTrack = checkInData.isSelfTracking
     const bulkTransfer = getBulkGpsSetting(getState())
     let newTrack
+
     if (shouldCreateTrack && checkInData.trackPrefix) {
       const result: AddRaceColumnResponseData[] = await dispatch(createNewTrack(checkInData.leaderboardName, checkInData.trackPrefix))
       newTrack = head(result)
       if (newTrack) {
         await dispatch(startTrack(checkInData.leaderboardName, newTrack.racename, newTrack.seriesname))
       }
+    } else {
+      await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret))
+      let races = getRaces(checkInData.leaderboardName)(getState())
+      let now = getNowAsMillis()
+      let activeRaces = races
+        .filter(race => race.trackingStartDate < now)
+        .filter(race => race.trackingEndDate > now || race.trackingEndDate === null)
+
+      if (activeRaces.length === 0) {
+        Alert.alert(
+          I18n.t('caption_race_not_started_yet'),
+          I18n.t('text_race_not_started_yet')
+        )
+      }
     }
-    const trackName =  (newTrack && newTrack.racename) || checkInData.currentTrackName
+    const trackName = (newTrack && newTrack.racename) || checkInData.currentTrackName
     if (checkInData.isSelfTracking && trackName && checkInData.currentFleet) {
       try {
         await dispatch(setRaceStartTime(checkInData.leaderboardName, trackName, checkInData.currentFleet))
