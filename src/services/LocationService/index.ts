@@ -45,16 +45,26 @@ const locationListeners: any[] = []
 
 const Log = (...args: any[]) => Logger.debug(LOG_TAG, ...args)
 
-BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
-  Log('Motion change:', status)
-})
 
-BackgroundGeolocation.on(LOCATION_KEY, async (location: any) => {
-  // Log('ON_LOCATION', location)
-  await handleGeolocation(location)
-})
+export const registerEvents = () => {
+  BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
+    Log('Motion change:', status)
+  })
 
-BackgroundGeolocation.on(HEARTBEAT_KEY, (params: any) => Log('Heartbeat', params))
+  BackgroundGeolocation.on(LOCATION_KEY, async (location: any) => {
+    // Log('Location:', location)
+    await handleGeolocation(location)
+  })
+
+  BackgroundGeolocation.on(HEARTBEAT_KEY, (params: any) => {
+    Log('Heartbeat', params)
+  })
+}
+
+export const unregisterEvents = () => {
+  BackgroundGeolocation.removeListeners()
+}
+
 
 const handleGeolocation = async (location: any = {}) => {
   const { coords, timestamp } = location
@@ -112,10 +122,9 @@ export const start = () => new Promise<any>((resolve, reject) => {
     )
 })
 
-export const stop = () => new Promise<any>((resolve, reject) => BackgroundGeolocation.stop(
-  resolve,
-  reject,
-))
+export const stop = () => new Promise<any>((resolve, reject) => {
+  BackgroundGeolocation.stop(resolve, reject)
+})
 
 export const addHeartbeatListener = (listener: (status: any) => void) =>
   BackgroundGeolocation.on(HEARTBEAT_KEY, listener)
