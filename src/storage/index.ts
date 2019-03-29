@@ -45,3 +45,13 @@ export const deleteGPSFixRequests = (fixes: any) => {
     Logger.error('Error on gpsfix deletion', e)
   }
 }
+
+export const deleteAllGPSFixRequests = () => {
+  try {
+    realm.write(() => {
+      realm.deleteAll()
+    })
+  } catch (e) {
+    Logger.error('Error on clear gpsfix storage', e)
+  }
+}

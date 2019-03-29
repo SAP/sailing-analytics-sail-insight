@@ -6,7 +6,6 @@ import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { navigateToTracking } from 'navigation'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
-//import { getLocationTrackingStatus  } from 'selectors/location'
 import { getRaces } from 'selectors/race'
 import * as LocationService from 'services/LocationService'
 
@@ -23,6 +22,7 @@ import { updateEventEndTime } from 'actions/sessions'
 import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
 import { getBulkGpsSetting } from '../selectors/settings'
 import { syncFixes } from '../services/GPSFixService'
+import { deleteAllGPSFixRequests } from '../storage'
 import { removeTrackedRegatta } from './locationTrackingData'
 
 
@@ -58,7 +58,7 @@ export const startTracking: StartTrackingAction = data =>  async (
 
   // TODO reset last tracking time and status
   navigateToTracking()
-  // TODO clean realm DB
+  deleteAllGPSFixRequests()
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const shouldCreateTrack = checkInData.isSelfTracking
