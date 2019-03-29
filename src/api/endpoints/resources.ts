@@ -178,7 +178,7 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
         method: HttpMethods.POST,
         body: gpsFixes,
         dataProcessor:  data => get(data, 'maneuverchanged'),
-        timeout: 10000,
+        timeout: 30000,
       },
     ),
     createEvent: body => dataRequest(
