@@ -7,13 +7,12 @@ import { CheckIn } from 'models'
 import { navigateToTracking } from 'navigation'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
-import * as LocationService from 'services/LocationService'
 
 import { withDataApi } from 'helpers/actions'
+import { getNowAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
-import { getNowAsMillis } from 'helpers/date'
 
 import { updateLoadingCheckInFlag } from 'actions/checkIn'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
@@ -75,16 +74,16 @@ export const startTracking: StartTrackingAction = data =>  async (
       }
     } else {
       await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret))
-      let races = getRaces(checkInData.leaderboardName)(getState())
-      let now = getNowAsMillis()
-      let activeRaces = races
+      const races = getRaces(checkInData.leaderboardName)(getState())
+      const now = getNowAsMillis()
+      const activeRaces = races
         .filter(race => race.trackingStartDate < now)
         .filter(race => race.trackingEndDate > now || race.trackingEndDate === null)
 
       if (activeRaces.length === 0) {
         Alert.alert(
           I18n.t('caption_race_not_started_yet'),
-          I18n.t('text_race_not_started_yet')
+          I18n.t('text_race_not_started_yet'),
         )
       }
     }
