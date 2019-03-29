@@ -147,7 +147,7 @@ class TrackingSetup extends TextInputForm<Props> {
             <TextButton
               style={[button.trackingAction, styles.betaButton]}
               textStyle={styles.betaButtonText}
-              onPress={this.props.handleSubmit(this.showBetaAlert)}
+              onPress={this.showBetaAlert}
             >
               {I18n.t('caption_beta_session')}
             </TextButton>

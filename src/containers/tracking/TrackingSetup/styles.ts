@@ -35,7 +35,7 @@ export default EStyleSheets.create({
   betaButton: {
     // styles are a bit hacky, but this button will be removed soon
     marginBottom: '$shareSpacing-5',
-    backgroundColor: '$importantHighlightColor',
+    backgroundColor: '$primaryButtonColor',
     alignSelf: 'flex-end',
     width: 60,
     height: 28,
