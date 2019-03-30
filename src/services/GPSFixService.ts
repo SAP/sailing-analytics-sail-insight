@@ -37,10 +37,10 @@ export const syncFixes = async (dispatch: DispatchType) => {
       try {
         maneuverInfo = await api(url).sendGpsFixes(postData)
         deleteGPSFixRequests(fixRequests)
-      } catch (err) {
-        Logger.error('Error while sendGpsFixes', err)
-      } finally {
         dispatch(handleManeuverChange(maneuverInfo))
+      } catch (err) {
+        Logger.debug('Error while sendGpsFixes', err)
+      } finally {
         dispatch(updateUnsentGpsFixCount(unsentGpsFixCount()))
       }
     } catch (err) {
