@@ -41,10 +41,14 @@ export const startLocationUpdates = (
 export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
   Logger.debug('Stopping Location updates...')
   if (LocationService.isEnabled()) {
-    await LocationService.changePace(false)
-    await LocationService.stop()
-    GpsFixService.stopGPSFixUpdatesWhenSynced()
-    Logger.debug('Location updates stopped.')
+    try {
+      await LocationService.changePace(false)
+      await LocationService.stop()
+      GpsFixService.stopGPSFixUpdatesWhenSynced()
+      Logger.debug('Location updates stopped.')
+    } catch (e) {
+      Logger.debug('Error during stopping location updates', e)
+    }
   } else {
     Logger.debug('stopLocationUpdates already stopped.')
   }
