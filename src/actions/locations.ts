@@ -44,7 +44,7 @@ export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
     try {
       await LocationService.changePace(false)
       await LocationService.stop()
-      GpsFixService.stopGPSFixUpdatesWhenSynced()
+      GpsFixService.stopGPSFixUpdates()
       Logger.debug('Location updates stopped.')
     } catch (e) {
       Logger.debug('Error during stopping location updates', e)
