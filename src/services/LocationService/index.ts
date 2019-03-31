@@ -5,6 +5,7 @@ import { getNowAsMillis, getTimestampAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'
+import I18n from '../../i18n'
 
 
 const LOG_TAG = '[BG_LOCATION]'
@@ -39,6 +40,7 @@ const config: Config = {
   locationUpdateInterval: 333,
   fastestLocationUpdateInterval: 333,
   activityRecognitionInterval: 0,
+  notificationText: I18n.t('text_notification_tracking'),
 }
 
 const locationListeners: any[] = []
