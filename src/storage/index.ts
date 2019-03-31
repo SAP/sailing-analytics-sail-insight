@@ -30,7 +30,7 @@ export const writeGPSFixRequest = (url: string, gpsFix: PositionFix) => {
       )
     })
   } catch (e) {
-    Logger.error('Error on gpsfix creation', e)
+    Logger.debug('Error on gpsfix creation', e)
   }
 }
 
@@ -42,7 +42,7 @@ export const deleteGPSFixRequests = (fixes: any) => {
       realm.delete(fixes)
     })
   } catch (e) {
-    Logger.error('Error on gpsfix deletion', e)
+    Logger.debug('Error on gpsfix deletion', e)
   }
 }
 
@@ -52,6 +52,6 @@ export const deleteAllGPSFixRequests = () => {
       realm.deleteAll()
     })
   } catch (e) {
-    Logger.error('Error on clear gpsfix storage', e)
+    Logger.debug('Error on clear gpsfix storage', e)
   }
 }

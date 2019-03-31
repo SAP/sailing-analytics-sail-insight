@@ -15,14 +15,23 @@ import * as CheckInService from './CheckInService'
 export const DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS = 1000
 export const BULK_UPDATE_TIME_INTERVAL_IN_MILLIS = 30000
 
-const transferFixes = async (dispatch: DispatchType, handleManeuverChangeData: boolean) => {
+let syncInProgress = false
+let syncIsShuttingDown = false
+
+const transferFixes = async (dispatch: DispatchType, backgroundTransfer: boolean) => {
   const allFixRequests = readGPSFixRequests({ sortedBy: BASE_URL_PROPERTY_NAME })
   const urls: { [url: string]: any[]; } = {}
 
   if (allFixRequests.length === 0) {
     return
   }
-  const fixRequests = chunk(allFixRequests, 20)[0]
+  const fixRequestsChunks = chunk(allFixRequests, 20)
+  if (fixRequestsChunks.length === 0) {
+    return
+  }
+
+  const fixRequests = fixRequestsChunks[0]
+
   fixRequests.forEach((fixRequest: any) => {
     const baseUrl = fixRequest[BASE_URL_PROPERTY_NAME]
     if (!urls[baseUrl]) {
@@ -34,8 +43,13 @@ const transferFixes = async (dispatch: DispatchType, handleManeuverChangeData: b
   await Promise.all(keys(urls).map(async (url: string) => {
     const postData = CheckInService.gpsFixPostData(urls[url])
     const maneuverInfo = await api(url).sendGpsFixes(postData)
-    deleteGPSFixRequests(fixRequests)
-    if (handleManeuverChangeData) {
+
+    if ((backgroundTransfer && !syncIsShuttingDown) || (!backgroundTransfer)) {
+      // Prevent event and delete overlapping, when stopping background timer
+      // This is generally handled by syncInProgress state
+      deleteGPSFixRequests(fixRequests)
+    }
+    if (backgroundTransfer && !syncIsShuttingDown) {
       dispatch(handleManeuverChange(maneuverInfo))
     }
     dispatch(updateUnsentGpsFixCount(unsentGpsFixCount()))
@@ -43,10 +57,17 @@ const transferFixes = async (dispatch: DispatchType, handleManeuverChangeData: b
 }
 
 export const backgroundSyncFixes = async (dispatch: DispatchType) => {
+  if (syncInProgress) {
+    Logger.debug('syncInProgress...............')
+    return
+  }
   try {
+    syncInProgress = true
     await transferFixes(dispatch, true)
   } catch (err) {
     Logger.debug('Error while sendGpsFixes', err)
+  } finally {
+    syncInProgress = false
   }
 }
 
@@ -66,6 +87,8 @@ export const unsentGpsFixCount = () => {
 
 export const startPeriodicalGPSFixUpdates = (bulkTransfer: boolean, dispatch: DispatchType) => {
   Logger.debug('[GPS-Fix] Transfer Manager started')
+  syncInProgress = false
+  syncIsShuttingDown = false
   const interval = bulkTransfer ? BULK_UPDATE_TIME_INTERVAL_IN_MILLIS : DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS
   const callback = () => backgroundSyncFixes(dispatch)
   BackgroundTimer.runBackgroundTimer(callback, interval)
@@ -73,5 +96,6 @@ export const startPeriodicalGPSFixUpdates = (bulkTransfer: boolean, dispatch: Di
 
 export const stopGPSFixUpdates = () => {
   Logger.debug('[GPS-Fix] Transfer Manager stopped')
+  syncIsShuttingDown = true
   BackgroundTimer.stopBackgroundTimer()
 }

@@ -26,6 +26,16 @@ export const startLocationUpdates = (
   leaderboardName: string,
   eventId?: string,
 ) => async (dispatch: DispatchType) => {
+
+  try {
+    if (await LocationService.isEnabled()) {
+      Logger.debug('LocationService seems to be active, stop it first before continue')
+      await LocationService.stop()
+    }
+  } catch (err) {
+    Logger.debug('Error during stop for start location service', err)
+  }
+
   try {
     await dispatch(updateTrackedRegatta({ leaderboardName, eventId }))
     await LocationService.start()
@@ -33,14 +43,14 @@ export const startLocationUpdates = (
     GpsFixService.startPeriodicalGPSFixUpdates(bulkTransfer, dispatch)
     dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
-    Logger.error('Error during startLocationUpdates', err)
+    Logger.debug('Error during startLocationUpdates', err)
     dispatch(removeTrackedRegatta())
   }
 }
 
 export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
   Logger.debug('Stopping Location updates...')
-  if (LocationService.isEnabled()) {
+  if (await LocationService.isEnabled()) {
     try {
       await LocationService.changePace(false)
       await LocationService.stop()

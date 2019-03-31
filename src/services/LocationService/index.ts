@@ -122,9 +122,7 @@ export const start = () => new Promise<any>((resolve, reject) => {
     )
 })
 
-export const stop = () => new Promise<any>((resolve, reject) => {
-  BackgroundGeolocation.stop(resolve, reject)
-})
+export const stop = () => new Promise<any>((resolve, reject) => BackgroundGeolocation.stop(resolve, reject))
 
 // export const addHeartbeatListener = (listener: (status: any) => void) =>
 //   BackgroundGeolocation.on(HEARTBEAT_KEY, listener)
