@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions'
 
-import { removeAuthInfo, updateCurrentUserInformation, updateToken } from 'actions/auth'
+import { removeAuthInfo, removeUserData, updateCurrentUserInformation, updateToken } from 'actions/auth'
 import { itemUpdateHandler } from 'helpers/reducers'
 
 import { AuthState } from './config'
@@ -16,6 +16,7 @@ const reducer = handleActions(
     [updateToken as any]: itemUpdateHandler('accessToken'),
     [updateCurrentUserInformation as any]: itemUpdateHandler('user'),
     [removeAuthInfo as any]: () => initialState,
+    [removeUserData as any]: () => initialState,
   },
   initialState,
 )

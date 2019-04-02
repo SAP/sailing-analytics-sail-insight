@@ -19,6 +19,8 @@ import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
 import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
+import { syncFixes } from '../services/GPSFixService'
+import { removeTrackedRegatta } from './locationTrackingData'
 
 
 const setupAndStartTrack = (
@@ -97,7 +99,8 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
     if (!data) {
       return
     }
-    await dispatch(stopLocationUpdates())
+    dispatch(stopLocationUpdates())
+    await syncFixes()
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
       await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
       await dispatch(stopTrack(data.leaderboardName, data.currentTrackName, data.currentFleet))
@@ -105,6 +108,7 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
       await dispatch(updateEventEndTime(data.leaderboardName, data.eventId))
     }
     dispatch(fetchRegattaAndRaces(data.regattaName))
+    dispatch(removeTrackedRegatta())
   },
 )
 

@@ -29,7 +29,7 @@ export const checkCurrentAuthSession = () => async (dispatch: DispatchType) => {
     await dispatch(fetchCurrentUser())
   } catch (err) {
     if (err.name === AuthException.NAME) {
-      dispatch(removeUserData())
+      dispatch(removeAuthInfo())
     }
   }
 }

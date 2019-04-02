@@ -32,13 +32,13 @@ export const syncFixes = async () => {
     try {
       await api(url).sendGpsFixes(postData)
       deleteGPSFixRequests(fixRequests)
+      if (stopWhenSynced) {
+        stopGPSFixUpdates()
+      }
     } catch (err) {
       Logger.debug(err)
     }
   }))
-  if (stopWhenSynced) {
-    stopGPSFixUpdates()
-  }
 }
 
 export const storeGPSFix = (serverUrl: string, gpsFix: PositionFix) =>

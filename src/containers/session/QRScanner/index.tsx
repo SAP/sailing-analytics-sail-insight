@@ -48,9 +48,15 @@ class QRScanner extends React.Component<{
       navigateToJoinRegatta(checkIn)
     } catch (err) {
       Logger.debug(err)
+      const title = getErrorTitle()
+      let message = getErrorDisplayMessage(err)
+      if (err && err.name === 'AuthException') {
+        message = I18n.t('error_regatta_access_forbidden')
+      }
+
       Alert.alert(
-        getErrorTitle(),
-        getErrorDisplayMessage(err),
+        title,
+        message,
         [
           { text: I18n.t('caption_ok'), onPress: this.reactivateScanner },
         ],

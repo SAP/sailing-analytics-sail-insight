@@ -3,6 +3,7 @@ import { handleActions } from 'redux-actions'
 
 import { removeCheckIn, updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
 import { itemUpdateHandler } from 'helpers/reducers'
+import { removeUserData } from '../actions/auth'
 import { CheckInState } from './config'
 
 
@@ -37,6 +38,7 @@ const reducer = handleActions(
         active: omit(state.active, [leaderboardName]),
       }
     },
+    [removeUserData as any]: () => initialState,
   },
   initialState,
 )
