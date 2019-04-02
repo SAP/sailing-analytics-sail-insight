@@ -92,7 +92,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   }
 
   public renderItem = ({ item }: any) => {
-    return <TrackItem onPress={this.onTrackPress(item)} track={item}/>
+    return <TrackItem onPress={this.onTrackPress(item)} track={item} showFullTrackName={false} />
   }
 
   public renderSessionDetails = () => {

@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 import React from 'react'
-import { Alert, View } from 'react-native'
+import { Alert, BackHandler, View } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
@@ -48,11 +48,13 @@ class Tracking extends React.Component<{
   public componentDidMount() {
     timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 1000)
     KeepAwake.activate()
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton)
   }
 
   public componentWillUnmount() {
     timer.clearInterval(this)
     KeepAwake.deactivate()
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
   }
 
   public render() {
@@ -134,6 +136,10 @@ class Tracking extends React.Component<{
         />
       </View>
     )
+  }
+
+  protected handleBackButton = () => {
+    return true
   }
 
   protected handleTimerEvent = () => {

@@ -205,3 +205,13 @@ export interface CompetitorManeuverItem {
   competitor: string
   maneuvers: Maneuver[]
 }
+
+export interface BoatClassesdBody {
+  name: string
+  typicallyStartsUpwind: boolean,
+  hullLengthInMeters: number,
+  hullBeamInMeters: number,
+  displayName?: string,
+  iconUrl?: string,
+  aliasNames: string[],
+}

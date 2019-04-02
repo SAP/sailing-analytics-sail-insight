@@ -42,6 +42,7 @@ const buildSession = (
     userInfo,
     result.leaderboard && (result.leaderboard.displayName || result.leaderboard.displayName),
   )
+  // result.regattaStrippedDisplayName = '',
   result.boat = boatEntity && checkIn.boatId ? mapResToBoat(boatEntity[checkIn.boatId]) : undefined
   result.mark = markEntity && checkIn.markId ? mapResToMark(markEntity[checkIn.markId]) : undefined
   return result
@@ -81,6 +82,8 @@ export const getSessionList = createSelector(
         markEntity,
         userInfo,
       )),
+      ['event.startDate'],
+      ['desc'],
     )
   },
 )

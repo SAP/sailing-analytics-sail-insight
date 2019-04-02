@@ -39,6 +39,9 @@ export const register: RegisterActionType = (username, email, password, name) =>
 export const login = (email: string, password: string) =>
   handleAccessToken(authApi.accessToken(email, password))
 
+export const requestPasswordReset = (username: string, email: string) =>
+   authApi.requestPasswordReset(username, email)
+
 export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
   dispatch(updateCurrentUserInformation(await authApi.user()))
 
