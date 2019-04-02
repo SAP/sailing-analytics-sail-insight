@@ -99,10 +99,10 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
     }
     await dispatch(stopLocationUpdates())
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
+      await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
       await dispatch(stopTrack(data.leaderboardName, data.currentTrackName, data.currentFleet))
       await dispatch(setRaceEndTime(data.leaderboardName, data.currentTrackName, data.currentFleet))
       await dispatch(updateEventEndTime(data.leaderboardName, data.eventId))
-      await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
     }
     dispatch(fetchRegattaAndRaces(data.regattaName))
   },

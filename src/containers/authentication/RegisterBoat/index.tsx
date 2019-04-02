@@ -38,9 +38,7 @@ class RegisterBoat extends TextInputForm<Props> {
   public state = { error: null, isLoading: false }
 
   private commonProps = {
-    validate: [validateRequired],
     keyboardType: 'default' as KeyboardType,
-    component: FormTextInput,
   }
 
   public render() {
@@ -57,9 +55,11 @@ class RegisterBoat extends TextInputForm<Props> {
           <Field
             label={I18n.t('text_placeholder_boat_name')}
             name={FORM_KEY_NAME}
+            component={FormTextInput}
             returnKeyType="next"
             onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_CLASS)}
             inputRef={this.handleInputRef(FORM_KEY_NAME)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
@@ -77,10 +77,12 @@ class RegisterBoat extends TextInputForm<Props> {
             style={styles.inputMargin}
             label={I18n.t('text_placeholder_sail_number')}
             name={FORM_KEY_SAIL_NUMBER}
+            component={FormTextInput}
             returnKeyType="go"
             onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
             hint={I18n.t('text_registration_sail_number_hint')}
             inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           {error && <Text style={registration.errorText()}>{error}</Text>}

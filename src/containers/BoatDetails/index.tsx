@@ -45,7 +45,6 @@ class BoatDetails extends TextInputForm<Props> {
   }
 
   private commonProps = {
-    validate: [validateRequired],
     keyboardType: 'default' as KeyboardType,
     returnKeyType: 'next' as ReturnKeyType,
     autoCorrect: false,
@@ -86,6 +85,7 @@ class BoatDetails extends TextInputForm<Props> {
             component={FormTextInput}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_SAIL_NUMBER)}
             onSubmitEditing={this.handleOnSubmitInput(boatForm.FORM_KEY_BOAT_CLASS)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
@@ -104,7 +104,6 @@ class BoatDetails extends TextInputForm<Props> {
             component={FormTextInput}
             inputRef={this.handleInputRef(boatForm.FORM_KEY_SAIL_COLOR)}
             {...this.commonProps}
-            validate={undefined}
           />
           <TextButton
             style={registration.nextButton()}

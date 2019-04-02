@@ -32,7 +32,6 @@ class EditSession extends TextInputForm<Props> {
   private commonProps = {
     keyboardType: 'default' as KeyboardType,
     returnKeyType: 'next' as ReturnKeyType,
-    validate: [validateRequired],
   }
 
   public render() {
@@ -51,6 +50,7 @@ class EditSession extends TextInputForm<Props> {
             component={FormTextInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TRACK_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
@@ -74,6 +74,7 @@ class EditSession extends TextInputForm<Props> {
             boats={this.props.boats}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
@@ -83,6 +84,7 @@ class EditSession extends TextInputForm<Props> {
             component={FormTextInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
@@ -101,6 +103,7 @@ class EditSession extends TextInputForm<Props> {
             component={FormTextInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_PRIVACY_SETTING)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           {/* <Field
