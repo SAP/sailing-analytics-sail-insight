@@ -109,14 +109,20 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                 </IconText>
                 <TrackingContext session={session} withoutBoat={true} />
               </View>
-              <IconText
-                style={styles.textMargins}
-                source={Images.info.location}
-                iconTintColor={$secondaryTextColor}
-                alignment="horizontal"
-              >
-                {session.event && session.event.venue && session.event.venue.name}
-              </IconText>
+              {
+                session.event &&
+                session.event.venue &&
+                session.event.venue.name &&
+                session.event.venue.name !== 'default' &&
+                <IconText
+                  style={styles.textMargins}
+                  source={Images.info.location}
+                  iconTintColor={$secondaryTextColor}
+                  alignment="horizontal"
+                >
+                  {session.event && session.event.venue && session.event.venue.name}
+                </IconText>
+              }
             </View>
             <ImageButton
               source={Images.actions.recordColored}
