@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo/react-native-action-sheet": "1.1.2",
     "@types/react-native-loading-spinner-overlay": "^0.5.1",
+    "buffer": "^5.2.1",
     "country-data": "^0.0.31",
     "lodash": "4.17.11",
     "moment": "2.22.2",

@@ -47,7 +47,7 @@ class ConnectivityIndicator extends React.Component<ViewProps & {
     } = this.props
     const { isConnected } = this.state
 
-    const isBuffering = unsentPositionFixCount > 0
+    const isBuffering = unsentPositionFixCount > 5
     const showStatus = isBuffering || !isConnected
 
     return !showStatus ? <View style={style}/> : (

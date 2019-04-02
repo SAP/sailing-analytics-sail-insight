@@ -3,11 +3,13 @@ import { includes, intersection, isEmpty, isString } from 'lodash'
 import { dateTimeText } from 'helpers/date'
 import I18n from 'i18n'
 import { BoatTemplate, TrackingSession, User } from 'models'
+import { RootState } from '../../reducers/config'
+import { getDeviceCountryIOC } from '../CheckInService'
 
 
 const getUserSessionPrefix = (username: string) => `<${username}>`
 
-export const generateNewSession = (boat?: BoatTemplate) => {
+export const generateNewSession = (boat?: BoatTemplate, state: RootState = {}) => {
   // TODO: implement prefill from current boat
   return {
     name: generateNewSessionName(),
@@ -18,6 +20,8 @@ export const generateNewSession = (boat?: BoatTemplate) => {
     boatName: (boat && boat.name) || I18n.t('text_default_value_boat_name'),
     sailNumber: (boat && boat.sailNumber) || I18n.t('text_default_value_sail_number'),
     boatId: (boat && boat.id),
+    nationality: getDeviceCountryIOC(),
+    teamImage: state.auth.user.imageData,
   } as TrackingSession
 }
 

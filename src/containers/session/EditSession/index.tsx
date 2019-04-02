@@ -20,7 +20,10 @@ import { getUserBoats } from 'selectors/user'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormImagePicker from '../../../components/form/FormImagePicker'
+import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 
 
 interface Props {
@@ -37,6 +40,11 @@ class EditSession extends TextInputForm<Props> {
   public render() {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
+        <Field
+          name={sessionForm.FORM_KEY_TEAM_IMAGE}
+          component={FormImagePicker}
+          placeholder={Images.header.sailors}
+        />
         <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_edit_session_claim_01')}</Text>
@@ -92,9 +100,18 @@ class EditSession extends TextInputForm<Props> {
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_NATIONALITY)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
             {...this.commonProps}
+          />
+          <Field
+              style={input.topMargin}
+              label={I18n.t('text_nationality')}
+              name={sessionForm.FORM_KEY_NATIONALITY}
+              component={FormNationalityPicker}
+              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
+              inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
+              {...this.commonProps}
           />
           <Field
             style={input.topMargin}

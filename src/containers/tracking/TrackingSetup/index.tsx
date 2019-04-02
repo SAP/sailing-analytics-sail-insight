@@ -113,6 +113,12 @@ class TrackingSetup extends TextInputForm<Props> {
               {...this.commonProps}
             />
             <Field
+                label={I18n.t('text_nationality')}
+                name={sessionForm.FORM_KEY_NATIONALITY}
+                component={this.renderProperty}
+                {...this.commonProps}
+            />
+            <Field
               label={I18n.t('text_team_name')}
               name={sessionForm.FORM_KEY_TEAM_NAME}
               component={this.renderProperty}
@@ -241,7 +247,7 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     initialValues: sessionParam ?
       sessionForm.formValuesFromTrackingSession(sessionParam) :
-      generateNewSession(lastUsedBoat),
+      generateNewSession(lastUsedBoat, state),
   }
 }
 

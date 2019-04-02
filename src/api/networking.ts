@@ -42,19 +42,32 @@ const getBody = (type: BodyType, body: any) => {
   switch (type) {
     case 'x-www-form-urlencoded':
       return querystring.stringify(body)
+    case 'image':
+      return body
     default:
       return JSON.stringify(body)
   }
 }
 
 const getHeaders = async (url: string, method: string, body: any, bodyType: BodyType, signer?: Signer) => {
+  let contentType = 'application/json'
+  if (bodyType === 'x-www-form-urlencoded') {
+    contentType = 'application/x-www-form-urlencoded;charset=UTF-8'
+  } else if (bodyType === 'image') {
+    contentType = 'image/jpeg'
+  }
   const headers = {
     ...DEFAULT_HEADERS,
-    'Content-Type': bodyType === 'x-www-form-urlencoded' ?
-      'application/x-www-form-urlencoded;charset=UTF-8' :
-      'application/json',
+    'Content-Type': contentType,
   }
   return signer ? await signer({ body, url, method, headers }) : headers
+}
+
+const timeoutPromise = (promise: Promise<Response>, timeout: number, error: string) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => { reject(error) }, timeout)
+    promise.then(resolve, reject)
+  })
 }
 
 export const request = async (
@@ -78,10 +91,7 @@ export const request = async (
   }
   let response
   try {
-    response = await fetch(
-      url,
-      fetchOptions,
-    )
+    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
   } catch (err) {
     throw err
   } finally {

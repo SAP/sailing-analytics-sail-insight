@@ -215,3 +215,13 @@ export interface BoatClassesdBody {
   iconUrl?: string,
   aliasNames: string[],
 }
+
+export interface CountryCodeBody {
+  twoLetterIsoCode?: string
+  threeLetterIocCode: string,
+  name: string,
+  unIsoNumeric?: string,
+  unVehicle?: string,
+  ianaInternet?: string,
+  threeLetterIsoCode: string,
+}

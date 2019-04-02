@@ -1,5 +1,3 @@
-import { get } from 'lodash'
-
 import { getDataApiGenerator, getDataApiV2Generator, getRaceApiGenerator, HttpMethods, UrlOptions } from 'api/config'
 import {
   AddRaceColumnResponseData,
@@ -9,6 +7,7 @@ import {
   CompetitorManeuverItem,
   CompetitorResponseData,
   CompetitorWithBoatBody,
+  CountryCodeBody,
   CreateEventBody,
   CreateEventResponseData,
   ManeuverChangeItem,
@@ -30,7 +29,8 @@ import {
   raceSchema,
   regattaSchema,
 } from 'api/schemas'
-
+import { Buffer } from 'buffer'
+import { get } from 'lodash'
 
 const apiEndpoints = (serverUrl: string) => {
   const getUrlV1 = getDataApiGenerator(serverUrl)
@@ -64,6 +64,8 @@ const apiEndpoints = (serverUrl: string) => {
     raceLog: getRaceUrl('/racelog'),
     preferences: getUrlV1('/preferences/{0}'),
     boatClasses: getUrlV1('/boatclasses'),
+    countryCodes: getUrlV1('/countrycodes'),
+    teamImage: getUrlV1('/competitors/{0}/team/image'),
   }
 }
 
@@ -127,8 +129,9 @@ export interface DataApi {
     filter?: {competitorId?: string, fromTime?: number},
   ) => Promise<CompetitorManeuverItem[]>
   requestBoatClasses: () => Promise<BoatClassesdBody[]>
+  requestCountryCodes: () => Promise<CountryCodeBody[]>
+  uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
 }
-
 
 const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
   const endpoints = apiEndpoints(serverUrl)
@@ -254,6 +257,15 @@ const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
       { method: HttpMethods.POST },
     ),
     requestBoatClasses: () => listRequest(endpoints.boatClasses()),
+    requestCountryCodes: () => listRequest(endpoints.countryCodes()),
+    uploadTeamImage: (competitorId, base64ImageData, mimeType) => dataRequest(
+      endpoints.teamImage({ pathParams: [competitorId] }),
+      {
+        method: HttpMethods.POST,
+        body: Buffer.from(base64ImageData, 'base64'),
+        bodyType: 'image',
+      },
+    ),
   }
 }
 
