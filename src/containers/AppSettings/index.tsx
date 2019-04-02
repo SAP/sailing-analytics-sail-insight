@@ -8,7 +8,7 @@ import { getAppVersionText, openEmailToContact, openTerms } from 'helpers/user'
 import I18n from 'i18n'
 import { getBulkGpsSetting } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
-import { UPDATE_TIME_INTERVAL_IN_MILLIS } from 'services/GPSFixService'
+import { BULK_UPDATE_TIME_INTERVAL_IN_MILLIS } from 'services/GPSFixService'
 
 import EditItemSwitch from 'components/EditItemSwitch'
 import LineSeparator from 'components/LineSeparator'
@@ -41,7 +41,7 @@ class AppSettings extends React.Component<ViewProps & {
                 onSwitchValueChange={this.props.updateGpsBulkSetting}
             />
             <Text style={styles.item}>
-              {I18n.t('text_setting_gps_bulk', { timeInSeconds: UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
+              {I18n.t('text_setting_gps_bulk', { timeInSeconds: BULK_UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
             </Text>
           </View>
         </View>

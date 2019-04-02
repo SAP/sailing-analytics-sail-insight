@@ -89,6 +89,12 @@ class TrackingSetup extends TextInputForm<Props> {
               {...this.commonProps}
             />
             <Field
+              label={I18n.t('text_team_name')}
+              name={sessionForm.FORM_KEY_TEAM_NAME}
+              component={this.renderProperty}
+              {...this.commonProps}
+            />
+            <Field
               label={I18n.t('text_track_name')}
               name={sessionForm.FORM_KEY_TRACK_NAME}
               component={this.renderProperty}
@@ -101,14 +107,14 @@ class TrackingSetup extends TextInputForm<Props> {
               {...this.commonProps}
             />
             <Field
-              label={I18n.t('text_number')}
-              name={sessionForm.FORM_KEY_SAIL_NUMBER}
+              label={I18n.t('text_class')}
+              name={sessionForm.FORM_KEY_BOAT_CLASS}
               component={this.renderProperty}
               {...this.commonProps}
             />
             <Field
-              label={I18n.t('text_class')}
-              name={sessionForm.FORM_KEY_BOAT_CLASS}
+              label={I18n.t('text_number')}
+              name={sessionForm.FORM_KEY_SAIL_NUMBER}
               component={this.renderProperty}
               {...this.commonProps}
             />
@@ -117,12 +123,6 @@ class TrackingSetup extends TextInputForm<Props> {
                 name={sessionForm.FORM_KEY_NATIONALITY}
                 component={this.renderProperty}
                 {...this.commonProps}
-            />
-            <Field
-              label={I18n.t('text_team_name')}
-              name={sessionForm.FORM_KEY_TEAM_NAME}
-              component={this.renderProperty}
-              {...this.commonProps}
             />
             {/* <Field
               label={I18n.t('text_privacy_setting')}
@@ -143,6 +143,13 @@ class TrackingSetup extends TextInputForm<Props> {
               disabledStyle={styles.disabledShareButton}
             >
               {I18n.t('caption_share_session')}
+            </TextButton>
+            <TextButton
+              style={[button.trackingAction, styles.betaButton]}
+              textStyle={styles.betaButtonText}
+              onPress={this.showBetaAlert}
+            >
+              {I18n.t('caption_beta_session')}
             </TextButton>
             <LineSeparator/>
           </View>
@@ -229,6 +236,10 @@ class TrackingSetup extends TextInputForm<Props> {
       this.setState({ isShareSheetLoading: false })
     }
     return false
+  }
+
+  protected showBetaAlert = () => {
+    Alert.alert(I18n.t('caption_beta_session'), I18n.t('text_beta_session'))
   }
 
   protected onStartSubmit = async (values: any) => {

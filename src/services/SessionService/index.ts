@@ -11,10 +11,11 @@ const getUserSessionPrefix = (username: string) => `<${username}>`
 
 export const generateNewSession = (boat?: BoatTemplate, state: RootState = {}) => {
   // TODO: implement prefill from current boat
+  let userName = state.auth.user ? state.auth.user.fullName : null
   return {
     name: generateNewSessionName(),
     trackName: generateNewTrackName(),
-    teamName: I18n.t('text_default_value_team_name'),
+    teamName: userName || I18n.t('text_default_value_team_name'),
     privacySetting: 'public',
     boatClass: (boat && boat.boatClass),
     boatName: (boat && boat.name) || I18n.t('text_default_value_boat_name'),

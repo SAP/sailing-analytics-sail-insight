@@ -32,6 +32,23 @@ export default EStyleSheets.create({
     marginTop: '$shareSpacing',
     marginBottom: '$shareSpacing',
   },
+  betaButton: {
+    // styles are a bit hacky, but this button will be removed soon
+    marginBottom: '$shareSpacing-5',
+    backgroundColor: '$primaryButtonColor',
+    alignSelf: 'flex-end',
+    width: 60,
+    height: 28,
+    borderRadius: '$baseBorderRadius',
+    marginRight: '$shareSpacing',
+    marginTop: -45
+  },
+  betaButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: '$titleFontSize-2',
+    letterSpacing: -0.5,
+  },
   disabledShareButton: {
     color: '$primaryInactiveColor',
     backgroundColor: 'transparent',

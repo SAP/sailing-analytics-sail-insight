@@ -15,6 +15,9 @@ import { CheckIn } from 'models'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
+import { getCompetitor } from 'selectors/competitor'
+import { getBoat } from 'selectors/boat'
+import { getMark } from 'selectors/mark'
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
 import { registration } from 'styles/components'
 
@@ -24,17 +27,22 @@ import Image from 'components/Image'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
+import TrackingContext from 'components/session/TrackingContext'
 
 
 class JoinRegatta extends React.Component<{
   checkInData: CheckIn,
   leaderboard?: any,
   event?: any,
+  competitor?: any,
+  boat?: any,
+  mark?: any,
   checkIn: (c: CheckIn) => any,
 } > {
 
   public state = {
     isLoading: false,
+    trackingContext: '',
     buttonText: I18n.t('caption_join_race'),
   }
 
@@ -49,20 +57,36 @@ class JoinRegatta extends React.Component<{
     }
   }
 
+  public getTrackingContext() {
+    const { checkInData } = this.props
+
+    if (checkInData.competitorId) {
+      this.state.trackingContext = 'COMPETITOR'
+      this.state.buttonText = I18n.t('caption_join_race_as_competitor')
+    } else if (checkInData.boatId) {
+      this.state.trackingContext = 'BOAT'
+      this.state.buttonText = I18n.t('caption_join_race_as_boat')
+    } else if (checkInData.markId) {
+      this.state.trackingContext = 'MARK'
+      this.state.buttonText = I18n.t('caption_join_race_as_mark')
+    }
+  }
+
   public render() {
-    const { event = {}, leaderboard = {}, checkInData } = this.props
+    const { 
+      event = {},
+      leaderboard = {},
+      competitor = {},
+      boat = {},
+      mark = {}
+    } = this.props
     const eventImageUrl = getEventPreviewImageUrl(event)
     const logoImageUrl = getEventLogoImageUrl(event)
     let title = leaderboard.displayName || leaderboard.name
     title = event.name && event.name !== title ? `${title}\n(${event.name})` : title
 
-    if (checkInData.competitorId) {
-      this.state.buttonText = I18n.t('caption_join_race_as_competitor')
-    } else if (checkInData.boatId) {
-      this.state.buttonText = I18n.t('caption_join_race_as_boat')
-    } else if (checkInData.markId) {
-      this.state.buttonText = I18n.t('caption_join_race_as_mark')
-    }
+    this.getTrackingContext()
+
     return (
       <ScrollContentView>
         <View style={container.stretchContent}>
@@ -83,6 +107,12 @@ class JoinRegatta extends React.Component<{
             >
               {event.venue && event.venue.name}
             </IconText>
+            <TrackingContext session={{
+              trackingContext: this.state.trackingContext,
+              competitor,
+              boat,
+              mark
+            }} />
           </View>
         </View>
         <View style={registration.bottomContainer()}>
@@ -114,6 +144,9 @@ const mapStateToProps = (state: any, props: any) => {
     checkInData,
     event: getEvent(checkInData.eventId)(state),
     leaderboard: getLeaderboard(checkInData.leaderboardName)(state),
+    competitor: getCompetitor(checkInData.competitorId)(state),
+    boat: getBoat(checkInData.boatId)(state),
+    mark: getMark(checkInData.markId)(state),
   }
 }
 

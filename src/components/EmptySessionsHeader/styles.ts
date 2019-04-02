@@ -8,4 +8,9 @@ export default EStyleSheet.create({
   separator: {
     marginTop: 9,
   },
+  loginButton: {
+    alignSelf: 'center',
+    marginTop: 32,
+    marginBottom: 16,
+  },
 })

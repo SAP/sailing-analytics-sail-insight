@@ -22,7 +22,6 @@ const INDICATOR_HEIGHT = 3
 export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTabNavigator(
   screenConfig,
   {
-    ...(navigatorConfig || {}),
     backBehavior: 'none',
     navigationOptions: ({ navigation }) => ({
       tabBarLabel: ({ tintColor }) => (
@@ -55,5 +54,6 @@ export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTa
         height: INDICATOR_HEIGHT,
       },
     },
+    ...(navigatorConfig || {}),
   },
 )

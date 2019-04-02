@@ -12,6 +12,7 @@ import * as LocationService from 'services/LocationService'
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
+import * as GpsFixService from './services/GPSFixService'
 
 
 interface Props {
@@ -29,6 +30,7 @@ class AppRoot extends Component<Props> {
     DeepLinking.addListener(this.handleDeeplink)
     LocationService.addStatusListener(this.handleLocationTrackingStatus)
     LocationService.addLocationListener(this.handleGeolocation)
+    LocationService.registerEvents()
     this.props.initLocationUpdates()
   }
 
@@ -37,6 +39,8 @@ class AppRoot extends Component<Props> {
     this.finalizeDeepLinks()
     LocationService.removeStatusListener(this.handleLocationTrackingStatus)
     LocationService.removeLocationListener(this.handleGeolocation)
+    LocationService.unregisterEvents()
+    GpsFixService.stopGPSFixUpdates()
   }
 
   public render() {

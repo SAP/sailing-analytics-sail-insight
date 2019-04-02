@@ -16,6 +16,7 @@ import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
 import Text from 'components/Text'
+import TrackingContext from 'components/session/TrackingContext'
 
 import { $secondaryTextColor } from 'styles/colors'
 import { button, container, image, text } from 'styles/commons'
@@ -43,39 +44,6 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
     } finally {
       this.setState({ isTrackingLoading: false })
     }
-  }
-
-  public renderTrackingContext = () => {
-    const { session } = this.props
-    let infoImage
-    let infoText
-    switch (session.trackingContext) {
-      // case 'BOAT':
-      //   infoImage = Images.info.boat
-      //   infoText = session.boat && session.boat.name
-      //   break
-      case 'COMPETITOR':
-        infoImage = Images.info.competitor
-        infoText = session.competitor && session.competitor.name
-        break
-      case 'MARK':
-        infoImage = Images.info.mark
-        infoText = session.mark && session.mark.name
-        break
-      default:
-        return
-    }
-    return (
-      <IconText
-        style={styles.infoItem}
-        source={infoImage}
-        iconTintColor={$secondaryTextColor}
-        alignment="horizontal"
-        textStyle={{ flex: 1 }}
-      >
-        {infoText}
-      </IconText>
-    )
   }
 
   public render() {
@@ -139,7 +107,7 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                 >
                   {boatInfoText}
                 </IconText>
-                {this.renderTrackingContext()}
+                <TrackingContext session={session} withoutBoat={true} />
               </View>
               <IconText
                 style={styles.textMargins}

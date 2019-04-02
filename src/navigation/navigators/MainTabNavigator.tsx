@@ -97,11 +97,24 @@ export default createBottomTabNavigator(
     [Screens.Sessions]: TopTabNavigator(
       {
         [Screens.UserSessions]: Sessions,
-        [Screens.Tracks]: Tracks,
+        //[Screens.Tracks]: Tracks,
       },
-      { initialRouteName: Screens.UserSessions },
+      {
+        initialRouteName: Screens.UserSessions,
+        tabBarOptions: {
+          activeTintColor: $primaryTextColor,
+          inactiveTintColor: $secondaryTextColor,
+          indicatorStyle: {
+            backgroundColor: 'white',
+            height: 3,
+          },
+          style: {
+            backgroundColor: 'white',
+          },
+        }
+      },
     ),
-    [Screens.TrackingSetupAction]: TrackingSetup,
+    //[Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.CheckIn]: CheckIn,
     [Screens.Account]: AuthNavigatorWrapper(getUserAccountNavigator),
   },

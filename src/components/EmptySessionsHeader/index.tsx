@@ -11,6 +11,7 @@ import { isSessionListEmpty } from 'selectors/session'
 import styles from './styles'
 
 import HintCard from 'components/HintCard'
+import LoginButton from 'components/LoginButton'
 import { isLoggedIn } from 'selectors/auth'
 
 
@@ -67,7 +68,12 @@ class EmptySessionsHeader extends React.Component<{
             actionText={I18n.t('caption_create_free_account')}
             onCancelPress={this.onCancelAccountPress}
             onPress={this.onAccountPress}
-          />
+          >
+            <LoginButton
+              style={styles.loginButton}
+              isModal={true}
+            />
+          </HintCard>
         }
       </View>
     ) :
