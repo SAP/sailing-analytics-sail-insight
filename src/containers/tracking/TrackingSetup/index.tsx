@@ -259,6 +259,7 @@ export default connect(
   form: sessionForm.SESSION_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
-  enableReinitialize: true,
+  enableReinitialize: false,
+  keepDirtyOnReinitialize: true,
   validate: sessionForm.validate,
 })(TrackingSetup))

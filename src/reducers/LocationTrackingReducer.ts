@@ -80,15 +80,24 @@ const reducer = handleActions(
       const distance = !lastLatitude || !lastLongitude ?
         state.distance :
         state.distance + distanceInM(lastLatitude, lastLongitude, gpsFix.latitude, gpsFix.longitude)
-      const optionals = {
-        ...(gpsFix.accuracy && { locationAccuracy: gpsFix.accuracy }),
-        ...(gpsFix.speedInKnots && gpsFix.speedInKnots > -1 && { speedInKnots: gpsFix.speedInKnots }),
-        ...(gpsFix.bearingInDeg && gpsFix.bearingInDeg > -1 && { headingInDeg: gpsFix.bearingInDeg }),
-      }
+
+      const locationAccuracy = typeof gpsFix.accuracy === 'number' ?
+          gpsFix.accuracy :
+          null
+
+      const speedInKnots = typeof gpsFix.speedInKnots === 'number' && gpsFix.speedInKnots > -1 ?
+          gpsFix.speedInKnots :
+          null
+
+      const headingInDeg = typeof gpsFix.bearingInDeg === 'number' && gpsFix.bearingInDeg > -1 ?
+          gpsFix.bearingInDeg :
+          null
 
       return ({
         ...state,
-        ...optionals,
+        locationAccuracy,
+        speedInKnots,
+        headingInDeg,
         distance,
         lastLatitude: gpsFix.latitude,
         lastLongitude: gpsFix.longitude,

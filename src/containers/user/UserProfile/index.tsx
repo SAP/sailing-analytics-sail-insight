@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
-import { removeAuthInfo, updateUser } from 'actions/auth'
+import { removeUserData, updateUser } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
 import { validateRequired } from 'forms/validators'
@@ -27,13 +27,14 @@ import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
+import Logger from '../../../helpers/Logger'
 import styles from './styles'
 
 
 interface Props {
   user: User,
   formFullName?: string,
-  removeAuthInfo: () => void,
+  removeUserData: () => void,
   fetchUserInfo: () => void,
   updateUser: (u: User) => void,
 }
@@ -98,7 +99,7 @@ class UserProfile extends TextInputForm<Props> {
           </TextButton>
           <TextButton
             style={styles.logoutButton}
-            onPress={this.props.removeAuthInfo}
+            onPress={this.deleteUserDataAlert}
           >
             Log out
           </TextButton>
@@ -117,6 +118,21 @@ class UserProfile extends TextInputForm<Props> {
       this.setState({ isLoading: false })
     }
   }
+
+  protected deleteUserDataAlert = () => {
+    Alert.alert(
+        I18n.t('user_profile_alert_label'),
+        I18n.t('user_profile_alert_text'), [
+          {
+            text: I18n.t('caption_cancel'),
+            onPress: () => Logger.debug('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: I18n.t('caption_ok'), onPress: this.props.removeUserData },
+        ],
+        { cancelable: false },
+    )
+  }
 }
 
 const mapStateToProps = (state: any) => {
@@ -132,7 +148,7 @@ const mapStateToProps = (state: any) => {
 
 export default connect(
   mapStateToProps,
-  { removeAuthInfo, fetchUserInfo, updateUser },
+  { removeUserData, fetchUserInfo, updateUser },
 )(reduxForm<{}, Props>({
   form: userForm.USER_FORM_NAME,
   destroyOnUnmount: false,

@@ -116,6 +116,9 @@
   "text_passwort_reset_confirm_title" : "Please check your inbox",
   "text_passwort_reset_confirm_message" : "If you have entered a valid username or valid email address, you will receive an email to reset your password shortly.",
 
+  "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
+  "user_profile_alert_label" : "Logout",
+
   "caption_ok": "OK",
   "caption_cancel": "Cancel",
   "caption_back": "Back",
@@ -174,6 +177,7 @@
   "error_forbidden": "Forbidden server operation.",
   "error_user_already_exists": "User already exists.",
   "error_precondition_failed": "Precondition failed.",
+  "error_field_invalid_username": "Username should contain at least 3 characters.",
 
   "JIBE": "Jibe",
   "HEAD_UP": "Heading Up",

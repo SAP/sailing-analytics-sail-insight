@@ -1,5 +1,6 @@
 import { AutoCourseUpdateState } from 'helpers/types'
 
+
 export interface RootState {
   auth?: any | AuthState
   network?: any

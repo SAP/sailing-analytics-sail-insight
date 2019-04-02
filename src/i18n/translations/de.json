@@ -116,6 +116,9 @@
   "text_passwort_reset_confirm_title" : "Prüfe deinen Posteingang",
   "text_passwort_reset_confirm_message" : "Wenn du einen gültigen Benutzernamen oder eine gültige E-Mail-Adresse angegeben hast, dann erhälst du in Kürze eine E-Mail zum Zurücksetzen deines Passworts.",
 
+  "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Sessions und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
+  "user_profile_alert_label" : "Logout",
+
   "caption_ok": "OK",
   "caption_cancel": "Abbrechen",
   "caption_back": "Zurück",
@@ -174,6 +177,7 @@
   "error_forbidden": "Server-Operation unzulässig.",
   "error_user_already_exists": "Nutzer existiert bereits.",
   "error_precondition_failed": "Anfragenbedingung nicht erfüllt.",
+  "error_field_invalid_username": "Der Benutzername sollte mindestens 3 Zeichen enthalten.",
 
   "JIBE": "Halse",
   "HEAD_UP": "Anluven",

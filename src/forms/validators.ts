@@ -9,6 +9,9 @@ const REGEX_EMAIL_VALID = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)
 export const validateRequired = (value: any) =>
   value ? undefined : I18n.t('error_field_required')
 
+export const validateUsername = (value: any) =>
+    value.length >= 3 ? undefined : I18n.t('error_field_invalid_username')
+
 export const validateEmail = (value: string) =>
   (REGEX_EMAIL_VALID.test(value) ? undefined : I18n.t('error_field_invalid_email'))
 
