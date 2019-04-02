@@ -24,19 +24,33 @@ export const getDeviceCountryIOC = () => {
   return country && country.ioc
 }
 
-export const extractData = (url: string) => {
+export const extractData = (url: string): any => {
   if (!url) {
     return null
   }
   const parsedUrl = parse(url)
-  const serverUrl = url.includes(BRANCH_APP_DOMAIN) ? getApiServerUrl() : parsedUrl && parsedUrl.origin
+  let serverUrl = parsedUrl && parsedUrl.origin
+
+  if (url.includes(BRANCH_APP_DOMAIN)) {
+    // parse branch.io based invitation and extract checkinUrl
+    const branchIoParsedQuery = querystring.parseUrl(url)
+    const branchIoQueryData = branchIoParsedQuery && branchIoParsedQuery.query
+    if (!branchIoQueryData) {
+      return null
+    }
+    if (branchIoQueryData.checkinUrl) {
+      // contains complete checkin url
+      return extractData(branchIoQueryData.checkinUrl)
+    }
+    // extract parameters directly, only replace target server e.g. for publicInvite
+    serverUrl = branchIoQueryData.server
+  }
 
   const parsedQuery = querystring.parseUrl(url)
   const queryData = parsedQuery && parsedQuery.query
   if (!queryData) {
     return null
   }
-
   const checkIn = urlParamsToCheckIn(serverUrl, queryData)
   return checkIn
 }
@@ -49,6 +63,7 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
     boatId,
     competitorId,
     markId,
+    secret,
   } = checkInData
 
   const body = {
@@ -56,6 +71,7 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
     [CheckInBodyKeys.DeviceUUID]: getDeviceId(),
     [CheckInBodyKeys.FromMillis]: new Date().getTime(),
     [CheckInBodyKeys.PushDeviceID]: '',
+    [CheckInBodyKeys.Secret]: secret,
     ...(boatId && { [CheckInBodyKeys.BoatId]: boatId }),
     ...(competitorId && { [CheckInBodyKeys.CompetitorId]: competitorId }),
     ...(markId && { [CheckInBodyKeys.MarkId]: markId }),
@@ -103,13 +119,13 @@ export const eventUrl = (checkInData: any) =>
 export const leaderboardUrl = (checkInData: any) =>
   checkInData &&
   // tslint:disable-next-line max-line-length
-  `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${escape(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
+  `${checkInData.serverUrl}/gwt/Leaderboard.html?name=${encodeURIComponent(checkInData.leaderboardName)}&showRaceDetails=false&embedded=true&hideToolbar=true`
 
 export const raceUrl = (session: CheckIn, race: Race) =>
   session &&
   race.name &&
   // tslint:disable-next-line max-line-length
-  `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${escape(session.leaderboardName)}&raceName=${escape(race.name)}&leaderboardName=${escape(session.leaderboardName)}&eventId=${escape(session.eventId)}&mode=FULL_ANALYSIS`
+  `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${encodeURIComponent(session.leaderboardName)}&raceName=${encodeURIComponent(race.name)}&leaderboardName=${encodeURIComponent(session.leaderboardName)}&eventId=${encodeURIComponent(session.eventId)}&mode=FULL_ANALYSIS`
 
 export const eventCreationResponseToCheckIn = (
   response: CreateEventResponseData,

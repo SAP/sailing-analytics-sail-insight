@@ -31,7 +31,7 @@ export const withToken: TokenActionHandler = (tokenAction: TokenAction) => (
 
 type DataApiAction = (dataApi: DataApi, dispatch: DispatchType, getState: GetStateType) => any
 type DataApiActionHandler = (action: DataApiAction) => ((dispatch: DispatchType, getState: GetStateType) => any)
-type DataApiInjector = (options?: string | {leaderboard?: string, fromTracked?: boolean}) => DataApiActionHandler
+type DataApiInjector = (options?: string | {leaderboard?: string, secret?: string, fromTracked?: boolean}) => DataApiActionHandler
 /**
  * get action handler with data api as parameter
  * @param options serverUrl OR options with leaderboard name

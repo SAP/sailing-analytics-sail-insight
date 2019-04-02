@@ -5,13 +5,13 @@ import { Race } from 'models'
 import { getRaces } from 'selectors/race'
 
 
-export const fetchRegatta = (regattaName: string, forcedServerUrl?: string) =>
-  withDataApi(forcedServerUrl || { leaderboard: regattaName })(async (dataApi, dispatch) => {
-    await dispatch(fetchEntityAction(dataApi.requestRegatta)(regattaName))
-    await dispatch(fetchEntityAction(dataApi.requestRaces)(regattaName))
+export const fetchRegatta = (regattaName: string, secret?: string, forcedServerUrl?: string) =>
+  withDataApi(forcedServerUrl || { secret, leaderboard: regattaName })(async (dataApi, dispatch) => {
+    await dispatch(fetchEntityAction(dataApi.requestRegatta)(regattaName, secret))
+    await dispatch(fetchEntityAction(dataApi.requestRaces)(regattaName, secret))
   })
 
-export const fetchRegattaRace = (regattaName?: string, raceName?: string) => withDataApi({ leaderboard: regattaName })(
+export const fetchRegattaRace = (regattaName?: string, raceName?: string, secret?: string) => withDataApi({ secret, leaderboard: regattaName })(
   async (dataApi, dispatch) =>
     regattaName &&
     raceName &&
@@ -20,8 +20,9 @@ export const fetchRegattaRace = (regattaName?: string, raceName?: string) => wit
 
 export const fetchAllRaces = (
   regattaName?: string,
+  secret?: string,
   forcedServerUrl?: string,
-) => withDataApi(forcedServerUrl || { leaderboard: regattaName })(async (dataApi, dispatch, getState) => {
+) => withDataApi(forcedServerUrl || { secret, leaderboard: regattaName })(async (dataApi, dispatch, getState) => {
   if (!regattaName) {
     return
   }
@@ -31,17 +32,17 @@ export const fetchAllRaces = (
   }
   const raceEntityAction = fetchEntityAction(dataApi.requestRace)
   return Promise.all(races.map((race: Race) => {
-    return race && dispatch(raceEntityAction(regattaName, race.name, race.id))
+    return race && dispatch(raceEntityAction(regattaName, race.name, race.id, secret))
   }))
 })
 
-export type FetchRegattaAndRacesAction = (regattaName?: string) => any
-export const fetchRegattaAndRaces: FetchRegattaAndRacesAction = regattaName => async (dispatch: DispatchType) => {
+export type FetchRegattaAndRacesAction = (regattaName?: string, secret?: string) => any
+export const fetchRegattaAndRaces: FetchRegattaAndRacesAction = (regattaName, secret) => async (dispatch: DispatchType) => {
   if (!regattaName) {
     return
   }
-  await dispatch(fetchRegatta(regattaName))
-  await dispatch(fetchAllRaces(regattaName))
+  await dispatch(fetchRegatta(regattaName, secret))
+  await dispatch(fetchAllRaces(regattaName, secret))
 }
 
 export const fetchRegattaRaceManeuvers = (race: Race, competitorId?: string) => withDataApi(race.regattaName)(

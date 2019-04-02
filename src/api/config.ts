@@ -1,3 +1,4 @@
+import * as _ from 'lodash'
 import querystring from 'query-string'
 import format from 'string-format'
 
@@ -15,9 +16,12 @@ export const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
     }
     generatedPath = format(path, ...urlOptions.pathParams)
   }
-  return urlOptions.urlParams ?
-    `${generatedPath}?${querystring.stringify(urlOptions.urlParams)}` :
-    generatedPath
+
+  const urlParams = _.omitBy(urlOptions.urlParams, _.isUndefined)
+  if (urlParams && !_.isEmpty(urlParams)) {
+    return `${generatedPath}?${querystring.stringify(urlParams)}`
+  }
+  return generatedPath
 }
 
 

@@ -107,7 +107,7 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
       await dispatch(setRaceEndTime(data.leaderboardName, data.currentTrackName, data.currentFleet))
       await dispatch(updateEventEndTime(data.leaderboardName, data.eventId))
     }
-    dispatch(fetchRegattaAndRaces(data.regattaName))
+    dispatch(fetchRegattaAndRaces(data.regattaName, data.secret))
     dispatch(removeTrackedRegatta())
   },
 )
