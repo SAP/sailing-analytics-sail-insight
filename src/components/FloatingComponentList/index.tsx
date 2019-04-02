@@ -4,6 +4,7 @@ import { FlatList, FlatListProps, View } from 'react-native'
 import { listKeyExtractor } from 'helpers/utils'
 
 import { container } from 'styles/commons'
+import { isPlatformAndroid } from '../../environment'
 import styles from './styles'
 
 class FloatingComponentList<ItemType> extends React.Component<FlatListProps<ItemType> & {
@@ -20,8 +21,8 @@ class FloatingComponentList<ItemType> extends React.Component<FlatListProps<Item
       <View style={[container.list, style]}>
         <FlatList
           onScrollBeginDrag={this.hideAdd}
-          onScrollEndDrag={this.showAdd}
-          onMomentumScrollBegin={this.hideAdd}
+          onScrollEndDrag={isPlatformAndroid ? undefined : this.showAdd}
+          onMomentumScrollBegin={isPlatformAndroid ? undefined : this.hideAdd}
           onMomentumScrollEnd={this.showAdd}
           keyExtractor={listKeyExtractor}
           {...remainingProps}

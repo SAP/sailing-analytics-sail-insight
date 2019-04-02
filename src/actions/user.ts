@@ -1,12 +1,11 @@
-import { find, omit } from 'lodash'
+import { omit } from 'lodash'
 import { createAction } from 'redux-actions'
 
 import { selfTrackingApi } from 'api'
-import { DispatchType, GetStateType } from 'helpers/types'
+import { DispatchType } from 'helpers/types'
 import { BoatTemplate } from 'models'
 
 import { fetchCurrentUser } from 'actions/auth'
-import { getUserBoats } from 'selectors/user'
 
 
 const BOATS_PREFERENCE_KEY = 'boats'
@@ -20,8 +19,9 @@ export type SaveBoatAction = (
   boat: BoatTemplate,
   options?: {replaceBoatName?: string, updateLastUsed?: boolean},
 ) => any
+
 export const saveBoat: SaveBoatAction = (boat, options = {}) => async (dispatch: DispatchType) => {
-  const boats = await selfTrackingApi.requestPreference(BOATS_PREFERENCE_KEY)
+  const boats = await fetchBoats()
   const { updateLastUsed, replaceBoatName } = options
   const newBoats = {
     ...(replaceBoatName ? omit(boats, replaceBoatName) : boats),
@@ -35,8 +35,9 @@ export const saveBoat: SaveBoatAction = (boat, options = {}) => async (dispatch:
   if (updateLastUsed) { dispatch(boatWasUsed(boat.name)) }
 }
 
-export const fetchBoats = () => async (dispatch: DispatchType) =>
-    dispatch(updateBoats(await selfTrackingApi.requestPreference(BOATS_PREFERENCE_KEY)))
+export const fetchBoats = async () => {
+  return (await selfTrackingApi.requestPreference(BOATS_PREFERENCE_KEY) || [])
+}
 
 export type DeleteBoatAction = (name: string) => any
 export const deleteBoat: DeleteBoatAction = name => async (dispatch: DispatchType) => {
@@ -45,15 +46,8 @@ export const deleteBoat: DeleteBoatAction = name => async (dispatch: DispatchTyp
   dispatch(updateBoats(newBoats))
 }
 
-export const fetchUserInfo = () => async (dispatch: DispatchType) =>
-  await dispatch(fetchCurrentUser()) && dispatch(fetchBoats())
-
-export const getBoatFromValues = (boat: any) => (dispatch: DispatchType, getState: GetStateType) => find(
-  getUserBoats(getState()),
-  boat,
-)
-
-export const updateBoatId = (boatValues: any, id: string) => async (dispatch: DispatchType, getState: GetStateType) => {
-  const boat = dispatch(getBoatFromValues(boatValues))
-  return boat && dispatch(saveBoat({ id, ...boat }))
+export const fetchUserInfo = () => async (dispatch: DispatchType) => {
+  const boats = await fetchBoats()
+  dispatch(updateBoats(boats))
+  await dispatch(fetchCurrentUser())
 }
