@@ -198,6 +198,8 @@
   "error_field_invalid_sessionname": "Der Event-Name darf folgende Zeichen nicht enthalten: /, \", ;, ?, [, ]",
   "error_tracking_resend_info_title" : "Tracking übertragen",
   "error_tracking_resend_info_text" : "Dein Tracking wurde gestoppt, jedoch konnten nicht alle Daten übertragen werden.\nBitte versuche es erneut.",
+  "error_load_nationalities": "Nationalitäten konnten nicht geladen werden",
+  "error_load_boat_classes": "Bootsklassen konnten nicht geladen werden",
 
   "JIBE": "Halse",
   "HEAD_UP": "Anluven",
