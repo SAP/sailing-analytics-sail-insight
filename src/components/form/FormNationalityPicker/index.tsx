@@ -1,10 +1,11 @@
 import { isEmpty, orderBy } from 'lodash'
 import React from 'react'
-import { TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
+import { Alert, TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
 import { selfTrackingApi } from '../../../api'
 import { CountryCodeBody } from '../../../api/endpoints/types'
+import { getErrorDisplayMessage } from 'helpers/texts'
 
 import Text from 'components/Text'
 import { TextInputProps } from 'components/TextInput'
@@ -42,6 +43,8 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
           'ASC',
       )
       this.setState({ countryList })
+    }).catch((err) => {
+      Alert.alert(I18n.t('error_load_nationalities'), getErrorDisplayMessage(err))
     })
   }
 
