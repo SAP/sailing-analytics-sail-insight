@@ -46,15 +46,31 @@ class UserProfile extends TextInputForm<Props> {
     isLoading: false,
   }
 
-  // TODO: remove logout button
   public componentDidMount() {
     this.props.fetchUserInfo()
   }
 
+  private formIsSaveable() {
+    const { formFullName } = this.props
+    const hasName = !isEmpty(formFullName)
+
+    return hasName
+  }
+
+  private formHasChanges() {
+    const { user, formFullName } = this.props
+
+    const nameHasChanged = isEmpty(user.fullName) || formFullName !== user.fullName
+
+    return nameHasChanged
+  }
+
   public render() {
-    const { user, formFullName, formImageData } = this.props
-    const isSaveDisabled = isEmpty(formFullName) || ((!isEmpty(user.fullName) && formFullName === user.fullName) &&
-      (!isEmpty(user.imageData) && formImageData === user.imageData))
+    const { user } = this.props
+
+    const canSave = this.formIsSaveable() && this.formHasChanges()
+    const isSaveDisabled = !canSave
+
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
@@ -62,6 +78,7 @@ class UserProfile extends TextInputForm<Props> {
             name={userForm.FORM_KEY_IMAGE}
             component={FormImagePicker}
             placeholder={Images.header.sailors}
+            onChange={this.saveImage}
           />
           <View style={container.largeHorizontalMargin}>
             <Field
@@ -109,15 +126,28 @@ class UserProfile extends TextInputForm<Props> {
     )
   }
 
-  protected onSubmit = async (values: any) => {
+  protected updateUserData = async (updatedProps: any) => {
     try {
       await this.setState({ isLoading: true })
-      await this.props.updateUser({ ...this.props.user, fullName: values[userForm.FORM_KEY_NAME], imageData: values[userForm.FORM_KEY_IMAGE] } as User)
+      await this.props.updateUser({...this.props.user, ...updatedProps} as User)
     } catch (err) {
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
       this.setState({ isLoading: false })
     }
+  }
+
+  protected saveImage = async (image: any) => {
+    this.updateUserData({
+      imageData: image
+    })
+  }
+
+  protected onSubmit = async (values: any) => {
+    this.updateUserData({
+      fullName: values[userForm.FORM_KEY_NAME],
+      imageData: values[userForm.FORM_KEY_IMAGE]
+    })
   }
 
   protected deleteUserDataAlert = () => {
