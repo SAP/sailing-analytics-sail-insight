@@ -98,15 +98,20 @@ class JoinRegatta extends React.Component<{
               {title}
             </Text>
             <Text style={[text.propertyValue, styles.timeText]}>{dateTimeText(event.startDate)}</Text>
-            <IconText
-              style={styles.location}
-              iconStyle={styles.locationIcon}
-              textStyle={[text.propertyValue, styles.locationText]}
-              source={Images.info.location}
-              alignment="horizontal"
-            >
-              {event.venue && event.venue.name}
-            </IconText>
+            {
+              event.venue &&
+              event.venue.name &&
+              event.venue.name !== 'default' &&
+              <IconText
+                style={styles.location}
+                iconStyle={styles.locationIcon}
+                textStyle={[text.propertyValue, styles.locationText]}
+                source={Images.info.location}
+                alignment="horizontal"
+              >
+                {event.venue && event.venue.name}
+              </IconText>
+            }
             <TrackingContext session={{
               trackingContext: this.state.trackingContext,
               competitor,
