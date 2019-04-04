@@ -3,6 +3,8 @@ import React from 'react'
 import { Alert, TextInputProps as RNTextInputProps, TouchableOpacity, View, ViewProps } from 'react-native'
 import Autocomplete from 'react-native-autocomplete-input'
 import { WrappedFieldProps } from 'redux-form'
+import I18n from 'i18n'
+
 import { assetApiEndpoint, selfTrackingApi } from '../../../api'
 import { BoatClassesdBody } from '../../../api/endpoints/types'
 import { getErrorDisplayMessage } from 'helpers/texts'

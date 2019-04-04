@@ -10,6 +10,7 @@ import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { durationText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { degToCompass } from 'helpers/physics'
+import { openSAPWebsite } from 'helpers/user'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { navigateBack, navigateToSetWind } from 'navigation'
@@ -133,6 +134,7 @@ class Tracking extends React.Component<{
           style={styles.tagLine}
           source={Images.corporateIdentity.sapTagLine}
           activeOpacity={1.0}
+          onPress={openSAPWebsite}
         />
       </View>
     )
