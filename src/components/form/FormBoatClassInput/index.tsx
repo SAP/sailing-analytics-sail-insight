@@ -1,12 +1,17 @@
 import Text from 'components/Text'
 import React from 'react'
-import { TextInputProps as RNTextInputProps, TouchableOpacity, View, ViewProps } from 'react-native'
+import { Alert, TextInputProps as RNTextInputProps, TouchableOpacity, View, ViewProps } from 'react-native'
 import Autocomplete from 'react-native-autocomplete-input'
 import { WrappedFieldProps } from 'redux-form'
+import I18n from 'i18n'
+
 import { assetApiEndpoint, selfTrackingApi } from '../../../api'
 import { BoatClassesdBody } from '../../../api/endpoints/types'
+import { getErrorDisplayMessage } from 'helpers/texts'
+
 import Image from '../../Image'
 import TextInput, { TextInputProps } from '../../TextInput'
+
 import styles from './styles'
 
 interface State {
@@ -28,6 +33,8 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   public componentDidMount() {
     selfTrackingApi.requestBoatClasses().then((boatClasses: BoatClassesdBody[]) => {
       this.setState({ boatClasses })
+    }).catch((err) => {
+      Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
     })
   }
 

@@ -54,14 +54,17 @@ class TrackItem extends React.Component<ViewProps & {
             >
               {track.boatClass || I18n.t('text_empty_value_placeholder')}
             </IconText>
-            <IconText
-              style={styles.textMargins}
-              source={Images.info.location}
-              iconTintColor={$secondaryTextColor}
-              alignment="horizontal"
-            >
-              {track.venueName || I18n.t('text_empty_value_placeholder')}
-            </IconText>
+            {
+              track.venueName && track.venueName !== 'default' &&
+              <IconText
+                  style={styles.textMargins}
+                  source={Images.info.location}
+                  iconTintColor={$secondaryTextColor}
+                  alignment="horizontal"
+              >
+                {track.venueName || I18n.t('text_empty_value_placeholder')}
+              </IconText>
+            }
           </View>
           {this.props.onSettingsPress && <ImageButton
             style={[button.secondaryActionIcon, styles.iconButton]}

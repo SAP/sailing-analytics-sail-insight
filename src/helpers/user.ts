@@ -7,11 +7,13 @@ import I18n from 'i18n'
 
 import { openEmailTo } from './utils'
 
-
-export const eulaUrl = 'http://www.sapsailing.com/EULA_iOS_SailingBoatTracker.html'
-export const contactEmail = 'sailing_analytics@sap.com'
+export const sapUrl = 'https://www.sap.com'
+export const eulaUrl = 'http://konzeptwerft.com/sail-insight-powered-by-sap-app/'
+export const contactEmail = 'sailinsight@sailtracks.tv'
 
 export const openTerms = () => Linking.openURL(eulaUrl)
+
+export const openSAPWebsite = () => Linking.openURL(sapUrl)
 
 export const openEmailToContact = () => openEmailTo(
   contactEmail,
