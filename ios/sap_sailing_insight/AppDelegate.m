@@ -7,6 +7,7 @@
 
 #import "AppDelegate.h"
 
+#import <Firebase.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <react-native-branch/RNBranch.h>
@@ -15,25 +16,48 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  NSURL *jsCodeLocation;
-
+  [FIRApp configure];
+  
+  // 1. init window
+  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  UIViewController *rootViewController = [UIViewController new];
+  
+  // 2. backgroundView using LaunchScreen.xib
+  UIView *backgroundView = [[[NSBundle mainBundle] loadNibNamed:@"LaunchScreen" owner:self options:nil] firstObject];
+  backgroundView.frame = self.window.bounds;
+  
+  // 3. init branch.io
   // Uncomment this line to use the test key instead of the live one.
   // [RNBranch useTestInstance];
   [RNBranch initSessionWithLaunchOptions:launchOptions isReferrable:YES];
   
+  // 4. ReactNative initialization
+  NSURL *jsCodeLocation;
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"sap_sailing_insight"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
-
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  UIViewController *rootViewController = [UIViewController new];
-  rootViewController.view = rootView;
+  
+  // 5. clear background, backgroundView can now be shown until ReactNative is fully loaded
+  rootView.backgroundColor = [UIColor clearColor];
+  
+  // 6. set loadingView to the LaunchScreen.xib view too (explicitly set all frames)
+  UIView *launchScreenView = [[[NSBundle mainBundle] loadNibNamed:@"LaunchScreen" owner:self options:nil] firstObject];
+  rootView.frame = self.window.bounds;
+  launchScreenView.frame = self.window.bounds;
+  rootView.loadingView = launchScreenView;
+  
+  // 7. set the backgroundView as main view for the rootViewController (instead of the rootView)
+  rootViewController.view = backgroundView;
+  
+  // 8. make visible
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  // 9. after the window is visible, add the rootView as a subview to your backgroundView
+  [backgroundView addSubview:rootView];
   return YES;
 }
 

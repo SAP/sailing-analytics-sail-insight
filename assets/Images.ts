@@ -1,0 +1,53 @@
+
+export default {
+  corporateIdentity: {
+    sapSailingLogo: require('./img/app_icon_sap_us_sailing.png'),
+    sapTagLine: require('./img/ci/logo-sap-tagline.png'),
+  },
+  header: {
+    sailors: require('./img/header_small.png'),
+    boat: require('./img/boat_placeholder.png'),
+  },
+  actions: {
+    add: require('./img/icons/icon-plus.png'),
+    decrease: require('./img/icons/icon-minus.png'),
+    settings: require('./img/icons/icon-settings.png'),
+    recordColored: require('./img/icons/icon-start.png'), // TODO: replace
+    pen: require('./img/icons/icon-edit.png'),
+    visibility: require('./img/icons/icon-visibility.png'),
+    visibilityOff: require('./img/icons/icon-visibility-off.png'),
+    help: require('./img/icons/icon-help.png'),
+    arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
+    close: require('./img/icons/icon-cross.png'),
+    expandLess: require('./img/icons/icon-arrow-expand-less.png'),
+    expandMore: require('./img/icons/icon-arrow-expand-more.png'),
+    pickImage: require('./img/icons/icon-camera.png'),
+    delete: require('./img/icons/icon-delete.png'),
+  },
+  tabs: {
+    tracking: require('./img/icons/icon-start.png'),
+    account: require('./img/icons/icon-account-outlined.png'),
+    sessions: require('./img/icons/icon-session.png'),
+    join: require('./img/icons/icon-scan.png'),
+  },
+  info: {
+    boat: require('./img/icons/icon-boat.png'),
+    location: require('./img/icons/icon-place.png'),
+    coloredBoat: require('./img/colored_boat.png'),
+    coloredUser: require('./img/colored_user.png'),
+    arrowUp: require('./img/icons/icon-arrow-up.png'),
+    arrowDown: require('./img/icons/icon-arrow-down.png'),
+    distance: require('./img/icons/icon-distance.png'),
+    time: require('./img/icons/icon-watch.png'),
+    maneuvers: require('./img/icons/icon-maneuvers.png'),
+    wind: require('./img/icons/icon-wind.png'),
+    error: require('./img/icons/icon-error.png'),
+    mark: require('./img/icons/icon-mark.png'),
+    competitor: require('./img/icons/icon-account-filled.png'),
+  },
+  animations: {
+    waveLoadingIndicator: require('./img/animations/wave_loading.json'),
+    waveLoadingIndicatorGif: require('./img/animations/wave_loading.gif'),
+    waveLoadingIndicatorBackground: require('./img/animations/wave_loading_background.png'),
+  },
+}

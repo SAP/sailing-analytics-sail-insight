@@ -3,7 +3,16 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.marianhello.bgloc.react.BackgroundGeolocationPackage;
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
+import com.reactnative.ivpusic.imagepicker.PickerPackage;
+import com.apsl.versionnumber.RNVersionNumberPackage;
+import com.dylanvann.fastimage.FastImageViewPackage;
+import com.corbt.keepawake.KCKeepAwakePackage;
+import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
+import com.transistorsoft.rnbackgroundgeolocation.RNBackgroundGeolocation;
+import com.ocetnik.timer.BackgroundTimerPackage;
+import io.realm.react.RealmReactPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.horcrux.svg.SvgPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
@@ -32,13 +41,23 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new BackgroundGeolocationPackage(),
+            new RNFirebasePackage(),
+            new RNFirebaseCrashlyticsPackage(),
+            new PickerPackage(),
+            new RNVersionNumberPackage(),
+            new FastImageViewPackage(),
+            new KCKeepAwakePackage(),
+            new RNBackgroundFetchPackage(),
+            new RNBackgroundGeolocation(),
+            new BackgroundTimerPackage(),
+            new RealmReactPackage(),
             new RNDeviceInfo(),
             new SvgPackage(),
             new LinearGradientPackage(),
             new RNI18nPackage(),
             new RNBranchPackage(),
-            new RNCameraPackage()
+            new RNCameraPackage(),
+            new ShowAppSettingsPackage()
       );
     }
 

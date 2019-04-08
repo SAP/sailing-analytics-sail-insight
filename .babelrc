@@ -1,14 +1,16 @@
 {
-  "presets": ["react-native"],
+  "presets": [
+    "module:metro-react-native-babel-preset"
+  ],
   "plugins": [
-    ["@babel/plugin-syntax-optional-chaining"],
-    ["transform-inline-environment-variables"],
+    [ "@babel/plugin-proposal-decorators", { "legacy": true } ],
+    [ "transform-inline-environment-variables" ],
     [
       "module-resolver", 
       {
         "cwd": "babelrc",
         "root": ["./src"],
-        "extensions": [".js", ".jsx", ".ios.js", ".android.js"],
+        "extensions": [".ts", ".tsx", ".js", ".jsx", ".ios.js", ".android.js"],
         "alias": {
           "assets": "./assets"
         }

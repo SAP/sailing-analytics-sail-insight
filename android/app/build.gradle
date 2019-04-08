@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: "io.fabric"
 
 import com.android.build.OutputFile
 
@@ -73,7 +74,8 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js"
+    entryFile: "index.js",
+    bundleInDebug: true
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -93,15 +95,22 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
+def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.sailtracks.android.sailinginsight'
+def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "16") as Integer
+def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.0"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.sap_sailing_insight"
+        applicationId _applicationId
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode _versionCode
+        versionName _versionName
+        vectorDrawables.useSupportLibrary = true // for react-native-crop-picker
+        multiDexEnabled true
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -114,10 +123,25 @@ android {
             include "armeabi-v7a", "x86"
         }
     }
-    buildTypes {
+    signingConfigs {
         release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            resValue "string", "app_name", _appName
+        }
+        release {
+            resValue "string", "app_name", _appName
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -141,31 +165,61 @@ android {
         dev {
             dimension "default"
             manifestPlaceholders = [
-                    branchIOKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
-                    branchIOTestKey:"key_live_hcw9UuPC67XuavXlixn9ZhepFBkRkS8m",
-                    branchIOAppLink:"d-labs.app.link",
+                    branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_dfPlye3KB3UqKx6h9FhdAmbbytkpdUuA",
+                    branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_idPavc3PD7SCPu5i9qaV9aglyDgbmRyR",
+                    branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight20-app.sapsailing.com",
                     branchIOTestMode: false,
-                    branchIOScheme: "comsapsailingtracker",
+                    branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "comsailtrackssailinginsight",
             ]
         }
+         live {
+             dimension "default"
+             manifestPlaceholders = [
+                     branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_dfPlye3KB3UqKx6h9FhdAmbbytkpdUuA",
+                     branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_idPavc3PD7SCPu5i9qaV9aglyDgbmRyR",
+                     branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight20-app.sapsailing.com",
+                     branchIOTestMode: false,
+                     branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "comsailtrackssailinginsight",
+             ]
+         }
     }
 }
 
 dependencies {
-    implementation project(':react-native-mauron85-background-geolocation')
+    implementation project(':react-native-firebase')
+    implementation project(':react-native-image-crop-picker')
+    implementation project(':react-native-version-number')
+    implementation project(':react-native-fast-image')
+    implementation project(':react-native-keep-awake')
+    implementation project(':react-native-background-fetch')
+    implementation project(':react-native-background-geolocation')
+    implementation project(':react-native-background-timer')
+    implementation project(':realm')
     implementation project(':react-native-device-info')
     implementation project(':react-native-svg')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-i18n')
     implementation project(':react-native-branch')
     implementation project(':react-native-camera')
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation 'com.android.support:multidex:1.0.3'
+
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation 'com.facebook.fresco:fresco:1.10.0'
+    implementation 'com.facebook.fresco:animated-gif:1.10.0'
+
+    // Firebase dependencies
+    implementation "com.google.android.gms:play-services-base:16.0.1"
+    implementation "com.google.firebase:firebase-core:16.0.6"
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
+        transitive = true
+    }
 
     configurations.all {
         resolutionStrategy {
-            force 'com.android.support:support-v4:27.1.1'
+            force 'com.android.support:support-v4:28.0.0'
         }
     }
 }
@@ -176,3 +230,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply plugin: 'com.google.gms.google-services'
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

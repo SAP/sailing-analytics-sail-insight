@@ -1,0 +1,46 @@
+import { getSecurityUrl, HttpMethods } from 'api/config'
+import { dataRequest, request } from 'api/handler'
+import { isEmpty } from 'lodash'
+import {
+  ApiAccessToken,
+  User,
+} from 'models'
+import { mapResToAccessTokenData } from 'models/ApiAccessToken'
+import { mapResToUser } from 'models/User'
+
+
+const endpoints = ({
+  createUser: getSecurityUrl('/create_user'),
+  user: getSecurityUrl('/user'),
+  accessToken: getSecurityUrl('/access_token'),
+  forgotPassword: getSecurityUrl('/forgot_password'),
+})
+
+
+export default {
+  user: (username?: string) => dataRequest(
+    endpoints.user({ urlParams: username && { username } }),
+    { dataProcessor: mapResToUser },
+  ) as Promise<User>,
+
+  register: (username: string, email: string, password: string, fullName?: string) => dataRequest(
+    endpoints.createUser({ urlParams: { email, password, username, ...(fullName && { fullName }) } }),
+    { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
+  ) as Promise<ApiAccessToken>,
+
+  accessToken: (email: string, password: string) => dataRequest(
+    endpoints.accessToken({ urlParams: { password, username: email } }),
+    { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
+  ) as Promise<ApiAccessToken>,
+
+  updateUser: (data: any) => request(
+    endpoints.user({ urlParams: data }),
+    { method: HttpMethods.PUT },
+  ),
+
+  requestPasswordReset: (username: string, email: string) => dataRequest(
+      !isEmpty(username) ? endpoints.forgotPassword({ urlParams: { username } }) :
+          endpoints.forgotPassword({ urlParams: { email } }),
+      { method: HttpMethods.POST },
+    ),
+}
