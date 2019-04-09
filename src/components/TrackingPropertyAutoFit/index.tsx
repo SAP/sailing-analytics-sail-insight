@@ -59,6 +59,7 @@ class TrackingPropertyAutoFit extends React.Component<ViewProps & {
           title={title}
           value={value}
           unit={unit}
+          allowFontScaling={false}
           {...textStyles}
           {...remainingProps}
         />
