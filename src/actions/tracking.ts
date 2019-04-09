@@ -60,6 +60,7 @@ export const startTracking: StartTrackingAction = data =>  async (
   deleteAllGPSFixRequests()
 
   navigateToTracking()
+  let showAlertRaceNotStarted = false
 
   try {
     const shouldCreateTrack = checkInData.isSelfTracking
@@ -81,10 +82,7 @@ export const startTracking: StartTrackingAction = data =>  async (
         .filter(race => race.trackingEndDate > now || race.trackingEndDate === null)
 
       if (activeRaces.length === 0) {
-        Alert.alert(
-          I18n.t('caption_race_not_started_yet'),
-          I18n.t('text_race_not_started_yet'),
-        )
+        showAlertRaceNotStarted = true
       }
     }
     const trackName = (newTrack && newTrack.racename) || checkInData.currentTrackName
@@ -100,5 +98,14 @@ export const startTracking: StartTrackingAction = data =>  async (
     throw err
   } finally {
     dispatch(updateLoadingCheckInFlag(false))
+
+    if (showAlertRaceNotStarted) {
+      // workaround for stuck fullscreen loading indicator when alert is called
+      setTimeout(async () => Alert.alert(
+          I18n.t('caption_race_not_started_yet'),
+          I18n.t('text_race_not_started_yet'),
+        ),
+                 800)
+    }
   }
 }
