@@ -1,11 +1,16 @@
 import { isString } from 'lodash'
 import querystring from 'query-string'
+import { compose, includes, prop, __, when } from 'ramda'
 
 import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
+import firebase from 'react-native-firebase'
 
+const responseHasFatalError = compose(
+  includes(__, [400, 404, 405]),
+  prop('status'))
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -107,6 +112,14 @@ export const request = async (
           response,
         },
       )
+    } else {
+      when(responseHasFatalError, async (response: any) => {
+        const error = await response.text()
+
+        firebase.crashlytics().setIntValue('status', response.status)
+        firebase.crashlytics().setStringValue('url', response.url)
+        firebase.crashlytics().recordError(0, error)
+      })(response)
     }
   }
   return response
