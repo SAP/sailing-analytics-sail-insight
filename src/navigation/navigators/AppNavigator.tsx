@@ -16,6 +16,7 @@ import EditCompetitor from 'containers/session/EditCompetitor'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
+import { navigateToTracking } from '../index'
 
 import MainNavigator from './MainNavigator'
 import NewSessionNavigator from './NewSessionNavigator'
@@ -66,7 +67,7 @@ export default createStackNavigator(
             secondLine={navigationProps.state.params.subHeading}
           />
         ),
-        headerRight: <ModalBackButton type="icon"/>,
+        headerRight: <ModalBackButton type="icon" onPress={navigateToTracking()}/>,
         headerLeft: null,
       }),
     },
