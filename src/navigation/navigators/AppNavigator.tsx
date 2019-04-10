@@ -67,7 +67,7 @@ export default createStackNavigator(
             secondLine={navigationProps.state.params.subHeading}
           />
         ),
-        headerRight: <ModalBackButton type="icon" onPress={navigateToTracking()}/>,
+        headerRight: <ModalBackButton type="icon" onPress={navigateToTracking}/>,
         headerLeft: null,
       }),
     },
