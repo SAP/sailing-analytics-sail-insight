@@ -1,7 +1,7 @@
 import BackgroundGeolocation, { Config } from 'react-native-background-geolocation'
 
-import { isPlatformAndroid } from 'environment'
-import { getTimestampAsMillis } from 'helpers/date'
+import { DEV_MODE, isPlatformAndroid } from 'environment'
+import { getNowAsMillis, getTimestampAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'
@@ -77,7 +77,7 @@ const handleGeolocation = async (location: any = {}) => {
   const gpsFix: PositionFix = {
     latitude: coords.latitude,
     longitude: coords.longitude,
-    timeMillis: getTimestampAsMillis(timestamp),
+    timeMillis: DEV_MODE ? getNowAsMillis() : getTimestampAsMillis(timestamp),
     speedInKnots: metersPerSecondsToKnots(Math.max(0, coords.speed)),
     bearingInDeg: Math.max(0, coords.heading),
     accuracy: coords.accuracy,
