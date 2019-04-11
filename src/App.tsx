@@ -34,6 +34,7 @@ const AppWithNetworkConnectivity = withNetworkConnectivity({
   withRedux: true, // no isConnected as a prop in this case
   checkConnectionInterval: 3000,
   checkInBackground: true,
+  pingServerUrl: 'https://www.google.com/',
 })(AppRoot)
 
 // must be a component to support hot reloading
