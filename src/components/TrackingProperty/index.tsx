@@ -41,7 +41,7 @@ class TrackingProperty extends React.Component<ViewProps & {
       unitStyle,
       onPress,
       titlePosition = 'top',
-      allowFontScaling = true
+      allowFontScaling = false
     } = this.props
 
     const containerStyle = titlePosition === 'left' ? styles.titleLeftContainer : undefined
