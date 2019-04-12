@@ -9,17 +9,6 @@ export default EStyleSheet.create({
     marginTop: '$largeSpacing-8',
     marginBottom: '$largeSpacing-4',
   },
-  closeButton: {
-    width: '$defaultIconSize',
-    height: '$defaultIconSize',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    resizeMode: 'contain',
-    tintColor: '$secondaryButtonColor',
-    marginRight: '$smallSpacing',
-    marginTop: '$baseSpacing',
-  },
   title: {
     marginTop: '$baseSpacing+5',
   },
