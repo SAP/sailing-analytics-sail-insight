@@ -54,6 +54,7 @@
 		408E7F7645A14C0885E4A72E /* libreact-native-branch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9190A08B7C4606B6AD7F69 /* libreact-native-branch.a */; };
 		44240950FA4CEE323610BF38 /* libPods-sap_sailing_insight-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BDE9E0193E8C6E5DD7A7DAC /* libPods-sap_sailing_insight-tvOSTests.a */; };
 		4439F9950E0D4FEFAEBAA1EF /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48D19F3865F54560A363145B /* libRNBackgroundTimer.a */; };
+		4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B2B06EC2267239A0009FAEC /* InfoPlist.strings */; };
 		5536C5CA256B48ED8D5F9AC2 /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC6180A3A444A9DB5927ECA /* libRNI18n.a */; };
 		57BC4A89C8DD4BD596D64D6E /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E652804557F46EBA1BACA13 /* libBVLinearGradient.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -581,6 +582,8 @@
 		3985FC0D624FBAC4C89E6140 /* Pods-sap_sailing_insight-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight-tvOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sap_sailing_insight-tvOS/Pods-sap_sailing_insight-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		48801B0D5D4B4D46A81DDB39 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		48D19F3865F54560A363145B /* libRNBackgroundTimer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundTimer.a; sourceTree = "<group>"; };
+		4B2B06EB2267239A0009FAEC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		4BC71877226725C5007EE0CD /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4E58F80BC109C99DB78ED31D /* Pods-sap_sailing_insight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sap_sailing_insight/Pods-sap_sailing_insight.debug.xcconfig"; sourceTree = "<group>"; };
 		50BB2900979E052472E0F006 /* Pods-sap_sailing_insight-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight-tvOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-sap_sailing_insight-tvOS/Pods-sap_sailing_insight-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		527570D5D0A34C3C8710BFE9 /* bentonsans_regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = file; name = bentonsans_regular.otf; path = ../assets/fonts/bentonsans_regular.otf; sourceTree = "<group>"; };
@@ -814,6 +817,7 @@
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				7704A56BFAED466EB8F8F240 /* RNBackgroundFetch+AppDelegate.m */,
+				4B2B06EC2267239A0009FAEC /* InfoPlist.strings */,
 			);
 			name = sap_sailing_insight;
 			sourceTree = "<group>";
@@ -1279,8 +1283,10 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
+				de,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
@@ -1864,6 +1870,7 @@
 				195A914BAA404C6D906E1E3B /* bentonsans_light.otf in Resources */,
 				39B02C161FDF4356BFD9A53D /* bentonsans_medium.otf in Resources */,
 				9305B9B167824E1FA4A23E48 /* bentonsans_thin.otf in Resources */,
+				4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2101,6 +2108,15 @@
 			);
 			name = LaunchScreen.xib;
 			path = sap_sailing_insight;
+			sourceTree = "<group>";
+		};
+		4B2B06EC2267239A0009FAEC /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4B2B06EB2267239A0009FAEC /* en */,
+				4BC71877226725C5007EE0CD /* de */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
