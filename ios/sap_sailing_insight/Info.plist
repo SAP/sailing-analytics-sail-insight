@@ -53,7 +53,7 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>App requires calendar</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Sail Insight requires camera access, to be able to scan QR-Codes. The permission is only used for this functionality.</string>
+	<string>Sail Insight requires camera access, to be able to scan QR-Codes and take a team photo. The permission is only used for this functionality.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
