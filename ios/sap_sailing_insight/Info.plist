@@ -30,7 +30,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>18</string>
+	<string>19</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -53,19 +53,19 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>App requires calendar</string>
 	<key>NSCameraUsageDescription</key>
-	<string>App requires camera</string>
+	<string>Sail Insight requires camera access, to be able to scan QR-Codes and take a team photo. The permission is only used for this functionality.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>App requires background tracking</string>
+	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>App requires background tracking</string>
+	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>App requires background tracking</string>
+	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App requires background tracking</string>
+	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>App requires microphone</string>
 	<key>NSMotionUsageDescription</key>
-	<string>App requires motion tracking</string>
+	<string>Accelerometer use increases battery efficiency by intelligently toggling location-tracking</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App requires photo library</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

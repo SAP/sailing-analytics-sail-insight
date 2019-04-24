@@ -1,0 +1,15 @@
+/* 
+  InfoPlist.strings
+  sap_sailing_insight
+
+  Created by Philipp Pajak on 17.04.19.
+  Copyright © 2019. All rights reserved.
+*/
+NSCameraUsageDescription = "Sail Insight requires camera access, to be able to scan QR-Codes and take a team photo. The permission is only used for this functionality.";
+
+NSLocationAlwaysAndWhenInUseUsageDescription = "Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.";
+NSLocationAlwaysUsageDescription = "Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.";
+NSLocationUsageDescription = "Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.";
+NSLocationWhenInUseUsageDescription = "Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.";
+
+NSMotionUsageDescription = "Accelerometer use increases battery efficiency by intelligently toggling location-tracking.";
