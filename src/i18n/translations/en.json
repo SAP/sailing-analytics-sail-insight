@@ -8,7 +8,7 @@
   "title_maneuver_monitor": "Maneuver Monitor",
   "title_edit_session": "Edit",
   "title_set_wind": "Set wind",
-  "title_eula": "Terms and Conditions & Privacy Policy",
+  "title_eula": "Terms and Conditions\n\t Privacy Policy",
 
   "text_more_information_at": "More information at",
   "text_device_id": "Device id",
@@ -150,7 +150,7 @@
   "caption_new_session": "New event",
   "caption_new_boat": "New boat",
   "caption_start": "Start",
-  "caption_share_session": "Invite friends to event",
+  "caption_share_session": "Invite friends",
   "caption_beta_session": "BETA",
   "caption_lets_go": "Let's go!",
   "caption_login": "Login",

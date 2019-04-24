@@ -25,6 +25,7 @@ class TrackingProperty extends React.Component<ViewProps & {
   tendency?: 'up' | 'down',
   titlePosition?: 'top' | 'left',
   rightIcon?: ImageSourcePropType,
+  allowFontScaling?: boolean
 } > {
 
   public state: {valueContainerHeight?: number} = { valueContainerHeight: undefined }
@@ -40,6 +41,7 @@ class TrackingProperty extends React.Component<ViewProps & {
       unitStyle,
       onPress,
       titlePosition = 'top',
+      allowFontScaling = false
     } = this.props
 
     const containerStyle = titlePosition === 'left' ? styles.titleLeftContainer : undefined
@@ -55,6 +57,7 @@ class TrackingProperty extends React.Component<ViewProps & {
           <Text
             style={[styles.title, titleStyle]}
             numberOfLines={1}
+            allowFontScaling={allowFontScaling}
             ellipsizeMode="tail"
           >
             {title && title.toUpperCase()}
@@ -62,12 +65,13 @@ class TrackingProperty extends React.Component<ViewProps & {
         }
         <View style={styles.valueContainer} onLayout={this.onValueContainerLayout}>
           <View style={styles.innerValueContainer}>
-            <Text style={[styles.value, valueStyle]}>
+            <Text style={[styles.value, valueStyle]} allowFontScaling={allowFontScaling}>
               {value}
               {
                 unit &&
                 <Text
                   style={[styles.unit, unitStyle]}
+                  allowFontScaling={allowFontScaling}
                 >
                   {` ${unit.toUpperCase()}`}
                 </Text>

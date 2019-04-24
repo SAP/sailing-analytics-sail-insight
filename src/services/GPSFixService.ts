@@ -82,7 +82,10 @@ export const storeGPSFix = (serverUrl: string, gpsFix: PositionFix) =>
 
 export const unsentGpsFixCount = () => {
   const fixes = readGPSFixRequests()
-  return fixes && fixes.length
+  if (!fixes) {
+    return 0
+  }
+  return fixes.length
 }
 
 export const startPeriodicalGPSFixUpdates = (bulkTransfer: boolean, dispatch: DispatchType) => {
