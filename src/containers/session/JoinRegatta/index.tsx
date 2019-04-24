@@ -12,6 +12,7 @@ import { dateTimeText } from 'helpers/date'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { openEmailToContact } from 'helpers/user'
 import { CheckIn } from 'models'
+import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
@@ -24,6 +25,7 @@ import { registration } from 'styles/components'
 import EulaLink from 'components/EulaLink'
 import IconText from 'components/IconText'
 import Image from 'components/Image'
+import ImageButton from 'components/ImageButton'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
@@ -138,7 +140,11 @@ class JoinRegatta extends React.Component<{
             {I18n.t('caption_need_help')}
           </TextButton>
         </View>
-      </ScrollContentView >
+        <ImageButton
+            style={button.closeButton}
+            source={Images.actions.close}
+            onPress={navigateToSessions}/>
+      </ScrollContentView>
     )
   }
 }

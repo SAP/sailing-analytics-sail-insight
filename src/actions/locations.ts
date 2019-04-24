@@ -10,7 +10,6 @@ import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
-  removeTrackedRegatta,
   updateStartedAt,
   updateTrackedRegatta,
   updateTrackingStatistics,
@@ -44,23 +43,23 @@ export const startLocationUpdates = (
     dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
     Logger.debug('Error during startLocationUpdates', err)
-    dispatch(removeTrackedRegatta())
+    // dispatch(removeTrackedRegatta())
   }
 }
 
 export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
   Logger.debug('Stopping Location updates...')
-  if (await LocationService.isEnabled()) {
-    try {
+  try {
+    if (await LocationService.isEnabled()) {
       await LocationService.changePace(false)
       await LocationService.stop()
       GpsFixService.stopGPSFixUpdates()
       Logger.debug('Location updates stopped.')
-    } catch (e) {
-      Logger.debug('Error during stopping location updates', e)
+    } else {
+      Logger.debug('stopLocationUpdates already stopped.')
     }
-  } else {
-    Logger.debug('stopLocationUpdates already stopped.')
+  } catch (e) {
+    Logger.debug('Error during stopping location updates', e)
   }
 }
 

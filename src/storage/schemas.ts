@@ -9,6 +9,7 @@ export const GPS_FIX_PROPERTY_NAME = 'gpsFix'
 
 export const GPS_FIX_SCHEMA_NAME = 'GPSFix'
 export const GPS_FIX_REQUEST_SCHEMA_NAME = 'GPSFixRequest'
+export const GPS_FIX_REQUEST_DUPLICATE_SCHEMA_NAME = 'GPSFixRequestDuplicate'
 
 export const GPS_SCHEMA: Realm.ObjectSchema = {
   name: GPS_FIX_SCHEMA_NAME,
@@ -17,6 +18,14 @@ export const GPS_SCHEMA: Realm.ObjectSchema = {
 
 export const GPS_REQUEST_SCHEMA: Realm.ObjectSchema = {
   name: GPS_FIX_REQUEST_SCHEMA_NAME,
+  properties: {
+    [BASE_URL_PROPERTY_NAME]: 'string',
+    [GPS_FIX_PROPERTY_NAME]: { type: GPS_FIX_SCHEMA_NAME },
+  },
+}
+
+export const GPS_REQUEST_DUPLICATE_SCHEMA: Realm.ObjectSchema = {
+  name: GPS_FIX_REQUEST_DUPLICATE_SCHEMA_NAME,
   properties: {
     [BASE_URL_PROPERTY_NAME]: 'string',
     [GPS_FIX_PROPERTY_NAME]: { type: GPS_FIX_SCHEMA_NAME },

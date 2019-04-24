@@ -1,4 +1,5 @@
 import { get, isNumber } from 'lodash'
+import { defaultTo } from 'ramda'
 import React from 'react'
 import { View } from 'react-native'
 import timer from 'react-native-timer'
@@ -48,16 +49,16 @@ class ManeuverMonitor extends React.Component<NavigationScreenProps & {
   public render() {
     const { maneuver } = this.props
 
-    const cogChange = `${this.toFixedFractionText(maneuver.cogAfterInTrueDegrees - maneuver.cogBeforeInTrueDegrees)}°`
+    const cogChange = `${this.toFixedFractionText(maneuver.cogAfterInTrueDegrees - maneuver.cogBeforeInTrueDegrees, 0)}°`
     const maneuverLoss = this.toFixedFractionText('maneuverLoss.meters')
-    const lowestSpeed = this.toFixedFractionText('lowestSpeedInKnots')
-    const speedEnter = this.toFixedFractionText('speedBeforeInKnots')
-    const speedEnd = this.toFixedFractionText('speedAfterInKnots')
+    const lowestSpeed = this.toFixedFractionText('lowestSpeedInKnots', 1)
+    const speedEnter = this.toFixedFractionText('speedBeforeInKnots', 1)
+    const speedEnd = this.toFixedFractionText('speedAfterInKnots', 1)
     const speedChange = speedEnter && speedEnd ?
-      this.toFixedFractionText(maneuver.speedAfterInKnots - maneuver.speedBeforeInKnots) :
+      this.toFixedFractionText(maneuver.speedAfterInKnots - maneuver.speedBeforeInKnots, 1) :
       undefined
-    const turnMaxRate = `${this.toFixedFractionText('maxTurningRateInDegreesPerSecond')}°`
-    const turnAvgRate = `${this.toFixedFractionText('avgTurningRateInDegreesPerSecond')}°`
+    const turnMaxRate = `${this.toFixedFractionText('maxTurningRateInDegreesPerSecond', 0)}°`
+    const turnAvgRate = `${this.toFixedFractionText('avgTurningRateInDegreesPerSecond', 0)}°`
 
     const propertyProps = {
       titleStyle: styles.lowerTitle,
@@ -69,16 +70,16 @@ class ManeuverMonitor extends React.Component<NavigationScreenProps & {
       <View style={container.main}>
         <View style={[container.largeHorizontalMargin, container.stretchContent, styles.container]}>
           <TrackingPropertyAutoFit
-            style={styles.dynamicPropertyContainer}
-            title={I18n.t('text_maneuver_cog_change')}
-            value={cogChange}
-          />
-          <TrackingPropertyAutoFit
             style={[styles.dynamicPropertyContainer, styles.property]}
             title={I18n.t('text_maneuver_loss')}
             value={maneuverLoss}
             unit={I18n.t('text_tracking_unit_meters')}
             // tendency="down"
+          />
+          <TrackingPropertyAutoFit
+            style={styles.dynamicPropertyContainer}
+            title={I18n.t('text_maneuver_cog_change')}
+            value={cogChange}
           />
           <TrackingPropertyAutoFit
             style={[styles.dynamicPropertyContainer, styles.property]}
@@ -145,7 +146,7 @@ class ManeuverMonitor extends React.Component<NavigationScreenProps & {
     const { maneuver } = this.props
     const num = isNumber(value) ? value : get(maneuver, value)
     return num ?
-      num.toFixed(fractionDigits || 2).toString() :
+      num.toFixed(defaultTo(2, fractionDigits)).toString() :
       undefined
   }
 }

@@ -74,4 +74,16 @@ export default EStyleSheet.create({
     height: '$defaultIconSize+$actionIconSizeAddition',
     padding: '$microSpacing',
   },
+
+  closeButton: {
+    width:       '$defaultIconSize',
+    height:      '$defaultIconSize',
+    position:    'absolute',
+    top:         0,
+    right:       0,
+    resizeMode:  'contain',
+    tintColor:   '$secondaryButtonColor',
+    marginRight: '$smallSpacing',
+    marginTop:   '$baseSpacing'
+  }
 })

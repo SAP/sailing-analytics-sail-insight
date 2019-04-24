@@ -10,6 +10,7 @@ import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { BoatTemplate, CheckIn, CompetitorInfo } from 'models'
+import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getUserInfo } from 'selectors/auth'
 import { getLastUsedBoat, getUserBoats } from 'selectors/user'
@@ -20,6 +21,7 @@ import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
+import ImageButton from 'components/ImageButton'
 
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
@@ -130,7 +132,11 @@ class EditCompetitor extends TextInputForm<Props> {
             {I18n.t('caption_accept')}
           </TextButton>
         </View>
-      </ScrollContentView >
+        <ImageButton
+            style={button.closeButton}
+            source={Images.actions.close}
+            onPress={navigateToSessions}/>
+      </ScrollContentView>
     )
   }
 
