@@ -84,6 +84,6 @@ export default EStyleSheet.create({
     resizeMode:  'contain',
     tintColor:   '$secondaryButtonColor',
     marginRight: '$smallSpacing',
-    marginTop:   '$baseSpacing'
-  }
+    marginTop:   '$baseSpacing',
+  },
 })
