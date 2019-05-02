@@ -1,5 +1,6 @@
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
+import I18n from 'i18n'
 
 import { CheckIn, CheckInUpdate } from 'models'
 import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
@@ -10,12 +11,13 @@ import CheckInException from 'services/CheckInService/CheckInException'
 import { ActionQueue, fetchEntityAction, withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
-import { DispatchType } from 'helpers/types'
+import { DispatchType, GetStateType } from 'helpers/types'
 import { spreadableList } from 'helpers/utils'
 
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
-
+import { LocationTrackingStatus } from 'services/LocationService'
+import { getLocationTrackingStatus } from 'selectors/location'
 
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
@@ -115,8 +117,19 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
   },
 )
 
-export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: DispatchType) => {
+export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
+  
+  if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
+    Alert.alert(
+      I18n.t('text_deep_link_tracking_active_title'),
+      I18n.t('text_deep_link_tracking_active_message'),
+      [{ text: 'OK' } ],
+      { cancelable: false })
+
+    return
+  }
+
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
