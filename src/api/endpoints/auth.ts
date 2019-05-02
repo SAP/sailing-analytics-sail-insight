@@ -29,8 +29,13 @@ export default {
   ) as Promise<ApiAccessToken>,
 
   accessToken: (email: string, password: string) => dataRequest(
-    endpoints.accessToken({ urlParams: { password, username: email } }),
-    { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
+    endpoints.accessToken(),
+    { method: HttpMethods.POST,
+      dataProcessor: mapResToAccessTokenData,
+      signer: null,
+      body: { password, username: email },
+      bodyType: 'x-www-form-urlencoded'
+    },
   ) as Promise<ApiAccessToken>,
 
   updateUser: (data: any) => request(
