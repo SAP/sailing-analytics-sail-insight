@@ -40,16 +40,16 @@ class AppSettings extends React.Component<ViewProps & {
           <LineSeparator/>
           <View>
             <EditItemSwitch
-                style={styles.item}
-                title={I18n.t('caption_setting_bulk_gps')}
-                switchValue={this.props.bulkGpsSetting}
-                onSwitchValueChange={this.props.updateGpsBulkSetting}
+              style={styles.item}
+              title={I18n.t('caption_setting_bulk_gps')}
+              switchValue={this.props.bulkGpsSetting}
+              onSwitchValueChange={this.props.updateGpsBulkSetting}
             />
             <EditItemSwitch
-                style={styles.item}
-                title={I18n.t('caption_setting_analytics')}
-                switchValue={this.props.enableAnalytics}
-                onSwitchValueChange={this.props.changeAnalyticsSetting}
+              style={styles.item}
+              title={I18n.t('caption_setting_analytics')}
+              switchValue={this.props.enableAnalytics}
+              onSwitchValueChange={this.props.changeAnalyticsSetting}
             />
             <Text style={styles.item}>
               {I18n.t('text_setting_gps_bulk', { timeInSeconds: BULK_UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
