@@ -28,7 +28,7 @@ class EditItem extends React.Component<ViewProps & {
 
     return (
       <View style={[styles.container, style]}>
-        <TitleLabel title={title}>
+        <TitleLabel style={styles.title} title={title}>
           {children}
         </TitleLabel>
         {this.renderEditView()}
