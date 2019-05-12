@@ -6,6 +6,7 @@ import { WrappedFieldProps } from 'redux-form'
 import I18n from 'i18n'
 
 import { assetApiEndpoint, selfTrackingApi } from '../../../api'
+import { getApiServerUrl } from '../../../api/config'
 import { BoatClassesdBody } from '../../../api/endpoints/types'
 import { getErrorDisplayMessage } from 'helpers/texts'
 
@@ -31,7 +32,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   }
 
   public componentDidMount() {
-    selfTrackingApi.requestBoatClasses().then((boatClasses: BoatClassesdBody[]) => {
+    selfTrackingApi().requestBoatClasses().then((boatClasses: BoatClassesdBody[]) => {
       this.setState({ boatClasses })
     }).catch((err) => {
       Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
@@ -88,7 +89,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   }
 
   protected renderItem = (item: BoatClassesdBody) => {
-    const iconSource = item.iconUrl ? { uri: assetApiEndpoint(item.iconUrl)() } : ''
+    const iconSource = item.iconUrl ? { uri: assetApiEndpoint(getApiServerUrl())(item.iconUrl)() } : ''
     return (
         <TouchableOpacity
             style={styles.listItem}

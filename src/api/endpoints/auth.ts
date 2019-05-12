@@ -1,4 +1,4 @@
-import { getSecurityUrl, HttpMethods } from 'api/config'
+import { getApiServerUrl, getSecurityGenerator, HttpMethods } from 'api/config'
 import { dataRequest, request } from 'api/handler'
 import { isEmpty } from 'lodash'
 import {
@@ -8,39 +8,53 @@ import {
 import { mapResToAccessTokenData } from 'models/ApiAccessToken'
 import { mapResToUser } from 'models/User'
 
+export interface SecurityApi {
+  user: (username?: string) => any,
+  register: (username: string, email: string, password: string, fullName?: string) => any,
+  accessToken: (email: string, password: string) => any,
+  updateUser: (data: any) => any,
+  requestPasswordReset: (username: string, email: string) => any,
 
-const endpoints = ({
-  createUser: getSecurityUrl('/create_user'),
-  user: getSecurityUrl('/user'),
-  accessToken: getSecurityUrl('/access_token'),
-  forgotPassword: getSecurityUrl('/forgot_password'),
-})
+}
+const securityEndpoints = (serverUrl: string) => {
+  const getSecurityUrl = getSecurityGenerator(serverUrl)
+  return {
+    createUser: getSecurityUrl('/create_user'),
+    user: getSecurityUrl('/user'),
+    accessToken: getSecurityUrl('/access_token'),
+    forgotPassword: getSecurityUrl('/forgot_password'),
+  }
+}
 
+const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
+  const endpoints = securityEndpoints(serverUrl ? serverUrl : getApiServerUrl())
+  return {
+    user: (username?: string) => dataRequest(
+      endpoints.user({ urlParams: username && { username } }),
+      { dataProcessor: mapResToUser },
+    ) as Promise<User>,
 
-export default {
-  user: (username?: string) => dataRequest(
-    endpoints.user({ urlParams: username && { username } }),
-    { dataProcessor: mapResToUser },
-  ) as Promise<User>,
+    register: (username: string, email: string, password: string, fullName?: string) => dataRequest(
+      endpoints.createUser({ urlParams: { email, password, username, ...(fullName && { fullName }) } }),
+      { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
+    ) as Promise<ApiAccessToken>,
 
-  register: (username: string, email: string, password: string, fullName?: string) => dataRequest(
-    endpoints.createUser({ urlParams: { email, password, username, ...(fullName && { fullName }) } }),
-    { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
-  ) as Promise<ApiAccessToken>,
+    accessToken: (email: string, password: string) => dataRequest(
+      endpoints.accessToken({ urlParams: { password, username: email } }),
+      { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
+    ) as Promise<ApiAccessToken>,
 
-  accessToken: (email: string, password: string) => dataRequest(
-    endpoints.accessToken({ urlParams: { password, username: email } }),
-    { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
-  ) as Promise<ApiAccessToken>,
+    updateUser: (data: any) => request(
+      endpoints.user({ urlParams: data }),
+      { method: HttpMethods.PUT },
+    ),
 
-  updateUser: (data: any) => request(
-    endpoints.user({ urlParams: data }),
-    { method: HttpMethods.PUT },
-  ),
-
-  requestPasswordReset: (username: string, email: string) => dataRequest(
+    requestPasswordReset: (username: string, email: string) => dataRequest(
       !isEmpty(username) ? endpoints.forgotPassword({ urlParams: { username } }) :
-          endpoints.forgotPassword({ urlParams: { email } }),
+        endpoints.forgotPassword({ urlParams: { email } }),
       { method: HttpMethods.POST },
     ),
+  }
 }
+
+export default securityApi
