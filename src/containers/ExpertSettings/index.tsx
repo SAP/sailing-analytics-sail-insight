@@ -22,7 +22,7 @@ import styles from './styles'
 
 interface Props {
   formServer?: string,
-  updateBaseServerSetting: (value: string) => void,
+  updateServerUrlSetting: (value: string) => void,
 }
 
 class ExpertSettings extends TextInputForm<Props> {
@@ -63,7 +63,7 @@ class ExpertSettings extends TextInputForm<Props> {
   }
 
   protected onSubmit = async (values: any) => {
-    await this.props.updateBaseServerSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
+    await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
   }
 }
 
