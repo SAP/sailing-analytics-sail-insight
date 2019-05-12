@@ -82,7 +82,7 @@ const deviceMapping = (endpoint: (options?: UrlOptions) => string) => (leaderboa
 )
 
 // tslint:disable-next-line max-line-length
-const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string, secret: string) => dataRequest(
+const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string, secret?: string) => dataRequest(
   url({ pathParams: [leaderboardName], urlParams: { secret, raceDetails: 'ALL' } }),
   { dataSchema: leaderboardSchema },
 )
