@@ -17,6 +17,7 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 import { updateServerUrlSetting } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import * as expertSettingsForm from '../../forms/settings'
+import { navigateBack } from '../../navigation'
 import { getServerUrlSetting } from '../../selectors/settings'
 import styles from './styles'
 
@@ -48,7 +49,7 @@ class ExpertSettings extends TextInputForm<Props> {
             keyboardType={'default'}
             returnKeyType="next"
             inputRef={this.handleInputRef(expertSettingsForm.FORM_KEY_SERVER_URL)}
-            onSubmitEditing={this.onSubmit}
+            onSubmitEditing={this.handleOnSubmitInput(expertSettingsForm.FORM_KEY_SERVER_URL)}
           />
           <TextButton
             style={registration.nextButton()}
@@ -64,6 +65,7 @@ class ExpertSettings extends TextInputForm<Props> {
 
   protected onSubmit = async (values: any) => {
     await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
+    navigateBack()
   }
 }
 
