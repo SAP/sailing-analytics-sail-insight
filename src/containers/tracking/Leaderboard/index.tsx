@@ -38,16 +38,18 @@ class Leaderboard extends React.Component<{
     const { trackedLeaderboardData, leaderboardData } = this.props
 
     const competitorsHardcoded = [
-      { name: 'foo', rank: 2 },
-      { name: 'bar', rank: 3 },
-      { name: 'bem', rank: 5 },
-      { name: 'for', rank: 6 },
-      { name: 'baz', rank: 1 },
-      { name: 'buz', rank: 4 },
+      { name: 'foo', rank: 2, calculatedTimeAtFastest: 10 },
+      { name: 'bar', rank: 3 , calculatedTimeAtFastest: 11 },
+      { name: 'bem', rank: 5 , calculatedTimeAtFastest: 34 },
+      { name: 'thud', rank: 8, calculatedTimeAtFastest: 137 },
+      { name: 'for', rank: 6, calculatedTimeAtFastest: 54 },
+      { name: 'quz', rank: 1, calculatedTimeAtFastest: '0' },
+      { name: 'fred', rank: 7, calculatedTimeAtFastest: 86 },
+      { name: 'quuz', rank: 4, calculatedTimeAtFastest: 23 },
     ]
 
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
-    const leaderboard = _.sortBy(competitorData, ['rank'])
+    const leaderboard = _.sortBy(competitorsHardcoded, ['rank'])
 
     const trackedLeaderboard = this.extractCompetitorData(
       trackedLeaderboardData,
@@ -61,7 +63,7 @@ class Leaderboard extends React.Component<{
             <View>
               <TrackingProperty
                 title={I18n.t('text_tracking_rank')}
-                value={trackedLeaderboard.rank || EMPTY_VALUE}
+                value={trackedLeaderboard.regattaRank || EMPTY_VALUE}
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
@@ -122,8 +124,11 @@ class Leaderboard extends React.Component<{
         <View
           style={[container.mediumHorizontalMargin, styles.listItemContainer]}
         >
-          <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
+        <View style={[styles.textContainer]}>
           <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
+          <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
+        </View>
+          <Text style={[styles.rankText]}>{calculatedTimeAtFastest || EMPTY_VALUE}</Text>
         </View>
         <Seperator />
       </View>

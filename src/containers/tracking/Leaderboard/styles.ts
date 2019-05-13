@@ -24,12 +24,17 @@ export default EStyleSheets.create({
     color: '$secondaryTextColor',
     fontSize: 24,
     letterSpacing: -0.8,
+    marginLeft: 15,
   },
   rankText: {
     color: '$primaryTextColor',
     fontSize: 32,
     fontWeight: 'bold',
     letterSpacing: -0.8,
+  },
+  textContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   separator: {
     height: 2,
