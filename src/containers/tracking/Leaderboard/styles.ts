@@ -22,9 +22,10 @@ export default EStyleSheets.create({
   },
   nameText: {
     color: '$secondaryTextColor',
-    fontSize: 24,
+    fontSize: 16,
     letterSpacing: -0.8,
     marginLeft: 15,
+    maxWidth: 150,
   },
   rankText: {
     color: '$primaryTextColor',
