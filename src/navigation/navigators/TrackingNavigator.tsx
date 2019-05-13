@@ -5,6 +5,7 @@ import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 
 import SetWind from 'containers/tracking/SetWind'
+import Leaderboard from 'containers/tracking/Leaderboard'
 import Tracking from 'containers/tracking/Tracking'
 
 export default createStackNavigator(
@@ -20,6 +21,12 @@ export default createStackNavigator(
       screen: SetWind,
       navigationOptions: {
         title: I18n.t('title_set_wind'),
+      },
+    },
+    [Screens.Leaderboard]: {
+      screen: Leaderboard,
+      navigationOptions: {
+        title: I18n.t('title_leaderboard'),
       },
     },
   },

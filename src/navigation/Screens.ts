@@ -35,6 +35,7 @@ export const TrackingSetupAction = 'TrackingSetupAction'
 export const ManeuverMonitor = 'ManeuverMonitor'
 export const SetWind = 'SetWind'
 export const TrackDetails = 'TrackDetails'
+export const Leaderboard = 'Leaderboard'
 
 // auth
 export const Register = 'Register'

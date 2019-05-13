@@ -13,7 +13,7 @@ import { degToCompass } from 'helpers/physics'
 import { openSAPWebsite } from 'helpers/user'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
-import { navigateBack, navigateToSetWind } from 'navigation'
+import { navigateBack, navigateToLeaderboard, navigateToSetWind } from 'navigation'
 import { getBoat } from 'selectors/boat'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
@@ -81,15 +81,13 @@ class Tracking extends React.Component<{
               />
             </View>
             <View
-              style={[
-                styles.rightPropertyContainer,
-                checkInData.isSelfTracking ? undefined : styles.singleValue,
-              ]}
+              style={[styles.rightPropertyContainer]}
             >
               <TrackingProperty
                 style={styles.windProperty}
                 title={I18n.t('text_tracking_rank')}
                 value={`${leaderboardData.rank || EMPTY_VALUE}`}
+                onPress={this.onLeaderboardPress}
               />
             </View>
           </View>
@@ -179,6 +177,10 @@ class Tracking extends React.Component<{
     } finally {
       this.setState({ isLoading: false })
     }
+  }
+
+  protected onLeaderboardPress = () => {
+    navigateToLeaderboard()
   }
 
   protected onSetWindPress = () => {
