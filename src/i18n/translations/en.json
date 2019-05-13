@@ -53,6 +53,7 @@
   "text_tracking_time": "Time",
   "text_tracking_distance": "Distance",
   "text_tracking_wind": "Wind",
+  "text_tracking_rank": "Rank",
   "text_tracking_unit_knots": "kts",
   "text_tracking_unit_meters": "m",
   "text_statistics_empty_state": "Unfortunately there are no statistics!",
@@ -184,7 +185,7 @@
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",
-  "error_with_code" : "Oops, something went wrong here.\nPlease try again! ({{code}})",  
+  "error_with_code" : "Oops, something went wrong here.\nPlease try again! ({{code}})",
   "error_field_required": "Field is required.",
   "error_field_already_exists": "Already exists.",
   "error_field_invalid_email": "No valid e-mail address.",

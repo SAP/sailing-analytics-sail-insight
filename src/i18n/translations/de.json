@@ -9,7 +9,7 @@
   "title_edit_session": "Bearbeiten",
   "title_set_wind": "Wind setzen",
   "title_eula": "AGB & Datenschutzrichtlinie",
-  
+
   "text_more_information_at" : "Mehr Informationen auf",
   "text_device_id": "Geräte-ID",
   "text_accuracy": "Genauigkeit",
@@ -53,6 +53,7 @@
   "text_tracking_time": "Zeit",
   "text_tracking_distance": "Strecke",
   "text_tracking_wind": "Wind",
+  "text_tracking_rank": "Platz",
   "text_tracking_unit_knots": "kts",
   "text_tracking_unit_meters": "m",
   "text_statistics_empty_state": "Leider gibt es hier noch keine Statistiken!",

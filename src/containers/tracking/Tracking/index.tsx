@@ -17,6 +17,7 @@ import { navigateBack, navigateToSetWind } from 'navigation'
 import { getBoat } from 'selectors/boat'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
+import { getTrackedCompetitorLeaderboardData } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { getMark } from 'selectors/mark'
 
@@ -39,6 +40,7 @@ class Tracking extends React.Component<{
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
+  leaderboardData: any,
 } > {
   public state = {
     isLoading: false,
@@ -59,7 +61,7 @@ class Tracking extends React.Component<{
   }
 
   public render() {
-    const { trackingStats, checkInData, trackedContextName } = this.props
+    const { trackingStats, checkInData, trackedContextName, leaderboardData } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
     const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(0)}°` : EMPTY_VALUE
@@ -70,13 +72,28 @@ class Tracking extends React.Component<{
         <ConnectivityIndicator style={styles.connectivity}/>
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={[container.mediumHorizontalMargin, styles.container]}>
+          <View style={styles.propertyRow}>
+            <View>
+              <TrackingPropertyAutoFit
+                title={I18n.t('text_tracking_sog')}
+                value={speedOverGround}
+                unit={I18n.t('text_tracking_unit_knots')}
+              />
+            </View>
+            <View
+              style={[
+                styles.rightPropertyContainer,
+                checkInData.isSelfTracking ? undefined : styles.singleValue,
+              ]}
+            >
+              <TrackingProperty
+                style={styles.windProperty}
+                title={I18n.t('text_tracking_rank')}
+                value={`${leaderboardData.rank || EMPTY_VALUE}`}
+              />
+            </View>
+          </View>
           <View style={[container.stretchContent]}>
-            <TrackingPropertyAutoFit
-              style={styles.dynamicPropertyContainer}
-              title={I18n.t('text_tracking_sog')}
-              value={speedOverGround}
-              unit={I18n.t('text_tracking_unit_knots')}
-            />
             <TrackingPropertyAutoFit
               style={[styles.dynamicPropertyContainer, styles.property]}
               title={I18n.t('text_tracking_cog')}
@@ -203,6 +220,7 @@ const mapStateToProps = (state: any) => {
       getMark(checkInData.markId)(state),
       'name',
     ),
+    leaderboardData: getTrackedCompetitorLeaderboardData(state) || {},
   }
 }
 

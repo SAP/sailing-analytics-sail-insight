@@ -15,6 +15,7 @@ import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import { updateLoadingCheckInFlag } from 'actions/checkIn'
+import { startLeaderboardUpdates, stopLeaderboardUpdates } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
@@ -32,6 +33,7 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
       return
     }
     await dispatch(stopLocationUpdates())
+    await dispatch(stopLeaderboardUpdates())
     await syncAllFixes(dispatch)
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
       await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
@@ -93,7 +95,8 @@ export const startTracking: StartTrackingAction = data =>  async (
         Logger.debug(err)
       }
     }
-    dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId))
+    await dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId))
+    await dispatch(startLeaderboardUpdates(checkInData))
   } catch (err) {
     throw err
   } finally {

@@ -33,6 +33,11 @@ export const getTrackedCheckIn = createSelector(
   (checkInEntity = {}, leaderboardName) => checkInEntity[leaderboardName] as CheckIn,
 )
 
+export const getTrackedCheckInCompetitorId = createSelector(
+  getTrackedCheckIn,
+  checkIn => checkIn && checkIn.competitorId,
+)
+
 export const getTrackedCheckInBaseUrl = createSelector(
   getTrackedCheckIn,
   checkIn => checkIn && checkIn.serverUrl,
