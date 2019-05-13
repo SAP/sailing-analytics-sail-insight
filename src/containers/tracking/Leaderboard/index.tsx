@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import { FlatList, View } from 'react-native'
+import Flag from 'react-native-flags'
 import { connect } from 'react-redux'
 
 import I18n from 'i18n'
@@ -32,7 +33,7 @@ const Seperator = () => {
 class Leaderboard extends React.Component<{
   trackedLeaderboardData: any
   leaderboardData: any
-  checkInData: CheckIn
+  checkInData: CheckIn,
 }> {
   public render() {
     const { trackedLeaderboardData, leaderboardData } = this.props
@@ -92,6 +93,7 @@ class Leaderboard extends React.Component<{
       currentTrackName &&
       _.get(competitorData, ['columns', currentTrackName, 'rank'])
     const regattaRank = _.get(competitorData, 'overallRank')
+    const country = _.get(competitorData, 'countryCode')
     const fleet =
       currentTrackName &&
       _.get(competitorData, ['columns', currentTrackName, 'fleet'])
@@ -127,7 +129,7 @@ class Leaderboard extends React.Component<{
   }
 
   private renderItem = ({ item }: any) => {
-    const { name, rank, regattaRank, calculatedTimeAtFastest } = item
+    const { name, rank, regattaRank, country, calculatedTimeAtFastest } = item
     return (
       <View style={[styles.listRowContainer]}>
         <View
@@ -135,6 +137,11 @@ class Leaderboard extends React.Component<{
         >
         <View style={[styles.textContainer]}>
           <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
+          <Flag
+            style={[styles.flag]}
+            code={country}
+            size={24}
+          />
           <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
         </View>
           <Text style={[styles.gapText]}>{calculatedTimeAtFastest || EMPTY_VALUE}</Text>

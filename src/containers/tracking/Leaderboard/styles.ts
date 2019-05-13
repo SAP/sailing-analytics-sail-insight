@@ -24,8 +24,11 @@ export default EStyleSheets.create({
     color: '$secondaryTextColor',
     fontSize: 16,
     letterSpacing: -0.8,
-    marginLeft: 15,
+    marginLeft: 10,
     maxWidth: 150,
+  },
+  flag: {
+    marginLeft: 25,
   },
   rankText: {
     color: '$primaryTextColor',
