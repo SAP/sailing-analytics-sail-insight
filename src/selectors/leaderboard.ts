@@ -4,7 +4,7 @@ import { createSelector } from 'reselect'
 import { LEADERBOARD_ENTITY_NAME } from 'api/schemas'
 import { getEntities, getEntityArrayByType, getEntityById } from './entity'
 
-import { getTrackedCheckInCompetitorId } from './checkIn'
+import { getTrackedCheckInCompetitorId, getTrackedCheckInCurrentTrack } from './checkIn'
 import { getTrackedLeaderboardName } from './location'
 
 export const getLeaderboardEntity = (state: any) => getEntities(state, LEADERBOARD_ENTITY_NAME)
@@ -22,6 +22,14 @@ export const getTrackedCompetitorLeaderboardData = createSelector(
   (leaderboard, competitorId) =>
   leaderboard &&
   leaderboard.competitors &&
-  _.find(leaderboard.competitors, { id: competitorId }),
+  _.find(leaderboard.competitors, { id: competitorId }) as any,
 )
 
+export const getCurrentTrackLeaderboardData = createSelector(
+  getTrackedCompetitorLeaderboardData,
+  getTrackedCheckInCurrentTrack,
+  (leaderboardCompetitor, currentTrackName) =>
+  leaderboardCompetitor &&
+  currentTrackName &&
+  _.get(leaderboardCompetitor, ['columns', currentTrackName]),
+)
