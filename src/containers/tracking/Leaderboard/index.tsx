@@ -92,6 +92,9 @@ class Leaderboard extends React.Component<{
       currentTrackName &&
       _.get(competitorData, ['columns', currentTrackName, 'rank'])
     const regattaRank = _.get(competitorData, 'overallRank')
+    const fleet =
+      currentTrackName &&
+      _.get(competitorData, ['columns', currentTrackName, 'fleet'])
     // The handicap value
     // Currently gets gapToLeader. TODO: get the actual calculatedTimeAtFastest
     const calculatedTimeAtFastest =
@@ -108,13 +111,19 @@ class Leaderboard extends React.Component<{
       rank,
       regattaRank,
       calculatedTimeAtFastest,
+      fleet
     }
   }
 
   // TODO: This should be memoized
   private mapLeaderboardToCompetitorData = (leaderboardData: any) => {
+    const { checkInData } = this.props
+    const currentFleet = checkInData && checkInData.currentFleet
+
     const competitors = _.get(leaderboardData, 'competitors')
-    return competitors.map(this.extractCompetitorData)
+    return competitors
+      .map(this.extractCompetitorData)
+      .filter((datum: any) => datum.fleet === currentFleet)
   }
 
   private renderItem = ({ item }: any) => {
