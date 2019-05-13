@@ -131,13 +131,13 @@ class Leaderboard extends React.Component<{
     return (
       <View style={[styles.listRowContainer]}>
         <View
-          style={[container.mediumHorizontalMargin, styles.listItemContainer]}
+          style={[container.smallHorizontalMargin, styles.listItemContainer]}
         >
         <View style={[styles.textContainer]}>
           <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
           <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
         </View>
-          <Text style={[styles.rankText]}>{calculatedTimeAtFastest || EMPTY_VALUE}</Text>
+          <Text style={[styles.gapText]}>{calculatedTimeAtFastest || EMPTY_VALUE}</Text>
         </View>
         <Seperator />
       </View>

@@ -33,6 +33,12 @@ export default EStyleSheets.create({
     fontWeight: 'bold',
     letterSpacing: -0.8,
   },
+  gapText: {
+    color: '$primaryTextColor',
+    fontSize: 24,
+    fontWeight: 'bold',
+    letterSpacing: -0.8,
+  },
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',
