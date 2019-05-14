@@ -51,6 +51,7 @@
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="${branchIOKey}" />
         <!--<meta-data android:name="io.branch.sdk.BranchKey.test" android:value="branchIOTestKey" />-->
         <meta-data android:name="io.branch.sdk.TestMode" android:value="${branchIOTestMode}" />
+        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
 
         <!-- Branch install referrer tracking (optional) -->
         <receiver android:name="io.branch.referral.InstallListener" android:exported="true">
