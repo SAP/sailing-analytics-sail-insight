@@ -38,19 +38,8 @@ class Leaderboard extends React.Component<{
   public render() {
     const { trackedLeaderboardData, leaderboardData } = this.props
 
-    const competitorsHardcoded = [
-      { name: 'foo', rank: 2, calculatedTimeAtFastest: 10 },
-      { name: 'bar', rank: 3 , calculatedTimeAtFastest: 11 },
-      { name: 'bem', rank: 5 , calculatedTimeAtFastest: 34 },
-      { name: 'thud', rank: 8, calculatedTimeAtFastest: 137 },
-      { name: 'for', rank: 6, calculatedTimeAtFastest: 54 },
-      { name: 'quz', rank: 1, calculatedTimeAtFastest: '0' },
-      { name: 'fred', rank: 7, calculatedTimeAtFastest: 86 },
-      { name: 'quuz', rank: 4, calculatedTimeAtFastest: 23 },
-    ]
-
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
-    const leaderboard = _.sortBy(competitorsHardcoded, ['rank'])
+    const leaderboard = _.sortBy(competitorData, ['rank'])
 
     const trackedLeaderboard = this.extractCompetitorData(
       trackedLeaderboardData,
