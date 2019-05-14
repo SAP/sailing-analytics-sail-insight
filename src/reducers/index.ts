@@ -7,6 +7,7 @@ import { RootState } from './config'
 import AuthReducer from './AuthReducer'
 import CheckInReducer from './CheckInReducer'
 import EntityReducer from './EntityReducer'
+import LeaderboardTrackingReducer from './LeaderboardTrackingReducer'
 import LocationTrackingReducer from './LocationTrackingReducer'
 import OnboardingReducer from './OnboardingReducer'
 import SettingsReducer from './SettingsReducer'
@@ -20,6 +21,7 @@ const reducer: RootState = {
   checkIn: CheckInReducer,
   form: formReducer,
   locationTracking: LocationTrackingReducer,
+  leaderboardTracking: LeaderboardTrackingReducer,
   onboarding: OnboardingReducer,
   settings: SettingsReducer,
   network: networkReducer,

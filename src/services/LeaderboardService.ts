@@ -1,8 +1,11 @@
+import { values } from 'lodash'
+
+import { updateLeaderboardTracking } from 'actions/leaderboards'
 import { DataApi } from 'api'
+import { fetchEntityAction } from 'helpers/actions'
+import { Leaderboard } from 'models'
 import Logger from '../helpers/Logger'
 import { DispatchType } from '../helpers/types'
-
-import { fetchEntityAction } from 'helpers/actions'
 
 export const DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS = 5000
 
@@ -13,11 +16,20 @@ export const backgroundSyncLeaderboard = async (
   dataApi: DataApi,
   leaderboard: string,
   secret?: string,
+  currentTrackName?: string
 ) => {
   try {
-    await dispatch(
+    const { payload } = await dispatch(
       fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard, secret),
     )
+
+    const receivedLeaderboards =
+      payload.entities &&
+      payload.entities.leaderboard &&
+      values(payload.entities.leaderboard)
+    const receivedLeaderboard = receivedLeaderboards[0] as Leaderboard
+
+    await dispatch(updateLeaderboardTracking(receivedLeaderboard, currentTrackName))
   } catch (err) {
     Logger.debug('Error while executing syncLeaderboard', err)
   }
@@ -28,14 +40,23 @@ export const startPeriodicalLeaderboardUpdates = (
   dataApi: DataApi,
   leaderboard: string,
   secret?: string,
+  currentTrackName?: string,
 ) => {
   Logger.debug('[Leaderboard] Transfer Manager started')
   const interval = DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS
   const callback = async () => {
-    backgroundSyncLeaderboard(dispatch, dataApi, leaderboard, secret)
+    backgroundSyncLeaderboard(
+      dispatch,
+      dataApi,
+      leaderboard,
+      secret,
+      currentTrackName,
+    )
   }
   if (intervalID) {
-    Logger.debug('[Leaderboard] Transfer Manager already running. Clearing old timer')
+    Logger.debug(
+      '[Leaderboard] Transfer Manager already running. Clearing old timer',
+    )
     clearInterval(intervalID)
     intervalID = undefined
   }

@@ -6,6 +6,7 @@ export interface RootState {
   network?: any
   checkIn?: any | CheckInState
   entities?: any
+  leaderboardTracking?: any | LeaderboardTrackingState
   locationTracking?: any | LocationTrackingState
   form?: any
   onboarding?: any | OnboardingState
@@ -31,6 +32,15 @@ export interface LocationTrackingState {
   wasTrackingStartTimeUpdated: boolean
   validGpsFixCount: number
   startAutoCourseUpdateStatus: AutoCourseUpdateState
+}
+
+export interface CompetitorGap {
+  gap: number
+  gaining: boolean | undefined
+}
+
+export interface LeaderboardTrackingState {
+  competitorGaps: Map<string, CompetitorGap>
 }
 
 export interface OnboardingState {
