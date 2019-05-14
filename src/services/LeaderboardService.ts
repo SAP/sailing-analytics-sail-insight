@@ -6,7 +6,6 @@ import { fetchEntityAction } from 'helpers/actions'
 
 export const DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS = 5000
 
-let syncInProgress = false
 let intervalID: NodeJS.Timer | undefined
 
 export const backgroundSyncLeaderboard = async (
@@ -15,19 +14,12 @@ export const backgroundSyncLeaderboard = async (
   leaderboard: string,
   secret?: string,
 ) => {
-  if (syncInProgress) {
-    Logger.debug('[Leaderboard] syncInProgress...............')
-    return
-  }
   try {
-    syncInProgress = true
     await dispatch(
       fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard, secret),
     )
   } catch (err) {
     Logger.debug('Error while executing syncLeaderboard', err)
-  } finally {
-    syncInProgress = false
   }
 }
 
@@ -38,7 +30,6 @@ export const startPeriodicalLeaderboardUpdates = (
   secret?: string,
 ) => {
   Logger.debug('[Leaderboard] Transfer Manager started')
-  syncInProgress = false
   const interval = DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS
   const callback = async () => {
     backgroundSyncLeaderboard(dispatch, dataApi, leaderboard, secret)
