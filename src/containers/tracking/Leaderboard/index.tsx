@@ -41,7 +41,7 @@ class Leaderboard extends React.Component<{
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
     const leaderboard = _.sortBy(competitorData, ['rank'])
 
-    const trackedLeaderboard = this.extractCompetitorData(
+    const { regattaRank, calculatedTimeAtFastest } = this.extractCompetitorData(
       trackedLeaderboardData,
     )
 
@@ -53,14 +53,16 @@ class Leaderboard extends React.Component<{
             <View>
               <TrackingProperty
                 title={I18n.t('text_tracking_rank')}
-                value={String(trackedLeaderboard.regattaRank) || EMPTY_VALUE}
+                value={regattaRank && String(regattaRank) || EMPTY_VALUE}
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
               <TrackingProperty
                 title={'Calculated time at fastest'}
                 value={
-                  trackedLeaderboard.calculatedTimeAtFastest || EMPTY_VALUE
+                  calculatedTimeAtFastest !== undefined
+                    ? String(calculatedTimeAtFastest)
+                    : EMPTY_VALUE
                 }
               />
             </View>
@@ -78,18 +80,18 @@ class Leaderboard extends React.Component<{
     const { checkInData } = this.props
     const currentTrackName = checkInData && checkInData.currentTrackName
     const name = competitorData.name
-    const rank =
+    const rank: number | undefined =
       currentTrackName &&
       _.get(competitorData, ['columns', currentTrackName, 'rank'])
     const regattaRank = competitorData.overallRank
     const country = competitorData.countryCode
-    const fleet =
+    const fleet: string | undefined =
       currentTrackName &&
       _.get(competitorData, ['columns', currentTrackName, 'fleet'])
 
     // The handicap value
     // Currently gets gapToLeader. TODO: get the actual calculatedTimeAtFastest
-    const calculatedTimeAtFastest =
+    const calculatedTimeAtFastest: number | undefined =
       currentTrackName &&
       _.get(competitorData, [
         'columns',
@@ -135,7 +137,13 @@ class Leaderboard extends React.Component<{
           />
           <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
         </View>
-          <Text style={[styles.gapText]}>{calculatedTimeAtFastest || EMPTY_VALUE}</Text>
+          <Text style={[styles.gapText]}>
+            {
+              calculatedTimeAtFastest !== undefined
+                ? String(calculatedTimeAtFastest)
+                : EMPTY_VALUE
+            }
+          </Text>
         </View>
         <Seperator />
       </View>
