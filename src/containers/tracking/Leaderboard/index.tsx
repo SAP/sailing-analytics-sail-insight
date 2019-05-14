@@ -16,7 +16,7 @@ import LineSeparator from 'components/LineSeparator'
 import Text from 'components/Text'
 import TrackingProperty from 'components/TrackingProperty'
 
-import { CheckIn } from 'models'
+import { CheckIn, Leaderboard as ILeaderboard, LeaderboardCompetitor } from 'models'
 import { container } from 'styles/commons'
 import styles from './styles'
 
@@ -31,8 +31,8 @@ const Seperator = () => {
 }
 
 class Leaderboard extends React.Component<{
-  trackedLeaderboardData: any
-  leaderboardData: any
+  trackedLeaderboardData: LeaderboardCompetitor
+  leaderboardData: ILeaderboard
   checkInData: CheckIn,
 }> {
   public render() {
@@ -64,7 +64,7 @@ class Leaderboard extends React.Component<{
             <View>
               <TrackingProperty
                 title={I18n.t('text_tracking_rank')}
-                value={trackedLeaderboard.regattaRank || EMPTY_VALUE}
+                value={String(trackedLeaderboard.regattaRank) || EMPTY_VALUE}
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
@@ -85,18 +85,19 @@ class Leaderboard extends React.Component<{
     )
   }
 
-  private extractCompetitorData = (competitorData: any) => {
+  private extractCompetitorData = (competitorData: LeaderboardCompetitor) => {
     const { checkInData } = this.props
     const currentTrackName = checkInData && checkInData.currentTrackName
-    const name = _.get(competitorData, 'name')
+    const name = competitorData.name
     const rank =
       currentTrackName &&
       _.get(competitorData, ['columns', currentTrackName, 'rank'])
-    const regattaRank = _.get(competitorData, 'overallRank')
-    const country = _.get(competitorData, 'countryCode')
+    const regattaRank = competitorData.overallRank
+    const country = competitorData.countryCode
     const fleet =
       currentTrackName &&
       _.get(competitorData, ['columns', currentTrackName, 'fleet'])
+
     // The handicap value
     // Currently gets gapToLeader. TODO: get the actual calculatedTimeAtFastest
     const calculatedTimeAtFastest =
@@ -113,17 +114,18 @@ class Leaderboard extends React.Component<{
       rank,
       regattaRank,
       calculatedTimeAtFastest,
-      fleet
+      fleet,
+      country,
     }
   }
 
   // TODO: This should be memoized
-  private mapLeaderboardToCompetitorData = (leaderboardData: any) => {
+  private mapLeaderboardToCompetitorData = (leaderboardData: ILeaderboard) => {
     const { checkInData } = this.props
     const currentFleet = checkInData && checkInData.currentFleet
 
-    const competitors = _.get(leaderboardData, 'competitors')
-    return competitors
+    const competitors = leaderboardData.competitors
+    return competitors && competitors
       .map(this.extractCompetitorData)
       .filter((datum: any) => datum.fleet === currentFleet)
   }

@@ -12,7 +12,7 @@ import Logger from 'helpers/Logger'
 import { degToCompass } from 'helpers/physics'
 import { openSAPWebsite } from 'helpers/user'
 import I18n from 'i18n'
-import { CheckIn } from 'models'
+import { CheckIn, LeaderboardCompetitor } from 'models'
 import { navigateBack, navigateToLeaderboard, navigateToSetWind } from 'navigation'
 import { getBoat } from 'selectors/boat'
 import { getTrackedCheckIn } from 'selectors/checkIn'
@@ -40,7 +40,7 @@ class Tracking extends React.Component<{
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
-  leaderboardData: any,
+  leaderboardData: LeaderboardCompetitor,
 } > {
   public state = {
     isLoading: false,
