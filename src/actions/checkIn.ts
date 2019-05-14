@@ -125,7 +125,8 @@ export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: Dispa
       I18n.t('text_deep_link_tracking_active_title'),
       I18n.t('text_deep_link_tracking_active_message'),
       [{ text: 'OK' } ],
-      { cancelable: false })
+      { cancelable: false }
+    )
 
     return
   }
