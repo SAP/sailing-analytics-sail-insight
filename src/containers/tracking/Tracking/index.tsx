@@ -40,7 +40,7 @@ class Tracking extends React.Component<{
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
-  leaderboardData: LeaderboardCompetitor,
+  leaderboardCompetitor: LeaderboardCompetitor,
 } > {
   public state = {
     isLoading: false,
@@ -61,11 +61,18 @@ class Tracking extends React.Component<{
   }
 
   public render() {
-    const { trackingStats, checkInData, trackedContextName, leaderboardData } = this.props
+    const { trackingStats, checkInData, trackedContextName, leaderboardCompetitor } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
     const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(0)}°` : EMPTY_VALUE
     const distance = trackingStats.distance ? trackingStats.distance.toFixed(0) : '0'
+
+    const currentTrackName = checkInData && checkInData.currentTrackName
+    const currentLeaderboardTrack =
+      leaderboardCompetitor &&
+      currentTrackName &&
+      get(leaderboardCompetitor, ['columns', currentTrackName])
+    const trackRank = currentLeaderboardTrack && currentLeaderboardTrack.rank
 
     return (
       <View style={[container.main]}>
@@ -84,9 +91,8 @@ class Tracking extends React.Component<{
               style={[styles.rightPropertyContainer]}
             >
               <TrackingProperty
-                style={styles.windProperty}
                 title={I18n.t('text_tracking_rank')}
-                value={`${leaderboardData.rank || EMPTY_VALUE}`}
+                value={`${trackRank || EMPTY_VALUE}`}
                 onPress={this.onLeaderboardPress}
               />
             </View>
@@ -222,7 +228,7 @@ const mapStateToProps = (state: any) => {
       getMark(checkInData.markId)(state),
       'name',
     ),
-    leaderboardData: getTrackedCompetitorLeaderboardData(state) || {},
+    leaderboardCompetitor: getTrackedCompetitorLeaderboardData(state) || {},
   }
 }
 

@@ -41,7 +41,7 @@ class Leaderboard extends React.Component<{
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
     const leaderboard = _.sortBy(competitorData, ['rank'])
 
-    const { regattaRank, calculatedTimeAtFastest } = this.extractCompetitorData(
+    const { rank, calculatedTimeAtFastest } = this.extractCompetitorData(
       trackedLeaderboardData,
     )
 
@@ -53,7 +53,7 @@ class Leaderboard extends React.Component<{
             <View>
               <TrackingProperty
                 title={I18n.t('text_tracking_rank')}
-                value={regattaRank && String(regattaRank) || EMPTY_VALUE}
+                value={rank && String(rank) || EMPTY_VALUE}
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
