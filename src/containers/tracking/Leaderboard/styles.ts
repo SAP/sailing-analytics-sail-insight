@@ -28,7 +28,7 @@ export default EStyleSheets.create({
     maxWidth: 150,
   },
   flag: {
-    marginLeft: 25,
+    marginLeft: 35,
   },
   rankText: {
     color: '$primaryTextColor',
