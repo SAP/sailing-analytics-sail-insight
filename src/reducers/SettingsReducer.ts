@@ -8,7 +8,7 @@ import { removeUserData } from '../actions/auth'
 
 const initialState: SettingsState = {
   bulkGpsUpdate: false,
-  enableAnalytics: true
+  enableAnalytics: false
 }
 
 const reducer = handleActions(
