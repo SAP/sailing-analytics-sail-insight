@@ -1,12 +1,12 @@
 import { get, toPairs } from 'lodash'
 import { handleActions } from 'redux-actions'
 
-import { CompetitorGap, LeaderboardTrackingState } from 'reducers/config'
+import { CompetitorGap, CompetitorGapMap, LeaderboardTrackingState } from 'reducers/config'
 
 import { clearLeaderboardGaps, updateLeaderboardGaps  } from '../actions/leaderboards'
 
 const initialState: LeaderboardTrackingState = {
-  competitorGaps: {} as Map<string, CompetitorGap>,
+  competitorGaps: {} as CompetitorGapMap,
 }
 
 const reducer = handleActions(
@@ -52,7 +52,7 @@ const reducer = handleActions(
             [competitor]: competitorGap,
           }
 
-        },{})
+        },      {})
 
       return {
         ...state,
@@ -62,7 +62,7 @@ const reducer = handleActions(
         },
       }
     },
-    [clearLeaderboardGaps as any]: () => initialState
+    [clearLeaderboardGaps as any]: () => initialState,
   },
   initialState,
 )

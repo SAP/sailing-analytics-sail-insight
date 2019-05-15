@@ -69,4 +69,15 @@ export default EStyleSheets.create({
   rightPropertyContainer: {
     marginLeft: '$tinySpacing',
   },
+  triangle: {
+    marginLeft: 5,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  green: {
+    color: '#64A266',
+  },
+  red: {
+    color: '#EC4C4C',
+  },
 })

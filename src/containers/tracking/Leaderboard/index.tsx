@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { get, sortBy } from 'lodash'
 import React from 'react'
 import { FlatList, View } from 'react-native'
 import Flag from 'react-native-flags'
@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import I18n from 'i18n'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import {
+  getLeaderboardGaps,
   getTrackedCompetitorLeaderboardData,
   getTrackedLeaderboard,
 } from 'selectors/leaderboard'
@@ -16,11 +17,19 @@ import LineSeparator from 'components/LineSeparator'
 import Text from 'components/Text'
 import TrackingProperty from 'components/TrackingProperty'
 
-import { CheckIn, Leaderboard as ILeaderboard, LeaderboardCompetitor } from 'models'
+import {
+  CheckIn,
+  Leaderboard as ILeaderboard,
+  LeaderboardCompetitor,
+} from 'models'
+import { CompetitorGapMap } from 'reducers/config'
 import { container } from 'styles/commons'
 import styles from './styles'
 
 const EMPTY_VALUE = '-'
+
+const TRIANGLE_UP = '▲'
+const TRIANGLE_DOWN = '▼'
 
 const Seperator = () => {
   return (
@@ -33,13 +42,14 @@ const Seperator = () => {
 class Leaderboard extends React.Component<{
   trackedLeaderboardData: LeaderboardCompetitor
   leaderboardData: ILeaderboard
-  checkInData: CheckIn,
+  checkInData: CheckIn
+  leaderboardGaps: CompetitorGapMap,
 }> {
   public render() {
     const { trackedLeaderboardData, leaderboardData } = this.props
 
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
-    const leaderboard = _.sortBy(competitorData, ['rank'])
+    const leaderboard = sortBy(competitorData, ['rank'])
 
     const { rank, calculatedTimeAtFastest } = this.extractCompetitorData(
       trackedLeaderboardData,
@@ -53,7 +63,7 @@ class Leaderboard extends React.Component<{
             <View>
               <TrackingProperty
                 title={I18n.t('text_tracking_rank')}
-                value={rank && String(rank) || EMPTY_VALUE}
+                value={(rank && String(rank)) || EMPTY_VALUE}
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
@@ -77,28 +87,32 @@ class Leaderboard extends React.Component<{
   }
 
   private extractCompetitorData = (competitorData: LeaderboardCompetitor) => {
-    const { checkInData } = this.props
+    const { checkInData, leaderboardGaps } = this.props
     const currentTrackName = checkInData && checkInData.currentTrackName
     const name = competitorData.name
     const rank: number | undefined =
       currentTrackName &&
-      _.get(competitorData, ['columns', currentTrackName, 'rank'])
+      get(competitorData, ['columns', currentTrackName, 'rank'])
     const regattaRank = competitorData.overallRank
     const country = competitorData.countryCode
     const fleet: string | undefined =
       currentTrackName &&
-      _.get(competitorData, ['columns', currentTrackName, 'fleet'])
+      get(competitorData, ['columns', currentTrackName, 'fleet'])
 
     // The handicap value
     // Currently gets gapToLeader. TODO: get the actual calculatedTimeAtFastest
     const calculatedTimeAtFastest: number | undefined =
       currentTrackName &&
-      _.get(competitorData, [
+      get(competitorData, [
         'columns',
         currentTrackName,
         'data',
         'gapToLeader-s',
       ])
+
+    const gain: boolean | undefined =
+      competitorData.id &&
+      get(leaderboardGaps, [competitorData.id, 'gaining'])
 
     return {
       name,
@@ -107,6 +121,7 @@ class Leaderboard extends React.Component<{
       calculatedTimeAtFastest,
       fleet,
       country,
+      gain,
     }
   }
 
@@ -116,34 +131,52 @@ class Leaderboard extends React.Component<{
     const currentFleet = checkInData && checkInData.currentFleet
 
     const competitors = leaderboardData.competitors
-    return competitors && competitors
-      .map(this.extractCompetitorData)
-      .filter((datum: any) => datum.fleet === currentFleet)
+    return (
+      competitors &&
+      competitors
+        .map(this.extractCompetitorData)
+        .filter((datum: any) => datum.fleet === currentFleet)
+    )
   }
 
   private renderItem = ({ item }: any) => {
-    const { name, rank, regattaRank, country, calculatedTimeAtFastest } = item
+    const {
+      name,
+      rank,
+      regattaRank,
+      country,
+      calculatedTimeAtFastest,
+      gain,
+    } = item
     return (
       <View style={[styles.listRowContainer]}>
         <View
           style={[container.smallHorizontalMargin, styles.listItemContainer]}
         >
-        <View style={[styles.textContainer]}>
-          <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
-          <Flag
-            style={[styles.flag]}
-            code={country}
-            size={24}
-          />
-          <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
-        </View>
-          <Text style={[styles.gapText]}>
-            {
-              calculatedTimeAtFastest !== undefined
+          <View style={[styles.textContainer]}>
+            <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
+            <Flag style={[styles.flag]} code={country} size={24} />
+            <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
+          </View>
+          <View style={[styles.textContainer]}>
+            <Text style={[styles.gapText]}>
+              {calculatedTimeAtFastest !== undefined
                 ? String(calculatedTimeAtFastest)
-                : EMPTY_VALUE
-            }
-          </Text>
+                : EMPTY_VALUE}
+            </Text>
+            <Text
+              style={[
+                styles.triangle,
+                gain === true ? styles.green : styles.red,
+              ]}
+            >
+              {gain === undefined
+                ? ' '
+                : gain === true
+                ? TRIANGLE_UP
+                : TRIANGLE_DOWN}
+            </Text>
+          </View>
         </View>
         <Seperator />
       </View>
@@ -156,6 +189,8 @@ const mapStateToProps = (state: any) => {
     checkInData: getTrackedCheckIn(state) || {},
     trackedLeaderboardData: getTrackedCompetitorLeaderboardData(state) || {},
     leaderboardData: getTrackedLeaderboard(state) || {},
+    leaderboardGaps:
+      getLeaderboardGaps(state) || ({} as CompetitorGapMap),
   }
 }
 

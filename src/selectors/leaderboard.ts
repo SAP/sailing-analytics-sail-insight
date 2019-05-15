@@ -5,6 +5,7 @@ import { LEADERBOARD_ENTITY_NAME } from 'api/schemas'
 import { getEntities, getEntityArrayByType, getEntityById } from './entity'
 
 import { Leaderboard } from 'models'
+import { RootState } from 'reducers/config'
 import { getTrackedCheckInCompetitorId } from './checkIn'
 import { getTrackedLeaderboardName } from './location'
 
@@ -26,3 +27,6 @@ export const getTrackedCompetitorLeaderboardData = createSelector(
   leaderboard.competitors &&
   _.find(leaderboard.competitors, { id: competitorId }),
 )
+
+export const getLeaderboardGaps = (state: RootState = {}) =>
+  state.leaderboardTracking && state.leaderboardTracking.competitorGaps

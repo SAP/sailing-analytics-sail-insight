@@ -39,8 +39,10 @@ export interface CompetitorGap {
   gaining: boolean | undefined
 }
 
+export type CompetitorGapMap = Map<string, CompetitorGap>
+
 export interface LeaderboardTrackingState {
-  competitorGaps: Map<string, CompetitorGap>
+  competitorGaps: CompetitorGapMap
 }
 
 export interface OnboardingState {
