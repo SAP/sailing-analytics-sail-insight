@@ -20,7 +20,7 @@ export const fetchLeaderboardV2 = (leaderboard: string) =>
 export const startLeaderboardUpdates = (checkInData: CheckIn) =>
   withDataApi(checkInData.serverUrl)(async (dataApi, dispatch) => {
     try {
-      dispatch(clearLeaderboardGaps)
+      dispatch(clearLeaderboardGaps())
       LeaderboardService.startPeriodicalLeaderboardUpdates(
         dispatch,
         dataApi,
