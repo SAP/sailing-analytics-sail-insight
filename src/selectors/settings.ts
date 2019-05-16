@@ -1,4 +1,5 @@
 import { RootState } from 'reducers/config'
+import { DEFAULT_SERVER_URL } from '../environment/init'
 
 
 export const getBulkGpsSetting = (state: RootState = {}) =>
@@ -6,3 +7,14 @@ export const getBulkGpsSetting = (state: RootState = {}) =>
 
 export const getEnableAnalyticsSettings = (state: RootState = {}) =>
   state.settings && state.settings.enableAnalytics
+
+export const getServerUrlSetting = (state: RootState = {}) =>
+  state.settings && state.settings.serverUrl
+
+export const IsDefaultServerUrlSettingUsed = (state: RootState = {}) => {
+  const serverUrl = getServerUrlSetting(state)
+  if (serverUrl && serverUrl !== DEFAULT_SERVER_URL) {
+    return false
+  }
+  return true
+}

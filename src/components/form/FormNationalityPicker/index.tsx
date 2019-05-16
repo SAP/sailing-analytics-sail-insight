@@ -36,7 +36,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
   }
 
   public componentDidMount() {
-    selfTrackingApi.requestCountryCodes().then((data: CountryCodeBody[]) => {
+    selfTrackingApi().requestCountryCodes().then((data: CountryCodeBody[]) => {
       const countryList = orderBy(
           countryToPickerItems(data),
           'label',

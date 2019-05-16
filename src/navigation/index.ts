@@ -11,6 +11,7 @@ export const navigateToQRScanner = () => NavigationService.navigate(Screens.QRSc
 export const navigateToCheckIn = () => NavigationService.navigate(Screens.CheckIn)
 export const navigateToAppSettings = () => NavigationService.navigate(Screens.AppSettings)
 export const navigateToUserRegistration = () => NavigationService.navigate(Screens.Register)
+export const navigateToExpertSettings = () => NavigationService.navigate(Screens.ExpertSettings)
 export const navigateToUserRegistrationCredentials = () => NavigationService.navigate(Screens.RegisterCredentials)
 export const navigateToUserRegistrationBoat = () => NavigationService.navigateWithReset(Screens.RegisterBoat)
 export const navitateToLogin = () => NavigationService.navigate(Screens.Login)

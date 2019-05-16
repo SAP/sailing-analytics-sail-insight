@@ -2,7 +2,10 @@ import * as _ from 'lodash'
 import querystring from 'query-string'
 import format from 'string-format'
 
-import { AUTH_API_PREFIX, DATA_API_PREFIX, DATA_API_V2_PREFIX, RACE_API_PREFIX, SERVER_URL } from 'environment'
+import { AUTH_API_PREFIX, DATA_API_PREFIX, DATA_API_V2_PREFIX, RACE_API_PREFIX } from 'environment'
+import { DEFAULT_SERVER_URL } from '../environment/init'
+import { getServerUrlSetting } from '../selectors/settings'
+import { getStore } from '../store'
 
 
 export const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
@@ -33,12 +36,12 @@ export interface UrlOptions {
 export const urlGenerator = (apiRoot: string, apiSuffix: string) => (path: string) => (options?: UrlOptions) =>
   `${apiRoot}${apiSuffix}${getPathWithParams(path, options)}`
 
-export const getDataApiGenerator = (serverUrl?: string) => urlGenerator(serverUrl || SERVER_URL, DATA_API_PREFIX)
-export const getDataApiV2Generator = (serverUrl: string) => urlGenerator(serverUrl || SERVER_URL, DATA_API_V2_PREFIX)
-export const getRaceApiGenerator = (serverUrl: string) => urlGenerator(serverUrl || SERVER_URL, RACE_API_PREFIX)
-export const getAssetApiGenerator = (serverUrl?: string) => urlGenerator(serverUrl || SERVER_URL, '')
+export const getDataApiGenerator = (serverUrl: string) => urlGenerator(serverUrl , DATA_API_PREFIX)
+export const getDataApiV2Generator = (serverUrl: string) => urlGenerator(serverUrl, DATA_API_V2_PREFIX)
+export const getRaceApiGenerator = (serverUrl: string) => urlGenerator(serverUrl, RACE_API_PREFIX)
+export const getAssetApiGenerator = (serverUrl: string) => urlGenerator(serverUrl, '')
 
-export const getSecurityUrl = urlGenerator(SERVER_URL, AUTH_API_PREFIX)
+export const getSecurityGenerator = (serverUrl: string) => urlGenerator(serverUrl, AUTH_API_PREFIX)
 
 
 export const HttpMethods = {
@@ -50,4 +53,10 @@ export const HttpMethods = {
 
 export type BodyType = 'x-www-form-urlencoded' | 'json' | 'image'
 
-export const getApiServerUrl = () => SERVER_URL
+export const getApiServerUrl = () => {
+  let serverUrl = getServerUrlSetting(getStore().getState())
+  if (!serverUrl) {
+    serverUrl = DEFAULT_SERVER_URL
+  }
+  return serverUrl
+}

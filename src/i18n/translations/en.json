@@ -9,6 +9,7 @@
   "title_edit_session": "Edit",
   "title_set_wind": "Set wind",
   "title_eula": "Terms and Conditions\n\t Privacy Policy",
+  "title_expert_settings": "Expert settings",
 
   "text_more_information_at": "More information at",
   "text_device_id": "Device id",
@@ -37,6 +38,7 @@
   "text_your_nationality": "Your nationality",
   "text_username": "Username",
   "text_email": "E-Mail",
+  "text_base_server": "Server",
   "text_placeholder_your_username": "Your username",
   "text_placeholder_your_email": "Your e-mail address",
   "text_placeholder_enter_password": "Enter a password",
@@ -155,6 +157,7 @@
   "caption_share_session": "Invite friends",
   "caption_beta_session": "BETA",
   "caption_lets_go": "Let's go!",
+  "caption_save": "Save",
   "caption_login": "Login",
   "caption_need_help": "Need help?",
   "caption_create_account": "Create your account",
