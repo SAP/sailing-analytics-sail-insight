@@ -38,25 +38,44 @@ const Seperator = () => {
     </View>
   )
 }
-const Gap = ({ gap, gain }: any) => {
+const Gap = ({ gap, gain, fontSize }: any) => {
   const minutes = gap && Math.floor(gap / 60)
   const seconds = gap && gap % 60
-  const gapText = gap === undefined ? EMPTY_VALUE :
-                  minutes !== 0 ? `${minutes}m ${seconds}s` :
-                  `${seconds}s`
+  const gapText =
+    gap === undefined
+      ? EMPTY_VALUE
+      : minutes !== 0
+      ? `${minutes}m ${seconds}s`
+      : `${seconds}s`
+
+  const fontSizeOverride =
+    fontSize === undefined
+      ? {}
+      : {
+          fontSize,
+        }
+
+  const emptySpaceOverride =
+    fontSize === undefined
+      ? {}
+      : {
+          width: fontSize,
+        }
 
   return (
     <View style={[styles.textContainer]}>
-      <Text style={[styles.gapText]}>
-        {gapText}
-      </Text>
+      <Text style={[styles.gapText, fontSizeOverride]}>{gapText}</Text>
       {/* This is so that numbers wihtout the indicators are aligned
           with numbers which have indicators */}
-      {gain === undefined &&
-        <View style={[styles.triangleEmptySpace]}/>
-      }
+      {gain === undefined && (
+        <View style={[styles.triangleEmptySpace, emptySpaceOverride]} />
+      )}
       <Text
-        style={[styles.triangle, gain === true ? styles.green : styles.red]}
+        style={[
+          styles.triangle,
+          fontSizeOverride,
+          gain === true ? styles.green : styles.red,
+        ]}
       >
         {gain === undefined ? '' : gain === true ? TRIANGLE_UP : TRIANGLE_DOWN}
       </Text>
@@ -68,7 +87,7 @@ class Leaderboard extends React.Component<{
   trackedLeaderboardData: LeaderboardCompetitor
   leaderboardData: ILeaderboard
   checkInData: CheckIn
-  leaderboardGaps: CompetitorGapMap,
+  leaderboardGaps: CompetitorGapMap
 }> {
   public render() {
     const { trackedLeaderboardData, leaderboardData } = this.props
@@ -99,7 +118,7 @@ class Leaderboard extends React.Component<{
               >
                 {I18n.t('text_leaderboard_my_gap').toUpperCase()}
               </Text>
-              <Gap gap={gapToLeader} gain={gain} />
+              <Gap gap={gapToLeader} gain={gain} fontSize={32}/>
             </View>
           </View>
         </View>
@@ -140,8 +159,7 @@ class Leaderboard extends React.Component<{
     }
 
     const gain: boolean | undefined =
-      competitorData.id &&
-      get(leaderboardGaps, [competitorData.id, 'gaining'])
+      competitorData.id && get(leaderboardGaps, [competitorData.id, 'gaining'])
 
     return {
       name,
@@ -169,14 +187,7 @@ class Leaderboard extends React.Component<{
   }
 
   private renderItem = ({ item }: any) => {
-    const {
-      name,
-      rank,
-      regattaRank,
-      country,
-      gapToLeader,
-      gain,
-    } = item
+    const { name, rank, regattaRank, country, gapToLeader, gain } = item
     return (
       <View style={[styles.listRowContainer]}>
         <View
@@ -193,7 +204,6 @@ class Leaderboard extends React.Component<{
       </View>
     )
   }
-
 }
 
 const mapStateToProps = (state: any) => {
@@ -201,8 +211,7 @@ const mapStateToProps = (state: any) => {
     checkInData: getTrackedCheckIn(state) || {},
     trackedLeaderboardData: getTrackedCompetitorLeaderboardData(state) || {},
     leaderboardData: getTrackedLeaderboard(state) || {},
-    leaderboardGaps:
-      getLeaderboardGaps(state) || ({} as CompetitorGapMap),
+    leaderboardGaps: getLeaderboardGaps(state) || ({} as CompetitorGapMap),
   }
 }
 
