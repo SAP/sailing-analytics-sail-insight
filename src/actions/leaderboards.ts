@@ -65,7 +65,7 @@ export const updateLeaderboardTracking = (
 
       return (
         (competitor.id &&
-          gapToLeader && {
+          gapToLeader !== undefined && {
             ...map,
             [competitor.id]: gapToLeader,
           }) ||
