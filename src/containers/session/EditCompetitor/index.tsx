@@ -9,7 +9,7 @@ import * as sessionForm from 'forms/session'
 import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
-import { BoatTemplate, CheckIn, CompetitorInfo } from 'models'
+import { TeamTemplate, CheckIn, CompetitorInfo } from 'models'
 import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getUserInfo } from 'selectors/auth'
@@ -34,7 +34,7 @@ import { getDeviceCountryIOC } from '../../../services/CheckInService'
 
 
 interface Props {
-  boats: BoatTemplate[]
+  boats: TeamTemplate[]
   registerCompetitorAndDevice: (data: any, values: any) => any
   checkInData: CheckIn
 }

@@ -1,4 +1,4 @@
-import { BoatTemplate } from 'models'
+import { TeamTemplate } from 'models'
 
 
 export const BOAT_FORM_NAME = 'boat'
@@ -13,4 +13,4 @@ export const boatFromFormValues = (values: any) => values && ({
   boatClass: values[FORM_KEY_BOAT_CLASS],
   name: values[FORM_KEY_NAME],
   sailNumber: values[FORM_KEY_SAIL_NUMBER],
-} as BoatTemplate)
+} as TeamTemplate)

@@ -2,14 +2,14 @@ import { includes, intersection, isEmpty, isString } from 'lodash'
 
 import { dateTimeText } from 'helpers/date'
 import I18n from 'i18n'
-import { BoatTemplate, TrackingSession, User } from 'models'
+import { TeamTemplate, TrackingSession, User } from 'models'
 import { RootState } from '../../reducers/config'
 import { getDeviceCountryIOC } from '../CheckInService'
 
 
 const getUserSessionPrefix = (username: string) => `<${username}>`
 
-export const generateNewSession = (boat?: BoatTemplate, state: RootState = {}) => {
+export const generateNewSession = (boat?: TeamTemplate, state: RootState = {}) => {
   // TODO: implement prefill from current boat
   let userName = state.auth.user ? state.auth.user.fullName : null
   return {

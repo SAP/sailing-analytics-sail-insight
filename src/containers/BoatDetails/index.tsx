@@ -13,7 +13,7 @@ import { ComparisonValidatorViewProps, validateNameExists, validateRequired } fr
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { BoatTemplate } from 'models'
+import { TeamTemplate } from 'models'
 import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getFormFieldValue } from 'selectors/form'
@@ -151,7 +151,7 @@ class BoatDetails extends TextInputForm<Props> {
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const boat: BoatTemplate | undefined = getCustomScreenParamData(props)
+  const boat: TeamTemplate | undefined = getCustomScreenParamData(props)
   const formBoatName = getFormFieldValue(boatForm.BOAT_FORM_NAME, boatForm.FORM_KEY_NAME)(state)
   const paramBoatName = boat && boat.name
   return {

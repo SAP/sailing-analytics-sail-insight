@@ -6,7 +6,7 @@ import { Field, Fields, reduxForm } from 'redux-form'
 import * as sessionForm from 'forms/session'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
-import { BoatTemplate } from 'models'
+import { TeamTemplate } from 'models'
 import { navigateBack } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -27,7 +27,7 @@ import FormNationalityPicker from '../../../components/form/FormNationalityPicke
 
 
 interface Props {
-  boats: BoatTemplate[]
+  boats: TeamTemplate[]
 }
 
 class EditSession extends TextInputForm<Props> {

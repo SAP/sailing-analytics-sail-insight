@@ -13,7 +13,7 @@ import {
 import { validateRequired } from 'forms/validators'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { BoatTemplate } from 'models'
+import { TeamTemplate } from 'models'
 import { navigateBack } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -116,7 +116,7 @@ class RegisterBoat extends TextInputForm<Props> {
         name: values[FORM_KEY_NAME],
         boatClass: values[FORM_KEY_BOAT_CLASS],
         sailNumber: values[FORM_KEY_SAIL_NUMBER],
-      } as BoatTemplate)
+      } as TeamTemplate)
       navigateBack()
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
