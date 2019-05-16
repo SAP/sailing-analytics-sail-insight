@@ -72,7 +72,7 @@ class Tracking extends React.Component<{
       leaderboardCompetitor &&
       currentTrackName &&
       get(leaderboardCompetitor, ['columns', currentTrackName])
-    const trackRank = currentLeaderboardTrack && currentLeaderboardTrack.rank
+    const trackRank = currentLeaderboardTrack && currentLeaderboardTrack.trackedRank
 
     return (
       <View style={[container.main]}>

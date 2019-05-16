@@ -92,7 +92,7 @@ class Leaderboard extends React.Component<{
     const name = competitorData.name
     const rank: number | undefined =
       currentTrackName &&
-      get(competitorData, ['columns', currentTrackName, 'rank'])
+      get(competitorData, ['columns', currentTrackName, 'trackedRank'])
     const regattaRank = competitorData.overallRank
     const country = competitorData.countryCode
     const fleet: string | undefined =
