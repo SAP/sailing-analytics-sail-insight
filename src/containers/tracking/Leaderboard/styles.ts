@@ -20,12 +20,18 @@ export default EStyleSheets.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  title: {
+    color: '$secondaryTextColor',
+    fontSize: '$regularFontSize',
+    fontWeight: '500',
+    letterSpacing: -0.3,
+  },
   nameText: {
     color: '$secondaryTextColor',
     fontSize: 16,
     letterSpacing: -0.8,
     marginLeft: 10,
-    maxWidth: 150,
+    maxWidth: 130,
   },
   flag: {
     marginLeft: 35,
@@ -71,7 +77,7 @@ export default EStyleSheets.create({
   },
   triangle: {
     marginLeft: 5,
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   green: {

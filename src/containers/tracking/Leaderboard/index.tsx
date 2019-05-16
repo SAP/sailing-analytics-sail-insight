@@ -38,6 +38,26 @@ const Seperator = () => {
     </View>
   )
 }
+const Gap = ({ gap, gain }: any) => {
+  const minutes = gap && Math.floor(gap / 60)
+  const seconds = gap && gap % 60
+  const gapText = gap === undefined ? EMPTY_VALUE :
+                  minutes !== 0 ? `${minutes}m ${seconds}s` :
+                  `${seconds}s`
+
+  return (
+    <View style={[styles.textContainer]}>
+      <Text style={[styles.gapText]}>
+        {gapText}
+      </Text>
+      <Text
+        style={[styles.triangle, gain === true ? styles.green : styles.red]}
+      >
+        {gain === undefined ? ' ' : gain === true ? TRIANGLE_UP : TRIANGLE_DOWN}
+      </Text>
+    </View>
+  )
+}
 
 class Leaderboard extends React.Component<{
   trackedLeaderboardData: LeaderboardCompetitor
@@ -51,7 +71,7 @@ class Leaderboard extends React.Component<{
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
     const leaderboard = sortBy(competitorData, ['rank'])
 
-    const { rank, gapToLeader } = this.extractCompetitorData(
+    const { rank, gapToLeader, gain } = this.extractCompetitorData(
       trackedLeaderboardData,
     )
 
@@ -67,14 +87,14 @@ class Leaderboard extends React.Component<{
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
-              <TrackingProperty
-                title={I18n.t('text_leaderboard_my_gap')}
-                value={
-                  gapToLeader !== undefined
-                    ? String(gapToLeader)
-                    : EMPTY_VALUE
-                }
-              />
+              <Text
+                style={[styles.title]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {I18n.t('text_leaderboard_my_gap').toUpperCase()}
+              </Text>
+              <Gap gap={gapToLeader} gain={gain} />
             </View>
           </View>
         </View>
@@ -101,7 +121,7 @@ class Leaderboard extends React.Component<{
 
     // The handicap value
     // TODO: Maybe this will have to be calculatedTimeAtFastest
-    const gapToLeader: number | undefined =
+    let gapToLeader: number | undefined =
       currentTrackName &&
       get(competitorData, [
         'columns',
@@ -109,6 +129,10 @@ class Leaderboard extends React.Component<{
         'data',
         'gapToLeader-s',
       ])
+
+    if (gapToLeader !== undefined) {
+      gapToLeader = Math.ceil(gapToLeader)
+    }
 
     const gain: boolean | undefined =
       competitorData.id &&
@@ -158,30 +182,13 @@ class Leaderboard extends React.Component<{
             <Flag style={[styles.flag]} code={country} size={24} />
             <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
           </View>
-          <View style={[styles.textContainer]}>
-            <Text style={[styles.gapText]}>
-              {gapToLeader !== undefined
-                ? String(gapToLeader)
-                : EMPTY_VALUE}
-            </Text>
-            <Text
-              style={[
-                styles.triangle,
-                gain === true ? styles.green : styles.red,
-              ]}
-            >
-              {gain === undefined
-                ? ' '
-                : gain === true
-                ? TRIANGLE_UP
-                : TRIANGLE_DOWN}
-            </Text>
-          </View>
+          <Gap gap={gapToLeader} gain={gain} />
         </View>
         <Seperator />
       </View>
     )
   }
+
 }
 
 const mapStateToProps = (state: any) => {
