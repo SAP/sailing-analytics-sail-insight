@@ -5,6 +5,9 @@ import { DEFAULT_SERVER_URL } from '../environment/init'
 export const getBulkGpsSetting = (state: RootState = {}) =>
   state.settings && state.settings.bulkGpsUpdate
 
+export const getEnableAnalyticsSettings = (state: RootState = {}) =>
+  state.settings && state.settings.enableAnalytics
+
 export const getServerUrlSetting = (state: RootState = {}) =>
   state.settings && state.settings.serverUrl
 

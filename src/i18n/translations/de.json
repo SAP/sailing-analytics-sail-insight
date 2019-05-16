@@ -126,6 +126,8 @@
   "text_passwort_reset_confirm_message" : "Wenn du einen gültigen Benutzernamen oder eine gültige E-Mail-Adresse angegeben hast, dann erhälst du in Kürze eine E-Mail zum Zurücksetzen deines Passworts.",
   "text_race_not_started_yet": "Das Rennen wurde vom Organisator noch nicht gestartet. Dein Tracking wird starten, aber die GPS Fixe werden keinem Rennen zugeordnet bis der Organisator eins startet.",
   "text_notification_tracking": "Event-Tracking aktiv",
+  "text_deep_link_tracking_active_title": "Aktives Tracking",
+  "text_deep_link_tracking_active_message": "Bitte beende das aktive Tracking, um den Sail Insight Link zu öffnen.",
 
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",
@@ -176,6 +178,7 @@
   "caption_join_regatta": "Nimm an einer Regatta teil",
   "caption_create_free_account": "Konto erstellen",
   "caption_setting_bulk_gps": "Batteriesparmodus",
+  "caption_setting_analytics": "Hilf uns Sail Insight durch dein Nutzerfeedback zu verbessern",
   "caption_open_photos" : "Fotos öffnen",
   "caption_take_photo" : "Foto aufnehmen",
   "caption_clear_photo": "Foto zurücksetzen",

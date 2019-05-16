@@ -124,6 +124,8 @@
   "text_passwort_reset_confirm_message" : "If you have entered a valid username or valid email address, you will receive an email to reset your password shortly.",
   "text_race_not_started_yet": "The owner has not started a race yet, your tracking will start, but the GPS fixes will not be assigned to any race until the owner starts one.",
   "text_notification_tracking": "Event tracking activated",
+  "text_deep_link_tracking_active_title": "Active Tracking",
+  "text_deep_link_tracking_active_message": "Please stop the active tracking to open the Sail Insight link.",
 
   "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
   "user_profile_alert_label" : "Logout",
@@ -174,6 +176,7 @@
   "caption_join_regatta": "Join a regatta",
   "caption_create_free_account": "Create an account now",
   "caption_setting_bulk_gps": "Battery saving mode",
+  "caption_setting_analytics": "Help us to improve Sail Insight by providing your usage feedback",
   "caption_open_photos" : "Open photos",
   "caption_take_photo" : "Take a photo",
   "caption_clear_photo": "Clear photo",

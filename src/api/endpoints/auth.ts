@@ -14,8 +14,8 @@ export interface SecurityApi {
   accessToken: (email: string, password: string) => any,
   updateUser: (data: any) => any,
   requestPasswordReset: (username: string, email: string) => any,
-
 }
+
 const securityEndpoints = (serverUrl: string) => {
   const getSecurityUrl = getSecurityGenerator(serverUrl)
   return {
@@ -40,8 +40,13 @@ const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
     ) as Promise<ApiAccessToken>,
 
     accessToken: (email: string, password: string) => dataRequest(
-      endpoints.accessToken({ urlParams: { password, username: email } }),
-      { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
+      endpoints.accessToken(),
+      { method: HttpMethods.POST,
+        dataProcessor: mapResToAccessTokenData,
+        signer: null,
+        body: { password, username: email },
+        bodyType: 'x-www-form-urlencoded'
+      },
     ) as Promise<ApiAccessToken>,
 
     updateUser: (data: any) => request(
