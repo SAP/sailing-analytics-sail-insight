@@ -51,7 +51,7 @@ class Leaderboard extends React.Component<{
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
     const leaderboard = sortBy(competitorData, ['rank'])
 
-    const { rank, calculatedTimeAtFastest } = this.extractCompetitorData(
+    const { rank, gapToLeader } = this.extractCompetitorData(
       trackedLeaderboardData,
     )
 
@@ -62,16 +62,16 @@ class Leaderboard extends React.Component<{
           <View style={styles.propertyRow}>
             <View>
               <TrackingProperty
-                title={I18n.t('text_tracking_rank')}
+                title={I18n.t('text_leaderboard_my_rank')}
                 value={(rank && String(rank)) || EMPTY_VALUE}
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
               <TrackingProperty
-                title={'Calculated time at fastest'}
+                title={I18n.t('text_leaderboard_my_gap')}
                 value={
-                  calculatedTimeAtFastest !== undefined
-                    ? String(calculatedTimeAtFastest)
+                  gapToLeader !== undefined
+                    ? String(gapToLeader)
                     : EMPTY_VALUE
                 }
               />
@@ -79,7 +79,7 @@ class Leaderboard extends React.Component<{
           </View>
         </View>
         <View style={[styles.listContainer]}>
-          <LineSeparator style={{ backgroundColor: '#123456', height: 2 }} />
+          <LineSeparator style={{ backgroundColor: '#000000', height: 2 }} />
           <FlatList data={leaderboard} renderItem={this.renderItem} />
         </View>
       </View>
@@ -100,8 +100,8 @@ class Leaderboard extends React.Component<{
       get(competitorData, ['columns', currentTrackName, 'fleet'])
 
     // The handicap value
-    // Currently gets gapToLeader. TODO: get the actual calculatedTimeAtFastest
-    const calculatedTimeAtFastest: number | undefined =
+    // TODO: Maybe this will have to be calculatedTimeAtFastest
+    const gapToLeader: number | undefined =
       currentTrackName &&
       get(competitorData, [
         'columns',
@@ -118,7 +118,7 @@ class Leaderboard extends React.Component<{
       name,
       rank,
       regattaRank,
-      calculatedTimeAtFastest,
+      gapToLeader,
       fleet,
       country,
       gain,
@@ -145,7 +145,7 @@ class Leaderboard extends React.Component<{
       rank,
       regattaRank,
       country,
-      calculatedTimeAtFastest,
+      gapToLeader,
       gain,
     } = item
     return (
@@ -160,8 +160,8 @@ class Leaderboard extends React.Component<{
           </View>
           <View style={[styles.textContainer]}>
             <Text style={[styles.gapText]}>
-              {calculatedTimeAtFastest !== undefined
-                ? String(calculatedTimeAtFastest)
+              {gapToLeader !== undefined
+                ? String(gapToLeader)
                 : EMPTY_VALUE}
             </Text>
             <Text

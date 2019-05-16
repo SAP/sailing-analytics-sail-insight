@@ -51,10 +51,8 @@ export const updateLeaderboardTracking = (
     currentTrackName &&
     leaderboard.competitors &&
     leaderboard.competitors.reduce((map, competitor) => {
-      // TODO: This is also currently using the gapToLeader, whilst in the future
-      //       it will have to use calculatedTimeAtFastest or another handicap
-      //       adjusted metric
-      const calculatedTimeAtFastest: number | undefined = get(competitor, [
+      // TODO: Maybe this will have to be calculated time at fastest
+      const gapToLeader: number | undefined = get(competitor, [
         'columns',
         currentTrackName,
         'data',
@@ -63,9 +61,9 @@ export const updateLeaderboardTracking = (
 
       return (
         (competitor.id &&
-          calculatedTimeAtFastest && {
+          gapToLeader && {
             ...map,
-            [competitor.id]: calculatedTimeAtFastest,
+            [competitor.id]: gapToLeader,
           }) ||
         map
       )
