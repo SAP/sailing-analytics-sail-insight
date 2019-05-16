@@ -50,10 +50,15 @@ const Gap = ({ gap, gain }: any) => {
       <Text style={[styles.gapText]}>
         {gapText}
       </Text>
+      {/* This is so that numbers wihtout the indicators are aligned
+          with numbers which have indicators */}
+      {gain === undefined &&
+        <View style={[styles.triangleEmptySpace]}/>
+      }
       <Text
         style={[styles.triangle, gain === true ? styles.green : styles.red]}
       >
-        {gain === undefined ? ' ' : gain === true ? TRIANGLE_UP : TRIANGLE_DOWN}
+        {gain === undefined ? '' : gain === true ? TRIANGLE_UP : TRIANGLE_DOWN}
       </Text>
     </View>
   )

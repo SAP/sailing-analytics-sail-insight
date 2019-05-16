@@ -6,6 +6,7 @@ const windowHeight = Dimensions.get('window').height
 const skipAndroid = true
 const topMargin = windowHeight * 0.057
 
+const indicatorSize = 24
 
 export default EStyleSheets.create({
   container: {
@@ -77,8 +78,11 @@ export default EStyleSheets.create({
   },
   triangle: {
     marginLeft: 5,
-    fontSize: 24,
+    fontSize: indicatorSize,
     fontWeight: 'bold',
+  },
+  triangleEmptySpace: {
+    width: indicatorSize,
   },
   green: {
     color: '#64A266',
