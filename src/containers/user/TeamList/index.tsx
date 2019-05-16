@@ -8,8 +8,8 @@ import { navigateToBoatDetails } from 'navigation'
 import { getLastUsedBoat, getUserBoats } from 'selectors/user'
 
 import AddButton from 'components/AddButton'
-import BoatItem from 'components/BoatItem'
 import FloatingComponentList from 'components/FloatingComponentList'
+import TeamItem from 'components/TeamItem'
 
 
 class TeamList extends React.Component<ViewProps & {
@@ -36,7 +36,7 @@ class TeamList extends React.Component<ViewProps & {
   protected renderItem = ({ item }: {item: TeamTemplate}) => {
     const { lastUsedBoat } = this.props
     return (
-      <BoatItem
+      <TeamItem
         lastUsed={lastUsedBoat && lastUsedBoat.name === item.name}
         boat={item}
       />

@@ -9,7 +9,7 @@ import { text } from 'styles/commons'
 import styles from './styles'
 
 
-class BoatItem extends React.Component<ViewProps & {
+class TeamItem extends React.Component<ViewProps & {
   boat: TeamTemplate,
   lastUsed?: boolean,
 } > {
@@ -34,4 +34,4 @@ class BoatItem extends React.Component<ViewProps & {
   }
 }
 
-export default BoatItem
+export default TeamItem
