@@ -104,7 +104,7 @@ const gpsFixPostItem = (fix: PositionFix) => fix && ({
   [GPSFixBodyKeys.Longitude]: fix.longitude,
   [GPSFixBodyKeys.Timestamp]: fix.timeMillis,
   [GPSFixBodyKeys.Course]: fix.bearingInDeg || 0,
-  [GPSFixBodyKeys.Speed]: fix.speedInKnots || 0,
+  [GPSFixBodyKeys.Speed]: (fix.speedInKnots || 0) * 0.51444444444,
 })
 
 export const gpsFixPostData = (fixes: PositionFix[]) => fixes && ({
