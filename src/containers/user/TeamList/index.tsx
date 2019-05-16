@@ -12,7 +12,7 @@ import BoatItem from 'components/BoatItem'
 import FloatingComponentList from 'components/FloatingComponentList'
 
 
-class UserBoats extends React.Component<ViewProps & {
+class TeamList extends React.Component<ViewProps & {
   boats: BoatTemplate[],
   lastUsedBoat?: BoatTemplate,
 }> {
@@ -49,4 +49,4 @@ const mapStateToProps = (state: any) => ({
   lastUsedBoat: getLastUsedBoat(state),
 })
 
-export default connect(mapStateToProps)(UserBoats)
+export default connect(mapStateToProps)(TeamList)
