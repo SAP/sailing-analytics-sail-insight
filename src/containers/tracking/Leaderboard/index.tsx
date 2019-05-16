@@ -1,6 +1,6 @@
-import { get, sortBy } from 'lodash'
+import { find, get, sortBy } from 'lodash'
 import React from 'react'
-import { FlatList, View } from 'react-native'
+import { FlatList, TouchableHighlight, View } from 'react-native'
 import Flag from 'react-native-flags'
 import { connect } from 'react-redux'
 
@@ -39,28 +39,31 @@ const Seperator = () => {
   )
 }
 const Gap = ({ gap, gain, fontSize }: any) => {
+  const negative = gap < 0
+  const negativeText = negative ? '-' : ''
+  gap = Math.abs(gap)
   const minutes = gap && Math.floor(gap / 60)
   const seconds = gap && gap % 60
   const gapText =
     gap === undefined
       ? EMPTY_VALUE
       : minutes !== 0
-      ? `${minutes}m ${seconds}s`
-      : `${seconds}s`
+      ? `${negativeText}${minutes}m ${seconds}s`
+      : `${negativeText}${seconds}s`
 
   const fontSizeOverride =
     fontSize === undefined
       ? {}
       : {
-          fontSize,
-        }
+        fontSize,
+      }
 
   const emptySpaceOverride =
     fontSize === undefined
       ? {}
       : {
-          width: fontSize,
-        }
+        width: fontSize,
+      }
 
   return (
     <View style={[styles.textContainer]}>
@@ -87,17 +90,31 @@ class Leaderboard extends React.Component<{
   trackedLeaderboardData: LeaderboardCompetitor
   leaderboardData: ILeaderboard
   checkInData: CheckIn
-  leaderboardGaps: CompetitorGapMap
+  leaderboardGaps: CompetitorGapMap,
 }> {
+
+  public state = {
+    selectedCompetitor: undefined,
+  }
+
   public render() {
     const { trackedLeaderboardData, leaderboardData } = this.props
+    const { selectedCompetitor } = this.state
 
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
     const leaderboard = sortBy(competitorData, ['rank'])
 
-    const { rank, gapToLeader, gain } = this.extractCompetitorData(
+    const { rank, gapToLeader: myGapToLeader, gain } = this.extractCompetitorData(
       trackedLeaderboardData,
     )
+
+    const gapTitle = selectedCompetitor
+      ? 'Gap to competitor'
+      : I18n.t('text_leaderboard_my_gap')
+
+    const gap = selectedCompetitor
+      ? this.getGapToCompetitor(myGapToLeader, selectedCompetitor)
+      : myGapToLeader
 
     return (
       <View style={[container.main]}>
@@ -116,9 +133,9 @@ class Leaderboard extends React.Component<{
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
-                {I18n.t('text_leaderboard_my_gap').toUpperCase()}
+                {gapTitle.toUpperCase()}
               </Text>
-              <Gap gap={gapToLeader} gain={gain} fontSize={32}/>
+              <Gap gap={gap} gain={gain} fontSize={32}/>
             </View>
           </View>
         </View>
@@ -134,6 +151,7 @@ class Leaderboard extends React.Component<{
     const { checkInData, leaderboardGaps } = this.props
     const currentTrackName = checkInData && checkInData.currentTrackName
     const name = competitorData.name
+    const id = competitorData.id
     const rank: number | undefined =
       currentTrackName &&
       get(competitorData, ['columns', currentTrackName, 'trackedRank'])
@@ -159,7 +177,7 @@ class Leaderboard extends React.Component<{
     }
 
     const gain: boolean | undefined =
-      competitorData.id && get(leaderboardGaps, [competitorData.id, 'gaining'])
+      id && get(leaderboardGaps, [id, 'gaining'])
 
     return {
       name,
@@ -186,22 +204,46 @@ class Leaderboard extends React.Component<{
     )
   }
 
+  private getGapToCompetitor = (myGapToLeader: any, competitorId: any) => {
+    const { checkInData, leaderboardData } = this.props
+    const currentTrackName = checkInData && checkInData.currentTrackName
+    const competitor = find(leaderboardData.competitors, { id: competitorId })
+    const competitorGapToLeader =
+      currentTrackName &&
+      get(competitor, [
+        'columns',
+        currentTrackName,
+        'data',
+        'gapToLeader-s',
+      ])
+
+    return Math.ceil(myGapToLeader - competitorGapToLeader)
+  }
+
+  private onLeaderboardItemPress = (competitorId?: string) => () => {
+    this.setState({ selectedCompetitor: competitorId })
+  }
+
   private renderItem = ({ item }: any) => {
-    const { name, rank, regattaRank, country, gapToLeader, gain } = item
+    const { name, rank, regattaRank, country, gapToLeader, gain, id } = item
     return (
-      <View style={[styles.listRowContainer]}>
-        <View
-          style={[container.smallHorizontalMargin, styles.listItemContainer]}
-        >
-          <View style={[styles.textContainer]}>
-            <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
-            <Flag style={[styles.flag]} code={country} size={24} />
-            <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
+      <>
+        <TouchableHighlight onPress={this.onLeaderboardItemPress(id)} >
+          <View style={[styles.listRowContainer]}>
+            <View
+              style={[container.smallHorizontalMargin, styles.listItemContainer]}
+            >
+              <View style={[styles.textContainer]}>
+                <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
+                <Flag style={[styles.flag]} code={country} size={24} />
+                <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
+              </View>
+              <Gap gap={gapToLeader} gain={gain} />
+            </View>
           </View>
-          <Gap gap={gapToLeader} gain={gain} />
-        </View>
+        </TouchableHighlight>
         <Seperator />
-      </View>
+      </>
     )
   }
 }
