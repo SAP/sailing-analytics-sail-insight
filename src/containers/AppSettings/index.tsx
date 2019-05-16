@@ -20,6 +20,7 @@ import TitleLabel from 'components/TitleLabel'
 import { button, container } from 'styles/commons'
 import { registration } from 'styles/components'
 import Logger from '../../helpers/Logger'
+import { navigateToExpertSettings } from '../../navigation'
 import { readGPSFixRequestDuplicates, readGPSFixRequests } from '../../storage'
 import { GPS_FIX_PROPERTY_NAME } from '../../storage/schemas'
 import styles from './styles'
@@ -29,6 +30,10 @@ class AppSettings extends React.Component<ViewProps & {
   updateGpsBulkSetting: (value: boolean) => void,
   bulkGpsSetting: boolean,
 }> {
+
+  public state = {
+    expertSettingsClickCount: 0,
+  }
 
   public render() {
     return (
@@ -69,10 +74,6 @@ class AppSettings extends React.Component<ViewProps & {
     )
   }
 
-  protected showServerUrl() {
-    Alert.alert('Self tracking server', getApiServerUrl())
-  }
-
   protected showDeveloperDialog = () => {
     const mainServerUrl = getApiServerUrl()
     const numberOfunsentGPSFixes = readGPSFixRequests().length
@@ -91,6 +92,15 @@ class AppSettings extends React.Component<ViewProps & {
       ],
       { cancelable: true },
     )
+  }
+
+  protected handleExpertSettings = () => {
+    if (this.state.expertSettingsClickCount >= 14) {
+      this.setState({ expertSettingsClickCount: 0 })
+      navigateToExpertSettings()
+    } else {
+      this.setState({ expertSettingsClickCount: this.state.expertSettingsClickCount + 1 })
+    }
   }
 
   protected exportGpsFixes = () => {
@@ -112,6 +122,7 @@ class AppSettings extends React.Component<ViewProps & {
     return (
       <TouchableWithoutFeedback
         onLongPress={this.showDeveloperDialog}
+        onPress={this.handleExpertSettings}
       >
         <Text style={styles.item}>
           {getAppVersionText()}

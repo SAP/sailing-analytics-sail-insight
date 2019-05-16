@@ -27,7 +27,7 @@ export const saveBoat: SaveBoatAction = (boat, options = {}) => async (dispatch:
     ...(replaceBoatName ? omit(boats, replaceBoatName) : boats),
     [boat.name]: boat,
   }
-  await selfTrackingApi.updatePreference(
+  await selfTrackingApi().updatePreference(
     BOATS_PREFERENCE_KEY,
     newBoats,
     )
@@ -36,13 +36,13 @@ export const saveBoat: SaveBoatAction = (boat, options = {}) => async (dispatch:
 }
 
 export const fetchBoats = async () => {
-  return (await selfTrackingApi.requestPreference(BOATS_PREFERENCE_KEY) || [])
+  return (await selfTrackingApi().requestPreference(BOATS_PREFERENCE_KEY) || [])
 }
 
 export type DeleteBoatAction = (name: string) => any
 export const deleteBoat: DeleteBoatAction = name => async (dispatch: DispatchType) => {
-  const newBoats = omit(await selfTrackingApi.requestPreference(BOATS_PREFERENCE_KEY), [name])
-  await selfTrackingApi.updatePreference(BOATS_PREFERENCE_KEY, newBoats)
+  const newBoats = omit(await selfTrackingApi().requestPreference(BOATS_PREFERENCE_KEY), [name])
+  await selfTrackingApi().updatePreference(BOATS_PREFERENCE_KEY, newBoats)
   dispatch(updateBoats(newBoats))
 }
 

@@ -76,7 +76,7 @@ export const generateSessionNameWithUserPrefix = (name: string) => (dispatch: Di
 
 export const createEvent = (session: TrackingSession, isPublic?: boolean) => async (dispatch: DispatchType) => {
   const secret = isPublic ? getSharingUuid() : undefined
-  const response = await selfTrackingApi.createEvent(
+  const response = await selfTrackingApi().createEvent(
     {
       boatclassname: session.boatClass,
       venuename: 'default', // TODO: get venue name? or position?

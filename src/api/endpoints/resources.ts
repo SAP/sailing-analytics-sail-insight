@@ -1,4 +1,11 @@
-import { getDataApiGenerator, getDataApiV2Generator, getRaceApiGenerator, HttpMethods, UrlOptions } from 'api/config'
+import {
+  getApiServerUrl,
+  getDataApiGenerator,
+  getDataApiV2Generator,
+  getRaceApiGenerator,
+  HttpMethods,
+  UrlOptions,
+} from 'api/config'
 import {
   AddRaceColumnResponseData,
   AddRaceColumnsBody,
@@ -75,7 +82,7 @@ const deviceMapping = (endpoint: (options?: UrlOptions) => string) => (leaderboa
 )
 
 // tslint:disable-next-line max-line-length
-const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string, secret: string) => dataRequest(
+const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string, secret?: string) => dataRequest(
   url({ pathParams: [leaderboardName], urlParams: { secret, raceDetails: 'ALL' } }),
   { dataSchema: leaderboardSchema },
 )
@@ -133,8 +140,8 @@ export interface DataApi {
   uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
 }
 
-const getApi: (serverUrl: string) => DataApi = (serverUrl) => {
-  const endpoints = apiEndpoints(serverUrl)
+const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
+  const endpoints = apiEndpoints(serverUrl ? serverUrl : getApiServerUrl())
   return {
     requestRegattas: () => listRequest(endpoints.regatta()),
     requestRegatta: (regattaName, secret) => dataRequest(
