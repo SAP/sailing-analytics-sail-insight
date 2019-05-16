@@ -38,7 +38,7 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
   deleteBoat: DeleteBoatAction
 }
 
-class BoatDetails extends TextInputForm<Props> {
+class TeamDetails extends TextInputForm<Props> {
 
   public state = {
     isLoading: false,
@@ -171,4 +171,4 @@ export default connect(mapStateToProps, { saveBoat, deleteBoat })(reduxForm<{}, 
   form: boatForm.BOAT_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
-})(BoatDetails))
+})(TeamDetails))

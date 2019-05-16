@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
-import { navigateToBoatDetails } from 'navigation'
+import { navigateToTeamDetails } from 'navigation'
 import { getLastUsedBoat, getUserBoats } from 'selectors/user'
 
 import AddButton from 'components/AddButton'
@@ -28,7 +28,7 @@ class TeamList extends React.Component<ViewProps & {
   }
 
   protected onNewBoatPress = () => {
-    navigateToBoatDetails()
+    navigateToTeamDetails()
   }
 
   protected renderAddItem = () => <AddButton onPress={this.onNewBoatPress}>{I18n.t('caption_new_boat')}</AddButton>

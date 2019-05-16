@@ -11,8 +11,8 @@ import { getFormBoatName } from 'selectors/boat'
 import HeaderTitle from 'components/HeaderTitle'
 import ImageButton from 'components/ImageButton'
 import WebView from 'components/WebView'
-import BoatDetails from 'containers/BoatDetails'
 import SessionDetail from 'containers/session/SessionDetail'
+import TeamDetails from 'containers/TeamDetails'
 
 import { button } from 'styles/commons'
 
@@ -55,8 +55,8 @@ export default createStackNavigator(
         headerTitle: 'Track Details',
       }),
     },
-    [Screens.BoatDetails]: {
-      screen: BoatDetails,
+    [Screens.TeamDetails]: {
+      screen: TeamDetails,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: boatDetailsHeader,
         headerRight: boatDeleteHeader(navigationProps),

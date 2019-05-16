@@ -8,7 +8,7 @@ export const AppSettings = 'AppSettings'
 export const ExpertSettings = 'ExpertSettings'
 export const UserProfile = 'UserProfile'
 export const TeamList = 'TeamList'
-export const BoatDetails = 'BoatDetails'
+export const TeamDetails = 'TeamDetails'
 
 // sessions
 export const UserSessions = 'UserSessions'

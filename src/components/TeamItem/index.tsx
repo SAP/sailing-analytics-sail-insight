@@ -1,7 +1,7 @@
 import Text from 'components/Text'
 
 import { TeamTemplate } from 'models'
-import { navigateToBoatDetails } from 'navigation'
+import { navigateToTeamDetails } from 'navigation'
 import React from 'react'
 import { TouchableOpacity, View, ViewProps } from 'react-native'
 
@@ -13,7 +13,7 @@ class TeamItem extends React.Component<ViewProps & {
   boat: TeamTemplate,
   lastUsed?: boolean,
 } > {
-  public onItempPress = () => navigateToBoatDetails(this.props.boat)
+  public onItempPress = () => navigateToTeamDetails(this.props.boat)
 
   public render() {
     const { boat } = this.props
