@@ -39,7 +39,8 @@ export interface OnboardingState {
 }
 
 export interface SettingsState {
-  bulkGpsUpdate: boolean
+  bulkGpsUpdate: boolean,
+  enableAnalytics: boolean
 }
 
 export interface AuthState {
