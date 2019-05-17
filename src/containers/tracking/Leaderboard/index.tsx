@@ -41,15 +41,20 @@ const Seperator = () => {
 const Gap = ({ gap, gain, fontSize }: any) => {
   const negative = gap < 0
   const negativeText = negative ? '-' : ''
-  gap = Math.abs(gap)
-  const minutes = gap && Math.floor(gap / 60)
-  const seconds = gap && gap % 60
-  const gapText =
-    gap === undefined
-      ? EMPTY_VALUE
-      : minutes !== 0
-      ? `${negativeText}${minutes}m ${seconds}s`
-      : `${negativeText}${seconds}s`
+
+  let gapText
+
+  if (gap === undefined) {
+    gapText = EMPTY_VALUE
+  } else {
+    const gapAbs = Math.abs(gap)
+    const minutes = Math.floor(gapAbs / 60)
+    const seconds = gapAbs % 60
+    gapText =
+      minutes !== 0
+        ? `${negativeText}${minutes}m ${seconds}s`
+        : `${negativeText}${seconds}s`
+  }
 
   const fontSizeOverride =
     fontSize === undefined
