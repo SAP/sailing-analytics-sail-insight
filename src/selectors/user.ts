@@ -10,7 +10,7 @@ import { getEntities, getEntityArrayByType } from './entity'
 import { getFormFieldValue } from './form'
 
 
-const orderBoatsLastUsedDesc = (boats: TeamTemplate[]) => boats.sort((b1, b2) => {
+const orderTeamsLastUsedDesc = (boats: TeamTemplate[]) => boats.sort((b1, b2) => {
   if (!b1.lastUsed && !b2.lastUsed) {
     return 0
   }
@@ -23,8 +23,8 @@ const orderBoatsLastUsedDesc = (boats: TeamTemplate[]) => boats.sort((b1, b2) =>
   return b2.lastUsed - b1.lastUsed
 })
 
-const getUserBoatEntities = (state: RootState = {}) => getEntities(state, 'boats', 'user')
-export const getUserTeams = (state: RootState = {}) => orderBoatsLastUsedDesc(getEntityArrayByType(
+const getUserTeamEntities = (state: RootState = {}) => getEntities(state, 'boats', 'user')
+export const getUserTeams = (state: RootState = {}) => orderTeamsLastUsedDesc(getEntityArrayByType(
   state,
   'boats',
   { reducerName: 'user', omitId: true },
@@ -36,17 +36,17 @@ export const getUserBoatsByClass = (boatClass: string) => createSelector(
 )
 
 export const getUserBoatByFormBoatName = createSelector(
-  getUserBoatEntities,
+  getUserTeamEntities,
   getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_NAME),
   (userBoats = {}, boatName) => userBoats[boatName],
 )
 
-export const getUserBoatNames = createSelector(
+export const getUserTeamNames = createSelector(
   getUserTeams,
-  (userBoats = []) => userBoats.map((boat: TeamTemplate) => boat.name),
+  (userTeams = []) => userTeams.map((team: TeamTemplate) => team.name),
 )
 
-export const getLastUsedBoat = createSelector(
+export const getLastUsedTeam = createSelector(
   getUserTeams,
   boats => head(boats),
 )

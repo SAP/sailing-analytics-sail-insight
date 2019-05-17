@@ -13,7 +13,7 @@ import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
 import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getUserInfo } from 'selectors/auth'
-import { getLastUsedBoat, getUserTeams } from 'selectors/user'
+import { getLastUsedTeam, getUserTeams } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormTeamPicker from 'components/form/FormTeamPicker'
@@ -51,6 +51,7 @@ class EditCompetitor extends TextInputForm<Props> {
   }
 
   public render() {
+    Logger.debug('EditCompetitor: render')
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <Field
@@ -159,17 +160,17 @@ class EditCompetitor extends TextInputForm<Props> {
 
 const mapStateToProps = (state: any, props: any) => {
   const userInfo = getUserInfo(state)
-  const lastUsedBoat = getLastUsedBoat(state)
+  const lastUsedTeam = getLastUsedTeam(state)
   return {
     initialValues: {
       // name: userInfo && userInfo.fullName,
-      ...(lastUsedBoat && {
-        teamName: lastUsedBoat.name,
-        boatClass: lastUsedBoat.boatClass,
-        boatId: lastUsedBoat.id,
-        boatName: lastUsedBoat.boatName,
-        sailNumber: lastUsedBoat.sailNumber,
-        nationality: lastUsedBoat.nationality,
+      ...(lastUsedTeam && {
+        teamName: lastUsedTeam.name,
+        boatClass: lastUsedTeam.boatClass,
+        boatId: lastUsedTeam.id,
+        boatName: lastUsedTeam.boatName,
+        sailNumber: lastUsedTeam.sailNumber,
+        nationality: lastUsedTeam.nationality,
       }),
       // TODO
       // nationality: getDeviceCountryIOC(),

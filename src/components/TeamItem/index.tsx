@@ -10,23 +10,23 @@ import styles from './styles'
 
 
 class TeamItem extends React.Component<ViewProps & {
-  boat: TeamTemplate,
+  team: TeamTemplate,
   lastUsed?: boolean,
 } > {
-  public onItempPress = () => navigateToTeamDetails(this.props.boat)
+  public onItemPress = () => navigateToTeamDetails(this.props.team)
 
   public render() {
-    const { boat } = this.props
+    const { team } = this.props
 
     return (
       <TouchableOpacity
         style={styles.container}
-        onPress={this.onItempPress}
+        onPress={this.onItemPress}
       >
         <View style={styles.textContainer}>
-          <Text style={text.itemName}>{boat.name}</Text>
+          <Text style={text.itemName}>{team.name}</Text>
           <View style={styles.lowerTextContainer}>
-            <Text style={[text.propertyValue, styles.sailNumber]}>{boat.sailNumber}</Text>
+            <Text style={[text.propertyValue, styles.sailNumber]}>{team.sailNumber}</Text>
           </View>
         </View>
       </TouchableOpacity>

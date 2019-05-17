@@ -18,7 +18,7 @@ import { TeamTemplate } from 'models'
 import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getFormFieldValue } from 'selectors/form'
-import { getUserBoatNames } from 'selectors/user'
+import { getUserTeamNames } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormImagePicker from 'components/form/FormImagePicker'
@@ -215,7 +215,7 @@ const mapStateToProps = (state: any, props: any) => {
     formBoatClass,
     formBoatName,
     paramTeamName,
-    comparisonValue: getUserBoatNames(state),
+    comparisonValue: getUserTeamNames(state),
     ignoredValue: paramTeamName,
     initialValues: team && {
       [teamForm.FORM_KEY_TEAM_NAME]: team.name,

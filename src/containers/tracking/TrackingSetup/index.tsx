@@ -22,7 +22,7 @@ import I18n from 'i18n'
 import { CheckInUpdate, TrackingSession } from 'models'
 import { navigateToEditSession, navigateToMain } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
-import { getLastUsedBoat } from 'selectors/user'
+import { getLastUsedTeam } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
 import ImageButton from 'components/ImageButton'
@@ -254,11 +254,11 @@ class TrackingSetup extends TextInputForm<Props> {
 
 const mapStateToProps = (state: any, props: any) => {
   const sessionParam = getCustomScreenParamData(props) as TrackingSession
-  const lastUsedBoat = getLastUsedBoat(state)
+  const lastUsedTeam = getLastUsedTeam(state)
   return {
     initialValues: sessionParam ?
       sessionForm.formValuesFromTrackingSession(sessionParam) :
-      generateNewSession(lastUsedBoat, state),
+      generateNewSession(lastUsedTeam, state),
   }
 }
 
