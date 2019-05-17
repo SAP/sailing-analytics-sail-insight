@@ -4,7 +4,7 @@ import { View, ViewProps } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
 
-import { FORM_KEY_BOAT_CLASS, FORM_KEY_BOAT_ID, FORM_KEY_BOAT_NAME, FORM_KEY_SAIL_NUMBER } from 'forms/session'
+import { FORM_KEY_BOAT_CLASS, FORM_KEY_BOAT_ID, FORM_KEY_BOAT_NAME, FORM_KEY_NATIONALITY, FORM_KEY_SAIL_NUMBER, FORM_KEY_TEAM_NAME } from 'forms/session'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
 
@@ -15,27 +15,27 @@ import { text } from 'styles/commons'
 import styles from './styles'
 
 
-const boatsToPickerItems = (boats: TeamTemplate[] = []) => boats.map(item => ({
+const teamsToPickerItems = (teams: TeamTemplate[] = []) => teams.map(item => ({
   label: item.name,
   value: item.name,
 }))
 
-class FormBoatPicker extends React.Component<ViewProps & WrappedFieldProps & {
+class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
   label: string,
-  boats: TeamTemplate[],
+  teams: TeamTemplate[],
 } > {
 
   public render() {
     const {
       label,
-      boats,
+      teams,
       style,
     } = this.props
     const {
       input: { name, onChange, ...restInput },
       meta: { touched: showError, error },
       ...additionalProps
-    } = (this.props as any)[FORM_KEY_BOAT_NAME]
+    } = (this.props as any)[FORM_KEY_TEAM_NAME]
 
     const shouldHighlight = error && showError
     const assistiveText = error && showError ? error : this.getAssistiveText(restInput.value)
@@ -52,14 +52,14 @@ class FormBoatPicker extends React.Component<ViewProps & WrappedFieldProps & {
             {...additionalProps}
           />
           {
-            isEmpty(boats) ? null :
+            isEmpty(teams) ? null :
             <RNPickerSelect
               placeholder={{
-                label: I18n.t('text_placeholder_boat_picker'),
+                label: I18n.t('text_placeholder_team_picker'),
                 value: null,
               }}
-              items={boatsToPickerItems(boats)}
-              onValueChange={this.onSelectBoat}
+              items={teamsToPickerItems(teams)}
+              onValueChange={this.onSelectTeam}
               style={{
                 inputIOS: styles.inputIOS,
                 inputAndroid: styles.inputAndroid,
@@ -80,32 +80,41 @@ class FormBoatPicker extends React.Component<ViewProps & WrappedFieldProps & {
     if (!name) {
       return
     }
-    const existingBoat = this.boatFromName(name)
-    if (existingBoat) {
+    const existingTeam = this.teamFromName(name)
+    if (existingTeam) {
+      const { input: { value: boatName } } = (this.props as any)[FORM_KEY_BOAT_NAME]
       const { input: { value: boatClass } } = (this.props as any)[FORM_KEY_BOAT_CLASS]
       const { input: { value: sailNumber } } = (this.props as any)[FORM_KEY_SAIL_NUMBER]
-      return boatClass !== existingBoat.boatClass || sailNumber !== existingBoat.sailNumber ?
-        I18n.t('text_hint_existing_boat_update') :
-        undefined
+      const { input: { value: nationality } } = (this.props as any)[FORM_KEY_NATIONALITY]
+      if (
+        boatName !== existingTeam.boatName || boatClass !== existingTeam.boatClass ||
+        sailNumber !== existingTeam.sailNumber ||  nationality !== existingTeam.nationality) {
+        return I18n.t('text_hint_existing_team_update')
+      }
+      return undefined
     }
-    return I18n.t('text_hint_new_boat_created')
+    return I18n.t('text_hint_new_team_created')
   }
 
-  protected onSelectBoat = (name: string) => {
-    const { input: { onChange: onChangeName } } = (this.props as any)[FORM_KEY_BOAT_NAME]
+  protected onSelectTeam = (name: string) => {
+    const { input: { onChange: onChangeName } } = (this.props as any)[FORM_KEY_TEAM_NAME]
+    const { input: { onChange: onChangeBoatName } } = (this.props as any)[FORM_KEY_BOAT_NAME]
     const { input: { onChange: onChangeClass } } = (this.props as any)[FORM_KEY_BOAT_CLASS]
     const { input: { onChange: onChangeSailNumber } } = (this.props as any)[FORM_KEY_SAIL_NUMBER]
+    const { input: { onChange: onChangeNationality } } = (this.props as any)[FORM_KEY_NATIONALITY]
     const { input: { onChange: onChangeBoatId } } = (this.props as any)[FORM_KEY_BOAT_ID]
 
-    const boat = this.boatFromName(name)
+    const team = this.teamFromName(name)
     onChangeName(name || null)
-    onChangeClass((boat && boat.boatClass) || null)
-    onChangeSailNumber((boat && boat.sailNumber) || null)
-    onChangeBoatId((boat && boat.id) || null)
+    onChangeBoatName((team && team.boatName) || null)
+    onChangeClass((team && team.boatClass) || null)
+    onChangeSailNumber((team && team.sailNumber) || null)
+    onChangeNationality((team && team.nationality) || null)
+    onChangeBoatId((team && team.id) || null)
   }
 
-  protected boatFromName = (name: string) => find(this.props.boats, { name })
+  protected teamFromName = (name: string) => find(this.props.teams, { name })
 }
 
 
-export default FormBoatPicker
+export default FormTeamPicker

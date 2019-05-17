@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
 import { navigateToTeamDetails } from 'navigation'
-import { getLastUsedBoat, getUserBoats } from 'selectors/user'
+import { getLastUsedBoat, getUserTeams } from 'selectors/user'
 
 import AddButton from 'components/AddButton'
 import FloatingComponentList from 'components/FloatingComponentList'
@@ -13,14 +13,14 @@ import TeamItem from 'components/TeamItem'
 
 
 class TeamList extends React.Component<ViewProps & {
-  boats: TeamTemplate[],
+  teams: TeamTemplate[],
   lastUsedBoat?: TeamTemplate,
 }> {
 
   public render() {
     return (
       <FloatingComponentList
-        data={this.props.boats}
+        data={this.props.teams}
         renderItem={this.renderItem}
         renderFloatingItem={this.renderAddItem}
       />
@@ -31,7 +31,7 @@ class TeamList extends React.Component<ViewProps & {
     navigateToTeamDetails()
   }
 
-  protected renderAddItem = () => <AddButton onPress={this.onNewBoatPress}>{I18n.t('caption_new_boat')}</AddButton>
+  protected renderAddItem = () => <AddButton onPress={this.onNewBoatPress}>{I18n.t('caption_new_team')}</AddButton>
 
   protected renderItem = ({ item }: {item: TeamTemplate}) => {
     const { lastUsedBoat } = this.props
@@ -45,7 +45,7 @@ class TeamList extends React.Component<ViewProps & {
 }
 
 const mapStateToProps = (state: any) => ({
-  boats: getUserBoats(state),
+  teams: getUserTeams(state),
   lastUsedBoat: getLastUsedBoat(state),
 })
 

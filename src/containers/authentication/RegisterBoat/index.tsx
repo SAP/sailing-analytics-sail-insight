@@ -3,13 +3,13 @@ import { KeyboardType, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
-import { saveBoat, SaveBoatAction } from 'actions/user'
+import { saveTeam, SaveTeamAction } from 'actions/user'
 import {
-  BOAT_FORM_NAME,
   FORM_KEY_BOAT_CLASS,
-  FORM_KEY_NAME,
+  FORM_KEY_BOAT_NAME,
   FORM_KEY_SAIL_NUMBER,
-} from 'forms/boat'
+  TEAM_FORM_NAME,
+} from 'forms/team'
 import { validateRequired } from 'forms/validators'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
@@ -30,7 +30,7 @@ import styles from './styles'
 
 
 interface Props {
-  saveBoat: SaveBoatAction
+  saveBoat: SaveTeamAction
 }
 
 class RegisterBoat extends TextInputForm<Props> {
@@ -54,11 +54,11 @@ class RegisterBoat extends TextInputForm<Props> {
         <View style={registration.bottomContainer()}>
           <Field
             label={I18n.t('text_placeholder_boat_name')}
-            name={FORM_KEY_NAME}
+            name={FORM_KEY_BOAT_NAME}
             component={FormTextInput}
             returnKeyType="next"
             onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(FORM_KEY_NAME)}
+            inputRef={this.handleInputRef(FORM_KEY_BOAT_NAME)}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -113,7 +113,7 @@ class RegisterBoat extends TextInputForm<Props> {
     try {
       this.setState({ isLoading: true, error: null })
       await this.props.saveBoat({
-        name: values[FORM_KEY_NAME],
+        name: values[FORM_KEY_BOAT_NAME],
         boatClass: values[FORM_KEY_BOAT_CLASS],
         sailNumber: values[FORM_KEY_SAIL_NUMBER],
       } as TeamTemplate)
@@ -126,8 +126,8 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 }
 
-export default connect(null, { saveBoat })(reduxForm<{}, Props>({
-  form: BOAT_FORM_NAME,
+export default connect(null, { saveBoat: saveTeam })(reduxForm<{}, Props>({
+  form: TEAM_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
 })(RegisterBoat))

@@ -29,7 +29,7 @@ import { getSharingUuid } from 'helpers/uuid'
 import { collectCheckInData, registerDevice, updateCheckIn } from 'actions/checkIn'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
-import { saveBoat } from 'actions/user'
+import { saveTeam } from 'actions/user'
 import { getUserInfo } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
@@ -140,11 +140,13 @@ export const createUserAttachmentToSession = (
     dispatch(normalizeAndReceiveEntities(competitor, competitorSchema))
     dispatch(updateCheckIn({ leaderboardName: regattaName, competitorId: competitor.id } as CheckInUpdate))
     if (user) {
-      await dispatch(saveBoat(
+      await dispatch(saveTeam(
         {
-          name: competitorInfo.boatName,
+          name: competitorInfo.teamName,
+          boatName: competitorInfo.boatName,
           boatClass: competitorInfo.boatClass,
           sailNumber: competitorInfo.sailNumber,
+          nationality: competitorInfo.nationality,
           id: competitor && competitor.boat && competitor.boat.id,
         },
         { updateLastUsed: true },

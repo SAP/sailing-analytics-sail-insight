@@ -101,7 +101,7 @@ class TrackingSetup extends TextInputForm<Props> {
               {...this.commonProps}
             />
             <Field
-              label={I18n.t('text_boat')}
+              label={I18n.t('text_boat_name')}
               name={sessionForm.FORM_KEY_BOAT_NAME}
               component={this.renderProperty}
               {...this.commonProps}
