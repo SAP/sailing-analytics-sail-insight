@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash'
 import React from 'react'
 import {
   Alert, KeyboardType, ReturnKeyType, View, ViewProps,
@@ -33,7 +34,12 @@ import FormNationalityPicker from '../../components/form/FormNationalityPicker'
 
 
 interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
+  team: TeamTemplate
   formTeamName?: string
+  formSailNumber?: string
+  formNationality?: string
+  formBoatClass?: string
+  formBoatName?: string
   paramTeamName?: string
   saveTeam: SaveTeamAction
   deleteTeam: DeleteTeamAction
@@ -59,6 +65,9 @@ class TeamDetails extends TextInputForm<Props> {
   }
 
   public render() {
+    const canSave = this.formIsSaveable() && this.formHasChanges()
+    const isSaveDisabled = !canSave
+
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
@@ -106,6 +115,7 @@ class TeamDetails extends TextInputForm<Props> {
             component={FormBoatClassInput}
             inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_CLASS)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_NAME)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
@@ -121,6 +131,7 @@ class TeamDetails extends TextInputForm<Props> {
             textStyle={button.actionText}
             onPress={this.props.handleSubmit(this.onSavePress)}
             isLoading={this.state.isLoading}
+            disabled={isSaveDisabled}
           >
             {I18n.t('caption_save')}
           </TextButton>
@@ -168,14 +179,41 @@ class TeamDetails extends TextInputForm<Props> {
       this.setState({ isLoading: false })
     }
   }
+
+  private formIsSaveable() {
+    const { formTeamName, formSailNumber, formNationality, formBoatClass } = this.props
+
+    return !isEmpty(formTeamName) && !isEmpty(formSailNumber) && !isEmpty(formNationality) && !isEmpty(formBoatClass)
+  }
+
+  private formHasChanges() {
+    const { team, formTeamName, formSailNumber, formNationality, formBoatClass, formBoatName } = this.props
+
+    const nameHasChanged = !team || formTeamName !== team.name
+    const sailNumberHasChanged = !team || formSailNumber !== team.sailNumber
+    const nationalityHasChanged = !team || formNationality !== team.nationality
+    const boatClassHasChanged = !team || formBoatClass !== team.boatClass
+    const boatNameHasChanged = !team || formBoatName !== team.boatName
+
+    return nameHasChanged || sailNumberHasChanged || nationalityHasChanged || boatClassHasChanged || boatNameHasChanged
+  }
 }
 
 const mapStateToProps = (state: any, props: any) => {
   const team: TeamTemplate | undefined = getCustomScreenParamData(props)
   const formTeamName = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_TEAM_NAME)(state)
+  const formSailNumber = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_SAIL_NUMBER)(state)
+  const formNationality = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_NATIONALITY)(state)
+  const formBoatClass = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_CLASS)(state)
+  const formBoatName = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_NAME)(state)
   const paramTeamName = team && team.name
   return {
+    team,
     formTeamName,
+    formSailNumber,
+    formNationality,
+    formBoatClass,
+    formBoatName,
     paramTeamName,
     comparisonValue: getUserBoatNames(state),
     ignoredValue: paramTeamName,
