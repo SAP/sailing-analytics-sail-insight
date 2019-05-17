@@ -222,7 +222,12 @@ class Leaderboard extends React.Component<{
         'gapToLeader-s',
       ])
 
+    if (competitorGapToLeader === undefined || myGapToLeader === undefined) {
+      return undefined
+    }
+
     return Math.ceil(myGapToLeader - competitorGapToLeader)
+
   }
 
   private onLeaderboardItemPress = (competitorId?: string) => () => {
