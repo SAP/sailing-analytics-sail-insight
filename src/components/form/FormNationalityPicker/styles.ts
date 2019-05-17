@@ -38,6 +38,10 @@ export default EStyleSheet.create({
 
   },
   inputAndroid: {
+    alignSelf: 'stretch',
+    paddingBottom: 1,
+    paddingVertical: 0, // remove Android default padding
+    height: 29,
   },
   underline: {
     borderTopWidth: 0,

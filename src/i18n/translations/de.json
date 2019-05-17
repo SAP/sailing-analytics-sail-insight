@@ -108,7 +108,7 @@
   "text_mock_track_name": "Mein Track",
   "text_set_wind_missing_data": "Fehlende Positionsdaten, bitte versuche es später noch einmal.",
   "text_placeholder_team_picker": "Wähle ein Team...",
-  "text_placeholder_nationality": "Wähle deine Nationalität...",
+  "text_placeholder_nationality": "Nationalität",
   "text_default_value_sail_number": "BOOT01",
   "text_default_value_team_name": "Mein Team",
   "text_default_value_boat_name": "Mein Boot",
