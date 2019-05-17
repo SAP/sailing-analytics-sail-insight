@@ -103,6 +103,7 @@ class EditSession extends TextInputForm<Props> {
             component={FormBoatClassInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
@@ -121,6 +122,7 @@ class EditSession extends TextInputForm<Props> {
               name={sessionForm.FORM_KEY_NATIONALITY}
               component={FormNationalityPicker}
               inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
+              validate={[validateRequired]}
               {...this.commonProps}
           />
           {/* <Field
@@ -134,7 +136,7 @@ class EditSession extends TextInputForm<Props> {
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
-            onPress={this.onSubmit}
+            onPress={this.props.handleSubmit(this.onSubmit)}
           >
             {I18n.t('caption_accept')}
           </TextButton>
