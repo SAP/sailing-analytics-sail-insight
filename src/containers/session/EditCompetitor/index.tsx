@@ -163,18 +163,14 @@ const mapStateToProps = (state: any, props: any) => {
   const lastUsedTeam = getLastUsedTeam(state)
   return {
     initialValues: {
-      // name: userInfo && userInfo.fullName,
-      ...(lastUsedTeam && {
-        teamName: lastUsedTeam.name,
-        boatClass: lastUsedTeam.boatClass,
-        boatId: lastUsedTeam.id,
-        boatName: lastUsedTeam.boatName,
-        sailNumber: lastUsedTeam.sailNumber,
-        nationality: lastUsedTeam.nationality,
-      }),
-      // TODO
-      // nationality: getDeviceCountryIOC(),
-      // teamName: I18n.t('text_default_value_team_name'),
+      name: userInfo && userInfo.fullName,
+      teamName: (lastUsedTeam && lastUsedTeam.name) || (userInfo && userInfo.fullName) || I18n.t('text_default_value_team_name'),
+      boatClass: (lastUsedTeam && lastUsedTeam.boatClass),
+      boatName: (lastUsedTeam && lastUsedTeam.boatName) || I18n.t('text_default_value_boat_name'),
+      sailNumber: (lastUsedTeam && lastUsedTeam.sailNumber) || I18n.t('text_default_value_sail_number'),
+      boatId: (lastUsedTeam && lastUsedTeam.id),
+      nationality: (lastUsedTeam && lastUsedTeam.nationality) || getDeviceCountryIOC(),
+      // TODO use image data from team
       teamImage: state.auth && state.auth.user && state.auth.user.imageData && state.auth.user.imageData,
     } as CompetitorInfo,
     teams: getUserTeams(state),
