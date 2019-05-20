@@ -60,6 +60,7 @@
   "text_leaderboard_my_rank": "My rank",
   "text_leaderboard_my_gap": "My gap to leader",
   "text_leaderboard_column_gap": "Gap to leader",
+  "text_leaderboard_column_gap_competitor": "Gap to competitor",
   "text_leaderboard_column_regattaRank": "Regatta Rank",
   "text_leaderboard_column_speed": "Speed",
   "text_leaderboard_column_averageSpeed": "Average speed",

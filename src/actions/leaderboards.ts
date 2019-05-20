@@ -51,7 +51,6 @@ export const updateLeaderboardTracking = (
     currentTrackName &&
     leaderboard.competitors &&
     leaderboard.competitors.reduce((map, competitor) => {
-      // TODO: Maybe this will have to be calculated time at fastest
       let gapToLeader: number | undefined = get(competitor, [
         'columns',
         currentTrackName,

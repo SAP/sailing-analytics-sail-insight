@@ -8,7 +8,6 @@ import I18n from 'i18n'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import {
   getLeaderboardGaps,
-  getTrackedCompetitorLeaderboardData,
   getTrackedLeaderboard,
 } from 'selectors/leaderboard'
 
@@ -33,6 +32,7 @@ const TRIANGLE_DOWN = '▼'
 
 enum ColumnValueType {
   GapToLeader = 'text_leaderboard_column_gap',
+  GapToCompetitor = 'text_leaderboard_column_gap_competitor',
   RegattaRank = 'text_leaderboard_column_regattaRank',
   Speed = 'text_leaderboard_column_speed',
   AverageSpeed = 'text_leaderboard_column_averageSpeed',
@@ -48,12 +48,53 @@ const Seperator = () => {
   )
 }
 
-const ColumnValue = ({selectedColumn, competitorData}: any) => {
-  if (selectedColumn === ColumnValueType.GapToLeader) {
-    const {gapToLeader, gain} = competitorData
+const MyColumnValue = ({
+  selectedColumn,
+  competitorData,
+  fontSize,
+  comparedCompetitorData,
+}: any) => {
+
+  if (selectedColumn === ColumnValueType.GapToCompetitor) {
+    const { gapToLeader: myGapToLeader } = competitorData
+    const { gapToLeader: comparedGapToLeader } = comparedCompetitorData
+
+    const gapToCompetitor =
+      comparedGapToLeader === undefined || myGapToLeader === undefined
+        ? undefined
+        : Math.ceil(myGapToLeader - comparedGapToLeader)
+
+    const modifiedCompetitorData = {
+      ...competitorData,
+      gain: undefined,
+      gapToLeader: gapToCompetitor,
+    }
+
     return (
-      <Gap gap={gapToLeader} gain={gain} />
+      <ColumnValue
+        selectedColumn={selectedColumn}
+        competitorData={modifiedCompetitorData}
+        fontSize={fontSize}
+      />
     )
+  }
+
+  return (
+    <ColumnValue
+      selectedColumn={selectedColumn}
+      competitorData={competitorData}
+      fontSize={fontSize}
+    />
+  )
+}
+
+const ColumnValue = ({ selectedColumn, competitorData, fontSize }: any) => {
+  if (
+    selectedColumn === ColumnValueType.GapToLeader ||
+    selectedColumn === ColumnValueType.GapToCompetitor
+  ) {
+    const { gapToLeader, gain } = competitorData
+    return <Gap gap={gapToLeader} gain={gain} fontSize={fontSize} />
   }
 
   let value
@@ -70,7 +111,10 @@ const ColumnValue = ({selectedColumn, competitorData}: any) => {
       break
     case ColumnValueType.DistanceTravelled:
       const distanceTravelled = competitorData.distanceTravelled
-      value = distanceTravelled !== undefined ? Math.floor(distanceTravelled) : undefined
+      value =
+        distanceTravelled !== undefined
+          ? Math.floor(distanceTravelled)
+          : undefined
       break
     case ColumnValueType.NumberOfManeuvers:
       value = competitorData.numberOfManeuvers
@@ -80,12 +124,15 @@ const ColumnValue = ({selectedColumn, competitorData}: any) => {
       break
   }
 
+  const fontSizeOverride = fontSize === undefined ? {} : { fontSize }
+
   return (
     <View style={[styles.textContainer]}>
-      <Text style={[styles.gapText]}>{value || EMPTY_VALUE}</Text>
+      <Text style={[styles.gapText, fontSizeOverride]}>
+        {value || EMPTY_VALUE}
+      </Text>
     </View>
   )
-
 }
 
 const Gap = ({ gap, gain, fontSize }: any) => {
@@ -106,19 +153,8 @@ const Gap = ({ gap, gain, fontSize }: any) => {
         : `${negativeText}${seconds}s`
   }
 
-  const fontSizeOverride =
-    fontSize === undefined
-      ? {}
-      : {
-        fontSize,
-      }
-
-  const emptySpaceOverride =
-    fontSize === undefined
-      ? {}
-      : {
-        width: fontSize,
-      }
+  const fontSizeOverride = fontSize === undefined ? {} : { fontSize }
+  const emptySpaceOverride = fontSize === undefined ? {} : { width: fontSize }
 
   return (
     <View style={[styles.textContainer]}>
@@ -142,35 +178,30 @@ const Gap = ({ gap, gain, fontSize }: any) => {
 }
 
 class Leaderboard extends React.Component<{
-  trackedLeaderboardData: LeaderboardCompetitor
   leaderboardData: ILeaderboard
   checkInData: CheckIn
-  leaderboardGaps: CompetitorGapMap,
+  leaderboardGaps: CompetitorGapMap
 }> {
-
   public state = {
     selectedCompetitor: undefined,
     selectedColumn: ColumnValueType.GapToLeader,
   }
 
   public render() {
-    const { trackedLeaderboardData, leaderboardData } = this.props
+    const { leaderboardData, checkInData } = this.props
     const { selectedCompetitor, selectedColumn } = this.state
 
     const competitorData = this.mapLeaderboardToCompetitorData(leaderboardData)
     const leaderboard = sortBy(competitorData, ['rank'])
 
-    const { rank, gapToLeader: myGapToLeader, gain } = this.extractCompetitorData(
-      trackedLeaderboardData,
-    )
+    const myCompetitorId = checkInData && checkInData.competitorId
+    const myCompetitorData = this.getCompetitorById(leaderboard, myCompetitorId)
 
-    const gapTitle = selectedCompetitor
-      ? 'Gap to competitor'
-      : I18n.t('text_leaderboard_my_gap')
+    const { rank } = myCompetitorData
 
-    const gap = selectedCompetitor
-      ? this.getGapToCompetitor(myGapToLeader, selectedCompetitor)
-      : myGapToLeader
+    const comparedCompetitorData = selectedCompetitor
+      ? this.getCompetitorById(leaderboard, selectedCompetitor)
+      : ({} as any)
 
     return (
       <View style={[container.main]}>
@@ -184,28 +215,27 @@ class Leaderboard extends React.Component<{
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
-              {/*
-              <Text
-                style={[styles.title]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >
-                {gapTitle.toUpperCase()}
-              </Text>
-              */}
               <Picker
                 itemStyle={[styles.title]}
-                style={{width: 200}}
+                style={[styles.picker]}
+                mode="dropdown"
                 selectedValue={selectedColumn}
-                onValueChange={(itemValue: any) =>
-                  this.setState({selectedColumn: itemValue})
-                }
+                onValueChange={this.onColumnPickerValueChange}
               >
-                {Object.keys(ColumnValueType).map(k =>
-                  <Picker.Item key={k} label={I18n.t(ColumnValueType[k])} value={ColumnValueType[k]}/>
-                )}
+                {Object.keys(ColumnValueType).map((k: any) => (
+                  <Picker.Item
+                    key={k}
+                    label={I18n.t(ColumnValueType[k]).toUpperCase()}
+                    value={ColumnValueType[k]}
+                  />
+                ))}
               </Picker>
-              <Gap gap={gap} gain={gain} fontSize={32}/>
+              <MyColumnValue
+                selectedColumn={selectedColumn}
+                competitorData={myCompetitorData}
+                comparedCompetitorData={comparedCompetitorData}
+                fontSize={32}
+              />
             </View>
           </View>
         </View>
@@ -226,19 +256,15 @@ class Leaderboard extends React.Component<{
     const country = competitorData.countryCode
 
     const currentTrackData: any =
-      currentTrackName &&
-      get(competitorData, ['columns', currentTrackName])
+      currentTrackName && get(competitorData, ['columns', currentTrackName])
 
     const rank: number | undefined =
-      currentTrackData &&
-      get(currentTrackData, 'trackedRank')
+      currentTrackData && get(currentTrackData, 'trackedRank')
     const fleet: string | undefined =
-      currentTrackData &&
-      get(currentTrackData, 'fleet')
+      currentTrackData && get(currentTrackData, 'fleet')
 
     let gapToLeader: number | undefined =
-      currentTrackData &&
-      get(currentTrackData, ['data', 'gapToLeader-s'])
+      currentTrackData && get(currentTrackData, ['data', 'gapToLeader-s'])
 
     const speed: number | undefined =
       currentTrackData &&
@@ -249,12 +275,10 @@ class Leaderboard extends React.Component<{
       get(currentTrackData, ['data', 'averageSpeedOverGround-kts'])
 
     const distanceTravelled: number | undefined =
-      currentTrackData &&
-      get(currentTrackData, ['data', 'distanceTraveled-m'])
+      currentTrackData && get(currentTrackData, ['data', 'distanceTraveled-m'])
 
     const numberOfManeuvers: number | undefined =
-      currentTrackData &&
-      get(currentTrackData, ['data', 'numberOfManeuvers'])
+      currentTrackData && get(currentTrackData, ['data', 'numberOfManeuvers'])
 
     if (gapToLeader !== undefined) {
       gapToLeader = Math.ceil(gapToLeader)
@@ -292,29 +316,23 @@ class Leaderboard extends React.Component<{
     )
   }
 
-  private getGapToCompetitor = (myGapToLeader: any, competitorId: any) => {
-    const { checkInData, leaderboardData } = this.props
-    const currentTrackName = checkInData && checkInData.currentTrackName
-    const competitor = find(leaderboardData.competitors, { id: competitorId })
-    const competitorGapToLeader =
-      currentTrackName &&
-      get(competitor, [
-        'columns',
-        currentTrackName,
-        'data',
-        'gapToLeader-s',
-      ])
-
-    if (competitorGapToLeader === undefined || myGapToLeader === undefined) {
-      return undefined
-    }
-
-    return Math.ceil(myGapToLeader - competitorGapToLeader)
-
+  private getCompetitorById = (leaderboardData: any, competitorId: any) => {
+    const competitorData = find(leaderboardData, { id: competitorId })
+    return competitorData || ({} as any)
   }
 
   private onLeaderboardItemPress = (competitorId?: string) => () => {
-    this.setState({ selectedCompetitor: competitorId })
+    this.setState({
+      selectedCompetitor: competitorId,
+      selectedColumn: ColumnValueType.GapToCompetitor,
+    })
+  }
+
+  private onColumnPickerValueChange = (itemValue: any) => {
+    this.setState({
+      selectedColumn: itemValue,
+      selectedCompetitor: undefined,
+    })
   }
 
   private renderItem = ({ item }: any) => {
@@ -322,17 +340,23 @@ class Leaderboard extends React.Component<{
     const { selectedColumn } = this.state
     return (
       <>
-        <TouchableHighlight onPress={this.onLeaderboardItemPress(id)} >
+        <TouchableHighlight onPress={this.onLeaderboardItemPress(id)}>
           <View style={[styles.listRowContainer]}>
             <View
-              style={[container.smallHorizontalMargin, styles.listItemContainer]}
+              style={[
+                container.smallHorizontalMargin,
+                styles.listItemContainer,
+              ]}
             >
               <View style={[styles.textContainer]}>
                 <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
                 <Flag style={[styles.flag]} code={country} size={24} />
                 <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
               </View>
-              <ColumnValue selectedColumn={selectedColumn} competitorData={item} />
+              <ColumnValue
+                selectedColumn={selectedColumn}
+                competitorData={item}
+              />
             </View>
           </View>
         </TouchableHighlight>
@@ -345,7 +369,6 @@ class Leaderboard extends React.Component<{
 const mapStateToProps = (state: any) => {
   return {
     checkInData: getTrackedCheckIn(state) || {},
-    trackedLeaderboardData: getTrackedCompetitorLeaderboardData(state) || {},
     leaderboardData: getTrackedLeaderboard(state) || {},
     leaderboardGaps: getLeaderboardGaps(state) || ({} as CompetitorGapMap),
   }
