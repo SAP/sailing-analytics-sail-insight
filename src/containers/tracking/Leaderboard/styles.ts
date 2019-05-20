@@ -28,9 +28,7 @@ export default EStyleSheets.create({
     letterSpacing: -0.3,
   },
   picker: {
-    fontSize: '$regularFontSize',
     width: 200,
-    margin: 0,
   },
   nameText: {
     color: '$secondaryTextColor',

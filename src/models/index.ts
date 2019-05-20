@@ -8,6 +8,8 @@ export {
   LeaderboardBoat,
   LeaderboardColumn,
   LeaderboardCompetitor,
+  LeaderboardColumnData,
+  LeaderboardCompetitorCurrentTrack
 } from './Leaderboard'
 export { default as Race } from './Race'
 export { default as Boat } from './Boat'

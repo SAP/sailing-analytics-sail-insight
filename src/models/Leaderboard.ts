@@ -83,3 +83,42 @@ export interface LeaderboardColumn {
   finished?: boolean
   data?: any
 }
+
+export const ColumnDataApiBodyKeys = {
+  gapToLeaderInS: 'gapToLeader-s',
+  averageSpeedOverGround: 'averageSpeedOverGround-kts',
+  distanceTravelled: 'distanceTraveled-m',
+  timeTravelled: 'timeTraveled-s',
+  currentSpeedOverGround: 'currentSpeedOverGround-kts',
+  gapToLeaderInM: 'gapToLeader-m',
+  numberOfManeuvers: 'numberOfManeuvers',
+  currentLeg: 'currentLeg',
+}
+
+export const mapResToLeaderboardColumnData = (map: any) => map && ({
+  gapToLeaderInS: map[ColumnDataApiBodyKeys.gapToLeaderInS],
+  averageSpeedOverGround: map[ColumnDataApiBodyKeys.averageSpeedOverGround],
+  distanceTravelled: map[ColumnDataApiBodyKeys.distanceTravelled],
+  timeTravelled: map[ColumnDataApiBodyKeys.timeTravelled],
+  currentSpeedOverGround: map[ColumnDataApiBodyKeys.currentSpeedOverGround],
+  gapToLeaderInM: map[ColumnDataApiBodyKeys.gapToLeaderInM],
+  numberOfManeuvers: map[ColumnDataApiBodyKeys.numberOfManeuvers],
+  currentLeg: map[ColumnDataApiBodyKeys.currentLeg],
+} as LeaderboardColumnData)
+
+export interface LeaderboardColumnData {
+  gapToLeaderInS?: number
+  averageSpeedOverGround?: number
+  distanceTravelled?: number
+  timeTravelled?: number
+  currentSpeedOverGround?: number
+  gapToLeaderInM?: number
+  numberOfManeuvers?: number
+  currentLeg?: number
+}
+
+export interface LeaderboardCompetitorCurrentTrack extends LeaderboardCompetitor {
+  gain?: boolean
+  trackedColumn?: LeaderboardColumn
+  trackedColumnData?: LeaderboardColumnData
+}
