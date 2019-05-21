@@ -69,7 +69,7 @@ const MyColumnValue = ({
     const gapToCompetitor =
       comparedGapToLeader === undefined || myGapToLeader === undefined
         ? undefined
-        : Math.ceil(myGapToLeader - comparedGapToLeader)
+        : myGapToLeader - comparedGapToLeader
 
     const modifiedCompetitorData: LeaderboardCompetitorCurrentTrack = {
       ...competitorData,
@@ -114,12 +114,10 @@ const ColumnValue = ({
     selectedColumn === ColumnValueType.GapToCompetitor
   ) {
     const { gain } = competitorData
-    let gapToLeader =
+    const gapToLeader =
       competitorData.trackedColumnData &&
       competitorData.trackedColumnData.gapToLeaderInS
-    if (gapToLeader !== undefined) {
-      gapToLeader = Math.ceil(gapToLeader)
-    }
+
     return <Gap gap={gapToLeader} gain={gain} fontSize={fontSize} />
   }
 
@@ -178,7 +176,8 @@ const Gap = ({ gap, gain, fontSize }: any) => {
   if (gap === undefined) {
     gapText = EMPTY_VALUE
   } else {
-    const gapAbs = Math.abs(gap)
+    const gapRounded = Math.ceil(gap)
+    const gapAbs = Math.abs(gapRounded)
     const minutes = Math.floor(gapAbs / 60)
     const seconds = gapAbs % 60
     gapText =
