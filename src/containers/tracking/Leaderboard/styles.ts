@@ -26,6 +26,7 @@ export default EStyleSheets.create({
     fontSize: '$regularFontSize',
     fontWeight: '500',
     letterSpacing: -0.3,
+    maxWidth: 170,
   },
   picker: {
     width: 200,

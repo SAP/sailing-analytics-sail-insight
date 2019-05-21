@@ -1,13 +1,13 @@
-import { find, get, sortBy } from 'lodash'
+import { difference, find, get, sortBy } from 'lodash'
 import React from 'react'
 import {
   FlatList,
   ListRenderItemInfo,
-  Picker,
   TouchableHighlight,
   View,
 } from 'react-native'
 import Flag from 'react-native-flags'
+import ModalDropdown from 'react-native-modal-dropdown'
 import { connect } from 'react-redux'
 
 import I18n from 'i18n'
@@ -237,6 +237,10 @@ class Leaderboard extends React.Component<{
       ? this.getCompetitorById(selectedCompetitor)
       : ({} as LeaderboardCompetitorCurrentTrack)
 
+    const columnText = selectedColumn === ColumnValueType.GapToCompetitor ?
+      `${I18n.t(selectedColumn)} ${comparedCompetitorData.name}`.toUpperCase()
+      : (selectedColumn && I18n.t(selectedColumn).toUpperCase())
+
     return (
       <View style={[container.main]}>
         <ConnectivityIndicator style={styles.connectivity} />
@@ -249,21 +253,19 @@ class Leaderboard extends React.Component<{
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
-              <Picker
-                itemStyle={[styles.title]}
-                style={[styles.picker]}
-                mode="dropdown"
-                selectedValue={selectedColumn}
-                onValueChange={this.onColumnPickerValueChange}
+              <ModalDropdown
+                options={difference(Object.values(ColumnValueType), [ColumnValueType.GapToCompetitor])}
+                onSelect={this.onDropdownSelect}
+                renderRow={this.renderDropdownRow}
               >
-                {Object.keys(ColumnValueType).map((k: any) => (
-                  <Picker.Item
-                    key={k}
-                    label={I18n.t(ColumnValueType[k]).toUpperCase()}
-                    value={ColumnValueType[k]}
-                  />
-                ))}
-              </Picker>
+                <Text
+                  style={[styles.title]}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {`${columnText}${TRIANGLE_DOWN}`}
+                </Text>
+              </ModalDropdown>
               <MyColumnValue
                 selectedColumn={selectedColumn}
                 competitorData={myCompetitorData}
@@ -296,11 +298,14 @@ class Leaderboard extends React.Component<{
     })
   }
 
-  private onColumnPickerValueChange = (itemValue: any) => {
-    this.setState({
-      selectedColumn: itemValue,
-      selectedCompetitor: undefined,
-    })
+  private renderDropdownRow = (option: any, index: any, isSelected: any) => (
+    <Text style={{ margin: 10 }}>
+      {I18n.t(option).toUpperCase()}
+    </Text>
+  )
+
+  private onDropdownSelect = (index: any, value: any) => {
+    this.setState({ selectedColumn: value })
   }
 
   private renderItem = ({
