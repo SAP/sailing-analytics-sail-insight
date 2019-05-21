@@ -16,7 +16,8 @@ export const backgroundSyncLeaderboard = async (
   dataApi: DataApi,
   leaderboard: string,
   secret?: string,
-  currentTrackName?: string
+  currentTrackName?: string,
+  rankingMetric?: string,
 ) => {
   try {
     const { payload } = await dispatch(
@@ -29,7 +30,7 @@ export const backgroundSyncLeaderboard = async (
       values(payload.entities.leaderboard)
     const receivedLeaderboard = receivedLeaderboards[0] as Leaderboard
 
-    await dispatch(updateLeaderboardTracking(receivedLeaderboard, currentTrackName))
+    await dispatch(updateLeaderboardTracking(receivedLeaderboard, currentTrackName, rankingMetric))
   } catch (err) {
     Logger.debug('Error while executing syncLeaderboard', err)
   }
@@ -41,6 +42,7 @@ export const startPeriodicalLeaderboardUpdates = (
   leaderboard: string,
   secret?: string,
   currentTrackName?: string,
+  rankingMetric?: string,
 ) => {
   Logger.debug('[Leaderboard] Transfer Manager started')
   const interval = DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS
@@ -51,6 +53,7 @@ export const startPeriodicalLeaderboardUpdates = (
       leaderboard,
       secret,
       currentTrackName,
+      rankingMetric
     )
   }
   if (intervalID) {

@@ -17,7 +17,7 @@ export const fetchLeaderboardV2 = (leaderboard: string) =>
     fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard),
   )
 
-export const startLeaderboardUpdates = (checkInData: CheckIn) =>
+export const startLeaderboardUpdates = (checkInData: CheckIn, rankingMetric?: string) =>
   withDataApi(checkInData.serverUrl)(async (dataApi, dispatch) => {
     try {
       dispatch(clearLeaderboardGaps())
@@ -27,6 +27,7 @@ export const startLeaderboardUpdates = (checkInData: CheckIn) =>
         checkInData.leaderboardName,
         checkInData.secret,
         checkInData.currentTrackName,
+        rankingMetric
       )
     } catch (err) {
       Logger.debug('Error during startLeaderboardUpdates', err)
@@ -46,6 +47,7 @@ export const stopLeaderboardUpdates = () => async () => {
 export const updateLeaderboardTracking = (
   leaderboard: Leaderboard,
   currentTrackName?: string,
+  rankingMetric = 'ONE_DESIGN',
 ) => async (dispatch: DispatchType) => {
   const payload =
     currentTrackName &&
@@ -55,7 +57,7 @@ export const updateLeaderboardTracking = (
         'columns',
         currentTrackName,
         'data',
-        'gapToLeader-s',
+        rankingMetric === 'ONE_DESIGN' ? 'gapToLeader-m' : 'gapToLeader-s',
       ])
 
       if (gapToLeader !== undefined) {

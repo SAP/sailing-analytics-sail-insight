@@ -38,6 +38,11 @@ export const getTrackedCheckInCompetitorId = createSelector(
   checkIn => checkIn && checkIn.competitorId,
 )
 
+export const getTrackedCheckInRegattaName = createSelector(
+  getTrackedCheckIn,
+  checkIn => checkIn && checkIn.regattaName,
+)
+
 export const getTrackedCheckInBaseUrl = createSelector(
   getTrackedCheckIn,
   checkIn => checkIn && checkIn.serverUrl,

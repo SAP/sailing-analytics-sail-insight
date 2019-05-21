@@ -20,6 +20,7 @@ import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
 import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
+import { getTrackedRegattaRankingMetric } from 'selectors/regatta';
 import { getBulkGpsSetting } from '../selectors/settings'
 import { syncAllFixes } from '../services/GPSFixService'
 import { deleteAllGPSFixRequests } from '../storage'
@@ -96,7 +97,9 @@ export const startTracking: StartTrackingAction = data =>  async (
       }
     }
     await dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId))
-    await dispatch(startLeaderboardUpdates(checkInData))
+
+    const rankingMetric: string | undefined = getTrackedRegattaRankingMetric(getState())
+    await dispatch(startLeaderboardUpdates(checkInData, rankingMetric))
   } catch (err) {
     throw err
   } finally {

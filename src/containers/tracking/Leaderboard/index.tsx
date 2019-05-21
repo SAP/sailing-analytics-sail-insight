@@ -20,6 +20,7 @@ import Text from 'components/Text'
 import TrackingProperty from 'components/TrackingProperty'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
+import { getTrackedRegattaRankingMetric } from 'selectors/regatta';
 import { container } from 'styles/commons'
 import styles from './styles'
 
@@ -55,16 +56,21 @@ const MyColumnValue = ({
   competitorData,
   fontSize,
   comparedCompetitorData,
+  rankingMetric = 'ONE_DESIGN'
 }: MyColumnValueProps) => {
 
   if (selectedColumn === ColumnValueType.GapToCompetitor) {
     const myGapToLeader =
       competitorData.trackedColumnData &&
-      competitorData.trackedColumnData.gapToLeaderInS
+      (rankingMetric === 'ONE_DESIGN'
+        ? competitorData.trackedColumnData.gapToLeaderInM
+        : competitorData.trackedColumnData.gapToLeaderInS)
     const comparedGapToLeader =
       comparedCompetitorData &&
       comparedCompetitorData.trackedColumnData &&
-      comparedCompetitorData.trackedColumnData.gapToLeaderInS
+      (rankingMetric === 'ONE_DESIGN'
+        ? comparedCompetitorData.trackedColumnData.gapToLeaderInM
+        : comparedCompetitorData.trackedColumnData.gapToLeaderInS)
 
     const gapToCompetitor =
       comparedGapToLeader === undefined || myGapToLeader === undefined
@@ -76,7 +82,7 @@ const MyColumnValue = ({
       gain: undefined,
       trackedColumnData: {
         ...competitorData.trackedColumnData,
-        gapToLeaderInS: gapToCompetitor,
+        [rankingMetric === 'ONE_DESIGN' ? 'gapToLeaderInM' : 'gapToLeaderInS']: gapToCompetitor,
       },
     }
 
@@ -85,6 +91,7 @@ const MyColumnValue = ({
         selectedColumn={selectedColumn}
         competitorData={modifiedCompetitorData}
         fontSize={fontSize}
+        rankingMetric={rankingMetric}
       />
     )
   }
@@ -94,6 +101,7 @@ const MyColumnValue = ({
       selectedColumn={selectedColumn}
       competitorData={competitorData}
       fontSize={fontSize}
+      rankingMetric={rankingMetric}
     />
   )
 }
@@ -102,12 +110,14 @@ interface ColumnValueProps {
   selectedColumn?: ColumnValueType
   competitorData: LeaderboardCompetitorCurrentTrack
   fontSize?: number
+  rankingMetric?: string
 }
 
 const ColumnValue = ({
   selectedColumn,
   competitorData,
   fontSize,
+  rankingMetric = 'ONE_DESIGN'
 }: ColumnValueProps) => {
   if (
     selectedColumn === ColumnValueType.GapToLeader ||
@@ -116,9 +126,18 @@ const ColumnValue = ({
     const { gain } = competitorData
     const gapToLeader =
       competitorData.trackedColumnData &&
-      competitorData.trackedColumnData.gapToLeaderInS
+      (rankingMetric === 'ONE_DESIGN'
+        ? competitorData.trackedColumnData.gapToLeaderInM
+        : competitorData.trackedColumnData.gapToLeaderInS)
 
-    return <Gap gap={gapToLeader} gain={gain} fontSize={fontSize} />
+    return (
+      <Gap
+        gap={gapToLeader}
+        gain={gain}
+        fontSize={fontSize}
+        rankingMetric={rankingMetric}
+      />
+    )
   }
 
   let value
@@ -167,7 +186,7 @@ const ColumnValue = ({
   )
 }
 
-const Gap = ({ gap, gain, fontSize }: any) => {
+const Gap = ({ gap, gain, fontSize, rankingMetric }: any) => {
   const negative = gap < 0
   const negativeText = negative ? '-' : ''
 
@@ -175,7 +194,7 @@ const Gap = ({ gap, gain, fontSize }: any) => {
 
   if (gap === undefined) {
     gapText = EMPTY_VALUE
-  } else {
+  } else if (rankingMetric !== 'ONE_DESIGN') {
     const gapRounded = Math.ceil(gap)
     const gapAbs = Math.abs(gapRounded)
     const minutes = Math.floor(gapAbs / 60)
@@ -184,6 +203,8 @@ const Gap = ({ gap, gain, fontSize }: any) => {
       minutes !== 0
         ? `${negativeText}${minutes}m ${seconds}s`
         : `${negativeText}${seconds}s`
+  } else {
+    gapText = `${Math.ceil(gap)}m`
   }
 
   const fontSizeOverride = fontSize === undefined ? {} : { fontSize }
@@ -213,6 +234,7 @@ const Gap = ({ gap, gain, fontSize }: any) => {
 class Leaderboard extends React.Component<{
   trackedCheckInCompetitorId: string | undefined
   leaderboard: LeaderboardCompetitorCurrentTrack[]
+  rankingMetric: string | undefined
 }> {
   public state = {
     selectedCompetitor: undefined,
@@ -220,7 +242,7 @@ class Leaderboard extends React.Component<{
   }
 
   public render() {
-    const { trackedCheckInCompetitorId: myCompetitorId } = this.props
+    const { trackedCheckInCompetitorId: myCompetitorId, rankingMetric } = this.props
     const leaderboard = sortBy(
       this.props.leaderboard,
       (o: LeaderboardCompetitorCurrentTrack) =>
@@ -271,6 +293,7 @@ class Leaderboard extends React.Component<{
                 competitorData={myCompetitorData}
                 comparedCompetitorData={comparedCompetitorData}
                 fontSize={32}
+                rankingMetric={rankingMetric}
               />
             </View>
           </View>
@@ -314,6 +337,7 @@ class Leaderboard extends React.Component<{
     const { name, countryCode, id } = item
     const rank = get(item, ['trackedColumn', 'trackedRank'])
     const { selectedColumn } = this.state
+    const { rankingMetric } = this.props
 
     return (
       <>
@@ -333,6 +357,7 @@ class Leaderboard extends React.Component<{
               <ColumnValue
                 selectedColumn={selectedColumn}
                 competitorData={item}
+                rankingMetric={rankingMetric}
               />
             </View>
           </View>
@@ -347,6 +372,7 @@ const mapStateToProps = (state: any) => {
   return {
     trackedCheckInCompetitorId: getTrackedCheckInCompetitorId(state),
     leaderboard: getTrackedLeaderboard(state) || [],
+    rankingMetric: getTrackedRegattaRankingMetric(state),
   }
 }
 
