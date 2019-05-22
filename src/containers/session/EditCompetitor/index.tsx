@@ -68,11 +68,11 @@ class EditCompetitor extends TextInputForm<Props> {
         <View style={registration.bottomContainer()}>
           <Field
             style={input.topMargin}
-            label={I18n.t('text_track_name')}
-            name={sessionForm.FORM_KEY_TRACK_NAME}
+            label={I18n.t('text_your_name')}
+            name={sessionForm.FORM_KEY_NAME}
             component={FormTextInput}
             onSubmitEditing={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TRACK_NAME)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
           />
           <Fields
             style={input.topMargin}
@@ -164,7 +164,7 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     initialValues: {
       name: userInfo && userInfo.fullName,
-      teamName: (lastUsedTeam && lastUsedTeam.name) || (userInfo && userInfo.fullName) || I18n.t('text_default_value_team_name'),
+      teamName: (lastUsedTeam && lastUsedTeam.name) || I18n.t('text_default_value_team_name'),
       boatClass: (lastUsedTeam && lastUsedTeam.boatClass),
       boatName: (lastUsedTeam && lastUsedTeam.boatName) || I18n.t('text_default_value_boat_name'),
       sailNumber: (lastUsedTeam && lastUsedTeam.sailNumber) || I18n.t('text_default_value_sail_number'),
