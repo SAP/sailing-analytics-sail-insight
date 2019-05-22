@@ -89,26 +89,14 @@ class TrackingSetup extends TextInputForm<Props> {
               {...this.commonProps}
             />
             <Field
-              label={I18n.t('text_team_name')}
-              name={sessionForm.FORM_KEY_TEAM_NAME}
-              component={this.renderProperty}
-              {...this.commonProps}
-            />
-            <Field
               label={I18n.t('text_track_name')}
               name={sessionForm.FORM_KEY_TRACK_NAME}
               component={this.renderProperty}
               {...this.commonProps}
             />
             <Field
-              label={I18n.t('text_boat_name')}
-              name={sessionForm.FORM_KEY_BOAT_NAME}
-              component={this.renderProperty}
-              {...this.commonProps}
-            />
-            <Field
-              label={I18n.t('text_class')}
-              name={sessionForm.FORM_KEY_BOAT_CLASS}
+              label={I18n.t('text_team_name')}
+              name={sessionForm.FORM_KEY_TEAM_NAME}
               component={this.renderProperty}
               {...this.commonProps}
             />
@@ -123,6 +111,18 @@ class TrackingSetup extends TextInputForm<Props> {
                 name={sessionForm.FORM_KEY_NATIONALITY}
                 component={this.renderProperty}
                 {...this.commonProps}
+            />
+            <Field
+              label={I18n.t('text_class')}
+              name={sessionForm.FORM_KEY_BOAT_CLASS}
+              component={this.renderProperty}
+              {...this.commonProps}
+            />
+            <Field
+              label={I18n.t('text_boat_name')}
+              name={sessionForm.FORM_KEY_BOAT_NAME}
+              component={this.renderProperty}
+              {...this.commonProps}
             />
             {/* <Field
               label={I18n.t('text_privacy_setting')}
