@@ -16,6 +16,7 @@ import EditCompetitor from 'containers/session/EditCompetitor'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
+import ExpertSettings from '../../containers/ExpertSettings'
 import { navigateToTracking } from '../index'
 
 import MainNavigator from './MainNavigator'
@@ -86,6 +87,14 @@ export default createStackNavigator(
         ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
         headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
+        headerLeft: null,
+      }),
+    },
+    [Screens.ExpertSettings]: {
+      screen: ExpertSettings,
+      navigationOptions: () => ({
+        title: I18n.t('title_expert_settings'),
+        headerRight: <ModalBackButton type="icon" />,
         headerLeft: null,
       }),
     },

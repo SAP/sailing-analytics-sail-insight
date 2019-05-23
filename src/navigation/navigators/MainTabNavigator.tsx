@@ -13,8 +13,6 @@ import AppSettings from 'containers/AppSettings'
 import RegisterPrompt from 'containers/authentication/RegisterPrompt'
 import CheckIn from 'containers/session/CheckIn'
 import Sessions from 'containers/session/Sessions'
-import TrackingSetup from 'containers/tracking/TrackingSetup'
-import Tracks from 'containers/tracking/Tracks'
 import UserBoats from 'containers/user/UserBoats'
 import UserProfile from 'containers/user/UserProfile'
 
@@ -97,7 +95,7 @@ export default createBottomTabNavigator(
     [Screens.Sessions]: TopTabNavigator(
       {
         [Screens.UserSessions]: Sessions,
-        //[Screens.Tracks]: Tracks,
+        // [Screens.Tracks]: Tracks,
       },
       {
         initialRouteName: Screens.UserSessions,
@@ -111,10 +109,10 @@ export default createBottomTabNavigator(
           style: {
             backgroundColor: 'white',
           },
-        }
+        },
       },
     ),
-    //[Screens.TrackingSetupAction]: TrackingSetup,
+    // [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.CheckIn]: CheckIn,
     [Screens.Account]: AuthNavigatorWrapper(getUserAccountNavigator),
   },

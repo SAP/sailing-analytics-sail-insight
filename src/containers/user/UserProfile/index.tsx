@@ -50,21 +50,6 @@ class UserProfile extends TextInputForm<Props> {
     this.props.fetchUserInfo()
   }
 
-  private formIsSaveable() {
-    const { formFullName } = this.props
-    const hasName = !isEmpty(formFullName)
-
-    return hasName
-  }
-
-  private formHasChanges() {
-    const { user, formFullName } = this.props
-
-    const nameHasChanged = isEmpty(user.fullName) || formFullName !== user.fullName
-
-    return nameHasChanged
-  }
-
   public render() {
     const { user } = this.props
 
@@ -163,6 +148,21 @@ class UserProfile extends TextInputForm<Props> {
         ],
         { cancelable: false },
     )
+  }
+
+  private formIsSaveable() {
+    const { formFullName } = this.props
+    const hasName = !isEmpty(formFullName)
+
+    return hasName
+  }
+
+  private formHasChanges() {
+    const { user, formFullName } = this.props
+
+    const nameHasChanged = isEmpty(user.fullName) || formFullName !== user.fullName
+
+    return nameHasChanged
   }
 }
 

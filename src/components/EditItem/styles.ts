@@ -7,4 +7,7 @@ export default EStyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  title: {
+    width: 300
+  }
 })

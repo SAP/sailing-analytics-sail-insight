@@ -35,16 +35,16 @@ export const checkCurrentAuthSession = () => async (dispatch: DispatchType) => {
 }
 
 export const register: RegisterActionType = (username, email, password, name) =>
-  handleAccessToken(authApi.register(username, email, password, name))
+  handleAccessToken(authApi().register(username, email, password, name))
 
 export const login = (email: string, password: string) =>
-  handleAccessToken(authApi.accessToken(email, password))
+  handleAccessToken(authApi().accessToken(email, password))
 
 export const requestPasswordReset = (username: string, email: string) =>
-   authApi.requestPasswordReset(username, email)
+   authApi().requestPasswordReset(username, email)
 
 export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
-  dispatch(updateCurrentUserInformation(await authApi.user()))
+  dispatch(updateCurrentUserInformation(await authApi().user()))
 
 export const authBasedNewSession = () => (dispatch: DispatchType, getState: GetStateType) => {
   const isLoggedIn = isLoggedInSelector(getState())
@@ -55,6 +55,6 @@ export const updateUser = (user: User) => async (dispatch: DispatchType) => {
   // store imageData locally
   dispatch(updateCurrentUserInformation({ imageData: user.imageData }))
   // sync with server
-  await authApi.updateUser(mapUserToRes(user))
+  await authApi().updateUser(mapUserToRes(user))
   dispatch(fetchCurrentUser())
 }
