@@ -18,18 +18,19 @@ import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import LineSeparator from 'components/LineSeparator'
 import Text from 'components/Text'
 import TrackingProperty from 'components/TrackingProperty'
+import ColumnValue from 'containers/tracking/Leaderboard/ColumnValue'
+import MyColumnValue from 'containers/tracking/Leaderboard/MyColumnValue'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
-import { getTrackedRegattaRankingMetric } from 'selectors/regatta';
+import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import { container } from 'styles/commons'
 import styles from './styles'
 
-const EMPTY_VALUE = '-'
+export const EMPTY_VALUE = '-'
 
-const TRIANGLE_UP = '▲'
 const TRIANGLE_DOWN = '▼'
 
-enum ColumnValueType {
+export enum ColumnValueType {
   GapToLeader = 'text_leaderboard_column_gap',
   GapToCompetitor = 'text_leaderboard_column_gap_competitor',
   RegattaRank = 'text_leaderboard_column_regattaRank',
@@ -43,190 +44,6 @@ const Seperator = () => {
   return (
     <View style={[container.largeHorizontalMargin]}>
       <LineSeparator style={[styles.separator]} />
-    </View>
-  )
-}
-
-interface MyColumnValueProps extends ColumnValueProps {
-  comparedCompetitorData?: LeaderboardCompetitorCurrentTrack
-}
-
-const MyColumnValue = ({
-  selectedColumn,
-  competitorData,
-  fontSize,
-  comparedCompetitorData,
-  rankingMetric = 'ONE_DESIGN'
-}: MyColumnValueProps) => {
-
-  if (selectedColumn === ColumnValueType.GapToCompetitor) {
-    const myGapToLeader =
-      competitorData.trackedColumnData &&
-      (rankingMetric === 'ONE_DESIGN'
-        ? competitorData.trackedColumnData.gapToLeaderInM
-        : competitorData.trackedColumnData.gapToLeaderInS)
-    const comparedGapToLeader =
-      comparedCompetitorData &&
-      comparedCompetitorData.trackedColumnData &&
-      (rankingMetric === 'ONE_DESIGN'
-        ? comparedCompetitorData.trackedColumnData.gapToLeaderInM
-        : comparedCompetitorData.trackedColumnData.gapToLeaderInS)
-
-    const gapToCompetitor =
-      comparedGapToLeader === undefined || myGapToLeader === undefined
-        ? undefined
-        : myGapToLeader - comparedGapToLeader
-
-    const modifiedCompetitorData: LeaderboardCompetitorCurrentTrack = {
-      ...competitorData,
-      gain: undefined,
-      trackedColumnData: {
-        ...competitorData.trackedColumnData,
-        [rankingMetric === 'ONE_DESIGN' ? 'gapToLeaderInM' : 'gapToLeaderInS']: gapToCompetitor,
-      },
-    }
-
-    return (
-      <ColumnValue
-        selectedColumn={selectedColumn}
-        competitorData={modifiedCompetitorData}
-        fontSize={fontSize}
-        rankingMetric={rankingMetric}
-      />
-    )
-  }
-
-  return (
-    <ColumnValue
-      selectedColumn={selectedColumn}
-      competitorData={competitorData}
-      fontSize={fontSize}
-      rankingMetric={rankingMetric}
-    />
-  )
-}
-
-interface ColumnValueProps {
-  selectedColumn?: ColumnValueType
-  competitorData: LeaderboardCompetitorCurrentTrack
-  fontSize?: number
-  rankingMetric?: string
-}
-
-const ColumnValue = ({
-  selectedColumn,
-  competitorData,
-  fontSize,
-  rankingMetric = 'ONE_DESIGN'
-}: ColumnValueProps) => {
-  if (
-    selectedColumn === ColumnValueType.GapToLeader ||
-    selectedColumn === ColumnValueType.GapToCompetitor
-  ) {
-    const { gain } = competitorData
-    const gapToLeader =
-      competitorData.trackedColumnData &&
-      (rankingMetric === 'ONE_DESIGN'
-        ? competitorData.trackedColumnData.gapToLeaderInM
-        : competitorData.trackedColumnData.gapToLeaderInS)
-
-    return (
-      <Gap
-        gap={gapToLeader}
-        gain={gain}
-        fontSize={fontSize}
-        rankingMetric={rankingMetric}
-      />
-    )
-  }
-
-  let value
-
-  switch (selectedColumn) {
-    case ColumnValueType.RegattaRank:
-      value = competitorData.overallRank
-      break
-    case ColumnValueType.Speed:
-      value =
-        competitorData.trackedColumnData &&
-        competitorData.trackedColumnData.currentSpeedOverGround
-      break
-    case ColumnValueType.AverageSpeed:
-      value =
-        competitorData.trackedColumnData &&
-        competitorData.trackedColumnData.averageSpeedOverGround
-      break
-    case ColumnValueType.DistanceTravelled:
-      const distanceTravelled =
-        competitorData.trackedColumnData &&
-        competitorData.trackedColumnData.distanceTravelled
-      value =
-        distanceTravelled !== undefined
-          ? Math.floor(distanceTravelled)
-          : undefined
-      break
-    case ColumnValueType.NumberOfManeuvers:
-      value =
-        competitorData.trackedColumnData &&
-        competitorData.trackedColumnData.numberOfManeuvers
-      break
-    default:
-      value = undefined
-      break
-  }
-
-  const fontSizeOverride = fontSize === undefined ? {} : { fontSize }
-
-  return (
-    <View style={[styles.textContainer]}>
-      <Text style={[styles.gapText, fontSizeOverride]}>
-        {value || EMPTY_VALUE}
-      </Text>
-    </View>
-  )
-}
-
-const Gap = ({ gap, gain, fontSize, rankingMetric }: any) => {
-  const negative = gap < 0
-  const negativeText = negative ? '-' : ''
-
-  let gapText
-
-  if (gap === undefined) {
-    gapText = EMPTY_VALUE
-  } else if (rankingMetric !== 'ONE_DESIGN') {
-    const gapRounded = Math.ceil(gap)
-    const gapAbs = Math.abs(gapRounded)
-    const minutes = Math.floor(gapAbs / 60)
-    const seconds = gapAbs % 60
-    gapText =
-      minutes !== 0
-        ? `${negativeText}${minutes}m ${seconds}s`
-        : `${negativeText}${seconds}s`
-  } else {
-    gapText = `${Math.ceil(gap)}m`
-  }
-
-  const fontSizeOverride = fontSize === undefined ? {} : { fontSize }
-  const emptySpaceOverride = fontSize === undefined ? {} : { width: fontSize }
-
-  return (
-    <View style={[styles.textContainer]}>
-      <Text style={[styles.gapText, fontSizeOverride]}>{gapText}</Text>
-      {/* This is so that numbers wihtout the indicators are aligned
-          with numbers which have indicators */}
-      {gain === undefined && (
-        <View style={[styles.triangleEmptySpace, emptySpaceOverride]} />
-      )}
-      <Text
-        style={[
-          styles.triangle,
-          fontSizeOverride,
-          gain === true ? styles.green : styles.red,
-        ]}
-      >
-        {gain === undefined ? '' : gain === true ? TRIANGLE_UP : TRIANGLE_DOWN}
-      </Text>
     </View>
   )
 }

@@ -4,8 +4,8 @@ import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 
+import Leaderboard from 'containers/tracking/Leaderboard/Leaderboard'
 import SetWind from 'containers/tracking/SetWind'
-import Leaderboard from 'containers/tracking/Leaderboard'
 import Tracking from 'containers/tracking/Tracking'
 
 export default createStackNavigator(
