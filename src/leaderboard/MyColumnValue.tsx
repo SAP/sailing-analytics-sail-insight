@@ -2,8 +2,8 @@ import React from 'react'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 
-import { ColumnValueType } from 'containers/tracking/Leaderboard/Leaderboard'
 import ColumnValue, { Props as ColumnValueProps } from './ColumnValue'
+import { ColumnValueType } from './Leaderboard'
 
 interface MyColumnValueProps extends ColumnValueProps {
   comparedCompetitorData?: LeaderboardCompetitorCurrentTrack
