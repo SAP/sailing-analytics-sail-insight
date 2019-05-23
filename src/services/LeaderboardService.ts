@@ -21,7 +21,7 @@ export const backgroundSyncLeaderboard = async (
 ) => {
   try {
     const { payload } = await dispatch(
-      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard, secret),
+      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard, secret, [currentTrackName]),
     )
 
     const receivedLeaderboards =

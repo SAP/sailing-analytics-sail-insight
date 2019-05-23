@@ -82,8 +82,8 @@ const deviceMapping = (endpoint: (options?: UrlOptions) => string) => (leaderboa
 )
 
 // tslint:disable-next-line max-line-length
-const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string, secret?: string) => dataRequest(
-  url({ pathParams: [leaderboardName], urlParams: { secret, raceDetails: 'ALL' } }),
+const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string, secret?: string, columnNames?: string[]) => dataRequest(
+  url({ pathParams: [leaderboardName], urlParams: { secret, columnNames, raceDetails: 'ALL' } }),
   { dataSchema: leaderboardSchema },
 )
 
@@ -94,7 +94,7 @@ export interface DataApi {
   requestRaces: (regattaName: string, secret?: string) => any
   requestRace: (regattaName: string, raceName: string, raceId?: string, secret?: string) => any
   requestLeaderboard: (leaderboardName: string, secret?: string) => any
-  requestLeaderboardV2: (leaderboardName: string, secret?: string) => any
+  requestLeaderboardV2: (leaderboardName: string, secret?: string, columnNames?: string[]) => any
   requestEvent: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
