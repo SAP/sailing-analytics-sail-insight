@@ -69,6 +69,12 @@ export default EStyleSheets.create({
   listContainer: {
     flex: 3.5,
   },
+  dropdownRowText: {
+    padding: 10,
+    color: 'gray',
+    backgroundColor: 'white',
+    textAlignVertical: 'center'
+  },
   connectivity: {
     marginTop: getStatusBarHeight(skipAndroid),
   },

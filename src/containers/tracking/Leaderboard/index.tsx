@@ -321,8 +321,8 @@ class Leaderboard extends React.Component<{
     })
   }
 
-  private renderDropdownRow = (option: any, index: any, isSelected: any) => (
-    <Text style={{ margin: 10 }}>
+  private renderDropdownRow = (option: any) => (
+    <Text style={[styles.dropdownRowText]}>
       {I18n.t(option).toUpperCase()}
     </Text>
   )
