@@ -6,6 +6,7 @@ import { DispatchType } from 'helpers/types'
 import { TeamTemplate } from 'models'
 
 import { fetchCurrentUser } from 'actions/auth'
+import { getNowAsMillis } from '../helpers/date'
 
 
 const TEAMS_PREFERENCE_KEY = 'boats'
@@ -24,6 +25,9 @@ export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch:
   const teams = await fetchTeams()
   const { updateLastUsed, replaceTeamName } = options
 
+  if (updateLastUsed) {
+    team.lastUsed = getNowAsMillis()
+  }
   // TODO Key should be replaces by unique key
   const newTeams = {
     ...(replaceTeamName ? omit(teams, replaceTeamName) : teams),
@@ -31,7 +35,6 @@ export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch:
   }
   await selfTrackingApi().updatePreference(TEAMS_PREFERENCE_KEY, newTeams)
   dispatch(updateTeams(newTeams))
-  if (updateLastUsed) { dispatch(teamWasUsed(team.name)) }
 }
 
 export const fetchTeams = async () => {
