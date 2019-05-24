@@ -84,16 +84,16 @@ class TeamDetails extends TextInputForm<Props> {
             name={teamForm.FORM_KEY_TEAM_NAME}
             component={FormTextInput}
             inputRef={this.handleInputRef(teamForm.FORM_KEY_TEAM_NAME)}
-            onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_SAIL_NUMBER)}
+            onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_CLASS)}
             {...this.commonProps}
             validate={[validateRequired, validateNameExists]}
           />
           <Field
             style={input.topMargin}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={teamForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
-            inputRef={this.handleInputRef(teamForm.FORM_KEY_SAIL_NUMBER)}
+            label={I18n.t('text_placeholder_boat_class')}
+            name={teamForm.FORM_KEY_BOAT_CLASS}
+            component={FormBoatClassInput}
+            inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_CLASS)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_NATIONALITY)}
             validate={[validateRequired]}
             {...this.commonProps}
@@ -110,10 +110,10 @@ class TeamDetails extends TextInputForm<Props> {
           />
           <Field
             style={input.topMargin}
-            label={I18n.t('text_placeholder_boat_class')}
-            name={teamForm.FORM_KEY_BOAT_CLASS}
-            component={FormBoatClassInput}
-            inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_CLASS)}
+            label={I18n.t('text_placeholder_sail_number')}
+            name={teamForm.FORM_KEY_SAIL_NUMBER}
+            component={FormTextInput}
+            inputRef={this.handleInputRef(teamForm.FORM_KEY_SAIL_NUMBER)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_NAME)}
             validate={[validateRequired]}
             {...this.commonProps}

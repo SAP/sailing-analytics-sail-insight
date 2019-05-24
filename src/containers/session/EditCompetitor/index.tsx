@@ -88,17 +88,17 @@ class EditCompetitor extends TextInputForm<Props> {
             component={FormTeamPicker}
             teams={this.props.teams}
             isLoggedIn={this.props.isLoggedIn}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             {...this.commonProps}
           />
           <Field
             style={input.topMargin}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={sessionForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
+            label={I18n.t('text_placeholder_boat_class')}
+            name={sessionForm.FORM_KEY_BOAT_CLASS}
+            component={FormBoatClassInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_NATIONALITY)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
             {...this.commonProps}
           />
           <Field
@@ -106,17 +106,17 @@ class EditCompetitor extends TextInputForm<Props> {
               label={I18n.t('text_nationality')}
               name={sessionForm.FORM_KEY_NATIONALITY}
               component={FormNationalityPicker}
-              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
+              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
               inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
               {...this.commonProps}
           />
           <Field
             style={input.topMargin}
-            label={I18n.t('text_placeholder_boat_class')}
-            name={sessionForm.FORM_KEY_BOAT_CLASS}
-            component={FormBoatClassInput}
+            label={I18n.t('text_placeholder_sail_number')}
+            name={sessionForm.FORM_KEY_SAIL_NUMBER}
+            component={FormTextInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_NAME)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
             {...this.commonProps}
           />
           <Field
