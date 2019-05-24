@@ -23,6 +23,7 @@ const teamsToPickerItems = (teams: TeamTemplate[] = []) => teams.map(item => ({
 class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
   label: string,
   teams: TeamTemplate[],
+  isLoggedIn: boolean,
 } > {
 
   public render() {
@@ -77,7 +78,7 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
   }
 
   protected getAssistiveText = (name: string) => {
-    if (!name) {
+    if (!name || !this.props.isLoggedIn) {
       return
     }
     const existingTeam = this.teamFromName(name)

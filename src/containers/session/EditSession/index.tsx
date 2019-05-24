@@ -24,10 +24,12 @@ import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
 import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
+import { isLoggedIn } from '../../../selectors/auth'
 
 
 interface Props {
-  teams: TeamTemplate[]
+  teams: TeamTemplate[],
+  isLoggedIn: boolean,
 }
 
 class EditSession extends TextInputForm<Props> {
@@ -82,6 +84,7 @@ class EditSession extends TextInputForm<Props> {
             ]}
             component={FormTeamPicker}
             teams={this.props.teams}
+            isLoggedIn={this.props.isLoggedIn}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             validate={[validateRequired]}
@@ -152,6 +155,7 @@ class EditSession extends TextInputForm<Props> {
 
 const mapStateToProps = (state: any) => ({
   teams: getUserTeams(state),
+  isLoggedIn: isLoggedIn(state),
 })
 
 export default connect(mapStateToProps)(reduxForm<{}, Props>({

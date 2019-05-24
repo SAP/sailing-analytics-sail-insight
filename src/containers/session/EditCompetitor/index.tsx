@@ -12,7 +12,7 @@ import I18n from 'i18n'
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
 import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
-import { getUserInfo } from 'selectors/auth'
+import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getLastUsedTeam, getUserTeams } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -37,7 +37,8 @@ import { getDeviceCountryIOC } from '../../../services/CheckInService'
 interface Props {
   teams: TeamTemplate[]
   registerCompetitorAndDevice: (data: any, values: any) => any
-  checkInData: CheckIn
+  checkInData: CheckIn,
+  isLoggedIn: boolean,
 }
 
 class EditCompetitor extends TextInputForm<Props> {
@@ -51,7 +52,6 @@ class EditCompetitor extends TextInputForm<Props> {
   }
 
   public render() {
-    Logger.debug('EditCompetitor: render')
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <Field
@@ -87,6 +87,7 @@ class EditCompetitor extends TextInputForm<Props> {
             ]}
             component={FormTeamPicker}
             teams={this.props.teams}
+            isLoggedIn={this.props.isLoggedIn}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             {...this.commonProps}
@@ -175,6 +176,7 @@ const mapStateToProps = (state: any, props: any) => {
     } as CompetitorInfo,
     teams: getUserTeams(state),
     checkInData: getCustomScreenParamData(props),
+    isLoggedIn: isLoggedIn(state),
   }
 }
 
