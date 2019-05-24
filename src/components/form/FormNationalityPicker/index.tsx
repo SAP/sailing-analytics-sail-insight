@@ -1,3 +1,4 @@
+import { getErrorDisplayMessage } from 'helpers/texts'
 import { isEmpty, orderBy } from 'lodash'
 import React from 'react'
 import { Alert, TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
@@ -5,7 +6,6 @@ import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
 import { selfTrackingApi } from '../../../api'
 import { CountryCodeBody } from '../../../api/endpoints/types'
-import { getErrorDisplayMessage } from 'helpers/texts'
 
 import Text from 'components/Text'
 import { TextInputProps } from 'components/TextInput'
@@ -49,6 +49,12 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     })
   }
 
+  public componentDidUpdate(prevProps: any) {
+    if (this.props.input.value !== prevProps.input.value) {
+      this.setState({ text: this.props.input.value })
+    }
+  }
+
   public render() {
     const {
       label,
@@ -81,7 +87,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                     value: null,
                   }}
                   items={this.state.countryList}
-                  value={this.props.input.value}
+                  value={stateText}
                   onValueChange={this.onValueChange}
                   placeholderTextColor={isHighlighted ? $importantHighlightColor : $secondaryTextColor}
                   style={{
@@ -102,14 +108,15 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     )
   }
 
-  protected onValueChange = (itemValue: any) => {
+  public onValueChange = (itemValue: any) => {
     if (!itemValue) return
     const {
       input: { onChange },
     } = this.props
-    this.setState({ text: itemValue })
 
     onChange(itemValue)
+
+    this.setState({ text: itemValue })
   }
 }
 
