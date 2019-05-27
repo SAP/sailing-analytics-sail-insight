@@ -1,9 +1,9 @@
-import { head, isString } from 'lodash'
+import { head, isString, maxBy } from 'lodash'
 import { Alert } from 'react-native'
 
 import { AddRaceColumnResponseData } from 'api/endpoints/types'
 import I18n from 'i18n'
-import { CheckIn } from 'models'
+import { CheckIn, CheckInUpdate } from 'models'
 import { navigateToTracking } from 'navigation'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
@@ -14,7 +14,7 @@ import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
-import { updateLoadingCheckInFlag } from 'actions/checkIn'
+import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
 import { startLeaderboardUpdates, stopLeaderboardUpdates } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
@@ -86,7 +86,21 @@ export const startTracking: StartTrackingAction = data =>  async (
 
       if (activeRaces.length === 0) {
         showAlertRaceNotStarted = true
+      } else {
+        const latestActiveRace = maxBy(activeRaces, 'trackingStartDate')
+        const latestTrackName = latestActiveRace && latestActiveRace.columnName
+
+        if (latestTrackName) {
+          dispatch(
+            updateCheckIn({
+              leaderboardName: checkInData.leaderboardName,
+              currentTrackName: latestTrackName,
+            } as CheckInUpdate),
+          )
+          checkInData.currentTrackName = latestTrackName
+        }
       }
+
     }
     const trackName = (newTrack && newTrack.racename) || checkInData.currentTrackName
     if (checkInData.isSelfTracking && trackName && checkInData.currentFleet) {
@@ -96,10 +110,11 @@ export const startTracking: StartTrackingAction = data =>  async (
         Logger.debug(err)
       }
     }
-    await dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId))
+    dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId))
+
 
     const rankingMetric: string | undefined = getTrackedRegattaRankingMetric(getState())
-    await dispatch(startLeaderboardUpdates(checkInData, rankingMetric))
+    dispatch(startLeaderboardUpdates(checkInData, rankingMetric))
   } catch (err) {
     throw err
   } finally {
