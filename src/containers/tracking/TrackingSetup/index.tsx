@@ -22,7 +22,7 @@ import I18n from 'i18n'
 import { CheckInUpdate, TrackingSession } from 'models'
 import { navigateToEditSession, navigateToMain } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
-import { getLastUsedBoat } from 'selectors/user'
+import { getLastUsedTeam } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
 import ImageButton from 'components/ImageButton'
@@ -89,20 +89,14 @@ class TrackingSetup extends TextInputForm<Props> {
               {...this.commonProps}
             />
             <Field
-              label={I18n.t('text_team_name')}
-              name={sessionForm.FORM_KEY_TEAM_NAME}
-              component={this.renderProperty}
-              {...this.commonProps}
-            />
-            <Field
               label={I18n.t('text_track_name')}
               name={sessionForm.FORM_KEY_TRACK_NAME}
               component={this.renderProperty}
               {...this.commonProps}
             />
             <Field
-              label={I18n.t('text_boat')}
-              name={sessionForm.FORM_KEY_BOAT_NAME}
+              label={I18n.t('text_team_name')}
+              name={sessionForm.FORM_KEY_TEAM_NAME}
               component={this.renderProperty}
               {...this.commonProps}
             />
@@ -113,16 +107,22 @@ class TrackingSetup extends TextInputForm<Props> {
               {...this.commonProps}
             />
             <Field
+              label={I18n.t('text_nationality')}
+              name={sessionForm.FORM_KEY_NATIONALITY}
+              component={this.renderProperty}
+              {...this.commonProps}
+            />
+            <Field
               label={I18n.t('text_number')}
               name={sessionForm.FORM_KEY_SAIL_NUMBER}
               component={this.renderProperty}
               {...this.commonProps}
             />
             <Field
-                label={I18n.t('text_nationality')}
-                name={sessionForm.FORM_KEY_NATIONALITY}
-                component={this.renderProperty}
-                {...this.commonProps}
+              label={I18n.t('text_boat_name')}
+              name={sessionForm.FORM_KEY_BOAT_NAME}
+              component={this.renderProperty}
+              {...this.commonProps}
             />
             {/* <Field
               label={I18n.t('text_privacy_setting')}
@@ -254,11 +254,11 @@ class TrackingSetup extends TextInputForm<Props> {
 
 const mapStateToProps = (state: any, props: any) => {
   const sessionParam = getCustomScreenParamData(props) as TrackingSession
-  const lastUsedBoat = getLastUsedBoat(state)
+  const lastUsedTeam = getLastUsedTeam(state)
   return {
     initialValues: sessionParam ?
       sessionForm.formValuesFromTrackingSession(sessionParam) :
-      generateNewSession(lastUsedBoat, state),
+      generateNewSession(lastUsedTeam, state),
   }
 }
 

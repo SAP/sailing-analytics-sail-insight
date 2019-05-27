@@ -1,3 +1,4 @@
+import { getErrorDisplayMessage } from 'helpers/texts'
 import { isEmpty, orderBy } from 'lodash'
 import React from 'react'
 import { Alert, TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
@@ -5,13 +6,13 @@ import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
 import { selfTrackingApi } from '../../../api'
 import { CountryCodeBody } from '../../../api/endpoints/types'
-import { getErrorDisplayMessage } from 'helpers/texts'
 
 import Text from 'components/Text'
 import { TextInputProps } from 'components/TextInput'
 
 import { text } from 'styles/commons'
 import I18n from '../../../i18n'
+import { $importantHighlightColor, $secondaryTextColor } from '../../../styles/colors'
 import styles from './styles'
 
 interface State {
@@ -48,6 +49,12 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     })
   }
 
+  public componentDidUpdate(prevProps: any) {
+    if (this.props.input.value !== prevProps.input.value) {
+      this.setState({ text: this.props.input.value })
+    }
+  }
+
   public render() {
     const {
       label,
@@ -58,13 +65,11 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     } = this.props
 
     const { text: stateText } = this.state
-
     const placeholder = I18n.t('text_nationality')
 
-    const shouldHighlight = error && showError
     const showTopPlaceholder = placeholder && (!isEmpty(stateText))
     const assistiveText = error && showError ? error : undefined
-    const isHighlighted = error || highlight
+    const isHighlighted = (error && showError) || highlight
     const highlightStyle = isHighlighted ? text.error : undefined
     return (
       <View style={style}>
@@ -76,7 +81,6 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
               ]}
             >
               {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
-
               <RNPickerSelect
                   placeholder={{
                     label: I18n.t('text_placeholder_nationality'),
@@ -85,6 +89,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                   items={this.state.countryList}
                   value={stateText}
                   onValueChange={this.onValueChange}
+                  placeholderTextColor={isHighlighted ? $importantHighlightColor : $secondaryTextColor}
                   style={{
                     inputIOS: styles.inputIOS,
                     inputAndroid: styles.inputAndroid,
@@ -94,22 +99,24 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                   {...additionalProps}
               />
             </View>
-            {
-              assistiveText &&
-              <Text style={[text.assistiveText, shouldHighlight ? text.error : undefined]}>{assistiveText}</Text>
-            }
           </View>
+          {
+            assistiveText &&
+            <Text style={[text.assistiveText, highlightStyle]}>{assistiveText}</Text>
+          }
       </View>
     )
   }
 
-  protected onValueChange = (itemValue: any) => {
+  public onValueChange = (itemValue: any) => {
+    if (!itemValue) return
     const {
       input: { onChange },
     } = this.props
-    this.setState({ text: itemValue })
 
     onChange(itemValue)
+
+    this.setState({ text: itemValue })
   }
 }
 
