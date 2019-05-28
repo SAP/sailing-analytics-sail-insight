@@ -9,7 +9,7 @@ import I18n from '../../i18n'
 
 
 const LOG_TAG = '[BG_LOCATION]'
-// const HEARTBEAT_KEY = 'heartbeat'
+const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
 // const MOTION_CHANGE_KEY = 'motionchange'
 const LOCATION_KEY = 'location'
@@ -59,9 +59,15 @@ export const registerEvents = () => {
     await handleGeolocation(location)
   })
 
-  // BackgroundGeolocation.on(HEARTBEAT_KEY, (params: any) => {
-  //   Log('Heartbeat', params)
-  // })
+  BackgroundGeolocation.on(HEARTBEAT_KEY, async (params: any) => {
+    const location = await BackgroundGeolocation.getCurrentPosition({
+      samples: 1,
+      persist: true
+    });
+
+    await handleGeolocation(location)
+  })
+
 }
 
 export const unregisterEvents = () => {
