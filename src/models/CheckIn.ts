@@ -28,6 +28,7 @@ export const InvitationUrlPropertyName = {
   CompetitorId: 'competitor_id',
   MarkId: 'mark_id',
   Secret: 'secret',
+  Server: 'server',
 }
 
 export type TrackingContext = 'COMPETITOR' | 'BOAT' | 'MARK'
@@ -64,7 +65,10 @@ export const createCheckInUrlFromParams = (params: any = {}) => {
   ) {
     return
   }
-  return addUrlParams(getApiServerUrl(), relevantParams)
+
+  const serverUrl = relevantParams[InvitationUrlPropertyName.Server] || getApiServerUrl()
+
+  return addUrlParams(serverUrl, relevantParams)
 }
 
 export interface CheckInUpdate {
