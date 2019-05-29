@@ -121,31 +121,41 @@ export const createUserAttachmentToSession = (
     const serverUrl = getServerUrl(regattaName)(getState())
     const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
     const boatId = get(userBoat, ['id', serverUrl])
+    let competitorId = get(userBoat, ['competitorId', serverUrl])
 
-    const competitor = boatId ?
-      await dataApi.createAndAddCompetitorWithBoat(
+    let registrationSuccess = false
+    if (boatId && competitorId) {
+      const registrationResponse = await dataApi.registerCompetitorToRegatta(
         regattaName,
-        {
-          ...baseValues,
-          boatId,
-          ...(secret && { secret }),
-        },
-      ) :
-      await dataApi.createAndAddCompetitor(
-        regattaName,
-        {
-          ...baseValues,
-          boatclass: competitorInfo.boatClass,
-          sailid: competitorInfo.sailNumber,
-          ...(secret && { secret }),
-          ...(secret && { deviceUuid: getDeviceId() }),
-        },
+        competitorId,
       )
-    if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
-      dataApi.uploadTeamImage(competitor.id, competitorInfo.teamImage.data, competitorInfo.teamImage.mime)
+      registrationSuccess = registrationResponse.status === 200
     }
-    dispatch(normalizeAndReceiveEntities(competitor, competitorSchema))
-    dispatch(updateCheckIn({ leaderboardName: regattaName, competitorId: competitor.id } as CheckInUpdate))
+
+    // Creates new competitorWithBoat if there isn't one on the current server
+    // or if the regeistration of the existing one to the regatta failed
+    let newCompetitorWithBoat
+    if (!registrationSuccess) {
+      newCompetitorWithBoat = await dataApi.createAndAddCompetitor(regattaName, {
+        ...baseValues,
+        boatclass: competitorInfo.boatClass,
+        sailid: competitorInfo.sailNumber,
+        ...(secret && { secret }),
+        ...(secret && { deviceUuid: getDeviceId() }),
+      })
+
+      competitorId = newCompetitorWithBoat.id
+    }
+
+    if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
+      dataApi.uploadTeamImage(competitorId, competitorInfo.teamImage.data, competitorInfo.teamImage.mime)
+    }
+
+    if (newCompetitorWithBoat) {
+      dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
+    }
+
+    dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
     if (user) {
       await dispatch(
         saveTeam(
@@ -157,9 +167,12 @@ export const createUserAttachmentToSession = (
             nationality: competitorInfo.nationality,
             id: {
               ...(userBoat && { ...userBoat.id }),
-              ...(!boatId &&
-                competitor &&
-                competitor.boat && { [serverUrl]: competitor.boat.id }),
+              ...(newCompetitorWithBoat &&
+                newCompetitorWithBoat.boat && { [serverUrl]: newCompetitorWithBoat.boat.id }),
+            },
+            competitorId: {
+              ...(userBoat && { ...userBoat.competitorId }),
+              ...(newCompetitorWithBoat && { [serverUrl]: newCompetitorWithBoat.id }),
             },
           },
           { updateLastUsed: true },

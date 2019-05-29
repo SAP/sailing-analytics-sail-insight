@@ -52,6 +52,7 @@ const apiEndpoints = (serverUrl: string) => {
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
+    registerCompetitorToRegatta: getUrlV1('/regattas/{0}/competitors/{1}/add'),
     leaderboard: getUrlV1('/leaderboards/{0}'),
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
@@ -114,6 +115,7 @@ export interface DataApi {
     regattaName: string,
     data?: CompetitorWithBoatBody,
   ) => Promise<CompetitorResponseData>
+  registerCompetitorToRegatta: (regattaName: string, competitorId: string) => any
   sendWindFix: (
     regattaName: string,
     raceName: string,
@@ -225,6 +227,10 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     ),
     createAndAddCompetitorWithBoat: (regattaName, data) => dataRequest(
       endpoints.createAndAddCompetitorWithBoat({ pathParams: [regattaName], urlParams: data }),
+      { method: HttpMethods.POST },
+    ),
+    registerCompetitorToRegatta: (regattaName, competitorId) => request(
+      endpoints.registerCompetitorToRegatta({ pathParams: [regattaName, competitorId] }),
       { method: HttpMethods.POST },
     ),
     sendWindFix: (regattaName, raceName, windFix, sourceId, sourceType = 'WEB') => request(
