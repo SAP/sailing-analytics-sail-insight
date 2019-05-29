@@ -41,6 +41,11 @@ export const getUserBoatByFormBoatName = createSelector(
   (userBoats = {}, boatName) => userBoats[boatName],
 )
 
+export const getUserBoatByBoatName = (boatName?: string) => createSelector(
+  getUserTeamEntities,
+  (userBoats = {}) => boatName && userBoats[boatName],
+)
+
 export const getUserTeamNames = createSelector(
   getUserTeams,
   (userTeams = []) => userTeams.map((team: TeamTemplate) => team.name),

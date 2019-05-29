@@ -31,8 +31,9 @@ import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { saveTeam } from 'actions/user'
 import { getUserInfo } from 'selectors/auth'
-import { getCheckInByLeaderboardName, getTrackedCheckIn } from 'selectors/checkIn'
+import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
+import { getUserBoatByBoatName } from 'selectors/user'
 
 
 export const shareSession = (checkIn: CheckIn) => async () => {
@@ -116,12 +117,18 @@ export const createUserAttachmentToSession = (
       competitorEmail: user && user.email,
       nationalityIOC: competitorInfo.nationality,
     }
-    const competitor = competitorInfo.boatId && !secret ?
+
+    const serverUrl = getServerUrl(regattaName)(getState())
+    const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
+    const boatId = get(userBoat, ['id', serverUrl])
+
+    const competitor = boatId ?
       await dataApi.createAndAddCompetitorWithBoat(
         regattaName,
         {
           ...baseValues,
-          boatId: competitorInfo.boatId,
+          boatId,
+          ...(secret && { secret }),
         },
       ) :
       await dataApi.createAndAddCompetitor(
@@ -140,17 +147,24 @@ export const createUserAttachmentToSession = (
     dispatch(normalizeAndReceiveEntities(competitor, competitorSchema))
     dispatch(updateCheckIn({ leaderboardName: regattaName, competitorId: competitor.id } as CheckInUpdate))
     if (user) {
-      await dispatch(saveTeam(
-        {
-          name: competitorInfo.teamName,
-          boatName: competitorInfo.boatName,
-          boatClass: competitorInfo.boatClass,
-          sailNumber: competitorInfo.sailNumber,
-          nationality: competitorInfo.nationality,
-          id: competitor && competitor.boat && competitor.boat.id,
-        },
-        { updateLastUsed: true },
-      ))
+      await dispatch(
+        saveTeam(
+          {
+            name: competitorInfo.teamName,
+            boatName: competitorInfo.boatName,
+            boatClass: competitorInfo.boatClass,
+            sailNumber: competitorInfo.sailNumber,
+            nationality: competitorInfo.nationality,
+            id: {
+              ...(userBoat && { ...userBoat.id }),
+              ...(!boatId &&
+                competitor &&
+                competitor.boat && { [serverUrl]: competitor.boat.id }),
+            },
+          },
+          { updateLastUsed: true },
+        ),
+      )
     }
   },
 )
