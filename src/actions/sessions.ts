@@ -166,7 +166,7 @@ export const createUserAttachmentToSession = (
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
             id: {
-              ...(userBoat && { ...userBoat.id }),
+              ...(userBoat && typeof userBoat.id === 'object' && { ...userBoat.id }),
               ...(newCompetitorWithBoat &&
                 newCompetitorWithBoat.boat && { [serverUrl]: newCompetitorWithBoat.boat.id }),
             },
