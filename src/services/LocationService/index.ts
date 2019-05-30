@@ -28,7 +28,7 @@ const config: Config = {
   // debug
   debug: false,
   // debug: __DEV__,
-  logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+  logLevel: BackgroundGeolocation.LOG_LEVEL_WARNING,
   logMaxDays: 2,
   // iOS:
   locationAuthorizationRequest: 'Always',
