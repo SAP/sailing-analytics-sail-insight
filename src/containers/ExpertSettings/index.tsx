@@ -6,7 +6,8 @@ import TextButton from 'components/TextButton'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import React from 'react'
-import { Image, View } from 'react-native'
+import { Alert, Image, View } from 'react-native'
+import BackgroundGeolocation from 'react-native-background-geolocation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import {  getFormFieldValue } from 'selectors/form'
@@ -17,6 +18,7 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 import { updateServerUrlSetting, updateVerboseLoggingSetting } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
+import TextInput from '../../components/TextInput'
 import * as expertSettingsForm from '../../forms/settings'
 import { navigateBack } from '../../navigation'
 import { getServerUrlSetting, getVerboseLoggingSetting } from '../../selectors/settings'
@@ -30,6 +32,11 @@ interface Props {
 }
 
 class ExpertSettings extends TextInputForm<Props> {
+
+  public state = {
+    email: '',
+    emailLoading: false,
+  }
 
   public render() {
     return (
@@ -50,6 +57,23 @@ class ExpertSettings extends TextInputForm<Props> {
             switchValue={this.props.verboseLogging}
             onSwitchValueChange={this.props.updateVerboseLoggingSetting}
           />
+        </View>
+        <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
+          <TextInput
+            value={this.state.email}
+            onChangeText={this.onEmailChange}
+            placeholder={I18n.t('text_email')}
+            keyboardType={'default'}
+            autoCapitalize="none"
+          />
+          <TextButton
+            style={registration.nextButton()}
+            textStyle={button.actionText}
+            onPress={this.onLogToEmailSubmit}
+            isLoading={this.state.emailLoading}
+          >
+            {I18n.t('caption_send_log_to_email')}
+          </TextButton>
         </View>
         <View style={registration.bottomContainer()}>
           <Field
@@ -77,6 +101,21 @@ class ExpertSettings extends TextInputForm<Props> {
   protected onSubmit = async (values: any) => {
     await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
     navigateBack()
+  }
+
+  protected onEmailChange = (newValue: string) => this.setState({ email: newValue })
+  protected onLogToEmailSubmit = () => {
+    const { email } = this.state
+    if (email) {
+      this.setState({ emailLoading: true })
+      BackgroundGeolocation.emailLog(email).then(() => {
+        Alert.alert(I18n.t('caption_success'))
+        navigateBack()
+      }).catch(() => {
+        Alert.alert(I18n.t('error_unknown'))
+        this.setState({ emailLoading: false })
+      })
+    }
   }
 }
 

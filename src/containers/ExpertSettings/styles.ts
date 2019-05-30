@@ -6,4 +6,8 @@ export default EStyleSheets.create({
     flex: 1,
     justifyContent: 'center',
   },
+  emailContainer: {
+    paddingTop: 30,
+    paddingBottom: 15,
+  }
 })
