@@ -39,6 +39,7 @@
   "text_username": "Username",
   "text_email": "E-Mail",
   "text_base_server": "Server",
+  "text_verbose_logging": "Enable verbose background GPS logging",
   "text_placeholder_your_username": "Your username",
   "text_placeholder_your_email": "Your e-mail address",
   "text_placeholder_enter_password": "Enter a password",

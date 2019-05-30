@@ -14,16 +14,19 @@ import {  getFormFieldValue } from 'selectors/form'
 import { button, container, image, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
-import { updateServerUrlSetting } from '../../actions/settings'
+import { updateServerUrlSetting, updateVerboseLoggingSetting } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
+import EditItemSwitch from '../../components/EditItemSwitch'
 import * as expertSettingsForm from '../../forms/settings'
 import { navigateBack } from '../../navigation'
-import { getServerUrlSetting } from '../../selectors/settings'
+import { getServerUrlSetting, getVerboseLoggingSetting } from '../../selectors/settings'
 import styles from './styles'
 
 interface Props {
   formServer?: string,
   updateServerUrlSetting: (value: string) => void,
+  verboseLogging: boolean,
+  updateVerboseLoggingSetting: (value: boolean) => void,
 }
 
 class ExpertSettings extends TextInputForm<Props> {
@@ -39,6 +42,14 @@ class ExpertSettings extends TextInputForm<Props> {
               <Text style={text.claimHighlighted}>{I18n.t('text_development_claim_02')}</Text>
             </Text>
           </View>
+        </View>
+        <View style={container.smallHorizontalMargin}>
+          <EditItemSwitch
+            style={styles.item}
+            title={I18n.t('text_verbose_logging')}
+            switchValue={this.props.verboseLogging}
+            onSwitchValueChange={this.props.updateVerboseLoggingSetting}
+          />
         </View>
         <View style={registration.bottomContainer()}>
           <Field
@@ -76,12 +87,13 @@ const mapStateToProps = (state: any) => {
     initialValues: {
       [expertSettingsForm.FORM_KEY_SERVER_URL]: getServerUrlSetting(state),
     },
+    verboseLogging: getVerboseLoggingSetting(state),
   }
 }
 
 export default connect(
   mapStateToProps,
-  { updateServerUrlSetting },
+  { updateServerUrlSetting, updateVerboseLoggingSetting },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,

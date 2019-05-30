@@ -19,7 +19,7 @@ import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
 import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
-import { getBulkGpsSetting } from '../selectors/settings'
+import { getBulkGpsSetting, getVerboseLoggingSetting } from '../selectors/settings'
 import { syncAllFixes } from '../services/GPSFixService'
 import { deleteAllGPSFixRequests } from '../storage'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
@@ -65,6 +65,7 @@ export const startTracking: StartTrackingAction = data =>  async (
   try {
     const shouldCreateTrack = checkInData.isSelfTracking
     const bulkTransfer = getBulkGpsSetting(getState())
+    const verboseLogging = getVerboseLoggingSetting(getState())
     let newTrack
 
     if (shouldCreateTrack && checkInData.trackPrefix) {
@@ -93,7 +94,7 @@ export const startTracking: StartTrackingAction = data =>  async (
         Logger.debug(err)
       }
     }
-    dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId))
+    dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId, verboseLogging))
   } catch (err) {
     throw err
   } finally {
