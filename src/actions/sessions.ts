@@ -2,6 +2,7 @@ import { find, get, head, includes, orderBy } from 'lodash'
 import { Alert } from 'react-native'
 
 import { selfTrackingApi } from 'api'
+import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
 import { ManeuverChangeItem } from 'api/endpoints/types'
 import { competitorSchema } from 'api/schemas'
@@ -125,11 +126,18 @@ export const createUserAttachmentToSession = (
 
     let registrationSuccess = false
     if (boatId && competitorId) {
-      const registrationResponse = await dataApi.registerCompetitorToRegatta(
-        regattaName,
-        competitorId,
-      )
-      registrationSuccess = registrationResponse.status === 200
+      try {
+        const registrationResponse = await dataApi.registerCompetitorToRegatta(
+          regattaName,
+          competitorId,
+        )
+
+        registrationSuccess = registrationResponse.status === 200
+      } catch (err) {
+        if (!(err instanceof ApiException)) {
+          throw err
+        }
+      }
     }
 
     // Creates new competitorWithBoat if there isn't one on the current server
