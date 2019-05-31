@@ -22,8 +22,7 @@ export const generateNewSession = (team?: TeamTemplate, state: RootState = {}) =
     sailNumber: (team && team.sailNumber) || I18n.t('text_default_value_sail_number'),
     boatId: (team && team.id),
     nationality: (team && team.nationality) || getDeviceCountryIOC(),
-    // TODO use image data from team
-    teamImage: state.auth.user.imageData,
+    teamImage: team && team.imageData,
   } as TrackingSession
 }
 

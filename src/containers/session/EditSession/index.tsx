@@ -45,7 +45,7 @@ class EditSession extends TextInputForm<Props> {
         <Field
           name={sessionForm.FORM_KEY_TEAM_IMAGE}
           component={FormImagePicker}
-          placeholder={Images.header.sailors}
+          placeholder={Images.header.team}
         />
         <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
@@ -81,6 +81,7 @@ class EditSession extends TextInputForm<Props> {
               sessionForm.FORM_KEY_SAIL_NUMBER,
               sessionForm.FORM_KEY_NATIONALITY,
               sessionForm.FORM_KEY_BOAT_ID,
+              sessionForm.FORM_KEY_TEAM_IMAGE,
             ]}
             component={FormTeamPicker}
             teams={this.props.teams}

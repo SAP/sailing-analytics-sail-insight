@@ -40,6 +40,7 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
   formNationality?: string
   formBoatClass?: string
   formBoatName?: string
+  formTeamImage?: any
   paramTeamName?: string
   saveTeam: SaveTeamAction
   deleteTeam: DeleteTeamAction
@@ -75,7 +76,6 @@ class TeamDetails extends TextInputForm<Props> {
             name={teamForm.FORM_KEY_IMAGE}
             component={FormImagePicker}
             placeholder={Images.header.team}
-            disabled={true}
           />
         </View>
         <View style={registration.bottomContainer()}>
@@ -187,15 +187,16 @@ class TeamDetails extends TextInputForm<Props> {
   }
 
   private formHasChanges() {
-    const { team, formTeamName, formSailNumber, formNationality, formBoatClass, formBoatName } = this.props
+    const { team, formTeamName, formSailNumber, formNationality, formBoatClass, formBoatName, formTeamImage } = this.props
 
     const nameHasChanged = !team || formTeamName !== team.name
     const sailNumberHasChanged = !team || formSailNumber !== team.sailNumber
     const nationalityHasChanged = !team || formNationality !== team.nationality
     const boatClassHasChanged = !team || formBoatClass !== team.boatClass
     const boatNameHasChanged = !team || formBoatName !== team.boatName
+    const imageHasChanged = !team || formTeamImage !== team.imageData
 
-    return nameHasChanged || sailNumberHasChanged || nationalityHasChanged || boatClassHasChanged || boatNameHasChanged
+    return nameHasChanged || sailNumberHasChanged || nationalityHasChanged || boatClassHasChanged || boatNameHasChanged || imageHasChanged
   }
 }
 
@@ -206,6 +207,7 @@ const mapStateToProps = (state: any, props: any) => {
   const formNationality = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_NATIONALITY)(state)
   const formBoatClass = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_CLASS)(state)
   const formBoatName = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_NAME)(state)
+  const formTeamImage = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_IMAGE)(state)
   const paramTeamName = team && team.name
   return {
     team,
@@ -214,6 +216,7 @@ const mapStateToProps = (state: any, props: any) => {
     formNationality,
     formBoatClass,
     formBoatName,
+    formTeamImage,
     paramTeamName,
     comparisonValue: getUserTeamNames(state),
     ignoredValue: paramTeamName,
@@ -223,6 +226,7 @@ const mapStateToProps = (state: any, props: any) => {
       [teamForm.FORM_KEY_BOAT_NAME]: team.boatName,
       [teamForm.FORM_KEY_SAIL_NUMBER]: team.sailNumber,
       [teamForm.FORM_KEY_BOAT_CLASS]: team.boatClass,
+      [teamForm.FORM_KEY_IMAGE]: team.imageData,
     },
   } as ComparisonValidatorViewProps
 }

@@ -147,6 +147,7 @@ export const createUserAttachmentToSession = (
           boatClass: competitorInfo.boatClass,
           sailNumber: competitorInfo.sailNumber,
           nationality: competitorInfo.nationality,
+          imageData: competitorInfo.teamImage,
           id: competitor && competitor.boat && competitor.boat.id,
         },
         { updateLastUsed: true },

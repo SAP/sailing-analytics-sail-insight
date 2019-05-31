@@ -57,7 +57,7 @@ class EditCompetitor extends TextInputForm<Props> {
         <Field
           name={sessionForm.FORM_KEY_TEAM_IMAGE}
           component={FormImagePicker}
-          placeholder={Images.header.sailors}
+          placeholder={Images.header.team}
         />
         <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
@@ -84,6 +84,7 @@ class EditCompetitor extends TextInputForm<Props> {
               sessionForm.FORM_KEY_SAIL_NUMBER,
               sessionForm.FORM_KEY_NATIONALITY,
               sessionForm.FORM_KEY_BOAT_ID,
+              sessionForm.FORM_KEY_TEAM_IMAGE,
             ]}
             component={FormTeamPicker}
             teams={this.props.teams}
@@ -171,8 +172,7 @@ const mapStateToProps = (state: any, props: any) => {
       sailNumber: (lastUsedTeam && lastUsedTeam.sailNumber) || I18n.t('text_default_value_sail_number'),
       boatId: (lastUsedTeam && lastUsedTeam.id),
       nationality: (lastUsedTeam && lastUsedTeam.nationality) || getDeviceCountryIOC(),
-      // TODO use image data from team
-      teamImage: state.auth && state.auth.user && state.auth.user.imageData && state.auth.user.imageData,
+      teamImage: lastUsedTeam && lastUsedTeam.imageData,
     } as CompetitorInfo,
     teams: getUserTeams(state),
     checkInData: getCustomScreenParamData(props),
