@@ -52,8 +52,6 @@ export const authBasedNewSession = () => (dispatch: DispatchType, getState: GetS
 }
 
 export const updateUser = (user: User) => async (dispatch: DispatchType) => {
-  // store imageData locally
-  dispatch(updateCurrentUserInformation({ imageData: user.imageData }))
   // sync with server
   await authApi().updateUser(mapUserToRes(user))
   dispatch(fetchCurrentUser())
