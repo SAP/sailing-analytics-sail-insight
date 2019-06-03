@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { updateGpsBulkSetting, changeAnalyticsSetting } from 'actions/settings'
 import { getApiServerUrl } from 'api/config'
-import { getAppVersionText, openEmailToContact, openTerms } from 'helpers/user'
+import { getAppVersionText, openEmailToContact, openPrivacyPolicy, openTerms } from 'helpers/user'
 import I18n from 'i18n'
 import { getBulkGpsSetting, getEnableAnalyticsSettings } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
@@ -75,6 +75,13 @@ class AppSettings extends React.Component<ViewProps & {
             onPress={openTerms}
           >
             {I18n.t('title_eula')}
+          </TextButton>
+          <TextButton
+            style={registration.nextButton()}
+            textStyle={button.actionText}
+            onPress={openPrivacyPolicy}
+          >
+            {I18n.t('title_privacy_policy')}
           </TextButton>
         </View>
         {this.renderVersionNumber()}

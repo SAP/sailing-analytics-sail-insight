@@ -8,9 +8,10 @@
   "title_maneuver_monitor": "Manöver-Monitor",
   "title_edit_session": "Bearbeiten",
   "title_set_wind": "Wind setzen",
-  "title_eula": "AGB & Datenschutzrichtlinie",
+  "title_eula": "AGB",
+  "title_privacy_policy": "Datenschutzrichtlinie",
   "title_expert_settings": "Experteneinstellungen",
-  
+
   "text_more_information_at" : "Mehr Informationen auf",
   "text_device_id": "Geräte-ID",
   "text_accuracy": "Genauigkeit",
@@ -117,7 +118,8 @@
   "text_email_help_body": "Problembeschreibung:",
   "text_register_grant_eula_01": "Mit der Registrierung akzeptierst du die ",
   "text_register_grant_eula_join_01": "Mit der Teilnahme akzeptierst du die ",
-  "text_register_grant_eula_02": "AGB & Datenschutzrichtlinie",
+  "text_register_grant_eula_02": "AGB",
+  "text_register_grant_eula_03": "Datenschutzrichtlinie",
   "text_passwort_reset_title" : "Passwort zurücksetzen",
   "text_passwort_reset_message" : "Bitte gib deinen Benutzernamen oder deine E-Mail-Adresse ein. Wir senden dir dann eine E-Mail zum Zurücksetzen deines Passworts zu.",
   "text_passwort_reset_or" : "oder",
@@ -208,6 +210,9 @@
   "error_tracking_resend_info_text" : "Dein Tracking wurde gestoppt, jedoch konnten nicht alle Daten übertragen werden.\nBitte versuche es erneut.",
   "error_load_nationalities": "Nationalitäten konnten nicht geladen werden",
   "error_load_boat_classes": "Bootsklassen konnten nicht geladen werden",
+
+  "url_eula": "http://konzeptwerft.com/konzeptwerft/sail-insight-powered-by-sap-terms-conditions/",
+  "url_privacy_policy": "http://konzeptwerft.com/datenschutz/",
 
   "JIBE": "Halse",
   "HEAD_UP": "Anluven",
