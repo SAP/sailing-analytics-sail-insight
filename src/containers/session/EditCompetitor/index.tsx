@@ -9,19 +9,20 @@ import * as sessionForm from 'forms/session'
 import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
-import { BoatTemplate, CheckIn, CompetitorInfo } from 'models'
+import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
 import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
-import { getUserInfo } from 'selectors/auth'
-import { getLastUsedBoat, getUserBoats } from 'selectors/user'
+import { getUserInfo, isLoggedIn } from 'selectors/auth'
+import { getLastUsedTeam, getUserTeams } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
-import FormBoatPicker from 'components/form/FormBoatPicker'
+import FormTeamPicker from 'components/form/FormTeamPicker'
 import FormTextInput from 'components/form/FormTextInput'
+import ImageButton from 'components/ImageButton'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import ImageButton from 'components/ImageButton'
+
 
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
@@ -34,9 +35,10 @@ import { getDeviceCountryIOC } from '../../../services/CheckInService'
 
 
 interface Props {
-  boats: BoatTemplate[]
+  teams: TeamTemplate[]
   registerCompetitorAndDevice: (data: any, values: any) => any
-  checkInData: CheckIn
+  checkInData: CheckIn,
+  isLoggedIn: boolean,
 }
 
 class EditCompetitor extends TextInputForm<Props> {
@@ -67,33 +69,27 @@ class EditCompetitor extends TextInputForm<Props> {
           <Field
             style={input.topMargin}
             label={I18n.t('text_your_name')}
-            name={'name'}
+            name={sessionForm.FORM_KEY_NAME}
             component={FormTextInput}
-            onSubmitEditing={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
-            inputRef={this.handleInputRef('name')}
+            onSubmitEditing={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
           />
           <Fields
             style={input.topMargin}
-            label={I18n.t('text_boat')}
+            label={I18n.t('text_team')}
             names={[
+              sessionForm.FORM_KEY_TEAM_NAME,
               sessionForm.FORM_KEY_BOAT_NAME,
               sessionForm.FORM_KEY_BOAT_CLASS,
               sessionForm.FORM_KEY_SAIL_NUMBER,
+              sessionForm.FORM_KEY_NATIONALITY,
               sessionForm.FORM_KEY_BOAT_ID,
             ]}
-            component={FormBoatPicker}
-            boats={this.props.boats}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
-            {...this.commonProps}
-          />
-          <Field
-            style={input.topMargin}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={sessionForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
+            component={FormTeamPicker}
+            teams={this.props.teams}
+            isLoggedIn={this.props.isLoggedIn}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             {...this.commonProps}
           />
           <Field
@@ -110,17 +106,25 @@ class EditCompetitor extends TextInputForm<Props> {
               label={I18n.t('text_nationality')}
               name={sessionForm.FORM_KEY_NATIONALITY}
               component={FormNationalityPicker}
-              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TEAM_NAME)}
+              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
               inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
               {...this.commonProps}
           />
           <Field
             style={input.topMargin}
-            label={I18n.t('text_team_name')}
-            name={sessionForm.FORM_KEY_TEAM_NAME}
+            label={I18n.t('text_placeholder_sail_number')}
+            name={sessionForm.FORM_KEY_SAIL_NUMBER}
             component={FormTextInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_PRIVACY_SETTING)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_NAME)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            {...this.commonProps}
+          />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_placeholder_boat_name')}
+            name={sessionForm.FORM_KEY_BOAT_NAME}
+            component={FormTextInput}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
           />
           <TextButton
@@ -135,7 +139,8 @@ class EditCompetitor extends TextInputForm<Props> {
         <ImageButton
             style={button.closeButton}
             source={Images.actions.close}
-            onPress={navigateToSessions}/>
+            onPress={navigateToSessions}
+        />
       </ScrollContentView>
     )
   }
@@ -156,22 +161,22 @@ class EditCompetitor extends TextInputForm<Props> {
 
 const mapStateToProps = (state: any, props: any) => {
   const userInfo = getUserInfo(state)
-  const lastUsedBoat = getLastUsedBoat(state)
+  const lastUsedTeam = getLastUsedTeam(state)
   return {
     initialValues: {
       name: userInfo && userInfo.fullName,
-      ...(lastUsedBoat && {
-        boatClass: lastUsedBoat.boatClass,
-        boatId: lastUsedBoat.id,
-        boatName: lastUsedBoat.name,
-        sailNumber: lastUsedBoat.sailNumber,
-      }),
-      nationality: getDeviceCountryIOC(),
-      teamName: I18n.t('text_default_value_team_name'),
+      teamName: (lastUsedTeam && lastUsedTeam.name) || I18n.t('text_default_value_team_name'),
+      boatClass: (lastUsedTeam && lastUsedTeam.boatClass),
+      boatName: (lastUsedTeam && lastUsedTeam.boatName) || I18n.t('text_default_value_boat_name'),
+      sailNumber: (lastUsedTeam && lastUsedTeam.sailNumber) || I18n.t('text_default_value_sail_number'),
+      boatId: (lastUsedTeam && lastUsedTeam.id),
+      nationality: (lastUsedTeam && lastUsedTeam.nationality) || getDeviceCountryIOC(),
+      // TODO use image data from team
       teamImage: state.auth && state.auth.user && state.auth.user.imageData && state.auth.user.imageData,
     } as CompetitorInfo,
-    boats: getUserBoats(state),
+    teams: getUserTeams(state),
     checkInData: getCustomScreenParamData(props),
+    isLoggedIn: isLoggedIn(state),
   }
 }
 

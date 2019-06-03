@@ -2,26 +2,27 @@ import { includes, intersection, isEmpty, isString } from 'lodash'
 
 import { dateTimeText } from 'helpers/date'
 import I18n from 'i18n'
-import { BoatTemplate, TrackingSession, User } from 'models'
+import { TeamTemplate, TrackingSession, User } from 'models'
 import { RootState } from '../../reducers/config'
 import { getDeviceCountryIOC } from '../CheckInService'
 
 
 const getUserSessionPrefix = (username: string) => `<${username}>`
 
-export const generateNewSession = (boat?: BoatTemplate, state: RootState = {}) => {
+export const generateNewSession = (team?: TeamTemplate, state: RootState = {}) => {
   // TODO: implement prefill from current boat
-  let userName = state.auth.user ? state.auth.user.fullName : null
+  const userName = state.auth.user ? state.auth.user.fullName : null
   return {
     name: generateNewSessionName(),
     trackName: generateNewTrackName(),
-    teamName: userName || I18n.t('text_default_value_team_name'),
+    teamName: (team && team.name) || userName || I18n.t('text_default_value_team_name'),
     privacySetting: 'public',
-    boatClass: (boat && boat.boatClass),
-    boatName: (boat && boat.name) || I18n.t('text_default_value_boat_name'),
-    sailNumber: (boat && boat.sailNumber) || I18n.t('text_default_value_sail_number'),
-    boatId: (boat && boat.id),
-    nationality: getDeviceCountryIOC(),
+    boatClass: (team && team.boatClass),
+    boatName: (team && team.boatName) || I18n.t('text_default_value_boat_name'),
+    sailNumber: (team && team.sailNumber) || I18n.t('text_default_value_sail_number'),
+    boatId: (team && team.id),
+    nationality: (team && team.nationality) || getDeviceCountryIOC(),
+    // TODO use image data from team
     teamImage: state.auth.user.imageData,
   } as TrackingSession
 }
