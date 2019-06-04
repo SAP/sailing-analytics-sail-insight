@@ -7,7 +7,7 @@ export default EStyleSheets.create({
     justifyContent: 'center',
   },
   emailContainer: {
-    paddingTop: 30,
-    paddingBottom: 15,
+    paddingTop: 15,
+    paddingBottom: 30,
   }
 })

@@ -18,7 +18,6 @@ import { $extraSpacingScrollContent } from 'styles/dimensions'
 import { updateServerUrlSetting, updateVerboseLoggingSetting } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
-import TextInput from '../../components/TextInput'
 import * as expertSettingsForm from '../../forms/settings'
 import { navigateBack } from '../../navigation'
 import { getServerUrlSetting, getVerboseLoggingSetting } from '../../selectors/settings'
@@ -34,7 +33,6 @@ interface Props {
 class ExpertSettings extends TextInputForm<Props> {
 
   public state = {
-    email: '',
     emailLoading: false,
   }
 
@@ -59,13 +57,6 @@ class ExpertSettings extends TextInputForm<Props> {
           />
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
-          <TextInput
-            value={this.state.email}
-            onChangeText={this.onEmailChange}
-            placeholder={I18n.t('text_email')}
-            keyboardType={'default'}
-            autoCapitalize="none"
-          />
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
@@ -103,19 +94,15 @@ class ExpertSettings extends TextInputForm<Props> {
     navigateBack()
   }
 
-  protected onEmailChange = (newValue: string) => this.setState({ email: newValue })
   protected onLogToEmailSubmit = () => {
-    const { email } = this.state
-    if (email) {
-      this.setState({ emailLoading: true })
-      BackgroundGeolocation.emailLog(email).then(() => {
-        Alert.alert(I18n.t('caption_success'))
-        navigateBack()
-      }).catch(() => {
-        Alert.alert(I18n.t('error_unknown'))
-        this.setState({ emailLoading: false })
-      })
-    }
+    this.setState({ emailLoading: true })
+    BackgroundGeolocation.emailLog('sailinsight@sailtracks.tv').then(() => {
+      Alert.alert(I18n.t('caption_success'))
+      navigateBack()
+    }).catch(() => {
+      Alert.alert(I18n.t('error_unknown'))
+      this.setState({ emailLoading: false })
+    })
   }
 }
 
