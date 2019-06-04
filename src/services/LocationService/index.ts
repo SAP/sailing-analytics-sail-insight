@@ -28,7 +28,7 @@ const config: Config = {
   // debug
   debug: false,
   // debug: __DEV__,
-  logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+  logLevel: BackgroundGeolocation.LOG_LEVEL_WARNING,
   logMaxDays: 2,
   // iOS:
   locationAuthorizationRequest: 'Always',
@@ -119,9 +119,14 @@ export const LocationTrackingStatus = {
   STOPPED: 'STOPPED',
 }
 
-export const start = () => new Promise<any>((resolve, reject) => {
+export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
   BackgroundGeolocation.ready(
-    config,
+    {
+      ...config,
+      ...(!!verboseLogging && {
+        logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
+      }),
+    },
     (state: any) => {
       if (!state.enabled) {
         return BackgroundGeolocation.start(resolve, reject)
@@ -129,7 +134,7 @@ export const start = () => new Promise<any>((resolve, reject) => {
       return reject(state)
     },
     reject,
-    )
+  )
 })
 
 export const stop = () => new Promise<any>((resolve, reject) => BackgroundGeolocation.stop(resolve, reject))

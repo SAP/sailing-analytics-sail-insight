@@ -11,6 +11,9 @@ export const getEnableAnalyticsSettings = (state: RootState = {}) =>
 export const getServerUrlSetting = (state: RootState = {}) =>
   state.settings && state.settings.serverUrl
 
+export const getVerboseLoggingSetting = (state: RootState = {}) =>
+  state.settings && state.settings.verboseLogging
+
 export const IsDefaultServerUrlSettingUsed = (state: RootState = {}) => {
   const serverUrl = getServerUrlSetting(state)
   if (serverUrl && serverUrl !== DEFAULT_SERVER_URL) {

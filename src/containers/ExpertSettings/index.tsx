@@ -6,7 +6,8 @@ import TextButton from 'components/TextButton'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import React from 'react'
-import { Image, View } from 'react-native'
+import { Alert, Image, View } from 'react-native'
+import BackgroundGeolocation from 'react-native-background-geolocation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import {  getFormFieldValue } from 'selectors/form'
@@ -14,19 +15,26 @@ import {  getFormFieldValue } from 'selectors/form'
 import { button, container, image, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
-import { updateServerUrlSetting } from '../../actions/settings'
+import { updateServerUrlSetting, updateVerboseLoggingSetting } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
+import EditItemSwitch from '../../components/EditItemSwitch'
 import * as expertSettingsForm from '../../forms/settings'
 import { navigateBack } from '../../navigation'
-import { getServerUrlSetting } from '../../selectors/settings'
+import { getServerUrlSetting, getVerboseLoggingSetting } from '../../selectors/settings'
 import styles from './styles'
 
 interface Props {
   formServer?: string,
   updateServerUrlSetting: (value: string) => void,
+  verboseLogging: boolean,
+  updateVerboseLoggingSetting: (value: boolean) => void,
 }
 
 class ExpertSettings extends TextInputForm<Props> {
+
+  public state = {
+    emailLoading: false,
+  }
 
   public render() {
     return (
@@ -39,6 +47,24 @@ class ExpertSettings extends TextInputForm<Props> {
               <Text style={text.claimHighlighted}>{I18n.t('text_development_claim_02')}</Text>
             </Text>
           </View>
+        </View>
+        <View style={container.largeHorizontalMargin}>
+          <EditItemSwitch
+            style={styles.item}
+            title={I18n.t('text_verbose_logging')}
+            switchValue={this.props.verboseLogging}
+            onSwitchValueChange={this.props.updateVerboseLoggingSetting}
+          />
+        </View>
+        <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
+          <TextButton
+            style={registration.nextButton()}
+            textStyle={button.actionText}
+            onPress={this.onLogToEmailSubmit}
+            isLoading={this.state.emailLoading}
+          >
+            {I18n.t('caption_send_log_to_email')}
+          </TextButton>
         </View>
         <View style={registration.bottomContainer()}>
           <Field
@@ -67,6 +93,17 @@ class ExpertSettings extends TextInputForm<Props> {
     await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
     navigateBack()
   }
+
+  protected onLogToEmailSubmit = () => {
+    this.setState({ emailLoading: true })
+    BackgroundGeolocation.emailLog('sailinsight@sailtracks.tv').then(() => {
+      Alert.alert(I18n.t('caption_success'))
+      navigateBack()
+    }).catch(() => {
+      Alert.alert(I18n.t('error_unknown'))
+      this.setState({ emailLoading: false })
+    })
+  }
 }
 
 const mapStateToProps = (state: any) => {
@@ -76,12 +113,13 @@ const mapStateToProps = (state: any) => {
     initialValues: {
       [expertSettingsForm.FORM_KEY_SERVER_URL]: getServerUrlSetting(state),
     },
+    verboseLogging: getVerboseLoggingSetting(state),
   }
 }
 
 export default connect(
   mapStateToProps,
-  { updateServerUrlSetting },
+  { updateServerUrlSetting, updateVerboseLoggingSetting },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,
