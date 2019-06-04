@@ -8,6 +8,6 @@ export default EStyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    width: 300
+    maxWidth: '75%'
   }
 })
