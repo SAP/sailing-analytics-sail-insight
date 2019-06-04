@@ -3,7 +3,8 @@ import { handleActions } from 'redux-actions'
 import {
   updateGpsBulkSetting,
   updateAnalyticsSettings,
-  updateServerUrlSetting
+  updateServerUrlSetting,
+  updateVerboseLoggingSetting
 } from 'actions/settings'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { SettingsState } from 'reducers/config'
@@ -15,6 +16,7 @@ const initialState: SettingsState = {
   bulkGpsUpdate: false,
   enableAnalytics: false,
   serverUrl: DEFAULT_SERVER_URL,
+  verboseLogging: false,
 }
 
 const reducer = handleActions(
@@ -22,6 +24,7 @@ const reducer = handleActions(
     [updateGpsBulkSetting as any]: itemUpdateHandler('bulkGpsUpdate'),
     [updateAnalyticsSettings as any]: itemUpdateHandler('enableAnalytics'),
     [updateServerUrlSetting as any]: itemUpdateHandler('serverUrl'),
+    [updateVerboseLoggingSetting as any]: itemUpdateHandler('verboseLogging'),
     [removeUserData as any]: () => initialState,
   },
   initialState,
