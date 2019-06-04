@@ -48,7 +48,7 @@ class ExpertSettings extends TextInputForm<Props> {
             </Text>
           </View>
         </View>
-        <View style={container.smallHorizontalMargin}>
+        <View style={container.largeHorizontalMargin}>
           <EditItemSwitch
             style={styles.item}
             title={I18n.t('text_verbose_logging')}
