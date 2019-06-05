@@ -57,7 +57,6 @@ class TrackingSetup extends TextInputForm<Props> {
     disableActionButtons: false,
   }
 
-  protected creationQueue?: ActionQueue
   protected session?: TrackingSession | null
 
   private commonProps = {
@@ -200,16 +199,16 @@ class TrackingSetup extends TextInputForm<Props> {
   ) => {
     const session = sessionForm.trackingSessionFromFormValues(values)
     session.name = this.props.generateSessionNameWithUserPrefix(session.name)
-    if (!this.creationQueue) {
-      this.creationQueue = this.props.createSessionCreationQueue(session, { isPublic: options.isPublic }) as ActionQueue
-    }
+
+    const creationQueue = this.props.createSessionCreationQueue(session, { isPublic: options.isPublic }) as ActionQueue
+
     try {
       this.setState({
         ...(options.loadingFlagName && { [options.loadingFlagName]: true }),
         creationError: null,
         disableActionButtons: true,
       })
-      await this.creationQueue.execute()
+      await creationQueue.execute()
       return session
     } catch (err) {
       Logger.debug('Creation queue error: ', err)
@@ -225,7 +224,8 @@ class TrackingSetup extends TextInputForm<Props> {
 
   protected onShareSubmit = async (values: any) => {
     await this.setState({ isShareSheetLoading: true })
-    this.session = this.session || await this.createSession(values, { isPublic: true })
+    this.session = await this.createSession(values, { isPublic: true })
+
     try {
       if (!this.session) { return }
       await this.props.shareSessionRegatta(this.session.name)
@@ -243,7 +243,7 @@ class TrackingSetup extends TextInputForm<Props> {
   }
 
   protected onStartSubmit = async (values: any) => {
-    this.session = this.session || await this.createSession(values, { loadingFlagName: 'isCreationLoading' })
+    this.session = await this.createSession(values, { loadingFlagName: 'isCreationLoading' })
     if (!this.session) {
       return
     }
