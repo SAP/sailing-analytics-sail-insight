@@ -19,6 +19,8 @@ export const navitateToModalLogin = () => NavigationService.navigate(Screens.Mod
 export const navitateToPasswordReset = () => NavigationService.navigate(Screens.PasswordReset)
 export const navigateToSessions = () => NavigationService.navigate(Screens.Sessions)
 export const navigateToTracking = () => NavigationService.navigate(Screens.Tracking)
+export const navigateToUserProfile = () => NavigationService.navigate(Screens.UserProfile)
+export const navigateToTeamList = () => NavigationService.navigate(Screens.TeamList)
 
 export const navigateToManeuver = (data?: Maneuver) => NavigationService.navigate(Screens.ManeuverMonitor, { data })
 export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
