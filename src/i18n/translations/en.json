@@ -209,6 +209,7 @@
   "error_user_already_exists": "User already exists.",
   "error_precondition_failed": "Precondition failed.",
   "error_field_invalid_username": "Username should contain at least 3 characters.",
+  "error_field_invalid_password": "Password must be minimum 5 characters.",
   "error_regatta_access_forbidden": "You do not have permission to access this regatta.",
   "error_field_invalid_sessionname": "The event name cannot contain the following characters: /, \", ;, ?, [, ]",
   "error_tracking_resend_info_title" : "Transfer Tracking",
