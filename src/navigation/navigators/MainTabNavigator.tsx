@@ -13,7 +13,7 @@ import AppSettings from 'containers/AppSettings'
 import RegisterPrompt from 'containers/authentication/RegisterPrompt'
 import CheckIn from 'containers/session/CheckIn'
 import Sessions from 'containers/session/Sessions'
-import UserBoats from 'containers/user/UserBoats'
+import TeamList from 'containers/user/TeamList'
 import UserProfile from 'containers/user/UserProfile'
 
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
@@ -78,7 +78,7 @@ const getUserAccountNavigator = (isLoggedIn: boolean) => {
     isLoggedIn ?
     {
       [Screens.UserProfile]: UserProfile,
-      [Screens.UserBoats]: UserBoats,
+      [Screens.TeamList]: TeamList,
       [Screens.AppSettings]: AppSettings,
     } :
     {

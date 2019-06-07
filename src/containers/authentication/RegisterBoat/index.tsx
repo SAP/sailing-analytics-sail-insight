@@ -3,17 +3,19 @@ import { KeyboardType, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
-import { saveBoat, SaveBoatAction } from 'actions/user'
+import { saveTeam, SaveTeamAction } from 'actions/user'
 import {
-  BOAT_FORM_NAME,
   FORM_KEY_BOAT_CLASS,
-  FORM_KEY_NAME,
+  FORM_KEY_BOAT_NAME,
+  FORM_KEY_NATIONALITY,
   FORM_KEY_SAIL_NUMBER,
-} from 'forms/boat'
+  FORM_KEY_TEAM_NAME,
+  TEAM_FORM_NAME,
+} from 'forms/team'
 import { validateRequired } from 'forms/validators'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { BoatTemplate } from 'models'
+import { TeamTemplate } from 'models'
 import { navigateBack } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -26,11 +28,12 @@ import { button, container, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import styles from './styles'
 
 
 interface Props {
-  saveBoat: SaveBoatAction
+  saveTeam: SaveTeamAction
 }
 
 class RegisterBoat extends TextInputForm<Props> {
@@ -53,12 +56,34 @@ class RegisterBoat extends TextInputForm<Props> {
         </View>
         <View style={registration.bottomContainer()}>
           <Field
-            label={I18n.t('text_placeholder_boat_name')}
-            name={FORM_KEY_NAME}
+            label={I18n.t('text_placeholder_team_name')}
+            name={FORM_KEY_TEAM_NAME}
             component={FormTextInput}
             returnKeyType="next"
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
+            inputRef={this.handleInputRef(FORM_KEY_TEAM_NAME)}
+            validate={[validateRequired]}
+            {...this.commonProps}
+          />
+          <Field
+            style={styles.inputMargin}
+            label={I18n.t('text_placeholder_sail_number')}
+            name={FORM_KEY_SAIL_NUMBER}
+            component={FormTextInput}
+            returnKeyType="next"
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_NATIONALITY)}
+            hint={I18n.t('text_registration_sail_number_hint')}
+            inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
+            validate={[validateRequired]}
+            {...this.commonProps}
+          />
+          <Field
+            label={I18n.t('text_nationality')}
+            name={FORM_KEY_NATIONALITY}
+            component={FormNationalityPicker}
+            returnKeyType="next"
             onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(FORM_KEY_NAME)}
+            inputRef={this.handleInputRef(FORM_KEY_NATIONALITY)}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -68,21 +93,19 @@ class RegisterBoat extends TextInputForm<Props> {
             name={FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
             returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_NAME)}
             hint={I18n.t('text_registration_boat_class_hint')}
             inputRef={this.handleInputRef(FORM_KEY_BOAT_CLASS)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field
-            style={styles.inputMargin}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={FORM_KEY_SAIL_NUMBER}
+            label={I18n.t('text_placeholder_boat_name')}
+            name={FORM_KEY_BOAT_NAME}
             component={FormTextInput}
             returnKeyType="go"
             onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
-            hint={I18n.t('text_registration_sail_number_hint')}
-            inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
-            validate={[validateRequired]}
+            inputRef={this.handleInputRef(FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
           />
           {error && <Text style={registration.errorText()}>{error}</Text>}
@@ -112,11 +135,13 @@ class RegisterBoat extends TextInputForm<Props> {
   protected onSubmit = async (values: any) => {
     try {
       this.setState({ isLoading: true, error: null })
-      await this.props.saveBoat({
-        name: values[FORM_KEY_NAME],
+      await this.props.saveTeam({
+        name: values[FORM_KEY_TEAM_NAME],
+        boatName: values[FORM_KEY_BOAT_NAME],
+        nationality: values[FORM_KEY_NATIONALITY],
         boatClass: values[FORM_KEY_BOAT_CLASS],
         sailNumber: values[FORM_KEY_SAIL_NUMBER],
-      } as BoatTemplate)
+      } as TeamTemplate)
       navigateBack()
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
@@ -126,8 +151,8 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 }
 
-export default connect(null, { saveBoat })(reduxForm<{}, Props>({
-  form: BOAT_FORM_NAME,
+export default connect(null, { saveTeam })(reduxForm<{}, Props>({
+  form: TEAM_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,
 })(RegisterBoat))

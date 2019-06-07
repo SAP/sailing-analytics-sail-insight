@@ -1,5 +1,5 @@
 import { Maneuver } from 'api/endpoints/types'
-import { BoatTemplate, CheckIn, Session, TrackingSession, WindFix } from 'models'
+import { CheckIn, Session, TeamTemplate, TrackingSession, WindFix } from 'models'
 import * as  NavigationService from './NavigationService'
 import * as Screens from './Screens'
 
@@ -26,7 +26,7 @@ export const navigateToSessionDetail = (data: string) => NavigationService.navig
 export const navigateToNewSession = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSession, { data })
 export const navigateToJoinRegatta = (data: CheckIn) => NavigationService.navigate(Screens.JoinRegatta, { data })
 export const navigateToTrackDetails = (data?: string) => NavigationService.navigate(Screens.TrackDetails, { data })
-export const navigateToBoatDetails = (data?: BoatTemplate) => NavigationService.navigate(Screens.BoatDetails, { data })
+export const navigateToTeamDetails = (data?: TeamTemplate) => NavigationService.navigate(Screens.TeamDetails, { data })
 export const navigateToEditCompetitor = (data: CheckIn) => NavigationService.navigate(Screens.EditCompetitor, { data })
 
 export const navigateToEditSession = (data?: Session) => NavigationService.navigate(

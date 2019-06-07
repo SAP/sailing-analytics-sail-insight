@@ -9,7 +9,7 @@ import I18n from '../../i18n'
 
 
 const LOG_TAG = '[BG_LOCATION]'
-// const HEARTBEAT_KEY = 'heartbeat'
+const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
 // const MOTION_CHANGE_KEY = 'motionchange'
 const LOCATION_KEY = 'location'
@@ -22,7 +22,7 @@ const config: Config = {
   distanceFilter: 0, // no minimum travel distance before location update to increase accuracy
   disableElasticity: true, // disable auto distanceFilter based on speed to increase accuracy
   stopOnTerminate: true, // Default: true. Set false to continue tracking after user teminates the app.
-  heartbeatInterval: 15, // in seconds
+  heartbeatInterval: 1, // in seconds
   disableStopDetection: true,
   stopOnStationary: false,
   // debug
@@ -59,9 +59,16 @@ export const registerEvents = () => {
     await handleGeolocation(location)
   })
 
-  // BackgroundGeolocation.on(HEARTBEAT_KEY, (params: any) => {
-  //   Log('Heartbeat', params)
-  // })
+  BackgroundGeolocation.on(HEARTBEAT_KEY, async (params: any) => {
+    const location = await BackgroundGeolocation.getCurrentPosition({
+      samples: 1,
+      persist: true,
+      desiredAccuracy: 15
+    });
+
+    await handleGeolocation(location)
+  })
+
 }
 
 export const unregisterEvents = () => {

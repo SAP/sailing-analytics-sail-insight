@@ -7,6 +7,7 @@ export default {
   header: {
     sailors: require('./img/header_small.png'),
     boat: require('./img/boat_placeholder.png'),
+    team: require('./img/team_placeholder.png'),
   },
   actions: {
     add: require('./img/icons/icon-plus.png'),
