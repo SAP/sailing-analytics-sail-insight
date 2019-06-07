@@ -36,8 +36,10 @@ const loggedInItems = (user: User) => [
 
 const notLoggedInItems = [
   {
-    title: I18n.t('caption_login'),
+    title: I18n.t('caption_register'),
+    subtitle: I18n.t('caption_login'),
     icon: Images.info.competitor,
+    big: true,
     onPress: navigateToUserProfile,
   },
 ]
