@@ -6,7 +6,7 @@ export default EStyleSheets.create({
     height: 70,
   },
   buttonContainerBig: {
-    height: 100,
+    height: 120,
   },
   buttonContentContainer: {
     flexDirection: 'row',
@@ -24,7 +24,7 @@ export default EStyleSheets.create({
     flex: 1.5,
     alignItems: 'center',
   },
-  $iconSize: 30,
+  $iconSize: 25,
   $bigIconSize: 45,
   baseIcon: {
     height: '$iconSize',
