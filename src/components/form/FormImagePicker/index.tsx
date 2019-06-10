@@ -2,6 +2,7 @@ import { get } from 'lodash'
 import React from 'react'
 import { ViewProps } from 'react-native'
 import { WrappedFieldProps } from 'redux-form'
+import uuidv4 from 'uuid/v4'
 
 import Images from '@assets/Images'
 
@@ -11,7 +12,6 @@ import ImagePickerButton from 'components/ImagePickerButton'
 import { $placeholderBackgroundColor } from 'styles/colors'
 import { image } from 'styles/commons'
 import Logger from '../../../helpers/Logger'
-
 
 class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
   placeholder?: any,
@@ -56,7 +56,10 @@ class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
     if (!input || !input.onChange) {
       return
     }
-    input.onChange(value)
+    input.onChange({
+      ...value,
+      ...(value && { uuid: uuidv4() }),
+    })
   }
 }
 

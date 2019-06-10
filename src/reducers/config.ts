@@ -52,6 +52,7 @@ export interface AuthState {
 export interface UserState {
   currentBoat?: any | null
   boats?: any | null
+  images?: any
 }
 
 export interface CheckInState {

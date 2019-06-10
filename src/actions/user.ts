@@ -1,4 +1,4 @@
-import { omit } from 'lodash'
+import { get, omit } from 'lodash'
 import { createAction } from 'redux-actions'
 
 import { selfTrackingApi } from 'api'
@@ -15,6 +15,7 @@ export const addOrUpdateUserBoat = createAction('ADD_USER_BOAT')
 export const teamWasUsed = createAction('BOAT_WAS_USED')
 export const removeTeam = createAction('REMOVE_BOAT')
 export const updateTeams = createAction('UPDATE_BOATS')
+export const updateImages = createAction('UPDATE_IMAGES')
 
 export type SaveTeamAction = (
   team: TeamTemplate,
@@ -28,13 +29,24 @@ export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch:
   if (updateLastUsed) {
     team.lastUsed = getNowAsMillis()
   }
+
+  team.imageUuid = get(team, ['imageData', 'uuid'])
+
   // TODO Key should be replaces by unique key
   const newTeams = {
     ...(replaceTeamName ? omit(teams, replaceTeamName) : teams),
-    [team.name]: team,
+    [team.name]: omit(team, 'imageData'),
   }
   await selfTrackingApi().updatePreference(TEAMS_PREFERENCE_KEY, newTeams)
   dispatch(updateTeams(newTeams))
+  if (team.imageUuid) {
+    dispatch(
+      updateImages({
+        imageUuid: team.imageUuid,
+        imageData: team.imageData,
+      })
+    )
+  }
 }
 
 export const fetchTeams = async () => {

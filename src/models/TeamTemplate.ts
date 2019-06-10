@@ -7,6 +7,7 @@ export const ApiBodyKeys = {
   SailColor: 'sailColor',
   IsDefault: 'isDefault',
   ImageData: 'imageData',
+  ImageUuid: 'imageUuid',
   Id: 'id',
 }
 
@@ -19,6 +20,7 @@ export const mapResToTeamTemplate = (map: any) => map && ({
   sailColor: map[ApiBodyKeys.SailColor],
   isDefault: map[ApiBodyKeys.IsDefault],
   imageData: map[ApiBodyKeys.ImageData],
+  imageUuid: map[ApiBodyKeys.ImageUuid],
   id: map[ApiBodyKeys.Id],
 } as TeamTemplate)
 
@@ -30,6 +32,7 @@ export default interface TeamTemplate {
   boatClass: string
   sailColor?: string
   imageData?: any
+  imageUuid?: string
   lastUsed?: number
   id?: string
 }
