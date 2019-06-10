@@ -215,6 +215,11 @@
   "error_tracking_resend_info_text" : "Dein Tracking wurde gestoppt, jedoch konnten nicht alle Daten übertragen werden.\nBitte versuche es erneut.",
   "error_load_nationalities": "Nationalitäten konnten nicht geladen werden",
   "error_load_boat_classes": "Bootsklassen konnten nicht geladen werden",
+  "error_no_venue": "Es ist kein Austragungsort gewählt. Bitte gib einen Austragungsort an.",
+  "error_no_boat_class": "Es ist keine Bootsklasse ausgewählt. Bitte gib eine Bootsklasse an um fortzufahren.",
+  "error_leaderboard_group_already_exists": "Ein Event mit dem gleichen Namen ist bereits vorhanden. Bitte wähle einen anderen Namen.",
+  "error_regatta_already_exists": "Eine Regatta mit dem gleichen Namen ist bereits vorhanden. Bitte wähle einen anderen Namen.",
+  "error_leaderboard_already_exists": "Eine Rangliste mit diesem Namen existiert bereits. Bitte wähle einen anderen Namen.",
 
   "url_eula": "http://konzeptwerft.com/konzeptwerft/sail-insight-powered-by-sap-terms-conditions/",
   "url_privacy_policy": "http://konzeptwerft.com/datenschutz/",

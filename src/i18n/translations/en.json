@@ -215,6 +215,11 @@
   "error_tracking_resend_info_text" : "Your tracking has been stopped, but not all data could be transmitted to the server.\nPlease try again.",
   "error_load_nationalities": "Could not load nationalities",
   "error_load_boat_classes": "Could not load boat classes",
+  "error_no_venue": "No venue chosen. Please select a venue.",
+  "error_no_boat_class": "No boats class chosen. Please select a boats class.",
+  "error_leaderboard_group_already_exists": "An event with this name already exists, please choose a different name.",
+  "error_regatta_already_exists": "A regatta with this name exists already. Please choose another name.",
+  "error_leaderboard_already_exists": "A leaderboard with this name exists already. Please choose another name.",
 
   "url_eula": "http://konzeptwerft.com/en/sail-insight-powered-sap-app/sail-insight-powered-sap-terms-conditions/",
   "url_privacy_policy": "http://konzeptwerft.com/en/privacy/",
