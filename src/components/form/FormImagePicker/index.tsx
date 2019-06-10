@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import React from 'react'
 import { ViewProps } from 'react-native'
 import { WrappedFieldProps } from 'redux-form'
@@ -9,7 +10,6 @@ import ImagePickerButton from 'components/ImagePickerButton'
 
 import { $placeholderBackgroundColor } from 'styles/colors'
 import { image } from 'styles/commons'
-import { getDataUriOrPath } from '../../../helpers/images'
 import Logger from '../../../helpers/Logger'
 
 
@@ -25,7 +25,7 @@ class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
       disabled,
     } = this.props
     // source from image picker
-    const imageValue = getDataUriOrPath(input.value)
+    const imageValue = get(input, 'value.path')
     const placeholderStyle = !imageValue ? { backgroundColor: $placeholderBackgroundColor } : undefined
 
     if (disabled) {

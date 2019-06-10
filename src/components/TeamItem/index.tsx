@@ -8,7 +8,6 @@ import { TouchableOpacity, View, ViewProps } from 'react-native'
 import { $placeholderBackgroundColor } from 'styles/colors'
 import { image, text } from 'styles/commons'
 import Images from '../../../assets/Images'
-import { getDataUriOrPath } from '../../helpers/images'
 import Image from '../Image'
 import styles from './styles'
 
@@ -21,7 +20,7 @@ class TeamItem extends React.Component<ViewProps & {
 
   public render() {
     const { team } = this.props
-    const imageValue = getDataUriOrPath(team.imageData)
+    const imageValue = team.imageData && team.imageData.path
     const placeholderStyle = !imageValue ? { backgroundColor: $placeholderBackgroundColor } : undefined
 
     return (
