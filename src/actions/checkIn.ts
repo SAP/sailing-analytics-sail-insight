@@ -15,7 +15,7 @@ import { DispatchType, GetStateType } from 'helpers/types'
 import { spreadableList } from 'helpers/utils'
 
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
-import { getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { getCheckInByLeaderboardName, getActiveCheckInEntity } from 'selectors/checkIn'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { mapResToCompetitor } from '../models/Competitor'
@@ -80,11 +80,30 @@ export const fetchCheckIn = (url: string) => async (dispatch: DispatchType) => {
   return await dispatch(collectCheckInData(data))
 }
 
-export const checkIn = (data: CheckIn) => async (dispatch: DispatchType) => {
+const isEventAlreadyJoined = (sessionCheckIn: any, getState: GetStateType) => {
+  const { eventId } = sessionCheckIn
+  const activeCheckIns = getActiveCheckInEntity(getState())
+
+  return Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
+}
+
+export const checkIn = (data: CheckIn) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!data) {
     throw new CheckInException('data is missing')
   }
   dispatch(updateCheckIn(data))
+
+  if (isEventAlreadyJoined(data, getState)) {
+    Alert.alert(
+      I18n.t('text_event_already_joined_title'),
+      I18n.t('text_event_already_joined_message'),
+      [{ text: 'OK', onPress: navigateToSessions }],
+      { cancelable: false }
+    )
+
+    return
+  }
+
   if (data.competitorId || data.markId || data.boatId) {
     await dispatch(registerDevice(data.leaderboardName))
     const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
@@ -151,7 +170,7 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
 
 export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
-  
+
   if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
     Alert.alert(
       I18n.t('text_deep_link_tracking_active_title'),
