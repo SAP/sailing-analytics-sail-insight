@@ -105,6 +105,7 @@ class TeamDetails extends TextInputForm<Props> {
             component={FormNationalityPicker}
             inputRef={this.handleInputRef(teamForm.FORM_KEY_NATIONALITY)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_SAIL_NUMBER)}
+            onChange={this.handleNationalityChanged}
             {...this.commonProps}
             validate={[validateRequired]}
           />
@@ -143,6 +144,11 @@ class TeamDetails extends TextInputForm<Props> {
         </View>
       </ScrollContentView>
     )
+  }
+  protected handleNationalityChanged = (event?: Event, newValue?: any, previousValue?: any)  => {
+    if (!this.props.formSailNumber) {
+      this.props.change(teamForm.FORM_KEY_SAIL_NUMBER, newValue)
+    }
   }
 
   protected deleteTeam = () => {
