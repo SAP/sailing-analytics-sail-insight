@@ -80,9 +80,8 @@ export const fetchCheckIn = (url: string) => async (dispatch: DispatchType) => {
   return await dispatch(collectCheckInData(data))
 }
 
-const isEventAlreadyJoined = (sessionCheckIn: any, getState: GetStateType) => {
-  const { eventId } = sessionCheckIn
-  const activeCheckIns = getActiveCheckInEntity(getState())
+const isEventAlreadyJoined = ({ eventId }: CheckIn, getState: GetStateType) => {
+  const activeCheckIns = getActiveCheckInEntity(getState()) || {}
 
   return Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
 }
