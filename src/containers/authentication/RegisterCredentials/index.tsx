@@ -7,7 +7,7 @@ import { Field, reduxForm } from 'redux-form'
 
 import { register, RegisterActionType } from 'actions/auth'
 import * as registrationForm from 'forms/registration'
-import { validateEmail, validateRequired, validateUsername } from 'forms/validators'
+import { validateEmail, validateRequired, validateUsername, validatePassword } from 'forms/validators'
 import { helpActionSheetOptions } from 'helpers/actionSheets'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
@@ -91,7 +91,7 @@ class RegisterCredentials extends TextInputForm<Props> {
             label={I18n.t('text_placeholder_enter_password')}
             name={registrationForm.FORM_KEY_PASSWORD}
             component={FormTextInput}
-            validate={[validateRequired]}
+            validate={[validateRequired, validatePassword]}
             keyboardType={'default'}
             returnKeyType="go"
             onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
