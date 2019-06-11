@@ -31,7 +31,7 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import FormBoatClassInput from '../../components/form/FormBoatClassInput'
 import FormNationalityPicker from '../../components/form/FormNationalityPicker'
-
+import FormSailNumberInput from '../../components/form/FormSailNumberInput'
 
 interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
   team: TeamTemplate
@@ -112,9 +112,14 @@ class TeamDetails extends TextInputForm<Props> {
             style={input.topMargin}
             label={I18n.t('text_placeholder_sail_number')}
             name={teamForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
+            component={FormSailNumberInput}
             inputRef={this.handleInputRef(teamForm.FORM_KEY_SAIL_NUMBER)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_NAME)}
+            onSelectTeam={(team: any) => {
+              this.props.change(teamForm.FORM_KEY_BOAT_CLASS, team.boatClass || '')
+              this.props.change(teamForm.FORM_KEY_BOAT_NAME, team.boatName || '')
+              this.props.change(teamForm.FORM_KEY_NATIONALITY, team.nationality || '')
+            }}
             validate={[validateRequired]}
             {...this.commonProps}
           />
