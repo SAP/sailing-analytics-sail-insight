@@ -9,7 +9,7 @@ import { TeamTemplate } from 'models'
 import { getEntities, getEntityArrayByType } from './entity'
 import { getFormFieldValue } from './form'
 
-const getUserImages = (state: RootState = {}) => getEntities(state, 'images', 'user')
+export const getUserImages = (state: RootState = {}) => getEntities(state, 'images', 'user')
 
 const orderTeamsLastUsedDesc = (boats: TeamTemplate[]) => boats.sort((b1, b2) => {
   if (!b1.lastUsed && !b2.lastUsed) {

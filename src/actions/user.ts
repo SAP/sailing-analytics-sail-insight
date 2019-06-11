@@ -2,11 +2,14 @@ import { get, omit } from 'lodash'
 import { createAction } from 'redux-actions'
 
 import { selfTrackingApi } from 'api'
-import { DispatchType } from 'helpers/types'
+import { DispatchType, GetStateType } from 'helpers/types'
 import { TeamTemplate } from 'models'
 
 import { fetchCurrentUser } from 'actions/auth'
 import { getNowAsMillis } from '../helpers/date'
+import { saveFile } from '../helpers/files'
+import Logger from '../helpers/Logger'
+import { getUserImages } from '../selectors/user'
 
 
 const TEAMS_PREFERENCE_KEY = 'boats'
@@ -44,8 +47,9 @@ export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch:
       updateImages({
         imageUuid: team.imageUuid,
         imageData: team.imageData,
-      })
+      }),
     )
+    await selfTrackingApi().updatePreference(team.imageUuid, omit(team.imageData, 'path'))
   }
 }
 
@@ -60,8 +64,45 @@ export const deleteTeam: DeleteTeamAction = name => async (dispatch: DispatchTyp
   dispatch(updateTeams(newBoats))
 }
 
+export const fetchMissingImages = (teams: any[]) => async (dispatch: DispatchType, getState: GetStateType) => {
+  const teamImages = getUserImages(getState())
+  const imagePromises = Object.values(teams).map(async ({ imageUuid }: any) => {
+    if (imageUuid && !Object.keys(teamImages).includes(imageUuid)) {
+      const image = await selfTrackingApi().requestPreference(imageUuid)
+      const imageData = image && image.data
+
+      if (!image || !imageData) {
+        // Bad data from the server
+        Logger.debug('Bad image got from server')
+        return
+      }
+
+      let imagePath
+      try {
+        imagePath = await saveFile(imageData, imageUuid)
+      } catch (err) {
+        // Saving image to device failed
+        Logger.debug('Saving image to device failed')
+        return
+      }
+
+      image.path = `file://${imagePath}`
+
+      dispatch(
+        updateImages({
+          imageUuid,
+          imageData: image,
+        }),
+      )
+    }
+  })
+
+  await Promise.all(imagePromises)
+}
+
 export const fetchUserInfo = () => async (dispatch: DispatchType) => {
   const teams = await fetchTeams()
   dispatch(updateTeams(teams))
+  await dispatch(fetchMissingImages(teams))
   await dispatch(fetchCurrentUser())
 }
