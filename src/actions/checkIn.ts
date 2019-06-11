@@ -2,7 +2,7 @@ import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 import I18n from 'i18n'
 
-import { CheckIn, CheckInUpdate } from 'models'
+import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
 import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -18,6 +18,13 @@ import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { getLocationTrackingStatus } from 'selectors/location'
+import { mapResToCompetitor } from '../models/Competitor'
+import { mapResToRegatta } from '../models/Regatta'
+import { getCompetitor } from '../selectors/competitor'
+import { getRegatta } from '../selectors/regatta'
+import { getUserTeamByNameBoatClassNationalitySailnumber } from '../selectors/user'
+import { getStore } from '../store'
+import { saveTeam } from './user'
 
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
@@ -90,6 +97,31 @@ export const checkIn = (data: CheckIn) => async (dispatch: DispatchType) => {
     }
     dispatch(updateCheckIn(update))
     navigateToSessions()
+
+    if (data.competitorId) {
+      const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
+      const regatta = mapResToRegatta(getRegatta(data.regattaName)(getStore().getState()))
+
+      if (competitor && competitor.name && competitor.nationality && competitor.sailId &&
+        regatta && regatta.boatClass) {
+        // find team by name, boatClass, nationality and sailNumber
+        const existingTeam = getUserTeamByNameBoatClassNationalitySailnumber(competitor.name,
+                                                                             regatta.boatClass,
+                                                                             competitor.nationality,
+                                                                             competitor.sailId)(getStore().getState())
+        if (!existingTeam) {
+          const team = {
+            name: competitor.name,
+            nationality: competitor.nationality,
+            sailNumber: competitor.sailId,
+            boatClass: regatta.boatClass,
+          } as TeamTemplate
+          dispatch(saveTeam(team))
+        } else {
+          // TODO Attach competitor image to session
+        }
+      }
+    }
   }
   if (!data.competitorId && !data.markId && !data.boatId) {
     navigateToEditCompetitor(data)
