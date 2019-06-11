@@ -123,9 +123,9 @@ export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, re
   BackgroundGeolocation.ready(
     {
       ...config,
-      ...(!!verboseLogging && {
+      ...(!!verboseLogging ? {
         logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      }),
+      } : {}),
     },
     (state: any) => {
       if (!state.enabled) {
