@@ -11,6 +11,7 @@ import {
   navigateToUserProfile,
 } from 'navigation'
 import { container } from 'styles/commons'
+import styles from './styles'
 import Images from '../../../../assets/Images'
 import {
   getUserInfo,
@@ -63,7 +64,7 @@ class AccountList extends React.Component<{
     ]
 
     return (
-      <View style={[container.main]}>
+      <View style={[container.main, styles.container]}>
         <FlatList data={data} renderItem={this.renderItem} />
       </View>
     )

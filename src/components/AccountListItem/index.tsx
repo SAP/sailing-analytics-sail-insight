@@ -16,8 +16,7 @@ class AccountListItem extends React.Component<{
   public render() {
     const { title, subtitle, icon, big, onPress } = this.props
 
-    return (
-      <>
+    return [
         <TouchableHighlight
           underlayColor={$secondaryBackgroundColor}
           style={[styles.buttonContainer, big && styles.buttonContainerBig]}
@@ -46,10 +45,8 @@ class AccountListItem extends React.Component<{
               />
             </View>
           </View>
-        </TouchableHighlight>
-        <LineSeparator />
-      </>
-    )
+        </TouchableHighlight>,
+        <LineSeparator />]
   }
 }
 
