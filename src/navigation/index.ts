@@ -24,7 +24,8 @@ export const navigateToManeuver = (data?: Maneuver) => NavigationService.navigat
 export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
 export const navigateToNewSession = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSession, { data })
-export const navigateToJoinRegatta = (data: CheckIn) => NavigationService.navigate(Screens.JoinRegatta, { data })
+export const navigateToJoinRegatta = (checkInData: CheckIn, alreadyJoined: boolean) =>
+  NavigationService.navigate(Screens.JoinRegatta, { data: { checkInData, alreadyJoined } })
 export const navigateToTrackDetails = (data?: string) => NavigationService.navigate(Screens.TrackDetails, { data })
 export const navigateToTeamDetails = (data?: TeamTemplate) => NavigationService.navigate(Screens.TeamDetails, { data })
 export const navigateToEditCompetitor = (data: CheckIn) => NavigationService.navigate(Screens.EditCompetitor, { data })

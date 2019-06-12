@@ -80,19 +80,17 @@ export const fetchCheckIn = (url: string) => async (dispatch: DispatchType) => {
   return await dispatch(collectCheckInData(data))
 }
 
-const isEventAlreadyJoined = ({ eventId }: CheckIn, getState: GetStateType) => {
-  const activeCheckIns = getActiveCheckInEntity(getState()) || {}
+export const isEventAlreadyJoined = ({ eventId }: CheckIn, activeCheckIns: any) =>
+  Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
 
-  return Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
-}
 
-export const checkIn = (data: CheckIn) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!data) {
     throw new CheckInException('data is missing')
   }
   dispatch(updateCheckIn(data))
 
-  if (isEventAlreadyJoined(data, getState)) {
+  if (alreadyJoined) {
     Alert.alert(
       I18n.t('text_event_already_joined_title'),
       I18n.t('text_event_already_joined_message'),
@@ -181,10 +179,13 @@ export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: Dispa
     return
   }
 
+
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
-    navigateToJoinRegatta(sessionCheckIn)
+    const activeCheckIns = getActiveCheckInEntity(getState()) || {}
+    const alreadyJoined = isEventAlreadyJoined(sessionCheckIn, activeCheckIns)
+    navigateToJoinRegatta(sessionCheckIn, alreadyJoined)
   } catch (err) {
     Logger.debug(err)
     error = err
