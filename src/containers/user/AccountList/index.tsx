@@ -30,7 +30,7 @@ const loggedInItems = (user: User) => [
   },
   {
     title: I18n.t('caption_my_teams'),
-    icon: Images.header.team,
+    icon: Images.info.team,
     onPress: navigateToTeamList,
   },
 ]
