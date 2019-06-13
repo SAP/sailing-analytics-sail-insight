@@ -133,6 +133,8 @@
   "text_notification_tracking": "Event-Tracking aktiv",
   "text_deep_link_tracking_active_title": "Aktives Tracking",
   "text_deep_link_tracking_active_message": "Bitte beende das aktive Tracking, um den Sail Insight Link zu öffnen.",
+  "text_event_already_joined_title": "Event is already joined",
+  "text_event_already_joined_message": "You cannot join the same event twice",
 
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",

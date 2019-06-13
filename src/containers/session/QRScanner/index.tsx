@@ -3,7 +3,7 @@ import { Alert, View } from 'react-native'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { connect } from 'react-redux'
 
-import { fetchCheckIn } from 'actions/checkIn'
+import { fetchCheckIn, isEventAlreadyJoined } from 'actions/checkIn'
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
 import I18n from 'i18n'
@@ -12,10 +12,12 @@ import { container } from 'styles/commons'
 import styles from './styles'
 
 import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
+import { getActiveCheckInEntity } from 'selectors/checkIn'
 
 
 class QRScanner extends React.Component<{
   fetchCheckIn: (url: string) => any,
+  activeCheckIns: any,
 } > {
   public state = {
     isLoading: false,
@@ -44,8 +46,11 @@ class QRScanner extends React.Component<{
     this.setState({ isLoading: true })
     try {
       const checkIn = await this.props.fetchCheckIn(url)
+      const activeCheckIns = this.props.activeCheckIns
+      const alreadyJoined = isEventAlreadyJoined(checkIn, activeCheckIns)
+
       navigateBack()
-      navigateToJoinRegatta(checkIn)
+      navigateToJoinRegatta(checkIn, alreadyJoined)
     } catch (err) {
       Logger.debug(err)
       const title = getErrorTitle()
@@ -89,4 +94,10 @@ class QRScanner extends React.Component<{
   }
 }
 
-export default connect(null, { fetchCheckIn })(QRScanner)
+const mapStateToProps = (state: any) => {
+  return {
+    activeCheckIns: getActiveCheckInEntity(state) || {}
+  }
+}
+
+export default connect(mapStateToProps, { fetchCheckIn })(QRScanner)
