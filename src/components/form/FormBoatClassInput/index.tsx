@@ -1,4 +1,5 @@
 import Text from 'components/Text'
+import { sortBy } from 'lodash'
 import React from 'react'
 import { Alert, TextInputProps as RNTextInputProps, TouchableOpacity, View, ViewProps } from 'react-native'
 import Autocomplete from 'react-native-autocomplete-input'
@@ -47,8 +48,11 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       ...additionalProps
     } = this.props
     const { query } = this.state
-    // Slice is to limit suggestions to 5 elements max
-    const filteredData = this.findBoatClass(query).slice(0, 5)
+    // sortby is to puts the suggestions that start with the string at the top
+    // slice is to limit suggestions to 5 elements max
+    const filteredData = sortBy(this.findBoatClass(query), boatclass =>
+      !boatclass.name.toLowerCase().startsWith(query.trim().toLowerCase()),
+    ).slice(0, 5)
     const comp = (a: string, b: string) => a.toLowerCase().trim() === b.toLowerCase().trim()
     return (
         <View>
