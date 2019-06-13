@@ -1,5 +1,5 @@
 import React from 'react'
-import { createBottomTabNavigator } from 'react-navigation'
+import { createBottomTabNavigator, createStackNavigator } from 'react-navigation'
 
 import Images from '@assets/Images'
 import { getTabItemTitleTranslation } from 'helpers/texts'
@@ -9,17 +9,13 @@ import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { getStore } from 'store'
 
 import IconText from 'components/IconText'
-import AppSettings from 'containers/AppSettings'
-import RegisterPrompt from 'containers/authentication/RegisterPrompt'
 import CheckIn from 'containers/session/CheckIn'
 import Sessions from 'containers/session/Sessions'
-import TeamList from 'containers/user/TeamList'
-import UserProfile from 'containers/user/UserProfile'
 
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 
-import AuthNavigatorWrapper from './AuthNavigatorWrapper'
+import AccountNavigator from 'navigation/navigators/AccountNavigator'
 import TopTabNavigator from './TopTabNavigator'
 
 
@@ -73,23 +69,6 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
   }
 }
 
-const getUserAccountNavigator = (isLoggedIn: boolean) => {
-  return TopTabNavigator(
-    isLoggedIn ?
-    {
-      [Screens.UserProfile]: UserProfile,
-      [Screens.TeamList]: TeamList,
-      [Screens.AppSettings]: AppSettings,
-    } :
-    {
-      [Screens.UserProfile]: RegisterPrompt,
-      [Screens.AppSettings]: AppSettings,
-    },
-    { initialRouteName: Screens.UserProfile },
-  )
-}
-
-
 export default createBottomTabNavigator(
   {
     [Screens.Sessions]: TopTabNavigator(
@@ -114,7 +93,7 @@ export default createBottomTabNavigator(
     ),
     // [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.CheckIn]: CheckIn,
-    [Screens.Account]: AuthNavigatorWrapper(getUserAccountNavigator),
+    [Screens.Account]: AccountNavigator,
   },
   {
     initialRouteName: Screens.Sessions,
