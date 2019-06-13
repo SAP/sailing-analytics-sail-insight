@@ -47,7 +47,8 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       ...additionalProps
     } = this.props
     const { query } = this.state
-    const filteredData = this.findBoatClass(query)
+    // Slice is to limit suggestions to 5 elements max
+    const filteredData = this.findBoatClass(query).slice(0, 5)
     const comp = (a: string, b: string) => a.toLowerCase().trim() === b.toLowerCase().trim()
     return (
         <View>
