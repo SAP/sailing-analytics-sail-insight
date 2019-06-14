@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash'
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import {
-  Alert, KeyboardType, ReturnKeyType, View, ViewProps,
+  Alert, KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View, ViewProps,
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
@@ -145,8 +145,10 @@ class TeamDetails extends TextInputForm<Props> {
       </ScrollContentView>
     )
   }
-  protected handleNationalityChanged = (event?: Event, newValue?: any, previousValue?: any)  => {
-    if (!this.props.formSailNumber) {
+
+  protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
+                                        newValue?: any, previousValue?: any) => {
+    if (!this.props.formSailNumber || this.props.formSailNumber === previousValue) {
       this.props.change(teamForm.FORM_KEY_SAIL_NUMBER, newValue)
     }
   }
