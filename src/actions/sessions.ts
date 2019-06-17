@@ -100,18 +100,19 @@ export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
   )
 
 const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
+  const { handicapType, handicapValue } = competitorInfo.handicap || {}
   if (
-    competitorInfo.handicapType === undefined ||
-    competitorInfo.handicapValue === undefined
+    handicapType === undefined ||
+    handicapValue === undefined
   ) {
     return undefined
   }
 
-  if (competitorInfo.handicapType === HandicapTypes.TimeOnTime) {
-    return competitorInfo.handicapValue
+  if (handicapType === HandicapTypes.TimeOnTime) {
+    return handicapValue
   }
 
-  const timeOnTimeFactor = competitorInfo.handicapValue / 100
+  const timeOnTimeFactor = handicapValue / 100
 
   return timeOnTimeFactor
 }
@@ -192,8 +193,7 @@ export const createUserAttachmentToSession = (
             boatClass: competitorInfo.boatClass,
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
-            handicapType: competitorInfo.handicapType,
-            handicapValue: competitorInfo.handicapValue,
+            handicap: competitorInfo.handicap,
             id: {
               ...(userBoat && typeof userBoat.id === 'object' && { ...userBoat.id }),
               ...(newCompetitorWithBoat &&

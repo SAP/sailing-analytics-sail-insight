@@ -8,8 +8,7 @@ export const ApiBodyKeys = {
   IsDefault: 'isDefault',
   ImageUrl: 'imageUrl',
   Id: 'id',
-  HandicapType: 'handicapType',
-  HandicapValue: 'handicapValue',
+  Handicap: 'handicap',
 }
 
 export const mapResToTeamTemplate = (map: any) => map && ({
@@ -22,13 +21,17 @@ export const mapResToTeamTemplate = (map: any) => map && ({
   isDefault: map[ApiBodyKeys.IsDefault],
   imageUrl: map[ApiBodyKeys.ImageUrl],
   id: map[ApiBodyKeys.Id],
-  handicapType: map[ApiBodyKeys.HandicapType],
-  handicapValue: map[ApiBodyKeys.HandicapValue],
+  handicap: map[ApiBodyKeys.Handicap],
 } as TeamTemplate)
 
 export enum HandicapTypes {
   Yardstick = 'YARDSTICK',
   TimeOnTime = 'TIME_ON_TIME',
+}
+
+export interface Handicap {
+  handicapType?: string
+  handicapValue?: number
 }
 
 export default interface TeamTemplate {
@@ -41,7 +44,6 @@ export default interface TeamTemplate {
   imageUrl?: string
   lastUsed?: number
   id?: string
-  handicapType?: string
-  handicapValue?: number
+  handicap?: Handicap
 }
 

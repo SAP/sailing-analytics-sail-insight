@@ -9,8 +9,7 @@ export const FORM_KEY_BOAT_NAME = 'boatName'
 export const FORM_KEY_BOAT_CLASS = 'boatClass'
 export const FORM_KEY_SAIL_NUMBER = 'sailNumber'
 export const FORM_KEY_IMAGE = 'image'
-export const FORM_KEY_HANDICAP_TYPE = 'handicapType'
-export const FORM_KEY_HANDICAP_VALUE = 'handicapValue'
+export const FORM_KEY_HANDICAP = 'handicap'
 
 export const teamFromFormValues = (values: any) => values && ({
   name: values[FORM_KEY_TEAM_NAME],
@@ -19,6 +18,5 @@ export const teamFromFormValues = (values: any) => values && ({
   boatClass: values[FORM_KEY_BOAT_CLASS],
   boatName: values[FORM_KEY_BOAT_NAME],
   sailNumber: values[FORM_KEY_SAIL_NUMBER],
-  handicapType: values[FORM_KEY_HANDICAP_TYPE],
-  handicapValue: values[FORM_KEY_HANDICAP_VALUE],
+  handicap: values[FORM_KEY_HANDICAP],
 } as TeamTemplate)

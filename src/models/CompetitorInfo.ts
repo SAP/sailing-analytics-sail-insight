@@ -1,3 +1,5 @@
+import { Handicap } from 'models/TeamTemplate'
+
 export default interface CompetitorInfo {
   boatName?: string
   boatClass?: string
@@ -6,7 +8,6 @@ export default interface CompetitorInfo {
   nationality?: string
   teamName?: string
   teamImage?: string
-  handicapType?: string
-  handicapValue?: number
+  handicap?: Handicap
   name?: string
 }

@@ -2,10 +2,10 @@ import { findIndex } from 'lodash'
 import React from 'react'
 import { Text, View, ViewProps } from 'react-native'
 import SwitchSelector from 'react-native-switch-selector'
-import { WrappedFieldsProps } from 'redux-form'
+import { WrappedFieldProps } from 'redux-form'
 
-import * as teamForm from 'forms/team'
 import FormTextInput from 'components/form/FormTextInput'
+import * as teamForm from 'forms/team'
 import { HandicapTypes } from 'models/TeamTemplate'
 
 const handicapTypeSelectorOptions = [
@@ -14,16 +14,16 @@ const handicapTypeSelectorOptions = [
 ]
 
 class FormHandicapInput extends React.Component<
-  ViewProps & WrappedFieldsProps & {
+  ViewProps & WrappedFieldProps & {
     label: string,
   }
 > {
   public render() {
     const { style, label } = this.props
     const {
-      input: { value: handicapType, onChange: handicapTypeOnChange },
-    } = this.props[teamForm.FORM_KEY_HANDICAP_TYPE]
-    const handicapValueProps = this.props[teamForm.FORM_KEY_HANDICAP_VALUE]
+      value: handicapType,
+      onChange: handicapTypeOnChange,
+    } = this.getHandicapTypeProps()
 
     return (
       <View style={style}>
@@ -36,7 +36,7 @@ class FormHandicapInput extends React.Component<
           onPress={handicapTypeOnChange}
         />
         <FormTextInput
-          {...handicapValueProps}
+          {...this.getHandicapValueProps()}
         />
       </View>
     )
@@ -45,6 +45,43 @@ class FormHandicapInput extends React.Component<
   private getHandicapTypeOptionIndex = (value: string) => {
     const index = findIndex(handicapTypeSelectorOptions, ['value', value])
     return index === -1 ? 0 : index
+  }
+
+  private getHandicapTypeProps = () => {
+    const {
+      input: { value: inputValue , onChange },
+    } = this.props
+
+    const handicapTypeOnChange = (value: any) => onChange({
+      handicapType: value,
+      handicapValue: inputValue.handicapValue,
+    })
+
+    return {
+      value: inputValue.handicapType,
+      onChange: handicapTypeOnChange,
+    }
+  }
+
+  private getHandicapValueProps = () => {
+    const {
+      input: { value: inputValue , onChange, ...restInputProps },
+    } = this.props
+
+    const handicapValue = inputValue.handicapValue
+    const handicapValueOnChange = (value: any) => onChange({
+      handicapType: inputValue.handicapType,
+      handicapValue: value,
+    })
+
+    return {
+      ...this.props,
+      input: {
+        value: handicapValue,
+        onChange: handicapValueOnChange,
+        ...restInputProps,
+      },
+    }
   }
 }
 
