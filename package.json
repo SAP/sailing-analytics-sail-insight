@@ -48,6 +48,7 @@
     "react-native-slider": "0.11.0",
     "react-native-status-bar-height": "2.1.0",
     "react-native-svg": "7.0.3",
+    "react-native-switch-selector": "^1.1.14",
     "react-native-timer": "1.3.4",
     "react-native-version-number": "0.3.4",
     "react-navigation": "2.17.0",
