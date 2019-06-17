@@ -5,7 +5,6 @@ import SwitchSelector from 'react-native-switch-selector'
 import { WrappedFieldProps } from 'redux-form'
 
 import FormTextInput from 'components/form/FormTextInput'
-import * as teamForm from 'forms/team'
 import { HandicapTypes } from 'models/TeamTemplate'
 
 const handicapTypeSelectorOptions = [

@@ -102,8 +102,7 @@ export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
 const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   const { handicapType, handicapValue } = competitorInfo.handicap || {}
   if (
-    handicapType === undefined ||
-    handicapValue === undefined
+    !handicapType || !handicapValue
   ) {
     return undefined
   }
