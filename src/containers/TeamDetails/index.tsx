@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, Fields } from 'redux-form'
 
 import Images from '@assets/Images'
 import { deleteTeam, DeleteTeamAction, saveTeam, SaveTeamAction } from 'actions/user'
@@ -21,6 +21,7 @@ import { getFormFieldValue } from 'selectors/form'
 import { getUserTeamNames } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
+import FormHandicapInput from 'components/form/FormHandicapInput'
 import FormImagePicker from 'components/form/FormImagePicker'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
@@ -40,6 +41,8 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
   formNationality?: string
   formBoatClass?: string
   formBoatName?: string
+  formHandicapType?: string
+  formHandicapValue?: number
   paramTeamName?: string
   saveTeam: SaveTeamAction
   deleteTeam: DeleteTeamAction
@@ -131,6 +134,15 @@ class TeamDetails extends TextInputForm<Props> {
             inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
           />
+          <Fields
+            style={input.topMargin}
+            label={'Handicap'}
+            names={[
+              teamForm.FORM_KEY_HANDICAP_TYPE,
+              teamForm.FORM_KEY_HANDICAP_VALUE,
+            ]}
+            component={FormHandicapInput}
+          />
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
@@ -192,15 +204,34 @@ class TeamDetails extends TextInputForm<Props> {
   }
 
   private formHasChanges() {
-    const { team, formTeamName, formSailNumber, formNationality, formBoatClass, formBoatName } = this.props
+    const {
+      team,
+      formTeamName,
+      formSailNumber,
+      formNationality,
+      formBoatClass,
+      formBoatName,
+      formHandicapType,
+      formHandicapValue,
+    } = this.props
 
     const nameHasChanged = !team || formTeamName !== team.name
     const sailNumberHasChanged = !team || formSailNumber !== team.sailNumber
     const nationalityHasChanged = !team || formNationality !== team.nationality
     const boatClassHasChanged = !team || formBoatClass !== team.boatClass
     const boatNameHasChanged = !team || formBoatName !== team.boatName
+    const handicapTypeHasChanged = !team || formHandicapType !== team.handicapType
+    const handicapValueHasChanged = !team || formHandicapValue !== team.handicapValue
 
-    return nameHasChanged || sailNumberHasChanged || nationalityHasChanged || boatClassHasChanged || boatNameHasChanged
+    return (
+      nameHasChanged ||
+      sailNumberHasChanged ||
+      nationalityHasChanged ||
+      boatClassHasChanged ||
+      boatNameHasChanged ||
+      handicapTypeHasChanged ||
+      handicapValueHasChanged
+    )
   }
 }
 
@@ -211,6 +242,8 @@ const mapStateToProps = (state: any, props: any) => {
   const formNationality = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_NATIONALITY)(state)
   const formBoatClass = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_CLASS)(state)
   const formBoatName = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_NAME)(state)
+  const formHandicapType = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_HANDICAP_TYPE)(state)
+  const formHandicapValue = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_HANDICAP_VALUE)(state)
   const paramTeamName = team && team.name
   return {
     team,
@@ -219,6 +252,8 @@ const mapStateToProps = (state: any, props: any) => {
     formNationality,
     formBoatClass,
     formBoatName,
+    formHandicapType,
+    formHandicapValue,
     paramTeamName,
     comparisonValue: getUserTeamNames(state),
     ignoredValue: paramTeamName,
@@ -228,6 +263,8 @@ const mapStateToProps = (state: any, props: any) => {
       [teamForm.FORM_KEY_BOAT_NAME]: team.boatName,
       [teamForm.FORM_KEY_SAIL_NUMBER]: team.sailNumber,
       [teamForm.FORM_KEY_BOAT_CLASS]: team.boatClass,
+      [teamForm.FORM_KEY_HANDICAP_TYPE]: team.handicapType,
+      [teamForm.FORM_KEY_HANDICAP_VALUE]: team.handicapValue,
     },
   } as ComparisonValidatorViewProps
 }

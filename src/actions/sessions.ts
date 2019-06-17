@@ -10,6 +10,7 @@ import { competitorSchema } from 'api/schemas'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
+import { HandicapTypes } from 'models/TeamTemplate'
 import { navigateToManeuver, navigateToSessions } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
@@ -98,6 +99,23 @@ export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
     dataApi => dataApi.updateEvent(eventId, { enddateasmillis: getNowAsMillis() }),
   )
 
+const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
+  if (
+    competitorInfo.handicapType === undefined ||
+    competitorInfo.handicapValue === undefined
+  ) {
+    return undefined
+  }
+
+  if (competitorInfo.handicapType === HandicapTypes.TimeOnTime) {
+    return competitorInfo.handicapValue
+  }
+
+  const timeOnTimeFactor = competitorInfo.handicapValue / 100
+
+  return timeOnTimeFactor
+}
+
 export const createUserAttachmentToSession = (
   regattaName: string,
   competitorInfo: CompetitorInfo,
@@ -148,6 +166,7 @@ export const createUserAttachmentToSession = (
         ...baseValues,
         boatclass: competitorInfo.boatClass,
         sailid: competitorInfo.sailNumber,
+        timeontimefactor: getTimeOnTimeFactor(competitorInfo),
         ...(secret && { secret }),
         ...(secret && { deviceUuid: getDeviceId() }),
       })
@@ -173,6 +192,8 @@ export const createUserAttachmentToSession = (
             boatClass: competitorInfo.boatClass,
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
+            handicapType: competitorInfo.handicapType,
+            handicapValue: competitorInfo.handicapValue,
             id: {
               ...(userBoat && typeof userBoat.id === 'object' && { ...userBoat.id }),
               ...(newCompetitorWithBoat &&
