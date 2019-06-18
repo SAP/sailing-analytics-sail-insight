@@ -39,6 +39,15 @@ export const getDefaultHandicap = () => ({
   handicapType: getDefaultHandicapType(),
 } as Handicap)
 
+export const hasHandicapChanged = (oldHandicap?: Handicap, newHandicap?: Handicap) =>
+  (!oldHandicap && newHandicap) ||
+  (oldHandicap && !newHandicap) ||
+  (oldHandicap && newHandicap &&
+    (newHandicap.handicapValue !== oldHandicap.handicapValue ||
+      (newHandicap.handicapValue !== undefined &&
+        newHandicap.handicapType !== oldHandicap.handicapType)))
+
+
 export default interface TeamTemplate {
   name: string,
   nationality: string,

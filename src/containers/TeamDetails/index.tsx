@@ -1,4 +1,4 @@
-import { isEmpty, isEqual } from 'lodash'
+import { isEmpty } from 'lodash'
 import React from 'react'
 import {
   Alert, KeyboardType, ReturnKeyType, View, ViewProps,
@@ -15,7 +15,7 @@ import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
-import { getDefaultHandicap, Handicap } from 'models/TeamTemplate'
+import { getDefaultHandicap, Handicap, hasHandicapChanged } from 'models/TeamTemplate'
 import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getFormFieldValue } from 'selectors/form'
@@ -216,7 +216,7 @@ class TeamDetails extends TextInputForm<Props> {
     const nationalityHasChanged = !team || formNationality !== team.nationality
     const boatClassHasChanged = !team || formBoatClass !== team.boatClass
     const boatNameHasChanged = !team || formBoatName !== team.boatName
-    const handicapHasChanged = !team || !isEqual(formHandicap, team.handicap)
+    const handicapHasChanged = !team || hasHandicapChanged(team.handicap, formHandicap)
 
     return (
       nameHasChanged ||

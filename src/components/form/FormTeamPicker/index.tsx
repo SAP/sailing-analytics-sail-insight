@@ -15,7 +15,7 @@ import {
 } from 'forms/session'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
-import { getDefaultHandicap } from 'models/TeamTemplate'
+import { getDefaultHandicap, hasHandicapChanged } from 'models/TeamTemplate'
 
 import Text from 'components/Text'
 import TextInput from 'components/TextInput'
@@ -100,7 +100,7 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
       if (
         boatName !== existingTeam.boatName || boatClass !== existingTeam.boatClass ||
         sailNumber !== existingTeam.sailNumber ||  nationality !== existingTeam.nationality ||
-        !isEqual(handicap, existingTeam.handicap)) {
+        hasHandicapChanged(existingTeam.handicap, handicap)) {
         return I18n.t('text_hint_existing_team_update')
       }
       return undefined
