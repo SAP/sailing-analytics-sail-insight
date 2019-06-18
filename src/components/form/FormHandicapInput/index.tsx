@@ -36,6 +36,11 @@ class FormHandicapInput extends React.Component<
           initial={this.getHandicapTypeOptionIndex(handicapType)}
           value={this.getHandicapTypeOptionIndex(handicapType)}
           onPress={handicapTypeOnChange}
+          disableValueChangeOnPress={
+            /* Without this the formPicker autocomplete does not work when
+             * the handicap type changes */
+            true
+          }
           backgroundColor="#EEEEEE"
           selectedColor="#028DD4"
           buttonColor="#FFFFFF"
