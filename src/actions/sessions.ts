@@ -107,11 +107,13 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
     return undefined
   }
 
+  const handicapValueFloat = parseFloat(handicapValue)
+
   if (handicapType === HandicapTypes.TimeOnTime) {
-    return handicapValue
+    return handicapValueFloat
   }
 
-  const timeOnTimeFactor = handicapValue / 100
+  const timeOnTimeFactor = handicapValueFloat / 100
 
   return timeOnTimeFactor
 }

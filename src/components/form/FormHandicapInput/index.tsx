@@ -50,6 +50,7 @@ class FormHandicapInput extends React.Component<
         />
         <FormTextInput
           {...this.getHandicapValueProps()}
+          keyboardType="number-pad"
         />
       </View>
     )
@@ -82,10 +83,15 @@ class FormHandicapInput extends React.Component<
     } = this.props
 
     const handicapValue = inputValue.handicapValue
-    const handicapValueOnChange = (value: any) => onChange({
-      handicapType: inputValue.handicapType,
-      handicapValue: value,
-    })
+    const handicapValueOnChange = (value: any) => {
+      // This is so that no characters other than numbers and . get written
+      const numericValue =
+        value === '' ? undefined : value.replace(/[^0-9.]/g, '')
+      onChange({
+        handicapType: inputValue.handicapType,
+        handicapValue: numericValue,
+      })
+    }
 
     return {
       ...this.props,
