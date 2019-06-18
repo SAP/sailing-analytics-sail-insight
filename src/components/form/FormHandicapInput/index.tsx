@@ -32,6 +32,7 @@ class FormHandicapInput extends React.Component<
         <SwitchSelector
           options={handicapTypeSelectorOptions}
           initial={this.getHandicapTypeOptionIndex(handicapType)}
+          value={this.getHandicapTypeOptionIndex(handicapType)}
           onPress={handicapTypeOnChange}
         />
         <FormTextInput
