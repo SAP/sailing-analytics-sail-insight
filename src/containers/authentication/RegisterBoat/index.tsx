@@ -112,7 +112,7 @@ class RegisterBoat extends TextInputForm<Props> {
           />
           <Field
             style={styles.inputMargin}
-            label={'Handicap'}
+            label={I18n.t('text_handicap_label')}
             name={FORM_KEY_HANDICAP}
             component={FormHandicapInput}
           />

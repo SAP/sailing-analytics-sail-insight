@@ -132,7 +132,7 @@ class EditSession extends TextInputForm<Props> {
           />
           <Field
             style={input.topMargin}
-            label={'Handicap'}
+            label={I18n.t('text_handicap_label')}
             name={sessionForm.FORM_KEY_HANDICAP}
             component={FormHandicapInput}
           />

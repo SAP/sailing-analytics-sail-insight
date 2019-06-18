@@ -7,9 +7,11 @@ import { WrappedFieldProps } from 'redux-form'
 import FormTextInput from 'components/form/FormTextInput'
 import { HandicapTypes } from 'models/TeamTemplate'
 
+import styles from './styles'
+
 const handicapTypeSelectorOptions = [
-  { label: HandicapTypes.Yardstick, value: HandicapTypes.Yardstick },
-  { label: HandicapTypes.TimeOnTime, value: HandicapTypes.TimeOnTime },
+  { label: 'Yardstick', value: HandicapTypes.Yardstick },
+  { label: 'ToT', value: HandicapTypes.TimeOnTime },
 ]
 
 class FormHandicapInput extends React.Component<
@@ -26,14 +28,25 @@ class FormHandicapInput extends React.Component<
 
     return (
       <View style={style}>
-        <Text>
-          {label}
+        <Text style={styles.label}>
+          {label.toUpperCase()}
         </Text>
         <SwitchSelector
           options={handicapTypeSelectorOptions}
           initial={this.getHandicapTypeOptionIndex(handicapType)}
           value={this.getHandicapTypeOptionIndex(handicapType)}
           onPress={handicapTypeOnChange}
+          backgroundColor="#EEEEEE"
+          selectedColor="#028DD4"
+          buttonColor="#FFFFFF"
+          textColor="#909090"
+          borderColor="#EEEEEE"
+          borderRadius={3}
+          hasPadding={
+            /* This is for the padding between the button color and border */
+            true
+          }
+          style={styles.switchSelector}
         />
         <FormTextInput
           {...this.getHandicapValueProps()}
