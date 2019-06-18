@@ -13,6 +13,9 @@ export const validateRequired = (value: any) =>
 export const validateUsername = (value: any) =>
     value.length >= 3 ? undefined : I18n.t('error_field_invalid_username')
 
+export const validatePassword = (value: any) =>
+    value.length >= 5 ? undefined : I18n.t('error_field_invalid_password')
+
 export const validateEmail = (value: string) =>
   (REGEX_EMAIL_VALID.test(value) ? undefined : I18n.t('error_field_invalid_email'))
 
