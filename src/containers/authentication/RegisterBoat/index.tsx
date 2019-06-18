@@ -17,6 +17,7 @@ import { validateRequired } from 'forms/validators'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 import { navigateBack } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -160,7 +161,15 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 }
 
-export default connect(null, { saveTeam })(reduxForm<{}, Props>({
+const mapStateToProps = () => {
+  return {
+    initialValues: {
+      [FORM_KEY_HANDICAP]: getDefaultHandicap(),
+    }
+  }
+}
+
+export default connect(mapStateToProps, { saveTeam })(reduxForm<{}, Props>({
   form: TEAM_FORM_NAME,
   destroyOnUnmount: true,
   forceUnregisterOnUnmount: true,

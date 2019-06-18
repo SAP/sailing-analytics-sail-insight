@@ -10,6 +10,7 @@ import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
@@ -179,7 +180,7 @@ const mapStateToProps = (state: any, props: any) => {
       sailNumber: (lastUsedTeam && lastUsedTeam.sailNumber) || I18n.t('text_default_value_sail_number'),
       boatId: (lastUsedTeam && lastUsedTeam.id),
       nationality: (lastUsedTeam && lastUsedTeam.nationality) || getDeviceCountryIOC(),
-      handicap: (lastUsedTeam && lastUsedTeam.handicap),
+      handicap: (lastUsedTeam && lastUsedTeam.handicap) || getDefaultHandicap(),
       // TODO use image data from team
       teamImage: state.auth && state.auth.user && state.auth.user.imageData && state.auth.user.imageData,
     } as CompetitorInfo,

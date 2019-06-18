@@ -1,4 +1,5 @@
 import { TrackingSession } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 import { validateRequired, validateSessionname } from './validators'
 
 
@@ -40,7 +41,7 @@ export const formValuesFromTrackingSession = (session: TrackingSession) => sessi
   [FORM_KEY_TEAM_NAME]: session.teamName,
   [FORM_KEY_TEAM_IMAGE]: session.teamImage,
   [FORM_KEY_BOAT_NAME]: session.boatName,
-  [FORM_KEY_HANDICAP]: session.handicap,
+  [FORM_KEY_HANDICAP]: session.handicap || getDefaultHandicap(),
   [FORM_KEY_BOAT_ID]: session.boatId || null,
 })
 

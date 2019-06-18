@@ -15,6 +15,7 @@ import {
 } from 'forms/session'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 
 import Text from 'components/Text'
 import TextInput from 'components/TextInput'
@@ -123,7 +124,7 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
     onChangeSailNumber((team && team.sailNumber) || null)
     onChangeNationality((team && team.nationality) || null)
     onChangeBoatId((team && team.id) || null)
-    onChangeHandicap((team && team.handicap) || null)
+    onChangeHandicap((team && team.handicap) || getDefaultHandicap())
   }
 
   protected teamFromName = (name: string) => find(this.props.teams, { name })

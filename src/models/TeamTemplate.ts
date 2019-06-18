@@ -34,6 +34,11 @@ export interface Handicap {
   handicapValue?: number
 }
 
+export const getDefaultHandicapType = () => HandicapTypes.Yardstick
+export const getDefaultHandicap = () => ({
+  handicapType: getDefaultHandicapType(),
+} as Handicap)
+
 export default interface TeamTemplate {
   name: string,
   nationality: string,

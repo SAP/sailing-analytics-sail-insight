@@ -15,7 +15,7 @@ import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
-import { Handicap } from 'models/TeamTemplate'
+import { getDefaultHandicap, Handicap } from 'models/TeamTemplate'
 import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getFormFieldValue } from 'selectors/form'
@@ -249,13 +249,15 @@ const mapStateToProps = (state: any, props: any) => {
     paramTeamName,
     comparisonValue: getUserTeamNames(state),
     ignoredValue: paramTeamName,
-    initialValues: team && {
+    initialValues: team ? {
       [teamForm.FORM_KEY_TEAM_NAME]: team.name,
       [teamForm.FORM_KEY_NATIONALITY]: team.nationality,
       [teamForm.FORM_KEY_BOAT_NAME]: team.boatName,
       [teamForm.FORM_KEY_SAIL_NUMBER]: team.sailNumber,
       [teamForm.FORM_KEY_BOAT_CLASS]: team.boatClass,
-      [teamForm.FORM_KEY_HANDICAP]: team.handicap,
+      [teamForm.FORM_KEY_HANDICAP]: team.handicap || getDefaultHandicap(),
+    } : {
+      [teamForm.FORM_KEY_HANDICAP]: getDefaultHandicap(),
     },
   } as ComparisonValidatorViewProps
 }

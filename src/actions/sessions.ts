@@ -10,7 +10,7 @@ import { competitorSchema } from 'api/schemas'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
-import { HandicapTypes } from 'models/TeamTemplate'
+import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
 import { navigateToManeuver, navigateToSessions } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
@@ -100,7 +100,8 @@ export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
   )
 
 const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
-  const { handicapType, handicapValue } = competitorInfo.handicap || {}
+  const { handicapType = getDefaultHandicapType(), handicapValue } =
+    competitorInfo.handicap || {}
   if (
     !handicapType || !handicapValue
   ) {
