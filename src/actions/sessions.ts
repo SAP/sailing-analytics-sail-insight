@@ -108,7 +108,7 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
     return undefined
   }
 
-  const handicapValueFloat = parseFloat(handicapValue)
+  const handicapValueFloat = parseFloat(handicapValue.replace(',', '.'))
 
   if (handicapType === HandicapTypes.TimeOnTime) {
     return handicapValueFloat

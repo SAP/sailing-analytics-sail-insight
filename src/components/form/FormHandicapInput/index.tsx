@@ -89,9 +89,9 @@ class FormHandicapInput extends React.Component<
 
     const handicapValue = inputValue.handicapValue
     const handicapValueOnChange = (value: any) => {
-      // This is so that no characters other than numbers and . get written
+      // This is so that no characters other than numbers and ., get written
       const numericValue =
-        value === '' ? undefined : value.replace(/[^0-9.]/g, '')
+        value === '' ? undefined : value.replace(/[^0-9,.]/g, '')
       onChange({
         handicapType: inputValue.handicapType,
         handicapValue: numericValue,
