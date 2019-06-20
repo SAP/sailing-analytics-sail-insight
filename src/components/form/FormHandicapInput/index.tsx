@@ -5,7 +5,7 @@ import SwitchSelector from 'react-native-switch-selector'
 import { WrappedFieldProps } from 'redux-form'
 
 import FormTextInput from 'components/form/FormTextInput'
-import { HandicapTypes } from 'models/TeamTemplate'
+import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
 
 import styles from './styles'
 
@@ -66,18 +66,39 @@ class FormHandicapInput extends React.Component<
     return index === -1 ? 0 : index
   }
 
+  private convertHandicapValue = (fromType: HandicapTypes, toType: HandicapTypes, value?: string) => {
+    if (!value) {
+      return value
+    }
+
+    const handicapValueFloat = parseFloat(value.replace(',', '.'))
+    if (fromType === HandicapTypes.Yardstick && toType === HandicapTypes.TimeOnTime ||
+        fromType === HandicapTypes.TimeOnTime && toType === HandicapTypes.Yardstick) {
+      return (+(100 / handicapValueFloat).toFixed(4)).toString()
+    }
+
+    return value
+  }
+
   private getHandicapTypeProps = () => {
     const {
       input: { value: inputValue , onChange },
     } = this.props
 
-    const handicapTypeOnChange = (value: any) => onChange({
-      handicapType: value,
-      handicapValue: inputValue.handicapValue,
-    })
+    const { handicapType = getDefaultHandicapType() } = inputValue
+
+    const handicapTypeOnChange = (value: any) =>
+      onChange({
+        handicapType: value,
+        handicapValue: this.convertHandicapValue(
+          handicapType,
+          value,
+          inputValue.handicapValue,
+        ),
+      })
 
     return {
-      value: inputValue.handicapType,
+      value: handicapType,
       onChange: handicapTypeOnChange,
     }
   }
