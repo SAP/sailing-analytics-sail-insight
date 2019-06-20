@@ -109,8 +109,11 @@ export const createUserAttachmentToSession = (
     getState: GetStateType,
   ) => {
     const user = getUserInfo(getState())
-    if (!competitorInfo.boatClass || !competitorInfo.sailNumber || !competitorInfo.boatName
-        || !competitorInfo.nationality) {
+    if (
+      !competitorInfo.boatClass ||
+      !competitorInfo.sailNumber ||
+      !competitorInfo.nationality
+    ) {
       throw new SessionException('user/boat data missing.')
     }
     const baseValues = {

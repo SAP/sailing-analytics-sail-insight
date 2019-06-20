@@ -9,7 +9,6 @@ export const validate = (values: CompetitorInfo = {}) => {
   const errors: any = {}
 
   errors.boatClass = validateRequired(values.boatClass)
-  errors.boatName = validateRequired(values.boatName)
   // errors.boatId = validateRequired(values.boatId)
   errors.name = validateRequired(values.name)
   errors.sailNumber = validateRequired(values.sailNumber)

@@ -51,7 +51,6 @@ export const validate = (values: any = {}) => {
   errors[FORM_KEY_PRIVACY_SETTING] = validateRequired(values[FORM_KEY_PRIVACY_SETTING])
   errors[FORM_KEY_NATIONALITY] = validateRequired(values[FORM_KEY_NATIONALITY])
   errors[FORM_KEY_TEAM_NAME] = validateRequired(values[FORM_KEY_TEAM_NAME])
-  errors[FORM_KEY_BOAT_NAME] = validateRequired(values[FORM_KEY_BOAT_NAME])
 
   return errors
 }
