@@ -114,7 +114,7 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
     return handicapValueFloat
   }
 
-  const timeOnTimeFactor = handicapValueFloat / 100
+  const timeOnTimeFactor = 100 / handicapValueFloat
 
   return timeOnTimeFactor
 }
