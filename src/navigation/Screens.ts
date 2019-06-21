@@ -7,8 +7,8 @@ export const Tracks = 'Tracks'
 export const AppSettings = 'AppSettings'
 export const ExpertSettings = 'ExpertSettings'
 export const UserProfile = 'UserProfile'
-export const UserBoats = 'UserBoats'
-export const BoatDetails = 'BoatDetails'
+export const TeamList = 'TeamList'
+export const TeamDetails = 'TeamDetails'
 
 // sessions
 export const UserSessions = 'UserSessions'

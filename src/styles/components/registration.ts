@@ -13,6 +13,8 @@ const styles = EStyleSheet.create({
   errorTextSpacing: {
     alignSelf: 'center',
     marginTop: '$tinySpacing',
+    paddingLeft: 20,
+    paddingRight: 20
   },
 })
 

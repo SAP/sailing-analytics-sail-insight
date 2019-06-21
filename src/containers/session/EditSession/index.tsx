@@ -6,17 +6,17 @@ import { Field, Fields, reduxForm } from 'redux-form'
 import * as sessionForm from 'forms/session'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
-import { BoatTemplate } from 'models'
+import { TeamTemplate } from 'models'
 import { navigateBack } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
-import FormBoatPicker from 'components/form/FormBoatPicker'
+import FormTeamPicker from 'components/form/FormTeamPicker'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
-import { getUserBoats } from 'selectors/user'
+import { getUserTeams } from 'selectors/user'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
@@ -24,10 +24,12 @@ import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
 import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
+import { isLoggedIn } from '../../../selectors/auth'
 
 
 interface Props {
-  boats: BoatTemplate[]
+  teams: TeamTemplate[],
+  isLoggedIn: boolean,
 }
 
 class EditSession extends TextInputForm<Props> {
@@ -63,35 +65,28 @@ class EditSession extends TextInputForm<Props> {
           />
           <Field
             style={input.topMargin}
-            label={I18n.t('text_team_name')}
-            name={sessionForm.FORM_KEY_TEAM_NAME}
-            component={FormTextInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_TRACK_NAME)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            style={input.topMargin}
             label={I18n.t('text_track_name')}
             name={sessionForm.FORM_KEY_TRACK_NAME}
             component={FormTextInput}
-            onSubmitEditing={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
+            onSubmitEditing={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_TRACK_NAME)}
           />
           <Fields
             style={input.topMargin}
-            label={I18n.t('text_boat')}
+            label={I18n.t('text_team')}
             names={[
+              sessionForm.FORM_KEY_TEAM_NAME,
               sessionForm.FORM_KEY_BOAT_NAME,
               sessionForm.FORM_KEY_BOAT_CLASS,
               sessionForm.FORM_KEY_SAIL_NUMBER,
+              sessionForm.FORM_KEY_NATIONALITY,
               sessionForm.FORM_KEY_BOAT_ID,
             ]}
-            component={FormBoatPicker}
-            boats={this.props.boats}
+            component={FormTeamPicker}
+            teams={this.props.teams}
+            isLoggedIn={this.props.isLoggedIn}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -100,17 +95,8 @@ class EditSession extends TextInputForm<Props> {
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
-            {...this.commonProps}
-          />
-          <Field
-            style={input.topMargin}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={sessionForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_NATIONALITY)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -119,8 +105,28 @@ class EditSession extends TextInputForm<Props> {
               label={I18n.t('text_nationality')}
               name={sessionForm.FORM_KEY_NATIONALITY}
               component={FormNationalityPicker}
+              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
               inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
+              validate={[validateRequired]}
               {...this.commonProps}
+          />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_placeholder_sail_number')}
+            name={sessionForm.FORM_KEY_SAIL_NUMBER}
+            component={FormTextInput}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_NAME)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            validate={[validateRequired]}
+            {...this.commonProps}
+          />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_placeholder_boat_name')}
+            name={sessionForm.FORM_KEY_BOAT_NAME}
+            component={FormTextInput}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
+            {...this.commonProps}
           />
           {/* <Field
             style={input.topMargin}
@@ -133,7 +139,7 @@ class EditSession extends TextInputForm<Props> {
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
-            onPress={this.onSubmit}
+            onPress={this.props.handleSubmit(this.onSubmit)}
           >
             {I18n.t('caption_accept')}
           </TextButton>
@@ -148,7 +154,8 @@ class EditSession extends TextInputForm<Props> {
 }
 
 const mapStateToProps = (state: any) => ({
-  boats: getUserBoats(state),
+  teams: getUserTeams(state),
+  isLoggedIn: isLoggedIn(state),
 })
 
 export default connect(mapStateToProps)(reduxForm<{}, Props>({

@@ -41,9 +41,16 @@ export const getUnknownErrorMessage = (errorCode?: string | number) => (errorCod
 )
 
 export const getErrorDisplayMessage = (exception: any) => {
-  if (!exception || (!exception.name && !exception.baseTypeName)) {
+  const data = JSON.parse(exception.data)
+
+  if (!exception || (!exception.name && !exception.baseTypeName && !data.errorCodeName)) {
     return getUnknownErrorMessage()
   }
+
+  if (data.errorCodeName) {
+    return I18n.t(ErrorCodes[data.errorCodeName])
+  }
+
   if (exception.name === ApiException.NAME || exception.baseTypeName === ApiException.NAME) {
     const error = exception as ApiException
     const errorKey = error.message

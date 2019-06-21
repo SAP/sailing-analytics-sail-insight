@@ -6,23 +6,23 @@ import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
-import { getFormBoatName } from 'selectors/boat'
+import { getFormTeamName } from 'selectors/boat'
 
 import HeaderTitle from 'components/HeaderTitle'
 import ImageButton from 'components/ImageButton'
 import WebView from 'components/WebView'
-import BoatDetails from 'containers/BoatDetails'
 import SessionDetail from 'containers/session/SessionDetail'
+import TeamDetails from 'containers/TeamDetails'
 
 import { button } from 'styles/commons'
 
 import MainTabNavigator from './MainTabNavigator'
 
 
-const boatDetailsHeader = connect((state: any) =>
-  ({ text: getFormBoatName(state) }))((props: any) => <HeaderTitle firstLine={props.text}/>)
+const teamDetailsHeader = connect((state: any) =>
+  ({ text: getFormTeamName(state) }))((props: any) => <HeaderTitle firstLine={props.text}/>)
 
-const boatDeleteHeader = (navigation: any) => get(navigation, 'state.params.paramBoatName') && (
+const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.paramTeamName') && (
   <ImageButton
     source={Images.actions.delete}
     style={button.actionIconNavBar}
@@ -55,11 +55,11 @@ export default createStackNavigator(
         headerTitle: 'Track Details',
       }),
     },
-    [Screens.BoatDetails]: {
-      screen: BoatDetails,
+    [Screens.TeamDetails]: {
+      screen: TeamDetails,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
-        headerTitle: boatDetailsHeader,
-        headerRight: boatDeleteHeader(navigationProps),
+        headerTitle: teamDetailsHeader,
+        headerRight: teamDeleteHeader(navigationProps),
       }),
     },
   },
