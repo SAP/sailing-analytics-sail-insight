@@ -1,12 +1,21 @@
-import { find, isEmpty } from 'lodash'
+import { find, isEmpty, isEqual } from 'lodash'
 import React from 'react'
 import { View, ViewProps } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
 
-import { FORM_KEY_BOAT_CLASS, FORM_KEY_BOAT_ID, FORM_KEY_BOAT_NAME, FORM_KEY_NATIONALITY, FORM_KEY_SAIL_NUMBER, FORM_KEY_TEAM_NAME } from 'forms/session'
+import {
+  FORM_KEY_BOAT_CLASS,
+  FORM_KEY_BOAT_ID,
+  FORM_KEY_BOAT_NAME,
+  FORM_KEY_HANDICAP,
+  FORM_KEY_NATIONALITY,
+  FORM_KEY_SAIL_NUMBER,
+  FORM_KEY_TEAM_NAME,
+} from 'forms/session'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
+import { getDefaultHandicap, hasHandicapChanged } from 'models/TeamTemplate'
 
 import Text from 'components/Text'
 import TextInput from 'components/TextInput'
@@ -87,9 +96,11 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
       const { input: { value: boatClass } } = (this.props as any)[FORM_KEY_BOAT_CLASS]
       const { input: { value: sailNumber } } = (this.props as any)[FORM_KEY_SAIL_NUMBER]
       const { input: { value: nationality } } = (this.props as any)[FORM_KEY_NATIONALITY]
+      const { input: { value: handicap } } = (this.props as any)[FORM_KEY_HANDICAP]
       if (
         boatName !== existingTeam.boatName || boatClass !== existingTeam.boatClass ||
-        sailNumber !== existingTeam.sailNumber ||  nationality !== existingTeam.nationality) {
+        sailNumber !== existingTeam.sailNumber ||  nationality !== existingTeam.nationality ||
+        hasHandicapChanged(existingTeam.handicap, handicap)) {
         return I18n.t('text_hint_existing_team_update')
       }
       return undefined
@@ -104,6 +115,7 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
     const { input: { onChange: onChangeSailNumber } } = (this.props as any)[FORM_KEY_SAIL_NUMBER]
     const { input: { onChange: onChangeNationality } } = (this.props as any)[FORM_KEY_NATIONALITY]
     const { input: { onChange: onChangeBoatId } } = (this.props as any)[FORM_KEY_BOAT_ID]
+    const { input: { onChange: onChangeHandicap } } = (this.props as any)[FORM_KEY_HANDICAP]
 
     const team = this.teamFromName(name)
     onChangeName(name || null)
@@ -112,6 +124,7 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
     onChangeSailNumber((team && team.sailNumber) || null)
     onChangeNationality((team && team.nationality) || null)
     onChangeBoatId((team && team.id) || null)
+    onChangeHandicap((team && team.handicap) || getDefaultHandicap())
   }
 
   protected teamFromName = (name: string) => find(this.props.teams, { name })

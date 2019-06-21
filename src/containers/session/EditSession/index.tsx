@@ -22,6 +22,7 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormHandicapInput from '../../../components/form/FormHandicapInput'
 import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import { isLoggedIn } from '../../../selectors/auth'
@@ -83,6 +84,7 @@ class EditSession extends TextInputForm<Props> {
               sessionForm.FORM_KEY_SAIL_NUMBER,
               sessionForm.FORM_KEY_NATIONALITY,
               sessionForm.FORM_KEY_BOAT_ID,
+              sessionForm.FORM_KEY_HANDICAP,
             ]}
             component={FormTeamPicker}
             teams={this.props.teams}
@@ -130,6 +132,12 @@ class EditSession extends TextInputForm<Props> {
             component={FormTextInput}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
+          />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_handicap_label')}
+            name={sessionForm.FORM_KEY_HANDICAP}
+            component={FormHandicapInput}
           />
           {/* <Field
             style={input.topMargin}

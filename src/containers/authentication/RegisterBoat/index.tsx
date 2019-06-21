@@ -7,6 +7,7 @@ import { saveTeam, SaveTeamAction } from 'actions/user'
 import {
   FORM_KEY_BOAT_CLASS,
   FORM_KEY_BOAT_NAME,
+  FORM_KEY_HANDICAP,
   FORM_KEY_NATIONALITY,
   FORM_KEY_SAIL_NUMBER,
   FORM_KEY_TEAM_NAME,
@@ -16,6 +17,7 @@ import { validateRequired } from 'forms/validators'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 import { navigateBack } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
@@ -28,6 +30,7 @@ import { button, container, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormHandicapInput from '../../../components/form/FormHandicapInput'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import { getFormFieldValue } from '../../../selectors/form'
 import styles from './styles'
@@ -111,6 +114,12 @@ class RegisterBoat extends TextInputForm<Props> {
             inputRef={this.handleInputRef(FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
           />
+          <Field
+            style={styles.inputMargin}
+            label={I18n.t('text_handicap_label')}
+            name={FORM_KEY_HANDICAP}
+            component={FormHandicapInput}
+          />
           {error && <Text style={registration.errorText()}>{error}</Text>}
           <TextButton
             style={registration.nextButton()}
@@ -152,6 +161,7 @@ class RegisterBoat extends TextInputForm<Props> {
         nationality: values[FORM_KEY_NATIONALITY],
         boatClass: values[FORM_KEY_BOAT_CLASS],
         sailNumber: values[FORM_KEY_SAIL_NUMBER],
+        handicap: values[FORM_KEY_HANDICAP],
       } as TeamTemplate)
       navigateBack()
     } catch (err) {
@@ -164,6 +174,9 @@ class RegisterBoat extends TextInputForm<Props> {
 
 const mapStateToProps = (state: any) => ({
   formSailNumber: getFormFieldValue(TEAM_FORM_NAME, FORM_KEY_SAIL_NUMBER)(state),
+  initialValues: {
+    [FORM_KEY_HANDICAP]: getDefaultHandicap(),
+  }
 })
 
 export default connect(mapStateToProps, { saveTeam })(reduxForm<{}, Props>({
