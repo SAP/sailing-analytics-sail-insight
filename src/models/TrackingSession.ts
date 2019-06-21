@@ -1,3 +1,5 @@
+import { Handicap } from 'models/TeamTemplate'
+
 export default interface TrackingSession {
   name: string
   trackName: string
@@ -7,6 +9,7 @@ export default interface TrackingSession {
   nationality: string,
   teamName: string
   teamImage?: string,
+  handicap?: Handicap,
   privacySetting: string
   boatId?: string
 }

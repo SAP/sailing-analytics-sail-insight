@@ -6034,6 +6034,11 @@ react-native-svg@7.0.3:
     lodash "^4.16.6"
     pegjs "^0.10.0"
 
+react-native-switch-selector@^1.1.14:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/react-native-switch-selector/-/react-native-switch-selector-1.1.14.tgz#953fc2fb1f1feb97e9a3a1fc7f87718a7b4c2a5b"
+  integrity sha512-VhmasNtYuJpG5B0954vyMSvOcT1qM6WQeZ1hrx6OxgcH6kdfZynC77MKlj8w022wI1AccyPCQrttgne+WSe5Wg==
+
 react-native-tab-view@^0.0.77:
   version "0.0.77"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-0.0.77.tgz#11ceb8e7c23100d07e628dc151b57797524d00d4"

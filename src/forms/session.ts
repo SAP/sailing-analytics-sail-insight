@@ -1,4 +1,5 @@
 import { TrackingSession } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 import { validateRequired, validateSessionname } from './validators'
 
 
@@ -13,6 +14,7 @@ export const FORM_KEY_BOAT_ID = 'boatId'
 export const FORM_KEY_TEAM_NAME = 'teamName'
 export const FORM_KEY_TEAM_IMAGE = 'teamImage'
 export const FORM_KEY_NATIONALITY = 'nationality'
+export const FORM_KEY_HANDICAP = 'handicap'
 export const FORM_KEY_PRIVACY_SETTING = 'privacySetting'
 
 export const trackingSessionFromFormValues = (values: any) => values && ({
@@ -25,6 +27,7 @@ export const trackingSessionFromFormValues = (values: any) => values && ({
   nationality: values[FORM_KEY_NATIONALITY],
   teamName: values[FORM_KEY_TEAM_NAME],
   teamImage: values[FORM_KEY_TEAM_IMAGE],
+  handicap: values[FORM_KEY_HANDICAP],
   trackName: values[FORM_KEY_TRACK_NAME],
 } as TrackingSession)
 
@@ -38,6 +41,7 @@ export const formValuesFromTrackingSession = (session: TrackingSession) => sessi
   [FORM_KEY_TEAM_NAME]: session.teamName,
   [FORM_KEY_TEAM_IMAGE]: session.teamImage,
   [FORM_KEY_BOAT_NAME]: session.boatName,
+  [FORM_KEY_HANDICAP]: session.handicap || getDefaultHandicap(),
   [FORM_KEY_BOAT_ID]: session.boatId || null,
 })
 

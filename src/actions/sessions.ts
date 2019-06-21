@@ -10,6 +10,7 @@ import { competitorSchema } from 'api/schemas'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
+import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
 import { navigateToManeuver, navigateToSessions } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
@@ -98,6 +99,26 @@ export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
     dataApi => dataApi.updateEvent(eventId, { enddateasmillis: getNowAsMillis() }),
   )
 
+const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
+  const { handicapType = getDefaultHandicapType(), handicapValue } =
+    competitorInfo.handicap || {}
+  if (
+    !handicapType || !handicapValue
+  ) {
+    return undefined
+  }
+
+  const handicapValueFloat = parseFloat(handicapValue.replace(',', '.'))
+
+  if (handicapType === HandicapTypes.TimeOnTime) {
+    return handicapValueFloat
+  }
+
+  const timeOnTimeFactor = 100 / handicapValueFloat
+
+  return timeOnTimeFactor
+}
+
 export const createUserAttachmentToSession = (
   regattaName: string,
   competitorInfo: CompetitorInfo,
@@ -148,6 +169,7 @@ export const createUserAttachmentToSession = (
         ...baseValues,
         boatclass: competitorInfo.boatClass,
         sailid: competitorInfo.sailNumber,
+        timeontimefactor: getTimeOnTimeFactor(competitorInfo),
         ...(secret && { secret }),
         ...(secret && { deviceUuid: getDeviceId() }),
       })
@@ -173,6 +195,7 @@ export const createUserAttachmentToSession = (
             boatClass: competitorInfo.boatClass,
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
+            handicap: competitorInfo.handicap,
             id: {
               ...(userBoat && typeof userBoat.id === 'object' && { ...userBoat.id }),
               ...(newCompetitorWithBoat &&

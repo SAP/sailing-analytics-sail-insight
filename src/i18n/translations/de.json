@@ -52,6 +52,7 @@
   "text_placeholder_boat_class": "Bootsklasse",
   "text_placeholder_sail_number": "Segelnummer",
   "text_placeholder_sail_color": "Segelfarbe",
+  "text_handicap_label": "Handicap",
   "text_registration_boat_class_hint": "Gib den ersten Buchstaben oder die erste Zahl ein, z.B. \"4\"",
   "text_registration_sail_number_hint": "z.B. GER123",
   "text_tracking_sog": "SOG",
