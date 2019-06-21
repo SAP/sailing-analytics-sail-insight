@@ -55,7 +55,7 @@ class FormHandicapInput extends React.Component<
         />
         <FormTextInput
           {...this.getHandicapValueProps()}
-          keyboardType="number-pad"
+          keyboardType="numeric"
         />
       </View>
     )
