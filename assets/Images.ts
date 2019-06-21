@@ -24,6 +24,7 @@ export default {
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
     pickImage: require('./img/icons/icon-camera.png'),
     delete: require('./img/icons/icon-delete.png'),
+    share: require('./img/icons/icon-open-in-new.png'),
   },
   tabs: {
     tracking: require('./img/icons/icon-start.png'),
