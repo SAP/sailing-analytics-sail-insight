@@ -12,12 +12,12 @@ import Logger from 'helpers/Logger'
 import { degToCompass } from 'helpers/physics'
 import { openSAPWebsite } from 'helpers/user'
 import I18n from 'i18n'
-import { CheckIn, LeaderboardCompetitor } from 'models'
+import { CheckIn } from 'models'
 import { navigateBack, navigateToLeaderboard, navigateToSetWind } from 'navigation'
 import { getBoat } from 'selectors/boat'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
-import { getTrackedCompetitorLeaderboardData } from 'selectors/leaderboard'
+import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { getMark } from 'selectors/mark'
 
@@ -40,7 +40,7 @@ class Tracking extends React.Component<{
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
-  leaderboardCompetitor: LeaderboardCompetitor,
+  trackedRank?: string,
 } > {
   public state = {
     isLoading: false,
@@ -61,18 +61,11 @@ class Tracking extends React.Component<{
   }
 
   public render() {
-    const { trackingStats, checkInData, trackedContextName, leaderboardCompetitor } = this.props
+    const { trackingStats, checkInData, trackedContextName, trackedRank } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
     const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(0)}°` : EMPTY_VALUE
     const distance = trackingStats.distance ? trackingStats.distance.toFixed(0) : '0'
-
-    const currentTrackName = checkInData && checkInData.currentTrackName
-    const currentLeaderboardTrack =
-      leaderboardCompetitor &&
-      currentTrackName &&
-      get(leaderboardCompetitor, ['columns', currentTrackName])
-    const trackRank = currentLeaderboardTrack && currentLeaderboardTrack.trackedRank
 
     return (
       <View style={[container.main]}>
@@ -92,7 +85,7 @@ class Tracking extends React.Component<{
             >
               <TrackingProperty
                 title={I18n.t('text_tracking_rank')}
-                value={`${trackRank || EMPTY_VALUE}`}
+                value={`${trackedRank || EMPTY_VALUE}`}
                 onPress={this.onLeaderboardPress}
               />
             </View>
@@ -228,7 +221,7 @@ const mapStateToProps = (state: any) => {
       getMark(checkInData.markId)(state),
       'name',
     ),
-    leaderboardCompetitor: getTrackedCompetitorLeaderboardData(state) || {},
+    trackedRank: getTrackedCompetitorLeaderboardRank(state),
   }
 }
 

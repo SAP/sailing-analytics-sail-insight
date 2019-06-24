@@ -15,7 +15,7 @@ import {
 import { mapResToLeaderboardColumnData } from 'models/Leaderboard'
 import { CompetitorGapMap, RootState } from 'reducers/config'
 import { getTrackedLeaderboardName } from 'selectors/location'
-import { getTrackedCheckIn, getTrackedCheckInCompetitorId } from './checkIn'
+import { getTrackedCheckIn } from './checkIn'
 
 export const getLeaderboardEntity = (state: any) =>
   getEntities(state, LEADERBOARD_ENTITY_NAME)
@@ -29,13 +29,23 @@ export const getTrackedLeaderboardEntity = (state: any) => {
   return getLeaderboard(leaderboardName)(state)
 }
 
-export const getTrackedCompetitorLeaderboardData = createSelector(
+export const getTrackedCompetitorLeaderboardRank = createSelector(
   getTrackedLeaderboardEntity,
-  getTrackedCheckInCompetitorId,
-  (leaderboard, competitorId) =>
-    leaderboard &&
-    leaderboard.competitors &&
-    _.find(leaderboard.competitors, { id: competitorId }),
+  getTrackedCheckIn,
+  (leaderboard, checkInData) => {
+    const competitorId = checkInData && checkInData.competitorId
+    const currentTrackName = checkInData && checkInData.currentTrackName
+    const trackedCompetitor = (leaderboard &&
+      leaderboard.competitors &&
+      _.find(leaderboard.competitors, { id: competitorId })) || {}
+    const currentLeaderboardTrack =
+      trackedCompetitor &&
+      currentTrackName &&
+      get(trackedCompetitor, ['columns', currentTrackName])
+    const trackedRank = currentLeaderboardTrack && currentLeaderboardTrack.trackedRank
+
+    return trackedRank
+  }
 )
 
 export const getLeaderboardGaps = (state: RootState = {}) =>
