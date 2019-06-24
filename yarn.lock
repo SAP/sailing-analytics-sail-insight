@@ -5645,7 +5645,7 @@ plist@^2.0.1:
     xmlbuilder "8.2.2"
     xmldom "0.1.x"
 
-plist@^3.0.0:
+plist@^3.0.0, plist@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/plist/-/plist-3.0.1.tgz#a9b931d17c304e8912ef0ba3bdd6182baf2e1f8c"
   integrity sha512-GpgvHHocGRyQm74b6FWEZZVRroHKE1I0/BTjAmySaohK+cUn+hZpbqXkc3KWgW3gQYkqcQej35FohcT0FRlkRQ==
@@ -5856,24 +5856,24 @@ react-native-autocomplete-input@^3.6.0:
   dependencies:
     prop-types "^15.5.10"
 
-react-native-background-fetch@~2.4.4:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-2.4.4.tgz#7e81694111e7ea9b7d75cc4c744886e7ea3dacbd"
-  integrity sha512-eEQW6054N0obIR54+4qwTv9L4GtS298b1nrOfNo5UkOUEtaT8KSWgpqSmlXo/f8IZAvPqGloHrwHZiwxV+LmeQ==
+react-native-background-fetch@~2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-2.6.0.tgz#410741a9454c59f4463b12fd41fdb51eb181545c"
+  integrity sha512-6a0ITgePMnFa1sVoCYeVuXvvjQzZavN7ynvchJixoQZEi8TreTuePUDxmzQVf7eZPCBciSaogfCoBwAzDRsK0Q==
   dependencies:
     fast-plist "^0.1.2"
-    plist "^2.0.1"
-    xcode "^0.9.1"
+    plist "^3.0.1"
+    xcode "^2.0.0"
 
-react-native-background-geolocation@2.14.2:
-  version "2.14.2"
-  resolved "https://registry.yarnpkg.com/react-native-background-geolocation/-/react-native-background-geolocation-2.14.2.tgz#a95ded5fb12f0cd02035fc6031eeeb2d9a8eebf7"
-  integrity sha512-kbQpLiH9kOVDeCM5lgulhBpylgN0ue2oZmcFzXLbOllHSyfA4n/LmZmplK57zSmY2WvZux38i9kGTP0erIAbHQ==
+react-native-background-geolocation@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-background-geolocation/-/react-native-background-geolocation-3.0.7.tgz#fde19e5ed1587862449f6e74f8289198ea4aca74"
+  integrity sha512-Gu5oNNav1Xjayas0FTJxwZK9PY7hJsBEYtPOC8/dMVJgWqT79jVy1wYtDPeqwJ8AQOERwyjHjKOlx8PQsfE+Ag==
   dependencies:
     cocoa-lumberjack "^3.0.5"
     fast-plist "^0.1.2"
     plist "^2.0.1"
-    react-native-background-fetch "~2.4.4"
+    react-native-background-fetch "~2.6.0"
     xcode "^0.9.1"
 
 react-native-background-timer@2.1.1:
@@ -6848,6 +6848,15 @@ simple-plist@^0.2.1:
     bplist-creator "0.0.7"
     bplist-parser "0.1.1"
     plist "2.0.1"
+
+simple-plist@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/simple-plist/-/simple-plist-1.0.0.tgz#bed3085633b22f371e111f45d159a1ccf94b81eb"
+  integrity sha512-043L2rO80LVF7zfZ+fqhsEkoJFvW8o59rt/l4ctx1TJWoTx7/jkiS1R5TatD15Z1oYnuLJytzE7gcnnBuIPL2g==
+  dependencies:
+    bplist-creator "0.0.7"
+    bplist-parser "0.1.1"
+    plist "^3.0.1"
 
 simple-swizzle@^0.2.2:
   version "0.2.2"
@@ -7826,6 +7835,14 @@ xcode@^0.9.1:
     pegjs "^0.10.0"
     simple-plist "^0.2.1"
     uuid "3.0.1"
+
+xcode@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/xcode/-/xcode-2.0.0.tgz#134f1f94c26fbfe8a9aaa9724bfb2772419da1a2"
+  integrity sha512-5xF6RCjAdDEiEsbbZaS/gBRt3jZ/177otZcpoLCjGN/u1LrfgH7/Sgeeavpr/jELpyDqN2im3AKosl2G2W8hfw==
+  dependencies:
+    simple-plist "^1.0.0"
+    uuid "^3.3.2"
 
 xml-name-validator@^3.0.0:
   version "3.0.0"
