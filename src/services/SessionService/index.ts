@@ -3,6 +3,7 @@ import { includes, intersection, isEmpty, isString } from 'lodash'
 import { dateTimeText } from 'helpers/date'
 import I18n from 'i18n'
 import { TeamTemplate, TrackingSession, User } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 import { RootState } from '../../reducers/config'
 import { getDeviceCountryIOC } from '../CheckInService'
 
@@ -23,6 +24,7 @@ export const generateNewSession = (team?: TeamTemplate, state: RootState = {}) =
     boatId: (team && team.id),
     nationality: (team && team.nationality) || getDeviceCountryIOC(),
     teamImage: team && team.imageData,
+    handicap: (team && team.handicap) || getDefaultHandicap(),
   } as TrackingSession
 }
 

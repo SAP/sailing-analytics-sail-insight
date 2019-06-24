@@ -10,6 +10,7 @@ import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
@@ -29,6 +30,7 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormHandicapInput from '../../../components/form/FormHandicapInput'
 import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import { getDeviceCountryIOC } from '../../../services/CheckInService'
@@ -85,6 +87,7 @@ class EditCompetitor extends TextInputForm<Props> {
               sessionForm.FORM_KEY_NATIONALITY,
               sessionForm.FORM_KEY_BOAT_ID,
               sessionForm.FORM_KEY_TEAM_IMAGE,
+              sessionForm.FORM_KEY_HANDICAP,
             ]}
             component={FormTeamPicker}
             teams={this.props.teams}
@@ -127,6 +130,12 @@ class EditCompetitor extends TextInputForm<Props> {
             component={FormTextInput}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
+          />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_handicap_label')}
+            name={sessionForm.FORM_KEY_HANDICAP}
+            component={FormHandicapInput}
           />
           <TextButton
             style={registration.nextButton()}
@@ -173,6 +182,7 @@ const mapStateToProps = (state: any, props: any) => {
       boatId: (lastUsedTeam && lastUsedTeam.id),
       nationality: (lastUsedTeam && lastUsedTeam.nationality) || getDeviceCountryIOC(),
       teamImage: lastUsedTeam && lastUsedTeam.imageData,
+      handicap: (lastUsedTeam && lastUsedTeam.handicap) || getDefaultHandicap(),
     } as CompetitorInfo,
     teams: getUserTeams(state),
     checkInData: getCustomScreenParamData(props),

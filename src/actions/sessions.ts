@@ -2,6 +2,7 @@ import { find, get, head, includes, orderBy } from 'lodash'
 import { Alert } from 'react-native'
 
 import { selfTrackingApi } from 'api'
+import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
 import { ManeuverChangeItem } from 'api/endpoints/types'
 import { competitorSchema } from 'api/schemas'
@@ -9,6 +10,7 @@ import { competitorSchema } from 'api/schemas'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
+import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
 import { navigateToManeuver, navigateToSessions } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
@@ -31,8 +33,9 @@ import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { saveTeam } from 'actions/user'
 import { getUserInfo } from 'selectors/auth'
-import { getCheckInByLeaderboardName, getTrackedCheckIn } from 'selectors/checkIn'
+import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
+import { getUserBoatByBoatName } from 'selectors/user'
 
 
 export const shareSession = (checkIn: CheckIn) => async () => {
@@ -96,6 +99,26 @@ export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
     dataApi => dataApi.updateEvent(eventId, { enddateasmillis: getNowAsMillis() }),
   )
 
+const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
+  const { handicapType = getDefaultHandicapType(), handicapValue } =
+    competitorInfo.handicap || {}
+  if (
+    !handicapType || !handicapValue
+  ) {
+    return undefined
+  }
+
+  const handicapValueFloat = parseFloat(handicapValue.replace(',', '.'))
+
+  if (handicapType === HandicapTypes.TimeOnTime) {
+    return handicapValueFloat
+  }
+
+  const timeOnTimeFactor = 100 / handicapValueFloat
+
+  return timeOnTimeFactor
+}
+
 export const createUserAttachmentToSession = (
   regattaName: string,
   competitorInfo: CompetitorInfo,
@@ -107,8 +130,11 @@ export const createUserAttachmentToSession = (
     getState: GetStateType,
   ) => {
     const user = getUserInfo(getState())
-    if (!competitorInfo.boatClass || !competitorInfo.sailNumber || !competitorInfo.boatName
-        || !competitorInfo.nationality) {
+    if (
+      !competitorInfo.boatClass ||
+      !competitorInfo.sailNumber ||
+      !competitorInfo.nationality
+    ) {
       throw new SessionException('user/boat data missing.')
     }
     const baseValues = {
@@ -116,42 +142,77 @@ export const createUserAttachmentToSession = (
       competitorEmail: user && user.email,
       nationalityIOC: competitorInfo.nationality,
     }
-    const competitor = competitorInfo.boatId && !secret ?
-      await dataApi.createAndAddCompetitorWithBoat(
-        regattaName,
-        {
-          ...baseValues,
-          boatId: competitorInfo.boatId,
-        },
-      ) :
-      await dataApi.createAndAddCompetitor(
-        regattaName,
-        {
-          ...baseValues,
-          boatclass: competitorInfo.boatClass,
-          sailid: competitorInfo.sailNumber,
-          ...(secret && { secret }),
-          ...(secret && { deviceUuid: getDeviceId() }),
-        },
-      )
-    if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
-      dataApi.uploadTeamImage(competitor.id, competitorInfo.teamImage.data, competitorInfo.teamImage.mime)
+
+    const serverUrl = getServerUrl(regattaName)(getState())
+    const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
+    const boatId = get(userBoat, ['id', serverUrl])
+    let competitorId = get(userBoat, ['competitorId', serverUrl])
+
+    let registrationSuccess = false
+    if (boatId && competitorId) {
+      try {
+        const registrationResponse = await dataApi.registerCompetitorToRegatta(
+          regattaName,
+          competitorId,
+        )
+
+        registrationSuccess = registrationResponse.status === 200
+      } catch (err) {
+        if (!(err instanceof ApiException)) {
+          throw err
+        }
+      }
     }
-    dispatch(normalizeAndReceiveEntities(competitor, competitorSchema))
-    dispatch(updateCheckIn({ leaderboardName: regattaName, competitorId: competitor.id } as CheckInUpdate))
+
+    // Creates new competitorWithBoat if there isn't one on the current server
+    // or if the regeistration of the existing one to the regatta failed
+    let newCompetitorWithBoat
+    if (!registrationSuccess) {
+      newCompetitorWithBoat = await dataApi.createAndAddCompetitor(regattaName, {
+        ...baseValues,
+        boatclass: competitorInfo.boatClass,
+        sailid: competitorInfo.sailNumber,
+        timeontimefactor: getTimeOnTimeFactor(competitorInfo),
+        ...(secret && { secret }),
+        ...(secret && { deviceUuid: getDeviceId() }),
+      })
+
+      competitorId = newCompetitorWithBoat.id
+    }
+
+    if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
+      dataApi.uploadTeamImage(competitorId, competitorInfo.teamImage.data, competitorInfo.teamImage.mime)
+    }
+
+    if (newCompetitorWithBoat) {
+      dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
+    }
+
+    dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
     if (user) {
-      await dispatch(saveTeam(
-        {
-          name: competitorInfo.teamName,
-          boatName: competitorInfo.boatName,
-          boatClass: competitorInfo.boatClass,
-          sailNumber: competitorInfo.sailNumber,
-          nationality: competitorInfo.nationality,
-          imageData: competitorInfo.teamImage,
-          id: competitor && competitor.boat && competitor.boat.id,
-        },
-        { updateLastUsed: true },
-      ))
+      await dispatch(
+        saveTeam(
+          {
+            name: competitorInfo.teamName,
+            boatName: competitorInfo.boatName,
+            boatClass: competitorInfo.boatClass,
+            sailNumber: competitorInfo.sailNumber,
+            nationality: competitorInfo.nationality,
+            imageData: competitorInfo.teamImage,
+            handicap: competitorInfo.handicap,
+            id: {
+              ...(userBoat && typeof userBoat.id === 'object' && { ...userBoat.id }),
+              ...(newCompetitorWithBoat &&
+                newCompetitorWithBoat.boat && { [serverUrl]: newCompetitorWithBoat.boat.id }),
+            },
+            competitorId: {
+              ...(userBoat && { ...userBoat.competitorId }),
+              ...(newCompetitorWithBoat && { [serverUrl]: newCompetitorWithBoat.id }),
+            },
+          },
+          { updateLastUsed: true },
+        ),
+      )
     }
   },
 )

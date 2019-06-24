@@ -15,12 +15,14 @@ import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
+import { getDefaultHandicap, Handicap, hasHandicapChanged } from 'models/TeamTemplate'
 import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getFormFieldValue } from 'selectors/form'
 import { getUserTeamNames } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
+import FormHandicapInput from 'components/form/FormHandicapInput'
 import FormImagePicker from 'components/form/FormImagePicker'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
@@ -31,7 +33,7 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import FormBoatClassInput from '../../components/form/FormBoatClassInput'
 import FormNationalityPicker from '../../components/form/FormNationalityPicker'
-
+import FormSailNumberInput from '../../components/form/FormSailNumberInput'
 
 interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
   team: TeamTemplate
@@ -41,6 +43,7 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
   formBoatClass?: string
   formBoatName?: string
   formTeamImage?: any
+  formHandicap?: Handicap
   paramTeamName?: string
   saveTeam: SaveTeamAction
   deleteTeam: DeleteTeamAction
@@ -112,9 +115,14 @@ class TeamDetails extends TextInputForm<Props> {
             style={input.topMargin}
             label={I18n.t('text_placeholder_sail_number')}
             name={teamForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
+            component={FormSailNumberInput}
             inputRef={this.handleInputRef(teamForm.FORM_KEY_SAIL_NUMBER)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_NAME)}
+            onSelectTeam={(team: any) => {
+              this.props.change(teamForm.FORM_KEY_BOAT_CLASS, team.boatClass || '')
+              this.props.change(teamForm.FORM_KEY_BOAT_NAME, team.boatName || '')
+              this.props.change(teamForm.FORM_KEY_NATIONALITY, team.nationality || '')
+            }}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -125,6 +133,12 @@ class TeamDetails extends TextInputForm<Props> {
             component={FormTextInput}
             inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
+          />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_handicap_label')}
+            name={teamForm.FORM_KEY_HANDICAP}
+            component={FormHandicapInput}
           />
           <TextButton
             style={registration.nextButton()}
@@ -187,7 +201,16 @@ class TeamDetails extends TextInputForm<Props> {
   }
 
   private formHasChanges() {
-    const { team, formTeamName, formSailNumber, formNationality, formBoatClass, formBoatName, formTeamImage } = this.props
+    const {
+      team,
+      formTeamName,
+      formSailNumber,
+      formNationality,
+      formBoatClass,
+      formBoatName,
+      formHandicap,
+      formTeamImage,
+    } = this.props
 
     const nameHasChanged = !team || formTeamName !== team.name
     const sailNumberHasChanged = !team || formSailNumber !== team.sailNumber
@@ -196,7 +219,17 @@ class TeamDetails extends TextInputForm<Props> {
     const boatNameHasChanged = !team || formBoatName !== team.boatName
     const imageHasChanged = !team || formTeamImage !== team.imageData
 
-    return nameHasChanged || sailNumberHasChanged || nationalityHasChanged || boatClassHasChanged || boatNameHasChanged || imageHasChanged
+    const handicapHasChanged = !team || hasHandicapChanged(team.handicap, formHandicap)
+
+    return (
+      nameHasChanged ||
+      sailNumberHasChanged ||
+      nationalityHasChanged ||
+      boatClassHasChanged ||
+      boatNameHasChanged ||
+      imageHasChanged ||
+      handicapHasChanged
+    )
   }
 }
 
@@ -208,6 +241,7 @@ const mapStateToProps = (state: any, props: any) => {
   const formBoatClass = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_CLASS)(state)
   const formBoatName = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_NAME)(state)
   const formTeamImage = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_IMAGE)(state)
+  const formHandicap = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_HANDICAP)(state)
   const paramTeamName = team && team.name
   return {
     team,
@@ -217,16 +251,20 @@ const mapStateToProps = (state: any, props: any) => {
     formBoatClass,
     formBoatName,
     formTeamImage,
+    formHandicap,
     paramTeamName,
     comparisonValue: getUserTeamNames(state),
     ignoredValue: paramTeamName,
-    initialValues: team && {
+    initialValues: team ? {
       [teamForm.FORM_KEY_TEAM_NAME]: team.name,
       [teamForm.FORM_KEY_NATIONALITY]: team.nationality,
       [teamForm.FORM_KEY_BOAT_NAME]: team.boatName,
       [teamForm.FORM_KEY_SAIL_NUMBER]: team.sailNumber,
       [teamForm.FORM_KEY_BOAT_CLASS]: team.boatClass,
       [teamForm.FORM_KEY_IMAGE]: team.imageData,
+      [teamForm.FORM_KEY_HANDICAP]: team.handicap || getDefaultHandicap(),
+    } : {
+      [teamForm.FORM_KEY_HANDICAP]: getDefaultHandicap(),
     },
   } as ComparisonValidatorViewProps
 }

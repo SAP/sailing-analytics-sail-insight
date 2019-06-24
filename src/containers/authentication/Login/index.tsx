@@ -8,7 +8,7 @@ import { login } from 'actions/auth'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToMain, navitateToPasswordReset } from 'navigation'
+import { navigateToMain, navigateToPasswordReset } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import ScrollContentView from 'components/ScrollContentView'
@@ -116,7 +116,7 @@ class Login extends TextInputForm<{
   }
 
   private onPasswordResetPress = () => {
-    return navitateToPasswordReset()
+    return navigateToPasswordReset()
   }
 }
 export default connect(null, { login })(Login)
