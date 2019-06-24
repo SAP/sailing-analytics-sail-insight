@@ -16,12 +16,12 @@ export const backgroundSyncLeaderboard = async (
   dataApi: DataApi,
   leaderboard: string,
   secret?: string,
-  currentTrackName?: string,
+  competitorId?: string,
   rankingMetric?: string,
 ) => {
   try {
     const { payload } = await dispatch(
-      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard, secret, [currentTrackName]),
+      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard, secret, competitorId),
     )
 
     const receivedLeaderboards =
@@ -30,7 +30,7 @@ export const backgroundSyncLeaderboard = async (
       values(payload.entities.leaderboard)
     const receivedLeaderboard = receivedLeaderboards[0] as Leaderboard
 
-    await dispatch(updateLeaderboardTracking(receivedLeaderboard, currentTrackName, rankingMetric))
+    await dispatch(updateLeaderboardTracking(receivedLeaderboard, rankingMetric))
   } catch (err) {
     Logger.debug('Error while executing syncLeaderboard', err)
   }
@@ -41,7 +41,7 @@ export const startPeriodicalLeaderboardUpdates = (
   dataApi: DataApi,
   leaderboard: string,
   secret?: string,
-  currentTrackName?: string,
+  competitorId?: string,
   rankingMetric?: string,
 ) => {
   Logger.debug('[Leaderboard] Transfer Manager started')
@@ -52,7 +52,7 @@ export const startPeriodicalLeaderboardUpdates = (
       dataApi,
       leaderboard,
       secret,
-      currentTrackName,
+      competitorId,
       rankingMetric
     )
   }

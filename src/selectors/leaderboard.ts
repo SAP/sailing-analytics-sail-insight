@@ -1,11 +1,10 @@
-import _, { get } from 'lodash'
+import { find, get, last, values } from 'lodash'
 import { createSelector } from 'reselect'
 
 import { LEADERBOARD_ENTITY_NAME } from 'api/schemas'
 import { getEntities, getEntityArrayByType, getEntityById } from './entity'
 
 import {
-  CheckIn,
   Leaderboard,
   LeaderboardColumn,
   LeaderboardColumnData,
@@ -15,7 +14,7 @@ import {
 import { mapResToLeaderboardColumnData } from 'models/Leaderboard'
 import { CompetitorGapMap, RootState } from 'reducers/config'
 import { getTrackedLeaderboardName } from 'selectors/location'
-import { getTrackedCheckIn } from './checkIn'
+import { getTrackedCheckIn, getTrackedCheckInCompetitorId } from './checkIn'
 
 export const getLeaderboardEntity = (state: any) =>
   getEntities(state, LEADERBOARD_ENTITY_NAME)
@@ -29,19 +28,22 @@ export const getTrackedLeaderboardEntity = (state: any) => {
   return getLeaderboard(leaderboardName)(state)
 }
 
+export const getLeaderboardCompetitorCurrentRaceColumn = (
+  competitorData: LeaderboardCompetitor,
+): LeaderboardColumn | undefined =>
+  competitorData.columns && last(values(competitorData.columns))
+
+
 export const getTrackedCompetitorLeaderboardRank = createSelector(
   getTrackedLeaderboardEntity,
-  getTrackedCheckIn,
-  (leaderboard, checkInData) => {
-    const competitorId = checkInData && checkInData.competitorId
-    const currentTrackName = checkInData && checkInData.currentTrackName
+  getTrackedCheckInCompetitorId,
+  (leaderboard, competitorId) => {
     const trackedCompetitor = (leaderboard &&
       leaderboard.competitors &&
-      _.find(leaderboard.competitors, { id: competitorId })) || {}
+      find(leaderboard.competitors, { id: competitorId })) || {}
     const currentLeaderboardTrack =
       trackedCompetitor &&
-      currentTrackName &&
-      get(trackedCompetitor, ['columns', currentTrackName])
+      getLeaderboardCompetitorCurrentRaceColumn(trackedCompetitor)
     const trackedRank = currentLeaderboardTrack && currentLeaderboardTrack.trackedRank
 
     return trackedRank
@@ -51,17 +53,10 @@ export const getTrackedCompetitorLeaderboardRank = createSelector(
 export const getLeaderboardGaps = (state: RootState = {}) =>
   state.leaderboardTracking && state.leaderboardTracking.competitorGaps
 
-const extractCompetitorData = (
-  checkInData: CheckIn,
-  leaderboardGaps: CompetitorGapMap,
-) => (
+const extractCompetitorData = (leaderboardGaps: CompetitorGapMap) => (
   competitorData: LeaderboardCompetitor,
 ): LeaderboardCompetitorCurrentTrack => {
-  const currentTrackName = checkInData && checkInData.currentTrackName
-
-  const currentTrackColumn: LeaderboardColumn | undefined =
-    currentTrackName && get(competitorData, ['columns', currentTrackName])
-
+  const currentTrackColumn = getLeaderboardCompetitorCurrentRaceColumn(competitorData)
   const currentTrackColumnData: LeaderboardColumnData | undefined =
     currentTrackColumn &&
     mapResToLeaderboardColumnData(get(currentTrackColumn, 'data'))
@@ -90,7 +85,7 @@ export const getTrackedLeaderboard = createSelector(
     const stuff =
       competitors &&
       competitors
-        .map(extractCompetitorData(checkInData, gaps))
+        .map(extractCompetitorData(gaps))
         .filter(
           (datum: LeaderboardCompetitorCurrentTrack) =>
             datum.trackedColumn && datum.trackedColumn.fleet === currentFleet,

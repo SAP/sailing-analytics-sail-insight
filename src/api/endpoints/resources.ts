@@ -82,11 +82,22 @@ const deviceMapping = (endpoint: (options?: UrlOptions) => string) => (leaderboa
   { method: HttpMethods.POST, body: data },
 )
 
-// tslint:disable-next-line max-line-length
-const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (leaderboardName: string, secret?: string, columnNames?: string[]) => dataRequest(
-  url({ pathParams: [leaderboardName], urlParams: { secret, columnNames, raceDetails: 'ALL' } }),
-  { dataSchema: leaderboardSchema },
-)
+const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (
+  leaderboardName: string,
+  secret?: string,
+  competitorId?: string,
+) =>
+  dataRequest(
+    url({
+      pathParams: [leaderboardName],
+      urlParams: {
+        secret,
+        showOnlyActiveRacesForCompetitorIds: competitorId,
+        raceDetails: 'ALL',
+      },
+    }),
+    { dataSchema: leaderboardSchema },
+  )
 
 type ApiFunction = () => any
 export interface DataApi {
@@ -95,7 +106,7 @@ export interface DataApi {
   requestRaces: (regattaName: string, secret?: string) => any
   requestRace: (regattaName: string, raceName: string, raceId?: string, secret?: string) => any
   requestLeaderboard: (leaderboardName: string, secret?: string) => any
-  requestLeaderboardV2: (leaderboardName: string, secret?: string, columnNames?: string[]) => any
+  requestLeaderboardV2: (leaderboardName: string, secret?: string, competitorId?: string) => any
   requestEvent: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any

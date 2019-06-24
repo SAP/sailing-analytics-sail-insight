@@ -7,6 +7,7 @@ import { DispatchType } from 'helpers/types'
 
 import { Leaderboard } from 'models'
 import CheckIn from 'models/CheckIn'
+import { getLeaderboardCompetitorCurrentRaceColumn } from 'selectors/leaderboard'
 import * as LeaderboardService from '../services/LeaderboardService'
 
 export const updateLeaderboardGaps = createAction('UPDATE_LEADERBOARD_GAPS')
@@ -26,7 +27,7 @@ export const startLeaderboardUpdates = (checkInData: CheckIn, rankingMetric?: st
         dataApi,
         checkInData.leaderboardName,
         checkInData.secret,
-        checkInData.currentTrackName,
+        checkInData.competitorId,
         rankingMetric
       )
     } catch (err) {
@@ -46,16 +47,13 @@ export const stopLeaderboardUpdates = () => async () => {
 
 export const updateLeaderboardTracking = (
   leaderboard: Leaderboard,
-  currentTrackName?: string,
   rankingMetric = 'ONE_DESIGN',
 ) => async (dispatch: DispatchType) => {
   const payload =
-    currentTrackName &&
     leaderboard.competitors &&
     leaderboard.competitors.reduce((map, competitor) => {
-      let gapToLeader: number | undefined = get(competitor, [
-        'columns',
-        currentTrackName,
+      const raceColumn = getLeaderboardCompetitorCurrentRaceColumn(competitor)
+      let gapToLeader: number | undefined = raceColumn && get(raceColumn, [
         'data',
         rankingMetric === 'ONE_DESIGN' ? 'gapToLeader-m' : 'gapToLeader-s',
       ])
