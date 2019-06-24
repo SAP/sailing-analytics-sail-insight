@@ -34,12 +34,13 @@ import TrackingContext from 'components/session/TrackingContext'
 
 class JoinRegatta extends React.Component<{
   checkInData: CheckIn,
+  alreadyJoined: boolean
   leaderboard?: any,
   event?: any,
   competitor?: any,
   boat?: any,
   mark?: any,
-  checkIn: (c: CheckIn) => any,
+  checkIn: (c: CheckIn, aj: boolean) => any,
 } > {
 
   public state = {
@@ -51,7 +52,7 @@ class JoinRegatta extends React.Component<{
   public onJoinPress = async () => {
     await this.setState({ isLoading: true })
     try {
-      await this.props.checkIn(this.props.checkInData)
+      await this.props.checkIn(this.props.checkInData, this.props.alreadyJoined)
     } catch (err) {
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
@@ -75,7 +76,7 @@ class JoinRegatta extends React.Component<{
   }
 
   public render() {
-    const { 
+    const {
       event = {},
       leaderboard = {},
       competitor = {},
@@ -149,10 +150,16 @@ class JoinRegatta extends React.Component<{
   }
 }
 
+interface ScreenParamProps {
+  checkInData: CheckIn
+  alreadyJoined: boolean
+}
+
 const mapStateToProps = (state: any, props: any) => {
-  const checkInData: CheckIn = getCustomScreenParamData(props) || {}
+  const { checkInData, alreadyJoined }: ScreenParamProps = getCustomScreenParamData(props) || {}
   return {
     checkInData,
+    alreadyJoined,
     event: getEvent(checkInData.eventId)(state),
     leaderboard: getLeaderboard(checkInData.leaderboardName)(state),
     competitor: getCompetitor(checkInData.competitorId)(state),

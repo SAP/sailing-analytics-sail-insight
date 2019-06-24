@@ -10,6 +10,7 @@ import { getFormTeamName } from 'selectors/boat'
 
 import HeaderTitle from 'components/HeaderTitle'
 import ImageButton from 'components/ImageButton'
+import ShareButton from 'components/ShareIconButton'
 import WebView from 'components/WebView'
 import SessionDetail from 'containers/session/SessionDetail'
 import TeamDetails from 'containers/TeamDetails'
@@ -51,9 +52,12 @@ export default createStackNavigator(
     },
     [Screens.TrackDetails]: {
       screen: WebView,
-      navigationOptions: () => ({
-        headerTitle: 'Track Details',
-      }),
+      navigationOptions: ({ navigation: navigationProps }: any) => {
+        return {
+          headerTitle: 'Track Details',
+          headerRight: <ShareButton url={get(navigationProps, 'state.params.data')}/>,
+        }
+      },
     },
     [Screens.TeamDetails]: {
       screen: TeamDetails,

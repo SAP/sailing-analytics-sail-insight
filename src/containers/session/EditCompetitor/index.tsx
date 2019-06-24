@@ -1,5 +1,5 @@
-import React from 'react'
-import { KeyboardType, ReturnKeyType, View } from 'react-native'
+import React, { ChangeEvent } from 'react'
+import { KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, Fields, reduxForm } from 'redux-form'
 
@@ -10,6 +10,7 @@ import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
+import { getDefaultHandicap } from 'models/TeamTemplate'
 import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
@@ -29,8 +30,10 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormHandicapInput from '../../../components/form/FormHandicapInput'
 import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
+import { getFormFieldValue } from '../../../selectors/form'
 import { getDeviceCountryIOC } from '../../../services/CheckInService'
 
 
@@ -39,6 +42,7 @@ interface Props {
   registerCompetitorAndDevice: (data: any, values: any) => any
   checkInData: CheckIn,
   isLoggedIn: boolean,
+  formSailNumber?: string,
 }
 
 class EditCompetitor extends TextInputForm<Props> {
@@ -84,6 +88,7 @@ class EditCompetitor extends TextInputForm<Props> {
               sessionForm.FORM_KEY_SAIL_NUMBER,
               sessionForm.FORM_KEY_NATIONALITY,
               sessionForm.FORM_KEY_BOAT_ID,
+              sessionForm.FORM_KEY_HANDICAP,
             ]}
             component={FormTeamPicker}
             teams={this.props.teams}
@@ -127,6 +132,12 @@ class EditCompetitor extends TextInputForm<Props> {
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
           />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_handicap_label')}
+            name={sessionForm.FORM_KEY_HANDICAP}
+            component={FormHandicapInput}
+          />
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
@@ -143,6 +154,13 @@ class EditCompetitor extends TextInputForm<Props> {
         />
       </ScrollContentView>
     )
+  }
+
+  protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
+                                        newValue?: any, previousValue?: any) => {
+    if (!this.props.formSailNumber || this.props.formSailNumber === previousValue) {
+      this.props.change(sessionForm.FORM_KEY_SAIL_NUMBER, newValue)
+    }
   }
 
   private onSubmit = async (values: CompetitorInfo) => {
@@ -171,12 +189,14 @@ const mapStateToProps = (state: any, props: any) => {
       sailNumber: (lastUsedTeam && lastUsedTeam.sailNumber) || I18n.t('text_default_value_sail_number'),
       boatId: (lastUsedTeam && lastUsedTeam.id),
       nationality: (lastUsedTeam && lastUsedTeam.nationality) || getDeviceCountryIOC(),
+      handicap: (lastUsedTeam && lastUsedTeam.handicap) || getDefaultHandicap(),
       // TODO use image data from team
       teamImage: state.auth && state.auth.user && state.auth.user.imageData && state.auth.user.imageData,
     } as CompetitorInfo,
     teams: getUserTeams(state),
     checkInData: getCustomScreenParamData(props),
     isLoggedIn: isLoggedIn(state),
+    formSailNumber: getFormFieldValue(competitorForm.COMPETITOR_FORM_NAME, sessionForm.FORM_KEY_SAIL_NUMBER)(state),
   }
 }
 
