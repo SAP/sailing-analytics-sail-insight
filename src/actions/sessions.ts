@@ -85,7 +85,7 @@ export const createEvent = (session: TrackingSession, isPublic?: boolean) => asy
       venuename: 'default', // TODO: get venue name? or position?
       eventName: session.name,
       competitorRegistrationType: isPublic ? 'OPEN_UNMODERATED' : 'CLOSED',
-      ...(secret && { secret }),
+      ...(secret ? { secret } : {}),
     },
   )
   return eventCreationResponseToCheckIn(
@@ -173,8 +173,8 @@ export const createUserAttachmentToSession = (
         boatclass: competitorInfo.boatClass,
         sailid: competitorInfo.sailNumber,
         timeontimefactor: getTimeOnTimeFactor(competitorInfo),
-        ...(secret && { secret }),
-        ...(secret && { deviceUuid: getDeviceId() }),
+        ...(secret ? { secret } : {}),
+        ...(secret ? { deviceUuid: getDeviceId() } : {}),
       })
 
       competitorId = newCompetitorWithBoat.id
