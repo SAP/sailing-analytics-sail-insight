@@ -5,7 +5,6 @@ export default EStyleSheets.create({
     paddingHorizontal: '$smallSpacing',
     paddingVertical: '$tinySpacing',
     backgroundColor: 'white',
-    marginBottom: '$tinySpacing',
   },
   innerContainer: {
     alignItems: 'center',

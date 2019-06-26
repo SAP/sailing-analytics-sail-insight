@@ -137,6 +137,8 @@
   "text_deep_link_tracking_active_message": "Please stop the active tracking to open the Sail Insight link.",
   "text_event_already_joined_title": "Event is already joined",
   "text_event_already_joined_message": "You cannot join the same event twice",
+  "text_session_archive": "Archive",
+  "text_session_unarchive": "Unarchive",
 
   "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
   "user_profile_alert_label" : "Logout",
