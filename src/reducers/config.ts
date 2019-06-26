@@ -11,6 +11,7 @@ export interface RootState {
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
+  events?: any | EventState
 }
 
 
@@ -54,6 +55,8 @@ export interface UserState {
   currentBoat?: any | null
   boats?: any | null
 }
+
+export type EventState = Map<string, any>
 
 export interface CheckInState {
   active: any

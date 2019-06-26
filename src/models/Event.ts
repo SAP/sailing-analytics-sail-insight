@@ -47,4 +47,5 @@ export default interface Event {
   images?: any[]
   videos?: any[]
   sailorsInfoWebsiteURLs?: string
+  archived?: boolean
 }

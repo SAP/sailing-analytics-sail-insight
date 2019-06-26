@@ -7,6 +7,7 @@ import { RootState } from './config'
 import AuthReducer from './AuthReducer'
 import CheckInReducer from './CheckInReducer'
 import EntityReducer from './EntityReducer'
+import EventReducer from './EventReducer'
 import LocationTrackingReducer from './LocationTrackingReducer'
 import OnboardingReducer from './OnboardingReducer'
 import SettingsReducer from './SettingsReducer'
@@ -23,6 +24,7 @@ const reducer: RootState = {
   onboarding: OnboardingReducer,
   settings: SettingsReducer,
   network: networkReducer,
+  events: EventReducer,
 }
 
 const reducers = combineReducers(reducer)

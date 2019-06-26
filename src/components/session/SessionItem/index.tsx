@@ -3,6 +3,7 @@ import {
   TouchableOpacity, View, ViewProps
 } from 'react-native'
 import Swipeable from 'react-native-swipeable'
+import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
 import { OnPressType } from 'helpers/types'
@@ -12,6 +13,8 @@ import { navigateToSessionDetail } from 'navigation'
 
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 import SwipeableButton from 'components/session/SwipeableButton'
+
+import { archiveEvent } from 'actions/events'
 
 import styles from './styles'
 
@@ -40,6 +43,7 @@ const UnarchiveButton = (onPress: () => void) => (
 class SessionItem extends React.Component<ViewProps & {
   session: Session,
   onTrackingPress?: OnPressType,
+  archiveEvent: any,
 } > {
   public onItempPress = () => navigateToSessionDetail(this.props.session.leaderboardName)
 
@@ -49,7 +53,7 @@ class SessionItem extends React.Component<ViewProps & {
       session,
     } = this.props
 
-    const archived = false
+    const archived = session.event && session.event.archived || false
 
     return (
       <View style={styles.container}>
@@ -73,8 +77,10 @@ class SessionItem extends React.Component<ViewProps & {
     )
   }
 
-  private setArchiveValue = (archived: boolean) => () => {}
+  private setArchiveValue = (archived: boolean) => () => {
+    this.props.archiveEvent(this.props.session, archived)
+  }
 }
 
 
-export default SessionItem
+export default connect(null, { archiveEvent })(SessionItem)
