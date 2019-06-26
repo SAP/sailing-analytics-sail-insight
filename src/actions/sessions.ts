@@ -200,13 +200,13 @@ export const createUserAttachmentToSession = (
             nationality: competitorInfo.nationality,
             handicap: competitorInfo.handicap,
             id: {
-              ...(userBoat && typeof userBoat.id === 'object' && { ...userBoat.id }),
+              ...(userBoat && typeof userBoat.id === 'object' ? { ...userBoat.id } : {}),
               ...(newCompetitorWithBoat &&
-                newCompetitorWithBoat.boat && { [serverUrl]: newCompetitorWithBoat.boat.id }),
+                newCompetitorWithBoat.boat ? { [serverUrl]: newCompetitorWithBoat.boat.id } : {}),
             },
             competitorId: {
-              ...(userBoat && { ...userBoat.competitorId }),
-              ...(newCompetitorWithBoat && { [serverUrl]: newCompetitorWithBoat.id }),
+              ...(userBoat ? { ...userBoat.competitorId } : {}),
+              ...(newCompetitorWithBoat ? { [serverUrl]: newCompetitorWithBoat.id } : {}),
             },
           },
           { updateLastUsed: true },
