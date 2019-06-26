@@ -139,6 +139,7 @@
   "text_event_already_joined_message": "You cannot join the same event twice",
   "text_session_archive": "Archive",
   "text_session_unarchive": "Unarchive",
+  "text_session_filter_header": "Filter my events",
 
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",
@@ -146,6 +147,8 @@
   "caption_ok": "OK",
   "caption_cancel": "Abbrechen",
   "caption_back": "Zurück",
+  "caption_close": "Close",
+  "caption_confirm": "Confirm",
   "caption_qr_scanner": "QR-Code scannen",
   "caption_start_tracking": "Starte Tracking",
   "caption_stop_tracking": "Stoppe Tracking",

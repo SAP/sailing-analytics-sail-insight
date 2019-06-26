@@ -139,6 +139,7 @@
   "text_event_already_joined_message": "You cannot join the same event twice",
   "text_session_archive": "Archive",
   "text_session_unarchive": "Unarchive",
+  "text_session_filter_header": "Filter my events",
 
   "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
   "user_profile_alert_label" : "Logout",
@@ -146,6 +147,8 @@
   "caption_ok": "OK",
   "caption_cancel": "Cancel",
   "caption_back": "Back",
+  "caption_close": "Close",
+  "caption_confirm": "Confirm",
   "caption_qr_scanner": "Scan QR-Code",
   "caption_start_tracking": "Start tracking",
   "caption_stop_tracking": "Stop tracking",

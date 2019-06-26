@@ -16,6 +16,7 @@ export const UserSessions = 'UserSessions'
 export const SessionDetail = 'SessionDetail'
 export const EditSession = 'EditSession'
 export const NewSession = 'NewSession'
+export const FilterSessions = 'FilterSessions'
 
 // join
 export const CheckIn = 'CheckIn'

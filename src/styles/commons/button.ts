@@ -52,6 +52,10 @@ export default EStyleSheet.create({
     fontSize: '$textButtonTextFontSize',
     fontWeight: '300',
   },
+  textButtonTextBig: {
+    color: '$textButtonTextColor',
+    fontSize: '$titleFontSize',
+  },
   modalBack: {
     color: '$primaryButtonColor',
     fontSize: 17,

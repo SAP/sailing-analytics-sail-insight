@@ -3,20 +3,21 @@ import { createBottomTabNavigator, createStackNavigator } from 'react-navigation
 
 import Images from '@assets/Images'
 import { getTabItemTitleTranslation } from 'helpers/texts'
-import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
+import { navigateToFilterSessions, navigateToNewSession, navigateToUserRegistration } from 'navigation'
 import * as Screens from 'navigation/Screens'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { getStore } from 'store'
 
 import IconText from 'components/IconText'
+import Text from 'components/Text'
 import CheckIn from 'containers/session/CheckIn'
 import Sessions from 'containers/session/Sessions'
 
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 
+import HeaderIconButton from 'components/HeaderIconButton'
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
-import TopTabNavigator from './TopTabNavigator'
 
 
 const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
@@ -71,26 +72,27 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
 
 export default createBottomTabNavigator(
   {
-    [Screens.Sessions]: TopTabNavigator(
-      {
-        [Screens.UserSessions]: Sessions,
-        // [Screens.Tracks]: Tracks,
-      },
-      {
-        initialRouteName: Screens.UserSessions,
-        tabBarOptions: {
-          activeTintColor: $primaryTextColor,
-          inactiveTintColor: $secondaryTextColor,
-          indicatorStyle: {
-            backgroundColor: 'white',
-            height: 3,
-          },
-          style: {
-            backgroundColor: 'white',
-          },
-        },
-      },
-    ),
+    [Screens.Sessions]: createStackNavigator({
+      [Screens.UserSessions]: {
+        screen: Sessions,
+        navigationOptions: ({ navigation }: any) => ({
+          headerTitle: (
+            <Text style={[tab.topTabItemText, { color: $primaryTextColor }]}>
+              {getTabItemTitleTranslation(navigation.state.routeName).toUpperCase()}
+            </Text>
+          ),
+          headerRight: (
+            <HeaderIconButton
+              icon={Images.actions.share}
+              onPress={navigateToFilterSessions}
+            />
+          ),
+        }),
+      }
+    },
+    {
+      headerLayoutPreset: 'center',
+    }),
     // [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.CheckIn]: CheckIn,
     [Screens.Account]: AccountNavigator,
