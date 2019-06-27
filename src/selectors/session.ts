@@ -4,8 +4,10 @@ import { createSelector } from 'reselect'
 import { CheckIn, Session } from 'models'
 import { mapResToCompetitor } from 'models/Competitor'
 import { mapResToEvent } from 'models/Event'
+import { EventFilter } from 'models/EventFilter'
 import { mapResToLeaderboard } from 'models/Leaderboard'
 import { mapResToRegatta } from 'models/Regatta'
+import { getEventFilters } from 'selectors/UI'
 import { removeUserPrefix } from 'services/SessionService'
 
 import { mapResToBoat } from 'models/Boat'
@@ -132,4 +134,18 @@ export const getSession = (leaderboardName: string) => createSelector(
 export const isSessionListEmpty = createSelector(
   getSessionList,
   (checkInList: any[]) => isEmpty(checkInList),
+)
+
+export const getFilteredSessionList = createSelector(
+  getSessionList,
+  getEventFilters,
+  (sessions: Session[], filters: EventFilter[]) => {
+    let filteredSessions = sessions
+    if (!filters.includes(EventFilter.Archived)) {
+      filteredSessions = filteredSessions.filter(
+        (session: Session) => session.event ? !session.event.archived : true
+      )
+    }
+    return filteredSessions
+  },
 )

@@ -140,6 +140,10 @@
   "text_session_archive": "Archive",
   "text_session_unarchive": "Unarchive",
   "text_session_filter_header": "Filter my events",
+  "text_session_filter_all": "All events",
+  "text_session_filter_own": "Events created by me",
+  "text_session_filter_invited": "Events I was invited to",
+  "text_session_filter_archived": "Archived events",
 
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",

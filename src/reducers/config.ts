@@ -12,6 +12,7 @@ export interface RootState {
   settings?: any | SettingsState
   user?: any | UserState
   events?: any | EventState
+  UI?: any | UIState
 }
 
 
@@ -57,6 +58,10 @@ export interface UserState {
 }
 
 export type EventState = Map<string, any>
+
+export interface UIState {
+  eventFilters: string[]
+}
 
 export interface CheckInState {
   active: any

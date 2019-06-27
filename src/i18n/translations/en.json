@@ -140,6 +140,10 @@
   "text_session_archive": "Archive",
   "text_session_unarchive": "Unarchive",
   "text_session_filter_header": "Filter my events",
+  "text_session_filter_all": "All events",
+  "text_session_filter_own": "Events created by me",
+  "text_session_filter_invited": "Events I was invited to",
+  "text_session_filter_archived": "Archived events",
 
   "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
   "user_profile_alert_label" : "Logout",
