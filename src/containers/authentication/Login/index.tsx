@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
 import { login } from 'actions/auth'
+import { fetchUserInfo } from 'actions/user'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
@@ -26,6 +27,7 @@ import styles from './styles'
 
 class Login extends TextInputForm<{
   login: (u: string, p: string) => any,
+  fetchUserInfo: () => void,
 }> {
   public state = {
     username: '',
@@ -43,6 +45,7 @@ class Login extends TextInputForm<{
     try {
       this.setState({ isLoading: true })
       await this.props.login(username, password)
+      this.props.fetchUserInfo()
       navigateToMain()
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
@@ -119,4 +122,4 @@ class Login extends TextInputForm<{
     return navigateToPasswordReset()
   }
 }
-export default connect(null, { login })(Login)
+export default connect(null, { fetchUserInfo, login })(Login)
