@@ -53,7 +53,7 @@ export const fetchRegattaRaceManeuvers = (race: Race, competitorId?: string) => 
     return dataApi.requestManeuvers(
       race.regattaName,
       race.name,
-      { fromTime: race.startDate, ...(competitorId && { competitorId }) },
+      { fromTime: race.startDate, ...(competitorId ? { competitorId } : {}) },
     )
   },
 )

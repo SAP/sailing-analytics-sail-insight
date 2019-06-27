@@ -204,7 +204,7 @@ class TrackingSetup extends TextInputForm<Props> {
 
     try {
       this.setState({
-        ...(options.loadingFlagName && { [options.loadingFlagName]: true }),
+        ...(options.loadingFlagName ? { [options.loadingFlagName]: true } : {}),
         creationError: null,
         disableActionButtons: true,
       })
@@ -216,7 +216,7 @@ class TrackingSetup extends TextInputForm<Props> {
       return null
     } finally {
       this.setState({
-        ...(options.loadingFlagName && { [options.loadingFlagName]: false }),
+        ...(options.loadingFlagName ? { [options.loadingFlagName]: false } : {}),
         disableActionButtons: false,
       })
     }
