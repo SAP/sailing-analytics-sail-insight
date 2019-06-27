@@ -4,6 +4,7 @@ export const Main = 'Main'
 export const Tracks = 'Tracks'
 
 // user
+export const AccountList = 'AccountList'
 export const AppSettings = 'AppSettings'
 export const ExpertSettings = 'ExpertSettings'
 export const UserProfile = 'UserProfile'

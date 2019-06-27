@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash'
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import {
-  Alert, KeyboardType, ReturnKeyType, View, ViewProps,
+  Alert, KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View, ViewProps,
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
@@ -15,12 +15,14 @@ import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
+import { getDefaultHandicap, Handicap, hasHandicapChanged } from 'models/TeamTemplate'
 import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getFormFieldValue } from 'selectors/form'
 import { getUserTeamNames } from 'selectors/user'
 
 import TextInputForm from 'components/base/TextInputForm'
+import FormHandicapInput from 'components/form/FormHandicapInput'
 import FormImagePicker from 'components/form/FormImagePicker'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
@@ -40,6 +42,7 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
   formNationality?: string
   formBoatClass?: string
   formBoatName?: string
+  formHandicap?: Handicap
   paramTeamName?: string
   saveTeam: SaveTeamAction
   deleteTeam: DeleteTeamAction
@@ -105,6 +108,7 @@ class TeamDetails extends TextInputForm<Props> {
             component={FormNationalityPicker}
             inputRef={this.handleInputRef(teamForm.FORM_KEY_NATIONALITY)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_SAIL_NUMBER)}
+            onChange={this.handleNationalityChanged}
             {...this.commonProps}
             validate={[validateRequired]}
           />
@@ -131,6 +135,12 @@ class TeamDetails extends TextInputForm<Props> {
             inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
           />
+          <Field
+            style={input.topMargin}
+            label={I18n.t('text_handicap_label')}
+            name={teamForm.FORM_KEY_HANDICAP}
+            component={FormHandicapInput}
+          />
           <TextButton
             style={registration.nextButton()}
             textStyle={button.actionText}
@@ -143,6 +153,13 @@ class TeamDetails extends TextInputForm<Props> {
         </View>
       </ScrollContentView>
     )
+  }
+
+  protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
+                                        newValue?: any, previousValue?: any) => {
+    if (!this.props.formSailNumber || this.props.formSailNumber === previousValue) {
+      this.props.change(teamForm.FORM_KEY_SAIL_NUMBER, newValue)
+    }
   }
 
   protected deleteTeam = () => {
@@ -192,15 +209,31 @@ class TeamDetails extends TextInputForm<Props> {
   }
 
   private formHasChanges() {
-    const { team, formTeamName, formSailNumber, formNationality, formBoatClass, formBoatName } = this.props
+    const {
+      team,
+      formTeamName,
+      formSailNumber,
+      formNationality,
+      formBoatClass,
+      formBoatName,
+      formHandicap,
+    } = this.props
 
     const nameHasChanged = !team || formTeamName !== team.name
     const sailNumberHasChanged = !team || formSailNumber !== team.sailNumber
     const nationalityHasChanged = !team || formNationality !== team.nationality
     const boatClassHasChanged = !team || formBoatClass !== team.boatClass
     const boatNameHasChanged = !team || formBoatName !== team.boatName
+    const handicapHasChanged = !team || hasHandicapChanged(team.handicap, formHandicap)
 
-    return nameHasChanged || sailNumberHasChanged || nationalityHasChanged || boatClassHasChanged || boatNameHasChanged
+    return (
+      nameHasChanged ||
+      sailNumberHasChanged ||
+      nationalityHasChanged ||
+      boatClassHasChanged ||
+      boatNameHasChanged ||
+      handicapHasChanged
+    )
   }
 }
 
@@ -211,6 +244,7 @@ const mapStateToProps = (state: any, props: any) => {
   const formNationality = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_NATIONALITY)(state)
   const formBoatClass = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_CLASS)(state)
   const formBoatName = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_NAME)(state)
+  const formHandicap = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_HANDICAP)(state)
   const paramTeamName = team && team.name
   return {
     team,
@@ -219,15 +253,19 @@ const mapStateToProps = (state: any, props: any) => {
     formNationality,
     formBoatClass,
     formBoatName,
+    formHandicap,
     paramTeamName,
     comparisonValue: getUserTeamNames(state),
     ignoredValue: paramTeamName,
-    initialValues: team && {
+    initialValues: team ? {
       [teamForm.FORM_KEY_TEAM_NAME]: team.name,
       [teamForm.FORM_KEY_NATIONALITY]: team.nationality,
       [teamForm.FORM_KEY_BOAT_NAME]: team.boatName,
       [teamForm.FORM_KEY_SAIL_NUMBER]: team.sailNumber,
       [teamForm.FORM_KEY_BOAT_CLASS]: team.boatClass,
+      [teamForm.FORM_KEY_HANDICAP]: team.handicap || getDefaultHandicap(),
+    } : {
+      [teamForm.FORM_KEY_HANDICAP]: getDefaultHandicap(),
     },
   } as ComparisonValidatorViewProps
 }

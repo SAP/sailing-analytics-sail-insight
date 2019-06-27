@@ -24,6 +24,7 @@ export default {
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
     pickImage: require('./img/icons/icon-camera.png'),
     delete: require('./img/icons/icon-delete.png'),
+    share: require('./img/icons/icon-open-in-new.png'),
   },
   tabs: {
     tracking: require('./img/icons/icon-start.png'),
@@ -45,6 +46,7 @@ export default {
     error: require('./img/icons/icon-error.png'),
     mark: require('./img/icons/icon-mark.png'),
     competitor: require('./img/icons/icon-account-filled.png'),
+    team: require('./img/icons/icon-team.png'),
   },
   animations: {
     waveLoadingIndicator: require('./img/animations/wave_loading.json'),
