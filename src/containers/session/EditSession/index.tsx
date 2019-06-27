@@ -1,5 +1,5 @@
-import React from 'react'
-import { KeyboardType, ReturnKeyType, View } from 'react-native'
+import React, { ChangeEvent } from 'react'
+import { KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, Fields, reduxForm } from 'redux-form'
 
@@ -26,11 +26,13 @@ import FormHandicapInput from '../../../components/form/FormHandicapInput'
 import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import { isLoggedIn } from '../../../selectors/auth'
+import { getFormFieldValue } from '../../../selectors/form'
 
 
 interface Props {
   teams: TeamTemplate[],
   isLoggedIn: boolean,
+  formSailNumber?: string,
 }
 
 class EditSession extends TextInputForm<Props> {
@@ -110,6 +112,7 @@ class EditSession extends TextInputForm<Props> {
               component={FormNationalityPicker}
               onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
               inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
+              onChange={this.handleNationalityChanged}
               validate={[validateRequired]}
               {...this.commonProps}
           />
@@ -157,6 +160,13 @@ class EditSession extends TextInputForm<Props> {
     )
   }
 
+  protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
+                                        newValue?: any, previousValue?: any) => {
+    if (!this.props.formSailNumber || this.props.formSailNumber === previousValue) {
+      this.props.change(sessionForm.FORM_KEY_SAIL_NUMBER, newValue)
+    }
+  }
+
   private onSubmit = () => {
     navigateBack()
   }
@@ -165,6 +175,7 @@ class EditSession extends TextInputForm<Props> {
 const mapStateToProps = (state: any) => ({
   teams: getUserTeams(state),
   isLoggedIn: isLoggedIn(state),
+  formSailNumber: getFormFieldValue(sessionForm.SESSION_FORM_NAME, sessionForm.FORM_KEY_SAIL_NUMBER)(state),
 })
 
 export default connect(mapStateToProps)(reduxForm<{}, Props>({

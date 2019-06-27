@@ -1,5 +1,5 @@
-import React from 'react'
-import { KeyboardType, ReturnKeyType, View } from 'react-native'
+import React, { ChangeEvent } from 'react'
+import { KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, Fields, reduxForm } from 'redux-form'
 
@@ -33,6 +33,7 @@ import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
 import FormHandicapInput from '../../../components/form/FormHandicapInput'
 import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
+import { getFormFieldValue } from '../../../selectors/form'
 import { getDeviceCountryIOC } from '../../../services/CheckInService'
 
 
@@ -41,6 +42,7 @@ interface Props {
   registerCompetitorAndDevice: (data: any, values: any) => any
   checkInData: CheckIn,
   isLoggedIn: boolean,
+  formSailNumber?: string,
 }
 
 class EditCompetitor extends TextInputForm<Props> {
@@ -155,6 +157,13 @@ class EditCompetitor extends TextInputForm<Props> {
     )
   }
 
+  protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
+                                        newValue?: any, previousValue?: any) => {
+    if (!this.props.formSailNumber || this.props.formSailNumber === previousValue) {
+      this.props.change(sessionForm.FORM_KEY_SAIL_NUMBER, newValue)
+    }
+  }
+
   private onSubmit = async (values: CompetitorInfo) => {
     try {
       this.setState({ isLoading: true })
@@ -187,6 +196,7 @@ const mapStateToProps = (state: any, props: any) => {
     teams: getUserTeams(state),
     checkInData: getCustomScreenParamData(props),
     isLoggedIn: isLoggedIn(state),
+    formSailNumber: getFormFieldValue(competitorForm.COMPETITOR_FORM_NAME, sessionForm.FORM_KEY_SAIL_NUMBER)(state),
   }
 }
 

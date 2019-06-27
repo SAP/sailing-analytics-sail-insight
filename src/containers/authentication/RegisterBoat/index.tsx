@@ -1,5 +1,5 @@
-import React from 'react'
-import { KeyboardType, View } from 'react-native'
+import React, { ChangeEvent } from 'react'
+import { KeyboardType, NativeSyntheticEvent, TextInputChangeEventData, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
@@ -35,11 +35,13 @@ import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
 import FormHandicapInput from '../../../components/form/FormHandicapInput'
 import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
+import { getFormFieldValue } from '../../../selectors/form'
 import styles from './styles'
 
 
 interface Props {
-  saveTeam: SaveTeamAction
+  saveTeam: SaveTeamAction,
+  formSailNumber?: string,
 }
 
 class RegisterBoat extends TextInputForm<Props> {
@@ -71,30 +73,8 @@ class RegisterBoat extends TextInputForm<Props> {
             name={FORM_KEY_TEAM_NAME}
             component={FormTextInput}
             returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
-            inputRef={this.handleInputRef(FORM_KEY_TEAM_NAME)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            style={styles.inputMargin}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
-            returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_NATIONALITY)}
-            hint={I18n.t('text_registration_sail_number_hint')}
-            inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            label={I18n.t('text_nationality')}
-            name={FORM_KEY_NATIONALITY}
-            component={FormNationalityPicker}
-            returnKeyType="next"
             onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(FORM_KEY_NATIONALITY)}
+            inputRef={this.handleInputRef(FORM_KEY_TEAM_NAME)}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -104,9 +84,32 @@ class RegisterBoat extends TextInputForm<Props> {
             name={FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
             returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_NAME)}
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_NATIONALITY)}
             hint={I18n.t('text_registration_boat_class_hint')}
             inputRef={this.handleInputRef(FORM_KEY_BOAT_CLASS)}
+            validate={[validateRequired]}
+            {...this.commonProps}
+          />
+          <Field
+            label={I18n.t('text_nationality')}
+            name={FORM_KEY_NATIONALITY}
+            component={FormNationalityPicker}
+            returnKeyType="next"
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
+            inputRef={this.handleInputRef(FORM_KEY_NATIONALITY)}
+            onChange={this.handleNationalityChanged}
+            validate={[validateRequired]}
+            {...this.commonProps}
+          />
+          <Field
+            style={styles.inputMargin}
+            label={I18n.t('text_placeholder_sail_number')}
+            name={FORM_KEY_SAIL_NUMBER}
+            component={FormTextInput}
+            returnKeyType="next"
+            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_NAME)}
+            hint={I18n.t('text_registration_sail_number_hint')}
+            inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
             validate={[validateRequired]}
             {...this.commonProps}
           />
@@ -145,6 +148,14 @@ class RegisterBoat extends TextInputForm<Props> {
       </ScrollContentView >
     )
   }
+
+  protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
+                                        newValue?: any, previousValue?: any) => {
+    if (!this.props.formSailNumber || this.props.formSailNumber === previousValue) {
+      this.props.change(FORM_KEY_SAIL_NUMBER, newValue)
+    }
+  }
+
   protected onSkip() {
     navigateBack()
   }
@@ -170,13 +181,12 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 }
 
-const mapStateToProps = () => {
-  return {
-    initialValues: {
-      [FORM_KEY_HANDICAP]: getDefaultHandicap(),
-    }
+const mapStateToProps = (state: any) => ({
+  formSailNumber: getFormFieldValue(TEAM_FORM_NAME, FORM_KEY_SAIL_NUMBER)(state),
+  initialValues: {
+    [FORM_KEY_HANDICAP]: getDefaultHandicap(),
   }
-}
+})
 
 export default connect(mapStateToProps, { saveTeam })(reduxForm<{}, Props>({
   form: TEAM_FORM_NAME,

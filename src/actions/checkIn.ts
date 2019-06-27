@@ -2,7 +2,7 @@ import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 import I18n from 'i18n'
 
-import { CheckIn, CheckInUpdate } from 'models'
+import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
 import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -15,9 +15,16 @@ import { DispatchType, GetStateType } from 'helpers/types'
 import { spreadableList } from 'helpers/utils'
 
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
-import { getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { getCheckInByLeaderboardName, getActiveCheckInEntity } from 'selectors/checkIn'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { getLocationTrackingStatus } from 'selectors/location'
+import { mapResToCompetitor } from '../models/Competitor'
+import { mapResToRegatta } from '../models/Regatta'
+import { getCompetitor } from '../selectors/competitor'
+import { getRegatta } from '../selectors/regatta'
+import { getUserTeamByNameBoatClassNationalitySailnumber } from '../selectors/user'
+import { getStore } from '../store'
+import { saveTeam } from './user'
 
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
@@ -73,11 +80,27 @@ export const fetchCheckIn = (url: string) => async (dispatch: DispatchType) => {
   return await dispatch(collectCheckInData(data))
 }
 
-export const checkIn = (data: CheckIn) => async (dispatch: DispatchType) => {
+export const isEventAlreadyJoined = ({ eventId }: CheckIn, activeCheckIns: any) =>
+  Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
+
+
+export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!data) {
     throw new CheckInException('data is missing')
   }
   dispatch(updateCheckIn(data))
+
+  if (alreadyJoined) {
+    Alert.alert(
+      I18n.t('text_event_already_joined_title'),
+      I18n.t('text_event_already_joined_message'),
+      [{ text: 'OK', onPress: navigateToSessions }],
+      { cancelable: false }
+    )
+
+    return
+  }
+
   if (data.competitorId || data.markId || data.boatId) {
     await dispatch(registerDevice(data.leaderboardName))
     const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
@@ -90,6 +113,31 @@ export const checkIn = (data: CheckIn) => async (dispatch: DispatchType) => {
     }
     dispatch(updateCheckIn(update))
     navigateToSessions()
+
+    if (data.competitorId) {
+      const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
+      const regatta = mapResToRegatta(getRegatta(data.regattaName)(getStore().getState()))
+
+      if (competitor && competitor.name && competitor.nationality && competitor.sailId &&
+        regatta && regatta.boatClass) {
+        // find team by name, boatClass, nationality and sailNumber
+        const existingTeam = getUserTeamByNameBoatClassNationalitySailnumber(competitor.name,
+                                                                             regatta.boatClass,
+                                                                             competitor.nationality,
+                                                                             competitor.sailId)(getStore().getState())
+        if (!existingTeam) {
+          const team = {
+            name: competitor.name,
+            nationality: competitor.nationality,
+            sailNumber: competitor.sailId,
+            boatClass: regatta.boatClass,
+          } as TeamTemplate
+          dispatch(saveTeam(team))
+        } else {
+          // TODO Attach competitor image to session
+        }
+      }
+    }
   }
   if (!data.competitorId && !data.markId && !data.boatId) {
     navigateToEditCompetitor(data)
@@ -119,7 +167,7 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
 
 export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
-  
+
   if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
     Alert.alert(
       I18n.t('text_deep_link_tracking_active_title'),
@@ -131,10 +179,13 @@ export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: Dispa
     return
   }
 
+
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
-    navigateToJoinRegatta(sessionCheckIn)
+    const activeCheckIns = getActiveCheckInEntity(getState()) || {}
+    const alreadyJoined = isEventAlreadyJoined(sessionCheckIn, activeCheckIns)
+    navigateToJoinRegatta(sessionCheckIn, alreadyJoined)
   } catch (err) {
     Logger.debug(err)
     error = err

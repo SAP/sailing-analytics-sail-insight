@@ -24,6 +24,7 @@ export const startLocationUpdates = (
   bulkTransfer: boolean,
   leaderboardName: string,
   eventId?: string,
+  verboseLogging?: boolean,
 ) => async (dispatch: DispatchType) => {
 
   try {
@@ -37,7 +38,7 @@ export const startLocationUpdates = (
 
   try {
     await dispatch(updateTrackedRegatta({ leaderboardName, eventId }))
-    await LocationService.start()
+    await LocationService.start(verboseLogging)
     await LocationService.changePace(true)
     GpsFixService.startPeriodicalGPSFixUpdates(bulkTransfer, dispatch)
     dispatch(updateStartedAt(currentTimestampAsText()))

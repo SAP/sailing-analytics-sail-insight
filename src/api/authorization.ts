@@ -22,6 +22,6 @@ export const tokenSigner = (options: SignerOptions = {}) => {
   const token = getAccessToken(getStore().getState())
   return {
     ...options.headers,
-    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   }
 }

@@ -35,7 +35,7 @@ const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
     ) as Promise<User>,
 
     register: (username: string, email: string, password: string, fullName?: string) => dataRequest(
-      endpoints.createUser({ urlParams: { email, password, username, ...(fullName && { fullName }) } }),
+      endpoints.createUser({ urlParams: { email, password, username, ...(fullName ? { fullName } : {}) } }),
       { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
     ) as Promise<ApiAccessToken>,
 

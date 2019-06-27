@@ -56,6 +56,16 @@ export const getUserBoatByBoatName = (boatName?: string) => createSelector(
   (userBoats = {}) => boatName && userBoats[boatName],
 )
 
+export const getUserTeamByNameBoatClassNationalitySailnumber = (name: string, boatClass: string, nationality: string, sailNumber: string) => createSelector(
+  getUserTeams,
+  (boats: TeamTemplate[]) => head(filter(boats, { name, boatClass, nationality, sailNumber })),
+)
+
+export const getUserTeamsByFilter = (predicate: []) => createSelector(
+  getUserTeams,
+  (boats: TeamTemplate[]) => filter(boats, predicate),
+)
+
 export const getUserTeamNames = createSelector(
   getUserTeams,
   (userTeams = []) => userTeams.map((team: TeamTemplate) => team.name),

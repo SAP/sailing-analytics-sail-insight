@@ -42,6 +42,7 @@ export interface SettingsState {
   bulkGpsUpdate: boolean,
   enableAnalytics: boolean,
   serverUrl: string,
+  verboseLogging: boolean,
 }
 
 export interface AuthState {

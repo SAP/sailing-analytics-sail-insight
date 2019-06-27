@@ -45,7 +45,7 @@
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
-        <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="0741d1d51b48d704d18ed70b90a10333757754e5d1b9955e6e78ca678bd77d59" />
+        <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="d888eb46ab373eda59264a6f19afbda499ce304f95862bbb4c04f46877ed4a71" />
 
         <!-- Branch init -->
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="${branchIOKey}" />
