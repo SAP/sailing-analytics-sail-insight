@@ -40,7 +40,7 @@ class Tracking extends React.Component<{
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
-  trackedRank?: string,
+  trackedRank?: number,
 } > {
   public state = {
     isLoading: false,
