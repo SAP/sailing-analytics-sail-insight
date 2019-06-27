@@ -20,6 +20,7 @@ import { getCompetitor } from 'selectors/competitor'
 import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { getMark } from 'selectors/mark'
+import { getLeaderboardEnabledSetting } from 'selectors/settings'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import ImageButton from 'components/ImageButton'
@@ -41,6 +42,7 @@ class Tracking extends React.Component<{
   checkInData: CheckIn,
   trackedContextName?: string,
   trackedRank?: number,
+  leaderboardEnabled?: boolean,
 } > {
   public state = {
     isLoading: false,
@@ -61,7 +63,13 @@ class Tracking extends React.Component<{
   }
 
   public render() {
-    const { trackingStats, checkInData, trackedContextName, trackedRank } = this.props
+    const {
+      trackingStats,
+      checkInData,
+      trackedContextName,
+      trackedRank,
+      leaderboardEnabled,
+    } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
     const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(0)}°` : EMPTY_VALUE
@@ -80,15 +88,17 @@ class Tracking extends React.Component<{
                 unit={I18n.t('text_tracking_unit_knots')}
               />
             </View>
-            <View
-              style={[styles.rightPropertyContainer]}
-            >
-              <TrackingProperty
-                title={I18n.t('text_tracking_rank')}
-                value={`${trackedRank || EMPTY_VALUE}`}
-                onPress={this.onLeaderboardPress}
-              />
-            </View>
+            {leaderboardEnabled &&
+              <View
+                style={[styles.rightPropertyContainer]}
+              >
+                <TrackingProperty
+                  title={I18n.t('text_tracking_rank')}
+                  value={`${trackedRank || EMPTY_VALUE}`}
+                  onPress={this.onLeaderboardPress}
+                />
+              </View>
+            }
           </View>
           <View style={[container.stretchContent]}>
             <TrackingPropertyAutoFit
@@ -222,6 +232,7 @@ const mapStateToProps = (state: any) => {
       'name',
     ),
     trackedRank: getTrackedCompetitorLeaderboardRank(state),
+    leaderboardEnabled: getLeaderboardEnabledSetting(state),
   }
 }
 

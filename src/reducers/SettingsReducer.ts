@@ -3,8 +3,9 @@ import { handleActions } from 'redux-actions'
 import {
   updateGpsBulkSetting,
   updateAnalyticsSettings,
+  updateLeaderboardEnabledSetting,
   updateServerUrlSetting,
-  updateVerboseLoggingSetting
+  updateVerboseLoggingSetting,
 } from 'actions/settings'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { SettingsState } from 'reducers/config'
@@ -17,6 +18,7 @@ const initialState: SettingsState = {
   enableAnalytics: false,
   serverUrl: DEFAULT_SERVER_URL,
   verboseLogging: false,
+  leaderboardEnabled: false,
 }
 
 const reducer = handleActions(
@@ -25,6 +27,7 @@ const reducer = handleActions(
     [updateAnalyticsSettings as any]: itemUpdateHandler('enableAnalytics'),
     [updateServerUrlSetting as any]: itemUpdateHandler('serverUrl'),
     [updateVerboseLoggingSetting as any]: itemUpdateHandler('verboseLogging'),
+    [updateLeaderboardEnabledSetting as any]: itemUpdateHandler('leaderboardEnabled'),
     [removeUserData as any]: () => initialState,
   },
   initialState,

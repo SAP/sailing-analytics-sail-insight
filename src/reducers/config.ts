@@ -55,6 +55,7 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
+  leaderboardEnabled: boolean,
 }
 
 export interface AuthState {

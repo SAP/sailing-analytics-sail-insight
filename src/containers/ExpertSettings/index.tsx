@@ -15,12 +15,20 @@ import {  getFormFieldValue } from 'selectors/form'
 import { button, container, image, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
-import { updateServerUrlSetting, updateVerboseLoggingSetting } from '../../actions/settings'
+import {
+  updateLeaderboardEnabledSetting,
+  updateServerUrlSetting,
+  updateVerboseLoggingSetting,
+} from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
 import * as expertSettingsForm from '../../forms/settings'
 import { navigateBack } from '../../navigation'
-import { getServerUrlSetting, getVerboseLoggingSetting } from '../../selectors/settings'
+import {
+  getLeaderboardEnabledSetting,
+  getServerUrlSetting,
+  getVerboseLoggingSetting,
+} from '../../selectors/settings'
 import styles from './styles'
 
 interface Props {
@@ -28,6 +36,8 @@ interface Props {
   updateServerUrlSetting: (value: string) => void,
   verboseLogging: boolean,
   updateVerboseLoggingSetting: (value: boolean) => void,
+  leaderboardEnabled: boolean,
+  updateLeaderboardEnabledSetting: (value: boolean) => void,
 }
 
 class ExpertSettings extends TextInputForm<Props> {
@@ -47,6 +57,14 @@ class ExpertSettings extends TextInputForm<Props> {
               <Text style={text.claimHighlighted}>{I18n.t('text_development_claim_02')}</Text>
             </Text>
           </View>
+        </View>
+        <View style={container.largeHorizontalMargin}>
+          <EditItemSwitch
+            style={styles.item}
+            title={I18n.t('text_leaderboard_enabled_setting')}
+            switchValue={this.props.leaderboardEnabled}
+            onSwitchValueChange={this.props.updateLeaderboardEnabledSetting}
+          />
         </View>
         <View style={container.largeHorizontalMargin}>
           <EditItemSwitch
@@ -114,12 +132,13 @@ const mapStateToProps = (state: any) => {
       [expertSettingsForm.FORM_KEY_SERVER_URL]: getServerUrlSetting(state),
     },
     verboseLogging: getVerboseLoggingSetting(state),
+    leaderboardEnabled: getLeaderboardEnabledSetting(state),
   }
 }
 
 export default connect(
   mapStateToProps,
-  { updateServerUrlSetting, updateVerboseLoggingSetting },
+  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,

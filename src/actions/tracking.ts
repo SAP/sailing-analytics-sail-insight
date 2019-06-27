@@ -21,7 +21,11 @@ import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
 import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
-import { getBulkGpsSetting, getVerboseLoggingSetting } from '../selectors/settings'
+import {
+  getBulkGpsSetting,
+  getLeaderboardEnabledSetting,
+  getVerboseLoggingSetting,
+} from '../selectors/settings'
 import { syncAllFixes } from '../services/GPSFixService'
 import { deleteAllGPSFixRequests } from '../storage'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
@@ -29,12 +33,15 @@ import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackin
 
 export type StopTrackingAction = (data?: CheckIn) => any
 export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboard: data && data.regattaName })(
-  async (dataApi, dispatch) => {
+  async (dataApi, dispatch, getState) => {
     if (!data) {
       return
     }
     await dispatch(stopLocationUpdates())
-    await dispatch(stopLeaderboardUpdates())
+    const leaderboardEnabled = getLeaderboardEnabledSetting(getState())
+    if (leaderboardEnabled) {
+      await dispatch(stopLeaderboardUpdates())
+    }
     await syncAllFixes(dispatch)
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
       await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
@@ -113,8 +120,11 @@ export const startTracking: StartTrackingAction = data =>  async (
     }
     dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId, verboseLogging))
 
-    const rankingMetric: string | undefined = getTrackedRegattaRankingMetric(getState())
-    dispatch(startLeaderboardUpdates(checkInData, rankingMetric))
+    const leaderboardEnabled = getLeaderboardEnabledSetting(getState())
+    if (leaderboardEnabled) {
+      const rankingMetric: string | undefined = getTrackedRegattaRankingMetric(getState())
+      dispatch(startLeaderboardUpdates(checkInData, rankingMetric))
+    }
   } catch (err) {
     throw err
   } finally {
