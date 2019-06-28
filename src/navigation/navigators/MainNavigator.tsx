@@ -55,7 +55,12 @@ export default createStackNavigator(
       navigationOptions: ({ navigation: navigationProps }: any) => {
         return {
           headerTitle: 'Track Details',
-          headerRight: <ShareButton url={get(navigationProps, 'state.params.data')}/>,
+          headerRight: (
+            <ShareButton
+              url={get(navigationProps, 'state.params.data.url')}
+              eventName={get(navigationProps, 'state.params.data.eventName')}
+            />
+          ),
         }
       },
     },

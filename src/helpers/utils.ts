@@ -113,7 +113,7 @@ export const openEmailTo = (email: string, subject?: string, body?: string) =>
   Linking.openURL(addUrlParams(
     `mailto:${email}`,
     {
-      ...(subject && { subject }),
-      ...(body && { body }),
+      ...(subject ? { subject } : {}),
+      ...(body ? { body } : {}),
     },
   ))

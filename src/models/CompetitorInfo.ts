@@ -7,7 +7,7 @@ export default interface CompetitorInfo {
   boatId?: string
   nationality?: string
   teamName?: string
-  teamImage?: string
+  teamImage?: any
   handicap?: Handicap
   name?: string
 }
