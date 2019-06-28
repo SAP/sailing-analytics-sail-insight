@@ -3,7 +3,14 @@ export { default as CheckIn } from './CheckIn'
 export { default as TrackingSession } from './TrackingSession'
 export { default as Event } from './Event'
 export { default as Competitor } from './Competitor'
-export { default as Leaderboard } from './Leaderboard'
+export {
+  Leaderboard,
+  LeaderboardBoat,
+  LeaderboardColumn,
+  LeaderboardCompetitor,
+  LeaderboardColumnData,
+  LeaderboardCompetitorCurrentTrack
+} from './Leaderboard'
 export { default as Race } from './Race'
 export { default as Boat } from './Boat'
 export { default as Mark } from './Mark'
