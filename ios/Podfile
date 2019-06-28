@@ -31,6 +31,8 @@ target 'sap_sailing_insight' do
   pod 'Fabric', '~> 1.7.13'
   pod 'Crashlytics', '~> 3.10.7'
 
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing

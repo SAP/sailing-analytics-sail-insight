@@ -1,7 +1,7 @@
 import { get, set } from 'lodash'
 import { handleActions } from 'redux-actions'
 
-import { addOrUpdateUserBoat, teamWasUsed, removeTeam, updateTeams } from 'actions/user'
+import { addOrUpdateUserBoat, teamWasUsed, removeTeam, updateTeams, updateImages } from 'actions/user'
 import { getNowAsMillis } from 'helpers/date'
 import { removeEntity } from 'helpers/reducers'
 
@@ -12,6 +12,7 @@ import { removeUserData } from '../actions/auth'
 const initialState: UserState = {
   currentBoat: null,
   boats: {},
+  images: {},
 }
 
 const reducer = handleActions(
@@ -23,6 +24,21 @@ const reducer = handleActions(
       return {
         ...state,
         boats: action.payload || {},
+      }
+    },
+    [updateImages as any]: (state: any = {}, action?: any) => {
+      if (!action) {
+        return state
+      }
+
+      const { imageUuid, imageData } = action.payload
+
+      return {
+        ...state,
+        images: {
+          ...state.images,
+          [imageUuid]: imageData,
+        },
       }
     },
     [addOrUpdateUserBoat as any]: (state: UserState = {}, action?: any) => {

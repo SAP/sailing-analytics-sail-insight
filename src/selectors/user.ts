@@ -9,6 +9,7 @@ import { TeamTemplate } from 'models'
 import { getEntities, getEntityArrayByType } from './entity'
 import { getFormFieldValue } from './form'
 
+export const getUserImages = (state: RootState = {}) => getEntities(state, 'images', 'user')
 
 const orderTeamsLastUsedDesc = (boats: TeamTemplate[]) => boats.sort((b1, b2) => {
   if (!b1.lastUsed && !b2.lastUsed) {
@@ -24,11 +25,20 @@ const orderTeamsLastUsedDesc = (boats: TeamTemplate[]) => boats.sort((b1, b2) =>
 })
 
 const getUserTeamEntities = (state: RootState = {}) => getEntities(state, 'boats', 'user')
-export const getUserTeams = (state: RootState = {}) => orderTeamsLastUsedDesc(getEntityArrayByType(
+export const getOrderedUserTeams = (state: RootState = {}) => orderTeamsLastUsedDesc(getEntityArrayByType(
   state,
   'boats',
   { reducerName: 'user', omitId: true },
 ))
+
+export const getUserTeams = createSelector(
+  getOrderedUserTeams,
+  getUserImages,
+  (teams: TeamTemplate[], images: any) => teams.map((team: TeamTemplate) => ({
+    ...team,
+    imageData: team.imageUuid && images[team.imageUuid],
+  }))
+)
 
 export const getUserBoatsByClass = (boatClass: string) => createSelector(
   getUserTeams,

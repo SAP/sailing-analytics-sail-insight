@@ -198,6 +198,7 @@ export const createUserAttachmentToSession = (
             boatClass: competitorInfo.boatClass,
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
+            imageData: competitorInfo.teamImage,
             handicap: competitorInfo.handicap,
             id: {
               ...(userBoat && typeof userBoat.id === 'object' ? { ...userBoat.id } : {}),
