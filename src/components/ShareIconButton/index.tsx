@@ -9,6 +9,7 @@ import styles from './styles'
 
 class ShareButton extends React.Component<{
   url?: string
+  eventName?: string
 }> {
 
   public render() {
@@ -26,9 +27,9 @@ class ShareButton extends React.Component<{
   }
 
   private onPress = () => {
-    const { url = '' } = this.props
+    const { url = '', eventName = '' } = this.props
 
-    const message = `${I18n.t('text_track_share')}${url}`
+    const message = `${I18n.t('text_track_share')}${eventName} ${url}`
 
     Share.share({ message })
   }

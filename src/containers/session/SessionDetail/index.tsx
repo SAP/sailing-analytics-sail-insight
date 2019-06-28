@@ -32,7 +32,7 @@ const TRACKS_DATA_KEY = 'tracks'
 
 @connectActionSheet
 class SessionDetail extends React.Component<NavigationScreenProps & {
-  openTrackDetails: (race: Race) => void,
+  openTrackDetails: (race: Race, session?: Session) => void,
   checkOut: (checkIn?: CheckIn) => void,
   startTracking: StartTrackingAction,
   session?: Session,
@@ -87,7 +87,7 @@ class SessionDetail extends React.Component<NavigationScreenProps & {
   }
 
   public onTrackPress = (race: Race) => () => {
-    this.props.openTrackDetails(race)
+    this.props.openTrackDetails(race, this.props.session)
   }
 
   public renderItem = ({ item }: any) => {
