@@ -33,24 +33,56 @@ export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch:
     team.lastUsed = getNowAsMillis()
   }
 
-  team.imageUuid = get(team, ['imageData', 'uuid'])
+  const teamWithImage = {
+    ...omit(team, 'imageData'),
+    imageUuid: await dispatch(uploadImage(team.imageData)),
+  }
 
   // TODO Key should be replaces by unique key
   const newTeams = {
     ...(replaceTeamName ? omit(teams, replaceTeamName) : teams),
-    [team.name]: omit(team, 'imageData'),
+    [team.name]: teamWithImage,
   }
   await selfTrackingApi().updatePreference(TEAMS_PREFERENCE_KEY, newTeams)
   dispatch(updateTeams(newTeams))
-  if (team.imageUuid) {
-    dispatch(
-      updateImages({
-        imageUuid: team.imageUuid,
-        imageData: team.imageData,
-      }),
-    )
-    await selfTrackingApi().updatePreference(team.imageUuid, omit(team.imageData, 'path'))
+}
+
+export type updateTeamImageAction = (teamName: string, imageData?: any) => any
+export const updateTeamImage: updateTeamImageAction = (teamName, imageData) =>
+  async (dispatch: DispatchType) => {
+    const teams = await fetchTeams()
+    const teamToEdit = get(teams, teamName)
+    if (!teamToEdit) {
+      return
+    }
+    const teamWithNewImage = {
+      ...teamToEdit,
+      imageUuid: await dispatch(uploadImage(imageData)),
+    }
+
+    const newTeams = {
+      ...teams,
+      [teamName]: teamWithNewImage,
+    }
+    await selfTrackingApi().updatePreference(TEAMS_PREFERENCE_KEY, newTeams)
+    dispatch(updateTeams(newTeams))
   }
+
+const uploadImage = (imageData?: any) => async (dispatch: DispatchType) => {
+  const uuid = imageData && imageData.uuid
+  if (!uuid) {
+    return undefined
+  }
+
+  dispatch(
+    updateImages({
+      imageData,
+      imageUuid: uuid,
+    }),
+  )
+  await selfTrackingApi().updatePreference(uuid, omit(imageData, 'path'))
+
+  return uuid
 }
 
 export const fetchTeams = async () => {

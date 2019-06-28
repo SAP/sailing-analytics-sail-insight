@@ -8,7 +8,14 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
-import { deleteTeam, DeleteTeamAction, saveTeam, SaveTeamAction } from 'actions/user'
+import {
+  deleteTeam,
+  DeleteTeamAction,
+  saveTeam,
+  SaveTeamAction,
+  updateTeamImage,
+  updateTeamImageAction,
+} from 'actions/user'
 import * as teamForm from 'forms/team'
 import { ComparisonValidatorViewProps, validateNameExists, validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
@@ -47,6 +54,7 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
   paramTeamName?: string
   saveTeam: SaveTeamAction
   deleteTeam: DeleteTeamAction
+  updateTeamImage: updateTeamImageAction
 }
 
 class TeamDetails extends TextInputForm<Props> {
@@ -79,6 +87,7 @@ class TeamDetails extends TextInputForm<Props> {
             name={teamForm.FORM_KEY_IMAGE}
             component={FormImagePicker}
             placeholder={Images.header.team}
+            onChange={this.onImageChange}
           />
         </View>
         <View style={registration.bottomContainer()}>
@@ -155,6 +164,13 @@ class TeamDetails extends TextInputForm<Props> {
     )
   }
 
+  protected onImageChange = (imageData: any) => {
+    const { team } = this.props
+    if (team) {
+      this.props.updateTeamImage(team.name, imageData)
+    }
+  }
+
   protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
                                         newValue?: any, previousValue?: any) => {
     if (!this.props.formSailNumber || this.props.formSailNumber === previousValue) {
@@ -217,7 +233,6 @@ class TeamDetails extends TextInputForm<Props> {
       formBoatClass,
       formBoatName,
       formHandicap,
-      formTeamImage,
     } = this.props
 
     const nameHasChanged = !team || formTeamName !== team.name
@@ -225,7 +240,6 @@ class TeamDetails extends TextInputForm<Props> {
     const nationalityHasChanged = !team || formNationality !== team.nationality
     const boatClassHasChanged = !team || formBoatClass !== team.boatClass
     const boatNameHasChanged = !team || formBoatName !== team.boatName
-    const imageHasChanged = !team || formTeamImage !== team.imageData
 
     const handicapHasChanged = !team || hasHandicapChanged(team.handicap, formHandicap)
 
@@ -235,7 +249,6 @@ class TeamDetails extends TextInputForm<Props> {
       nationalityHasChanged ||
       boatClassHasChanged ||
       boatNameHasChanged ||
-      imageHasChanged ||
       handicapHasChanged
     )
   }
@@ -277,8 +290,13 @@ const mapStateToProps = (state: any, props: any) => {
   } as ComparisonValidatorViewProps
 }
 
-export default connect(mapStateToProps, { saveTeam, deleteTeam })(reduxForm<{}, Props>({
-  form: teamForm.TEAM_FORM_NAME,
-  destroyOnUnmount: true,
-  forceUnregisterOnUnmount: true,
-})(TeamDetails))
+export default connect(
+  mapStateToProps,
+  { saveTeam, deleteTeam, updateTeamImage },
+)(
+  reduxForm<{}, Props>({
+    form: teamForm.TEAM_FORM_NAME,
+    destroyOnUnmount: true,
+    forceUnregisterOnUnmount: true,
+  })(TeamDetails),
+)

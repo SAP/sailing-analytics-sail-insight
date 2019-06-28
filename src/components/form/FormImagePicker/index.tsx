@@ -16,6 +16,7 @@ import Logger from '../../../helpers/Logger'
 class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
   placeholder?: any,
   disabled?: boolean,
+  onChange?: (value: any) => void
 } > {
 
   public render() {
@@ -52,14 +53,20 @@ class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
   }
 
   protected handleImage = (value: any) => {
-    const { input } = this.props
+    const { input, onChange } = this.props
     if (!input || !input.onChange) {
       return
     }
-    input.onChange({
+
+    const imageData = {
       ...value,
       ...(value && { uuid: uuidv4() }),
-    })
+    }
+
+    input.onChange(imageData)
+    if (onChange) {
+      onChange(imageData)
+    }
   }
 }
 
