@@ -131,11 +131,19 @@ export const getFilteredSessionList = createSelector(
   getActiveEventFilters,
   (sessions: Session[], filters: EventFilter[]) => {
     let filteredSessions = sessions
+
+    if (!filters.includes(EventFilter.All)) {
+      filteredSessions = filteredSessions.filter(
+        (session: Session) => session.event ? session.event.archived : false
+      )
+    }
+
     if (!filters.includes(EventFilter.Archived)) {
       filteredSessions = filteredSessions.filter(
         (session: Session) => session.event ? !session.event.archived : true
       )
     }
+
     return filteredSessions
   },
 )

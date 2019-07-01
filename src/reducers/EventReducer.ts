@@ -1,15 +1,16 @@
 import { get } from 'lodash'
 import { handleActions } from 'redux-actions'
 
-import { receiveEvent, updateEvent, updateEventFilters } from 'actions/events'
+import { EventFilter } from 'models/EventFilter'
+import { EventState } from 'reducers/config'
 
 import { removeUserData } from 'actions/auth'
-import { EventState } from 'reducers/config'
+import { receiveEvent, updateEvent, updateEventFilters } from 'actions/events'
 
 
 const initialState: EventState = {
   all: {} as Map<string, any>,
-  activeFilters: [],
+  activeFilters: [EventFilter.All],
 } as EventState
 
 const reducer = handleActions(
@@ -24,7 +25,7 @@ const reducer = handleActions(
         ...state,
         all: {
           ...state.all,
-          ...event
+          ...event,
         },
       }
     },
@@ -42,7 +43,7 @@ const reducer = handleActions(
           [id]: {
             ...(state.all[id] || {}),
             ...data,
-          }
+          },
         },
       }
     },
