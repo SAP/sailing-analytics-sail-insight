@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { handleActions } from 'redux-actions'
 
-import { receiveEvent, updateEvent } from 'actions/events'
+import { receiveEvent, updateEvent, updateEventFilters } from 'actions/events'
 
 import { removeUserData } from 'actions/auth'
 import { EventState } from 'reducers/config'
@@ -44,6 +44,16 @@ const reducer = handleActions(
             ...data,
           }
         },
+      }
+    },
+    [updateEventFilters as any]: (state: any = {}, action?: any) => {
+      if (!action || !action.payload) {
+        return state
+      }
+
+      return {
+        ...state,
+        activeFilters: action.payload,
       }
     },
     [removeUserData as any]: () => initialState,

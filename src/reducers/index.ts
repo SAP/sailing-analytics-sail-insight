@@ -11,7 +11,6 @@ import EventReducer from './EventReducer'
 import LocationTrackingReducer from './LocationTrackingReducer'
 import OnboardingReducer from './OnboardingReducer'
 import SettingsReducer from './SettingsReducer'
-import UIReducer from './UIReducer'
 import UserReducer from './UserReducer'
 
 
@@ -26,7 +25,6 @@ const reducer: RootState = {
   settings: SettingsReducer,
   network: networkReducer,
   events: EventReducer,
-  UI: UIReducer,
 }
 
 const reducers = combineReducers(reducer)

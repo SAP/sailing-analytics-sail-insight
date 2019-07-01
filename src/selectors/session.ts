@@ -7,7 +7,7 @@ import { mapResToEvent } from 'models/Event'
 import { EventFilter } from 'models/EventFilter'
 import { mapResToLeaderboard } from 'models/Leaderboard'
 import { mapResToRegatta } from 'models/Regatta'
-import { getEventFilters } from 'selectors/UI'
+import { getActiveEventFilters } from 'selectors/event'
 import { removeUserPrefix } from 'services/SessionService'
 
 import { mapResToBoat } from 'models/Boat'
@@ -128,7 +128,7 @@ export const isSessionListEmpty = createSelector(
 
 export const getFilteredSessionList = createSelector(
   getSessionList,
-  getEventFilters,
+  getActiveEventFilters,
   (sessions: Session[], filters: EventFilter[]) => {
     let filteredSessions = sessions
     if (!filters.includes(EventFilter.Archived)) {

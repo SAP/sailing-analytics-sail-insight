@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, InjectedFormProps, reduxForm } from 'redux-form'
 
-import { updateEventFilters } from 'actions/UI'
+import { updateEventFilters } from 'actions/events'
 import {
   EVENT_FILTER_FORM_NAME,
   eventFilterFromFormValues,

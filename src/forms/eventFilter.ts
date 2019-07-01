@@ -1,5 +1,5 @@
 import { EventFilter } from 'models/EventFilter'
-import { getEventFilters } from 'selectors/UI'
+import { getActiveEventFilters } from 'selectors/event'
 
 export const EVENT_FILTER_FORM_NAME = 'eventFilter'
 
@@ -16,7 +16,7 @@ export const eventFilterFromFormValues = (values: any) => ([
 ])
 
 export const getFormInitialValues = (state: any) => {
-  const eventFilters = getEventFilters(state)
+  const eventFilters = getActiveEventFilters(state)
 
   return {
     [FORM_KEY_ALL]:      eventFilters.includes(EventFilter.All),

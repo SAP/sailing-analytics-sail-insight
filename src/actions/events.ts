@@ -7,6 +7,7 @@ import { DispatchType } from 'helpers/types'
 
 export const updateEvent = createAction('UPDATE_EVENT')
 export const receiveEvent = createAction('RECEIVE_EVENT')
+export const updateEventFilters = createAction('UPDATE_EVENT_FILTERS')
 
 export const fetchEvent = (requestFunction: ((...args: any[]) => void)) =>
   (...args: any[]) => async (dispatch: DispatchType) => {
