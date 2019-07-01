@@ -16,7 +16,7 @@ import { getUserInfo } from './auth'
 import { getBoatEntity } from './boat'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from './checkIn'
 import { getCompetitorEntity } from './competitor'
-import { getEventEntity, getEventLocalState } from './event'
+import { getEventEntity } from './event'
 import { getLeaderboardEntity } from './leaderboard'
 import { getMarkEntity } from './mark'
 import { getRegattaEntity } from './regatta'
@@ -25,7 +25,6 @@ import { getRegattaEntity } from './regatta'
 const buildSession = (
   checkIn: CheckIn,
   eventEntity: any,
-  eventLocalState: any,
   leaderboardEntity: any,
   regattaEntity: any,
   competitorEntity: any,
@@ -34,10 +33,7 @@ const buildSession = (
   userInfo: any,
 ) => {
   const result: Session = { ...checkIn }
-  result.event = {
-    ...((eventEntity && mapResToEvent(eventEntity[checkIn.eventId])) || {}),
-    ...((eventLocalState && eventLocalState[checkIn.eventId]) || {}),
-  }
+  result.event = eventEntity && mapResToEvent(eventEntity[checkIn.eventId])
   result.leaderboard = leaderboardEntity && mapResToLeaderboard(leaderboardEntity[checkIn.leaderboardName])
   result.competitor =
     checkIn.competitorId &&
@@ -58,7 +54,6 @@ const buildSession = (
 export const getSessionList = createSelector(
   getActiveCheckInEntity,
   getEventEntity,
-  getEventLocalState,
   getLeaderboardEntity,
   getRegattaEntity,
   getCompetitorEntity,
@@ -68,7 +63,6 @@ export const getSessionList = createSelector(
   (
     activeCheckIns,
     eventEntity,
-    eventLocalState,
     leaderboardEntity,
     regattaEntity,
     competitorEntity,
@@ -83,7 +77,6 @@ export const getSessionList = createSelector(
       values(activeCheckIns).map(checkIn => buildSession(
         checkIn,
         eventEntity,
-        eventLocalState,
         leaderboardEntity,
         regattaEntity,
         competitorEntity,
@@ -100,7 +93,6 @@ export const getSessionList = createSelector(
 export const getSession = (leaderboardName: string) => createSelector(
   getCheckInByLeaderboardName(leaderboardName),
   getEventEntity,
-  getEventLocalState,
   getLeaderboardEntity,
   getRegattaEntity,
   getCompetitorEntity,
@@ -110,7 +102,6 @@ export const getSession = (leaderboardName: string) => createSelector(
   (
     checkIn,
     eventEntity,
-    eventLocalState,
     leaderboardEntity,
     regattaEntity,
     competitorEntity,
@@ -120,7 +111,6 @@ export const getSession = (leaderboardName: string) => createSelector(
   ) => buildSession(
     checkIn,
     eventEntity,
-    eventLocalState,
     leaderboardEntity,
     regattaEntity,
     competitorEntity,

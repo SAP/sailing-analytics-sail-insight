@@ -9,11 +9,17 @@ import { getAccessToken } from 'selectors/auth'
 import { getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import CheckInException from 'services/CheckInService/CheckInException'
 
+export const fetchAction = (
+  requestFunction: (...args: any[]) => void,
+  actionCreator: (...args: any[]) => any,
+) => (...args: any[]) => async (dispatch: DispatchType) => {
+  const payload: any = await requestFunction(...args)
+  return payload && dispatch(actionCreator(payload))
+}
 
 export const fetchEntityAction = (requestFunction: ((...args: any[]) => void)) =>
   (...args: any[]) => async (dispatch: DispatchType) => {
-    const payload: any = await requestFunction(...args)
-    return payload && dispatch(receiveEntities(payload))
+    return await dispatch(fetchAction(requestFunction, receiveEntities)(...args))
   }
 
 type TokenAction = (token: string, dispatch: DispatchType, getState: GetStateType) => any

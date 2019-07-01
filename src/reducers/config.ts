@@ -57,7 +57,10 @@ export interface UserState {
   boats?: any | null
 }
 
-export type EventState = Map<string, any>
+export interface EventState {
+  all: Map<string, any>
+  activeFilters: string[]
+}
 
 export interface UIState {
   eventFilters: string[]
