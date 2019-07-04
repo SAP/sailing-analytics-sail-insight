@@ -6,6 +6,7 @@ export interface RootState {
   network?: any
   checkIn?: any | CheckInState
   entities?: any
+  leaderboardTracking?: any | LeaderboardTrackingState
   locationTracking?: any | LocationTrackingState
   form?: any
   onboarding?: any | OnboardingState
@@ -33,6 +34,17 @@ export interface LocationTrackingState {
   startAutoCourseUpdateStatus: AutoCourseUpdateState
 }
 
+export interface CompetitorGap {
+  gap: number
+  gaining: boolean | undefined
+}
+
+export type CompetitorGapMap = Map<string, CompetitorGap>
+
+export interface LeaderboardTrackingState {
+  competitorGaps: CompetitorGapMap
+}
+
 export interface OnboardingState {
   joinRegattaDismissedAt: number | null
   createAccountDismissedAt: number | null
@@ -43,6 +55,7 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
+  leaderboardEnabled: boolean,
 }
 
 export interface AuthState {
@@ -53,6 +66,7 @@ export interface AuthState {
 export interface UserState {
   currentBoat?: any | null
   boats?: any | null
+  images?: any
 }
 
 export interface CheckInState {

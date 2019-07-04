@@ -13,12 +13,14 @@ import { degToCompass } from 'helpers/physics'
 import { openSAPWebsite } from 'helpers/user'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
-import { navigateBack, navigateToSetWind } from 'navigation'
+import { navigateBack, navigateToLeaderboard, navigateToSetWind } from 'navigation'
 import { getBoat } from 'selectors/boat'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
+import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { getMark } from 'selectors/mark'
+import { getLeaderboardEnabledSetting } from 'selectors/settings'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import ImageButton from 'components/ImageButton'
@@ -39,6 +41,8 @@ class Tracking extends React.Component<{
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
+  trackedRank?: number,
+  leaderboardEnabled?: boolean,
 } > {
   public state = {
     isLoading: false,
@@ -59,7 +63,13 @@ class Tracking extends React.Component<{
   }
 
   public render() {
-    const { trackingStats, checkInData, trackedContextName } = this.props
+    const {
+      trackingStats,
+      checkInData,
+      trackedContextName,
+      trackedRank,
+      leaderboardEnabled,
+    } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
     const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(0)}°` : EMPTY_VALUE
@@ -70,13 +80,27 @@ class Tracking extends React.Component<{
         <ConnectivityIndicator style={styles.connectivity}/>
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={[container.mediumHorizontalMargin, styles.container]}>
+          <View style={styles.propertyRow}>
+            <View>
+              <TrackingPropertyAutoFit
+                title={I18n.t('text_tracking_sog')}
+                value={speedOverGround}
+                unit={I18n.t('text_tracking_unit_knots')}
+              />
+            </View>
+            {leaderboardEnabled &&
+              <View
+                style={[styles.rightPropertyContainer]}
+              >
+                <TrackingProperty
+                  title={I18n.t('text_tracking_rank')}
+                  value={`${trackedRank || EMPTY_VALUE}`}
+                  onPress={this.onLeaderboardPress}
+                />
+              </View>
+            }
+          </View>
           <View style={[container.stretchContent]}>
-            <TrackingPropertyAutoFit
-              style={styles.dynamicPropertyContainer}
-              title={I18n.t('text_tracking_sog')}
-              value={speedOverGround}
-              unit={I18n.t('text_tracking_unit_knots')}
-            />
             <TrackingPropertyAutoFit
               style={[styles.dynamicPropertyContainer, styles.property]}
               title={I18n.t('text_tracking_cog')}
@@ -164,6 +188,10 @@ class Tracking extends React.Component<{
     }
   }
 
+  protected onLeaderboardPress = () => {
+    navigateToLeaderboard()
+  }
+
   protected onSetWindPress = () => {
     const { trackingStats } = this.props
     if (!trackingStats || !trackingStats.lastLatitude || !trackingStats.lastLongitude) {
@@ -203,6 +231,8 @@ const mapStateToProps = (state: any) => {
       getMark(checkInData.markId)(state),
       'name',
     ),
+    trackedRank: getTrackedCompetitorLeaderboardRank(state),
+    leaderboardEnabled: getLeaderboardEnabledSetting(state),
   }
 }
 

@@ -72,9 +72,9 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
     [CheckInBodyKeys.FromMillis]: new Date().getTime(),
     [CheckInBodyKeys.PushDeviceID]: '',
     [CheckInBodyKeys.Secret]: secret,
-    ...(boatId && { [CheckInBodyKeys.BoatId]: boatId }),
-    ...(competitorId && { [CheckInBodyKeys.CompetitorId]: competitorId }),
-    ...(markId && { [CheckInBodyKeys.MarkId]: markId }),
+    ...(boatId ? { [CheckInBodyKeys.BoatId]: boatId } : {}),
+    ...(competitorId ? { [CheckInBodyKeys.CompetitorId]: competitorId } : {}),
+    ...(markId ? { [CheckInBodyKeys.MarkId]: markId } : {}),
   }
   return body
 }
@@ -92,9 +92,9 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   const body = {
     [CheckInBodyKeys.DeviceUUID]: getDeviceId(),
     [CheckInBodyKeys.ToMillis]: new Date().getTime(),
-    ...(boatId && { [CheckInBodyKeys.BoatId]: boatId }),
-    ...(competitorId && { [CheckInBodyKeys.CompetitorId]: competitorId }),
-    ...(markId && { [CheckInBodyKeys.MarkId]: markId }),
+    ...(boatId ? { [CheckInBodyKeys.BoatId]: boatId } : {}),
+    ...(competitorId ? { [CheckInBodyKeys.CompetitorId]: competitorId } : {}),
+    ...(markId ? { [CheckInBodyKeys.MarkId]: markId } : {}),
   }
   return body
 }

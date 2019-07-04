@@ -11,6 +11,7 @@ import {
   FORM_KEY_HANDICAP,
   FORM_KEY_NATIONALITY,
   FORM_KEY_SAIL_NUMBER,
+  FORM_KEY_TEAM_IMAGE,
   FORM_KEY_TEAM_NAME,
 } from 'forms/session'
 import I18n from 'i18n'
@@ -115,6 +116,7 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
     const { input: { onChange: onChangeSailNumber } } = (this.props as any)[FORM_KEY_SAIL_NUMBER]
     const { input: { onChange: onChangeNationality } } = (this.props as any)[FORM_KEY_NATIONALITY]
     const { input: { onChange: onChangeBoatId } } = (this.props as any)[FORM_KEY_BOAT_ID]
+    const { input: { onChange: onChangeTeamImage } } = (this.props as any)[FORM_KEY_TEAM_IMAGE]
     const { input: { onChange: onChangeHandicap } } = (this.props as any)[FORM_KEY_HANDICAP]
 
     const team = this.teamFromName(name)
@@ -124,6 +126,7 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
     onChangeSailNumber((team && team.sailNumber) || null)
     onChangeNationality((team && team.nationality) || null)
     onChangeBoatId((team && team.id) || null)
+    onChangeTeamImage((team && team.imageData) || null)
     onChangeHandicap((team && team.handicap) || getDefaultHandicap())
   }
 

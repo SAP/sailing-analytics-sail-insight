@@ -4,7 +4,6 @@ import { Alert, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
-import Images from '@assets/Images'
 import { removeUserData, updateUser } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
@@ -14,7 +13,6 @@ import I18n from 'i18n'
 import User from 'models/User'
 
 import TextInputForm from 'components/base/TextInputForm'
-import FormImagePicker from 'components/form/FormImagePicker'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
@@ -34,7 +32,6 @@ import styles from './styles'
 interface Props {
   user: User,
   formFullName?: string,
-  formImageData?: string,
   removeUserData: () => void,
   fetchUserInfo: () => void,
   updateUser: (u: User) => void,
@@ -59,12 +56,6 @@ class UserProfile extends TextInputForm<Props> {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
-          <Field
-            name={userForm.FORM_KEY_IMAGE}
-            component={FormImagePicker}
-            placeholder={Images.header.sailors}
-            onChange={this.saveImage}
-          />
           <View style={container.largeHorizontalMargin}>
             <Field
               style={input.topMargin}
@@ -122,17 +113,8 @@ class UserProfile extends TextInputForm<Props> {
     }
   }
 
-  protected saveImage = async (image: any) => {
-    this.updateUserData({
-      imageData: image
-    })
-  }
-
   protected onSubmit = async (values: any) => {
-    this.updateUserData({
-      fullName: values[userForm.FORM_KEY_NAME],
-      imageData: values[userForm.FORM_KEY_IMAGE]
-    })
+    this.updateUserData({ fullName: values[userForm.FORM_KEY_NAME] })
   }
 
   protected deleteUserDataAlert = () => {
@@ -171,11 +153,7 @@ const mapStateToProps = (state: any) => {
   return {
     user,
     formFullName: getFormFieldValue(userForm.USER_FORM_NAME, userForm.FORM_KEY_NAME)(state),
-    formImageData: getFormFieldValue(userForm.USER_FORM_NAME, userForm.FORM_KEY_IMAGE)(state),
-    initialValues: {
-      [userForm.FORM_KEY_NAME]: user.fullName,
-      [userForm.FORM_KEY_IMAGE]: user.imageData,
-    },
+    initialValues: { [userForm.FORM_KEY_NAME]: user.fullName },
   }
 }
 
