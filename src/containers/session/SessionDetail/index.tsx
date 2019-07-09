@@ -1,178 +1,108 @@
-import { connectActionSheet } from '@expo/react-native-action-sheet'
-import { isEmpty } from 'lodash'
+import { curry } from 'ramda'
+
 import React from 'react'
-import { Alert, Linking, SectionList, View } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 
 import { checkOut, collectCheckInData } from 'actions/checkIn'
-import { openTrackDetails } from 'actions/navigation'
-import {  startTracking, StartTrackingAction } from 'actions/tracking'
-import { settingsWithCheckoutActionSheetOptions } from 'helpers/actionSheets'
-import { getErrorDisplayMessage } from 'helpers/texts'
-import { getStatsFromTracks, listKeyExtractor } from 'helpers/utils'
-import I18n from 'i18n'
-import { CheckIn, Race, Session } from 'models'
-import { navigateBack } from 'navigation'
+import { Session } from 'models'
 import { getCustomScreenParamData } from 'navigation/utils'
-import { getRaces } from 'selectors/race'
-import * as CheckInService from 'services/CheckInService'
 import { getSession } from 'selectors/session'
 
-import { container, button } from 'styles/commons'
+import Text from 'components/Text'
+import IconText from 'components/IconText'
+
+import Images from '@assets/Images'
+import { container } from 'styles/commons'
 import styles from './styles'
 
-import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
-import TrackInfo from 'components/session/TrackInfo'
-import TrackItem from 'components/session/TrackItem'
-import Text from 'components/Text'
-import TextButton from 'components/TextButton'
+const iconText = (icon: String, text?: String) =>
+  <IconText
+    source={icon}
+    iconTintColor={'#5B97F8'}>
+    {text}
+  </IconText>;
 
-const TRACKS_DATA_KEY = 'tracks'
+const toTouchableCard = curry(({ onPress, icon }, content: any) =>
+  <TouchableOpacity onPress={onPress} style={styles.card}>
+    { iconText(icon) }
+    <View style={styles.cardContent}>
+      { content }
+    </View>
+    <View style={{ justifyContent: 'center'}}>
+      { iconText(Images.actions.arrowRight) }
+    </View>
+  </TouchableOpacity>);
 
-@connectActionSheet
-class SessionDetail extends React.Component<NavigationScreenProps & {
-  openTrackDetails: (race: Race, session?: Session) => void,
-  checkOut: (checkIn?: CheckIn) => void,
-  startTracking: StartTrackingAction,
+const overallStatus = (session?: Session) => toTouchableCard({
+    onPress: () => console.log('press'),
+    icon: Images.info.boat
+  }, [
+    <Text>Everything is <Text style={{ color: 'green'}}>good</Text></Text>,
+    <Text>Race 1 is currently running</Text>,
+    <Text>All trackers are sending location updates.</Text>
+  ]);
+
+const sessionDetails = (session?: Session) => toTouchableCard({
+  onPress: () => console.log('press'),
+  icon: Images.info.competitor
+  }, [
+    <Text>Wednesday Regatta</Text>,
+    <Text>10.07.2019</Text>,
+    <Text>Handicap Regatta</Text>,
+    <Text>Rating System</Text>
+  ]);
+
+const typeAndBoatClass = (session?: Session) => toTouchableCard({
+  onPress: () => console.log('press'),
+  icon: Images.info.location
+  }, [
+    <Text>Regatta Type and Boat Class</Text>,
+    <Text>One Design Regatta</Text>
+  ]);
+
+const racesAndScoring = (session?: Session) => toTouchableCard({
+  onPress: () => console.log('press'),
+  icon: Images.actions.share
+  }, [
+    <Text>Races and Scoring</Text>,
+    <Text>10 Races Planned</Text>,
+    <Text>Low Point Scoring</Text>,
+    <Text>Discard starting from 3. race</Text>
+  ]);
+
+const competitors = (session?: Session) => toTouchableCard({
+  onPress: () => console.log('press'),
+  icon: Images.info.competitor
+  }, [
+    <Text>Competitors</Text>,
+    <Text>Unmanaged Regatta – 7 Entries</Text>,
+    <Text>Invitations: 4 / Acceptations: 2</Text>
+  ]);
+
+const SessionDetail: React.SFC<NavigationScreenProps & {
   session?: Session,
-  showActionSheetWithOptions: any,
-  tracks: Race[],
-  collectCheckInData: (c?: CheckIn) => void,
-} > {
-
-  public state = {
-    isLoading: false,
-  }
-
-  public componentDidMount() {
-    const { session } = this.props
-    this.props.navigation.setParams({
-      heading: session && (session.userStrippedDisplayName || session.leaderboardName),
-      onOptionsPressed: this.onOptionsPressed,
-    })
-    this.props.collectCheckInData(session)
-  }
-
-  public onCheckoutPressed = async () => {
-    try {
-      await this.props.checkOut(this.props.session)
-      navigateBack()
-    } catch (err) {
-      Alert.alert(getErrorDisplayMessage(err))
-    }
-  }
-
-  public onOptionsPressed = () => {
-    this.props.showActionSheetWithOptions(...settingsWithCheckoutActionSheetOptions(this.onCheckoutPressed))
-  }
-
-  public onTrackingPress = async () => {
-    await this.setState({ isLoading: true })
-    try {
-      await this.props.startTracking(this.props.session)
-    } catch (err) {
-      Alert.alert(getErrorDisplayMessage(err))
-    } finally {
-      this.setState({ isLoading: false })
-    }
-  }
-
-  public onEventPress = () => {
-    Linking.openURL(CheckInService.eventUrl(this.props.session))
-  }
-
-  public onLeaderboardPress = () => {
-    Linking.openURL(CheckInService.leaderboardUrl(this.props.session))
-  }
-
-  public onTrackPress = (race: Race) => () => {
-    this.props.openTrackDetails(race, this.props.session)
-  }
-
-  public renderItem = ({ item }: any) => {
-    return <TrackItem onPress={this.onTrackPress(item)} track={item} showFullTrackName={false} />
-  }
-
-  public renderSessionDetails = () => {
-    const { session, tracks } = this.props
-    if (!session) {
-      return <View/>
-    }
-    return (
-      <View
-        style={[
-          styles.header,
-          this.props.tracks.length > 0 ? styles.headerWithTracks : undefined,
-        ]}
-      >
-        <SessionInfoDisplay
-          session={session}
-          eventImageSize="large"
-          onTrackingPress={this.onTrackingPress}
-        />
-        { session.isSelfTracking &&
-          <TextButton
-            style={[button.trackingAction, styles.betaButton]}
-            textStyle={styles.betaButtonText}
-            onPress={this.showBetaAlert}
-          >
-            {I18n.t('caption_beta_session')}
-          </TextButton>
-        }
-        <TrackInfo stats={getStatsFromTracks(tracks)}  style={styles.sidePadding}/>
-      </View>
-    )
-  }
-
-  public showBetaAlert = () => {
-    Alert.alert(
-      I18n.t('caption_beta_self_tracking'),
-      I18n.t('text_beta_self_tracking')
-    )
-  }
-
-  public renderSectionHeader = ({ section: { title, data } }: any) => {
-    return (
-      <View style={styles.sectionHeaderContainer}>
-        {
-          !isEmpty(data) &&
-          <Text style={styles.sectionHeader}>
-            {title === TRACKS_DATA_KEY ? I18n.t('text_tracks').toUpperCase() : title}
-          </Text>
-        }
-      </View>
-    )
-  }
-
-  public render() {
-    const { tracks } = this.props
-    return (
-      <View style={container.list}>
-        <SectionList
-          bounces={tracks.length > 0}
-          sections={[{ title: TRACKS_DATA_KEY, data: tracks }]}
-          renderItem={this.renderItem}
-          ListHeaderComponent={this.renderSessionDetails}
-          renderSectionHeader={this.renderSectionHeader}
-          keyExtractor={listKeyExtractor}
-        />
-      </View>
-    )
-  }
-}
+}> = ({ session, navigation }) =>
+  <View style={[ container.list, styles.cardsContainer ]}>
+    {[
+      overallStatus(session),
+      sessionDetails(session),
+      typeAndBoatClass(session),
+      racesAndScoring(session),
+      competitors(session)
+      ]}
+  </View>;
 
 const mapStateToProps = (state: any, props: any) => {
   const leaderboardName = getCustomScreenParamData(props)
   return {
-    session: getSession(leaderboardName)(state),
-    tracks: getRaces(leaderboardName)(state) || [],
+    session: getSession(leaderboardName)(state)
   }
 }
 
 export default connect(mapStateToProps, {
   checkOut,
-  startTracking,
   collectCheckInData,
-  openTrackDetails,
 })(SessionDetail)
+
