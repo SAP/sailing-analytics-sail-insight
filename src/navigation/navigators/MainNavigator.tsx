@@ -40,7 +40,7 @@ export default createStackNavigator(
       },
     },
     [Screens.SessionDetail]: {
-      screen: SessionDetail,
+      screen: SessionDetail.fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
