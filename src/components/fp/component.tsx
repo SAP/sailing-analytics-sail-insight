@@ -64,6 +64,7 @@ export {
     Component,
     fold,
     classToFn,
+    enhance,
     reduxConnect,
     recomposeBranch,
     recomposeWithHandlers,

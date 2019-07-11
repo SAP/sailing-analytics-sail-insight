@@ -34,7 +34,7 @@ export default createStackNavigator(
         header: null,
       },
     },
-    [Screens.NewSession]: { screen: NewSessionNavigator, navigationOptions: { header: null } },
+    [Screens.NewSessionBasics]: { screen: NewSessionNavigator, navigationOptions: { header: null } },
     [Screens.TrackingNavigator]: {
       screen: TrackingNavigator,
       navigationOptions: { header: null, gesturesEnabled: false },

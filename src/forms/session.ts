@@ -6,6 +6,7 @@ import { validateRequired, validateSessionname } from './validators'
 export const SESSION_FORM_NAME = 'session'
 
 export const FORM_KEY_NAME = 'name'
+export const FORM_KEY_LOCATION = 'location'
 export const FORM_KEY_TRACK_NAME = 'trackName'
 export const FORM_KEY_BOAT_NAME = 'boatName'
 export const FORM_KEY_BOAT_CLASS = 'boatClass'

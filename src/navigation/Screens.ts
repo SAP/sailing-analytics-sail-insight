@@ -15,7 +15,8 @@ export const TeamDetails = 'TeamDetails'
 export const UserSessions = 'UserSessions'
 export const SessionDetail = 'SessionDetail'
 export const EditSession = 'EditSession'
-export const NewSession = 'NewSession'
+export const NewSessionBasics = 'NewSessionBasics'
+export const NewSessionTypeAndBoatClass = 'NewSessionTypeAndBoatClass'
 
 // join
 export const CheckIn = 'CheckIn'

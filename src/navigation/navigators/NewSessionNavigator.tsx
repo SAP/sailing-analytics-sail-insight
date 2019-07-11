@@ -7,12 +7,13 @@ import * as Screens from 'navigation/Screens'
 
 import ModalBackButton from 'components/ModalBackButton'
 import EditSession from 'containers/session/EditSession'
-import TrackingSetup from 'containers/tracking/TrackingSetup'
+import BasicsSetup from 'containers/session/BasicsSetup'
+import TypeAndBoatClass from 'containers/session/TypeAndBoatClass'
 
 export default createStackNavigator(
   {
-    [Screens.TrackingSetup]: {
-      screen: TrackingSetup,
+    [Screens.NewSessionBasics]: {
+      screen: BasicsSetup.fold,
       navigationOptions: () => ({
         title: I18n.t('caption_new_session'),
         headerLeft: null,
@@ -25,9 +26,15 @@ export default createStackNavigator(
         title: I18n.t('title_edit_session'),
       },
     },
+    [Screens.NewSessionTypeAndBoatClass]: {
+      screen: TypeAndBoatClass.fold,
+      navigationOptions: {
+        title: I18n.t('title_edit_session'),
+      },
+    }
   },
   {
-    initialRouteName: Screens.TrackingSetup,
+    initialRouteName: Screens.NewSessionBasics,
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },
