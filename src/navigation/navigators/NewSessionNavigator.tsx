@@ -13,7 +13,8 @@ import TypeAndBoatClass from 'containers/session/TypeAndBoatClass'
 export default createStackNavigator(
   {
     [Screens.NewSessionBasics]: {
-      screen: BasicsSetup.fold,
+      //screen: BasicsSetup.fold,
+      screen: TypeAndBoatClass.fold,
       navigationOptions: () => ({
         title: I18n.t('caption_new_session'),
         headerLeft: null,

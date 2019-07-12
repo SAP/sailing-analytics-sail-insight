@@ -3,7 +3,7 @@ import { compose, reduce, concat, merge } from 'ramda'
 import I18n from 'i18n'
 
 import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
-import { Component, fold, nothing, reduxConnect as connect, fromClass } from 'components/fp/component'
+import { Component, fold, nothing, reduxConnect as connect, fromClass, contramap } from 'components/fp/component'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import { view, text, touchableOpacity } from 'components/fp/react-native'
 import FormTextInput from 'components/form/FormTextInput'
@@ -58,14 +58,14 @@ const nextButton = Component((props: Object) => compose(
   fold(props),
   touchableOpacity({
     onPress: () => navigateToNewSessionTypeAndBoatClass()
-  }))(
-    fromClass(IconText).contramap(merge({
-      source: Images.actions.arrowRight,
-      alignment: 'horizontal',
-      iconPosition: 'second',
-      children: 'Continue'
-    }))
-  ))
+  }),
+  contramap(merge({
+    source: Images.actions.arrowRight,
+    alignment: 'horizontal',
+    iconPosition: 'second',
+    children: 'Continue'
+  })))(
+  fromClass(IconText)))
 
 export default Component((props: Object) => compose(
   fold(props),

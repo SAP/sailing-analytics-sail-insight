@@ -49,6 +49,8 @@ const Component = compose(
     (x: any) => compose(asArray, x)
 );
 
+const contramap = curry((f: Function, c: any) => c.contramap(f))
+
 // of :: JSX -> Component
 Component.of = compose(Component, always);
 
@@ -62,6 +64,7 @@ const nothingAsClass = () => class extends React.Component {
 
 export {
     Component,
+    contramap,
     fold,
     classToFn,
     enhance,
