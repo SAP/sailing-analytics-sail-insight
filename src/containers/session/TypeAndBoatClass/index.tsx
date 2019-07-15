@@ -1,16 +1,16 @@
-import { compose, reduce, concat, merge, always, propEq } from 'ramda'
-
-import I18n from 'i18n'
+import { compose, reduce, concat, merge, always, propEq, prop } from 'ramda'
 
 import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
 import { Component, fold, nothing, reduxConnect as connect, fromClass, contramap,
-  recomposeWithState as withState } from 'components/fp/component'
+  recomposeWithState as withState, recomposeBranch as branch, nothingAsClass } from 'components/fp/component'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import { view, text, touchableOpacity } from 'components/fp/react-native'
 import CheckBox from 'react-native-check-box'
 import IconText from 'components/IconText'
 import * as sessionForm from 'forms/session'
 import Images from '@assets/Images'
+import FormTextInput from 'components/form/FormTextInput'
+import ModalDropdown from 'react-native-modal-dropdown'
 
 const mapStateToProps = (state: any, props: any) => {
   return {}
@@ -27,6 +27,8 @@ const formSettings = {
 const withSelectedType = withState('selectedType', 'setSelectedType', 'oneDesign')
 const isOneDesignSelected = propEq('selectedType', 'oneDesign')
 const isHandicapSelected = propEq('selectedType', 'handicap')
+const nothingIfOneDesignSelected = branch(isOneDesignSelected, nothingAsClass)
+const nothingIfHandicapSelected = branch(isHandicapSelected, nothingAsClass)
 
 const boatIcon = fromClass(IconText).contramap(always({
   source: Images.info.boat
@@ -71,17 +73,29 @@ const reviewButton = Component((props: Object) => compose(
   })))(
   fromClass(IconText)));
 
+const boatClassInput = reduxFormField({
+  label: 'Boat class (autocomplete)',
+  name: sessionForm.FORM_KEY_NAME,
+  component: FormTextInput
+})
+
+const ratingSystemDropdown = fromClass(ModalDropdown).contramap(always({
+  options: ['IRC', 'ORC International', 'ORC Club', 'Yardstick', 'PHRF']
+}))
+
 export default Component((props: Object) => compose(
   fold(props),
   connect(mapStateToProps),
   withSelectedType,
   reduxForm(formSettings),
-  view({ style: []}),
+  view({ style: { backgroundColor: 'red'}}),
   reduce(concat, nothing()))([
     text({}, 'Regatta Type and Boat Class'),
     oneDesignCheckbox,
     handicapCheckbox,
-    text({}, "Additional settings are optional. Click 'Review and create' to create your event now."),
+    nothingIfHandicapSelected(boatClassInput),
+    nothingIfOneDesignSelected(ratingSystemDropdown),
+    text({ style: { marginTop: 100 }}, "Additional settings are optional. Click 'Review and create' to create your event now."),
     reviewButton,
     nextButton
   ]))

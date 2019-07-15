@@ -13,6 +13,7 @@
     "@types/ramda": "^0.26.6",
     "@types/react-native-datepicker": "^1.7.0",
     "@types/react-native-loading-spinner-overlay": "^0.5.1",
+    "@types/react-native-modal-dropdown": "^0.6.1",
     "@types/recompose": "^0.30.6",
     "buffer": "^5.2.1",
     "country-data": "^0.0.31",
