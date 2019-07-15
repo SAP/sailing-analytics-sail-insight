@@ -115,8 +115,6 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       ...additionalProps
     } = this.props
 
-    console.log('####', restInput)
-
     const { query }: Readonly<any> = this.state
     return (
         <TextInput

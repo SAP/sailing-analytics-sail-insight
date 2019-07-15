@@ -1,15 +1,15 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
-  // container: {
-  //   flex: 1,
-  // },
+  container: {
+    flex: 1,
+  },
   autocompleteContainer: {
-    //flex: 1,
+    flex: 1,
     left: 0,
     right: 0,
     top: 0,
-    //zIndex: 1,
+    zIndex: 1,
   },
   inputContainer: {
     borderWidth: 0,
