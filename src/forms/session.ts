@@ -17,6 +17,8 @@ export const FORM_KEY_TEAM_IMAGE = 'teamImage'
 export const FORM_KEY_NATIONALITY = 'nationality'
 export const FORM_KEY_HANDICAP = 'handicap'
 export const FORM_KEY_PRIVACY_SETTING = 'privacySetting'
+export const FORM_KEY_RACE_NUMBER = 'raceNumber'
+export const FORM_KEY_DISCARD_START = 'discardStart'
 
 export const trackingSessionFromFormValues = (values: any) => values && ({
   boatClass: values[FORM_KEY_BOAT_CLASS],
