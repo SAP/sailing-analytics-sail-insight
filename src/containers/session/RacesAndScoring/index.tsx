@@ -1,4 +1,4 @@
-import { compose, concat, map, merge, reduce } from 'ramda'
+import { __, always, compose, concat, curry, map, merge, reduce } from 'ramda'
 
 import React from 'react'
 import { FlatList, Text, TouchableOpacity } from 'react-native'
@@ -28,21 +28,36 @@ const formSettings = {
   keepDirtyOnReinitialize: true,
 }
 
-const raceNumberInput = reduxFormField({
-  name: sessionForm.FORM_KEY_RACE_NUMBER,
-  component: Slider,
-})
+const SliderControlled = Component((props: any) => (
+  <Slider
+    value={props.input.value}
+    onValueChange={props.input.onChange}
+    {...props}
+  />
+))
 
-const raceNumberSelector = Component((props: object) =>
+const sliderSettings = {
+  minimumValue: 1,
+  maximumValue: 20,
+  step: 1,
+}
+
+const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
     reduce(concat, nothing()),
   )([
     text({}, 'Planned number of races'),
-    raceNumberInput,
+    SliderControlled,
+    text({}, `${props.input.value}`),
   ]),
 )
 
+const raceNumberSelectorConnected = reduxFormField({
+  name: sessionForm.FORM_KEY_RACE_NUMBER,
+  component: raceNumberSelector.fold,
+  ...sliderSettings
+})
 
 const scoringSystemLabel = Component((props: object) => compose(
   fold(props),
@@ -54,10 +69,15 @@ const scoringSystemLabel = Component((props: object) => compose(
 ]))
 
 
-const flatList = (settings: object) =>
-  fromClass(FlatList).contramap(merge(settings))
+const flatList = (settings: object) => Component((props: any) => compose(
+  fold(props),
+  fromClass(FlatList).contramap,
+  merge,
+  merge(__, { renderItem: settings.renderItem(props) }),
+  merge(settings),
+)(settings))
 
-const horizontalPickerItem = ({ item }: any) => (
+const horizontalPickerItem = curry((props: any, { item }: any) => (
   <TouchableOpacity
     style={{
       height: 100,
@@ -65,16 +85,23 @@ const horizontalPickerItem = ({ item }: any) => (
       justifyContent: 'center',
       alignItems: 'center',
       flex: 1,
-      backgroundColor: '#F1F9FF',
+      backgroundColor: item.key == props.input.value ? '#2699FB' : '#F1F9FF',
       margin: 10,
     }}
+    onPress={() => props.input.onChange(item.key)}
   >
-    <Text>{item.key}</Text>
+    <Text
+      style={{
+        color: item.key == props.input.value ? '#FFFFFF' : '#2699FB',
+      }}
+    >
+      {item.key}
+    </Text>
   </TouchableOpacity>
-)
+))
 
 const discardHorizontalPicker = flatList({
-  data: [{ key: 1 }, { key: 2 }, { key: 3 }, { key: 4 }, { key: 5 }, { key: 6 }],
+  data: [{ key: 2 }, { key: 3 }, { key: 4 }, { key: 5 }, { key: 6 }, { key: 7 }],
   renderItem: horizontalPickerItem,
   showsHorizontalScrollIndicator: false,
   horizontal: true,
@@ -108,14 +135,21 @@ const nextButton = Component((props: Object) => compose(
     })),
   ))
 
+const mapStateToProps = (state: any) => ({
+  initialValues: {
+    [sessionForm.FORM_KEY_RACE_NUMBER]: 3,
+    [sessionForm.FORM_KEY_DISCARD_START]: 3,
+  }
+})
+
 export default Component((props: Object) => compose(
   fold(props),
-  connect(),
+  connect(mapStateToProps),
   reduxForm(formSettings),
   view({ style: [] }),
   reduce(concat, nothing()))([
     text({}, 'Races & Scoring'),
-    raceNumberSelector,
+    raceNumberSelectorConnected,
     scoringSystemLabel,
     discardSelector,
     nextButton,
