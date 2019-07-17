@@ -9,6 +9,8 @@ import ModalBackButton from 'components/ModalBackButton'
 import BasicsSetup from 'containers/session/BasicsSetup'
 import EditSession from 'containers/session/EditSession'
 import RacesAndScoring from 'containers/session/RacesAndScoring'
+import Competitors from 'containers/session/Competitors'
+import EditSession from 'containers/session/EditSession'
 import TypeAndBoatClass from 'containers/session/TypeAndBoatClass'
 
 export default createStackNavigator(
@@ -36,6 +38,8 @@ export default createStackNavigator(
     },
     [Screens.NewSessionRacesAndScoring]: {
       screen: RacesAndScoring.fold,
+    [Screens.NewSessionCompetitors]: {
+      screen: Competitors.fold,
       navigationOptions: {
         title: I18n.t('title_edit_session'),
       },
