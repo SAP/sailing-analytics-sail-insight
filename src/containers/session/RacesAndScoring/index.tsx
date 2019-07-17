@@ -28,13 +28,15 @@ const formSettings = {
   keepDirtyOnReinitialize: true,
 }
 
-const SliderControlled = Component((props: any) => (
-  <Slider
-    value={props.input.value}
-    onValueChange={props.input.onChange}
-    {...props}
-  />
-))
+const SliderControlled = Component((props: any) => compose(
+  fold(props),
+  fromClass(Slider).contramap,
+  merge,
+  merge(__, {
+    value: props.input.value,
+    onValueChange: props.input.onChange,
+  }),
+)({}))
 
 const sliderSettings = {
   minimumValue: 1,
