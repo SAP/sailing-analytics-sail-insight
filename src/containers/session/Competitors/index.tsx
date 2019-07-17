@@ -1,4 +1,4 @@
-import { compose, concat, map, merge, reduce } from 'ramda'
+import { compose, concat, map, reduce, toUpper } from 'ramda'
 
 import { Share } from 'react-native'
 
@@ -40,12 +40,10 @@ const inviteButton = Component((props: object) => compose(
       justifyContent: 'center',
       alignItems: 'center',
     }
-  })
-)(
-  text({
-    style: { color: '#1897FE' }
-  }, 'Share invite link'.toUpperCase())
-))
+  }),
+  text({ style: { color: '#1897FE' }}),
+  toUpper)(
+  'Share invite link'))
 
 const reviewButton = Component((props: object) => compose(
   fold(props),
@@ -58,11 +56,9 @@ const reviewButton = Component((props: object) => compose(
       justifyContent: 'center',
       alignItems: 'center',
     }
-  }))(
-    text({
-      style: { color: '#FFFFFF' }
-    }, 'Review and create')
-  ))
+  }),
+  text({ style: { color: '#FFFFFF' }}))(
+  'Review and create'))
 
 export default Component((props: object) => compose(
   fold(props),

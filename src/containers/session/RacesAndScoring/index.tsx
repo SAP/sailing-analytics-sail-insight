@@ -12,6 +12,7 @@ import {
   fromClass,
   nothing,
   reduxConnect as connect,
+  contramap
 } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
@@ -33,11 +34,12 @@ const sliderSettings = {
   step: 1,
 }
 
-const forwardingPropsFlatList = Component(props => compose(
-  fold(props))(
-  fromClass(FlatList).contramap(mergeLeft({
+const forwardingPropsFlatList = Component((props: any) => compose(
+  fold(props),
+  contramap(mergeLeft({
     renderItem: item => props.renderItem({...props, ...item })
-  }))))
+  }))(
+  fromClass(FlatList)))
 
 const raceNumberSelector = Component((props: any) =>
   compose(
@@ -97,14 +99,14 @@ const nextButton = Component((props: Object) => compose(
   fold(props),
   touchableOpacity({
     onPress: () => navigateToNewSessionTypeAndBoatClass(),
-  }))(
-    fromClass(IconText).contramap(merge({
-      source: Images.actions.arrowRight,
-      alignment: 'horizontal',
-      iconPosition: 'second',
-      children: 'Competitors',
-    })),
-  ))
+  }),
+  contramap(merge({
+    source: Images.actions.arrowRight,
+    alignment: 'horizontal',
+    iconPosition: 'second',
+    children: 'Competitors',
+  })))(
+  fromClass(IconText)))
 
 const mapStateToProps = (state: any) => ({
   initialValues: {
