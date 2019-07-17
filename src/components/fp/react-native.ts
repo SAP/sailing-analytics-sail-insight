@@ -1,5 +1,5 @@
 import { Text, View, Image, TouchableHighlight } from 'react-native';
-import { compose, objOf, merge, always, curry, unless, is, __, either, isNil, head } from 'ramda';
+import { compose, objOf, merge, always, curry, when, __, has, head } from 'ramda';
 import { fromClass, fold, Component } from './component';
 
 const view = curry((settings, c) => Component((props: Object) => compose(
@@ -17,7 +17,7 @@ const text = curry((settings, c) => Component((props: Object) => compose(
     always,
     merge(settings),
     objOf('children'),
-    unless(either(is(String), isNil), fold(props)))(
+    when(has('fold'), fold(props)))(
     c)));
 
 const image = (settings: Object) => Component((props: Object) => compose(
@@ -41,7 +41,7 @@ const touchableOpacity = curry((settings, c) => Component((props: Object) => com
     fold(props),
     fromClass(TouchableHighlight).contramap,
     always,
-    merge(__, { onPress: () => settings.onPress(props) }),
+    merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props) }),
     merge(settings),
     objOf('children'),
     head,
