@@ -41,7 +41,7 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.NewSessionBasics,
+    initialRouteName: Screens.NewSessionRacesAndScoring,
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },

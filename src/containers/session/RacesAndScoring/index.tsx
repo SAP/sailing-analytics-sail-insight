@@ -1,4 +1,4 @@
-import { compose, concat, map, merge, reduce } from 'ramda'
+import { compose, concat, map, merge, reduce, prop, path } from 'ramda'
 
 import React from 'react'
 import { FlatList, Text, TouchableOpacity } from 'react-native'
@@ -40,9 +40,7 @@ const raceNumberSelector = Component((props: object) =>
   )([
     text({}, 'Planned number of races'),
     raceNumberInput,
-  ]),
-)
-
+  ]))
 
 const scoringSystemLabel = Component((props: object) => compose(
   fold(props),
@@ -53,13 +51,10 @@ const scoringSystemLabel = Component((props: object) => compose(
   'Please contact us if you require any other scoring system.'
 ]))
 
-
-const flatList = (settings: object) =>
-  fromClass(FlatList).contramap(merge(settings))
-
-const horizontalPickerItem = ({ item }: any) => (
-  <TouchableOpacity
-    style={{
+const horizontalPickerItem = Component(props => compose(
+  fold(props),
+  touchableOpacity({
+    style: {
       height: 100,
       width: 100,
       justifyContent: 'center',
@@ -67,18 +62,19 @@ const horizontalPickerItem = ({ item }: any) => (
       flex: 1,
       backgroundColor: '#F1F9FF',
       margin: 10,
-    }}
-  >
-    <Text>{item.key}</Text>
-  </TouchableOpacity>
-)
+    },
+    onPress: item => console.log(item)
+  }),
+  text({}),
+  path(['item', 'key']))(
+  props))
 
-const discardHorizontalPicker = flatList({
+const discardHorizontalPicker = fromClass(FlatList).contramap(merge({
   data: [{ key: 1 }, { key: 2 }, { key: 3 }, { key: 4 }, { key: 5 }, { key: 6 }],
-  renderItem: horizontalPickerItem,
+  renderItem: horizontalPickerItem.fold,
   showsHorizontalScrollIndicator: false,
   horizontal: true,
-})
+}))
 
 const discardInput = reduxFormField({
   name: sessionForm.FORM_KEY_DISCARD_START,
