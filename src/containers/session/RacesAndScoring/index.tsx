@@ -1,8 +1,7 @@
-import { compose, concat, map, merge, reduce, prop, path } from 'ramda'
+import { __, compose, concat, map, merge, mergeLeft, reduce, range, objOf } from 'ramda'
 
-import React from 'react'
-import { FlatList, Text, TouchableOpacity } from 'react-native'
 import Slider from '@react-native-community/slider'
+import { FlatList } from 'react-native'
 
 import I18n from 'i18n'
 
@@ -28,30 +27,47 @@ const formSettings = {
   keepDirtyOnReinitialize: true,
 }
 
-const raceNumberInput = reduxFormField({
-  name: sessionForm.FORM_KEY_RACE_NUMBER,
-  component: Slider,
-})
+const sliderSettings = {
+  minimumValue: 1,
+  maximumValue: 20,
+  step: 1,
+}
 
-const raceNumberSelector = Component((props: object) =>
+const forwardingPropsFlatList = Component(props => compose(
+  fold(props))(
+  fromClass(FlatList).contramap(mergeLeft({
+    renderItem: item => props.renderItem({...props, ...item })
+  }))))
+
+const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
     reduce(concat, nothing()),
   )([
     text({}, 'Planned number of races'),
-    raceNumberInput,
-  ]))
+    fromClass(Slider).contramap(merge({
+      value: props.input.value,
+      onValueChange: props.input.onChange
+    })),
+    text({}, `${props.input.value}`),
+  ]),
+)
+
+const raceNumberFormField = reduxFormField({
+  name: sessionForm.FORM_KEY_RACE_NUMBER,
+  component: raceNumberSelector.fold,
+  ...sliderSettings,
+})
 
 const scoringSystemLabel = Component((props: object) => compose(
   fold(props),
   reduce(concat, nothing()),
-  map(text({}))
-)([
+  map(text({})))([
   'Low point scoring applies',
   'Please contact us if you require any other scoring system.'
 ]))
 
-const horizontalPickerItem = Component(props => compose(
+const discardSelectorItem = Component((props: any) => compose(
   fold(props),
   touchableOpacity({
     style: {
@@ -60,36 +76,22 @@ const horizontalPickerItem = Component(props => compose(
       justifyContent: 'center',
       alignItems: 'center',
       flex: 1,
-      backgroundColor: '#F1F9FF',
+      backgroundColor: props.item.key == props.input.value ? '#2699FB' : '#F1F9FF',
       margin: 10,
     },
-    onPress: item => console.log(item)
+    onPress: () => props.input.onChange(props.item.key)
   }),
-  text({}),
-  path(['item', 'key']))(
-  props))
+  text({}))(
+  props.item.key))
 
-const discardHorizontalPicker = fromClass(FlatList).contramap(merge({
-  data: [{ key: 1 }, { key: 2 }, { key: 3 }, { key: 4 }, { key: 5 }, { key: 6 }],
-  renderItem: horizontalPickerItem.fold,
+const discardInputFormField = reduxFormField({
+  name: sessionForm.FORM_KEY_DISCARD_START,
+  data: map(objOf('key'), range(1, 7)),
+  component: forwardingPropsFlatList.fold,
+  renderItem: discardSelectorItem.fold,
   showsHorizontalScrollIndicator: false,
   horizontal: true,
-}))
-
-const discardInput = reduxFormField({
-  name: sessionForm.FORM_KEY_DISCARD_START,
-  component: discardHorizontalPicker.fold,
 })
-
-const discardSelector = Component((props: object) =>
-  compose(
-    fold(props),
-    reduce(concat, nothing()),
-  )([
-    text({}, 'Discards starting from ... races'),
-    discardInput,
-  ]),
-)
 
 const nextButton = Component((props: Object) => compose(
   fold(props),
@@ -104,15 +106,23 @@ const nextButton = Component((props: Object) => compose(
     })),
   ))
 
+const mapStateToProps = (state: any) => ({
+  initialValues: {
+    [sessionForm.FORM_KEY_RACE_NUMBER]: 3,
+    [sessionForm.FORM_KEY_DISCARD_START]: 3,
+  },
+})
+
 export default Component((props: Object) => compose(
   fold(props),
-  connect(),
+  connect(mapStateToProps),
   reduxForm(formSettings),
   view({ style: [] }),
   reduce(concat, nothing()))([
     text({}, 'Races & Scoring'),
-    raceNumberSelector,
+    raceNumberFormField,
     scoringSystemLabel,
-    discardSelector,
+    text({}, 'Discards starting from ... races'),
+    discardInputFormField,
     nextButton,
   ]))
