@@ -1,4 +1,4 @@
-import { Text, View, Image, TouchableHighlight } from 'react-native';
+import { Text, View, Image, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { compose, objOf, merge, always, curry, when, __, has, head } from 'ramda';
 import { fromClass, fold, Component } from './component';
 
@@ -39,7 +39,7 @@ const touchableHighlight = curry((settings, c) => Component((props: Object) => c
 
 const touchableOpacity = curry((settings, c) => Component((props: Object) => compose(
     fold(props),
-    fromClass(TouchableHighlight).contramap,
+    fromClass(TouchableOpacity).contramap,
     always,
     merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props) }),
     merge(settings),
