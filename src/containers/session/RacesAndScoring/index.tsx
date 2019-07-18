@@ -38,7 +38,7 @@ const forwardingPropsFlatList = Component((props: any) => compose(
   fold(props),
   contramap(mergeLeft({
     renderItem: item => props.renderItem({...props, ...item })
-  }))(
+  })))(
   fromClass(FlatList)))
 
 const raceNumberSelector = Component((props: any) =>
@@ -48,7 +48,7 @@ const raceNumberSelector = Component((props: any) =>
   )([
     text({}, 'Planned number of races'),
     fromClass(Slider).contramap(merge({
-      value: props.input.value,
+      value: Number(props.input.value),
       onValueChange: props.input.onChange
     })),
     text({}, `${props.input.value}`),

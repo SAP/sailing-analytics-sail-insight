@@ -1,6 +1,6 @@
 import { compose, reduce, concat, merge, always, propEq, prop } from 'ramda'
 
-import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
+import { navigateToNewSessionsRacesAndScoring } from 'navigation'
 import { Component, fold, nothing, reduxConnect as connect, fromClass, contramap,
   recomposeWithState as withState, recomposeBranch as branch, nothingAsClass } from 'components/fp/component'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
@@ -59,14 +59,14 @@ const nextButton = Component((props: Object) => compose(
     children: 'Races & Scoring'
   })),
   touchableOpacity({
-    onPress: () => navigateToNewSessionTypeAndBoatClass()
+    onPress: () => navigateToNewSessionsRacesAndScoring()
   }))(
   fromClass(IconText)));
 
 const reviewButton = Component((props: Object) => compose(
   fold(props),
   touchableOpacity({
-    onPress: () => navigateToNewSessionTypeAndBoatClass()
+    onPress: () => {}
   }),
   contramap(merge({
     children: 'Review and create'

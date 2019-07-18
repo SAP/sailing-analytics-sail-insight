@@ -10,14 +10,12 @@ import BasicsSetup from 'containers/session/BasicsSetup'
 import EditSession from 'containers/session/EditSession'
 import RacesAndScoring from 'containers/session/RacesAndScoring'
 import Competitors from 'containers/session/Competitors'
-import EditSession from 'containers/session/EditSession'
 import TypeAndBoatClass from 'containers/session/TypeAndBoatClass'
 
 export default createStackNavigator(
   {
     [Screens.NewSessionBasics]: {
-      //screen: BasicsSetup.fold,
-      screen: TypeAndBoatClass.fold,
+      screen: BasicsSetup.fold,
       navigationOptions: () => ({
         title: I18n.t('caption_new_session'),
         headerLeft: null,
@@ -44,9 +42,9 @@ export default createStackNavigator(
         title: I18n.t('title_edit_session'),
       },
     },
-  },
+  }},
   {
-    initialRouteName: Screens.NewSessionRacesAndScoring,
+    initialRouteName: Screens.NewSessionBasics,
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },
