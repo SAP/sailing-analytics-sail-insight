@@ -70,7 +70,7 @@ const nextButton = Component((props: Object) => compose(
 const reviewButton = Component((props: Object) => compose(
   fold(props),
   touchableOpacity({
-    onPress: () => navigateToNewSessionTypeAndBoatClass()
+    onPress: () => {}
   }),
   contramap(merge({
     children: 'Review and create'

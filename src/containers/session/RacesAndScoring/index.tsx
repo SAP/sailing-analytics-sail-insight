@@ -43,7 +43,7 @@ const raceNumberSelector = Component((props: any) =>
   )([
     text({}, 'Planned number of races'),
     fromClass(Slider).contramap(merge({
-      value: props.input.value,
+      value: Number(props.input.value),
       onValueChange: props.input.onChange
     })),
     text({}, `${props.input.value}`),
