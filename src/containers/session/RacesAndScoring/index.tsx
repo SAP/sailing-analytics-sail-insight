@@ -18,7 +18,7 @@ import { text, touchableOpacity, view } from 'components/fp/react-native'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import IconText from 'components/IconText'
 import * as sessionForm from 'forms/session'
-import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
+import { navigateToNewSessionCompetitors } from 'navigation'
 
 const formSettings = {
   form: sessionForm.SESSION_FORM_NAME,
@@ -98,7 +98,7 @@ const discardInputFormField = reduxFormField({
 const nextButton = Component((props: Object) => compose(
   fold(props),
   touchableOpacity({
-    onPress: () => navigateToNewSessionTypeAndBoatClass(),
+    onPress: () => navigateToNewSessionCompetitors(),
   }),
   contramap(merge({
     source: Images.actions.arrowRight,
