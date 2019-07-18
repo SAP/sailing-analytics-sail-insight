@@ -15,8 +15,7 @@ import TypeAndBoatClass from 'containers/session/TypeAndBoatClass'
 export default createStackNavigator(
   {
     [Screens.NewSessionBasics]: {
-      // screen: BasicsSetup.fold,
-      screen: TypeAndBoatClass.fold,
+      screen: BasicsSetup.fold,
       navigationOptions: () => ({
         title: I18n.t('caption_new_session'),
         headerLeft: null,
@@ -32,24 +31,24 @@ export default createStackNavigator(
     [Screens.NewSessionTypeAndBoatClass]: {
       screen: TypeAndBoatClass.fold,
       navigationOptions: {
-        title: I18n.t('title_edit_session'),
+        title: I18n.t('caption_new_session'),
       },
     },
     [Screens.NewSessionRacesAndScoring]: {
       screen: RacesAndScoring.fold,
       navigationOptions: {
-        title: I18n.t('title_edit_session'),
+        title: I18n.t('caption_new_session'),
       },
     },
     [Screens.NewSessionCompetitors]: {
       screen: Competitors.fold,
       navigationOptions: {
-        title: I18n.t('title_edit_session'),
+        title: I18n.t('caption_new_session'),
       },
     },
   },
   {
-    initialRouteName: Screens.NewSessionRacesAndScoring,
+    initialRouteName: Screens.NewSessionBasics,
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },

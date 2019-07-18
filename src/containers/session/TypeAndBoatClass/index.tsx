@@ -1,32 +1,32 @@
-import { compose, reduce, concat, merge, always, propEq, prop } from 'ramda'
+import {  compose, reduce, concat, merge, mergeLeft, always, propEq, prop } from 'ramda'
 
-import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
+import { navigateToNewSessionsRacesAndScoring, navigateToNewSessionTypeAndBoatClass } from 'navigation'
 import { Component, fold, nothing, reduxConnect as connect, fromClass, contramap,
   recomposeWithState as withState, recomposeBranch as branch, nothingAsClass } from 'components/fp/component'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import { view, text, touchableOpacity } from 'components/fp/react-native'
 import CheckBox from 'react-native-check-box'
 import IconText from 'components/IconText'
-import * as sessionForm from 'forms/session'
+import {
+  EVENT_CREATION_FORM_NAME,
+  eventWizardCommonFormSettings,
+  FORM_KEY_BOAT_CLASS,
+  FORM_KEY_REGATTA_TYPE,
+} from 'forms/eventCreation'
 import Images from '@assets/Images'
 import FormTextInput from 'components/form/FormTextInput'
 import ModalDropdown from 'react-native-modal-dropdown'
 
+import { getFormFieldValue } from 'selectors/form'
+
 const mapStateToProps = (state: any, props: any) => {
-  return {}
+  return {
+    regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state)
+  }
 }
 
-const formSettings = {
-  form: sessionForm.SESSION_FORM_NAME,
-  destroyOnUnmount: true,
-  forceUnregisterOnUnmount: true,
-  enableReinitialize: false,
-  keepDirtyOnReinitialize: true,
-};
-
-const withSelectedType = withState('selectedType', 'setSelectedType', 'oneDesign')
-const isOneDesignSelected = propEq('selectedType', 'oneDesign')
-const isHandicapSelected = propEq('selectedType', 'handicap')
+const isOneDesignSelected = propEq('regattaType', 'oneDesign')
+const isHandicapSelected = propEq('regattaType', 'handicap')
 const nothingIfOneDesignSelected = branch(isOneDesignSelected, nothingAsClass)
 const nothingIfHandicapSelected = branch(isHandicapSelected, nothingAsClass)
 
@@ -34,22 +34,26 @@ const boatIcon = fromClass(IconText).contramap(always({
   source: Images.info.boat
 }))
 
-const checkbox = (label: String) => compose(
+const checkbox = (label: string, value: any) => Component((props: any) => compose(
+  fold(props),
   view({}),
   reduce(concat, nothing()))([
-  boatIcon,
-  text({}, label),
-  fromClass(CheckBox)])
+    boatIcon,
+    text({}, label),
+    fromClass(CheckBox).contramap(mergeLeft({
+      isChecked: props.input.value === value,
+      onClick: () => props.input.onChange(value),
+    }))
+  ])
+)
 
-const oneDesignCheckbox = checkbox('One design regatta').contramap((props: any) => ({
-  isChecked: isOneDesignSelected(props),
-  onClick: () => props.setSelectedType('oneDesign')
-}))
+const regattaTypeCheckbox = (...args: any) => reduxFormField({
+  name: FORM_KEY_REGATTA_TYPE,
+  component: checkbox(...args).fold
+})
 
-const handicapCheckbox = checkbox('Handicap').contramap((props: any) => ({
-  isChecked: isHandicapSelected(props),
-  onClick: () => props.setSelectedType('handicap')
-}))
+const oneDesignCheckbox = regattaTypeCheckbox('One design regatta', 'oneDesign')
+const handicapCheckbox = regattaTypeCheckbox('Handicap', 'handicap')
 
 const nextButton = Component((props: Object) => compose(
   fold(merge(props, {
@@ -59,7 +63,7 @@ const nextButton = Component((props: Object) => compose(
     children: 'Races & Scoring'
   })),
   touchableOpacity({
-    onPress: () => navigateToNewSessionTypeAndBoatClass()
+    onPress: () => navigateToNewSessionsRacesAndScoring()
   }))(
   fromClass(IconText)));
 
@@ -75,7 +79,7 @@ const reviewButton = Component((props: Object) => compose(
 
 const boatClassInput = reduxFormField({
   label: 'Boat class (autocomplete)',
-  name: sessionForm.FORM_KEY_NAME,
+  name: FORM_KEY_BOAT_CLASS,
   component: FormTextInput
 })
 
@@ -86,8 +90,7 @@ const ratingSystemDropdown = fromClass(ModalDropdown).contramap(always({
 export default Component((props: Object) => compose(
   fold(props),
   connect(mapStateToProps),
-  withSelectedType,
-  reduxForm(formSettings),
+  reduxForm(eventWizardCommonFormSettings),
   view({ style: { backgroundColor: 'red'}}),
   reduce(concat, nothing()))([
     text({}, 'Regatta Type and Boat Class'),

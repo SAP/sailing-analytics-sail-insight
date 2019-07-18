@@ -27,10 +27,10 @@ export const navigateToManeuver = (data?: Maneuver) => NavigationService.navigat
 export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
 export const navigateToLeaderboard = () => NavigationService.navigate(Screens.Leaderboard)
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
-export const navigateToNewSessionBasics = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSessionBasics, { data })
-export const navigateToNewSessionTypeAndBoatClass = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSessionTypeAndBoatClass, { data })
-export const navigateToNewSessionsRacesAndScoring = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSessionRacesAndScoring, { data })
-export const navigateToNewSessionCompetitors = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSessionCompetitors, { data })
+export const navigateToNewSessionBasics = () => NavigationService.navigate(Screens.NewSessionBasics)
+export const navigateToNewSessionTypeAndBoatClass = () => NavigationService.navigate(Screens.NewSessionTypeAndBoatClass)
+export const navigateToNewSessionsRacesAndScoring = () => NavigationService.navigate(Screens.NewSessionRacesAndScoring)
+export const navigateToNewSessionCompetitors = () => NavigationService.navigate(Screens.NewSessionCompetitors)
 export const navigateToJoinRegatta = (checkInData: CheckIn, alreadyJoined: boolean) =>
   NavigationService.navigate(Screens.JoinRegatta, { data: { checkInData, alreadyJoined } })
 export const navigateToTrackDetails = (url?: string, eventName?: string) =>

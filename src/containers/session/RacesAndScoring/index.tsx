@@ -11,22 +11,17 @@ import {
   fold,
   fromClass,
   nothing,
-  reduxConnect as connect,
   contramap
 } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import IconText from 'components/IconText'
-import * as sessionForm from 'forms/session'
-import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
-
-const formSettings = {
-  form: sessionForm.SESSION_FORM_NAME,
-  destroyOnUnmount: true,
-  forceUnregisterOnUnmount: true,
-  enableReinitialize: false,
-  keepDirtyOnReinitialize: true,
-}
+import {
+  eventWizardCommonFormSettings,
+  FORM_KEY_DISCARDS_START,
+  FORM_KEY_NUMBER_OF_RACES,
+} from 'forms/eventCreation'
+import { navigateToNewSessionCompetitors } from 'navigation'
 
 const sliderSettings = {
   minimumValue: 1,
@@ -56,7 +51,7 @@ const raceNumberSelector = Component((props: any) =>
 )
 
 const raceNumberFormField = reduxFormField({
-  name: sessionForm.FORM_KEY_RACE_NUMBER,
+  name: FORM_KEY_NUMBER_OF_RACES,
   component: raceNumberSelector.fold,
   ...sliderSettings,
 })
@@ -87,7 +82,7 @@ const discardSelectorItem = Component((props: any) => compose(
   props.item.key))
 
 const discardInputFormField = reduxFormField({
-  name: sessionForm.FORM_KEY_DISCARD_START,
+  name: FORM_KEY_DISCARDS_START,
   data: map(objOf('key'), range(1, 7)),
   component: forwardingPropsFlatList.fold,
   renderItem: discardSelectorItem.fold,
@@ -98,7 +93,7 @@ const discardInputFormField = reduxFormField({
 const nextButton = Component((props: Object) => compose(
   fold(props),
   touchableOpacity({
-    onPress: () => navigateToNewSessionTypeAndBoatClass(),
+    onPress: () => navigateToNewSessionCompetitors(),
   }),
   contramap(merge({
     source: Images.actions.arrowRight,
@@ -108,17 +103,9 @@ const nextButton = Component((props: Object) => compose(
   })))(
   fromClass(IconText)))
 
-const mapStateToProps = (state: any) => ({
-  initialValues: {
-    [sessionForm.FORM_KEY_RACE_NUMBER]: 3,
-    [sessionForm.FORM_KEY_DISCARD_START]: 3,
-  },
-})
-
 export default Component((props: Object) => compose(
   fold(props),
-  connect(mapStateToProps),
-  reduxForm(formSettings),
+  reduxForm(eventWizardCommonFormSettings),
   view({ style: [] }),
   reduce(concat, nothing()))([
     text({}, 'Races & Scoring'),
