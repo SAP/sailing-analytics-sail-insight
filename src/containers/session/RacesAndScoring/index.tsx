@@ -38,7 +38,7 @@ const forwardingPropsFlatList = Component((props: any) => compose(
   fold(props),
   contramap(mergeLeft({
     renderItem: item => props.renderItem({...props, ...item })
-  }))(
+  })))(
   fromClass(FlatList)))
 
 const raceNumberSelector = Component((props: any) =>
