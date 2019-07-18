@@ -1,12 +1,13 @@
 import {  compose, reduce, concat, merge, mergeLeft, always, propEq, prop } from 'ramda'
 
-import { navigateToNewSessionsRacesAndScoring, navigateToNewSessionTypeAndBoatClass } from 'navigation'
+import { navigateToNewSessionsRacesAndScoring } from 'navigation'
 import { Component, fold, nothing, reduxConnect as connect, fromClass, contramap,
   recomposeWithState as withState, recomposeBranch as branch, nothingAsClass } from 'components/fp/component'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import { view, text, touchableOpacity } from 'components/fp/react-native'
 import CheckBox from 'react-native-check-box'
 import IconText from 'components/IconText'
+import { nextButton, reviewButton } from 'containers/session/common'
 import {
   EVENT_CREATION_FORM_NAME,
   eventWizardCommonFormSettings,
@@ -55,28 +56,6 @@ const regattaTypeCheckbox = (...args: any) => reduxFormField({
 const oneDesignCheckbox = regattaTypeCheckbox('One design regatta', 'oneDesign')
 const handicapCheckbox = regattaTypeCheckbox('Handicap', 'handicap')
 
-const nextButton = Component((props: Object) => compose(
-  fold(merge(props, {
-    source: Images.actions.arrowRight,
-    alignment: 'horizontal',
-    iconPosition: 'second',
-    children: 'Races & Scoring'
-  })),
-  touchableOpacity({
-    onPress: () => navigateToNewSessionsRacesAndScoring()
-  }))(
-  fromClass(IconText)));
-
-const reviewButton = Component((props: Object) => compose(
-  fold(props),
-  touchableOpacity({
-    onPress: () => {}
-  }),
-  contramap(merge({
-    children: 'Review and create'
-  })))(
-  fromClass(IconText)));
-
 const boatClassInput = reduxFormField({
   label: 'Boat class (autocomplete)',
   name: FORM_KEY_BOAT_CLASS,
@@ -100,5 +79,5 @@ export default Component((props: Object) => compose(
     nothingIfOneDesignSelected(ratingSystemDropdown),
     text({ style: { marginTop: 100 }}, "Additional settings are optional. Click 'Review and create' to create your event now."),
     reviewButton,
-    nextButton
+    nextButton(navigateToNewSessionsRacesAndScoring, 'Races & Scoring')
   ]))

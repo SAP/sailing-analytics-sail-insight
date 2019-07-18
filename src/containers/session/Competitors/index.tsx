@@ -10,7 +10,7 @@ import {
   nothing,
 } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
-import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
+import { reviewButton } from 'containers/session/common'
 
 const regattaTypeText = Component((props: object) => compose(
   fold(props),
@@ -45,20 +45,6 @@ const inviteButton = Component((props: object) => compose(
   toUpper)(
   'Share invite link'))
 
-const reviewButton = Component((props: object) => compose(
-  fold(props),
-  touchableOpacity({
-    onPress: () => navigateToNewSessionTypeAndBoatClass(),
-    style: {
-      backgroundColor: '#1897FE',
-      marginHorizontal: '5%',
-      height: 50,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }
-  }),
-  text({ style: { color: '#FFFFFF' }}))(
-  'Review and create'))
 
 export default Component((props: object) => compose(
   fold(props),

@@ -1,13 +1,13 @@
-import { compose, reduce, concat, merge, mergeLeft } from 'ramda'
+import { compose, reduce, concat, mergeLeft } from 'ramda'
 
 import I18n from 'i18n'
 
 import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
 import { Component, fold, nothing, reduxConnect as connect, fromClass, contramap } from 'components/fp/component'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
-import { view, text, touchableOpacity } from 'components/fp/react-native'
+import { view, text } from 'components/fp/react-native'
 import FormTextInput from 'components/form/FormTextInput'
-import IconText from 'components/IconText'
+import { nextButton } from 'containers/session/common'
 import {
   eventWizardCommonFormSettings,
   FORM_KEY_DATE_FROM,
@@ -16,7 +16,6 @@ import {
   FORM_KEY_NAME,
   initialValues,
 } from 'forms/eventCreation'
-import Images from '@assets/Images'
 import DatePicker from 'react-native-datepicker'
 
 const mapStateToProps = (state: any, props: any) => ({ initialValues })
@@ -59,19 +58,6 @@ const endDateInput = reduxFormField({
   ...datePickerSettings,
 })
 
-const nextButton = Component((props: Object) => compose(
-  fold(props),
-  touchableOpacity({
-    onPress: () => navigateToNewSessionTypeAndBoatClass(),
-  }),
-  contramap(merge({
-    source: Images.actions.arrowRight,
-    alignment: 'horizontal',
-    iconPosition: 'second',
-    children: 'Continue',
-  })))(
-  fromClass(IconText)))
-
 const formSettings = {
   ...eventWizardCommonFormSettings,
   enableReinitialize: true,       // <-- Reset the form to initial values when newly entering the form
@@ -89,5 +75,5 @@ export default Component((props: Object) => compose(
     startDateInput,
     endDateInput,
     locationInput,
-    nextButton,
+    nextButton(navigateToNewSessionTypeAndBoatClass, 'Continue'),
   ]))

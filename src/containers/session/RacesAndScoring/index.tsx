@@ -5,7 +5,6 @@ import { FlatList } from 'react-native'
 
 import I18n from 'i18n'
 
-import Images from '@assets/Images'
 import {
   Component,
   fold,
@@ -15,7 +14,7 @@ import {
 } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
-import IconText from 'components/IconText'
+import { nextButton, reviewButton } from 'containers/session/common'
 import {
   eventWizardCommonFormSettings,
   FORM_KEY_DISCARDS_START,
@@ -90,19 +89,6 @@ const discardInputFormField = reduxFormField({
   horizontal: true,
 })
 
-const nextButton = Component((props: Object) => compose(
-  fold(props),
-  touchableOpacity({
-    onPress: () => navigateToNewSessionCompetitors(),
-  }),
-  contramap(merge({
-    source: Images.actions.arrowRight,
-    alignment: 'horizontal',
-    iconPosition: 'second',
-    children: 'Competitors',
-  })))(
-  fromClass(IconText)))
-
 export default Component((props: Object) => compose(
   fold(props),
   reduxForm(eventWizardCommonFormSettings),
@@ -113,5 +99,6 @@ export default Component((props: Object) => compose(
     scoringSystemLabel,
     text({}, 'Discards starting from ... races'),
     discardInputFormField,
-    nextButton,
+    reviewButton,
+    nextButton(navigateToNewSessionCompetitors, 'Competitors'),
   ]))
