@@ -1,3 +1,7 @@
+import EventCreationData from 'models/EventCreationData'
+import { validateRequired } from './validators'
+import { generateNewSessionName } from 'services/SessionService'
+
 export const EVENT_CREATION_FORM_NAME = 'eventCreation'
 
 export const FORM_KEY_NAME = 'name'
@@ -19,8 +23,35 @@ export const eventWizardCommonFormSettings = {
   forceUnregisterOnUnmount: true,
 }
 
+const datePickerDateFormat = (date: Date) =>
+  `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
+
 export const initialValues = {
+  [FORM_KEY_NAME]: generateNewSessionName(),
+  [FORM_KEY_DATE_FROM]: datePickerDateFormat(new Date()),
+  [FORM_KEY_DATE_TO]: datePickerDateFormat(new Date()),
   [FORM_KEY_NUMBER_OF_RACES]: 3,
   [FORM_KEY_DISCARDS_START]: 3,
   [FORM_KEY_REGATTA_TYPE]: 'oneDesign',
 }
+
+export const eventCreationDataFromFormValues = (values: any) => values && ({
+  name: values[FORM_KEY_NAME],
+  dateFrom: values[FORM_KEY_DATE_FROM],
+  dateTo: values[FORM_KEY_DATE_TO],
+  location: values[FORM_KEY_LOCATION],
+  regattaType: values[FORM_KEY_REGATTA_TYPE],
+  boatClass: values[FORM_KEY_BOAT_CLASS],
+  ratingSystem: values[FORM_KEY_RATING_SYSTEM],
+  numberOfRaces: values[FORM_KEY_NUMBER_OF_RACES],
+  discardsStart: values[FORM_KEY_DISCARDS_START],
+} as EventCreationData)
+
+export const validateBasics = (values: any = {}) => ({
+  [FORM_KEY_NAME]: validateRequired(values[FORM_KEY_NAME]),
+  [FORM_KEY_LOCATION]: validateRequired(values[FORM_KEY_LOCATION]),
+})
+
+export const validateTypeAndBoatClass   = (values: any = {}) => ({
+  [FORM_KEY_BOAT_CLASS]: validateRequired(values[FORM_KEY_BOAT_CLASS]),
+})

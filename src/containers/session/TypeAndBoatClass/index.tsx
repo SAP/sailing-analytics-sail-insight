@@ -1,6 +1,9 @@
 import {  compose, reduce, concat, mergeLeft, always, propEq } from 'ramda'
 
-import { navigateToNewSessionsRacesAndScoring } from 'navigation'
+import {
+  navigateToNewSessionReviewAndCreate,
+  navigateToNewSessionsRacesAndScoring,
+} from 'navigation'
 import { Component, fold, nothing, reduxConnect as connect, fromClass,
   recomposeBranch as branch, nothingAsClass } from 'components/fp/component'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
@@ -13,6 +16,7 @@ import {
   eventWizardCommonFormSettings,
   FORM_KEY_BOAT_CLASS,
   FORM_KEY_REGATTA_TYPE,
+  validateTypeAndBoatClass,
 } from 'forms/eventCreation'
 import Images from '@assets/Images'
 import FormTextInput from 'components/form/FormTextInput'
@@ -67,11 +71,17 @@ const ratingSystemDropdown = fromClass(ModalDropdown).contramap(always({
   options: ['IRC', 'ORC International', 'ORC Club', 'Yardstick', 'PHRF']
 }))
 
+const formSettings = {
+  ...eventWizardCommonFormSettings,
+  onSubmit: navigateToNewSessionsRacesAndScoring,
+  validate: validateTypeAndBoatClass,
+}
+
 export default Component((props: Object) =>
   compose(
     fold(props),
     connect(mapStateToProps),
-    reduxForm(eventWizardCommonFormSettings),
+    reduxForm(formSettings),
     view({ style: { backgroundColor: 'red'}}),
     reduce(concat, nothing()))
   ([
@@ -81,5 +91,6 @@ export default Component((props: Object) =>
     nothingIfHandicapSelected(boatClassInput),
     nothingIfOneDesignSelected(ratingSystemDropdown),
     text({ style: { marginTop: 100 }}, "Additional settings are optional. Click 'Review and create' to create your event now."),
-    reviewButton,
-    nextButton(navigateToNewSessionsRacesAndScoring, 'Races & Scoring') ]))
+    // reviewButton((p: any) => p.handleSubmit(navigateToNewSessionReviewAndCreate)),
+    reviewButton(),
+    nextButton((p: any) => p.handleSubmit(), 'Races & Scoring') ]))

@@ -5,6 +5,10 @@ export interface CreateEventBody {
   numberofraces?: number
   competitorRegistrationType?: 'CLOSED' | 'OPEN_UNMODERATED' | 'OPEN_MODERATED'
   secret?: string
+  createleaderboardgroup?: boolean
+  createregatta?: boolean
+  startdate?: string
+  enddate?: string
 }
 
 export interface UpdateEventBody {

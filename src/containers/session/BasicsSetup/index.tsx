@@ -15,6 +15,7 @@ import {
   FORM_KEY_LOCATION,
   FORM_KEY_NAME,
   initialValues,
+  validateBasics,
 } from 'forms/eventCreation'
 import DatePicker from 'react-native-datepicker'
 
@@ -61,6 +62,8 @@ const endDateInput = reduxFormField({
 const formSettings = {
   ...eventWizardCommonFormSettings,
   enableReinitialize: true,       // <-- Reset the form to initial values when newly entering the form
+  validate: validateBasics,
+  onSubmit: navigateToNewSessionTypeAndBoatClass,
 }
 
 export default Component((props: Object) => compose(
@@ -75,5 +78,5 @@ export default Component((props: Object) => compose(
     startDateInput,
     endDateInput,
     locationInput,
-    nextButton(navigateToNewSessionTypeAndBoatClass, 'Continue'),
+    nextButton((p: any) => p.handleSubmit(), 'Continue'),
   ]))

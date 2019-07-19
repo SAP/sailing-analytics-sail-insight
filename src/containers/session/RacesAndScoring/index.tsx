@@ -102,5 +102,5 @@ export default Component((props: Object) =>
     scoringSystemLabel,
     text({}, 'Discards starting from ... races'),
     discardInputFormField,
-    reviewButton,
+    reviewButton(),
     nextButton(navigateToNewSessionCompetitors, 'Competitors') ]))

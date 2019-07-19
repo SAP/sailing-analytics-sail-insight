@@ -55,4 +55,4 @@ export default Component((props: object) =>
     text({}, 'Competitors'),
     regattaTypeText,
     inviteButton,
-    reviewButton ]))
+    reviewButton() ]))

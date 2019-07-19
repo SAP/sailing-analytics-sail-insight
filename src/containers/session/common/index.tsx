@@ -26,10 +26,10 @@ export const nextButton = (onPress: any, label: string) =>
       })))
     (fromClass(IconText)))
 
-export const reviewButton = Component((props: object) => compose(
+export const reviewButton = (onPress?: any) => Component((props: object) => compose(
   fold(props),
   touchableOpacity({
-    onPress: navigateToNewSessionReviewAndCreate,
+    onPress: onPress || navigateToNewSessionReviewAndCreate,
     style: {
       backgroundColor: '#1897FE',
       marginHorizontal: '5%',
@@ -52,7 +52,7 @@ const toTouchableCard = curry(({ onPress, icon }, content: any) =>
       fromClass(IconText).contramap(merge({ source: icon })),
       view({ style: styles.cardContent }, content),
       ArrowRight ])));
-  
+
 export const overallStatusCard = Component((props: any) =>
   compose(
     fold(props),
