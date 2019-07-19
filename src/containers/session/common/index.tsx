@@ -5,7 +5,7 @@ import { text, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
 
 import Images from '@assets/Images'
-import { navigateToMain } from 'navigation'
+import { navigateToNewSessionReviewAndCreate } from 'navigation'
 
 import styles from './styles'
 
@@ -29,7 +29,7 @@ export const nextButton = (onPress: any, label: string) =>
 export const reviewButton = Component((props: object) => compose(
   fold(props),
   touchableOpacity({
-    onPress: navigateToMain,
+    onPress: navigateToNewSessionReviewAndCreate,
     style: {
       backgroundColor: '#1897FE',
       marginHorizontal: '5%',

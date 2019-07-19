@@ -11,6 +11,7 @@ import Competitors from 'containers/session/Competitors'
 import EditSession from 'containers/session/EditSession'
 import RacesAndScoring from 'containers/session/RacesAndScoring'
 import TypeAndBoatClass from 'containers/session/TypeAndBoatClass'
+import ReviewAndCreate from 'containers/session/ReviewAndCreate'
 
 export default createStackNavigator(
   {
@@ -42,6 +43,12 @@ export default createStackNavigator(
     },
     [Screens.NewSessionCompetitors]: {
       screen: Competitors.fold,
+      navigationOptions: {
+        title: I18n.t('caption_new_session'),
+      },
+    },
+    [Screens.NewSessionReviewAndCreate]: {
+      screen: ReviewAndCreate.fold,
       navigationOptions: {
         title: I18n.t('caption_new_session'),
       },

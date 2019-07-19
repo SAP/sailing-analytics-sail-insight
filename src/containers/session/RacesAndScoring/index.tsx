@@ -28,26 +28,25 @@ const sliderSettings = {
   step: 1,
 }
 
-const forwardingPropsFlatList = Component((props: any) => compose(
-  fold(props),
-  contramap(mergeLeft({
-    renderItem: item => props.renderItem({...props, ...item })
-  })))(
-  fromClass(FlatList)))
+const forwardingPropsFlatList = Component((props: any) =>
+  compose(
+    fold(props),
+    contramap(mergeLeft({
+      renderItem: item => props.renderItem({...props, ...item })
+    })))
+  (fromClass(FlatList)))
 
 const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
-    reduce(concat, nothing()),
-  )([
+    reduce(concat, nothing()))
+  ([
     text({}, 'Planned number of races'),
     fromClass(Slider).contramap(merge({
       value: Number(props.input.value),
       onValueChange: props.input.onChange
     })),
-    text({}, `${props.input.value}`),
-  ]),
-)
+    text({}, `${props.input.value}`) ]))
 
 const raceNumberFormField = reduxFormField({
   name: FORM_KEY_NUMBER_OF_RACES,
@@ -55,30 +54,32 @@ const raceNumberFormField = reduxFormField({
   ...sliderSettings,
 })
 
-const scoringSystemLabel = Component((props: object) => compose(
-  fold(props),
-  reduce(concat, nothing()),
-  map(text({})))([
-  'Low point scoring applies',
-  'Please contact us if you require any other scoring system.'
-]))
+const scoringSystemLabel = Component((props: object) =>
+  compose(
+    fold(props),
+    reduce(concat, nothing()),
+    map(text({})))
+  ([
+    'Low point scoring applies',
+    'Please contact us if you require any other scoring system.' ]))
 
-const discardSelectorItem = Component((props: any) => compose(
-  fold(props),
-  touchableOpacity({
-    style: {
-      height: 100,
-      width: 100,
-      justifyContent: 'center',
-      alignItems: 'center',
-      flex: 1,
-      backgroundColor: props.item.key == props.input.value ? '#2699FB' : '#F1F9FF',
-      margin: 10,
-    },
-    onPress: () => props.input.onChange(props.item.key)
-  }),
-  text({}))(
-  props.item.key))
+const discardSelectorItem = Component((props: any) =>
+  compose(
+    fold(props),
+    touchableOpacity({
+      style: {
+        height: 100,
+        width: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        backgroundColor: props.item.key == props.input.value ? '#2699FB' : '#F1F9FF',
+        margin: 10,
+      },
+      onPress: () => props.input.onChange(props.item.key)
+    }),
+    text({}))
+  (props.item.key))
 
 const discardInputFormField = reduxFormField({
   name: FORM_KEY_DISCARDS_START,
@@ -89,16 +90,17 @@ const discardInputFormField = reduxFormField({
   horizontal: true,
 })
 
-export default Component((props: Object) => compose(
-  fold(props),
-  reduxForm(eventWizardCommonFormSettings),
-  view({ style: [] }),
-  reduce(concat, nothing()))([
+export default Component((props: Object) =>
+  compose(
+    fold(props),
+    reduxForm(eventWizardCommonFormSettings),
+    view({ style: [] }),
+    reduce(concat, nothing()))
+  ([
     text({}, 'Races & Scoring'),
     raceNumberFormField,
     scoringSystemLabel,
     text({}, 'Discards starting from ... races'),
     discardInputFormField,
     reviewButton,
-    nextButton(navigateToNewSessionCompetitors, 'Competitors'),
-  ]))
+    nextButton(navigateToNewSessionCompetitors, 'Competitors') ]))

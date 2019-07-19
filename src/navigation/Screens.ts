@@ -19,6 +19,7 @@ export const NewSessionBasics = 'NewSessionBasics'
 export const NewSessionTypeAndBoatClass = 'NewSessionTypeAndBoatClass'
 export const NewSessionRacesAndScoring = 'NewSessionRacesAndScoring'
 export const NewSessionCompetitors = 'NewSessionCompetitors'
+export const NewSessionReviewAndCreate = 'NewSessionReviewAndCreate'
 
 // join
 export const CheckIn = 'CheckIn'

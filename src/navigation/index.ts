@@ -31,6 +31,7 @@ export const navigateToNewSessionBasics = () => NavigationService.navigate(Scree
 export const navigateToNewSessionTypeAndBoatClass = () => NavigationService.navigate(Screens.NewSessionTypeAndBoatClass)
 export const navigateToNewSessionsRacesAndScoring = () => NavigationService.navigate(Screens.NewSessionRacesAndScoring)
 export const navigateToNewSessionCompetitors = () => NavigationService.navigate(Screens.NewSessionCompetitors)
+export const navigateToNewSessionReviewAndCreate = () => NavigationService.navigate(Screens.NewSessionReviewAndCreate)
 export const navigateToJoinRegatta = (checkInData: CheckIn, alreadyJoined: boolean) =>
   NavigationService.navigate(Screens.JoinRegatta, { data: { checkInData, alreadyJoined } })
 export const navigateToTrackDetails = (url?: string, eventName?: string) =>
