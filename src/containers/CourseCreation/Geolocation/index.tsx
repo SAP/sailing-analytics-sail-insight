@@ -1,8 +1,8 @@
-import { __, compose, concat, map, merge, mergeLeft, reduce, range, objOf } from 'ramda'
+import { __, compose, concat, map, merge, mergeLeft, head, reduce, range, objOf } from 'ramda'
 
 import React from 'react'
 import { View } from 'react-native'
-import MapView from 'react-native-maps'
+import MapView, { Marker } from 'react-native-maps'
 
 import {
   Component,
@@ -25,22 +25,35 @@ const initialRegion = {
 }
 const withRegion = withState('region', 'setRegion', initialRegion)
 
+const marker = Component((props: any) => compose(
+  fold(props),
+  contramap(mergeLeft({
+    coordinate: props.region,
+  })),
+)(fromClass(Marker)))
+
 const mapView = (settings: any) => Component((props: any) => compose(
     fold(props),
     view({ style: styles.mapContainer }),
-    contramap(mergeLeft({
+    fromClass(MapView).contramap,
+    mergeLeft,
+    mergeLeft({
       onRegionChange: (region: any) => {
         props.setRegion(region)
       }
-    })),
-    contramap(mergeLeft(settings)),
-  )(fromClass(MapView))
+    }),
+    mergeLeft(settings),
+    objOf('children'),
+    head,
+    fold(props),
+  )(marker)
 )
 
+const COORDS_PRECISION = 7
 const coordinatesInput = ({ propName }: any) => Component((props: any) => compose(
     fold(props),
     contramap(mergeLeft({
-      // Should add toPrecision(7)
+      // value: props.region[propName].toPrecision(COORDS_PRECISION).toString(),
       value: props.region[propName].toString(),
       onChangeText: (value: any) => props.setRegion({
         ...props.region,
