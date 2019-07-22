@@ -47,6 +47,10 @@
 
         <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="d888eb46ab373eda59264a6f19afbda499ce304f95862bbb4c04f46877ed4a71" />
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCXDY-tQPUAlNQ67Wf06_4iW8lpNZOw508"/>
+
         <!-- Branch init -->
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="${branchIOKey}" />
         <!--<meta-data android:name="io.branch.sdk.BranchKey.test" android:value="branchIOTestKey" />-->
