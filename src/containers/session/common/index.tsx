@@ -1,4 +1,4 @@
-import { compose, merge, reduce, concat, curry, map } from 'ramda'
+import { compose, merge, reduce, concat, curry, map, unless, isNil, call } from 'ramda'
 
 import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
@@ -13,7 +13,7 @@ const ArrowRight = fromClass(IconText).contramap(merge({
   source: Images.actions.arrowRight,
   style: { justifyContent: 'center' } }));
 
-export const nextButton = (onPress: any, label: string) =>
+export const nextButton = ({ onPress, label }: { onPress?: any, label?: any} = {}) =>
   Component((props: any) =>
     compose(
       fold(props),
@@ -26,10 +26,10 @@ export const nextButton = (onPress: any, label: string) =>
       })))
     (fromClass(IconText)))
 
-export const reviewButton = (onPress?: any) => Component((props: object) => compose(
+export const reviewButton = ({ onPress }: { onPress?: any} = {}) => Component((props: object) => compose(
   fold(props),
   touchableOpacity({
-    onPress: onPress || navigateToNewSessionReviewAndCreate,
+    onPress: (props: any) => onPress ? onPress(props) : navigateToNewSessionReviewAndCreate(),
     style: {
       backgroundColor: '#1897FE',
       marginHorizontal: '5%',
@@ -90,7 +90,10 @@ export const sessionDetailsCard = Component((props: any) =>
 export const racesAndScoringCard = Component((props: any) =>
   compose(
     fold(props),
-    toTouchableCard({ icon: Images.info.competitor, onPress: () => console.log('press on competitors')}),
+    toTouchableCard({
+      icon: Images.info.competitor,
+      onPress: () => unless(isNil, call)(props.racesAndScoringOnPress)
+    }),
     reduce(concat, nothing()),
     map(text({})))
   ([

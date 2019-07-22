@@ -91,6 +91,10 @@ export default Component((props: Object) =>
     nothingIfHandicapSelected(boatClassInput),
     nothingIfOneDesignSelected(ratingSystemDropdown),
     text({ style: { marginTop: 100 }}, "Additional settings are optional. Click 'Review and create' to create your event now."),
-    // reviewButton((p: any) => p.handleSubmit(navigateToNewSessionReviewAndCreate)),
-    reviewButton(),
-    nextButton((p: any) => p.handleSubmit(), 'Races & Scoring') ]))
+    reviewButton({
+      onPress: (props: any) => props.handleSubmit(navigateToNewSessionReviewAndCreate)()
+    }),
+    nextButton({
+      onPress: (p: any) => p.handleSubmit(),
+      label: 'Races & Scoring'
+    }) ]))

@@ -78,5 +78,8 @@ export default Component((props: Object) => compose(
     startDateInput,
     endDateInput,
     locationInput,
-    nextButton((p: any) => p.handleSubmit(), 'Continue'),
+    nextButton({
+      onPress: (p: any) => p.handleSubmit(),
+      label: 'Continue'
+    }),
   ]))

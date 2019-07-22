@@ -103,4 +103,7 @@ export default Component((props: Object) =>
     text({}, 'Discards starting from ... races'),
     discardInputFormField,
     reviewButton(),
-    nextButton(navigateToNewSessionCompetitors, 'Competitors') ]))
+    nextButton({
+      onPress: navigateToNewSessionCompetitors,
+      label: 'Competitors'
+    }) ]))

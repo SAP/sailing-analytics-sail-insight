@@ -46,7 +46,7 @@ const getViewCardPropsFromEventData = (eventData: EventCreationData) => ({
   registrationType: 'Unmanaged Regatta',
   entries: 7,
   invitations: 4,
-  acceptations: 2,
+  acceptations: 2
 })
 
 const createEvent = async (props: any) => {
@@ -64,4 +64,7 @@ export default Component((props: any) =>
       typeAndBoatClassCard,
       racesAndScoringCard,
       competitorsCard,
-      nextButton(createEvent, 'Create Event')]))
+      nextButton({
+        onPress: createEvent,
+        label: 'Create Event'
+      }) ]))

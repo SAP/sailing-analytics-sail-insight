@@ -40,7 +40,8 @@ const sessionData = {
   registrationType: 'Unmanaged Regatta',
   entries: 7,
   invitations: 4,
-  acceptations: 2
+  acceptations: 2,
+  racesAndScoringOnPress: () => console.log('pressed on races and scoring')
 }
 
 export default Component((props: any) =>
