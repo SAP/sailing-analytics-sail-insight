@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    compose, curry, reject, isNil, always, prop, __
+    compose, curry, reject, isNil, always, prop, __, addIndex, map
 } from 'ramda';
 import {
     branch,
@@ -13,6 +13,8 @@ import {
     lifecycle
 } from 'recompose';
 import { connect } from 'react-redux';
+
+const mapIndexed = addIndex(map)
 
 const fold    = curry((props, v) => v.fold(props));
 const asArray = (x: any) => Array.isArray(x) ? x : Array.of(x);
@@ -43,6 +45,7 @@ const Component = compose(
         concat:    (other: any) => Component((x: any) => g(x).concat(other.g(x))),
         // fold :: props -> JSX
         fold:      compose(
+            mapIndexed((element, i) => React.cloneElement(element, { key: i })),
             reject(isNil),
             g)
     }),

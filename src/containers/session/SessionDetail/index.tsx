@@ -3,6 +3,7 @@ import { compose, reduce, concat, merge } from 'ramda'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
+import { navigateToRaceDetails } from 'navigation'
 
 import { Component, fold, nothing, reduxConnect as connect } from 'components/fp/component';
 import { view } from 'components/fp/react-native';
@@ -41,7 +42,7 @@ const sessionData = {
   entries: 7,
   invitations: 4,
   acceptations: 2,
-  racesAndScoringOnPress: () => console.log('pressed on races and scoring')
+  racesAndScoringOnPress: navigateToRaceDetails
 }
 
 export default Component((props: any) =>
