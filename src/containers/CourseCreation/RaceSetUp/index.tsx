@@ -8,17 +8,31 @@ import {
   fold,
   fromClass,
   nothing,
+  recomposeWithState as withState
 } from 'components/fp/component'
 import { text, view } from 'components/fp/react-native'
 
 import Images from '@assets/Images'
 import styles, { itemWidth, sliderWidth } from './styles'
 
-const timePicker = fromClass(DatePicker).contramap(
+const dateToTime = (date: Date) => `${date.getHours()}:${date.getMinutes()}`
+
+const courseLayouts = [
+  { id: '0', title: 'FOO', image: null },
+  { id: '1', title: 'BAR', image: null },
+  { id: '2', title: 'BAZ', image: null },
+]
+
+const withSelectedLayout = withState('selectedLayout', 'setSelectedLayout', 0)
+const withStartTime = withState('startTime', 'setStartTime', dateToTime(new Date()))
+
+const timePicker = fromClass(DatePicker).contramap((props: any) =>
   mergeLeft({
     mode: 'time',
     iconSource: Images.info.time,
-  }),
+    date: props.startTime,
+    onDateChange: (val: any) => props.setStartTime(val),
+  }, props),
 )
 
 const carouselItem = Component((props: any) =>
@@ -32,24 +46,25 @@ const carouselItem = Component((props: any) =>
   ]),
 )
 
-const courseLayouts = [
-  { id: '1', title: 'FOO', image: null },
-  { id: '2', title: 'BAR', image: null },
-  { id: '3', title: 'BAZ', image: null },
-]
-
-const carousel = fromClass(Carousel).contramap(
+const carousel = fromClass(Carousel).contramap((props: any) =>
   mergeLeft({
     sliderWidth,
     itemWidth,
     data: courseLayouts,
     renderItem: carouselItem.fold,
-  }),
+    onSnapToItem: (index: number) => props.setSelectedLayout(index),
+  }, props),
 )
+
+const selectedLayout = Component((props: any) => compose(
+  fold(props),
+)(text({}, props.selectedLayout)))
 
 export default Component((props: object) =>
   compose(
     fold(props),
+    withSelectedLayout,
+    withStartTime,
     view({ style: styles.screenContainer }),
     reduce(concat, nothing()),
   )([
@@ -57,5 +72,6 @@ export default Component((props: object) =>
     timePicker,
     text({}, 'Select Course layout'),
     carousel,
+    selectedLayout,
   ]),
 )
