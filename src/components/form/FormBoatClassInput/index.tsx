@@ -20,6 +20,7 @@ interface State {
   boatClasses: BoatClassesdBody[],
   query: string,
   selected: boolean,
+  focused: boolean,
 }
 
 class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & WrappedFieldProps & TextInputProps & {
@@ -32,6 +33,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     boatClasses: [],
     query: '',
     selected: false,
+    focused: true,
   }
 
   public componentDidMount() {
@@ -49,13 +51,14 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       style,
       ...additionalProps
     } = this.props
-    const { query, selected } = this.state
+    const { query, selected, focused } = this.state
     // sortby is to puts the suggestions that start with the string at the top
     // slice is to limit suggestions to 5 elements max
     const filteredData = sortBy(this.findBoatClass(query), boatclass =>
       !boatclass.name.toLowerCase().startsWith(query.trim().toLowerCase()),
     ).slice(0, 5)
     const comp = (a: string, b: string) => a.toLowerCase().trim() === b.toLowerCase().trim()
+    const hideResults = !focused || selected
     return (
         <View>
           <View style={styles.autocompleteContainer}>
@@ -67,7 +70,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
                 renderItem={this.renderItem}
                 inputContainerStyle={styles.inputContainer}
                 listStyle={styles.list}
-                hideResults={selected}
+                hideResults={hideResults}
                 {...restInput}
                 {...additionalProps}
             />
@@ -133,9 +136,14 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
             onChangeText={this.handleChangeText}
             {...restInput}
             {...additionalProps}
+            onBlur={this.onTextInputFocusChange(false)}
+            onFocus={this.onTextInputFocusChange(true)}
         />
     )
   }
+
+  protected onTextInputFocusChange = (focused: boolean) =>
+    () => this.setState({ focused })
 }
 
 export default FormBoatClassInput
