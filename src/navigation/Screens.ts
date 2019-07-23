@@ -15,12 +15,14 @@ export const TeamDetails = 'TeamDetails'
 export const UserSessions = 'UserSessions'
 export const SessionDetail = 'SessionDetail'
 export const EditSession = 'EditSession'
-export const RaceDetails = 'RaceDetails'
 export const NewSessionBasics = 'NewSessionBasics'
 export const NewSessionTypeAndBoatClass = 'NewSessionTypeAndBoatClass'
 export const NewSessionRacesAndScoring = 'NewSessionRacesAndScoring'
 export const NewSessionCompetitors = 'NewSessionCompetitors'
 export const NewSessionReviewAndCreate = 'NewSessionReviewAndCreate'
+
+export const RaceDetails = 'RaceDetails'
+export const RaceSetup = 'RaceSetup'
 
 // join
 export const CheckIn = 'CheckIn'

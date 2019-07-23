@@ -25,6 +25,8 @@ import {
 import { ArrowRight } from 'containers/session/common'
 import IconText from 'components/IconText'
 
+import { navigateToRaceSetup } from 'navigation'
+
 const sliderSettings = {
   minimumValue: 1,
   maximumValue: 20,
@@ -65,7 +67,7 @@ const DefineLayoutButton = Component(props =>
   compose(
     fold(props),
     touchableOpacity({
-      onPress: () => console.log('define layout')
+      onPress: () => navigateToRaceSetup()
     }))(
     text({}, 'Define Layout')))
 
