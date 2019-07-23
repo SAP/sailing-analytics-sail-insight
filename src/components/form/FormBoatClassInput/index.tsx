@@ -19,6 +19,7 @@ import styles from './styles'
 interface State {
   boatClasses: BoatClassesdBody[],
   query: string,
+  selected: boolean,
 }
 
 class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & WrappedFieldProps & TextInputProps & {
@@ -30,6 +31,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   public readonly state: Readonly<State> = {
     boatClasses: [],
     query: '',
+    selected: false,
   }
 
   public componentDidMount() {
@@ -47,7 +49,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       style,
       ...additionalProps
     } = this.props
-    const { query } = this.state
+    const { query, selected } = this.state
     // sortby is to puts the suggestions that start with the string at the top
     // slice is to limit suggestions to 5 elements max
     const filteredData = sortBy(this.findBoatClass(query), boatclass =>
@@ -65,6 +67,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
                 renderItem={this.renderItem}
                 inputContainerStyle={styles.inputContainer}
                 listStyle={styles.list}
+                hideResults={selected}
                 {...restInput}
                 {...additionalProps}
             />
@@ -83,11 +86,17 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   }
 
   protected handleChangeText = (text: string) => {
-    this.setState({ query: text })
+    this.setState({
+      query: text,
+      selected: false,
+    })
   }
 
   protected setCurrentInput = (suggestionValue: any) =>  (event: any)  => {
-    this.setState({ query: suggestionValue })
+    this.setState({
+      query: suggestionValue,
+      selected: true,
+    })
 
     const { input } = this.props
     input.onChange(suggestionValue)
