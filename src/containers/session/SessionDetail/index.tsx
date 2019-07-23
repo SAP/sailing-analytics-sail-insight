@@ -27,7 +27,7 @@ const mapStateToProps = (state: any, props: any) => {
 }
 
 const sessionData = {
-  name: 'Wednesday Regatta',
+  name: 'Wednesday Regatta 2',
   startDate: '10.07.2019',
   overallStatus: 'Everything is good',
   handicapType: 'Handicap Regatta',
@@ -42,7 +42,7 @@ const sessionData = {
   entries: 7,
   invitations: 4,
   acceptations: 2,
-  racesAndScoringOnPress: navigateToRaceDetails
+  racesAndScoringOnPress: (props: any) => navigateToRaceDetails(props.session)
 }
 
 export default Component((props: any) =>

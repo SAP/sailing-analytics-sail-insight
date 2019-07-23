@@ -1,4 +1,4 @@
-import { compose, merge, reduce, concat, curry, map, unless, isNil, call } from 'ramda'
+import { compose, merge, reduce, concat, curry, map, __ } from 'ramda'
 
 import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
@@ -9,7 +9,7 @@ import { navigateToNewSessionReviewAndCreate } from 'navigation'
 
 import styles from './styles'
 
-const ArrowRight = fromClass(IconText).contramap(merge({
+export const ArrowRight = fromClass(IconText).contramap(merge({
   source: Images.actions.arrowRight,
   style: { justifyContent: 'center' } }));
 
@@ -92,7 +92,7 @@ export const racesAndScoringCard = Component((props: any) =>
     fold(props),
     toTouchableCard({
       icon: Images.info.competitor,
-      onPress: () => unless(isNil, call)(props.racesAndScoringOnPress)
+      onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props)
     }),
     reduce(concat, nothing()),
     map(text({})))

@@ -13,6 +13,7 @@ import ImageButton from 'components/ImageButton'
 import ShareButton from 'components/ShareIconButton'
 import WebView from 'components/WebView'
 import SessionDetail from 'containers/session/SessionDetail'
+import RaceDetails from 'containers/session/RaceDetails'
 import TeamDetails from 'containers/TeamDetails'
 
 import { button } from 'styles/commons'
@@ -41,6 +42,17 @@ export default createStackNavigator(
     },
     [Screens.SessionDetail]: {
       screen: SessionDetail.fold,
+      navigationOptions: ({ navigation: navigationProps }: any) => ({
+        headerTitle: (
+          <HeaderTitle
+            firstLine={navigationProps.state.params.heading}
+            secondLine={navigationProps.state.params.subHeading}
+          />
+        ),
+      }),
+    },
+    [Screens.RaceDetails]: {
+      screen: RaceDetails.fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle

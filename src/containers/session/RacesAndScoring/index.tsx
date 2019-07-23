@@ -1,7 +1,7 @@
 import { __, compose, concat, map, merge, mergeLeft, reduce, range, objOf } from 'ramda'
 
 import Slider from '@react-native-community/slider'
-import { FlatList } from 'react-native'
+import { forwardingPropsFlatList } from 'components/fp/react-native'
 
 import I18n from 'i18n'
 
@@ -9,8 +9,7 @@ import {
   Component,
   fold,
   fromClass,
-  nothing,
-  contramap
+  nothing
 } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
@@ -27,14 +26,6 @@ const sliderSettings = {
   maximumValue: 20,
   step: 1,
 }
-
-const forwardingPropsFlatList = Component((props: any) =>
-  compose(
-    fold(props),
-    contramap(mergeLeft({
-      renderItem: item => props.renderItem({...props, ...item })
-    })))
-  (fromClass(FlatList)))
 
 const raceNumberSelector = Component((props: any) =>
   compose(
