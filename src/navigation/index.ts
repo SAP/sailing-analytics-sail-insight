@@ -29,6 +29,7 @@ export const navigateToLeaderboard = () => NavigationService.navigate(Screens.Le
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
 export const navigateToRaceDetails = (data: string) => NavigationService.navigate(Screens.RaceDetails, { data })
 export const navigateToRaceSetup = (data: string) => NavigationService.navigate(Screens.RaceSetup, { data })
+export const navigateToRaceCourseLayout = () => NavigationService.navigate(Screens.RaceCourseLayout)
 export const navigateToNewSessionBasics = () => NavigationService.navigate(Screens.NewSessionBasics)
 export const navigateToNewSessionTypeAndBoatClass = () => NavigationService.navigate(Screens.NewSessionTypeAndBoatClass)
 export const navigateToNewSessionsRacesAndScoring = () => NavigationService.navigate(Screens.NewSessionRacesAndScoring)

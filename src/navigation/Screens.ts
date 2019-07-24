@@ -23,6 +23,7 @@ export const NewSessionReviewAndCreate = 'NewSessionReviewAndCreate'
 
 export const RaceDetails = 'RaceDetails'
 export const RaceSetup = 'RaceSetup'
+export const RaceCourseLayout = 'RaceCourseLayout'
 
 // join
 export const CheckIn = 'CheckIn'

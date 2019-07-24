@@ -13,6 +13,7 @@ import ImageButton from 'components/ImageButton'
 import ShareButton from 'components/ShareIconButton'
 import WebView from 'components/WebView'
 import SessionDetail from 'containers/session/SessionDetail'
+import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import RaceSetup from 'containers/CourseCreation/RaceSetUp'
 import TeamDetails from 'containers/TeamDetails'
@@ -70,6 +71,16 @@ export default createStackNavigator(
           <HeaderTitle
             firstLine={navigationProps.state.params.heading}
             secondLine={navigationProps.state.params.subHeading}
+          />
+        ),
+      }),
+    },
+    [Screens.RaceCourseLayout]: {
+      screen: RaceCourseLayout.fold,
+      navigationOptions: ({ navigation: navigationProps }: any) => ({
+        headerTitle: (
+          <HeaderTitle
+            firstLine='Race course'
           />
         ),
       }),
