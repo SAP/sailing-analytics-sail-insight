@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 const mapIndexed = addIndex(map)
 
 const fold    = curry((props, v) => v.fold(props));
-const asArray = (x: any) => Array.isArray(x) ? x : Array.of(x);
+const asArray = (x: any) => Array.isArray(x) ? x : [x];
 
 const classToFn = (C: any) => (props: any) => <C {...props}/>;
 
