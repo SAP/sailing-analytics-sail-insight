@@ -25,7 +25,7 @@ import {
 import { ArrowRight } from 'containers/session/common'
 import IconText from 'components/IconText'
 
-import { navigateToRaceSetup } from 'navigation'
+import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
 const sliderSettings = {
   minimumValue: 1,
@@ -67,9 +67,9 @@ const DefineLayoutButton = Component(props =>
   compose(
     fold(props),
     touchableOpacity({
-      onPress: () => navigateToRaceSetup()
+      onPress: () => props.item.courseDefined ? navigateToRaceCourseLayout() : navigateToRaceSetup()
     }))(
-    text({}, 'Define Layout')))
+    text({}, props.item.courseDefined ? 'See Layout' : 'Define Layout')))
 
 const RaceItem = Component(props =>
   compose(
@@ -83,10 +83,16 @@ const RaceItem = Component(props =>
     DefineLayoutButton,
     ArrowRight ]))
 
-const raceList = forwardingPropsFlatList.contramap(merge({
-  data: [{ name: 'R1', startDate: '08:30' }, { name: 'R2', startDate: '09:30' }, { name: 'R3', startDate: '10:30' }],
-  renderItem: RaceItem.fold
-}))
+const raceList = forwardingPropsFlatList.contramap(
+  merge({
+    data: [
+      { name: 'R1', startDate: '08:30', courseDefined: false },
+      { name: 'R2', startDate: '09:30', courseDefined: true },
+      { name: 'R3', startDate: '10:30', courseDefined: true },
+    ],
+    renderItem: RaceItem.fold,
+  }),
+)
 
 export default Component((props: Object) =>
   compose(
