@@ -1,18 +1,16 @@
-import { __, compose, concat, map, merge, mergeLeft, head, reduce, range, objOf } from 'ramda'
+import { __, compose, concat, head, mergeLeft, objOf, reduce } from 'ramda'
 
-import React from 'react'
-import { View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
 import {
   Component,
+  contramap,
   fold,
   fromClass,
   nothing,
-  contramap,
-  recomposeWithState as withState
+  recomposeWithState as withState,
 } from 'components/fp/component'
-import { text, touchableOpacity, view } from 'components/fp/react-native'
+import { view } from 'components/fp/react-native'
 import TextInput from 'components/TextInput'
 
 import styles from './styles'
@@ -32,21 +30,21 @@ const marker = Component((props: any) => compose(
   })),
 )(fromClass(Marker)))
 
-const mapView = (settings: any) => Component((props: any) => compose(
+const mapView = (settings: any = {}) => Component((props: any) => compose(
     fold(props),
     view({ style: styles.mapContainer }),
     fromClass(MapView).contramap,
     mergeLeft,
     mergeLeft({
+      ...settings,
       onRegionChange: (region: any) => {
         props.setRegion(region)
-      }
+      },
     }),
-    mergeLeft(settings),
     objOf('children'),
     head,
     fold(props),
-  )(marker)
+  )(marker),
 )
 
 const COORDS_PRECISION = 7
@@ -60,8 +58,8 @@ const coordinatesInput = ({ propName }: any) => Component((props: any) => compos
         [propName]: value,
       }),
       placeholder: propName,
-    }))
-  )(fromClass(TextInput))
+    })),
+  )(fromClass(TextInput)),
 )
 
 const latitudeInput = coordinatesInput({ propName: 'latitude' })
@@ -74,9 +72,9 @@ export default Component((props: object) =>
     reduce(concat, nothing()),
   )([
     mapView({
-      style:styles.map,
+      style: styles.map,
     }),
     latitudeInput,
-    longitudeInput
-  ])
+    longitudeInput,
+  ]),
 )
