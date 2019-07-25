@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions'
 import { RaceState } from 'reducers/config'
 
 import { removeUserData } from 'actions/auth'
-import { receiveCourse, updateCourseLoading } from 'actions/races'
+import { receiveCourse, receiveMark, updateCourseLoading } from 'actions/races'
 
 
 const initialState: RaceState = {
@@ -26,6 +26,20 @@ const reducer = handleActions(
         courses: {
           ...state.courses,
           ...course,
+        },
+      }
+    },
+    [receiveMark as any]: (state: any = {}, action: any) => {
+      const mark = action && action.payload
+      if (!mark) {
+        return state
+      }
+
+      return {
+        ...state,
+        marks: {
+          ...state.marks,
+          ...mark,
         },
       }
     },

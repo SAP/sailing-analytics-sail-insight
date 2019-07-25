@@ -65,7 +65,7 @@ const raceNumberFormField = reduxFormField({
 })
 
 const onSeeCourse = (props: any) => {
-  props.fetchCourse('TW 2013 (Finn)', 'Finn Race 4')
+  props.fetchCourse('TW 2013 (Finn)', 'Finn Race 4', 'TW 2013 (Finn)')
   navigateToRaceCourseLayout()
 }
 

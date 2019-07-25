@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 
 import { RACE_ENTITY_NAME } from 'api/schemas'
 import { CheckIn, User } from 'models'
+import { Course, CourseState, Mark, WaypointState } from 'models/Course'
 import { ApiBodyKeys as EventApiKeys } from 'models/Event'
 import Race, { ApiBodyKeys as RaceApiKeys, mapResToRace } from 'models/Race'
 import { ApiBodyKeys as RegattaApiKeys } from 'models/Regatta'
@@ -18,11 +19,40 @@ import { getEventEntity } from './event'
 import { getLeaderboardEntity } from './leaderboard'
 import { getRegatta, getRegattaEntity } from './regatta'
 
-export const getCourse = (raceId: string) => (state: RootState) =>
+export const getCourse = (raceId: string) => (state: RootState): CourseState | undefined =>
   state.races && state.races.courses[raceId]
 
 export const getCourseLoading = (state: RootState) =>
   state.races && state.races.courseLoading
+
+// Gets currently the "local ids" of marks
+// TODO: Should be made to get all of the server ids of marks
+export const getMarkIds = (state: RootState) =>
+  state.races && state.races.marks && Object.keys(state.races.marks)
+
+export const markdByIdPresent = (markId: string) => (state: RootState) =>
+  getMarkIds(state).includes(markId)
+
+export const getMarkById = (markId: string) => (state: RootState): Mark | undefined =>
+  state.races && state.races.marks && state.races.marks[markId]
+
+export const getCourseWithMarks = (raceId: string) => (
+  state: RootState,
+): Course | undefined => {
+  const courseState = getCourse(raceId)(state)
+  if (!courseState) return
+
+  return {
+    name: courseState.name,
+    waypoints: courseState.waypoints.map((waypointState: WaypointState) => ({
+      passingInstruction: waypointState.passingInstruction,
+      leftMark: getMarkById(waypointState.leftMarkId)(state),
+      rightMark: waypointState.rightMarkId
+        ? getMarkById(waypointState.rightMarkId)(state)
+        : undefined,
+    })),
+  }
+}
 
 const orderRaces = getOrderListFunction<Race>(['trackingStartDate'], 'desc')
 
