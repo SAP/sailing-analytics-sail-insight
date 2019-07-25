@@ -1,29 +1,39 @@
-import { __, compose } from 'ramda'
+import { __, complement, compose, concat, propEq, reduce } from 'ramda'
 
 import {
   Component,
   fold,
-  recomposeLifecycle as lifecycle,
+  nothing,
+  nothingAsClass,
+  recomposeBranch as branch,
+  reduxConnect as connect,
 } from 'components/fp/component'
 import { text } from 'components/fp/react-native'
 
-import { selfTrackingApi } from 'api'
+import { getCourse, getCourseLoading } from 'selectors/race'
 
-const withCourse = lifecycle({
-  state: { course: undefined },
-  componentDidMount() {
-    selfTrackingApi('https://sapsailing.com').requestCourse(
-      'TW 2013 (Finn)', 'Finn Race 4'
-    ).then((res: any) => this.setState({ course: JSON.stringify(res)}))
-  }
-})
+const isLoading = propEq('loading', true)
+const isNotLoading = complement(isLoading)
+const nothingIfLoading = branch(isLoading, nothingAsClass)
+const nothingIfNotLoading = branch(isNotLoading, nothingAsClass)
 
 const course = Component((props: any) =>
-  fold(props, text({}, props.course || 'loading')))
+  fold(props, text({}, props.course && JSON.stringify(props.course) || 'error')))
+
+const spinner = text({}, 'Loading ...')
+
+const mapStateToProps = (state: any) => ({
+  course: getCourse('TW 2013 (Finn) - Finn Race 4')(state),
+  loading: getCourseLoading(state),
+})
 
 export default Component((props: object) =>
   compose(
     fold(props),
-    withCourse,
-  )(course),
+    connect(mapStateToProps),
+    reduce(concat, nothing()),
+  )([
+    nothingIfNotLoading(spinner),
+    nothingIfLoading(course),
+  ]),
 )

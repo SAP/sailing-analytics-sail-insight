@@ -6,6 +6,7 @@ import { CheckIn, User } from 'models'
 import { ApiBodyKeys as EventApiKeys } from 'models/Event'
 import Race, { ApiBodyKeys as RaceApiKeys, mapResToRace } from 'models/Race'
 import { ApiBodyKeys as RegattaApiKeys } from 'models/Regatta'
+import { RootState } from 'reducers/config'
 import { removeRegattaPrefix, removeUserPrefix } from 'services/SessionService'
 
 import { getOrderListFunction } from 'helpers/utils'
@@ -17,6 +18,11 @@ import { getEventEntity } from './event'
 import { getLeaderboardEntity } from './leaderboard'
 import { getRegatta, getRegattaEntity } from './regatta'
 
+export const getCourse = (raceId: string) => (state: RootState) =>
+  state.races && state.races.courses[raceId]
+
+export const getCourseLoading = (state: RootState) =>
+  state.races && state.races.courseLoading
 
 const orderRaces = getOrderListFunction<Race>(['trackingStartDate'], 'desc')
 

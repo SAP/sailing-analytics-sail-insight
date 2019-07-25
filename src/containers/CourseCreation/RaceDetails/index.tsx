@@ -25,6 +25,7 @@ import {
 import { ArrowRight } from 'containers/session/common'
 import IconText from 'components/IconText'
 
+import { fetchCourse } from 'actions/races'
 import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
 const sliderSettings = {
@@ -63,11 +64,16 @@ const raceNumberFormField = reduxFormField({
   ...sliderSettings,
 })
 
+const onSeeCourse = (props: any) => {
+  props.fetchCourse('TW 2013 (Finn)', 'Finn Race 4')
+  navigateToRaceCourseLayout()
+}
+
 const DefineLayoutButton = Component(props =>
   compose(
     fold(props),
     touchableOpacity({
-      onPress: () => props.item.courseDefined ? navigateToRaceCourseLayout() : navigateToRaceSetup()
+      onPress: () => props.item.courseDefined ? onSeeCourse(props) : navigateToRaceSetup()
     }))(
     text({}, props.item.courseDefined ? 'See Layout' : 'Define Layout')))
 
@@ -97,7 +103,7 @@ const raceList = forwardingPropsFlatList.contramap(
 export default Component((props: Object) =>
   compose(
     fold(props),
-    connect(mapStateToProps),
+    connect(mapStateToProps, { fetchCourse }),
     reduxForm(eventWizardCommonFormSettings),
     view({ style: [] }),
     reduce(concat, nothing()))

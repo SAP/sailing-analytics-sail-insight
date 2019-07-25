@@ -12,6 +12,7 @@ export interface RootState {
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
+  races?: any | RaceState
 }
 
 
@@ -72,4 +73,12 @@ export interface UserState {
 export interface CheckInState {
   active: any
   isLoadingCheckIn: boolean
+}
+
+export interface RaceState {
+  // RaceID and MarkID - strings
+  allRaces: any // Should be Map<RaceID, Race>
+  courses: Map<string, any> // Should be Map<RaceID, Course>
+  marks: any // Should be Map<MarkID, Mark>
+  courseLoading: boolean
 }
