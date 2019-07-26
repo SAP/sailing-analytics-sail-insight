@@ -45,7 +45,7 @@ export const getCourseWithMarks = (raceId: string) => (
   return {
     name: courseState.name,
     waypoints: courseState.waypoints.map((waypointState: WaypointState) => ({
-      passingInstruction: waypointState.passingInstruction,
+      ...waypointState,
       leftMark: getMarkById(waypointState.leftMark)(state),
       rightMark: waypointState.rightMark
         ? getMarkById(waypointState.rightMark)(state)

@@ -19,6 +19,9 @@ export interface Course<T = Mark> {
 }
 
 export interface Waypoint<T = Mark> {
+  id: string
+  shortName?: string
+  longName: string
   passingInstruction: PassingInstruction
   leftMark: T
   rightMark?: T

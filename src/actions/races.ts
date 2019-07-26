@@ -89,17 +89,19 @@ const apiCourseToLocalFormat = (
     name: apiCourse.name,
     waypoints: await Promise.all<WaypointState>(
       apiCourse.waypoints.map(
-        async (waypoint: any): Promise<WaypointState> => {
+        async (apiWaypoint: any): Promise<WaypointState> => {
           const { leftMark, rightMark } = (await dispatch(
             apiControlPointToLocalMarkIds(
               leaderboardName,
-              waypoint.controlPoint,
+              apiWaypoint.controlPoint,
             ),
           )) as { leftMark: string; rightMark?: string }
           return {
             leftMark,
             rightMark,
-            passingInstruction: waypoint.passingInstruction,
+            id: apiWaypoint.controlPoint.id,
+            longName: apiWaypoint.controlPoint.name,
+            passingInstruction: apiWaypoint.passingInstruction,
           }
         },
       ),
