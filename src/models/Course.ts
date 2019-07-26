@@ -1,3 +1,4 @@
+export type MarkID = string
 export type Mark = any
 
 // Got this from https://www.sapsailing.com/sailingserver/webservices/api/v1/addCourseDefinitionToRaceLog.html
@@ -11,24 +12,19 @@ export type PassingInstruction =
   | 'FixedBearing'
   | 'Single_Unknown'
 
-export interface Course {
+// With T = Mark this is the Course model that is used in the UI
+export interface Course<T = Mark> {
   name: string,
-  waypoints: Waypoint[]
+  waypoints: Waypoint<T>[]
 }
 
-export interface Waypoint {
+export interface Waypoint<T = Mark> {
   passingInstruction: PassingInstruction
-  leftMark: Mark
-  rightMark?: Mark
+  leftMark: T
+  rightMark?: T
 }
 
-export interface CourseState {
-  name: string,
-  waypoints: WaypointState[]
-}
-
-export interface WaypointState {
-  passingInstruction: PassingInstruction
-  leftMarkId: string
-  rightMarkId?: string
-}
+// This is the Course model that is used in the redux state
+// with MarkIDs instead of the actual Mark model
+export type CourseState = Course<MarkID>
+export type WaypointState = Waypoint<MarkID>

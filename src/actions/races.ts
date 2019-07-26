@@ -53,13 +53,13 @@ const apiControlPointToLocalMarkIds = (
   controlPoint: any,
 ) => async (dispatch: DispatchType) => {
   if (controlPoint.left) {
-    const leftMarkId = await dispatch(
+    const leftMark = await dispatch(
       fetchMissingMarkInformationIfNeeded(
         leaderboardName,
         controlPoint.left.id,
       ),
     )
-    const rightMarkId = await dispatch(
+    const rightMark = await dispatch(
       fetchMissingMarkInformationIfNeeded(
         leaderboardName,
         controlPoint.right.id,
@@ -67,16 +67,16 @@ const apiControlPointToLocalMarkIds = (
     )
 
     return {
-      leftMarkId,
-      rightMarkId,
+      leftMark,
+      rightMark,
     }
   }
 
   return {
-    leftMarkId: await dispatch(
+    leftMark: await dispatch(
       fetchMissingMarkInformationIfNeeded(leaderboardName, controlPoint.id),
     ),
-    rightMarkId: undefined,
+    rightMark: undefined,
   }
 }
 
@@ -84,22 +84,26 @@ const apiCourseToLocalFormat = (
   apiCourse: any,
   raceId: string,
   leaderboardName: string,
-) => async (dispatch: DispatchType) => {
-  // Can't get the types to work because of Promise.all
-  // ) => async (dispatch: DispatchType): Promise<{ [id: string]: CourseState }> => {
-  // const course: CourseState = {
-  const course = {
+) => async (dispatch: DispatchType): Promise<{ [id: string]: CourseState }> => {
+  const course: CourseState = {
     name: apiCourse.name,
-    waypoints: await Promise.all(apiCourse.waypoints.map(async (waypoint: any): Promise<WaypointState> => {
-      const { leftMarkId, rightMarkId } = await dispatch(
-        apiControlPointToLocalMarkIds(leaderboardName, waypoint.controlPoint),
-      ) as { leftMarkId: string, rightMarkId?: string }
-      return {
-        leftMarkId,
-        rightMarkId,
-        passingInstruction: waypoint.passingInstruction,
-      }
-    })),
+    waypoints: await Promise.all<WaypointState>(
+      apiCourse.waypoints.map(
+        async (waypoint: any): Promise<WaypointState> => {
+          const { leftMark, rightMark } = (await dispatch(
+            apiControlPointToLocalMarkIds(
+              leaderboardName,
+              waypoint.controlPoint,
+            ),
+          )) as { leftMark: string; rightMark?: string }
+          return {
+            leftMark,
+            rightMark,
+            passingInstruction: waypoint.passingInstruction,
+          }
+        },
+      ),
+    ),
   }
 
   return {
