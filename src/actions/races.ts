@@ -1,11 +1,23 @@
+import { curry, times } from 'ramda'
 import { first, get, keys } from 'lodash'
 import { createAction } from 'redux-actions'
+import uuidv4 from 'uuid/v4'
 
 import { selfTrackingApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import { CourseState, WaypointState } from 'models/Course'
 import { markdByIdPresent } from 'selectors/race'
+
+const addUUIDs = curry((amount: number, payload: any) => ({
+  ...(amount > 1 ?
+    { 'UUIDs': times(uuidv4, amount) } :
+    { 'UUID' : uuidv4() }
+  ),
+	...payload,
+}))
+
+const addUUID = addUUIDs(1)
 
 // Actions to store the appropriate objects as they are into the state
 export const loadRace = createAction('LOAD_RACE')
@@ -14,9 +26,11 @@ export const loadMark = createAction('LOAD_MARK')
 
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
-export const selectCourse = createAction('SELECT_COURSE')
+// TODO: the addUUIDs(2) should be replaced with an actual number of
+//       required UUIDs for a given template, besides the start from scratch
+export const selectCourse = createAction('SELECT_COURSE', addUUIDs(2))
 
-export const addWaypoint = createAction('ADD_WAYPOINT')
+export const addWaypoint = createAction('ADD_WAYPOINT', addUUID)
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 
@@ -24,6 +38,8 @@ export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 export const saveCourse = createAction('SAVE_COURSE')
 // Save mark to server
 export const saveMark = createAction('SAVE_MARK')
+
+export const selectWaypoint = createAction('SELECT_WAYPOINT')
 
 const fetchMark = (leaderboardName: string, markId: string) => async (
   dispatch: DispatchType,

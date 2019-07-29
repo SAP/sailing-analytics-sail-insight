@@ -1,5 +1,5 @@
+import { findIndex, propEq } from 'ramda'
 import { handleActions } from 'redux-actions'
-import uuidv4 from 'uuid/v4'
 
 import { RaceState } from 'reducers/config'
 
@@ -11,6 +11,7 @@ import {
   loadMark,
   removeWaypoint,
   selectCourse,
+  selectWaypoint,
   updateCourseLoading,
 } from 'actions/races'
 import { CourseCreationState, CourseState, Mark } from 'models/Course'
@@ -35,7 +36,8 @@ const updateItem = (array: any[], index: number, item: any) => (
 	})
 )
 
-const generateUUID = () => uuidv4()
+const getArrayIndexByWaypointId = (raceState: any) =>
+  findIndex(propEq('id', raceState.selectedWaypoint))(raceState.courseCreation.waypoints)
 
 const initialState: RaceState = {
   allRaces: {},
@@ -43,6 +45,7 @@ const initialState: RaceState = {
   marks: {} as Map<string, Mark>,
   courseLoading: false,
   courseCreation: undefined,
+	selectedWaypoint: undefined,
 } as RaceState
 
 const reducer = handleActions(
@@ -71,18 +74,17 @@ const reducer = handleActions(
 
     // Select course for loading into the course creation state
     // Course template (e.g. from scratch) or an existing course (when it is fetched from the server)
-    // (courseID?: string) => void
+    // ({ courseId?: string, UUIDs: string[] }) => void
     [selectCourse as any]: (state: any = {}, action: any) => {
-      const courseID = action.payload
-      const courseExists = courseID && Object.keys(state.courses).includes(courseID)
+      const { courseId, UUIDs } = action.payload
+      const courseExists = courseId && Object.keys(state.courses).includes(courseId)
       if (courseExists) {
         return {
           ...state,
-          courseCreation: state.courses[courseID],
+          courseCreation: state.courses[courseId],
         }
       }
 
-			//TODO: UUID OUT!!
       const newCourse: CourseCreationState = {
         name: 'New course',
         waypoints: [
@@ -90,13 +92,13 @@ const reducer = handleActions(
             shortName: 'S',
             longName: 'Start',
             passingInstruction: 'Gate',
-						id: generateUUID(),
+						id: UUIDs[0],
           },
           {
             shortName: 'F',
             longName: 'Finish',
             passingInstruction: 'Gate',
-						id: generateUUID(),
+						id: UUIDs[1],
           },
         ],
       }
@@ -107,43 +109,56 @@ const reducer = handleActions(
       }
     },
 
-    // Create a new waypoint at a specified index
-    // (index: number) => void
+    // Create a new waypoint at a specified index and selects it
+    // The index behaves like an Array.splice, i.e. an insertion, would
+    // ({ UUID: string, index: number }) => void
     [addWaypoint as any]: (state: any = {}, action: any) => ({
 			...state,
 			courseCreation: {
 				...state.courseCreation,
-				// TODO: UUID
-				// TODO: Set selectedWaypoint
-				waypoints: insertItem(state.courseCreation.waypoints, action.payload, {}),
+				waypoints: insertItem(
+					state.courseCreation.waypoints,
+					action.payload.index,
+          { id: action.payload.UUID },
+        ),
       },
+      selectedWaypoint: action.payload.UUID,
     }),
 
-    // Remove a new waypoint at a specified index
-    // (index: number) => void
+    // Remove a new waypoint at the selectedWaypoint id
     [removeWaypoint as any]: (state: any = {}, action: any) => ({
-			//TODO: use id from selectedWaypoint
       ...state,
       courseCreation: {
         ...state.courseCreation,
-        waypoints: removeItem(state.courseCreation.waypoints, action.payload),
+        waypoints: removeItem(
+          state.courseCreation.waypoints,
+          getArrayIndexByWaypointId(state),
+        ),
       },
     }),
 
-    // Change waypoint state at a given index
-    // ({ index, waypoint }: { number, Partial<Waypoint> }) => void
-    [updateWaypoint as any]: (state: any = {}, action: any) => {
-			// TODO: use index from selectedWaypoint
-      const { index, waypoint } = action.payload
+    // Change waypoint state at the selectedWaypoint id
+    // (waypoint: Partial<Waypoint>) => void
+    [updateWaypoint as any]: (state: any = {}, action: any) => ({
+      // If waypoint.id is changed selectedWaypoint should be changed as well.
+      // Just to keep in mind, the id should not be changeable by design
+      ...state,
+      courseCreation: {
+        ...state.courseCreation,
+        waypoints: updateItem(
+          state.courseCreation.waypoints,
+          getArrayIndexByWaypointId(state),
+          action.payload,
+        ),
+      },
+    }),
 
-      return {
-        ...state,
-        courseCreation: {
-          ...state.courseCreation,
-          waypoints: updateItem(state.courseCreation.waypoints, index, waypoint),
-        },
-      }
-    },
+    // Change selectedWaypoint
+    // (selectedWaypoint: string) => void
+    [selectWaypoint as any]: (state: any = {}, action: any) => ({
+      ...state,
+      selectedWaypoint: action.payload,
+    }),
 
     [removeUserData as any]: () => initialState,
 
