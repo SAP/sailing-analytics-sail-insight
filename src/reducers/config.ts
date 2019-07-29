@@ -1,5 +1,5 @@
 import { AutoCourseUpdateState } from 'helpers/types'
-import { CourseCreationState, CourseState, Mark } from 'models/Course'
+import { SelectedCourseState, CourseState, Mark } from 'models/Course'
 
 
 export interface RootState {
@@ -82,7 +82,7 @@ export interface RaceState {
   courses: Map<string, CourseState> // Should be Map<RaceID, Course>
   marks: Map<string, Mark> // Should be Map<MarkID, Mark>
   courseLoading: boolean
-  courseCreation?: CourseCreationState
+  selectedCourse?: SelectedCourseState
 	// ID of the waypoint that is selected for editing
 	selectedWaypoint?: string
 }

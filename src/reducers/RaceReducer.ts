@@ -14,7 +14,7 @@ import {
   selectWaypoint,
   updateCourseLoading,
 } from 'actions/races'
-import { CourseCreationState, CourseState, Mark } from 'models/Course'
+import { SelectedCourseState, CourseState, Mark } from 'models/Course'
 
 const insertItem = (array: any[], index: number, item: any) => {
 	let newArray = array.slice()
@@ -44,7 +44,7 @@ const initialState: RaceState = {
   courses: {} as Map<string, CourseState>,
   marks: {} as Map<string, Mark>,
   courseLoading: false,
-  courseCreation: undefined,
+  selectedCourse: undefined,
 	selectedWaypoint: undefined,
 } as RaceState
 
@@ -81,11 +81,11 @@ const reducer = handleActions(
       if (courseExists) {
         return {
           ...state,
-          courseCreation: state.courses[courseId],
+          selectedCourse: state.courses[courseId],
         }
       }
 
-      const newCourse: CourseCreationState = {
+      const newCourse: SelectedCourseState = {
         name: 'New course',
         waypoints: [
           {
@@ -105,7 +105,7 @@ const reducer = handleActions(
 
       return {
         ...state,
-        courseCreation: newCourse,
+        selectedCourse: newCourse,
       }
     },
 
@@ -114,10 +114,10 @@ const reducer = handleActions(
     // ({ UUID: string, index: number }) => void
     [addWaypoint as any]: (state: any = {}, action: any) => ({
 			...state,
-			courseCreation: {
-				...state.courseCreation,
+			selectedCourse: {
+				...state.selectedCourse,
 				waypoints: insertItem(
-					state.courseCreation.waypoints,
+					state.selectedCourse.waypoints,
 					action.payload.index,
           { id: action.payload.UUID },
         ),
@@ -128,25 +128,25 @@ const reducer = handleActions(
     // Remove a new waypoint at the selectedWaypoint id
     [removeWaypoint as any]: (state: any = {}, action: any) => ({
       ...state,
-      courseCreation: {
-        ...state.courseCreation,
+      selectedCourse: {
+        ...state.selectedCourse,
         waypoints: removeItem(
-          state.courseCreation.waypoints,
+          state.selectedCourse.waypoints,
           getArrayIndexByWaypointId(state),
         ),
       },
     }),
 
     // Change waypoint state at the selectedWaypoint id
-    // (waypoint: Partial<Waypoint>) => void
+    // (waypoint: Partial<WaypointState>) => void
     [updateWaypoint as any]: (state: any = {}, action: any) => ({
       // If waypoint.id is changed selectedWaypoint should be changed as well.
       // Just to keep in mind, the id should not be changeable by design
       ...state,
-      courseCreation: {
-        ...state.courseCreation,
+      selectedCourse: {
+        ...state.selectedCourse,
         waypoints: updateItem(
-          state.courseCreation.waypoints,
+          state.selectedCourse.waypoints,
           getArrayIndexByWaypointId(state),
           action.payload,
         ),

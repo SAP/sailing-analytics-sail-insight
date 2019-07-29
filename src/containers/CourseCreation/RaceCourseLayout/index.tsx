@@ -10,7 +10,7 @@ import {
 } from 'components/fp/component'
 import { text } from 'components/fp/react-native'
 
-import { getCourseLoading, getCourseWithMarks } from 'selectors/race'
+import { getCourseLoading, getSelectedCourseWithMarks } from 'selectors/race'
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
@@ -23,7 +23,7 @@ const course = Component((props: any) =>
 const spinner = text({}, 'Loading ...')
 
 const mapStateToProps = (state: any) => ({
-  course: getCourseWithMarks('TW 2013 (Finn) - Finn Race 4')(state),
+  course: getSelectedCourseWithMarks(state),
   loading: getCourseLoading(state),
 })
 

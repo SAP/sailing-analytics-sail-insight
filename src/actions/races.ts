@@ -160,6 +160,7 @@ export const fetchCourse = (
   )
 
   dispatch(loadCourse(course))
+  dispatch(selectCourse({ courseId: raceId }))
   dispatch(updateCourseLoading(false))
   return course
 }

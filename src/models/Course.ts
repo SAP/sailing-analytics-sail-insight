@@ -32,7 +32,9 @@ export interface Waypoint<T = Mark> {
 export type CourseState = Course<MarkID>
 export type WaypointState = Waypoint<MarkID>
 
-export interface CourseCreationState {
+// Since the selected course is the one that will be edited,
+// it contains partial information about the waypoints
+export interface SelectedCourseState {
   name: string
-  waypoints: Array<Partial<Waypoint<MarkID>>>
+  waypoints: Partial<WaypointState>[]
 }
