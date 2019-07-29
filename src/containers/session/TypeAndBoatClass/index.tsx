@@ -18,6 +18,10 @@ import {
   FORM_KEY_REGATTA_TYPE,
   validateTypeAndBoatClass,
 } from 'forms/eventCreation'
+import {
+  RegattaType,
+  HandicapRatingSystem,
+} from 'models/EventCreationData'
 import Images from '@assets/Images'
 import FormTextInput from 'components/form/FormTextInput'
 import ModalDropdown from 'react-native-modal-dropdown'
@@ -30,8 +34,8 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-const isOneDesignSelected = propEq('regattaType', 'oneDesign')
-const isHandicapSelected = propEq('regattaType', 'handicap')
+const isOneDesignSelected = propEq('regattaType', RegattaType.OneDesign)
+const isHandicapSelected = propEq('regattaType', RegattaType.Handicap)
 const nothingIfOneDesignSelected = branch(isOneDesignSelected, nothingAsClass)
 const nothingIfHandicapSelected = branch(isHandicapSelected, nothingAsClass)
 
@@ -58,8 +62,8 @@ const regattaTypeCheckbox = (...args: any) => reduxFormField({
   component: checkbox(...args).fold
 })
 
-const oneDesignCheckbox = regattaTypeCheckbox('One design regatta', 'oneDesign')
-const handicapCheckbox = regattaTypeCheckbox('Handicap', 'handicap')
+const oneDesignCheckbox = regattaTypeCheckbox('One design regatta', RegattaType.OneDesign)
+const handicapCheckbox = regattaTypeCheckbox('Handicap', RegattaType.Handicap)
 
 const boatClassInput = reduxFormField({
   label: 'Boat class (autocomplete)',
@@ -68,7 +72,7 @@ const boatClassInput = reduxFormField({
 })
 
 const ratingSystemDropdown = fromClass(ModalDropdown).contramap(always({
-  options: ['IRC', 'ORC International', 'ORC Club', 'Yardstick', 'PHRF']
+  options: Object.values(HandicapRatingSystem)
 }))
 
 const formSettings = {
