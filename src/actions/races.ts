@@ -7,11 +7,23 @@ import { DispatchType, GetStateType } from 'helpers/types'
 import { CourseState, WaypointState } from 'models/Course'
 import { markdByIdPresent } from 'selectors/race'
 
-export const receiveRace = createAction('RECEIVE_RACE')
-export const receiveCourse = createAction('RECEIVE_COURSE')
-export const receiveMark = createAction('RECEIVE_MARK')
+// Actions to store the appropriate objects as they are into the state
+export const loadRace = createAction('LOAD_RACE')
+export const loadCourse = createAction('LOAD_COURSE')
+export const loadMark = createAction('LOAD_MARK')
 
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
+
+export const selectCourse = createAction('SELECT_COURSE')
+
+export const addWaypoint = createAction('ADD_WAYPOINT')
+export const removeWaypoint = createAction('REMOVE_WAYPOINT')
+export const updateWaypoint = createAction('UPDATE_WAYPOINT')
+
+// Save course to server
+export const saveCourse = createAction('SAVE_COURSE')
+// Save mark to server
+export const saveMark = createAction('SAVE_MARK')
 
 const fetchMark = (leaderboardName: string, markId: string) => async (
   dispatch: DispatchType,
@@ -30,7 +42,7 @@ const fetchMark = (leaderboardName: string, markId: string) => async (
   // const { id, mark } = apiMarkToLocalState()
   const id = first(keys(apiMark))
   const mark = apiMark
-  dispatch(receiveMark(mark))
+  dispatch(loadMark(mark))
 
   return id
 }
@@ -131,7 +143,7 @@ export const fetchCourse = (
     apiCourseToLocalFormat(apiCourse, raceId, leaderboardName),
   )
 
-  dispatch(receiveCourse(course))
+  dispatch(loadCourse(course))
   dispatch(updateCourseLoading(false))
   return course
 }

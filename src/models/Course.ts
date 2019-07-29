@@ -31,3 +31,8 @@ export interface Waypoint<T = Mark> {
 // with MarkIDs instead of the actual Mark model
 export type CourseState = Course<MarkID>
 export type WaypointState = Waypoint<MarkID>
+
+export interface CourseCreationState {
+  name: string
+  waypoints: Array<Partial<Waypoint<MarkID>>>
+}
