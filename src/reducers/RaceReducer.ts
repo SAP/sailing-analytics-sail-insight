@@ -78,35 +78,30 @@ const reducer = handleActions(
     [selectCourse as any]: (state: any = {}, action: any) => {
       const { courseId, UUIDs } = action.payload
       const courseExists = courseId && Object.keys(state.courses).includes(courseId)
-      if (courseExists) {
-        return {
-          ...state,
-          selectedCourse: state.courses[courseId],
-          selectedWaypoint: undefined,
-        }
-      }
-
-      const newCourse: SelectedCourseState = {
-        name: 'New course',
-        waypoints: [
-          {
-            shortName: 'S',
-            longName: 'Start',
-            passingInstruction: 'Gate',
-            id: UUIDs[0],
-          },
-          {
-            shortName: 'F',
-            longName: 'Finish',
-            passingInstruction: 'Gate',
-            id: UUIDs[1],
-          },
-        ],
-      }
+      const selectedCourse: SelectedCourseState = courseExists
+        ? state.courses[courseId]
+        : {
+            name: 'New course',
+            waypoints: [
+              {
+                shortName: 'S',
+                longName: 'Start',
+                passingInstruction: 'Gate',
+                id: UUIDs[0]
+              },
+              {
+                shortName: 'F',
+                longName: 'Finish',
+                passingInstruction: 'Gate',
+                id: UUIDs[1]
+              }
+            ]
+          }
 
       return {
         ...state,
-        selectedCourse: newCourse,
+        selectedCourse,
+        selectedWaypoint: undefined,
       }
     },
 
