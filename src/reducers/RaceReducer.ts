@@ -6,34 +6,34 @@ import { RaceState } from 'reducers/config'
 import { removeUserData } from 'actions/auth'
 import {
   addWaypoint,
-  updateWaypoint,
   loadCourse,
   loadMark,
   removeWaypoint,
   selectCourse,
   selectWaypoint,
   updateCourseLoading,
+  updateWaypoint,
 } from 'actions/races'
-import { SelectedCourseState, CourseState, Mark } from 'models/Course'
+import { CourseState, Mark, MarkID, SelectedCourseState } from 'models/Course'
 
 const insertItem = (array: any[], index: number, item: any) => {
-	let newArray = array.slice()
-	newArray.splice(index, 0, item)
-	return newArray
+  const newArray = array.slice()
+  newArray.splice(index, 0, item)
+  return newArray
 }
 
 const removeItem = (array: any[], index: number) => (
-	array.filter((item: any, i: number) => i !== index)
+  array.filter((item: any, i: number) => i !== index)
 )
 
 const updateItem = (array: any[], index: number, item: any) => (
-	array.map((it: any, ind: number) => {
-		if (ind !== index) {
-			return it
-		}
+  array.map((it: any, ind: number) => {
+    if (ind !== index) {
+      return it
+    }
 
-		return item
-	})
+    return item
+  })
 )
 
 const getArrayIndexByWaypointId = (raceState: any) =>
@@ -42,28 +42,28 @@ const getArrayIndexByWaypointId = (raceState: any) =>
 const initialState: RaceState = {
   allRaces: {},
   courses: {} as Map<string, CourseState>,
-  marks: {} as Map<string, Mark>,
+  marks: {} as Map<MarkID, Mark>,
   courseLoading: false,
   selectedCourse: undefined,
-	selectedWaypoint: undefined,
+  selectedWaypoint: undefined,
 } as RaceState
 
 const reducer = handleActions(
   {
     [loadCourse as any]: (state: any = {}, action: any) => ({
-			...state,
-			courses: {
-				...state.courses,
-				...(action.payload || {}),
-			},
+      ...state,
+      courses: {
+        ...state.courses,
+        ...(action.payload || {}),
+      },
     }),
 
     [loadMark as any]: (state: any = {}, action: any) => ({
-			...state,
-			marks: {
-				...state.marks,
-				...(action.payload || {}),
-			},
+      ...state,
+      marks: {
+        ...state.marks,
+        ...(action.payload || {}),
+      },
     }),
 
     [updateCourseLoading as any]: (state: any = {}, action: any) => ({
@@ -92,13 +92,13 @@ const reducer = handleActions(
             shortName: 'S',
             longName: 'Start',
             passingInstruction: 'Gate',
-						id: UUIDs[0],
+            id: UUIDs[0],
           },
           {
             shortName: 'F',
             longName: 'Finish',
             passingInstruction: 'Gate',
-						id: UUIDs[1],
+            id: UUIDs[1],
           },
         ],
       }
@@ -113,12 +113,12 @@ const reducer = handleActions(
     // The index behaves like an Array.splice, i.e. an insertion, would
     // ({ UUID: string, index: number }) => void
     [addWaypoint as any]: (state: any = {}, action: any) => ({
-			...state,
-			selectedCourse: {
-				...state.selectedCourse,
-				waypoints: insertItem(
-					state.selectedCourse.waypoints,
-					action.payload.index,
+      ...state,
+      selectedCourse: {
+        ...state.selectedCourse,
+        waypoints: insertItem(
+          state.selectedCourse.waypoints,
+          action.payload.index,
           { id: action.payload.UUID },
         ),
       },
