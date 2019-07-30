@@ -16,6 +16,7 @@ import {
   eventWizardCommonFormSettings,
   FORM_KEY_BOAT_CLASS,
   FORM_KEY_REGATTA_TYPE,
+  FORM_KEY_RATING_SYSTEM,
   validateTypeAndBoatClass,
 } from 'forms/eventCreation'
 import {
@@ -71,9 +72,17 @@ const boatClassInput = reduxFormField({
   component: FormTextInput
 })
 
-const ratingSystemDropdown = fromClass(ModalDropdown).contramap(always({
-  options: Object.values(HandicapRatingSystem)
-}))
+const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLeft({
+  onSelect: (index: any, value: any) => props.input.onChange(value),
+  defaultValue: props.input.value,
+  defaultIndex: props.options.indexOf(props.input.value),
+}, props))
+
+const ratingSystemDropdown = reduxFormField({
+  name: FORM_KEY_RATING_SYSTEM,
+  component: modalDropdown.fold,
+  options: Object.values(HandicapRatingSystem),
+})
 
 const formSettings = {
   ...eventWizardCommonFormSettings,
