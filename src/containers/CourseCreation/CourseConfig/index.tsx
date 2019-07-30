@@ -1,5 +1,5 @@
 import { __, compose, always, both, has,
-  prop, map, reduce, concat, merge,
+  prop, map, reduce, concat, merge, curry,
   objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
 
 import {
@@ -22,7 +22,7 @@ import IconText from 'components/IconText'
 
 import styles from './styles'
 
-const hasDefinedProp = (p: string) => both(compose(not, isNil, prop(p)), has(p))
+const hasDefinedProp = curry((p: string, v: any) => both(has(p), compose(not, isNil, prop(p)), v))
 
 const mapStateToProps = (state: any, props: any) => {
   return {
@@ -30,10 +30,11 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-const isGateWaypoint = compose(both(hasDefinedProp('leftMark'), hasDefinedProp('rightMark')), prop('waypoint'))
+const isGateWaypoint = compose(both(hasDefinedProp('leftMark'), hasDefinedProp('rightMark')), prop('waypoint'), tap(v => console.log(v)))
+//const isGateWaypoint = () => true
 const isMarkWaypoint = compose(both(hasDefinedProp('leftMark'), compose(not, hasDefinedProp('rightMark'))), prop('waypoint'))
 const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('waypoint')))
-const isWaypointSelected = (props: any) => props.selectedWaypoint.id === props.item.id
+const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenIsNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
@@ -96,8 +97,8 @@ const AddButton = Component((props: any) =>
 const waypointItemToComponent = (waypoint: any) => compose(
   touchableOpacity({ onPress: (props: any) => props.selectWaypoint(waypoint.id) }),
   cond([[
-    isGateWaypoint, compose(GateWaypoint.contramap, merge)],[
-    isMarkWaypoint, compose(MarkWaypoint.contramap, merge)]]),
+    isGateWaypoint, compose(GateWaypoint.contramap, merge)],/*[
+    isMarkWaypoint, compose(MarkWaypoint.contramap, merge)]*/]),
   objOf('waypoint'))(
   waypoint)
 
