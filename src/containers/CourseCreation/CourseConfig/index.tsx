@@ -14,7 +14,7 @@ import {
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
 
-import { selectWaypoint } from 'actions/races'
+import { selectWaypoint, removeWaypoint } from 'actions/races'
 import { getSelectedWaypoint } from 'selectors/race'
 
 import Images from '@assets/Images'
@@ -36,17 +36,17 @@ const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'),
 const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
-const nothingWhenIsNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
+const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
+const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
 
 const icon = ({ source, style }) => fromClass(IconText).contramap(always({ source, style }))
 const gateIcon = icon({ source: Images.actions.minus })
+const deleteIcon = icon({ source: Images.actions.delete })
 
 const plusIcon = icon({
   source: Images.actions.add,
   style: { width: 100, height: 100 }
 })
-
-const deleteIcon = icon({ source: null })
 
 const GateWaypoint = Component((props: any) =>
   compose(
@@ -76,15 +76,15 @@ const SameStartFinish = Component((props: any) =>
 const DeleteButton = Component((props: any) =>
   compose(
     fold(props),
-    reduce(concat, nothing()))([
-    text({}, 'Start/Finish are the same')
-  ]))
+    touchableOpacity({ onPress: (props: any) => props.removeWaypoint(props.waypoint.id) }))(
+    deleteIcon))
 
 const WaypointEditForm = Component((props: any) =>
   compose(
     fold(merge(props, { waypoint: props.selectedWaypoint })),
     reduce(concat, nothing()))([
-      nothingWhenIsNotStartOrFinishGate(SameStartFinish)
+      nothingWhenStartOrFinishGate(DeleteButton),
+      nothingWhenNotStartOrFinishGate(SameStartFinish)
   ]))
 
 const AddButton = Component((props: any) =>
@@ -104,7 +104,7 @@ const waypointItemToComponent = (waypoint: any) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { selectWaypoint }),
+    connect(mapStateToProps, { selectWaypoint, removeWaypoint }),
     concat(__, nothingWhenNoSelectedWaypoint(WaypointEditForm)),
     view({}),
     scrollView({ horizontal: true, style: { height: 100 } }),
