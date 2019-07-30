@@ -229,3 +229,20 @@ export interface CountryCodeBody {
   ianaInternet?: string,
   threeLetterIsoCode: string,
 }
+
+export interface AddMarkFixBody {
+  leaderboardName: string
+  raceColumnName: string
+  fleetName: string
+  markId: string
+  lonDeg: number
+  latDeg: number
+  timeMillis: number
+}
+
+export interface AddCourseDefinitionToRaceLogBody {
+  leaderboardName: string
+  raceColumnName: string
+  fleetName: string
+  controlPoints: any[]
+}

@@ -7,6 +7,8 @@ import {
   UrlOptions,
 } from 'api/config'
 import {
+  AddCourseDefinitionToRaceLogBody,
+  AddMarkFixBody,
   AddRaceColumnResponseData,
   AddRaceColumnsBody,
   BoatClassesdBody,
@@ -75,6 +77,9 @@ const apiEndpoints = (serverUrl: string) => {
     boatClasses: getUrlV1('/boatclasses'),
     countryCodes: getUrlV1('/countrycodes'),
     teamImage: getUrlV1('/competitors/{0}/team/image'),
+    addMarkToRegatta: getUrlV1('/mark/addMarkToRegatta'),
+    addMarkFix: getUrlV1('/mark/addMarkFix'),
+    addCourseDefinitionToRaceLog: getUrlV1('/mark/addCourseDefinitionToRaceLog'),
   }
 }
 
@@ -153,6 +158,9 @@ export interface DataApi {
   requestBoatClasses: () => Promise<BoatClassesdBody[]>
   requestCountryCodes: () => Promise<CountryCodeBody[]>
   uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
+  addMarkToRegatta: (regattaName: string, markName: string) => any,
+  addMarkFix: (body: AddMarkFixBody) => any,
+  addCourseDefinitionToRaceLog: (body: AddCourseDefinitionToRaceLogBody) => any,
 }
 
 const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
@@ -294,6 +302,30 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         bodyType: 'image',
         timeout: 60000,
       },
+    ),
+    addMarkToRegatta: (regattaName, markName) => dataRequest(
+      endpoints.addMarkToRegatta(),
+      {
+        body: {
+          markName,
+          regattaName,
+        },
+        method: HttpMethods.POST,
+      }
+    ),
+    addMarkFix: (body) => dataRequest(
+      endpoints.addMarkFix(),
+      {
+        body,
+        method: HttpMethods.POST,
+      }
+    ),
+    addCourseDefinitionToRaceLog: (body) => dataRequest(
+      endpoints.addCourseDefinitionToRaceLog(),
+      {
+        body,
+        method: HttpMethods.POST,
+      }
     ),
   }
 }
