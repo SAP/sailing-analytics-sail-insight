@@ -1,5 +1,36 @@
 export type MarkID = string
-export type Mark = any
+export enum MarkType {
+  Buoy = 'BUOY',
+  Cameraboat = 'CAMERABOAT',
+  Finishboat = 'FINISHBOAT',
+  Landmark = 'LANDMARK',
+  Startboat = 'STARTBOAT',
+  Umpireboat = 'UMPIREBOAT',
+}
+export enum MarkShape {
+  Conical = 'CONICAL',
+  Cylinder = 'CYLINDER',
+}
+export enum MarkPattern {
+  Checkered = 'CHECKERED',
+}
+
+export interface Geolocation {
+  latitude: number
+  longitude: number
+}
+export type TrackingDevice = any
+
+export interface Mark {
+  id: MarkID
+  longName: string
+  shortName?: string
+  type: MarkType
+  position?: Geolocation || TrackingDevice
+  shape?: MarkShape
+  color? string
+  pattern?: MarkPattern
+}
 
 // Got this from https://www.sapsailing.com/sailingserver/webservices/api/v1/addCourseDefinitionToRaceLog.html
 export type PassingInstruction =

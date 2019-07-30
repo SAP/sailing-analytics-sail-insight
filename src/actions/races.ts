@@ -1,20 +1,26 @@
-import { curry, times } from 'ramda'
-import { first, get, keys } from 'lodash'
+import { curry, compose, times } from 'ramda'
+import { first, get, keys, values } from 'lodash'
 import { createAction } from 'redux-actions'
 import uuidv4 from 'uuid/v4'
 
 import { selfTrackingApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
-import { CourseState, WaypointState } from 'models/Course'
+import {
+  CourseState,
+  Geolocation,
+  Mark,
+  MarkID,
+  WaypointState
+} from "models/Course"
 import { markdByIdPresent } from 'selectors/race'
 
 const addUUIDs = curry((amount: number, payload: any) => ({
   ...(amount > 1 ?
-    { 'UUIDs': times(uuidv4, amount) } :
-    { 'UUID' : uuidv4() }
+    { UUIDs: times(uuidv4, amount) } :
+    { UUID : uuidv4() }
   ),
-	...payload,
+  ...payload,
 }))
 
 const addUUID = addUUIDs(1)
@@ -41,6 +47,21 @@ export const saveMark = createAction('SAVE_MARK')
 
 export const selectWaypoint = createAction('SELECT_WAYPOINT')
 
+const apiMarkToLocalFormat = (apiMark: any): { mark: Mark, id: MarkID } => {
+  const mark: Mark = {
+    id: apiMark.id,
+    longName: apiMark.name,
+    type: apiMark.type,
+    position: apiMark.position && {
+      latitude: apiMark.position.latitude,
+      longitude: apiMark.position.longitude,
+    } as Geolocation,
+  }
+  const id = mark.id
+
+  return { mark, id }
+}
+
 const fetchMark = (leaderboardName: string, markId: string) => async (
   dispatch: DispatchType,
 ) => {
@@ -55,10 +76,12 @@ const fetchMark = (leaderboardName: string, markId: string) => async (
     )
   }
 
-  // const { id, mark } = apiMarkToLocalState()
-  const id = first(keys(apiMark))
-  const mark = apiMark
-  dispatch(loadMark(mark))
+  const { mark, id } = compose(
+    apiMarkToLocalFormat,
+    first,
+    values,
+  )(apiMark)
+  dispatch(loadMark({ [id]: mark }))
 
   return id
 }
