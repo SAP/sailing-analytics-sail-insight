@@ -25,8 +25,6 @@ import styles from './styles'
 const hasDefinedProp = (p: string) => both(compose(not, isNil, prop(p)), has(p))
 
 const mapStateToProps = (state: any, props: any) => {
-  console.log('##', state, getSelectedWaypoint(state))
-
   return {
     selectedWaypoint: getSelectedWaypoint(state)
   }

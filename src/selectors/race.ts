@@ -66,11 +66,11 @@ export const getSelectedCourseState = (state: any) =>
 export const getSelectedCourse =
   compose(getSelectedCourseWithMarks, getSelectedCourseState)
 
-export const getWaypointStateById = (id?: string) =>
-  (state: any) => id && get(state, `races.selectedCourse.waypoints.${id}`)
+export const getWaypointStateById = (id?: string) => (state: any) =>
+  id && find(get(state, 'races.selectedCourse.waypoints') || [], { id })
 
 export const getSelectedWaypointState = (state: any) =>
-  getWaypointStateById(state.races.selectedWaypoint)
+  getWaypointStateById(state.races.selectedWaypoint)(state)
 
 export const getSelectedWaypoint = (state: any) =>
   compose(
