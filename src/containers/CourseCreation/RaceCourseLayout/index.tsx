@@ -6,6 +6,7 @@ import {
   recomposeLifecycle as lifecycle,
 } from 'components/fp/component'
 import { text } from 'components/fp/react-native'
+import CourseConfig from '../CourseConfig'
 
 import { selfTrackingApi } from 'api'
 
@@ -24,6 +25,6 @@ const course = Component((props: any) =>
 export default Component((props: object) =>
   compose(
     fold(props),
-    withCourse,
-  )(course),
+    //withCourse,
+  )(CourseConfig),
 )

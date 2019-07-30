@@ -157,7 +157,6 @@ interface ScreenParamProps {
 const mapStateToProps = (state: any, props: any) => {
   const { checkInData, alreadyJoined }: ScreenParamProps = getCustomScreenParamData(props) || {}
 
-  console.log('### join regatta')
   return {
     checkInData,
     alreadyJoined,
