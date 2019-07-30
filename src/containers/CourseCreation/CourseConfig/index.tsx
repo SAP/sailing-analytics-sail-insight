@@ -30,22 +30,23 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-const isGateWaypoint = compose(both(hasDefinedProp('leftMark'), hasDefinedProp('rightMark')), prop('item'))
-const isMarkWaypoint = compose(both(hasDefinedProp('leftMark'), compose(not, hasDefinedProp('rightMark'))), prop('item'))
-const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('item')))
+const isGateWaypoint = compose(both(hasDefinedProp('leftMark'), hasDefinedProp('rightMark')), prop('waypoint'))
+const isMarkWaypoint = compose(both(hasDefinedProp('leftMark'), compose(not, hasDefinedProp('rightMark'))), prop('waypoint'))
+const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('waypoint')))
 const isWaypointSelected = (props: any) => props.selectedWaypoint.id === props.item.id
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenIsNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 
-const gateIcon = fromClass(IconText).contramap(always({
-  source: Images.actions.minus
-}))
+const icon = ({ source, style }) => fromClass(IconText).contramap(always({ source, style }))
+const gateIcon = icon({ source: Images.actions.minus })
 
-const plusIcon = fromClass(IconText).contramap(always({
-  style: { width: 100, height: 100 },
-  source: Images.actions.add
-}))
+const plusIcon = icon({
+  source: Images.actions.add,
+  style: { width: 100, height: 100 }
+})
+
+const deleteIcon = icon({ source: null })
 
 const GateWaypoint = Component((props: any) =>
   compose(
@@ -53,7 +54,7 @@ const GateWaypoint = Component((props: any) =>
     view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
     reduce(concat, nothing()))([
     gateIcon,
-    text({}, props.item.longName)
+    text({}, props.waypoint.longName)
   ]))
 
 const MarkWaypoint = Component((props: any) =>
@@ -62,21 +63,28 @@ const MarkWaypoint = Component((props: any) =>
     view({}),
     reduce(concat, nothing()))([
     gateIcon,
-    text({}, props.item.longName || 'Choose')
+    text({}, props.waypoint.longName || 'Choose')
   ]))
 
 const SameStartFinish = Component((props: any) =>
-compose(
-  fold(props),
-  reduce(concat, nothing()))([
-  text({}, 'Start/Finish are the same')
-]))
-
-const WaypointEditForm = Component((props: any) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-      SameStartFinish
+    text({}, 'Start/Finish are the same')
+  ]))
+
+const DeleteButton = Component((props: any) =>
+  compose(
+    fold(props),
+    reduce(concat, nothing()))([
+    text({}, 'Start/Finish are the same')
+  ]))
+
+const WaypointEditForm = Component((props: any) =>
+  compose(
+    fold(merge(props, { waypoint: props.selectedWaypoint })),
+    reduce(concat, nothing()))([
+      nothingWhenIsNotStartOrFinishGate(SameStartFinish)
   ]))
 
 const AddButton = Component((props: any) =>
@@ -85,13 +93,13 @@ const AddButton = Component((props: any) =>
     view({}))(
     plusIcon))
 
-const waypointItemToComponent = item => compose(
-  touchableOpacity({ onPress: props => props.selectWaypoint(item.id) }),
+const waypointItemToComponent = (waypoint: any) => compose(
+  touchableOpacity({ onPress: (props: any) => props.selectWaypoint(waypoint.id) }),
   cond([[
     isGateWaypoint, compose(GateWaypoint.contramap, merge)],[
     isMarkWaypoint, compose(MarkWaypoint.contramap, merge)]]),
-  objOf('item'))(
-  item)
+  objOf('waypoint'))(
+  waypoint)
 
 export default Component((props: object) =>
   compose(
