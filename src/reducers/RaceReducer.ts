@@ -82,6 +82,7 @@ const reducer = handleActions(
         return {
           ...state,
           selectedCourse: state.courses[courseId],
+          selectedWaypoint: undefined,
         }
       }
 
