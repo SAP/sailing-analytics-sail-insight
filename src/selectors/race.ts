@@ -1,5 +1,5 @@
 import { find, get, keys } from 'lodash'
-import { compose } from 'ramda'
+import { compose, isNil, unless } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { RACE_ENTITY_NAME } from 'api/schemas'
@@ -74,7 +74,7 @@ export const getSelectedWaypointState = (state: any) =>
 
 export const getSelectedWaypoint = (state: any) =>
   compose(
-    populateWaypointWithMarkData(state),
+    unless(isNil, populateWaypointWithMarkData(state)),
     getSelectedWaypointState
   )(state)
 

@@ -30,10 +30,16 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
+// These two conditionals fail when the course has waypoints that have
+// leftMark (or rightMark?) undefined
+// if stubbed out with
+// const isMarkWaypoint = () => true
+// const isGateWaypoint = () => true
+// It works with `Define layout`
 const isGateWaypoint = compose(both(hasDefinedProp('leftMark'), hasDefinedProp('rightMark')), prop('item'))
 const isMarkWaypoint = compose(both(hasDefinedProp('leftMark'), compose(not, hasDefinedProp('rightMark'))), prop('item'))
 const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('name'), prop('item')))
-const isWaypointSelected = (props: any) => props.selectedWaypoint.id === props.item.id
+const isWaypointSelected = (props: any) => props.selectedWaypoint && (props.selectedWaypoint.id === props.item.id)
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenIsNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
