@@ -1,4 +1,5 @@
 import { AutoCourseUpdateState } from 'helpers/types'
+import { SelectedCourseState, CourseState, Mark } from 'models/Course'
 
 
 export interface RootState {
@@ -12,6 +13,7 @@ export interface RootState {
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
+  races?: any | RaceState
 }
 
 
@@ -72,4 +74,15 @@ export interface UserState {
 export interface CheckInState {
   active: any
   isLoadingCheckIn: boolean
+}
+
+export interface RaceState {
+  // RaceID and MarkID - strings
+  allRaces: any // Should be Map<RaceID, Race>
+  courses: Map<string, CourseState> // Should be Map<RaceID, Course>
+  marks: Map<string, Mark> // Should be Map<MarkID, Mark>
+  courseLoading: boolean
+  selectedCourse?: SelectedCourseState
+	// ID of the waypoint that is selected for editing
+	selectedWaypoint?: string
 }

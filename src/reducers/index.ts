@@ -10,6 +10,7 @@ import EntityReducer from './EntityReducer'
 import LeaderboardTrackingReducer from './LeaderboardTrackingReducer'
 import LocationTrackingReducer from './LocationTrackingReducer'
 import OnboardingReducer from './OnboardingReducer'
+import RaceReducer from './RaceReducer'
 import SettingsReducer from './SettingsReducer'
 import UserReducer from './UserReducer'
 
@@ -25,6 +26,7 @@ const reducer: RootState = {
   onboarding: OnboardingReducer,
   settings: SettingsReducer,
   network: networkReducer,
+  races: RaceReducer,
 }
 
 const reducers = combineReducers(reducer)
