@@ -37,7 +37,7 @@ const updateItem = (array: any[], index: number, item: any) => (
 )
 
 const getArrayIndexByWaypointId = (raceState: any) =>
-  findIndex(propEq('id', raceState.selectedWaypoint))(raceState.courseCreation.waypoints)
+  findIndex(propEq('id', raceState.selectedWaypoint))(raceState.selectedCourse.waypoints)
 
 const initialState: RaceState = {
   allRaces: {},
