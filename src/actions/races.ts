@@ -1,5 +1,5 @@
-import { curry, compose, times } from 'ramda'
 import { first, get, keys, values } from 'lodash'
+import { compose, curry, objOf, times } from 'ramda'
 import { createAction } from 'redux-actions'
 import uuidv4 from 'uuid/v4'
 
@@ -34,9 +34,15 @@ export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
 // TODO: the addUUIDs(2) should be replaced with an actual number of
 //       required UUIDs for a given template, besides the start from scratch
-export const selectCourse = createAction('SELECT_COURSE', addUUIDs(2))
+export const selectCourse = createAction('SELECT_COURSE', compose(
+  addUUIDs(2),
+  objOf('courseId'),
+))
 
-export const addWaypoint = createAction('ADD_WAYPOINT', addUUID)
+export const addWaypoint = createAction('ADD_WAYPOINT', compose(
+  addUUID,
+  objOf('index'),
+))
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 
@@ -183,7 +189,7 @@ export const fetchCourse = (
   )
 
   dispatch(loadCourse(course))
-  dispatch(selectCourse({ courseId: raceId }))
+  dispatch(selectCourse(raceId))
   dispatch(updateCourseLoading(false))
   return course
 }
