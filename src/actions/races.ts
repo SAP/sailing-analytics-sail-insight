@@ -150,7 +150,7 @@ const apiCourseToLocalFormat = (
           return {
             leftMark,
             rightMark,
-            id: apiWaypoint.controlPoint.id,
+            id: uuidv4(),
             longName: apiWaypoint.controlPoint.name,
             passingInstruction: apiWaypoint.passingInstruction,
           }
