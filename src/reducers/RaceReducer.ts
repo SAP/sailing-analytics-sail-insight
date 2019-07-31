@@ -61,6 +61,7 @@ const getWaypointIndicesToUpdate = (raceState: any) =>
     : [getArrayIndexByWaypointId(raceState)]
 
 const SAME_START_FINISH_DEFAULT = false
+const SELECTED_WAYPOINT_DEFAULT = undefined
 
 const initialState: RaceState = {
   allRaces: {},
@@ -68,7 +69,7 @@ const initialState: RaceState = {
   marks: {} as Map<MarkID, Mark>,
   courseLoading: false,
   selectedCourse: undefined,
-  selectedWaypoint: undefined,
+  selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
   sameStartFinish: SAME_START_FINISH_DEFAULT,
 } as RaceState
 
@@ -125,7 +126,7 @@ const reducer = handleActions(
       return {
         ...state,
         selectedCourse,
-        selectedWaypoint: undefined,
+        selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
         sameStartFinish: SAME_START_FINISH_DEFAULT,
       }
     },
