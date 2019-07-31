@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import { findIndex, propEq } from 'ramda'
 import { handleActions } from 'redux-actions'
 
@@ -47,6 +48,9 @@ const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => 
 
 const getArrayIndexByWaypointId = (raceState: any) =>
   findIndex(propEq('id', raceState.selectedWaypoint))(raceState.selectedCourse.waypoints)
+
+const getWaypointIdByArrayIndex = (raceState: any) => (index: number) =>
+  get(raceState, ['selectedCourse', 'waypoints', index, 'id'])
 
 const getFinishWaypointIndex = (raceState: any) =>
   raceState.selectedCourse.waypoints.length - 1
@@ -157,6 +161,9 @@ const reducer = handleActions(
           getArrayIndexByWaypointId(state),
         ),
       },
+      selectedWaypoint: getWaypointIdByArrayIndex(state)(
+        getArrayIndexByWaypointId(state) - 1
+      )
     }),
 
     // Change waypoint state at the selectedWaypoint id
