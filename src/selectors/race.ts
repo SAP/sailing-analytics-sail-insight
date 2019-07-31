@@ -78,6 +78,9 @@ export const getSelectedWaypoint = (state: any) =>
     getSelectedWaypointState
   )(state)
 
+export const getSelectedMark = (state: any) =>
+    state.races.selectedMark && getMarkById(state.races.selectedMark)(state)
+
 const orderRaces = getOrderListFunction<Race>(['trackingStartDate'], 'desc')
 
 const getRaceColumnNameFromRegatta = (race: Race, regatta: any, seriesName: string, fleetName: string = 'Default') => {
