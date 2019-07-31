@@ -1,4 +1,4 @@
-import { __, compose, always, both, has,
+import { __, compose, always, both, has, path, when,
   prop, map, reduce, concat, merge, props as rProps,
   objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
 
@@ -16,8 +16,8 @@ import { text, view, scrollView, touchableOpacity } from 'components/fp/react-na
 
 import { Switch } from 'react-native'
 
-import { selectWaypoint, removeWaypoint } from 'actions/races'
-import { getSelectedWaypoint } from 'selectors/race'
+import { selectWaypoint, removeWaypoint, selectMark, addWaypoint } from 'actions/races'
+import { getSelectedWaypoint, getSelectedMark } from 'selectors/race'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
@@ -28,7 +28,8 @@ const hasDefinedProp = (p: string) => both(has(p), compose(not, isNil, prop(p)))
 
 const mapStateToProps = (state: any, props: any) => {
   return {
-    selectedWaypoint: getSelectedWaypoint(state)
+    selectedWaypoint: getSelectedWaypoint(state),
+    selectedMark: getSelectedMark(state)
   }
 }
 
@@ -63,16 +64,21 @@ const GateWaypoint = Component((props: any) =>
 const GateMarkSelectorItem = Component((props) =>
   compose(
     fold(props),
-    view({}),
-    text({}))(
-    props.mark && props.mark.name))
+    touchableOpacity({ onPress: (props: any) => props.selectMark(props.mark.id) }),
+    text({}),
+    path(['mark', 'name']))(
+    props))
 
 const GateMarkSelector = Component((props: any) =>
   compose(
     fold(props),
     view({}),
     reduce(concat, nothing()),
-    map(compose(GateMarkSelectorItem.contramap, merge, objOf('mark'))),
+    map(compose(
+      GateMarkSelectorItem.contramap,
+      merge,
+      when(compose(equals(props.selectedMark.id), path(['mark', 'id'])), merge({ selected: true })),
+      objOf('mark'))),
     rProps(['leftMark', 'rightMark']),
     prop('selectedWaypoint'))(
     props))
@@ -126,7 +132,7 @@ const WaypointEditForm = Component((props: any) =>
 const AddButton = Component((props: any) =>
   compose(
     fold(props),
-    view({}))(
+    touchableOpacity({ onPress: (props: any) => props.addWaypoint(1) }))(
     plusIcon))
 
 const waypointItemToComponent = (waypoint: any) => compose(
@@ -140,7 +146,7 @@ const waypointItemToComponent = (waypoint: any) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { selectWaypoint, removeWaypoint }),
+    connect(mapStateToProps, { selectWaypoint, removeWaypoint, selectMark, addWaypoint }),
     concat(__, nothingWhenNoSelectedWaypoint(WaypointEditForm)),
     view({}),
     scrollView({ horizontal: true, style: { height: 100 } }),
