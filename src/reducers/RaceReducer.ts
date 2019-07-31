@@ -11,6 +11,7 @@ import {
   removeWaypoint,
   selectCourse,
   selectWaypoint,
+  toggleSameStartFinish,
   updateCourseLoading,
   updateWaypoint,
 } from 'actions/races'
@@ -26,18 +27,40 @@ const removeItem = (array: any[], index: number) => (
   array.filter((item: any, i: number) => i !== index)
 )
 
-const updateItem = (array: any[], index: number, item: any) => (
-  array.map((it: any, ind: number) => {
-    if (ind !== index) {
+interface itemWithId {
+  id: string
+}
+
+// Update items but preserve ID
+const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => (
+  array.map((it: itemWithId, ind: number) => {
+    if (!indices.includes(ind)) {
       return it
     }
 
-    return item
+    return {
+      id: it.id,
+      ...item,
+    }
   })
 )
 
 const getArrayIndexByWaypointId = (raceState: any) =>
   findIndex(propEq('id', raceState.selectedWaypoint))(raceState.selectedCourse.waypoints)
+
+const getFinishWaypointIndex = (raceState: any) =>
+  raceState.selectedCourse.waypoints.length - 1
+
+const startOrFinishWaypointSelected = (raceState: any) =>
+  getArrayIndexByWaypointId(raceState) === 0 ||
+  getArrayIndexByWaypointId(raceState) === getFinishWaypointIndex(raceState)
+
+const getWaypointIndicesToUpdate = (raceState: any) =>
+  raceState.sameStartFinish && startOrFinishWaypointSelected(raceState)
+    ? [0, getFinishWaypointIndex(raceState)]
+    : [getArrayIndexByWaypointId(raceState)]
+
+const SAME_START_FINISH_DEFAULT = false
 
 const initialState: RaceState = {
   allRaces: {},
@@ -46,6 +69,7 @@ const initialState: RaceState = {
   courseLoading: false,
   selectedCourse: undefined,
   selectedWaypoint: undefined,
+  sameStartFinish: SAME_START_FINISH_DEFAULT,
 } as RaceState
 
 const reducer = handleActions(
@@ -102,6 +126,7 @@ const reducer = handleActions(
         ...state,
         selectedCourse,
         selectedWaypoint: undefined,
+        sameStartFinish: SAME_START_FINISH_DEFAULT,
       }
     },
 
@@ -136,14 +161,12 @@ const reducer = handleActions(
     // Change waypoint state at the selectedWaypoint id
     // (waypoint: Partial<WaypointState>) => void
     [updateWaypoint as any]: (state: any = {}, action: any) => ({
-      // If waypoint.id is changed selectedWaypoint should be changed as well.
-      // Just to keep in mind, the id should not be changeable by design
       ...state,
       selectedCourse: {
         ...state.selectedCourse,
-        waypoints: updateItem(
+        waypoints: updateItems(
           state.selectedCourse.waypoints,
-          getArrayIndexByWaypointId(state),
+          getWaypointIndicesToUpdate(state),
           action.payload,
         ),
       },
@@ -154,6 +177,11 @@ const reducer = handleActions(
     [selectWaypoint as any]: (state: any = {}, action: any) => ({
       ...state,
       selectedWaypoint: action.payload,
+    }),
+
+    [toggleSameStartFinish as any]: (state: any = {}) => ({
+      ...state,
+      sameStartFinish: !state.sameStartFinish,
     }),
 
     [removeUserData as any]: () => initialState,

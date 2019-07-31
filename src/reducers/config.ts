@@ -85,4 +85,5 @@ export interface RaceState {
   selectedCourse?: SelectedCourseState
   // ID of the waypoint that is selected for editing
   selectedWaypoint?: string
+  sameStartFinish: boolean
 }

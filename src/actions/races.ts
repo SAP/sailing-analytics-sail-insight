@@ -52,6 +52,7 @@ export const saveCourse = createAction('SAVE_COURSE')
 export const saveMark = createAction('SAVE_MARK')
 
 export const selectWaypoint = createAction('SELECT_WAYPOINT')
+export const toggleSameStartFinish = createAction('TOGGLE_SAME_START_FINISH')
 
 const apiMarkToLocalFormat = (apiMark: any): { mark: Mark, id: MarkID } => {
   const mark: Mark = {
