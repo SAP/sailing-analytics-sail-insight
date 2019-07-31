@@ -1,5 +1,5 @@
 import { __, compose, always, both, has,
-  prop, map, reduce, concat, merge, curry,
+  prop, map, reduce, concat, merge, props as rProps,
   objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
 
 import {
@@ -14,6 +14,8 @@ import {
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
 
+import { Switch } from 'react-native'
+
 import { selectWaypoint, removeWaypoint } from 'actions/races'
 import { getSelectedWaypoint } from 'selectors/race'
 
@@ -22,7 +24,7 @@ import IconText from 'components/IconText'
 
 import styles from './styles'
 
-const hasDefinedProp = curry((p: string, v: any) => both(has(p), compose(not, isNil, prop(p)), v))
+const hasDefinedProp = (p: string) => both(has(p), compose(not, isNil, prop(p)))
 
 const mapStateToProps = (state: any, props: any) => {
   return {
@@ -36,6 +38,7 @@ const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'),
 const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
+const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
 const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
 
@@ -57,6 +60,23 @@ const GateWaypoint = Component((props: any) =>
     text({}, props.waypoint.longName)
   ]))
 
+const GateMarkSelectorItem = Component((props) =>
+  compose(
+    fold(props),
+    view({}),
+    text({}))(
+    props.mark && props.mark.name))
+
+const GateMarkSelector = Component((props: any) =>
+  compose(
+    fold(props),
+    view({}),
+    reduce(concat, nothing()),
+    map(compose(GateMarkSelectorItem.contramap, merge, objOf('mark'))),
+    rProps(['leftMark', 'rightMark']),
+    prop('selectedWaypoint'))(
+    props))
+
 const MarkWaypoint = Component((props: any) =>
   compose(
     fold(props),
@@ -70,7 +90,8 @@ const SameStartFinish = Component((props: any) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-    text({}, 'Start/Finish are the same')
+    text({}, 'Start/Finish are the same'),
+    fromClass(Switch)
   ]))
 
 const DeleteButton = Component((props: any) =>
@@ -84,7 +105,8 @@ const WaypointEditForm = Component((props: any) =>
     fold(merge(props, { waypoint: props.selectedWaypoint })),
     reduce(concat, nothing()))([
       nothingWhenStartOrFinishGate(DeleteButton),
-      nothingWhenNotStartOrFinishGate(SameStartFinish)
+      nothingWhenNotStartOrFinishGate(SameStartFinish),
+      nothingWhenNotAGate(GateMarkSelector)
   ]))
 
 const AddButton = Component((props: any) =>
