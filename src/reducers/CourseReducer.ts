@@ -17,7 +17,13 @@ import {
   updateCourseLoading,
   updateWaypoint,
 } from 'actions/courses'
-import { CourseState, Mark, MarkID, SelectedCourseState } from 'models/Course'
+import {
+  ControlPointClass,
+  CourseState,
+  Mark,
+  MarkID,
+  SelectedCourseState,
+} from 'models/Course'
 
 const insertItem = (array: any[], index: number, item: any) => {
   const newArray = array.slice()
@@ -75,6 +81,16 @@ const getWaypointById = (state: any) => (id: string) =>
     getArrayIndexByWaypointId(state)(id)
   ]);
 
+// Gets the left mark id or just the single mark id
+// of a waypoint. To be used for autoselecting a mark on waypoint selection
+const getAutoSelectedMarkId = (state: any) => (waypointId: string) => {
+  const waypoint = getWaypointById(state)(waypointId)
+  const controlPoint = waypoint.controlPoint
+
+  if (!controlPoint) return undefined
+
+  return controlPoint.leftMark || controlPoint.id
+}
 
 const SAME_START_FINISH_DEFAULT = false
 const SELECTED_WAYPOINT_DEFAULT = undefined
@@ -129,13 +145,21 @@ const reducer = handleActions(
                 shortName: 'S',
                 longName: 'Start',
                 passingInstruction: 'Gate',
-                id: UUIDs[0]
+                id: UUIDs[0],
+                controlPoint: {
+                  class: ControlPointClass.MarkPair,
+                  id: UUIDs[1],
+                }
               },
               {
                 shortName: 'F',
                 longName: 'Finish',
                 passingInstruction: 'Gate',
-                id: UUIDs[1]
+                id: UUIDs[2],
+                controlPoint: {
+                  class: ControlPointClass.MarkPair,
+                  id: UUIDs[3],
+                }
               }
             ],
         }
@@ -199,8 +223,7 @@ const reducer = handleActions(
     [selectWaypoint as any]: (state: any = {}, action: any) => ({
       ...state,
       selectedWaypoint: action.payload,
-      // Select left mark
-      selectedMark: get(getWaypointById(state)(action.payload), 'leftMark')
+      selectedMark: getAutoSelectedMarkId(state)(action.payload),
     }),
 
     // Change selectedMark

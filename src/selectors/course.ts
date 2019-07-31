@@ -1,7 +1,7 @@
 import { find, get } from 'lodash'
 import { compose, isNil, unless } from 'ramda'
 
-import { Course, CourseState, Mark, WaypointState } from 'models/Course'
+import { Course, CourseState, Mark, WaypointState, ControlPointClass } from 'models/Course'
 import { RootState } from 'reducers/config'
 
 export const getCourseState = (raceId: string) => (state: RootState): CourseState | undefined =>
@@ -21,16 +21,24 @@ export const markdByIdPresent = (markId: string) => (state: RootState) =>
 export const getMarkById = (markId: string) => (state: RootState): Mark | undefined =>
   state.courses && state.courses.marks && state.courses.marks[markId]
 
-const populateWaypointWithMarkData = (state: any) =>
-  (waypointState: Partial<WaypointState>) => ({
-    ...waypointState,
-    leftMark: waypointState.leftMark
-      ? getMarkById(waypointState.leftMark)(state)
-      : undefined,
-    rightMark: waypointState.rightMark
-      ? getMarkById(waypointState.rightMark)(state)
-      : undefined,
-  })
+const populateWaypointWithMarkData = (state: any) => (
+  waypointState: Partial<WaypointState>
+) => ({
+  ...waypointState,
+  controlPoint: waypointState.controlPoint && {
+    ...waypointState.controlPoint,
+    ...(waypointState.controlPoint.class === ControlPointClass.Mark
+      ? getMarkById(waypointState.controlPoint.id)(state) || {}
+      : {
+          leftMark: waypointState.controlPoint.leftMark
+            ? getMarkById(waypointState.controlPoint.leftMark)(state)
+            : undefined,
+          rightMark: waypointState.controlPoint.rightMark
+            ? getMarkById(waypointState.controlPoint.rightMark)(state)
+            : undefined
+        })
+  }
+})
 
 export const getSelectedCourseWithMarks = (state: RootState) => {
   const selectedCourseState = getSelectedCourseState(state)

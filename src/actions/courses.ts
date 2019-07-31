@@ -7,12 +7,15 @@ import { selfTrackingApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
+  ControlPointClass,
   CourseState,
   Geolocation,
   Mark,
   MarkID,
+  MarkPairState,
+  MarkState,
   WaypointState
-} from "models/Course"
+} from 'models/Course'
 import { markdByIdPresent } from 'selectors/course'
 
 const addUUIDs = curry((amount: number, payload: any) => ({
@@ -31,10 +34,10 @@ export const loadMark = createAction('LOAD_MARK')
 
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
-// TODO: the addUUIDs(2) should be replaced with an actual number of
+// TODO: the addUUIDs(4) should be replaced with an actual number of
 //       required UUIDs for a given template, besides the start from scratch
 export const selectCourse = createAction('SELECT_COURSE', compose(
-  addUUIDs(2),
+  addUUIDs(4),
   objOf('courseId'),
 ))
 
@@ -106,7 +109,7 @@ const fetchMissingMarkInformationIfNeeded = (
   return markId
 }
 
-const apiControlPointToLocalMarkIds = (
+const apiControlPointToLocalFormat = (
   leaderboardName: string,
   controlPoint: any,
 ) => async (dispatch: DispatchType) => {
@@ -125,17 +128,19 @@ const apiControlPointToLocalMarkIds = (
     )
 
     return {
+      class: ControlPointClass.MarkPair,
+      id: controlPoint.id,
       leftMark,
       rightMark,
-    }
+    } as MarkPairState
   }
 
   return {
-    leftMark: await dispatch(
+    class: ControlPointClass.Mark,
+    id: await dispatch(
       fetchMissingMarkInformationIfNeeded(leaderboardName, controlPoint.id),
     ),
-    rightMark: undefined,
-  }
+  } as MarkState
 }
 
 const apiCourseToLocalFormat = (
@@ -148,15 +153,11 @@ const apiCourseToLocalFormat = (
     waypoints: await Promise.all<WaypointState>(
       apiCourse.waypoints.map(
         async (apiWaypoint: any): Promise<WaypointState> => {
-          const { leftMark, rightMark } = (await dispatch(
-            apiControlPointToLocalMarkIds(
-              leaderboardName,
-              apiWaypoint.controlPoint,
-            ),
-          )) as { leftMark: string; rightMark?: string }
+          const controlPoint = await dispatch(
+            apiControlPointToLocalFormat(leaderboardName, apiWaypoint.controlPoint),
+          )
           return {
-            leftMark,
-            rightMark,
+            controlPoint,
             id: uuidv4(),
             longName: apiWaypoint.controlPoint.name,
             passingInstruction: apiWaypoint.passingInstruction,

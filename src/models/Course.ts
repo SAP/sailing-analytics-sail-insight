@@ -1,4 +1,15 @@
 export type MarkID = string
+
+export enum ControlPointClass {
+  Mark = 'Mark',
+  MarkPair = 'ControlPointWithTwoMarks'
+}
+
+export interface ControlPoint {
+  class: ControlPointClass
+  id: MarkID
+}
+
 export enum MarkType {
   Buoy = 'BUOY',
   Cameraboat = 'CAMERABOAT',
@@ -21,15 +32,19 @@ export interface Geolocation {
 }
 export type TrackingDevice = any
 
-export interface Mark {
-  id: MarkID
+export interface Mark extends ControlPoint {
   longName: string
   shortName?: string
   type: MarkType
-  position?: Geolocation || TrackingDevice
+  position?: Geolocation | TrackingDevice
   shape?: MarkShape
-  color? string
+  color?: string
   pattern?: MarkPattern
+}
+
+export interface MarkPair<T = Mark> extends ControlPoint {
+  leftMark: T
+  rightMark?: T
 }
 
 // Got this from https://www.sapsailing.com/sailingserver/webservices/api/v1/addCourseDefinitionToRaceLog.html
@@ -43,25 +58,38 @@ export type PassingInstruction =
   | 'FixedBearing'
   | 'Single_Unknown'
 
-// With T = Mark this is the Course model that is used in the UI
-export interface Course<T = Mark> {
-  name: string,
-  waypoints: Waypoint<T>[]
+interface CourseBase {
+  name: string
 }
 
-export interface Waypoint<T = Mark> {
+export interface Course extends CourseBase {
+  waypoints: Waypoint[]
+}
+
+export interface CourseState extends CourseBase {
+  waypoints: WaypointState[]
+}
+
+interface WaypointBase {
   id: string
   shortName?: string
   longName: string
   passingInstruction: PassingInstruction
-  leftMark: T
-  rightMark?: T
+}
+
+export interface Waypoint extends WaypointBase {
+  controlPoint: MarkPair<Mark> | Mark
 }
 
 // This is the Course model that is used in the redux state
 // with MarkIDs instead of the actual Mark model
-export type CourseState = Course<MarkID>
-export type WaypointState = Waypoint<MarkID>
+export interface WaypointState extends WaypointBase {
+  controlPoint: ControlPointState
+}
+
+export type MarkPairState = MarkPair<MarkID>
+export type MarkState = ControlPoint
+export type ControlPointState = MarkPairState | MarkState
 
 // Since the selected course is the one that will be edited,
 // it contains partial information about the waypoints
