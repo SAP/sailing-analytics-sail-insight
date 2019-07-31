@@ -11,7 +11,7 @@ import {
 import { text } from 'components/fp/react-native'
 import CourseConfig from '../CourseConfig'
 
-import { getCourseLoading, getSelectedCourseWithMarks } from 'selectors/race'
+import { getCourseLoading, getSelectedCourseWithMarks } from 'selectors/course'
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)

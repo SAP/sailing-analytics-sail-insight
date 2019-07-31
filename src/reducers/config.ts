@@ -13,7 +13,7 @@ export interface RootState {
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
-  races?: any | RaceState
+  courses?: any | CourseReducerState
 }
 
 
@@ -76,10 +76,8 @@ export interface CheckInState {
   isLoadingCheckIn: boolean
 }
 
-export interface RaceState {
-  // RaceID and MarkID - strings
-  allRaces: any // Should be Map<RaceID, Race>
-  courses: Map<string, CourseState> // Should be Map<RaceID, Course>
+export interface CourseReducerState {
+  allCourses: Map<string, CourseState> // Should be Map<RaceID, Course>
   marks: Map<MarkID, Mark> // Should be Map<MarkID, Mark>
   courseLoading: boolean
   selectedCourse?: SelectedCourseState

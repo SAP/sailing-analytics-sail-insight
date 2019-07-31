@@ -13,7 +13,7 @@ import {
   MarkID,
   WaypointState
 } from "models/Course"
-import { markdByIdPresent } from 'selectors/race'
+import { markdByIdPresent } from 'selectors/course'
 
 const addUUIDs = curry((amount: number, payload: any) => ({
   ...(amount > 1 ?
@@ -26,7 +26,6 @@ const addUUIDs = curry((amount: number, payload: any) => ({
 const addUUID = addUUIDs(1)
 
 // Actions to store the appropriate objects as they are into the state
-export const loadRace = createAction('LOAD_RACE')
 export const loadCourse = createAction('LOAD_COURSE')
 export const loadMark = createAction('LOAD_MARK')
 
