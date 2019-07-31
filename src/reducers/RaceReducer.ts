@@ -11,6 +11,7 @@ import {
   loadMark,
   removeWaypoint,
   selectCourse,
+  selectMark,
   selectWaypoint,
   toggleSameStartFinish,
   updateCourseLoading,
@@ -46,8 +47,11 @@ const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => 
   })
 )
 
-const getArrayIndexByWaypointId = (raceState: any) =>
-  findIndex(propEq('id', raceState.selectedWaypoint))(raceState.selectedCourse.waypoints)
+const getArrayIndexByWaypointId = (raceState: any) => (id: string) =>
+  findIndex(propEq('id', id))(raceState.selectedCourse.waypoints)
+
+const getSelectedWaypointArrayIndex = (raceState: any) =>
+  getArrayIndexByWaypointId(raceState)(raceState.selectedWaypoint)
 
 const getWaypointIdByArrayIndex = (raceState: any) => (index: number) =>
   get(raceState, ['selectedCourse', 'waypoints', index, 'id'])
@@ -56,16 +60,25 @@ const getFinishWaypointIndex = (raceState: any) =>
   raceState.selectedCourse.waypoints.length - 1
 
 const startOrFinishWaypointSelected = (raceState: any) =>
-  getArrayIndexByWaypointId(raceState) === 0 ||
-  getArrayIndexByWaypointId(raceState) === getFinishWaypointIndex(raceState)
+  getSelectedWaypointArrayIndex(raceState) === 0 ||
+  getSelectedWaypointArrayIndex(raceState) === getFinishWaypointIndex(raceState)
 
 const getWaypointIndicesToUpdate = (raceState: any) =>
   raceState.sameStartFinish && startOrFinishWaypointSelected(raceState)
     ? [0, getFinishWaypointIndex(raceState)]
-    : [getArrayIndexByWaypointId(raceState)]
+    : [getSelectedWaypointArrayIndex(raceState)]
+
+const getWaypointById = (raceState: any) => (id: string) =>
+  get(raceState, [
+    "selectedCourse",
+    "waypoints",
+    getArrayIndexByWaypointId(raceState)(id)
+  ]);
+
 
 const SAME_START_FINISH_DEFAULT = false
 const SELECTED_WAYPOINT_DEFAULT = undefined
+const SELECTED_MARK_DEFAULT = undefined
 
 const initialState: RaceState = {
   allRaces: {},
@@ -75,6 +88,7 @@ const initialState: RaceState = {
   selectedCourse: undefined,
   selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
   sameStartFinish: SAME_START_FINISH_DEFAULT,
+  selectedMark: SELECTED_MARK_DEFAULT,
 } as RaceState
 
 const reducer = handleActions(
@@ -124,14 +138,15 @@ const reducer = handleActions(
                 passingInstruction: 'Gate',
                 id: UUIDs[1]
               }
-            ]
-          }
+            ],
+        }
 
       return {
         ...state,
         selectedCourse,
         selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
         sameStartFinish: SAME_START_FINISH_DEFAULT,
+        selectedMark: SELECTED_MARK_DEFAULT,
       }
     },
 
@@ -158,11 +173,11 @@ const reducer = handleActions(
         ...state.selectedCourse,
         waypoints: removeItem(
           state.selectedCourse.waypoints,
-          getArrayIndexByWaypointId(state),
+          getSelectedWaypointArrayIndex(state),
         ),
       },
       selectedWaypoint: getWaypointIdByArrayIndex(state)(
-        getArrayIndexByWaypointId(state) - 1
+        getSelectedWaypointArrayIndex(state) - 1
       )
     }),
 
@@ -185,6 +200,15 @@ const reducer = handleActions(
     [selectWaypoint as any]: (state: any = {}, action: any) => ({
       ...state,
       selectedWaypoint: action.payload,
+      // Select left mark
+      selectedMark: get(getWaypointById(state)(action.payload), 'leftMark')
+    }),
+
+    // Change selectedMark
+    // (selectedMark: string) => void
+    [selectMark as any]: (state: any = {}, action: any) => ({
+      ...state,
+      selectedMark: action.payload,
     }),
 
     [toggleSameStartFinish as any]: (state: any = {}) => ({
