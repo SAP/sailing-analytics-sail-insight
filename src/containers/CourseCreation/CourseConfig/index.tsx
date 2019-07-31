@@ -1,5 +1,5 @@
 import { __, compose, always, both, has, path, when,
-  prop, map, reduce, concat, merge, props as rProps,
+  prop, map, reduce, concat, merge, props as rProps, defaultTo,
   objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
 
 import {
@@ -56,16 +56,18 @@ const GateWaypoint = Component((props: any) =>
   compose(
     fold(props),
     view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
-    reduce(concat, nothing()))([
-    gateIcon,
-    text({}, props.waypoint.longName)
-  ]))
+    concat(gateIcon),
+    text({}),
+    defaultTo(''),
+    path(['waypoint', 'longName']))(
+    props))
 
 const GateMarkSelectorItem = Component((props) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.selectMark(props.mark.id) }),
     text({}),
+    defaultTo(''),
     path(['mark', 'longName']))(
     props))
 
@@ -89,7 +91,7 @@ const MarkWaypoint = Component((props: any) =>
     view({}),
     reduce(concat, nothing()))([
     gateIcon,
-    text({}, props.waypoint.longName || 'Choose')
+    text({}, defaultTo('Choose', props.waypoint.longName))
   ]))
 
 const SameStartFinish = Component((props: any) =>
@@ -152,5 +154,6 @@ export default Component((props: object) =>
     scrollView({ horizontal: true, style: { height: 100 } }),
     reduce(concat, nothing()),
     items => insert(items.length - 1, AddButton, items),
-    map(waypointItemToComponent))(
+    map(waypointItemToComponent),
+    tap(v => console.log(v)))(
     props.course.waypoints))
