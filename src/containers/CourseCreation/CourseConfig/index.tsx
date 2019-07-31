@@ -66,7 +66,7 @@ const GateMarkSelectorItem = Component((props) =>
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.selectMark(props.mark.id) }),
     text({}),
-    path(['mark', 'name']))(
+    path(['mark', 'longName']))(
     props))
 
 const GateMarkSelector = Component((props: any) =>
