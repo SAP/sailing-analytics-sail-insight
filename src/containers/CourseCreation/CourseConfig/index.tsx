@@ -94,6 +94,18 @@ const SameStartFinish = Component((props: any) =>
     fromClass(Switch)
   ]))
 
+const MarkPosition = Component(props =>
+  compose(
+    fold(props),
+    reduce(concat, nothing()),
+    map(text({})))(
+    ['Tracker', 'PING', 'GEO']))
+
+const Appearance = Component(props =>
+  compose(
+    fold(props))(
+    text({}, 'Appearance')))
+
 const DeleteButton = Component((props: any) =>
   compose(
     fold(props),
@@ -106,7 +118,9 @@ const WaypointEditForm = Component((props: any) =>
     reduce(concat, nothing()))([
       nothingWhenStartOrFinishGate(DeleteButton),
       nothingWhenNotStartOrFinishGate(SameStartFinish),
-      nothingWhenNotAGate(GateMarkSelector)
+      nothingWhenNotAGate(GateMarkSelector),
+      MarkPosition,
+      Appearance
   ]))
 
 const AddButton = Component((props: any) =>
