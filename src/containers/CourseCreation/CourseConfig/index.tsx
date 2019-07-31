@@ -97,7 +97,7 @@ const SameStartFinish = Component((props: any) =>
 const DeleteButton = Component((props: any) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.removeWaypoint(props.waypoint.id) }))(
+    touchableOpacity({ onPress: (props: any) => props.removeWaypoint() }))(
     deleteIcon))
 
 const WaypointEditForm = Component((props: any) =>

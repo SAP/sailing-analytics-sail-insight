@@ -72,7 +72,7 @@ const onSeeCourse = (props: any) => {
 const onNewCourse = (props: any) => {
   // const raceId = getRaceId(regattaName, raceName)
   const raceId = 'TW 2013 (Finn) - Finn Race 5'
-  props.selectCourse({ courseId: 'TW 2013 (Finn)'})
+  props.selectCourse(raceId)
   navigateToRaceCourseLayout()
 }
 

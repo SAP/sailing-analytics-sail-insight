@@ -1,3 +1,4 @@
+import { get } from 'lodash'
 import { findIndex, propEq } from 'ramda'
 import { handleActions } from 'redux-actions'
 
@@ -11,6 +12,7 @@ import {
   removeWaypoint,
   selectCourse,
   selectWaypoint,
+  toggleSameStartFinish,
   updateCourseLoading,
   updateWaypoint,
 } from 'actions/races'
@@ -26,18 +28,44 @@ const removeItem = (array: any[], index: number) => (
   array.filter((item: any, i: number) => i !== index)
 )
 
-const updateItem = (array: any[], index: number, item: any) => (
-  array.map((it: any, ind: number) => {
-    if (ind !== index) {
+interface itemWithId {
+  id: string
+}
+
+// Update items but preserve ID
+const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => (
+  array.map((it: itemWithId, ind: number) => {
+    if (!indices.includes(ind)) {
       return it
     }
 
-    return item
+    return {
+      id: it.id,
+      ...item,
+    }
   })
 )
 
 const getArrayIndexByWaypointId = (raceState: any) =>
-  findIndex(propEq('id', raceState.selectedWaypoint))(raceState.courseCreation.waypoints)
+  findIndex(propEq('id', raceState.selectedWaypoint))(raceState.selectedCourse.waypoints)
+
+const getWaypointIdByArrayIndex = (raceState: any) => (index: number) =>
+  get(raceState, ['selectedCourse', 'waypoints', index, 'id'])
+
+const getFinishWaypointIndex = (raceState: any) =>
+  raceState.selectedCourse.waypoints.length - 1
+
+const startOrFinishWaypointSelected = (raceState: any) =>
+  getArrayIndexByWaypointId(raceState) === 0 ||
+  getArrayIndexByWaypointId(raceState) === getFinishWaypointIndex(raceState)
+
+const getWaypointIndicesToUpdate = (raceState: any) =>
+  raceState.sameStartFinish && startOrFinishWaypointSelected(raceState)
+    ? [0, getFinishWaypointIndex(raceState)]
+    : [getArrayIndexByWaypointId(raceState)]
+
+const SAME_START_FINISH_DEFAULT = false
+const SELECTED_WAYPOINT_DEFAULT = undefined
 
 const initialState: RaceState = {
   allRaces: {},
@@ -45,7 +73,8 @@ const initialState: RaceState = {
   marks: {} as Map<MarkID, Mark>,
   courseLoading: false,
   selectedCourse: undefined,
-  selectedWaypoint: undefined,
+  selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
+  sameStartFinish: SAME_START_FINISH_DEFAULT,
 } as RaceState
 
 const reducer = handleActions(
@@ -78,35 +107,31 @@ const reducer = handleActions(
     [selectCourse as any]: (state: any = {}, action: any) => {
       const { courseId, UUIDs } = action.payload
       const courseExists = courseId && Object.keys(state.courses).includes(courseId)
-      if (courseExists) {
-        return {
-          ...state,
-          selectedCourse: state.courses[courseId],
-          selectedWaypoint: undefined,
-        }
-      }
-
-      const newCourse: SelectedCourseState = {
-        name: 'New course',
-        waypoints: [
-          {
-            shortName: 'S',
-            longName: 'Start',
-            passingInstruction: 'Gate',
-            id: UUIDs[0],
-          },
-          {
-            shortName: 'F',
-            longName: 'Finish',
-            passingInstruction: 'Gate',
-            id: UUIDs[1],
-          },
-        ],
-      }
+      const selectedCourse: SelectedCourseState = courseExists
+        ? state.courses[courseId]
+        : {
+            name: 'New course',
+            waypoints: [
+              {
+                shortName: 'S',
+                longName: 'Start',
+                passingInstruction: 'Gate',
+                id: UUIDs[0]
+              },
+              {
+                shortName: 'F',
+                longName: 'Finish',
+                passingInstruction: 'Gate',
+                id: UUIDs[1]
+              }
+            ]
+          }
 
       return {
         ...state,
-        selectedCourse: newCourse,
+        selectedCourse,
+        selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
+        sameStartFinish: SAME_START_FINISH_DEFAULT,
       }
     },
 
@@ -136,19 +161,20 @@ const reducer = handleActions(
           getArrayIndexByWaypointId(state),
         ),
       },
+      selectedWaypoint: getWaypointIdByArrayIndex(state)(
+        getArrayIndexByWaypointId(state) - 1
+      )
     }),
 
     // Change waypoint state at the selectedWaypoint id
     // (waypoint: Partial<WaypointState>) => void
     [updateWaypoint as any]: (state: any = {}, action: any) => ({
-      // If waypoint.id is changed selectedWaypoint should be changed as well.
-      // Just to keep in mind, the id should not be changeable by design
       ...state,
       selectedCourse: {
         ...state.selectedCourse,
-        waypoints: updateItem(
+        waypoints: updateItems(
           state.selectedCourse.waypoints,
-          getArrayIndexByWaypointId(state),
+          getWaypointIndicesToUpdate(state),
           action.payload,
         ),
       },
@@ -159,6 +185,11 @@ const reducer = handleActions(
     [selectWaypoint as any]: (state: any = {}, action: any) => ({
       ...state,
       selectedWaypoint: action.payload,
+    }),
+
+    [toggleSameStartFinish as any]: (state: any = {}) => ({
+      ...state,
+      sameStartFinish: !state.sameStartFinish,
     }),
 
     [removeUserData as any]: () => initialState,
