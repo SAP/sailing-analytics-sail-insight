@@ -1,14 +1,11 @@
 import { find, get, keys } from 'lodash'
-import { compose, isNil, unless } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { RACE_ENTITY_NAME } from 'api/schemas'
 import { CheckIn, User } from 'models'
-import { Course, CourseState, Mark, WaypointState } from 'models/Course'
 import { ApiBodyKeys as EventApiKeys } from 'models/Event'
 import Race, { ApiBodyKeys as RaceApiKeys, mapResToRace } from 'models/Race'
 import { ApiBodyKeys as RegattaApiKeys } from 'models/Regatta'
-import { RootState } from 'reducers/config'
 import { removeRegattaPrefix, removeUserPrefix } from 'services/SessionService'
 
 import { getOrderListFunction } from 'helpers/utils'
@@ -19,67 +16,6 @@ import { getEntities } from './entity'
 import { getEventEntity } from './event'
 import { getLeaderboardEntity } from './leaderboard'
 import { getRegatta, getRegattaEntity } from './regatta'
-
-export const getCourseState = (raceId: string) => (state: RootState): CourseState | undefined =>
-  state.races && state.races.courses[raceId]
-
-export const getCourseLoading = (state: RootState) =>
-  state.races && state.races.courseLoading
-
-// Gets currently the "local ids" of marks
-// TODO: Should be made to get all of the server ids of marks
-export const getMarkIds = (state: RootState) =>
-  state.races && state.races.marks && Object.keys(state.races.marks)
-
-export const markdByIdPresent = (markId: string) => (state: RootState) =>
-  getMarkIds(state).includes(markId)
-
-export const getMarkById = (markId: string) => (state: RootState): Mark | undefined =>
-  state.races && state.races.marks && state.races.marks[markId]
-
-const populateWaypointWithMarkData = (state: any) =>
-  (waypointState: Partial<WaypointState>) => ({
-    ...waypointState,
-    leftMark: waypointState.leftMark
-      ? getMarkById(waypointState.leftMark)(state)
-      : undefined,
-    rightMark: waypointState.rightMark
-      ? getMarkById(waypointState.rightMark)(state)
-      : undefined,
-  })
-
-export const getSelectedCourseWithMarks = (state: RootState) => {
-  const selectedCourseState = getSelectedCourseState(state)
-  if (!selectedCourseState) return
-
-  return {
-    name: selectedCourseState.name,
-    waypoints: selectedCourseState.waypoints.map(
-      populateWaypointWithMarkData(state)
-    ),
-  }
-}
-
-export const getSelectedCourseState = (state: any) =>
-  state.races.selectedCourse
-
-export const getSelectedCourse =
-  compose(getSelectedCourseWithMarks, getSelectedCourseState)
-
-export const getWaypointStateById = (id?: string) => (state: any) =>
-  id && find(get(state, 'races.selectedCourse.waypoints') || [], { id })
-
-export const getSelectedWaypointState = (state: any) =>
-  getWaypointStateById(state.races.selectedWaypoint)(state)
-
-export const getSelectedWaypoint = (state: any) =>
-  compose(
-    unless(isNil, populateWaypointWithMarkData(state)),
-    getSelectedWaypointState
-  )(state)
-
-export const getSelectedMark = (state: any) =>
-    state.races.selectedMark && getMarkById(state.races.selectedMark)(state)
 
 const orderRaces = getOrderListFunction<Race>(['trackingStartDate'], 'desc')
 

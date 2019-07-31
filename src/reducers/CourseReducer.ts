@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import { findIndex, propEq } from 'ramda'
 import { handleActions } from 'redux-actions'
 
-import { RaceState } from 'reducers/config'
+import { CourseReducerState } from 'reducers/config'
 
 import { removeUserData } from 'actions/auth'
 import {
@@ -16,7 +16,7 @@ import {
   toggleSameStartFinish,
   updateCourseLoading,
   updateWaypoint,
-} from 'actions/races'
+} from 'actions/courses'
 import { CourseState, Mark, MarkID, SelectedCourseState } from 'models/Course'
 
 const insertItem = (array: any[], index: number, item: any) => {
@@ -47,32 +47,32 @@ const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => 
   })
 )
 
-const getArrayIndexByWaypointId = (raceState: any) => (id: string) =>
-  findIndex(propEq('id', id))(raceState.selectedCourse.waypoints)
+const getArrayIndexByWaypointId = (state: any) => (id: string) =>
+  findIndex(propEq('id', id))(state.selectedCourse.waypoints)
 
-const getSelectedWaypointArrayIndex = (raceState: any) =>
-  getArrayIndexByWaypointId(raceState)(raceState.selectedWaypoint)
+const getSelectedWaypointArrayIndex = (state: any) =>
+  getArrayIndexByWaypointId(state)(state.selectedWaypoint)
 
-const getWaypointIdByArrayIndex = (raceState: any) => (index: number) =>
-  get(raceState, ['selectedCourse', 'waypoints', index, 'id'])
+const getWaypointIdByArrayIndex = (state: any) => (index: number) =>
+  get(state, ['selectedCourse', 'waypoints', index, 'id'])
 
-const getFinishWaypointIndex = (raceState: any) =>
-  raceState.selectedCourse.waypoints.length - 1
+const getFinishWaypointIndex = (state: any) =>
+  state.selectedCourse.waypoints.length - 1
 
-const startOrFinishWaypointSelected = (raceState: any) =>
-  getSelectedWaypointArrayIndex(raceState) === 0 ||
-  getSelectedWaypointArrayIndex(raceState) === getFinishWaypointIndex(raceState)
+const startOrFinishWaypointSelected = (state: any) =>
+  getSelectedWaypointArrayIndex(state) === 0 ||
+  getSelectedWaypointArrayIndex(state) === getFinishWaypointIndex(state)
 
-const getWaypointIndicesToUpdate = (raceState: any) =>
-  raceState.sameStartFinish && startOrFinishWaypointSelected(raceState)
-    ? [0, getFinishWaypointIndex(raceState)]
-    : [getSelectedWaypointArrayIndex(raceState)]
+const getWaypointIndicesToUpdate = (state: any) =>
+  state.sameStartFinish && startOrFinishWaypointSelected(state)
+    ? [0, getFinishWaypointIndex(state)]
+    : [getSelectedWaypointArrayIndex(state)]
 
-const getWaypointById = (raceState: any) => (id: string) =>
-  get(raceState, [
+const getWaypointById = (state: any) => (id: string) =>
+  get(state, [
     "selectedCourse",
     "waypoints",
-    getArrayIndexByWaypointId(raceState)(id)
+    getArrayIndexByWaypointId(state)(id)
   ]);
 
 
@@ -80,23 +80,22 @@ const SAME_START_FINISH_DEFAULT = false
 const SELECTED_WAYPOINT_DEFAULT = undefined
 const SELECTED_MARK_DEFAULT = undefined
 
-const initialState: RaceState = {
-  allRaces: {},
-  courses: {} as Map<string, CourseState>,
+const initialState: CourseReducerState = {
+  allCourses: {} as Map<string, CourseState>,
   marks: {} as Map<MarkID, Mark>,
   courseLoading: false,
   selectedCourse: undefined,
   selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
   sameStartFinish: SAME_START_FINISH_DEFAULT,
   selectedMark: SELECTED_MARK_DEFAULT,
-} as RaceState
+} as CourseReducerState
 
 const reducer = handleActions(
   {
     [loadCourse as any]: (state: any = {}, action: any) => ({
       ...state,
-      courses: {
-        ...state.courses,
+      allCourses: {
+        ...state.allCourses,
         ...(action.payload || {}),
       },
     }),
@@ -120,9 +119,9 @@ const reducer = handleActions(
     // ({ courseId?: string, UUIDs: string[] }) => void
     [selectCourse as any]: (state: any = {}, action: any) => {
       const { courseId, UUIDs } = action.payload
-      const courseExists = courseId && Object.keys(state.courses).includes(courseId)
+      const courseExists = courseId && Object.keys(state.allCourses).includes(courseId)
       const selectedCourse: SelectedCourseState = courseExists
-        ? state.courses[courseId]
+        ? state.allCourses[courseId]
         : {
             name: 'New course',
             waypoints: [

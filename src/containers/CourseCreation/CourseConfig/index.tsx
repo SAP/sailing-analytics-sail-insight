@@ -16,8 +16,8 @@ import { text, view, scrollView, touchableOpacity } from 'components/fp/react-na
 
 import { Switch } from 'react-native'
 
-import { selectWaypoint, removeWaypoint, selectMark, addWaypoint } from 'actions/races'
-import { getSelectedWaypoint, getSelectedMark } from 'selectors/race'
+import { selectWaypoint, removeWaypoint, selectMark, addWaypoint } from 'actions/courses'
+import { getSelectedWaypoint, getSelectedMark } from 'selectors/course'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
