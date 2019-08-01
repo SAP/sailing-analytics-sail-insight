@@ -33,16 +33,15 @@ const insertItem = (array: any[], index: number, item: any) => {
   return newArray
 }
 
-const removeItem = (array: any[], index: number) => (
+const removeItem = (array: any[], index: number) =>
   array.filter((item: any, i: number) => i !== index)
-)
 
 interface itemWithId {
   id: string
 }
 
 // Update items but preserve ID
-const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => (
+const updateItems = (array: itemWithId[], indices: number[], item: any = {}) =>
   array.map((it: itemWithId, ind: number) => {
     if (!indices.includes(ind)) {
       return it
@@ -53,7 +52,6 @@ const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => 
       ...item,
     }
   })
-)
 
 const getArrayIndexByWaypointId = (state: any) => (id: string) =>
   findIndex(propEq('id', id))(state.selectedCourse.waypoints)
@@ -78,13 +76,13 @@ const getWaypointIndicesToUpdate = (state: any) =>
 
 const getWaypointById = (state: any) => (id: string) =>
   get(state, [
-    "selectedCourse",
-    "waypoints",
-    getArrayIndexByWaypointId(state)(id)
-  ]);
+    'selectedCourse',
+    'waypoints',
+    getArrayIndexByWaypointId(state)(id),
+  ])
 
-const getSelectedWaypoint = (state: any) => state.selectedWaypoint &&
-  getWaypointById(state.selectedWaypoint)
+const getSelectedWaypoint = (state: any) =>
+  state.selectedWaypoint && getWaypointById(state.selectedWaypoint)
 
 // Gets the left mark id or just the single mark id
 // of a waypoint. To be used for autoselecting a mark on waypoint selection
@@ -149,13 +147,13 @@ const reducer = handleActions(
       courseLoading: !!action.payload,
     }),
 
-
     // Select course for loading into the course creation state
     // Course template (e.g. from scratch) or an existing course (when it is fetched from the server)
     // ({ courseId?: string, UUIDs: string[] }) => void
     [selectCourse as any]: (state: any = {}, action: any) => {
       const { courseId, UUIDs } = action.payload
-      const courseExists = courseId && Object.keys(state.allCourses).includes(courseId)
+      const courseExists =
+        courseId && Object.keys(state.allCourses).includes(courseId)
       const selectedCourse: SelectedCourseState = courseExists
         ? state.allCourses[courseId]
         : {
@@ -169,7 +167,7 @@ const reducer = handleActions(
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
                   id: UUIDs[1],
-                }
+                },
               },
               {
                 shortName: 'F',
@@ -179,10 +177,10 @@ const reducer = handleActions(
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
                   id: UUIDs[3],
-                }
-              }
+                },
+              },
             ],
-        }
+          }
 
       return {
         ...state,
@@ -212,7 +210,7 @@ const reducer = handleActions(
     // Remove a new waypoint at the selectedWaypoint id
     [removeWaypoint as any]: (state: any = {}, action: any) => {
       const selectedWaypoint = getWaypointIdByArrayIndex(state)(
-        getSelectedWaypointArrayIndex(state) - 1
+        getSelectedWaypointArrayIndex(state) - 1,
       )
 
       return {
@@ -264,7 +262,6 @@ const reducer = handleActions(
     }),
 
     [removeUserData as any]: () => initialState,
-
   },
   initialState,
 )

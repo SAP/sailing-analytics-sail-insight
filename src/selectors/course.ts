@@ -11,8 +11,9 @@ import {
 } from 'models/Course'
 import { RootState } from 'reducers/config'
 
-export const getCourseState = (raceId: string) => (state: RootState): CourseState | undefined =>
-  state.courses && state.courses.allCourses[raceId]
+export const getCourseState = (raceId: string) => (
+  state: RootState,
+): CourseState | undefined => state.courses && state.courses.allCourses[raceId]
 
 export const getCourseLoading = (state: RootState) =>
   state.courses && state.courses.courseLoading
@@ -25,11 +26,13 @@ export const getMarkIds = (state: RootState) =>
 export const markdByIdPresent = (markId: string) => (state: RootState) =>
   getMarkIds(state).includes(markId)
 
-export const getMarkById = (markId: string) => (state: RootState): Mark | undefined =>
+export const getMarkById = (markId: string) => (
+  state: RootState,
+): Mark | undefined =>
   state.courses && state.courses.marks && state.courses.marks[markId]
 
 const populateWaypointWithMarkData = (state: any) => (
-  waypointState: Partial<WaypointState>
+  waypointState: Partial<WaypointState>,
 ) => ({
   ...waypointState,
   controlPoint: waypointState.controlPoint && {
@@ -42,9 +45,9 @@ const populateWaypointWithMarkData = (state: any) => (
             : undefined,
           rightMark: waypointState.controlPoint.rightMark
             ? getMarkById(waypointState.controlPoint.rightMark)(state)
-            : undefined
-        })
-  }
+            : undefined,
+        }),
+  },
 })
 
 export const getSelectedCourseWithMarks = (state: RootState) => {
@@ -54,7 +57,7 @@ export const getSelectedCourseWithMarks = (state: RootState) => {
   return {
     name: selectedCourseState.name,
     waypoints: selectedCourseState.waypoints.map(
-      populateWaypointWithMarkData(state)
+      populateWaypointWithMarkData(state),
     ),
   }
 }
@@ -62,8 +65,10 @@ export const getSelectedCourseWithMarks = (state: RootState) => {
 export const getSelectedCourseState = (state: any) =>
   state.courses.selectedCourse
 
-export const getSelectedCourse =
-  compose(getSelectedCourseWithMarks, getSelectedCourseState)
+export const getSelectedCourse = compose(
+  getSelectedCourseWithMarks,
+  getSelectedCourseState,
+)
 
 export const getWaypointStateById = (id?: string) => (
   state: any,
@@ -73,11 +78,13 @@ export const getWaypointStateById = (id?: string) => (
 export const getSelectedWaypointState = (state: any) =>
   getWaypointStateById(state.courses.selectedWaypoint)(state)
 
-export const getSelectedWaypoint = (state: any): Partial<Waypoint> | undefined =>
+export const getSelectedWaypoint = (
+  state: any,
+): Partial<Waypoint> | undefined =>
   compose(
     unless(isNil, populateWaypointWithMarkData(state)),
-    getSelectedWaypointState
+    getSelectedWaypointState,
   )(state)
 
 export const getSelectedMark = (state: any) =>
-    state.courses.selectedMark && getMarkById(state.courses.selectedMark)(state)
+  state.courses.selectedMark && getMarkById(state.courses.selectedMark)(state)
