@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, insert, isNil, not, either, equals, cond } from 'ramda'
+  objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
 
 import {
   Component,
@@ -26,12 +26,10 @@ import IconText from 'components/IconText'
 
 import styles from './styles'
 
-const mapStateToProps = (state: any, props: any) => {
-  return {
+const mapStateToProps = (state: any, props: any) => ({
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMark: getSelectedMark(state)
-  }
-}
+  })
 
 const waypointClass = path(['waypoint', 'controlPoint', 'class'])
 const isGateWaypoint = compose(equals(ControlPointClass.MarkPair), waypointClass)
@@ -44,6 +42,7 @@ const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoi
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
 const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
+const nothingIfAddingWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 
 const icon = ({ source, style }) => fromClass(IconText).contramap(always({ source, style }))
 const gateIcon = icon({ source: Images.actions.minus })
@@ -90,7 +89,7 @@ const GateMarkSelector = Component((props: any) =>
 const MarkWaypoint = Component((props: any) =>
   compose(
     fold(props),
-    view({}),
+    view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
     reduce(concat, nothing()))([
     gateIcon,
     text({}, defaultTo('Choose', props.waypoint.longName))
@@ -98,7 +97,7 @@ const MarkWaypoint = Component((props: any) =>
 
 const SameStartFinish = Component((props: any) =>
   compose(
-    fold(props),
+    fold(props),  
     reduce(concat, nothing()))([
     text({}, 'Start/Finish are the same'),
     fromClass(Switch)
@@ -129,8 +128,8 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenStartOrFinishGate(DeleteButton),
       nothingWhenNotStartOrFinishGate(SameStartFinish),
       nothingWhenNotAGate(GateMarkSelector),
-      MarkPosition,
-      Appearance
+      nothingIfAddingWaypoint(MarkPosition),
+      nothingIfAddingWaypoint(Appearance)
   ]))
 
 const AddButton = Component((props: any) =>

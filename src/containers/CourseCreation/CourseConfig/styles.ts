@@ -4,10 +4,10 @@ export default EStyleSheets.create({
   waypointContainer: {
     width: 100,
     height: 100,
-    backgroundColor: 'red'
+    backgroundColor: '#EAF2FD'
   },
 
   selectedWaypointContainer: {
-    backgroundColor: 'blue'
+    backgroundColor: '#4E8AFB'
   }
 })
