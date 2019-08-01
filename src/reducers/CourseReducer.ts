@@ -190,19 +190,25 @@ const reducer = handleActions(
     }),
 
     // Remove a new waypoint at the selectedWaypoint id
-    [removeWaypoint as any]: (state: any = {}, action: any) => ({
-      ...state,
-      selectedCourse: {
-        ...state.selectedCourse,
-        waypoints: removeItem(
-          state.selectedCourse.waypoints,
-          getSelectedWaypointArrayIndex(state),
-        ),
-      },
-      selectedWaypoint: getWaypointIdByArrayIndex(state)(
+    [removeWaypoint as any]: (state: any = {}, action: any) => {
+      const selectedWaypoint = getWaypointIdByArrayIndex(state)(
         getSelectedWaypointArrayIndex(state) - 1
       )
-    }),
+
+      return {
+        ...state,
+        selectedCourse: {
+          ...state.selectedCourse,
+          waypoints: removeItem(
+            state.selectedCourse.waypoints,
+            getSelectedWaypointArrayIndex(state),
+          ),
+        },
+        // Selects a waypoint to the left and autoselects the mark
+        selectedWaypoint,
+        selectedMark: getAutoSelectedMarkId(state)(selectedWaypoint),
+      }
+    },
 
     // Change waypoint state at the selectedWaypoint id
     // (waypoint: Partial<WaypointState>) => void
