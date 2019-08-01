@@ -1,6 +1,6 @@
-import { __, compose, always, both, has, path, when,
+import { __, compose, always, both, path, when,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
+  objOf, insert, isNil, not, either, equals, cond } from 'ramda'
 
 import {
   Component,
@@ -16,6 +16,8 @@ import { text, view, scrollView, touchableOpacity } from 'components/fp/react-na
 
 import { Switch } from 'react-native'
 
+import { ControlPointClass } from 'models/Course'
+
 import { selectWaypoint, removeWaypoint, selectMark, addWaypoint } from 'actions/courses'
 import { getSelectedWaypoint, getSelectedMark } from 'selectors/course'
 
@@ -24,8 +26,6 @@ import IconText from 'components/IconText'
 
 import styles from './styles'
 
-const hasDefinedProp = (p: string) => both(has(p), compose(not, isNil, prop(p)))
-
 const mapStateToProps = (state: any, props: any) => {
   return {
     selectedWaypoint: getSelectedWaypoint(state),
@@ -33,8 +33,10 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-const isGateWaypoint = compose(both(hasDefinedProp('leftMark'), hasDefinedProp('rightMark')), prop('waypoint'))
-const isMarkWaypoint = compose(both(hasDefinedProp('leftMark'), compose(not, hasDefinedProp('rightMark'))), prop('waypoint'))
+const waypointClass = path(['waypoint', 'controlPoint', 'class'])
+const isGateWaypoint = compose(equals(ControlPointClass.MarkPair), waypointClass)
+const isMarkWaypoint = compose(equals(ControlPointClass.Mark), waypointClass)
+const isEmptyWaypoint = compose(isNil, path(['waypoint', 'controlPoint']))
 const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('waypoint')))
 const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
 
@@ -82,7 +84,7 @@ const GateMarkSelector = Component((props: any) =>
       when(compose(equals(props.selectedMark.id), path(['mark', 'id'])), merge({ selected: true })),
       objOf('mark'))),
     rProps(['leftMark', 'rightMark']),
-    prop('selectedWaypoint'))(
+    path(['selectedWaypoint', 'controlPoint']))(
     props))
 
 const MarkWaypoint = Component((props: any) =>
@@ -141,7 +143,8 @@ const waypointItemToComponent = (waypoint: any) => compose(
   touchableOpacity({ onPress: (props: any) => props.selectWaypoint(waypoint.id) }),
   cond([[
     isGateWaypoint, compose(GateWaypoint.contramap, merge)],[
-    isMarkWaypoint, compose(MarkWaypoint.contramap, merge)]]),
+    isMarkWaypoint, compose(MarkWaypoint.contramap, merge)],[
+    isEmptyWaypoint, compose(MarkWaypoint.contramap, merge) ]]),
   objOf('waypoint'))(
   waypoint)
 
@@ -154,6 +157,5 @@ export default Component((props: object) =>
     scrollView({ horizontal: true, style: { height: 100 } }),
     reduce(concat, nothing()),
     items => insert(items.length - 1, AddButton, items),
-    map(waypointItemToComponent),
-    tap(v => console.log(v)))(
+    map(waypointItemToComponent))(
     props.course.waypoints))
