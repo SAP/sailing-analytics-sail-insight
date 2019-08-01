@@ -1,7 +1,14 @@
 import { find, get } from 'lodash'
 import { compose, isNil, unless } from 'ramda'
 
-import { Course, CourseState, Mark, WaypointState, ControlPointClass } from 'models/Course'
+import {
+  ControlPointClass,
+  Course,
+  CourseState,
+  Mark,
+  Waypoint,
+  WaypointState,
+} from 'models/Course'
 import { RootState } from 'reducers/config'
 
 export const getCourseState = (raceId: string) => (state: RootState): CourseState | undefined =>
@@ -58,13 +65,15 @@ export const getSelectedCourseState = (state: any) =>
 export const getSelectedCourse =
   compose(getSelectedCourseWithMarks, getSelectedCourseState)
 
-export const getWaypointStateById = (id?: string) => (state: any) =>
+export const getWaypointStateById = (id?: string) => (
+  state: any,
+): Parital<WaypointState> | undefined =>
   id && find(get(state, 'courses.selectedCourse.waypoints') || [], { id })
 
 export const getSelectedWaypointState = (state: any) =>
   getWaypointStateById(state.courses.selectedWaypoint)(state)
 
-export const getSelectedWaypoint = (state: any) =>
+export const getSelectedWaypoint = (state: any): Partial<Waypoint> | undefined =>
   compose(
     unless(isNil, populateWaypointWithMarkData(state)),
     getSelectedWaypointState

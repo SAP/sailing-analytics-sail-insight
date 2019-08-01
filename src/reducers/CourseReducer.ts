@@ -14,6 +14,7 @@ import {
   selectMark,
   selectWaypoint,
   toggleSameStartFinish,
+  updateControlPoint,
   updateCourseLoading,
   updateWaypoint,
 } from 'actions/courses'
@@ -23,6 +24,7 @@ import {
   Mark,
   MarkID,
   SelectedCourseState,
+  WaypointState,
 } from 'models/Course'
 
 const insertItem = (array: any[], index: number, item: any) => {
@@ -81,6 +83,9 @@ const getWaypointById = (state: any) => (id: string) =>
     getArrayIndexByWaypointId(state)(id)
   ]);
 
+const getSelectedWaypoint = (state: any) => state.selectedWaypoint &&
+  getWaypointById(state.selectedWaypoint)
+
 // Gets the left mark id or just the single mark id
 // of a waypoint. To be used for autoselecting a mark on waypoint selection
 const getAutoSelectedMarkId = (state: any) => (waypointId: string) => {
@@ -91,6 +96,21 @@ const getAutoSelectedMarkId = (state: any) => (waypointId: string) => {
 
   return controlPoint.leftMark || controlPoint.id
 }
+
+const updateWaypointReducer = (
+  state: any,
+  waypointState: Partial<WaypointState>,
+) => ({
+  ...state,
+  selectedCourse: {
+    ...state.selectedCourse,
+    waypoints: updateItems(
+      state.selectedCourse.waypoints,
+      getWaypointIndicesToUpdate(state),
+      waypointState,
+    ),
+  },
+})
 
 const SAME_START_FINISH_DEFAULT = true
 const SELECTED_WAYPOINT_DEFAULT = undefined
@@ -212,17 +232,16 @@ const reducer = handleActions(
 
     // Change waypoint state at the selectedWaypoint id
     // (waypoint: Partial<WaypointState>) => void
-    [updateWaypoint as any]: (state: any = {}, action: any) => ({
-      ...state,
-      selectedCourse: {
-        ...state.selectedCourse,
-        waypoints: updateItems(
-          state.selectedCourse.waypoints,
-          getWaypointIndicesToUpdate(state),
-          action.payload,
-        ),
-      },
-    }),
+    [updateWaypoint as any]: (state: any = {}, action: any) =>
+      updateWaypointReducer(state, action.payload),
+
+    // Change controlPoint state of the waypoint at the selectedWaypoint id
+    // (controlPointState: Partial<ControlPointState>) => void
+    [updateControlPoint as any]: (state: any = {}, action: any) =>
+      updateWaypointReducer(state, {
+        ...(getSelectedWaypoint(state) || {}),
+        controlPoint: action.payload,
+      }),
 
     // Change selectedWaypoint
     // (selectedWaypoint: string) => void

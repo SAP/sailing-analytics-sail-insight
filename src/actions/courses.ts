@@ -7,7 +7,9 @@ import { selfTrackingApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
+  ControlPoint,
   ControlPointClass,
+  ControlPointState,
   CourseState,
   Geolocation,
   Mark,
@@ -47,6 +49,7 @@ export const addWaypoint = createAction('ADD_WAYPOINT', compose(
 ))
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateWaypoint = createAction('UPDATE_WAYPOINT')
+export const updateControlPoint = createAction('UPDATE_CONTROL_POINT')
 
 // Save course to server
 export const saveCourse = createAction('SAVE_COURSE')
@@ -195,3 +198,24 @@ export const fetchCourse = (
   dispatch(updateCourseLoading(false))
   return course
 }
+
+export const assignControlPointClass = (controlPointClass: ControlPointClass) =>
+  updateControlPoint({
+    class: controlPointClass,
+    id: controlPointClass === ControlPointClass.MarkPair ? uuidv4() : undefined,
+  })
+
+export const assignControlPoint = (controlPoint: ControlPoint) =>
+  updateControlPoint(
+    controlPoint.class === ControlPointClass.Mark
+      ? ({
+          class: controlPoint.class,
+          id: controlPoint.id,
+        } as MarkState)
+      : ({
+          class: controlPoint.class,
+          id: controlPoint.id,
+          leftMark: get(controlPoint, 'leftMark.id'),
+          rightMark: get(controlPoint, 'rightMark.id'),
+        } as MarkPair<string>),
+  )
