@@ -1,4 +1,4 @@
-import { __, compose, always, both, path, when,
+import { __, compose, always, both, path, when, append,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
   objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
 
@@ -18,7 +18,7 @@ import { Switch } from 'react-native'
 
 import { ControlPointClass } from 'models/Course'
 
-import { selectWaypoint, removeWaypoint, selectMark, addWaypoint } from 'actions/courses'
+import { selectWaypoint, removeWaypoint, selectMark, addWaypoint, assignControlPointClass } from 'actions/courses'
 import { getSelectedWaypoint, getSelectedMark } from 'selectors/course'
 
 import Images from '@assets/Images'
@@ -26,9 +26,15 @@ import IconText from 'components/IconText'
 
 import styles from './styles'
 
+const controlPointClassToLabel = {
+  [ControlPointClass.MarkPair]: 'Gate/Line',
+  [ControlPointClass.Mark]: 'Mark'
+}
+
 const mapStateToProps = (state: any, props: any) => ({
     selectedWaypoint: getSelectedWaypoint(state),
-    selectedMark: getSelectedMark(state)
+    selectedMark: getSelectedMark(state),
+    controlPoints: [{}, {}, {}]
   })
 
 const waypointClass = path(['waypoint', 'controlPoint', 'class'])
@@ -42,7 +48,8 @@ const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoi
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
 const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
-const nothingIfAddingWaypoint = branch(isEmptyWaypoint, nothingAsClass)
+const nothingIfEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
+const nothingIfNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
 
 const icon = ({ source, style }) => fromClass(IconText).contramap(always({ source, style }))
 const gateIcon = icon({ source: Images.actions.minus })
@@ -106,6 +113,7 @@ const SameStartFinish = Component((props: any) =>
 const MarkPosition = Component(props =>
   compose(
     fold(props),
+    concat(text({}, 'LOCATE OR TRACK')),
     reduce(concat, nothing()),
     map(text({})))(
     ['Tracker', 'PING', 'GEO']))
@@ -121,6 +129,40 @@ const DeleteButton = Component((props: any) =>
     touchableOpacity({ onPress: (props: any) => props.removeWaypoint() }))(
     deleteIcon))
 
+const ControlPointClassSelectorItem = Component(props =>
+  compose(
+    fold(props),
+    touchableOpacity({ onPress: (props: any) => props.assignControlPointClass(props.class) }),
+    text({}),
+    prop(__, controlPointClassToLabel))(
+    props.class))
+
+const ControlPointSelectorItem = Component(props =>
+  compose(
+    fold(props),
+    touchableOpacity({ onPress: (props: any) => props.assignControlPoint(props.item) }),
+    text({}))(
+    'this is a control point item'))
+
+const ControlPointList = Component(props =>
+  compose(
+    fold(props),
+    view({}),
+    reduce(concat, nothing()),
+    map(compose(ControlPointSelectorItem.contramap, merge, objOf('item'))))(
+    props.controlPoints))
+
+const ControlPointSelector = Component(props =>
+  compose(
+    fold(props),
+    view({}),
+    concat(text({}, 'CREATE NEW')),
+    reduce(concat, nothing()),
+    append(ControlPointList),
+    map(compose(ControlPointClassSelectorItem.contramap, merge, objOf('class'))))([
+    ControlPointClass.MarkPair,
+    ControlPointClass.Mark ]))
+
 const WaypointEditForm = Component((props: any) =>
   compose(
     fold(merge(props, { waypoint: props.selectedWaypoint })),
@@ -128,8 +170,9 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenStartOrFinishGate(DeleteButton),
       nothingWhenNotStartOrFinishGate(SameStartFinish),
       nothingWhenNotAGate(GateMarkSelector),
-      nothingIfAddingWaypoint(MarkPosition),
-      nothingIfAddingWaypoint(Appearance)
+      nothingIfEmptyWaypoint(MarkPosition),
+      nothingIfEmptyWaypoint(Appearance),
+      nothingIfNotEmptyWaypoint(ControlPointSelector)
   ]))
 
 const AddButton = Component((props: any) =>
@@ -150,7 +193,7 @@ const waypointItemToComponent = (waypoint: any) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { selectWaypoint, removeWaypoint, selectMark, addWaypoint }),
+    connect(mapStateToProps, { selectWaypoint, removeWaypoint, selectMark, addWaypoint, assignControlPointClass }),
     concat(__, nothingWhenNoSelectedWaypoint(WaypointEditForm)),
     view({}),
     scrollView({ horizontal: true, style: { height: 100 } }),
