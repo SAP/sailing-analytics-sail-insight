@@ -11,7 +11,7 @@ import {
   loadMark,
   removeWaypoint,
   selectCourse,
-  selectMark,
+  selectGateSide,
   selectWaypoint,
   toggleSameStartFinish,
   updateControlPoint,
@@ -21,6 +21,7 @@ import {
 import {
   ControlPointClass,
   CourseState,
+  GateSide,
   Mark,
   MarkID,
   SelectedCourseState,
@@ -84,17 +85,6 @@ const getWaypointById = (state: any) => (id: string) =>
 const getSelectedWaypoint = (state: any) =>
   state.selectedWaypoint && getWaypointById(state.selectedWaypoint)
 
-// Gets the left mark id or just the single mark id
-// of a waypoint. To be used for autoselecting a mark on waypoint selection
-const getAutoSelectedMarkId = (state: any) => (waypointId: string) => {
-  const waypoint = getWaypointById(state)(waypointId)
-  const controlPoint = waypoint.controlPoint
-
-  if (!controlPoint) return undefined
-
-  return controlPoint.leftMark || controlPoint.id
-}
-
 const updateWaypointReducer = (
   state: any,
   waypointState: Partial<WaypointState>,
@@ -112,7 +102,7 @@ const updateWaypointReducer = (
 
 const SAME_START_FINISH_DEFAULT = true
 const SELECTED_WAYPOINT_DEFAULT = undefined
-const SELECTED_MARK_DEFAULT = undefined
+const SELECTED_GATE_SIDE_DEFAULT = GateSide.LEFT
 
 const initialState: CourseReducerState = {
   allCourses: {} as Map<string, CourseState>,
@@ -121,7 +111,7 @@ const initialState: CourseReducerState = {
   selectedCourse: undefined,
   selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
   sameStartFinish: SAME_START_FINISH_DEFAULT,
-  selectedMark: SELECTED_MARK_DEFAULT,
+  selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
 } as CourseReducerState
 
 const reducer = handleActions(
@@ -187,7 +177,7 @@ const reducer = handleActions(
         selectedCourse,
         selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
         sameStartFinish: SAME_START_FINISH_DEFAULT,
-        selectedMark: SELECTED_MARK_DEFAULT,
+        selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
       }
     },
 
@@ -224,7 +214,7 @@ const reducer = handleActions(
         },
         // Selects a waypoint to the left and autoselects the mark
         selectedWaypoint,
-        selectedMark: getAutoSelectedMarkId(state)(selectedWaypoint),
+        selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
       }
     },
 
@@ -246,14 +236,14 @@ const reducer = handleActions(
     [selectWaypoint as any]: (state: any = {}, action: any) => ({
       ...state,
       selectedWaypoint: action.payload,
-      selectedMark: getAutoSelectedMarkId(state)(action.payload),
+      selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
     }),
 
-    // Change selectedMark
-    // (selectedMark: string) => void
-    [selectMark as any]: (state: any = {}, action: any) => ({
+    // Change selectedGateSide
+    // (selectedGateSide: GateSide) => void
+    [selectGateSide as any]: (state: any = {}, action: any) => ({
       ...state,
-      selectedMark: action.payload,
+      selectedGateSide: action.payload,
     }),
 
     [toggleSameStartFinish as any]: (state: any = {}) => ({

@@ -16,9 +16,9 @@ import { text, view, scrollView, touchableOpacity } from 'components/fp/react-na
 
 import { Switch } from 'react-native'
 
-import { ControlPointClass } from 'models/Course'
+import { ControlPointClass, GateSide } from 'models/Course'
 
-import { selectWaypoint, removeWaypoint, selectMark, addWaypoint, assignControlPointClass } from 'actions/courses'
+import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass } from 'actions/courses'
 import { getSelectedWaypoint, getSelectedMark } from 'selectors/course'
 
 import Images from '@assets/Images'
@@ -73,7 +73,7 @@ const GateWaypoint = Component((props: any) =>
 const GateMarkSelectorItem = Component((props) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.selectMark(props.mark.id) }),
+    touchableOpacity({ onPress: (props: any) => props.selectGateSide(GateSide.RIGHT) }),
     text({}),
     defaultTo(''),
     path(['mark', 'longName']))(
@@ -104,7 +104,7 @@ const MarkWaypoint = Component((props: any) =>
 
 const SameStartFinish = Component((props: any) =>
   compose(
-    fold(props),  
+    fold(props),
     reduce(concat, nothing()))([
     text({}, 'Start/Finish are the same'),
     fromClass(Switch)
@@ -193,7 +193,7 @@ const waypointItemToComponent = (waypoint: any) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { selectWaypoint, removeWaypoint, selectMark, addWaypoint, assignControlPointClass }),
+    connect(mapStateToProps, { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass }),
     concat(__, nothingWhenNoSelectedWaypoint(WaypointEditForm)),
     view({}),
     scrollView({ horizontal: true, style: { height: 100 } }),

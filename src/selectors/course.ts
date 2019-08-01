@@ -5,6 +5,7 @@ import {
   ControlPointClass,
   Course,
   CourseState,
+  GateSide,
   Mark,
   Waypoint,
   WaypointState,
@@ -86,8 +87,30 @@ export const getSelectedWaypoint = (
     getSelectedWaypointState,
   )(state)
 
+export const getSelectedGateSide = (state: any): GateSide =>
+  state.courses.selectedGateSide
+
+const getSelectedGateSideMarkFromWaypoint = (state: any) => (
+  waypoint: Partial<Waypoint>,
+) => {
+  const controlPoint = waypoint.controlPoint
+  if (!controlPoint) return undefined
+
+  if (controlPoint.class === ControlPointClass.Mark) {
+    return controlPoint
+  } else {
+    const selectedGateSide = getSelectedGateSide(state)
+    return selectedGateSide === GateSide.LEFT
+      ? controlPoint.leftMark
+      : controlPoint.rightMark
+  }
+}
+
 export const getSelectedMark = (state: any) =>
-  state.courses.selectedMark && getMarkById(state.courses.selectedMark)(state)
+  compose(
+    unless(isNil, getSelectedGateSideMarkFromWaypoint(state)),
+    getSelectedWaypoint,
+  )(state)
 
 export const getMarkInventory = (state: any) =>
   Object.values(state.courses.marks)

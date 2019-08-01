@@ -1,5 +1,11 @@
 import { AutoCourseUpdateState } from 'helpers/types'
-import { CourseState, Mark, MarkID, SelectedCourseState } from 'models/Course'
+import {
+  CourseState,
+  GateSide,
+  Mark,
+  MarkID,
+  SelectedCourseState,
+} from 'models/Course'
 
 
 export interface RootState {
@@ -84,5 +90,5 @@ export interface CourseReducerState {
   // ID of the waypoint that is selected for editing
   selectedWaypoint?: string
   sameStartFinish: boolean
-  selectedMark?: MarkID
+  selectedGateSide?: GateSide
 }

@@ -1,8 +1,13 @@
+export enum GateSide {
+  LEFT = 'LEFT',
+  RIGHT = 'RIGHT',
+}
+
 export type MarkID = string
 
 export enum ControlPointClass {
   Mark = 'Mark',
-  MarkPair = 'ControlPointWithTwoMarks'
+  MarkPair = 'ControlPointWithTwoMarks',
 }
 
 export interface ControlPoint {
