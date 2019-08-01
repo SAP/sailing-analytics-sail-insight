@@ -88,3 +88,6 @@ export const getSelectedWaypoint = (
 
 export const getSelectedMark = (state: any) =>
   state.courses.selectedMark && getMarkById(state.courses.selectedMark)(state)
+
+export const getMarkInventory = (state: any) =>
+  Object.values(state.courses.marks)
