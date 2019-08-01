@@ -14,6 +14,7 @@ import {
   selectMark,
   selectWaypoint,
   toggleSameStartFinish,
+  updateControlPoint,
   updateCourseLoading,
   updateWaypoint,
 } from 'actions/courses'
@@ -23,6 +24,7 @@ import {
   Mark,
   MarkID,
   SelectedCourseState,
+  WaypointState,
 } from 'models/Course'
 
 const insertItem = (array: any[], index: number, item: any) => {
@@ -31,16 +33,15 @@ const insertItem = (array: any[], index: number, item: any) => {
   return newArray
 }
 
-const removeItem = (array: any[], index: number) => (
+const removeItem = (array: any[], index: number) =>
   array.filter((item: any, i: number) => i !== index)
-)
 
 interface itemWithId {
   id: string
 }
 
 // Update items but preserve ID
-const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => (
+const updateItems = (array: itemWithId[], indices: number[], item: any = {}) =>
   array.map((it: itemWithId, ind: number) => {
     if (!indices.includes(ind)) {
       return it
@@ -51,7 +52,6 @@ const updateItems = (array: itemWithId[], indices: number[], item: any = {}) => 
       ...item,
     }
   })
-)
 
 const getArrayIndexByWaypointId = (state: any) => (id: string) =>
   findIndex(propEq('id', id))(state.selectedCourse.waypoints)
@@ -76,10 +76,13 @@ const getWaypointIndicesToUpdate = (state: any) =>
 
 const getWaypointById = (state: any) => (id: string) =>
   get(state, [
-    "selectedCourse",
-    "waypoints",
-    getArrayIndexByWaypointId(state)(id)
-  ]);
+    'selectedCourse',
+    'waypoints',
+    getArrayIndexByWaypointId(state)(id),
+  ])
+
+const getSelectedWaypoint = (state: any) =>
+  state.selectedWaypoint && getWaypointById(state.selectedWaypoint)
 
 // Gets the left mark id or just the single mark id
 // of a waypoint. To be used for autoselecting a mark on waypoint selection
@@ -92,7 +95,22 @@ const getAutoSelectedMarkId = (state: any) => (waypointId: string) => {
   return controlPoint.leftMark || controlPoint.id
 }
 
-const SAME_START_FINISH_DEFAULT = false
+const updateWaypointReducer = (
+  state: any,
+  waypointState: Partial<WaypointState>,
+) => ({
+  ...state,
+  selectedCourse: {
+    ...state.selectedCourse,
+    waypoints: updateItems(
+      state.selectedCourse.waypoints,
+      getWaypointIndicesToUpdate(state),
+      waypointState,
+    ),
+  },
+})
+
+const SAME_START_FINISH_DEFAULT = true
 const SELECTED_WAYPOINT_DEFAULT = undefined
 const SELECTED_MARK_DEFAULT = undefined
 
@@ -129,13 +147,13 @@ const reducer = handleActions(
       courseLoading: !!action.payload,
     }),
 
-
     // Select course for loading into the course creation state
     // Course template (e.g. from scratch) or an existing course (when it is fetched from the server)
     // ({ courseId?: string, UUIDs: string[] }) => void
     [selectCourse as any]: (state: any = {}, action: any) => {
       const { courseId, UUIDs } = action.payload
-      const courseExists = courseId && Object.keys(state.allCourses).includes(courseId)
+      const courseExists =
+        courseId && Object.keys(state.allCourses).includes(courseId)
       const selectedCourse: SelectedCourseState = courseExists
         ? state.allCourses[courseId]
         : {
@@ -149,7 +167,7 @@ const reducer = handleActions(
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
                   id: UUIDs[1],
-                }
+                },
               },
               {
                 shortName: 'F',
@@ -159,10 +177,10 @@ const reducer = handleActions(
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
                   id: UUIDs[3],
-                }
-              }
+                },
+              },
             ],
-        }
+          }
 
       return {
         ...state,
@@ -190,33 +208,38 @@ const reducer = handleActions(
     }),
 
     // Remove a new waypoint at the selectedWaypoint id
-    [removeWaypoint as any]: (state: any = {}, action: any) => ({
-      ...state,
-      selectedCourse: {
-        ...state.selectedCourse,
-        waypoints: removeItem(
-          state.selectedCourse.waypoints,
-          getSelectedWaypointArrayIndex(state),
-        ),
-      },
-      selectedWaypoint: getWaypointIdByArrayIndex(state)(
-        getSelectedWaypointArrayIndex(state) - 1
+    [removeWaypoint as any]: (state: any = {}, action: any) => {
+      const selectedWaypoint = getWaypointIdByArrayIndex(state)(
+        getSelectedWaypointArrayIndex(state) - 1,
       )
-    }),
+
+      return {
+        ...state,
+        selectedCourse: {
+          ...state.selectedCourse,
+          waypoints: removeItem(
+            state.selectedCourse.waypoints,
+            getSelectedWaypointArrayIndex(state),
+          ),
+        },
+        // Selects a waypoint to the left and autoselects the mark
+        selectedWaypoint,
+        selectedMark: getAutoSelectedMarkId(state)(selectedWaypoint),
+      }
+    },
 
     // Change waypoint state at the selectedWaypoint id
     // (waypoint: Partial<WaypointState>) => void
-    [updateWaypoint as any]: (state: any = {}, action: any) => ({
-      ...state,
-      selectedCourse: {
-        ...state.selectedCourse,
-        waypoints: updateItems(
-          state.selectedCourse.waypoints,
-          getWaypointIndicesToUpdate(state),
-          action.payload,
-        ),
-      },
-    }),
+    [updateWaypoint as any]: (state: any = {}, action: any) =>
+      updateWaypointReducer(state, action.payload),
+
+    // Change controlPoint state of the waypoint at the selectedWaypoint id
+    // (controlPointState: Partial<ControlPointState>) => void
+    [updateControlPoint as any]: (state: any = {}, action: any) =>
+      updateWaypointReducer(state, {
+        ...(getSelectedWaypoint(state) || {}),
+        controlPoint: action.payload,
+      }),
 
     // Change selectedWaypoint
     // (selectedWaypoint: string) => void
@@ -239,7 +262,6 @@ const reducer = handleActions(
     }),
 
     [removeUserData as any]: () => initialState,
-
   },
   initialState,
 )

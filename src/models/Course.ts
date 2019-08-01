@@ -43,7 +43,7 @@ export interface Mark extends ControlPoint {
 }
 
 export interface MarkPair<T = Mark> extends ControlPoint {
-  leftMark: T
+  leftMark?: T
   rightMark?: T
 }
 

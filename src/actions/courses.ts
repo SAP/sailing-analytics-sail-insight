@@ -7,22 +7,21 @@ import { selfTrackingApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
+  ControlPoint,
   ControlPointClass,
+  ControlPointState,
   CourseState,
   Geolocation,
   Mark,
   MarkID,
   MarkPairState,
   MarkState,
-  WaypointState
+  WaypointState,
 } from 'models/Course'
 import { markdByIdPresent } from 'selectors/course'
 
 const addUUIDs = curry((amount: number, payload: any) => ({
-  ...(amount > 1 ?
-    { UUIDs: times(uuidv4, amount) } :
-    { UUID : uuidv4() }
-  ),
+  ...(amount > 1 ? { UUIDs: times(uuidv4, amount) } : { UUID: uuidv4() }),
   ...payload,
 }))
 
@@ -36,17 +35,24 @@ export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
 // TODO: the addUUIDs(4) should be replaced with an actual number of
 //       required UUIDs for a given template, besides the start from scratch
-export const selectCourse = createAction('SELECT_COURSE', compose(
-  addUUIDs(4),
-  objOf('courseId'),
-))
+export const selectCourse = createAction(
+  'SELECT_COURSE',
+  compose(
+    addUUIDs(4),
+    objOf('courseId'),
+  ),
+)
 
-export const addWaypoint = createAction('ADD_WAYPOINT', compose(
-  addUUID,
-  objOf('index'),
-))
+export const addWaypoint = createAction(
+  'ADD_WAYPOINT',
+  compose(
+    addUUID,
+    objOf('index'),
+  ),
+)
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateWaypoint = createAction('UPDATE_WAYPOINT')
+export const updateControlPoint = createAction('UPDATE_CONTROL_POINT')
 
 // Save course to server
 export const saveCourse = createAction('SAVE_COURSE')
@@ -57,15 +63,17 @@ export const selectWaypoint = createAction('SELECT_WAYPOINT')
 export const selectMark = createAction('SELECT_MARK')
 export const toggleSameStartFinish = createAction('TOGGLE_SAME_START_FINISH')
 
-const apiMarkToLocalFormat = (apiMark: any): { mark: Mark, id: MarkID } => {
+const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
   const mark: Mark = {
     id: apiMark.id,
     longName: apiMark.name,
     type: apiMark.type,
-    position: apiMark.position && {
-      latitude: apiMark.position.latitude,
-      longitude: apiMark.position.longitude,
-    } as Geolocation,
+    position:
+      apiMark.position &&
+      ({
+        latitude: apiMark.position.latitude,
+        longitude: apiMark.position.longitude,
+      } as Geolocation),
   }
   const id = mark.id
 
@@ -154,7 +162,10 @@ const apiCourseToLocalFormat = (
       apiCourse.waypoints.map(
         async (apiWaypoint: any): Promise<WaypointState> => {
           const controlPoint = await dispatch(
-            apiControlPointToLocalFormat(leaderboardName, apiWaypoint.controlPoint),
+            apiControlPointToLocalFormat(
+              leaderboardName,
+              apiWaypoint.controlPoint,
+            ),
           )
           return {
             controlPoint,
@@ -195,3 +206,24 @@ export const fetchCourse = (
   dispatch(updateCourseLoading(false))
   return course
 }
+
+export const assignControlPointClass = (controlPointClass: ControlPointClass) =>
+  updateControlPoint({
+    class: controlPointClass,
+    id: controlPointClass === ControlPointClass.MarkPair ? uuidv4() : undefined,
+  })
+
+export const assignControlPoint = (controlPoint: ControlPoint) =>
+  updateControlPoint(
+    controlPoint.class === ControlPointClass.Mark
+      ? ({
+          class: controlPoint.class,
+          id: controlPoint.id,
+        } as MarkState)
+      : ({
+          class: controlPoint.class,
+          id: controlPoint.id,
+          leftMark: get(controlPoint, 'leftMark.id'),
+          rightMark: get(controlPoint, 'rightMark.id'),
+        } as MarkPair<string>),
+  )
