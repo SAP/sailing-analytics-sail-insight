@@ -1,4 +1,4 @@
-import { __, compose, always, both, path, when, append,
+import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
   objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
 
@@ -9,7 +9,6 @@ import {
   nothing,
   nothingAsClass,
   reduxConnect as connect,
-  recomposeWithState as withState,
   recomposeBranch as branch
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
@@ -19,7 +18,7 @@ import { Switch } from 'react-native'
 import { ControlPointClass, GateSide } from 'models/Course'
 
 import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass } from 'actions/courses'
-import { getSelectedWaypoint, getSelectedMark } from 'selectors/course'
+import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide } from 'selectors/course'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
@@ -34,6 +33,7 @@ const controlPointClassToLabel = {
 const mapStateToProps = (state: any, props: any) => ({
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMark: getSelectedMark(state),
+    selectedGateSide: getSelectedGateSide(state),
     controlPoints: [{}, {}, {}]
   })
 
@@ -73,22 +73,20 @@ const GateWaypoint = Component((props: any) =>
 const GateMarkSelectorItem = Component((props) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.selectGateSide(GateSide.RIGHT) }),
+    touchableOpacity({ onPress: (props: any) => props.selectGateSide(props.side) }),
     text({}),
-    defaultTo(''),
-    path(['mark', 'longName']))(
-    props))
+    defaultTo(props.mark.side))(
+    props.mark.longName))
 
 const GateMarkSelector = Component((props: any) =>
   compose(
     fold(props),
     view({}),
     reduce(concat, nothing()),
-    map(compose(
-      GateMarkSelectorItem.contramap,
-      merge,
-      when(compose(equals(props.selectedMark.id), path(['mark', 'id'])), merge({ selected: true })),
-      objOf('mark'))),
+    map(compose(GateMarkSelectorItem.contramap, merge, objOf('mark'))),
+    tap(v => console.log(v)),
+    map(when(compose(equals(props.selectedGateSide), prop('side')), merge({ selected: true }))),
+    zipWith(merge, [{ side: GateSide.LEFT }, { side: GateSide.RIGHT }]),
     rProps(['leftMark', 'rightMark']),
     path(['selectedWaypoint', 'controlPoint']))(
     props))
@@ -166,6 +164,7 @@ const ControlPointSelector = Component(props =>
 const WaypointEditForm = Component((props: any) =>
   compose(
     fold(merge(props, { waypoint: props.selectedWaypoint })),
+    tap(v => console.log('###', props)),
     reduce(concat, nothing()))([
       nothingWhenStartOrFinishGate(DeleteButton),
       nothingWhenNotStartOrFinishGate(SameStartFinish),
