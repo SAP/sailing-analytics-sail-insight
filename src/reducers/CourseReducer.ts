@@ -92,7 +92,7 @@ const getAutoSelectedMarkId = (state: any) => (waypointId: string) => {
   return controlPoint.leftMark || controlPoint.id
 }
 
-const SAME_START_FINISH_DEFAULT = false
+const SAME_START_FINISH_DEFAULT = true
 const SELECTED_WAYPOINT_DEFAULT = undefined
 const SELECTED_MARK_DEFAULT = undefined
 
