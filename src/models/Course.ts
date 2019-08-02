@@ -112,3 +112,15 @@ export interface SelectedCourseState {
   name: string
   waypoints: Partial<WaypointState>[]
 }
+
+export interface SelectedEventInfo {
+  serverUrl: string
+  regattaName: string
+  leaderboardName: string
+  secret?: string
+}
+
+export interface SelectedRaceInfo extends SelectedEventInfo {
+  raceColumnName: string
+  fleet: string
+}

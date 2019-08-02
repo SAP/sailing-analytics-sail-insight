@@ -5,7 +5,6 @@ import {
 
 import { OnPressType } from 'helpers/types'
 import { Session } from 'models'
-import { navigateToSessionDetail } from 'navigation'
 
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 
@@ -13,9 +12,8 @@ import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 class SessionItem extends React.Component<ViewProps & {
   session: Session,
   onTrackingPress?: OnPressType,
+  onItemPress: onPressType
 } > {
-  public onItempPress = () => navigateToSessionDetail(this.props.session.leaderboardName)
-
   public render() {
     const {
       style,
@@ -24,7 +22,7 @@ class SessionItem extends React.Component<ViewProps & {
 
     return (
       <TouchableOpacity
-        onPress={this.onItempPress}
+        onPress={this.props.onItemPress}
       >
         <SessionInfoDisplay
           style={style}

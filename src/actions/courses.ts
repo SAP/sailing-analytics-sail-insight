@@ -17,18 +17,10 @@ import {
   MarkPairState,
   MarkPositionType,
   MarkState,
+  SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
-import { markdByIdPresent } from 'selectors/course'
-
-export interface SelectedRaceInfo {
-  serverUrl: string
-  regattaName: string
-  leaderboardName: string
-  raceColumnName: string
-  fleet: string
-  secret?: string
-}
+import { markdByIdPresent, getSelectedRaceInfo } from 'selectors/course'
 
 const getNowInMillis = () => Date.now() * 1000
 
@@ -66,6 +58,8 @@ export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 export const updateControlPoint = createAction('UPDATE_CONTROL_POINT')
 
+export const selectEvent = createAction('SELECT_EVENT')
+export const selectRace = createAction('SELECT_RACE')
 export const selectWaypoint = createAction('SELECT_WAYPOINT')
 export const selectGateSide = createAction('SELECT_GATE_SIDE')
 export const toggleSameStartFinish = createAction('TOGGLE_SAME_START_FINISH')
@@ -262,9 +256,9 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
   }
 }
 
-export const saveMark = (mark: Mark, selectedRaceInfo: SelectedRaceInfo) =>
-  async (dispatch: DispatchType) => {
-    console.log({ mark })
+export const saveMark = (mark: Mark) =>
+  async (dispatch: DispatchType, getState : GetStateType) => {
+    const selectedRaceInfo = getSelectedRaceInfo(getState()) as SelectedRaceInfo
     const api = dataApi(selectedRaceInfo.serverUrl)
     const response = await api.addMarkToRegatta(selectedRaceInfo.regattaName, mark.longName)
 
