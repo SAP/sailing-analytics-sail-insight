@@ -31,11 +31,21 @@ export enum MarkPattern {
   Checkered = 'CHECKERED',
 }
 
+export enum MarkPositionType {
+  Geolocation =  'GEOLOCATION',
+  TrackingDevice = 'TRACKING_DEVICE',
+}
+
 export interface Geolocation {
+  positionType: MarkPositionType.Geolocation
   latitude: number
   longitude: number
 }
-export type TrackingDevice = any
+
+export interface TrackingDevice {
+  positionType: MarkPositionType.TrackingDevice
+  deviceUuid: string
+}
 
 export interface Mark extends ControlPoint {
   longName: string

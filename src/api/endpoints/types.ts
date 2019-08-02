@@ -235,9 +235,9 @@ export interface AddMarkFixBody {
   raceColumnName: string
   fleetName: string
   markId: string
-  lonDeg: number
-  latDeg: number
-  timeMillis: number
+  lonDeg: string
+  latDeg: string
+  timeMillis: string
 }
 
 export interface AddCourseDefinitionToRaceLogBody {

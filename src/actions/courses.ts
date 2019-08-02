@@ -3,7 +3,7 @@ import { compose, curry, objOf, times } from 'ramda'
 import { createAction } from 'redux-actions'
 import uuidv4 from 'uuid/v4'
 
-import { selfTrackingApi } from 'api'
+import { dataApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
@@ -15,10 +15,22 @@ import {
   Mark,
   MarkID,
   MarkPairState,
+  MarkPositionType,
   MarkState,
   WaypointState,
 } from 'models/Course'
 import { markdByIdPresent } from 'selectors/course'
+
+export interface SelectedRaceInfo {
+  serverUrl: string
+  regattaName: string
+  leaderboardName: string
+  raceColumnName: string
+  fleet: string
+  secret?: string
+}
+
+const getNowInMillis = () => Date.now() * 1000
 
 const addUUIDs = curry((amount: number, payload: any) => ({
   ...(amount > 1 ? { UUIDs: times(uuidv4, amount) } : { UUID: uuidv4() }),
@@ -54,11 +66,6 @@ export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 export const updateControlPoint = createAction('UPDATE_CONTROL_POINT')
 
-// Save course to server
-export const saveCourse = createAction('SAVE_COURSE')
-// Save mark to server
-export const saveMark = createAction('SAVE_MARK')
-
 export const selectWaypoint = createAction('SELECT_WAYPOINT')
 export const selectGateSide = createAction('SELECT_GATE_SIDE')
 export const toggleSameStartFinish = createAction('TOGGLE_SAME_START_FINISH')
@@ -83,7 +90,7 @@ const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
 const fetchMark = (leaderboardName: string, markId: string) => async (
   dispatch: DispatchType,
 ) => {
-  const api = selfTrackingApi('https://sapsailing.com')
+  const api = dataApi('https://sapsailing.com')
   const res = await api.requestMark(leaderboardName, markId)
   const apiMark = get(res, 'entities.mark')
 
@@ -194,7 +201,7 @@ export const fetchCourse = (
   dispatch(updateCourseLoading(true))
 
   // TODO: Inject serverURL
-  const api = selfTrackingApi('https://sapsailing.com')
+  const api = dataApi('https://sapsailing.com')
   const raceId = getRaceId(regattaName, raceName)
   const apiCourse = await api.requestCourse(regattaName, raceName)
   const course: { [id: string]: CourseState } = await dispatch(
@@ -227,3 +234,50 @@ export const assignControlPoint = (controlPoint: ControlPoint) =>
           rightMark: get(controlPoint, 'rightMark.id'),
         } as MarkPair<string>),
   )
+
+const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
+  const position = mark.position
+  const api = dataApi(selectedRaceInfo.serverUrl)
+  if (!position) return
+
+  if (position.positionType === MarkPositionType.TrackingDevice) {
+    await api.startDeviceMapping(selectedRaceInfo.leaderboardName, {
+      markId: mark.id,
+      deviceUuid: position.deviceUuid,
+      fromMillis: getNowInMillis(),
+      ...(selectedRaceInfo.secret ? { secret: selectedRaceInfo.secret } : {}),
+    })
+  }
+
+  else if (position.positionType === MarkPositionType.Geolocation) {
+    await api.addMarkFix({
+      leaderboardName: selectedRaceInfo.leaderboardName,
+      raceColumnName: selectedRaceInfo.raceColumnName,
+      fleetName: selectedRaceInfo.fleet,
+      markId: mark.id,
+      lonDeg: position.longitude.toString(),
+      latDeg: position.latitude.toString(),
+      timeMillis: getNowInMillis().toString(),
+    })
+  }
+}
+
+export const saveMark = (mark: Mark, selectedRaceInfo: SelectedRaceInfo) =>
+  async (dispatch: DispatchType) => {
+    console.log({ mark })
+    const api = dataApi(selectedRaceInfo.serverUrl)
+    const response = await api.addMarkToRegatta(selectedRaceInfo.regattaName, mark.longName)
+
+    if (!response || !response.markId) {
+      console.log({ response })
+      throw Error('Failed to create mark on the server')
+    }
+
+    const { markId } = response
+    const markWithServerId: Mark = {
+      ...mark,
+      id: markId
+    }
+    dispatch(loadMark({ [markWithServerId.id]: mark }))
+    await bindMarkLocationOnServer(markWithServerId, selectedRaceInfo)
+  }
