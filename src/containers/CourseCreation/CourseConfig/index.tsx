@@ -17,11 +17,17 @@ import { Switch } from 'react-native'
 
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 
+import {
+  courseConfigCommonFormSettings,
+  FORM_ROUNDING_DIRECTION,
+  initialValues,
+} from 'forms/courseConfig'
 import { ControlPointClass, GateSide } from 'models/Course'
-import { FORM_ROUNDING_DIRECTION, courseConfigCommonFormSettings } from 'forms/courseConfig'
 
 import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass } from 'actions/courses'
 import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide } from 'selectors/course'
+
+import { navigateToCourseGeolocation } from 'navigation'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
@@ -34,6 +40,7 @@ const controlPointClassToLabel = {
 }
 
 const mapStateToProps = (state: any, props: any) => ({
+    initialValues,
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMark: getSelectedMark(state),
     selectedGateSide: getSelectedGateSide(state),
@@ -114,6 +121,7 @@ const SameStartFinish = Component((props: any) =>
 const MarkPosition = Component(props =>
   compose(
     fold(props),
+    touchableOpacity({ onPress: navigateToCourseGeolocation }),
     concat(text({}, 'LOCATE OR TRACK')),
     reduce(concat, nothing()),
     map(text({})))(

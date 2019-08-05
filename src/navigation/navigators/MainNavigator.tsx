@@ -12,6 +12,8 @@ import HeaderTitle from 'components/HeaderTitle'
 import ImageButton from 'components/ImageButton'
 import ShareButton from 'components/ShareIconButton'
 import WebView from 'components/WebView'
+
+import Geolocation from 'containers/CourseCreation/Geolocation'
 import SessionDetail from 'containers/session/SessionDetail'
 import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
@@ -81,6 +83,16 @@ export default createStackNavigator(
         headerTitle: (
           <HeaderTitle
             firstLine='Race course'
+          />
+        ),
+      }),
+    },
+    [Screens.CourseGeolocation]: {
+      screen: Geolocation.fold,
+      navigationOptions: ({ navigation: navigationProps }: any) => ({
+        headerTitle: (
+          <HeaderTitle
+            firstLine='Geolocation'
           />
         ),
       }),

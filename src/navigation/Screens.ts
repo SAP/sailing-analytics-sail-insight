@@ -24,6 +24,7 @@ export const NewSessionReviewAndCreate = 'NewSessionReviewAndCreate'
 export const RaceDetails = 'RaceDetails'
 export const RaceSetup = 'RaceSetup'
 export const RaceCourseLayout = 'RaceCourseLayout'
+export const CourseGeolocation = 'CourseGeolocation'
 
 // join
 export const CheckIn = 'CheckIn'
