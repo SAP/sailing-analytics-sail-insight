@@ -1,4 +1,4 @@
-import { find, get } from 'lodash'
+import { find, get, values } from 'lodash'
 import { compose, isNil, unless } from 'ramda'
 
 import {
@@ -7,6 +7,8 @@ import {
   CourseState,
   GateSide,
   Mark,
+  SelectedEventInfo,
+  SelectedRaceInfo,
   Waypoint,
   WaypointState,
 } from 'models/Course'
@@ -114,3 +116,21 @@ export const getSelectedMark = (state: any) =>
 
 export const getMarkInventory = (state: any) =>
   Object.values(state.courses.marks)
+
+export const getSelectedEventInfo = (state: any): SelectedEventInfo | undefined =>
+  state.courses.selectedEvent &&
+    find(values(state.checkIn.active) || [], { eventId: state.courses.selectedEvent })
+
+export const getSelectedRaceInfo = (
+  state: any
+): SelectedRaceInfo | undefined => {
+  const selectedEvent = getSelectedEventInfo(state);
+  return (
+    state.courses.selectedRace &&
+    selectedEvent && {
+      ...selectedEvent,
+      raceColumnName: state.courses.selectedRace,
+      fleet: "Default" // TODO: This has to be the real fleet, but it will work with most cases with 'Default'
+    }
+  );
+};

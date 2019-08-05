@@ -31,11 +31,21 @@ export enum MarkPattern {
   Checkered = 'CHECKERED',
 }
 
+export enum MarkPositionType {
+  Geolocation =  'GEOLOCATION',
+  TrackingDevice = 'TRACKING_DEVICE',
+}
+
 export interface Geolocation {
+  positionType: MarkPositionType.Geolocation
   latitude: number
   longitude: number
 }
-export type TrackingDevice = any
+
+export interface TrackingDevice {
+  positionType: MarkPositionType.TrackingDevice
+  deviceUuid: string
+}
 
 export interface Mark extends ControlPoint {
   longName: string
@@ -101,4 +111,16 @@ export type ControlPointState = MarkPairState | MarkState
 export interface SelectedCourseState {
   name: string
   waypoints: Partial<WaypointState>[]
+}
+
+export interface SelectedEventInfo {
+  serverUrl: string
+  regattaName: string
+  leaderboardName: string
+  secret?: string
+}
+
+export interface SelectedRaceInfo extends SelectedEventInfo {
+  raceColumnName: string
+  fleet: string
 }

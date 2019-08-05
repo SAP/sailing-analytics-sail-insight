@@ -3,7 +3,7 @@ import React from 'react'
 import { ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
-import { navigateToNewSession } from 'navigation'
+import { navigateToNewSession, navigateToSessionDetail } from 'navigation'
 
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
@@ -11,6 +11,7 @@ import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
 
 import { authBasedNewSession } from 'actions/auth'
+import { selectEvent } from 'actions/courses'
 import { CheckIn, Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getSessionList } from 'selectors/session'
@@ -27,6 +28,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   sessions: Session[],
   startTracking: StartTrackingAction,
   authBasedNewSession: () => void,
+  selectEvent: any,
 } > {
 
   public state = {
@@ -38,6 +40,10 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public onTrackingPress = (checkIn: CheckIn) => () => this.props.startTracking(checkIn)
+  public onSessionItemPress = (checkIn: CheckIn) => () => {
+    this.props.selectEvent(checkIn.eventId)
+    navigateToSessionDetail(checkIn.leaderboardName)
+  }
 
   public renderAddItem = () => (
     <AddButton
@@ -51,9 +57,13 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     return <EmptySessionsHeader/>
   }
 
-  public renderItem = ({ item }: any) => {
-    return <SessionItem onTrackingPress={this.onTrackingPress(item)} session={item}/>
-  }
+  public renderItem = ({ item }: any) => (
+      <SessionItem
+        onTrackingPress={this.onTrackingPress(item)}
+        onItemPress={this.onSessionItemPress(item)}
+        session={item}
+      />
+  )
 
   public render() {
     return (
@@ -77,4 +87,4 @@ const mapStateToProps = (state: any) => ({
   sessions: getSessionList(state),
 })
 
-export default connect(mapStateToProps, { startTracking, authBasedNewSession })(Sessions)
+export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)

@@ -91,4 +91,9 @@ export interface CourseReducerState {
   selectedWaypoint?: string
   sameStartFinish: boolean
   selectedGateSide?: GateSide
+
+  // These should not be in the courseReducer but there is nowhere else to put
+  // them currently
+  selectedEvent?: string
+  selectedRace?: string
 }

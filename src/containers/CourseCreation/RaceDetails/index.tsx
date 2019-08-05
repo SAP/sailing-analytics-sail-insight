@@ -25,7 +25,7 @@ import {
 import { ArrowRight } from 'containers/session/common'
 import IconText from 'components/IconText'
 
-import { fetchCourse, selectCourse } from 'actions/courses'
+import { fetchCourse, selectCourse, selectRace } from 'actions/courses'
 import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
 const sliderSettings = {
@@ -66,6 +66,7 @@ const raceNumberFormField = reduxFormField({
 
 const onSeeCourse = (props: any) => {
   props.fetchCourse('TW 2013 (Finn)', 'Finn Race 4', 'TW 2013 (Finn)')
+  props.selectRace(props.item.raceName)
   navigateToRaceCourseLayout()
 }
 
@@ -73,6 +74,7 @@ const onNewCourse = (props: any) => {
   // const raceId = getRaceId(regattaName, raceName)
   const raceId = 'TW 2013 (Finn) - Finn Race 5'
   props.selectCourse(raceId)
+  props.selectRace(props.item.raceName)
   navigateToRaceCourseLayout()
 }
 
@@ -90,7 +92,7 @@ const RaceItem = Component(props =>
     view({ style: { flex: 1, flexDirection: 'row' }}),
     reduce(concat, nothing()))
   ([
-    text({}, props.item.name),
+    text({}, props.item.raceName),
     fromClass(IconText).contramap(merge({ source: Images.info.time })),
     text({}, props.item.startDate),
     DefineLayoutButton,
@@ -99,9 +101,9 @@ const RaceItem = Component(props =>
 const raceList = forwardingPropsFlatList.contramap(
   merge({
     data: [
-      { name: 'R1', startDate: '08:30', courseDefined: false },
-      { name: 'R2', startDate: '09:30', courseDefined: true },
-      { name: 'R3', startDate: '10:30', courseDefined: true },
+      { raceName: 'R1', startDate: '08:30', courseDefined: false },
+      { raceName: 'R2', startDate: '09:30', courseDefined: true },
+      { raceName: 'R3', startDate: '10:30', courseDefined: true },
     ],
     renderItem: RaceItem.fold,
   }),
@@ -110,7 +112,7 @@ const raceList = forwardingPropsFlatList.contramap(
 export default Component((props: Object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { fetchCourse, selectCourse }),
+    connect(mapStateToProps, { fetchCourse, selectCourse, selectRace }),
     reduxForm(eventWizardCommonFormSettings),
     view({ style: [] }),
     reduce(concat, nothing()))
