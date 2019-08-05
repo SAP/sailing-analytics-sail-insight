@@ -7,7 +7,6 @@ import { dataApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
-  ControlPoint,
   ControlPointClass,
   ControlPointState,
   CourseState,
@@ -214,20 +213,8 @@ export const assignControlPointClass = (controlPointClass: ControlPointClass) =>
     id: controlPointClass === ControlPointClass.MarkPair ? uuidv4() : undefined,
   })
 
-export const assignControlPoint = (controlPoint: ControlPoint) =>
-  updateControlPoint(
-    controlPoint.class === ControlPointClass.Mark
-      ? ({
-          class: controlPoint.class,
-          id: controlPoint.id,
-        } as MarkState)
-      : ({
-          class: controlPoint.class,
-          id: controlPoint.id,
-          leftMark: get(controlPoint, 'leftMark.id'),
-          rightMark: get(controlPoint, 'rightMark.id'),
-        } as MarkPair<string>),
-  )
+export const assignControlPoint = (controlPoint: ControlPointState) =>
+  updateControlPoint(controlPoint)
 
 const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
   const position = mark.position
