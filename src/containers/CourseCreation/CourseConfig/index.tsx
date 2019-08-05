@@ -1,6 +1,7 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, insert, isNil, not, either, equals, cond, tap, memoizeWith, identity } from 'ramda'
+  objOf, insert, isNil, not, either, equals, cond, tap,
+  propEq } from 'ramda'
 
 import {
   Component,
@@ -9,7 +10,8 @@ import {
   nothing,
   nothingAsClass,
   reduxConnect as connect,
-  recomposeBranch as branch
+  recomposeBranch as branch,
+  recomposeWithState as withState
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
 
@@ -17,7 +19,7 @@ import { Switch } from 'react-native'
 
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 
-import { ControlPointClass, GateSide } from 'models/Course'
+import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
 import { FORM_ROUNDING_DIRECTION, courseConfigCommonFormSettings } from 'forms/courseConfig'
 
 import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass } from 'actions/courses'
@@ -48,11 +50,16 @@ const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'),
 const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
+const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
 const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
 const nothingIfEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 const nothingIfNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
+const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
+const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
+
+const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 
 const icon = ({ source, style }) => fromClass(IconText).contramap(always({ source, style }))
 const gateIcon = icon({ source: Images.actions.minus })
@@ -87,7 +94,6 @@ const GateMarkSelector = Component((props: any) =>
     view({}),
     reduce(concat, nothing()),
     map(compose(GateMarkSelectorItem.contramap, merge, objOf('mark'))),
-    tap(v => console.log(v)),
     map(when(compose(equals(props.selectedGateSide), prop('side')), merge({ selected: true }))),
     zipWith(merge, [{ side: GateSide.LEFT }, { side: GateSide.RIGHT }]),
     rProps(['leftMark', 'rightMark']),
@@ -111,18 +117,43 @@ const SameStartFinish = Component((props: any) =>
     fromClass(Switch)
   ]))
 
+const MarkPositionItem = Component(props =>
+  compose(
+    fold(props),
+    touchableOpacity({ onPress: (props: any) => props.setSelectedPositionType(props.type) }),
+    text({}))(
+    props.type))
+
+const MarkPositionTracking = Component(props =>
+  compose(
+    fold(props),
+    tap(() => console.log(props)))(
+    text({}, 'tracking device info')))
+
+const MarkPositionGeolocation = Component(props =>
+  compose(
+    fold(props))(
+    text({}, 'geolocation info')))
+
 const MarkPosition = Component(props =>
   compose(
     fold(props),
+    withSelectedPositionType,
     concat(text({}, 'LOCATE OR TRACK')),
+    concat(__, nothingWhenNotTrackingSelected(MarkPositionTracking)),
+    concat(__, nothingWhenNotGeolocationSelected(MarkPositionGeolocation)),
     reduce(concat, nothing()),
-    map(text({})))(
-    ['Tracker', 'PING', 'GEO']))
+    map(compose(
+      MarkPositionItem.contramap,
+      merge,
+      objOf('type')
+    )))(
+    [MarkPositionType.TrackingDevice, MarkPositionType.Geolocation]))
 
 const Appearance = Component(props =>
   compose(
     fold(props))(
-    text({}, 'Appearance')))
+    text({}, 'APPEARANCE')))
 
 const DeleteButton = Component((props: any) =>
   compose(
@@ -167,20 +198,23 @@ const ControlPointSelector = Component(props =>
 const RoundingDirectionItem = Component(props =>
   compose(
     fold(props),
-    view({}),
+    touchableOpacity({ onPress: (props: any) => props.input.onChange(props.type) }),
     text({}))(
-    'rounding direction item'))
-
-const roundingDirectionFormField = reduxFormField({
-  name: FORM_ROUNDING_DIRECTION,
-  component: RoundingDirectionItem.fold
-})
+    props.type))
 
 const RoundingDirection = Component(props =>
   compose(
-    fold(prop),
-    reduce(concat, nothing()))([
-      roundingDirectionFormField ]))
+    fold(props),
+    concat(text({}, 'ROUNDING DIRECTION')),
+    reduce(concat, nothing()),
+    map(compose(
+      reduxFormField,
+      merge({
+        name: FORM_ROUNDING_DIRECTION,
+        component: RoundingDirectionItem.fold
+      }),
+      objOf('type'))))(
+    ['left', 'right']))
 
 const WaypointEditForm = Component((props: any) =>
   compose(
@@ -192,7 +226,7 @@ const WaypointEditForm = Component((props: any) =>
       nothingIfEmptyWaypoint(MarkPosition),
       nothingIfEmptyWaypoint(Appearance),
       nothingIfNotEmptyWaypoint(ControlPointSelector),
-      RoundingDirection
+      compose(nothingWhenGate, nothingIfEmptyWaypoint)(RoundingDirection)
   ]))
 
 const AddButton = Component((props: any) =>
