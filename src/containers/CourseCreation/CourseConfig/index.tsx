@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, insert, isNil, not, either, equals, cond, tap } from 'ramda'
+  objOf, insert, isNil, not, either, equals, cond, tap, memoizeWith, identity } from 'ramda'
 
 import {
   Component,
@@ -15,7 +15,10 @@ import { text, view, scrollView, touchableOpacity } from 'components/fp/react-na
 
 import { Switch } from 'react-native'
 
+import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
+
 import { ControlPointClass, GateSide } from 'models/Course'
+import { FORM_ROUNDING_DIRECTION, courseConfigCommonFormSettings } from 'forms/courseConfig'
 
 import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass } from 'actions/courses'
 import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide } from 'selectors/course'
@@ -161,17 +164,35 @@ const ControlPointSelector = Component(props =>
     ControlPointClass.MarkPair,
     ControlPointClass.Mark ]))
 
+const RoundingDirectionItem = Component(props =>
+  compose(
+    fold(props),
+    view({}),
+    text({}))(
+    'rounding direction item'))
+
+const roundingDirectionFormField = reduxFormField({
+  name: FORM_ROUNDING_DIRECTION,
+  component: RoundingDirectionItem.fold
+})
+
+const RoundingDirection = Component(props =>
+  compose(
+    fold(prop),
+    reduce(concat, nothing()))([
+      roundingDirectionFormField ]))
+
 const WaypointEditForm = Component((props: any) =>
   compose(
     fold(merge(props, { waypoint: props.selectedWaypoint })),
-    tap(v => console.log('###', props)),
     reduce(concat, nothing()))([
       nothingWhenStartOrFinishGate(DeleteButton),
       nothingWhenNotStartOrFinishGate(SameStartFinish),
       nothingWhenNotAGate(GateMarkSelector),
       nothingIfEmptyWaypoint(MarkPosition),
       nothingIfEmptyWaypoint(Appearance),
-      nothingIfNotEmptyWaypoint(ControlPointSelector)
+      nothingIfNotEmptyWaypoint(ControlPointSelector),
+      RoundingDirection
   ]))
 
 const AddButton = Component((props: any) =>
@@ -193,6 +214,7 @@ export default Component((props: object) =>
   compose(
     fold(props),
     connect(mapStateToProps, { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass }),
+    reduxForm(courseConfigCommonFormSettings),
     concat(__, nothingWhenNoSelectedWaypoint(WaypointEditForm)),
     view({}),
     scrollView({ horizontal: true, style: { height: 100 } }),
