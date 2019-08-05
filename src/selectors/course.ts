@@ -90,7 +90,11 @@ export const getSelectedWaypoint = createSelector(
 )
 
 const getSelectedGateSideMarkFromWaypoint = (selectedGateSide: GateSide) => (
-  waypoint: Partial<Waypoint>,
+  // To add a type for this it should be compatible with both Partial<Waypoint>
+  // and the return type of populateWaypointWithMarkData which returns
+  // something similar to Partial<Waypoint> except with possible undefined values
+  // for the mark[s] in the control point
+  waypoint: any,
 ) => {
   const controlPoint = waypoint.controlPoint
   if (!controlPoint) return undefined
