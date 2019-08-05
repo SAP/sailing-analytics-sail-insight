@@ -7,7 +7,6 @@ import { dataApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
-  ControlPoint,
   ControlPointClass,
   ControlPointState,
   CourseState,
@@ -20,7 +19,7 @@ import {
   SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
-import { markdByIdPresent, getSelectedRaceInfo } from 'selectors/course'
+import { markByIdPresent, getSelectedRaceInfo } from 'selectors/course'
 
 const getNowInMillis = () => Date.now() * 1000
 
@@ -72,6 +71,7 @@ const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
     position:
       apiMark.position &&
       ({
+        positionType: MarkPositionType.Geolocation,
         latitude: apiMark.position.latitude,
         longitude: apiMark.position.longitude,
       } as Geolocation),
@@ -109,7 +109,7 @@ const fetchMissingMarkInformationIfNeeded = (
   leaderboardName: string,
   markId: any,
 ) => async (dispatch: DispatchType, getState: GetStateType) => {
-  const markPresent = markdByIdPresent(markId)(getState())
+  const markPresent = markByIdPresent(markId)(getState())
   if (!markPresent) {
     return await dispatch(fetchMark(leaderboardName, markId))
   }
@@ -214,20 +214,8 @@ export const assignControlPointClass = (controlPointClass: ControlPointClass) =>
     id: controlPointClass === ControlPointClass.MarkPair ? uuidv4() : undefined,
   })
 
-export const assignControlPoint = (controlPoint: ControlPoint) =>
-  updateControlPoint(
-    controlPoint.class === ControlPointClass.Mark
-      ? ({
-          class: controlPoint.class,
-          id: controlPoint.id,
-        } as MarkState)
-      : ({
-          class: controlPoint.class,
-          id: controlPoint.id,
-          leftMark: get(controlPoint, 'leftMark.id'),
-          rightMark: get(controlPoint, 'rightMark.id'),
-        } as MarkPair<string>),
-  )
+export const assignControlPoint = (controlPoint: ControlPointState) =>
+  updateControlPoint(controlPoint)
 
 const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
   const position = mark.position
@@ -241,9 +229,7 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
       fromMillis: getNowInMillis(),
       ...(selectedRaceInfo.secret ? { secret: selectedRaceInfo.secret } : {}),
     })
-  }
-
-  else if (position.positionType === MarkPositionType.Geolocation) {
+  } else {
     await api.addMarkFix({
       leaderboardName: selectedRaceInfo.leaderboardName,
       raceColumnName: selectedRaceInfo.raceColumnName,

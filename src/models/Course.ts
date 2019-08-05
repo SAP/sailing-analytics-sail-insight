@@ -10,11 +10,6 @@ export enum ControlPointClass {
   MarkPair = 'ControlPointWithTwoMarks',
 }
 
-export interface ControlPoint {
-  class: ControlPointClass
-  id: MarkID
-}
-
 export enum MarkType {
   Buoy = 'BUOY',
   Cameraboat = 'CAMERABOAT',
@@ -33,13 +28,21 @@ export enum MarkPattern {
 
 export enum MarkPositionType {
   Geolocation =  'GEOLOCATION',
+  PingedLocation =  'PINGED_LOCATION',
   TrackingDevice = 'TRACKING_DEVICE',
 }
 
-export interface Geolocation {
-  positionType: MarkPositionType.Geolocation
+export interface Location {
   latitude: number
   longitude: number
+}
+
+export interface Geolocation extends Location {
+  positionType: MarkPositionType.Geolocation
+}
+
+export interface PingedLocation extends Location {
+  positionType: MarkPositionType.PingedLocation
 }
 
 export interface TrackingDevice {
@@ -47,17 +50,21 @@ export interface TrackingDevice {
   deviceUuid: string
 }
 
-export interface Mark extends ControlPoint {
+export interface Mark {
+  id: MarkID
+  class: ControlPointClass.Mark
   longName: string
   shortName?: string
   type: MarkType
-  position?: Geolocation | TrackingDevice
+  position?: Geolocation | TrackingDevice | PingedLocation
   shape?: MarkShape
   color?: string
   pattern?: MarkPattern
 }
 
-export interface MarkPair<T = Mark> extends ControlPoint {
+export interface MarkPair<T = Mark> {
+  id: MarkID
+  class: ControlPointClass.MarkPair
   leftMark?: T
   rightMark?: T
 }
@@ -93,7 +100,7 @@ interface WaypointBase {
 }
 
 export interface Waypoint extends WaypointBase {
-  controlPoint: MarkPair<Mark> | Mark
+  controlPoint: ControlPoint
 }
 
 // This is the Course model that is used in the redux state
@@ -103,7 +110,8 @@ export interface WaypointState extends WaypointBase {
 }
 
 export type MarkPairState = MarkPair<MarkID>
-export type MarkState = ControlPoint
+export type MarkState = Pick<Mark, 'id' | 'class'>
+export type ControlPoint = MarkPair<Mark> | Mark
 export type ControlPointState = MarkPairState | MarkState
 
 // Since the selected course is the one that will be edited,
@@ -124,3 +132,5 @@ export interface SelectedRaceInfo extends SelectedEventInfo {
   raceColumnName: string
   fleet: string
 }
+
+export interface MarkMap { [id: string]: Mark }

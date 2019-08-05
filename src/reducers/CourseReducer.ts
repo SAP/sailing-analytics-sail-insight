@@ -24,8 +24,6 @@ import {
   ControlPointClass,
   CourseState,
   GateSide,
-  Mark,
-  MarkID,
   SelectedCourseState,
   WaypointState,
 } from 'models/Course'
@@ -108,7 +106,7 @@ const SELECTED_GATE_SIDE_DEFAULT = GateSide.LEFT
 
 const initialState: CourseReducerState = {
   allCourses: {} as Map<string, CourseState>,
-  marks: {} as Map<MarkID, Mark>,
+  marks: {},
   courseLoading: false,
   selectedCourse: undefined,
   selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
