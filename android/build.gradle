@@ -55,6 +55,10 @@ allprojects {
         maven { url "$rootDir/../node_modules/react-native-background-fetch/android/libs" }
         maven { url "https://jitpack.io" }
     }
+
+    configurations.all {
+        resolutionStrategy.force "com.google.android.gms:play-services-base:16.1.0"
+    }
 }
 
 task wrapper(type: Wrapper) {

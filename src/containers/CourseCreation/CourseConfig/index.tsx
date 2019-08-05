@@ -19,11 +19,17 @@ import { Switch } from 'react-native'
 
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 
+import {
+  courseConfigCommonFormSettings,
+  FORM_ROUNDING_DIRECTION,
+  initialValues
+} from 'forms/courseConfig'
 import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
-import { FORM_ROUNDING_DIRECTION, courseConfigCommonFormSettings } from 'forms/courseConfig'
 
 import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass } from 'actions/courses'
 import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide } from 'selectors/course'
+
+import { navigateToCourseGeolocation } from 'navigation'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
@@ -36,6 +42,7 @@ const controlPointClassToLabel = {
 }
 
 const mapStateToProps = (state: any, props: any) => ({
+    initialValues,
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMark: getSelectedMark(state),
     selectedGateSide: getSelectedGateSide(state),
@@ -142,7 +149,7 @@ const MarkPositionTracking = Component(props =>
 const MarkPositionGeolocation = Component(props =>
   compose(
     fold(props),
-    view({}),
+    touchableOpacity({ onPress: navigateToCourseGeolocation }),
     reduce(concat, nothing()))([
       text({}, hasWaypointGeolocation(props) ? 'geolocation info' : 'No geolocation specified. Please configure geolocation.'),
       nothingWhenHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))
