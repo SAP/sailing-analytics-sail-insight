@@ -1,5 +1,6 @@
 import { find, get, values } from 'lodash'
 import { compose, isNil, unless } from 'ramda'
+import { createSelector } from 'reselect'
 
 import {
   ControlPointClass,
@@ -34,6 +35,8 @@ export const getMarkById = (markId: string) => (
 ): Mark | undefined =>
   state.courses && state.courses.marks && state.courses.marks[markId]
 
+export const getMarks = (state: any) => state.courses.marks
+
 const populateWaypointWithMarkData = (state: any) => (
   waypointState: Partial<WaypointState>,
 ) => ({
@@ -53,20 +56,51 @@ const populateWaypointWithMarkData = (state: any) => (
   },
 })
 
-export const getSelectedCourseWithMarks = (state: RootState) => {
-  const selectedCourseState = getSelectedCourseState(state)
-  if (!selectedCourseState) return
+const populateWaypointWithMarkDataWithoutState = (marks: any) => (
+  waypointState: Partial<WaypointState>,
+) => ({
+  ...waypointState,
+  controlPoint: waypointState.controlPoint && {
+    ...waypointState.controlPoint,
+    ...(waypointState.controlPoint.class === ControlPointClass.Mark
+      ? marks[waypointState.controlPoint.id] || {}
+      : {
+          leftMark: waypointState.controlPoint.leftMark
+            ? marks[waypointState.controlPoint.leftMark]
+            : undefined,
+          rightMark: waypointState.controlPoint.rightMark
+            ? marks[waypointState.controlPoint.rightMark]
+            : undefined,
+        }),
+  },
+})
 
-  return {
-    name: selectedCourseState.name,
-    waypoints: selectedCourseState.waypoints.map(
-      populateWaypointWithMarkData(state),
-    ),
-  }
-}
+// export const getSelectedCourseWithMarks = (state: RootState) => {
+//   const selectedCourseState = getSelectedCourseState(state)
+//   if (!selectedCourseState) return
+
+//   return {
+//     name: selectedCourseState.name,
+//     waypoints: selectedCourseState.waypoints.map(
+//       populateWaypointWithMarkData(state),
+//     ),
+//   }
+// }
+
 
 export const getSelectedCourseState = (state: any) =>
   state.courses.selectedCourse
+
+export const getSelectedCourseWithMarks = createSelector(
+  getSelectedCourseState,
+  getMarks,
+  (selectedCourseState: any, marks: any) => selectedCourseState && ({
+    name: selectedCourseState.name,
+    waypoints: selectedCourseState.waypoints.map(
+      populateWaypointWithMarkDataWithoutState(marks),
+    ),
+  })
+)
 
 export const getSelectedCourse = compose(
   getSelectedCourseWithMarks,
