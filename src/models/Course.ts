@@ -124,3 +124,5 @@ export interface SelectedRaceInfo extends SelectedEventInfo {
   raceColumnName: string
   fleet: string
 }
+
+export interface MarkMap { [id: string]: Mark }

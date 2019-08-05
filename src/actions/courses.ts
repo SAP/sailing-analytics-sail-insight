@@ -20,7 +20,7 @@ import {
   SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
-import { markdByIdPresent, getSelectedRaceInfo } from 'selectors/course'
+import { markByIdPresent, getSelectedRaceInfo } from 'selectors/course'
 
 const getNowInMillis = () => Date.now() * 1000
 
@@ -109,7 +109,7 @@ const fetchMissingMarkInformationIfNeeded = (
   leaderboardName: string,
   markId: any,
 ) => async (dispatch: DispatchType, getState: GetStateType) => {
-  const markPresent = markdByIdPresent(markId)(getState())
+  const markPresent = markByIdPresent(markId)(getState())
   if (!markPresent) {
     return await dispatch(fetchMark(leaderboardName, markId))
   }

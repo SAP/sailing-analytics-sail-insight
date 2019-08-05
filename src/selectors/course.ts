@@ -1,62 +1,48 @@
-import { find, get, values } from 'lodash'
-import { compose, isNil, unless } from 'ramda'
+import { find, values } from 'lodash'
 import { createSelector } from 'reselect'
 
 import {
   ControlPointClass,
-  Course,
-  CourseState,
   GateSide,
   Mark,
+  MarkMap,
+  SelectedCourseState,
   SelectedEventInfo,
   SelectedRaceInfo,
   Waypoint,
   WaypointState,
 } from 'models/Course'
-import { RootState } from 'reducers/config'
 
-export const getCourseState = (raceId: string) => (
-  state: RootState,
-): CourseState | undefined => state.courses && state.courses.allCourses[raceId]
-
-export const getCourseLoading = (state: RootState) =>
-  state.courses && state.courses.courseLoading
+export const getCourseLoading = (state: any): boolean =>
+  state.courses.courseLoading
 
 // Gets currently the "local ids" of marks
 // TODO: Should be made to get all of the server ids of marks
-export const getMarkIds = (state: RootState) =>
-  state.courses && state.courses.marks && Object.keys(state.courses.marks)
+const getMarkIds = (state: any): string[] => Object.keys(state.courses.marks)
 
-export const markdByIdPresent = (markId: string) => (state: RootState) =>
-  getMarkIds(state).includes(markId)
+const getMarks = (state: any): MarkMap => state.courses.marks
 
-export const getMarkById = (markId: string) => (
-  state: RootState,
-): Mark | undefined =>
-  state.courses && state.courses.marks && state.courses.marks[markId]
+const getSelectedCourseState = (state: any): SelectedCourseState | undefined =>
+  state.courses.selectedCourse
 
-export const getMarks = (state: any) => state.courses.marks
+export const getSelectedGateSide = (state: any): GateSide =>
+  state.courses.selectedGateSide
 
-const populateWaypointWithMarkData = (state: any) => (
-  waypointState: Partial<WaypointState>,
-) => ({
-  ...waypointState,
-  controlPoint: waypointState.controlPoint && {
-    ...waypointState.controlPoint,
-    ...(waypointState.controlPoint.class === ControlPointClass.Mark
-      ? getMarkById(waypointState.controlPoint.id)(state) || {}
-      : {
-          leftMark: waypointState.controlPoint.leftMark
-            ? getMarkById(waypointState.controlPoint.leftMark)(state)
-            : undefined,
-          rightMark: waypointState.controlPoint.rightMark
-            ? getMarkById(waypointState.controlPoint.rightMark)(state)
-            : undefined,
-        }),
-  },
-})
+const getSelectedCourseWaypointState = createSelector(
+  getSelectedCourseState,
+  selectedCourseState => selectedCourseState && selectedCourseState.waypoints,
+)
 
-const populateWaypointWithMarkDataWithoutState = (marks: any) => (
+export const markByIdPresent = (markId: string) =>
+  createSelector(
+    getMarkIds,
+    (markIds: string[]) => markIds.includes(markId),
+  )
+
+export const getMarkInventory = (state: any): Mark[] =>
+  values(state.courses.marks)
+
+const populateWaypointWithMarkData = (marks: MarkMap) => (
   waypointState: Partial<WaypointState>,
 ) => ({
   ...waypointState,
@@ -75,58 +61,35 @@ const populateWaypointWithMarkDataWithoutState = (marks: any) => (
   },
 })
 
-// export const getSelectedCourseWithMarks = (state: RootState) => {
-//   const selectedCourseState = getSelectedCourseState(state)
-//   if (!selectedCourseState) return
-
-//   return {
-//     name: selectedCourseState.name,
-//     waypoints: selectedCourseState.waypoints.map(
-//       populateWaypointWithMarkData(state),
-//     ),
-//   }
-// }
-
-
-export const getSelectedCourseState = (state: any) =>
-  state.courses.selectedCourse
-
 export const getSelectedCourseWithMarks = createSelector(
   getSelectedCourseState,
   getMarks,
-  (selectedCourseState: any, marks: any) => selectedCourseState && ({
-    name: selectedCourseState.name,
-    waypoints: selectedCourseState.waypoints.map(
-      populateWaypointWithMarkDataWithoutState(marks),
-    ),
-  })
+  (selectedCourseState, marks) =>
+    selectedCourseState && {
+      name: selectedCourseState.name,
+      waypoints: selectedCourseState.waypoints.map(
+        populateWaypointWithMarkData(marks),
+      ),
+    },
 )
 
-export const getSelectedCourse = compose(
-  getSelectedCourseWithMarks,
-  getSelectedCourseState,
+const getSelectedWaypointState = createSelector(
+  getSelectedCourseWaypointState,
+  (state: any): string | undefined => state.courses.selectedWaypoint,
+  (selectedCourseWaypointState, selectedWaypoint) =>
+    selectedWaypoint &&
+    find(selectedCourseWaypointState || [], { id: selectedWaypoint }),
 )
 
-export const getWaypointStateById = (id?: string) => (
-  state: any,
-): Parital<WaypointState> | undefined =>
-  id && find(get(state, 'courses.selectedCourse.waypoints') || [], { id })
+export const getSelectedWaypoint = createSelector(
+  getSelectedWaypointState,
+  getMarks,
+  (selectedWaypointState, marks) =>
+    selectedWaypointState &&
+    populateWaypointWithMarkData(marks)(selectedWaypointState),
+)
 
-export const getSelectedWaypointState = (state: any) =>
-  getWaypointStateById(state.courses.selectedWaypoint)(state)
-
-export const getSelectedWaypoint = (
-  state: any,
-): Partial<Waypoint> | undefined =>
-  compose(
-    unless(isNil, populateWaypointWithMarkData(state)),
-    getSelectedWaypointState,
-  )(state)
-
-export const getSelectedGateSide = (state: any): GateSide =>
-  state.courses.selectedGateSide
-
-const getSelectedGateSideMarkFromWaypoint = (state: any) => (
+const getSelectedGateSideMarkFromWaypoint = (selectedGateSide: GateSide) => (
   waypoint: Partial<Waypoint>,
 ) => {
   const controlPoint = waypoint.controlPoint
@@ -134,37 +97,36 @@ const getSelectedGateSideMarkFromWaypoint = (state: any) => (
 
   if (controlPoint.class === ControlPointClass.Mark) {
     return controlPoint
-  } else {
-    const selectedGateSide = getSelectedGateSide(state)
-    return selectedGateSide === GateSide.LEFT
-      ? controlPoint.leftMark
-      : controlPoint.rightMark
   }
+
+  return selectedGateSide === GateSide.LEFT
+    ? controlPoint.leftMark
+    : controlPoint.rightMark
 }
 
-export const getSelectedMark = (state: any) =>
-  compose(
-    unless(isNil, getSelectedGateSideMarkFromWaypoint(state)),
-    getSelectedWaypoint,
-  )(state)
+export const getSelectedMark = createSelector(
+  getSelectedWaypoint,
+  getSelectedGateSide,
+  (selectedWaypoint, selectedGateSide) =>
+    selectedWaypoint &&
+    getSelectedGateSideMarkFromWaypoint(selectedGateSide)(selectedWaypoint),
+)
 
-export const getMarkInventory = (state: any) =>
-  Object.values(state.courses.marks)
+export const getSelectedEventInfo = createSelector(
+  (state: any): string | undefined => state.courses.selectedEvent,
+  (state: any): any[] => values(state.checkIn.active),
+  (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
+    selectedEvent && find(activeCheckIns, { eventId: selectedEvent }),
+)
 
-export const getSelectedEventInfo = (state: any): SelectedEventInfo | undefined =>
-  state.courses.selectedEvent &&
-    find(values(state.checkIn.active) || [], { eventId: state.courses.selectedEvent })
-
-export const getSelectedRaceInfo = (
-  state: any
-): SelectedRaceInfo | undefined => {
-  const selectedEvent = getSelectedEventInfo(state);
-  return (
-    state.courses.selectedRace &&
-    selectedEvent && {
+export const getSelectedRaceInfo = createSelector(
+  getSelectedEventInfo,
+  (state: any): string | undefined => state.courses.selectedRace,
+  (selectedEvent, selectedRace): SelectedRaceInfo | undefined =>
+    selectedEvent &&
+    selectedRace && {
       ...selectedEvent,
-      raceColumnName: state.courses.selectedRace,
-      fleet: "Default" // TODO: This has to be the real fleet, but it will work with most cases with 'Default'
-    }
-  );
-};
+      raceColumnName: selectedRace,
+      fleet: 'Default', // TODO: This has to be the real fleet, but it will work with most cases with 'Default'
+    } || undefined,
+)
