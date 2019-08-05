@@ -71,6 +71,7 @@ const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
     position:
       apiMark.position &&
       ({
+        positionType: MarkPositionType.Geolocation,
         latitude: apiMark.position.latitude,
         longitude: apiMark.position.longitude,
       } as Geolocation),
@@ -228,9 +229,7 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
       fromMillis: getNowInMillis(),
       ...(selectedRaceInfo.secret ? { secret: selectedRaceInfo.secret } : {}),
     })
-  }
-
-  else if (position.positionType === MarkPositionType.Geolocation) {
+  } else {
     await api.addMarkFix({
       leaderboardName: selectedRaceInfo.leaderboardName,
       raceColumnName: selectedRaceInfo.raceColumnName,
