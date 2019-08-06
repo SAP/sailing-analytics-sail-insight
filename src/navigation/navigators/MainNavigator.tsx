@@ -14,6 +14,7 @@ import ShareButton from 'components/ShareIconButton'
 import WebView from 'components/WebView'
 
 import Geolocation from 'containers/CourseCreation/Geolocation'
+import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
 import SessionDetail from 'containers/session/SessionDetail'
 import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
@@ -93,6 +94,16 @@ export default createStackNavigator(
         headerTitle: (
           <HeaderTitle
             firstLine='Geolocation'
+          />
+        ),
+      }),
+    },
+    [Screens.CourseTrackerBinding]: {
+      screen: TrackerBinding.fold,
+      navigationOptions: ({ navigation: navigationProps }: any) => ({
+        headerTitle: (
+          <HeaderTitle
+            firstLine='Bind with tracker'
           />
         ),
       }),
