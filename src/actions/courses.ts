@@ -67,6 +67,7 @@ export const toggleSameStartFinish = createAction('TOGGLE_SAME_START_FINISH')
 const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
   const mark: Mark = {
     id: apiMark.id,
+    class: ControlPointClass.Mark,
     longName: apiMark.name,
     type: apiMark.type,
     position:
