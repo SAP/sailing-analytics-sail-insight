@@ -32,7 +32,7 @@ const mapView = (settings: any = {}) => Component((props: any) => compose(
     mergeLeft({
       ...settings,
       region: props.input.value,
-      onRegionChange: (region: any) => {
+      onRegionChangeComplete: (region: any) => {
         props.input.onChange(region)
       },
     }),
