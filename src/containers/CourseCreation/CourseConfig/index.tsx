@@ -55,9 +55,9 @@ const isMarkWaypoint = compose(equals(ControlPointClass.Mark), waypointClass)
 const isEmptyWaypoint = compose(isNil, path(['waypoint', 'controlPoint']))
 const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('waypoint')))
 const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
-const hasWaypointGeolocation = compose(propEq('positionType', MarkPositionType.Geolocation), path(['waypoint', 'controlPoint', 'position']))
-const hasWaypointTracking = compose(propEq('positionType', MarkPositionType.TrackingDevice), path(['waypoint', 'controlPoint', 'position']))
-const hasWaypointPing = compose(propEq('positionType', MarkPositionType.PingedLocation), path(['waypoint', 'controlPoint', 'position']))
+const hasGeolocation = compose(propEq('positionType', MarkPositionType.Geolocation), defaultTo({}), path(['selectedMark', 'position']))
+const hasTracking = compose(propEq('positionType', MarkPositionType.TrackingDevice), defaultTo({}), path(['selectedMark', 'position']))
+const hasPing = compose(propEq('positionType', MarkPositionType.PingedLocation), defaultTo({}), path(['selectedMark', 'position']))
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
@@ -69,9 +69,9 @@ const nothingIfNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingA
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotPingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.PingedLocation)), nothingAsClass)
-const nothingWhenHasGeolocation = branch(hasWaypointGeolocation, nothingAsClass)
-const nothingWhenHasTracking = branch(hasWaypointTracking, nothingAsClass)
-const nothingWhenHasPing = branch(hasWaypointPing, nothingAsClass)
+const nothingWhenHasGeolocation = branch(hasGeolocation, nothingAsClass)
+const nothingWhenHasTracking = branch(hasTracking, nothingAsClass)
+const nothingWhenHasPing = branch(hasPing, nothingAsClass)
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 
@@ -143,7 +143,7 @@ const MarkPositionTracking = Component(props =>
     fold(props),
     view({}),
     reduce(concat, nothing()))([
-      text({}, hasWaypointTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),
+      text({}, hasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),
       nothingWhenHasTracking(text({}, 'CONFIGURE OR CHANGE TRACKER BINDING')) ]))
 
 const MarkPositionGeolocation = Component(props =>
@@ -151,7 +151,7 @@ const MarkPositionGeolocation = Component(props =>
     fold(props),
     touchableOpacity({ onPress: navigateToCourseGeolocation }),
     reduce(concat, nothing()))([
-      text({}, hasWaypointGeolocation(props) ? 'geolocation info' : 'No geolocation specified. Please configure geolocation.'),
+      text({}, hasGeolocation(props) ? 'geolocation info' : 'No geolocation specified. Please configure geolocation.'),
       nothingWhenHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))
     ]))
 
@@ -159,7 +159,7 @@ const MarkPositionPing = Component(props =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-    text({}, hasWaypointPing(props) ? 'ping info' : 'No ping specified. Please configure ping.'),
+    text({}, hasPing(props) ? 'ping info' : 'No ping specified. Please configure ping.'),
     nothingWhenHasPing(text({}, 'CONFIGURE OR CHANGE PING'))]))
 
 const MarkPosition = Component(props =>
