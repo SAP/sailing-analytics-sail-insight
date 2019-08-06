@@ -20,9 +20,9 @@ export const getCourseLoading = (state: any): boolean =>
 // TODO: Should be made to get all of the server ids of marks
 const getMarkIds = (state: any): string[] => Object.keys(state.courses.marks)
 
-const getMarks = (state: any): MarkMap => state.courses.marks
+export const getMarks = (state: any): MarkMap => state.courses.marks
 
-const getSelectedCourseState = (state: any): SelectedCourseState | undefined =>
+export const getSelectedCourseState = (state: any): SelectedCourseState | undefined =>
   state.courses.selectedCourse
 
 export const getSelectedGateSide = (state: any): GateSide =>

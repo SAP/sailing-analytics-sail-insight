@@ -20,7 +20,12 @@ import {
   SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
-import { markByIdPresent, getSelectedRaceInfo } from 'selectors/course'
+import {
+  getMarks,
+  getSelectedCourseState,
+  getSelectedRaceInfo,
+  markByIdPresent,
+} from 'selectors/course'
 
 const getNowInMillis = () => Date.now() * 1000
 
@@ -262,22 +267,82 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
   }
 }
 
-export const saveMark = (mark: Mark) =>
-  async (dispatch: DispatchType, getState : GetStateType) => {
-    const selectedRaceInfo = getSelectedRaceInfo(getState()) as SelectedRaceInfo
-    const api = dataApi(selectedRaceInfo.serverUrl)
-    const response = await api.addMarkToRegatta(selectedRaceInfo.regattaName, mark.longName)
+const saveMark = (mark: Mark) => async (
+  dispatch: DispatchType,
+  getState: GetStateType,
+) => {
+  const selectedRaceInfo = getSelectedRaceInfo(getState()) as SelectedRaceInfo
+  const api = dataApi(selectedRaceInfo.serverUrl)
+  const response = await api.addMarkToRegatta(
+    selectedRaceInfo.regattaName,
+    mark.longName,
+  )
 
-    if (!response || !response.markId) {
-      console.log({ response })
-      throw Error('Failed to create mark on the server')
-    }
-
-    const { markId } = response
-    const markWithServerId: Mark = {
-      ...mark,
-      id: markId
-    }
-    dispatch(loadMark({ [markWithServerId.id]: mark }))
-    await bindMarkLocationOnServer(markWithServerId, selectedRaceInfo)
+  if (!response || !response.markId) {
+    console.log({ response })
+    throw Error('Failed to create mark on the server')
   }
+
+  const { markId } = response
+  const markWithServerId: Mark = {
+    ...mark,
+    id: markId,
+  }
+  //   TODO: This is the code that saves the mark id for the server/regatta.
+  //   This has to be changed according to the way we will handle markIds
+  // dispatch(loadMark({ [markWithServerId.id]: mark }))
+
+  //   Right now we could also do CHANGE_MARK
+  //   to replace existing mark with new mark with server id,
+  //   and change mark ID in selectedCourse
+
+  await bindMarkLocationOnServer(markWithServerId, selectedRaceInfo)
+  return markId
+}
+
+// Convert waypoint to apiControlPoint and add mark to regatta if missing
+const waypointToApiControlPoint = (waypoint: WaypointState) => async (
+  dispatch: DispatchType,
+  getState: GetStateType,
+) => {
+  // TODO: Add a check if mark is in regatta instead of dumbly always
+  // adding the mark in the regatta even if it's there
+  const { passingInstruction, controlPoint } = waypoint
+  const marks = getMarks(getState())
+  return {
+    passingInstruction,
+    marks:
+      controlPoint.class === ControlPointClass.Mark
+        ? [await dispatch(saveMark(marks[controlPoint.id]))]
+        : [
+            // The `as string` should not be necessary and be taken care of by the typing
+            await dispatch(saveMark(marks[controlPoint.leftMark as string])),
+            await dispatch(saveMark(marks[controlPoint.rightMark as string])),
+          ],
+  }
+}
+
+export const saveCourse = () => async (
+  dispatch: DispatchType,
+  getState: GetStateType,
+) => {
+  const selectedRaceInfo = getSelectedRaceInfo(getState()) as SelectedRaceInfo
+  const api = dataApi(selectedRaceInfo.serverUrl)
+  // TODO: There should be a validation step here to see that the object
+  // is actually CourseState, i.e. without Partial information
+  const selectedCourseState = getSelectedCourseState(getState()) as CourseState
+
+  const apiControlPoints = await Promise.all(selectedCourseState.waypoints.map(
+    async waypoint => await dispatch(waypointToApiControlPoint(waypoint))
+  ))
+
+  await api.addCourseDefinitionToRaceLog({
+    leaderboardName: selectedRaceInfo.leaderboardName,
+    raceColumnName: selectedRaceInfo.raceColumnName,
+    fleetName: selectedRaceInfo.fleet,
+    controlPoints: apiControlPoints,
+  })
+
+  const courseID = getRaceId(selectedRaceInfo.regattaName, selectedRaceInfo.raceColumnName)
+  dispatch(loadCourse({ [courseID]: selectedCourseState }))
+}
