@@ -33,6 +33,8 @@ import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide, getMarkInven
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 
+import { coordinatesToString } from 'helpers/utils'
+
 import FormTextInput from 'components/form/FormTextInput'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
@@ -58,9 +60,12 @@ const isMarkWaypoint = compose(equals(ControlPointClass.Mark), waypointClass)
 const isEmptyWaypoint = compose(isNil, path(['waypoint', 'controlPoint']))
 const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('waypoint')))
 const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
-const hasGeolocation = compose(propEq('positionType', MarkPositionType.Geolocation), defaultTo({}), path(['selectedMark', 'position']))
-const hasTracking = compose(propEq('positionType', MarkPositionType.TrackingDevice), defaultTo({}), path(['selectedMark', 'position']))
-const hasPing = compose(propEq('positionType', MarkPositionType.PingedLocation), defaultTo({}), path(['selectedMark', 'position']))
+const hasMarkPositionType = (type: string) => compose(propEq('positionType', type), defaultTo({}), path(['selectedMark', 'position']))
+const hasGeolocation = hasMarkPositionType(MarkPositionType.Geolocation)
+const hasTracking = hasMarkPositionType(MarkPositionType.TrackingDevice)
+const hasPing = hasMarkPositionType(MarkPositionType.PingedLocation)
+
+const geolocationAsString = compose(coordinatesToString, path(['selectedMark', 'position']))
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
@@ -134,7 +139,7 @@ const SameStartFinish = Component((props: object) =>
     fromClass(Switch)
   ]))
 
-const MarkPositionItem = Component((props: object) =>
+const PositionSelectorItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.setSelectedPositionType(props.type) }),
@@ -155,7 +160,7 @@ const MarkPositionGeolocation = Component((props: object) =>
     fold(props),
     touchableOpacity({ onPress: navigateToCourseGeolocation }),
     reduce(concat, nothing()))([
-      text({}, hasGeolocation(props) ? 'geolocation info' : 'No geolocation specified. Please configure geolocation.'),
+      text({}, hasGeolocation(props) ? geolocationAsString(props) : 'No geolocation specified. Please configure geolocation.'),
       nothingWhenHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))
     ]))
 
@@ -163,7 +168,7 @@ const MarkPositionPing = Component((props: object) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-    text({}, hasPing(props) ? 'ping info' : 'No ping specified. Please configure ping.'),
+    text({}, hasPing(props) ? geolocationAsString(props) : 'No ping specified. Please configure ping.'),
     nothingWhenHasPing(text({}, 'CONFIGURE OR CHANGE PING'))]))
 
 const MarkPosition = Component((props: object) =>
@@ -176,7 +181,7 @@ const MarkPosition = Component((props: object) =>
     concat(__, nothingWhenNotPingSelected(MarkPositionPing)),
     reduce(concat, nothing()),
     map(compose(
-      MarkPositionItem.contramap,
+      PositionSelectorItem.contramap,
       merge,
       objOf('type')
     )))(

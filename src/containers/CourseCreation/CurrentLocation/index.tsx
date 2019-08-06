@@ -8,6 +8,8 @@ import {
 } from 'components/fp/component'
 import { image, text, view } from 'components/fp/react-native'
 
+import { coordinatesToString } from 'helpers/utils'
+
 import Images from '@assets/Images'
 
 const withCurrentLocation = lifecycle({
@@ -18,34 +20,6 @@ const withCurrentLocation = lifecycle({
     )
   },
 })
-
-const convertDMS = (coords: number, longitude: boolean) => {
-  const cardinalDirection = longitude ? (coords > 0 ? 'E' : 'W') : (coords > 0 ? 'N' : 'S')
-  const absolute = Math.abs(coords)
-  const degrees = Math.floor(absolute)
-  const minutesNotTruncated = (absolute - degrees) * 60
-  const minutes = Math.floor(minutesNotTruncated)
-  const seconds = Math.floor((minutesNotTruncated - minutes) * 60)
-
-  return {
-    cardinalDirection,
-    degrees,
-    minutes,
-    seconds,
-  }
-}
-
-const coordinateToString = (coords: number, longitude: boolean) => {
-  const { cardinalDirection, degrees, minutes, seconds } = convertDMS(coords, longitude)
-  return `${cardinalDirection} ${degrees}° ${minutes}' ${seconds}''`
-}
-
-const coordinatesToString = ({ latitude, longitude }: any) => {
-  const lonString = coordinateToString(longitude, true)
-  const latString = coordinateToString(latitude, false)
-
-  return `${latString}/ ${lonString}`
-}
 
 const location = Component((props: any) => compose(
   fold(props),
