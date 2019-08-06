@@ -26,8 +26,8 @@ import {
 } from 'forms/courseConfig'
 import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
 
-import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass } from 'actions/courses'
-import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide } from 'selectors/course'
+import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass, assignControlPoint } from 'actions/courses'
+import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide, getMarkInventory } from 'selectors/course'
 
 import { navigateToCourseGeolocation } from 'navigation'
 
@@ -46,7 +46,7 @@ const mapStateToProps = (state: any, props: any) => ({
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMark: getSelectedMark(state),
     selectedGateSide: getSelectedGateSide(state),
-    controlPoints: [{}, {}, {}]
+    inventory: getMarkInventory(state)
   })
 
 const waypointClass = path(['waypoint', 'controlPoint', 'class'])
@@ -84,7 +84,7 @@ const plusIcon = icon({
   style: { width: 100, height: 100 }
 })
 
-const GateWaypoint = Component((props: any) =>
+const GateWaypoint = Component((props: object) =>
   compose(
     fold(props),
     view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
@@ -94,7 +94,7 @@ const GateWaypoint = Component((props: any) =>
     path(['waypoint', 'longName']))(
     props))
 
-const GateMarkSelectorItem = Component((props) =>
+const GateMarkSelectorItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.selectGateSide(props.side) }),
@@ -102,7 +102,7 @@ const GateMarkSelectorItem = Component((props) =>
     defaultTo(props.mark.side))(
     props.mark.longName))
 
-const GateMarkSelector = Component((props: any) =>
+const GateMarkSelector = Component((props: object) =>
   compose(
     fold(props),
     view({}),
@@ -114,7 +114,7 @@ const GateMarkSelector = Component((props: any) =>
     path(['selectedWaypoint', 'controlPoint']))(
     props))
 
-const MarkWaypoint = Component((props: any) =>
+const MarkWaypoint = Component((props: object) =>
   compose(
     fold(props),
     view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
@@ -123,7 +123,7 @@ const MarkWaypoint = Component((props: any) =>
     text({}, defaultTo('Choose', props.waypoint.longName))
   ]))
 
-const SameStartFinish = Component((props: any) =>
+const SameStartFinish = Component((props: object) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
@@ -131,14 +131,14 @@ const SameStartFinish = Component((props: any) =>
     fromClass(Switch)
   ]))
 
-const MarkPositionItem = Component(props =>
+const MarkPositionItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.setSelectedPositionType(props.type) }),
     text({}))(
     props.type))
 
-const MarkPositionTracking = Component(props =>
+const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
     view({}),
@@ -146,7 +146,7 @@ const MarkPositionTracking = Component(props =>
       text({}, hasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),
       nothingWhenHasTracking(text({}, 'CONFIGURE OR CHANGE TRACKER BINDING')) ]))
 
-const MarkPositionGeolocation = Component(props =>
+const MarkPositionGeolocation = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: navigateToCourseGeolocation }),
@@ -155,14 +155,14 @@ const MarkPositionGeolocation = Component(props =>
       nothingWhenHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))
     ]))
 
-const MarkPositionPing = Component(props =>
+const MarkPositionPing = Component((props: object) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
     text({}, hasPing(props) ? 'ping info' : 'No ping specified. Please configure ping.'),
     nothingWhenHasPing(text({}, 'CONFIGURE OR CHANGE PING'))]))
 
-const MarkPosition = Component(props =>
+const MarkPosition = Component((props: object) =>
   compose(
     fold(props),
     withSelectedPositionType,
@@ -178,18 +178,18 @@ const MarkPosition = Component(props =>
     )))(
     [MarkPositionType.TrackingDevice, MarkPositionType.Geolocation, MarkPositionType.PingedLocation]))
 
-const Appearance = Component(props =>
+const Appearance = Component((props: object) =>
   compose(
     fold(props))(
     text({}, 'APPEARANCE')))
 
-const DeleteButton = Component((props: any) =>
+const DeleteButton = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.removeWaypoint() }))(
     deleteIcon))
 
-const ControlPointClassSelectorItem = Component(props =>
+const ControlPointClassSelectorItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.assignControlPointClass(props.class) }),
@@ -197,40 +197,45 @@ const ControlPointClassSelectorItem = Component(props =>
     prop(__, controlPointClassToLabel))(
     props.class))
 
-const ControlPointSelectorItem = Component(props =>
+const InventoryItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.assignControlPoint(props.item) }),
     text({}))(
-    'this is a control point item'))
+    props.item.longName))
 
-const ControlPointList = Component(props =>
+const InventoryList = Component((props: object) =>
   compose(
     fold(props),
     view({}),
     reduce(concat, nothing()),
-    map(compose(ControlPointSelectorItem.contramap, merge, objOf('item'))))(
-    props.controlPoints))
+    map(compose(InventoryItem.contramap, merge, objOf('item'))))(
+    props.inventory))
 
-const ControlPointSelector = Component(props =>
+const CreateNewSelector = Component((props: object) =>
   compose(
     fold(props),
     view({}),
     concat(text({}, 'CREATE NEW')),
     reduce(concat, nothing()),
-    append(ControlPointList),
+    append(InventoryList),
     map(compose(ControlPointClassSelectorItem.contramap, merge, objOf('class'))))([
     ControlPointClass.MarkPair,
     ControlPointClass.Mark ]))
 
-const RoundingDirectionItem = Component(props =>
+const ShortAndLongName = Component(props =>
+  compose(
+    fold(props)
+  ))
+
+const RoundingDirectionItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({ onPress: (props: any) => props.input.onChange(props.type) }),
     text({}))(
     props.type))
 
-const RoundingDirection = Component(props =>
+const RoundingDirection = Component((props: object) =>
   compose(
     fold(props),
     concat(text({}, 'ROUNDING DIRECTION')),
@@ -253,7 +258,7 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenNotAGate(GateMarkSelector),
       nothingIfEmptyWaypoint(MarkPosition),
       nothingIfEmptyWaypoint(Appearance),
-      nothingIfNotEmptyWaypoint(ControlPointSelector),
+      nothingIfNotEmptyWaypoint(CreateNewSelector),
       compose(nothingWhenGate, nothingIfEmptyWaypoint)(RoundingDirection)
   ]))
 
@@ -275,7 +280,10 @@ const waypointItemToComponent = (waypoint: any) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass }),
+    connect(mapStateToProps, {
+      selectWaypoint, removeWaypoint, selectGateSide,
+      addWaypoint, assignControlPointClass, assignControlPoint
+    }),
     reduxForm(courseConfigCommonFormSettings),
     concat(__, nothingWhenNoSelectedWaypoint(WaypointEditForm)),
     view({}),
