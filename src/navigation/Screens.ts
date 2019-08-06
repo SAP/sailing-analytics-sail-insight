@@ -25,6 +25,7 @@ export const RaceDetails = 'RaceDetails'
 export const RaceSetup = 'RaceSetup'
 export const RaceCourseLayout = 'RaceCourseLayout'
 export const CourseGeolocation = 'CourseGeolocation'
+export const CourseTrackerBinding = 'CourseTrackerBinding'
 
 // join
 export const CheckIn = 'CheckIn'

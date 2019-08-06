@@ -29,7 +29,7 @@ import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
 import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass, assignControlPoint } from 'actions/courses'
 import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide, getMarkInventory } from 'selectors/course'
 
-import { navigateToCourseGeolocation } from 'navigation'
+import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
@@ -141,6 +141,7 @@ const MarkPositionItem = Component((props: object) =>
 const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
+    touchableOpacity({ onPress: navigateToCourseTrackerBinding }),
     view({}),
     reduce(concat, nothing()))([
       text({}, hasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),
