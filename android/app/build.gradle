@@ -186,6 +186,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-svg')
     compile project(':react-native-maps')
     compile project(':@react-native-community_slider')
     compile project(':react-native-fs')

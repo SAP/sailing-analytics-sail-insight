@@ -2,6 +2,8 @@ export const COURSE_CONFIG_FORM_NAME = 'courseConfig'
 
 export const FORM_ROUNDING_DIRECTION = 'roundingDirection'
 export const FORM_LOCATION = 'location'
+export const FORM_SHORT_NAME = 'shortName'
+export const FORM_LONG_NAME = 'longName'
 
 export const courseConfigCommonFormSettings = {
   form: COURSE_CONFIG_FORM_NAME,

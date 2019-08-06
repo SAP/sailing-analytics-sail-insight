@@ -22,6 +22,8 @@ import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import {
   courseConfigCommonFormSettings,
   FORM_ROUNDING_DIRECTION,
+  FORM_SHORT_NAME,
+  FORM_LONG_NAME,
   initialValues
 } from 'forms/courseConfig'
 import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
@@ -31,6 +33,7 @@ import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide, getMarkInven
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 
+import FormTextInput from 'components/form/FormTextInput'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 
@@ -224,10 +227,17 @@ const CreateNewSelector = Component((props: object) =>
     ControlPointClass.MarkPair,
     ControlPointClass.Mark ]))
 
-const ShortAndLongName = Component(props =>
+const ShortAndLongName = Component((props: object) =>
   compose(
-    fold(props)
-  ))
+    fold(props),
+    view({}),
+    reduce(concat, nothing()),
+    map(compose(
+      reduxFormField,
+      merge({ component: FormTextInput }),
+      objOf('name'))))([
+    FORM_SHORT_NAME,
+    FORM_LONG_NAME ]))
 
 const RoundingDirectionItem = Component((props: object) =>
   compose(
@@ -257,10 +267,11 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenStartOrFinishGate(DeleteButton),
       nothingWhenNotStartOrFinishGate(SameStartFinish),
       nothingWhenNotAGate(GateMarkSelector),
+      ShortAndLongName,
+      compose(nothingWhenGate, nothingIfEmptyWaypoint)(RoundingDirection),
       nothingIfEmptyWaypoint(MarkPosition),
       nothingIfEmptyWaypoint(Appearance),
-      nothingIfNotEmptyWaypoint(CreateNewSelector),
-      compose(nothingWhenGate, nothingIfEmptyWaypoint)(RoundingDirection)
+      nothingIfNotEmptyWaypoint(CreateNewSelector)
   ]))
 
 const AddButton = Component((props: any) =>
