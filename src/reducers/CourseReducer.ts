@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import { findIndex, propEq } from 'ramda'
+import { compose, findIndex, isNil, propEq, unless } from 'ramda'
 import { handleActions } from 'redux-actions'
 
 import { CourseReducerState } from 'reducers/config'
@@ -11,6 +11,7 @@ import {
   loadMark,
   loadMarkPair,
   removeWaypoint,
+  saveMark,
   selectCourse,
   selectEvent,
   selectGateSide,
@@ -23,7 +24,9 @@ import {
 } from 'actions/courses'
 import {
   ControlPointClass,
+  ControlPointState,
   GateSide,
+  Mark,
   SelectedCourseState,
   WaypointState,
 } from 'models/Course'
@@ -83,13 +86,19 @@ const getWaypointById = (state: any) => (id: string) =>
   ])
 
 const getSelectedWaypoint = (state: any) =>
-  state.selectedWaypoint && getWaypointById(state.selectedWaypoint)
+  state.selectedWaypoint && getWaypointById(state)(state.selectedWaypoint)
+
+const getSelectedControlPoint = compose(
+  unless(isNil, (waypoint: any) => waypoint.controlPoint),
+  getSelectedWaypoint,
+)
+
+const getSelectedGateSide = (state: any) => state.selectedGateSide
 
 const updateWaypointReducer = (
   state: any,
   waypointState: Partial<WaypointState>,
 ) => ({
-  ...state,
   selectedCourse: {
     ...state.selectedCourse,
     waypoints: updateItems(
@@ -99,6 +108,15 @@ const updateWaypointReducer = (
     ),
   },
 })
+
+const updateControlPointReducer = (
+  state: any,
+  controlPointState: ControlPointState,
+) =>
+  updateWaypointReducer(state, {
+    ...(getSelectedWaypoint(state) || {}),
+    controlPoint: controlPointState,
+  })
 
 const SAME_START_FINISH_DEFAULT = true
 const SELECTED_WAYPOINT_DEFAULT = undefined
@@ -148,6 +166,36 @@ const reducer = handleActions(
       ...state,
       courseLoading: !!action.payload,
     }),
+
+    // (mark: Mark)
+    [saveMark as any]: (state: any = {}, action: any) => {
+      const mark: Mark = action.payload
+      const selectedControlPoint: ControlPointState | undefined =
+        getSelectedControlPoint(state)
+      const selectedGateSide: GateSide = getSelectedGateSide(state)
+
+      const changedControlPoint = selectedControlPoint && {
+        ...selectedControlPoint,
+        ...(selectedControlPoint.class === ControlPointClass.Mark
+          ? { id: mark.id }
+          : {
+            leftMark: selectedGateSide === GateSide.LEFT ? mark.id : selectedControlPoint.leftMark,
+            rightMark: selectedGateSide === GateSide.RIGHT ? mark.id : selectedControlPoint.rightMark,
+          }
+        )
+      }
+      if (!mark || !mark.id) return state
+      return {
+        ...state,
+        ...(changedControlPoint
+          ? updateControlPointReducer(state, changedControlPoint)
+          : {}),
+        marks: {
+          ...state.marks,
+          [mark.id]: mark,
+        },
+      }
+    },
 
     // Select course for loading into the course creation state
     // Course template (e.g. from scratch) or an existing course (when it is fetched from the server)
@@ -232,16 +280,17 @@ const reducer = handleActions(
 
     // Change waypoint state at the selectedWaypoint id
     // (waypoint: Partial<WaypointState>) => void
-    [updateWaypoint as any]: (state: any = {}, action: any) =>
-      updateWaypointReducer(state, action.payload),
+    [updateWaypoint as any]: (state: any = {}, action: any) => ({
+      ...state,
+      ...updateWaypointReducer(state, action.payload),
+    }),
 
     // Change controlPoint state of the waypoint at the selectedWaypoint id
     // (controlPointState: Partial<ControlPointState>) => void
-    [updateControlPoint as any]: (state: any = {}, action: any) =>
-      updateWaypointReducer(state, {
-        ...(getSelectedWaypoint(state) || {}),
-        controlPoint: action.payload,
-      }),
+    [updateControlPoint as any]: (state: any = {}, action: any) => ({
+      ...state,
+      ...updateControlPointReducer(state, action.payload),
+    }),
 
     // Change selectedWaypoint
     // (selectedWaypoint: string) => void

@@ -60,6 +60,9 @@ export const addWaypoint = createAction(
     objOf('index'),
   ),
 )
+
+export const saveMark = createAction('SAVE_MARK')
+
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 export const updateControlPoint = createAction('UPDATE_CONTROL_POINT')
@@ -287,7 +290,7 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
   }
 }
 
-const saveMark = (mark: Mark) => async (
+const saveMarkToServer = (mark: Mark) => async (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
@@ -333,11 +336,11 @@ const waypointToApiControlPoint = (waypoint: WaypointState) => async (
     passingInstruction,
     marks:
       controlPoint.class === ControlPointClass.Mark
-        ? [await dispatch(saveMark(marks[controlPoint.id]))]
+        ? [await dispatch(saveMarkToServer(marks[controlPoint.id]))]
         : [
             // The `as string` should not be necessary and be taken care of by the typing
-            await dispatch(saveMark(marks[controlPoint.leftMark as string])),
-            await dispatch(saveMark(marks[controlPoint.rightMark as string])),
+            await dispatch(saveMarkToServer(marks[controlPoint.leftMark as string])),
+            await dispatch(saveMarkToServer(marks[controlPoint.rightMark as string])),
           ],
   }
 }
@@ -366,3 +369,4 @@ export const saveCourse = () => async (
   const courseID = getRaceId(selectedRaceInfo.regattaName, selectedRaceInfo.raceColumnName)
   dispatch(loadCourse({ [courseID]: selectedCourseState }))
 }
+
