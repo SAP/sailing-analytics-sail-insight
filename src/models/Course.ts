@@ -135,5 +135,6 @@ export interface SelectedRaceInfo extends SelectedEventInfo {
   fleet: string
 }
 
+export interface CourseStateMap { [id: string]: CourseState }
 export interface MarkMap { [id: string]: Mark }
 export interface MarkPairMap { [id: string]: MarkPairState }

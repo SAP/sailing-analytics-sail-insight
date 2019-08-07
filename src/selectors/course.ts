@@ -5,8 +5,9 @@ import {
   ControlPoint,
   ControlPointClass,
   ControlPointState,
+  CourseState,
+  CourseStateMap,
   GateSide,
-  Mark,
   MarkMap,
   MarkPairMap,
   SelectedCourseState,
@@ -17,6 +18,12 @@ import {
 
 export const getCourseLoading = (state: any): boolean =>
   state.courses.courseLoading
+
+const getCourses = (state: any): CourseStateMap => state.courses.allCourses
+const getCourseById = (courseId: string) => createSelector(
+  getCourses,
+  courses => courses[courseId] as CourseState | undefined
+)
 
 // Gets currently the "local ids" of marks
 // TODO: Should be made to get all of the server ids of marks
@@ -40,6 +47,11 @@ export const getSelectedGateSide = (state: any): GateSide =>
 const getSelectedCourseWaypointState = createSelector(
   getSelectedCourseState,
   selectedCourseState => selectedCourseState && selectedCourseState.waypoints,
+)
+
+export const getCourseShortNameLabel = (courseId: string) => createSelector(
+  getCourseById(courseId),
+  course => course && course.waypoints.map(waypoint => waypoint.shortName || '?')
 )
 
 export const markByIdPresent = (markId: string) =>

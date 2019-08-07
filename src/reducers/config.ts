@@ -1,6 +1,6 @@
 import { AutoCourseUpdateState } from 'helpers/types'
 import {
-  CourseState,
+  CourseStateMap,
   GateSide,
   MarkMap,
   MarkPairMap,
@@ -83,7 +83,7 @@ export interface CheckInState {
 }
 
 export interface CourseReducerState {
-  allCourses: Map<string, CourseState> // Should be Map<RaceID, Course>
+  allCourses: CourseStateMap // Should be Map<RaceID, Course>
   marks: MarkMap
   markPairs: MarkPairMap
   courseLoading: boolean

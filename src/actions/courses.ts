@@ -198,6 +198,7 @@ const apiCourseToLocalFormat = (
             controlPoint,
             id: uuidv4(),
             longName: apiWaypoint.controlPoint.name,
+            shortName: first(apiWaypoint.controlPoint.name),
             passingInstruction: apiWaypoint.passingInstruction,
           }
         },
