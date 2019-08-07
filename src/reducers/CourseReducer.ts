@@ -9,6 +9,7 @@ import {
   addWaypoint,
   loadCourse,
   loadMark,
+  loadMarkPair,
   removeWaypoint,
   selectCourse,
   selectEvent,
@@ -107,6 +108,7 @@ const SELECTED_GATE_SIDE_DEFAULT = GateSide.LEFT
 const initialState: CourseReducerState = {
   allCourses: {} as Map<string, CourseState>,
   marks: {},
+  markPairs: {},
   courseLoading: false,
   selectedCourse: undefined,
   selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
@@ -131,6 +133,14 @@ const reducer = handleActions(
       ...state,
       marks: {
         ...state.marks,
+        ...(action.payload || {}),
+      },
+    }),
+
+    [loadMarkPair as any]: (state: any = {}, action: any) => ({
+      ...state,
+      markPairs: {
+        ...state.markPairs,
         ...(action.payload || {}),
       },
     }),

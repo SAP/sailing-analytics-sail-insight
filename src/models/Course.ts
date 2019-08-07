@@ -65,6 +65,8 @@ export interface Mark {
 export interface MarkPair<T = Mark> {
   id: MarkID
   class: ControlPointClass.MarkPair
+  longName?: string
+  shortName?: string
   leftMark?: T
   rightMark?: T
 }
@@ -134,3 +136,4 @@ export interface SelectedRaceInfo extends SelectedEventInfo {
 }
 
 export interface MarkMap { [id: string]: Mark }
+export interface MarkPairMap { [id: string]: MarkPairState }

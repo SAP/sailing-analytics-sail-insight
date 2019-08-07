@@ -39,6 +39,7 @@ const addUUID = addUUIDs(1)
 // Actions to store the appropriate objects as they are into the state
 export const loadCourse = createAction('LOAD_COURSE')
 export const loadMark = createAction('LOAD_MARK')
+export const loadMarkPair = createAction('LOAD_MARK_PAIR')
 
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
@@ -143,12 +144,30 @@ const apiControlPointToLocalFormat = (
       ),
     )
 
-    return {
-      class: ControlPointClass.MarkPair,
-      id: controlPoint.id,
+    const markPairState: MarkPairState =  {
       leftMark,
       rightMark,
-    } as MarkPairState
+      class: ControlPointClass.MarkPair,
+      id: controlPoint.id,
+    }
+
+    // Maybe need a check like `if(markPairByIdPresent())`
+    dispatch(
+      loadMarkPair({
+        [markPairState.id]: {
+          ...markPairState,
+          longName: controlPoint.name,
+        },
+      }),
+    )
+
+    // The longName isn't returned, because what is returned is added
+    // to the waypointState.
+    // Maybe waypointState has to be changed overall to have the controlPoint
+    // as just an id so that it can get information, such as longName, for
+    // markPairs from the markPairs state
+
+    return markPairState
   }
 
   return {
