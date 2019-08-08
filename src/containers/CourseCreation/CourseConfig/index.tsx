@@ -49,7 +49,7 @@ const controlPointClassToLabel = {
 
 const mapStateToProps = (state: any, props: any) => {
     const form = COURSE_CONFIG_FORM_NAME + getSelectedGateSide(state)
-    
+
     return {
       initialValues,
       selectedWaypoint: getSelectedWaypoint(state),
@@ -106,7 +106,7 @@ const GateWaypoint = Component((props: object) =>
     concat(gateIcon),
     text({}),
     defaultTo(''),
-    path(['waypoint', 'longName']))(
+    path(['waypoint', 'controlPoint', 'longName']))(
     props))
 
 const GateMarkSelectorItem = Component((props: object) =>
@@ -135,7 +135,7 @@ const MarkWaypoint = Component((props: object) =>
     view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
     reduce(concat, nothing()))([
     gateIcon,
-    text({}, defaultTo('Choose', props.waypoint.longName))
+    text({}, defaultTo('Choose', props.waypoint.controlPoint.longName))
   ]))
 
 const SameStartFinish = Component((props: object) =>

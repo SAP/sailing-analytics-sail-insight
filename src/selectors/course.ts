@@ -20,9 +20,15 @@ export const getCourseLoading = (state: any): boolean =>
   state.courses.courseLoading
 
 const getCourses = (state: any): CourseStateMap => state.courses.allCourses
-const getCourseById = (courseId: string) => createSelector(
+const getCourseStateById = (courseId: string) => createSelector(
   getCourses,
   courses => courses[courseId] as CourseState | undefined
+)
+
+const getCourseById = (courseId: string) => createSelector(
+  getCourseStateById(courseId),
+  getMarks,
+  populateCourseWithMarks,
 )
 
 // Gets currently the "local ids" of marks
@@ -51,7 +57,7 @@ const getSelectedCourseWaypointState = createSelector(
 
 export const getCourseShortNameLabel = (courseId: string) => createSelector(
   getCourseById(courseId),
-  course => course && course.waypoints.map(waypoint => waypoint.shortName || '?')
+  course => course && course.waypoints.map((waypoint: any) => waypoint.controlPoint.shortName || '?')
 )
 
 export const markByIdPresent = (markId: string) =>
@@ -91,16 +97,19 @@ const populateWaypointWithMarkData = (marks: MarkMap) => (
     populateControlPointWithMarkData(marks)(waypointState.controlPoint),
 })
 
+const populateCourseWithMarks = (
+  courseState: SelectedCourseState | undefined,
+  marks: MarkMap,
+) =>
+  courseState && {
+    ...courseState,
+    waypoints: courseState.waypoints.map(populateWaypointWithMarkData(marks)),
+  }
+
 export const getSelectedCourseWithMarks = createSelector(
   getSelectedCourseState,
   getMarks,
-  (selectedCourseState, marks) =>
-    selectedCourseState && {
-      name: selectedCourseState.name,
-      waypoints: selectedCourseState.waypoints.map(
-        populateWaypointWithMarkData(marks),
-      ),
-    },
+  populateCourseWithMarks,
 )
 
 const getSelectedWaypointState = createSelector(

@@ -97,8 +97,6 @@ export interface CourseState extends CourseBase {
 
 interface WaypointBase {
   id: string
-  shortName?: string
-  longName: string
   passingInstruction: PassingInstruction
 }
 

@@ -79,6 +79,7 @@ const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
     id: apiMark.id,
     class: ControlPointClass.Mark,
     longName: apiMark.name,
+    shortName: first(apiMark.name),
     type: apiMark.type,
     position:
       apiMark.position &&
@@ -151,22 +152,15 @@ const apiControlPointToLocalFormat = (
     const markPairState: MarkPairState =  {
       leftMark,
       rightMark,
+      longName: controlPoint.name,
+      shortName: first(controlPoint.name),
       class: ControlPointClass.MarkPair,
       id: controlPoint.id,
     }
 
     // Maybe need a check like `if(markPairByIdPresent())`
-    dispatch(
-      loadMarkPair({
-        [markPairState.id]: {
-          ...markPairState,
-          longName: controlPoint.name,
-        },
-      }),
-    )
+    dispatch(loadMarkPair({ [markPairState.id]: markPairState }))
 
-    // The longName isn't returned, because what is returned is added
-    // to the waypointState.
     // Maybe waypointState has to be changed overall to have the controlPoint
     // as just an id so that it can get information, such as longName, for
     // markPairs from the markPairs state
@@ -201,8 +195,6 @@ const apiCourseToLocalFormat = (
           return {
             controlPoint,
             id: uuidv4(),
-            longName: apiWaypoint.controlPoint.name,
-            shortName: first(apiWaypoint.controlPoint.name),
             passingInstruction: apiWaypoint.passingInstruction,
           }
         },
