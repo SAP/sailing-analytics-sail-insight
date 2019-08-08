@@ -17,6 +17,7 @@ import {
   MarkPairState,
   MarkPositionType,
   MarkState,
+  PassingInstruction,
   SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
@@ -264,6 +265,34 @@ export const assignControlPoint = (controlPoint: ControlPoint) => compose(
   assignControlPointState,
   controlPointToControlPointState,
 )(controlPoint)
+
+export const saveWaypoint = (
+  mark: Mark,
+  passingInstruction: PassingInstruction,
+  markPairLongName?: string,
+) => (dispatch: DispatchType) => {
+  dispatch(saveMark(mark))
+  dispatch(updateWaypoint({ passingInstruction, markPairLongName }))
+}
+
+export const saveWaypointFromForm = () => (
+  dispatch: DispatchType,
+  getState: GetStateType,
+) => {
+  // const { mark, passingInstruction, markPairLongName } = getFormValues(getState())
+  const { mark, passingInstruction, markPairLongName } = {
+    mark: {
+      id: uuidv4(),
+      class: ControlPointClass.Mark,
+      longName: 'Foo Mark',
+      shortName: 'F',
+      type: 'BUOY',
+    } as Mark,
+    passingInstruction: PassingInstruction.Starboard,
+    markPairLongName: 'New Gate Name',
+  }
+  dispatch(saveWaypoint(mark, passingInstruction, markPairLongName))
+}
 
 const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
   const position = mark.position
