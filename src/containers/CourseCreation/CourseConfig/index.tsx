@@ -129,10 +129,11 @@ const MarkWaypoint = Component((props: object) =>
   compose(
     fold(props),
     view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
-    reduce(concat, nothing()))([
-    gateIcon,
-    text({}, defaultTo('Choose', props.waypoint.controlPoint.longName))
-  ]))
+    concat(gateIcon),
+    text({}),
+    defaultTo('Choose'),
+    path(['waypoint', 'controlPoint', 'longName']))(
+    props))
 
 const SameStartFinish = Component((props: object) =>
   compose(
