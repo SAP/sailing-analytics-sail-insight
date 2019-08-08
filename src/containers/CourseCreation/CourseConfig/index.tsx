@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, insert, isNil, not, either, equals, cond, tap,
+  objOf, insert, isNil, not, either, equals, cond,
   propEq } from 'ramda'
 
 import {
@@ -17,15 +17,16 @@ import { text, view, scrollView, touchableOpacity } from 'components/fp/react-na
 
 import { Switch } from 'react-native'
 
-import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
+import { field as reduxFormField, reduxForm, formSection } from 'components/fp/redux-form'
 
 import {
   courseConfigCommonFormSettings,
-  COURSE_CONFIG_FORM_NAME,
+  FORM_WAYPOINT_SECTION_NAME,
   FORM_ROUNDING_DIRECTION,
   FORM_SHORT_NAME,
   FORM_LONG_NAME,
-  initialValues
+  initialValues,
+  formMarkSectionNameByGateSide
 } from 'forms/courseConfig'
 import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
 
@@ -47,19 +48,14 @@ const controlPointClassToLabel = {
   [ControlPointClass.Mark]: 'Mark'
 }
 
-const mapStateToProps = (state: any, props: any) => {
-    const form = COURSE_CONFIG_FORM_NAME + getSelectedGateSide(state)
-    
-    return {
+const mapStateToProps = (state: any, props: any) => ({
       initialValues,
       selectedWaypoint: getSelectedWaypoint(state),
       selectedMark: getSelectedMark(state),
       selectedGateSide: getSelectedGateSide(state),
       inventory: getMarkInventory(state),
-      key: form,
-      form
-    }
-}
+      // required for properly updating the redux form fields
+      key: getSelectedGateSide(state) })
 
 const waypointClass = path(['waypoint', 'controlPoint', 'class'])
 const isGateWaypoint = compose(equals(ControlPointClass.MarkPair), waypointClass)
@@ -279,8 +275,14 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenStartOrFinishGate(DeleteButton),
       nothingWhenNotStartOrFinishGate(SameStartFinish),
       nothingWhenNotAGate(GateMarkSelector),
-      ShortAndLongName,
-      compose(nothingWhenGate, nothingIfEmptyWaypoint)(RoundingDirection),
+      compose(
+        formSection({ name: formMarkSectionNameByGateSide(props.selectedGateSide) }))(
+        ShortAndLongName),
+      compose(
+        formSection({ name: FORM_WAYPOINT_SECTION_NAME }),
+        nothingWhenGate,
+        nothingIfEmptyWaypoint)(
+        RoundingDirection),
       nothingIfEmptyWaypoint(MarkPosition),
       nothingIfEmptyWaypoint(Appearance),
       nothingIfNotEmptyWaypoint(CreateNewSelector)

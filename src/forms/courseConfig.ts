@@ -1,9 +1,20 @@
+import { prop, __ } from 'ramda'
+import { GateSide } from 'models/Course'
+
 export const COURSE_CONFIG_FORM_NAME = 'courseConfig'
+export const FORM_WAYPOINT_SECTION_NAME = 'waypoint'
 
 export const FORM_ROUNDING_DIRECTION = 'roundingDirection'
 export const FORM_LOCATION = 'location'
 export const FORM_SHORT_NAME = 'shortName'
 export const FORM_LONG_NAME = 'longName'
+
+const sectionNameByGateSide = {
+  [GateSide.LEFT]: 'leftMark',
+  [GateSide.RIGHT]: 'rightMark'
+}
+
+export const formMarkSectionNameByGateSide = prop(__, sectionNameByGateSide)
 
 export const courseConfigCommonFormSettings = {
   form: COURSE_CONFIG_FORM_NAME,
