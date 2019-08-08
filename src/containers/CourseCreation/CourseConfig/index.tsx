@@ -21,6 +21,7 @@ import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 
 import {
   courseConfigCommonFormSettings,
+  COURSE_CONFIG_FORM_NAME,
   FORM_ROUNDING_DIRECTION,
   FORM_SHORT_NAME,
   FORM_LONG_NAME,
@@ -46,13 +47,19 @@ const controlPointClassToLabel = {
   [ControlPointClass.Mark]: 'Mark'
 }
 
-const mapStateToProps = (state: any, props: any) => ({
-    initialValues,
-    selectedWaypoint: getSelectedWaypoint(state),
-    selectedMark: getSelectedMark(state),
-    selectedGateSide: getSelectedGateSide(state),
-    inventory: getMarkInventory(state)
-  })
+const mapStateToProps = (state: any, props: any) => {
+    const form = COURSE_CONFIG_FORM_NAME + getSelectedGateSide(state)
+    
+    return {
+      initialValues,
+      selectedWaypoint: getSelectedWaypoint(state),
+      selectedMark: getSelectedMark(state),
+      selectedGateSide: getSelectedGateSide(state),
+      inventory: getMarkInventory(state),
+      key: form,
+      form
+    }
+}
 
 const waypointClass = path(['waypoint', 'controlPoint', 'class'])
 const isGateWaypoint = compose(equals(ControlPointClass.MarkPair), waypointClass)
@@ -105,7 +112,7 @@ const GateWaypoint = Component((props: object) =>
 const GateMarkSelectorItem = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.selectGateSide(props.side) }),
+    touchableOpacity({ onPress: (props: any) => props.selectGateSide(props.mark.side) }),
     text({}),
     defaultTo(props.mark.side))(
     props.mark.longName))
