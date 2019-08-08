@@ -17,6 +17,7 @@ import {
   MarkPairState,
   MarkPositionType,
   MarkState,
+  PassingInstruction,
   SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
@@ -78,6 +79,7 @@ const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
     id: apiMark.id,
     class: ControlPointClass.Mark,
     longName: apiMark.name,
+    shortName: first(apiMark.name),
     type: apiMark.type,
     position:
       apiMark.position &&
@@ -150,22 +152,15 @@ const apiControlPointToLocalFormat = (
     const markPairState: MarkPairState =  {
       leftMark,
       rightMark,
+      longName: controlPoint.name,
+      shortName: first(controlPoint.name),
       class: ControlPointClass.MarkPair,
       id: controlPoint.id,
     }
 
     // Maybe need a check like `if(markPairByIdPresent())`
-    dispatch(
-      loadMarkPair({
-        [markPairState.id]: {
-          ...markPairState,
-          longName: controlPoint.name,
-        },
-      }),
-    )
+    dispatch(loadMarkPair({ [markPairState.id]: markPairState }))
 
-    // The longName isn't returned, because what is returned is added
-    // to the waypointState.
     // Maybe waypointState has to be changed overall to have the controlPoint
     // as just an id so that it can get information, such as longName, for
     // markPairs from the markPairs state
@@ -200,8 +195,6 @@ const apiCourseToLocalFormat = (
           return {
             controlPoint,
             id: uuidv4(),
-            longName: apiWaypoint.controlPoint.name,
-            shortName: first(apiWaypoint.controlPoint.name),
             passingInstruction: apiWaypoint.passingInstruction,
           }
         },
@@ -264,6 +257,34 @@ export const assignControlPoint = (controlPoint: ControlPoint) => compose(
   assignControlPointState,
   controlPointToControlPointState,
 )(controlPoint)
+
+export const saveWaypoint = (
+  mark: Mark,
+  passingInstruction: PassingInstruction,
+  markPairLongName?: string,
+) => (dispatch: DispatchType) => {
+  dispatch(saveMark(mark))
+  dispatch(updateWaypoint({ passingInstruction, markPairLongName }))
+}
+
+export const saveWaypointFromForm = () => (
+  dispatch: DispatchType,
+  getState: GetStateType,
+) => {
+  // const { mark, passingInstruction, markPairLongName } = getFormValues(getState())
+  const { mark, passingInstruction, markPairLongName } = {
+    mark: {
+      id: uuidv4(),
+      class: ControlPointClass.Mark,
+      longName: 'Foo Mark',
+      shortName: 'F',
+      type: 'BUOY',
+    } as Mark,
+    passingInstruction: PassingInstruction.Starboard,
+    markPairLongName: 'New Gate Name',
+  }
+  dispatch(saveWaypoint(mark, passingInstruction, markPairLongName))
+}
 
 const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
   const position = mark.position

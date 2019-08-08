@@ -72,15 +72,16 @@ export interface MarkPair<T = Mark> {
 }
 
 // Got this from https://www.sapsailing.com/sailingserver/webservices/api/v1/addCourseDefinitionToRaceLog.html
-export type PassingInstruction =
-  | 'Port'
-  | 'Starboard'
-  | 'Line'
-  | 'None'
-  | 'Gate'
-  | 'Offset'
-  | 'FixedBearing'
-  | 'Single_Unknown'
+export enum PassingInstruction {
+  Port = 'Port',
+  Starboard = 'Starboard',
+  Line =  'Line',
+  None = 'None',
+  Gate = 'Gate',
+  Offset = 'Offset',
+  FixedBearing = 'FixedBearing',
+  SingleUnknown = 'Single_Unknown',
+}
 
 interface CourseBase {
   name: string
@@ -96,8 +97,6 @@ export interface CourseState extends CourseBase {
 
 interface WaypointBase {
   id: string
-  shortName?: string
-  longName: string
   passingInstruction: PassingInstruction
 }
 

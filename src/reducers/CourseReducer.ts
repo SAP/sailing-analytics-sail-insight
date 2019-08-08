@@ -27,6 +27,7 @@ import {
   ControlPointState,
   GateSide,
   Mark,
+  PassingInstruction,
   SelectedCourseState,
   WaypointState,
 } from 'models/Course'
@@ -279,11 +280,38 @@ const reducer = handleActions(
     },
 
     // Change waypoint state at the selectedWaypoint id
-    // (waypoint: Partial<WaypointState>) => void
-    [updateWaypoint as any]: (state: any = {}, action: any) => ({
-      ...state,
-      ...updateWaypointReducer(state, action.payload),
-    }),
+    [updateWaypoint as any]: (state: any = {}, action: any) => {
+      const {
+        passingInstruction,
+        markPairLongName,
+      }: {
+        passingInstruction: PassingInstruction
+        markPairLongName?: string
+      } = action.payload
+
+      const selectedWaypoint: WaypointState | undefined = getSelectedWaypoint(state)
+
+      if (!selectedWaypoint) return state
+
+      const changedWaypoint = {
+        ...selectedWaypoint,
+        passingInstruction,
+        ...(markPairLongName &&
+        selectedWaypoint.controlPoint.class === ControlPointClass.MarkPair
+          ? {
+              controlPoint: {
+                ...selectedWaypoint.controlPoint,
+                longName: markPairLongName,
+              },
+            }
+          : {}),
+      }
+
+      return {
+        ...state,
+        ...updateWaypointReducer(state, changedWaypoint),
+      }
+    },
 
     // Change controlPoint state of the waypoint at the selectedWaypoint id
     // (controlPointState: Partial<ControlPointState>) => void
