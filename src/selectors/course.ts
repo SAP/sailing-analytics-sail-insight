@@ -1,26 +1,42 @@
-import { find, values } from 'lodash'
+import { concat, find, mapValues, values } from 'lodash'
 import { createSelector } from 'reselect'
 
 import {
+  ControlPoint,
   ControlPointClass,
+  ControlPointState,
+  CourseState,
+  CourseStateMap,
   GateSide,
-  Mark,
   MarkMap,
+  MarkPairMap,
   SelectedCourseState,
   SelectedEventInfo,
   SelectedRaceInfo,
-  Waypoint,
   WaypointState,
 } from 'models/Course'
 
 export const getCourseLoading = (state: any): boolean =>
   state.courses.courseLoading
 
+const getCourses = (state: any): CourseStateMap => state.courses.allCourses
+const getCourseById = (courseId: string) => createSelector(
+  getCourses,
+  courses => courses[courseId] as CourseState | undefined
+)
+
 // Gets currently the "local ids" of marks
 // TODO: Should be made to get all of the server ids of marks
 const getMarkIds = (state: any): string[] => Object.keys(state.courses.marks)
 
 export const getMarks = (state: any): MarkMap => state.courses.marks
+
+const getMarkPairState = (state: any): MarkPairMap => state.courses.markPairs
+const getMarkPairs = createSelector(
+  getMarks,
+  getMarkPairState,
+  (marks, markPairState) => mapValues(markPairState, populateControlPointWithMarkData(marks))
+)
 
 export const getSelectedCourseState = (state: any): SelectedCourseState | undefined =>
   state.courses.selectedCourse
@@ -33,32 +49,46 @@ const getSelectedCourseWaypointState = createSelector(
   selectedCourseState => selectedCourseState && selectedCourseState.waypoints,
 )
 
+export const getCourseShortNameLabel = (courseId: string) => createSelector(
+  getCourseById(courseId),
+  course => course && course.waypoints.map(waypoint => waypoint.shortName || '?')
+)
+
 export const markByIdPresent = (markId: string) =>
   createSelector(
     getMarkIds,
     (markIds: string[]) => markIds.includes(markId),
   )
 
-export const getMarkInventory = (state: any): Mark[] =>
-  values(state.courses.marks)
+export const getMarkInventory = createSelector(
+  getMarks,
+  getMarkPairs,
+  (marks, markPairs) => concat(values(marks), values(markPairs)) as ControlPoint[]
+)
+
+const populateControlPointWithMarkData = (marks: MarkMap) => (
+  controlPoint: ControlPointState,
+) => ({
+  ...controlPoint,
+  ...(controlPoint.class === ControlPointClass.Mark
+    ? marks[controlPoint.id] || {}
+    : {
+        leftMark: controlPoint.leftMark
+          ? marks[controlPoint.leftMark]
+          : undefined,
+        rightMark: controlPoint.rightMark
+          ? marks[controlPoint.rightMark]
+          : undefined,
+      }),
+})
 
 const populateWaypointWithMarkData = (marks: MarkMap) => (
   waypointState: Partial<WaypointState>,
 ) => ({
   ...waypointState,
-  controlPoint: waypointState.controlPoint && {
-    ...waypointState.controlPoint,
-    ...(waypointState.controlPoint.class === ControlPointClass.Mark
-      ? marks[waypointState.controlPoint.id] || {}
-      : {
-          leftMark: waypointState.controlPoint.leftMark
-            ? marks[waypointState.controlPoint.leftMark]
-            : undefined,
-          rightMark: waypointState.controlPoint.rightMark
-            ? marks[waypointState.controlPoint.rightMark]
-            : undefined,
-        }),
-  },
+  controlPoint:
+    waypointState.controlPoint &&
+    populateControlPointWithMarkData(marks)(waypointState.controlPoint),
 })
 
 export const getSelectedCourseWithMarks = createSelector(

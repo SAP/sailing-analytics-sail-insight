@@ -39,6 +39,7 @@ const addUUID = addUUIDs(1)
 // Actions to store the appropriate objects as they are into the state
 export const loadCourse = createAction('LOAD_COURSE')
 export const loadMark = createAction('LOAD_MARK')
+export const loadMarkPair = createAction('LOAD_MARK_PAIR')
 
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
@@ -59,6 +60,9 @@ export const addWaypoint = createAction(
     objOf('index'),
   ),
 )
+
+export const saveMark = createAction('SAVE_MARK')
+
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 export const updateControlPoint = createAction('UPDATE_CONTROL_POINT')
@@ -143,12 +147,30 @@ const apiControlPointToLocalFormat = (
       ),
     )
 
-    return {
-      class: ControlPointClass.MarkPair,
-      id: controlPoint.id,
+    const markPairState: MarkPairState =  {
       leftMark,
       rightMark,
-    } as MarkPairState
+      class: ControlPointClass.MarkPair,
+      id: controlPoint.id,
+    }
+
+    // Maybe need a check like `if(markPairByIdPresent())`
+    dispatch(
+      loadMarkPair({
+        [markPairState.id]: {
+          ...markPairState,
+          longName: controlPoint.name,
+        },
+      }),
+    )
+
+    // The longName isn't returned, because what is returned is added
+    // to the waypointState.
+    // Maybe waypointState has to be changed overall to have the controlPoint
+    // as just an id so that it can get information, such as longName, for
+    // markPairs from the markPairs state
+
+    return markPairState
   }
 
   return {
@@ -179,6 +201,7 @@ const apiCourseToLocalFormat = (
             controlPoint,
             id: uuidv4(),
             longName: apiWaypoint.controlPoint.name,
+            shortName: first(apiWaypoint.controlPoint.name),
             passingInstruction: apiWaypoint.passingInstruction,
           }
         },
@@ -267,7 +290,7 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
   }
 }
 
-const saveMark = (mark: Mark) => async (
+const saveMarkToServer = (mark: Mark) => async (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
@@ -313,11 +336,11 @@ const waypointToApiControlPoint = (waypoint: WaypointState) => async (
     passingInstruction,
     marks:
       controlPoint.class === ControlPointClass.Mark
-        ? [await dispatch(saveMark(marks[controlPoint.id]))]
+        ? [await dispatch(saveMarkToServer(marks[controlPoint.id]))]
         : [
             // The `as string` should not be necessary and be taken care of by the typing
-            await dispatch(saveMark(marks[controlPoint.leftMark as string])),
-            await dispatch(saveMark(marks[controlPoint.rightMark as string])),
+            await dispatch(saveMarkToServer(marks[controlPoint.leftMark as string])),
+            await dispatch(saveMarkToServer(marks[controlPoint.rightMark as string])),
           ],
   }
 }
@@ -346,3 +369,4 @@ export const saveCourse = () => async (
   const courseID = getRaceId(selectedRaceInfo.regattaName, selectedRaceInfo.raceColumnName)
   dispatch(loadCourse({ [courseID]: selectedCourseState }))
 }
+
