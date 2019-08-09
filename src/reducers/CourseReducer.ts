@@ -53,8 +53,8 @@ const updateItems = (array: itemWithId[], indices: number[], item: any = {}) =>
     }
 
     return {
-      id: it.id,
       ...item,
+      id: it.id,
     }
   })
 

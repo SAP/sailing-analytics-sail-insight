@@ -1,16 +1,23 @@
 import { first, get, keys, values } from 'lodash'
 import { compose, curry, objOf, times } from 'ramda'
 import { createAction } from 'redux-actions'
+import { getFormValues } from 'redux-form'
 import uuidv4 from 'uuid/v4'
 
 import { dataApi } from 'api'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
+  COURSE_CONFIG_FORM_NAME,
+  waypointFromFormValues,
+} from 'forms/courseConfig'
+
+import {
   ControlPoint,
   ControlPointClass,
   ControlPointState,
   CourseState,
+  GateSide,
   Geolocation,
   Mark,
   MarkID,
@@ -24,6 +31,7 @@ import {
 import {
   getMarks,
   getSelectedCourseState,
+  getSelectedGateSide,
   getSelectedRaceInfo,
   markByIdPresent,
 } from 'selectors/course'
@@ -271,18 +279,15 @@ export const saveWaypointFromForm = () => (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
-  // const { mark, passingInstruction, markPairLongName } = getFormValues(getState())
-  const { mark, passingInstruction, markPairLongName } = {
-    mark: {
-      id: uuidv4(),
-      class: ControlPointClass.Mark,
-      longName: 'Foo Mark',
-      shortName: 'F',
-      type: 'BUOY',
-    } as Mark,
-    passingInstruction: PassingInstruction.Starboard,
-    markPairLongName: 'New Gate Name',
-  }
+  const { leftMark, rightMark, passingInstruction, markPairLongName } = compose(
+    waypointFromFormValues,
+    getFormValues(COURSE_CONFIG_FORM_NAME),
+  )(getState())
+
+  const selectedGateSide = getSelectedGateSide(getState())
+
+  const mark = selectedGateSide === GateSide.LEFT ? leftMark : rightMark
+
   dispatch(saveWaypoint(mark, passingInstruction, markPairLongName))
 }
 
