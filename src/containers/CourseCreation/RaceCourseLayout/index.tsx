@@ -40,13 +40,6 @@ const saveCourseButton = Component((props: any) =>
   )(text({}, 'Save course')),
 )
 
-const saveWaypointButton = Component((props: object) =>
-  compose(
-    fold(props),
-    touchableOpacity({ onPress: (props: any) => props.saveWaypointFromForm() }),
-    text({}))(
-    'Save waypoint'))
-
 export default Component((props: object) =>
   compose(
     fold(props),
@@ -55,7 +48,6 @@ export default Component((props: object) =>
   )([
     nothingIfNotLoading(spinner),
     nothingIfLoading(CourseConfig),
-    saveCourseButton,
-    saveWaypointButton,
+    saveCourseButton
   ]),
 )

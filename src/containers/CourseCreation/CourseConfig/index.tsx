@@ -30,7 +30,8 @@ import {
 } from 'forms/courseConfig'
 import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
 
-import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, assignControlPointClass, assignControlPoint } from 'actions/courses'
+import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint,
+  assignControlPointClass, assignControlPoint, saveWaypointFromForm } from 'actions/courses'
 import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide, getMarkInventory } from 'selectors/course'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
@@ -50,6 +51,7 @@ const controlPointClassToLabel = {
 
 const mapStateToProps = (state: any, props: any) => ({
       initialValues,
+      isFormChanged: true,
       selectedWaypoint: getSelectedWaypoint(state),
       selectedMark: getSelectedMark(state),
       selectedGateSide: getSelectedGateSide(state),
@@ -75,14 +77,15 @@ const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
 const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
-const nothingIfEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
-const nothingIfNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
+const nothingWhenEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
+const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotPingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.PingedLocation)), nothingAsClass)
 const nothingWhenHasGeolocation = branch(hasGeolocation, nothingAsClass)
 const nothingWhenHasTracking = branch(hasTracking, nothingAsClass)
 const nothingWhenHasPing = branch(hasPing, nothingAsClass)
+const nothingWhenPristineForm = branch(propEq('pristine', true), nothingAsClass)
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 
@@ -180,10 +183,11 @@ const MarkPosition = Component((props: object) =>
     fold(props),
     withSelectedPositionType,
     concat(text({}, 'LOCATE OR TRACK')),
-    concat(__, nothingWhenNotTrackingSelected(MarkPositionTracking)),
-    concat(__, nothingWhenNotGeolocationSelected(MarkPositionGeolocation)),
-    concat(__, nothingWhenNotPingSelected(MarkPositionPing)),
     reduce(concat, nothing()),
+    concat(__, [
+      nothingWhenNotPingSelected(MarkPositionPing),
+      nothingWhenNotGeolocationSelected(MarkPositionGeolocation),
+      nothingWhenNotTrackingSelected(MarkPositionTracking)]),
     map(compose(
       PositionSelectorItem.contramap,
       merge,
@@ -240,6 +244,7 @@ const ShortAndLongName = Component((props: object) =>
   compose(
     fold(props),
     view({}),
+    formSection({ name: formMarkSectionNameByGateSide(props.selectedGateSide) }),
     reduce(concat, nothing()),
     map(compose(
       reduxFormField,
@@ -258,6 +263,7 @@ const RoundingDirectionItem = Component((props: object) =>
 const RoundingDirection = Component((props: object) =>
   compose(
     fold(props),
+    formSection({ name: FORM_WAYPOINT_SECTION_NAME }),
     concat(text({}, 'ROUNDING DIRECTION')),
     reduce(concat, nothing()),
     map(compose(
@@ -269,24 +275,34 @@ const RoundingDirection = Component((props: object) =>
       objOf('type'))))(
     ['left', 'right']))
 
+const CancelButton = Component((props: object) =>
+  compose(
+    fold(props),
+    touchableOpacity({ onPress: (props: any) => props.reset() }),
+    text({}))(
+    'Cancel'))
+
+const SaveButton = Component((props: object) =>
+  compose(
+    fold(props),
+    touchableOpacity({ onPress: (props: any) => props.saveWaypointFromForm() }),
+    text({}))(
+    'Save'))
+
 const WaypointEditForm = Component((props: any) =>
   compose(
     fold(merge(props, { waypoint: props.selectedWaypoint })),
     reduce(concat, nothing()))([
+      nothingWhenPristineForm(CancelButton),
+      nothingWhenPristineForm(SaveButton),
       nothingWhenStartOrFinishGate(DeleteButton),
       nothingWhenNotStartOrFinishGate(SameStartFinish),
       nothingWhenNotAGate(GateMarkSelector),
-      compose(
-        formSection({ name: formMarkSectionNameByGateSide(props.selectedGateSide) }))(
-        ShortAndLongName),
-      compose(
-        formSection({ name: FORM_WAYPOINT_SECTION_NAME }),
-        nothingWhenGate,
-        nothingIfEmptyWaypoint)(
-        RoundingDirection),
-      nothingIfEmptyWaypoint(MarkPosition),
-      nothingIfEmptyWaypoint(Appearance),
-      nothingIfNotEmptyWaypoint(CreateNewSelector)
+      nothingWhenEmptyWaypoint(ShortAndLongName),
+      compose(nothingWhenGate, nothingWhenEmptyWaypoint)(RoundingDirection),
+      nothingWhenEmptyWaypoint(MarkPosition),
+      nothingWhenEmptyWaypoint(Appearance),
+      nothingWhenNotEmptyWaypoint(CreateNewSelector)
   ]))
 
 const AddButton = Component((props: any) =>
@@ -308,7 +324,7 @@ export default Component((props: object) =>
   compose(
     fold(props),
     connect(mapStateToProps, {
-      selectWaypoint, removeWaypoint, selectGateSide,
+      selectWaypoint, removeWaypoint, selectGateSide, saveWaypointFromForm,
       addWaypoint, assignControlPointClass, assignControlPoint
     }),
     reduxForm(courseConfigCommonFormSettings),
