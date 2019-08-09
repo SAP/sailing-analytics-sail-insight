@@ -89,7 +89,9 @@ export default createStackNavigator(
       }),
     },
     [Screens.CourseGeolocation]: {
-      screen: Geolocation.fold,
+      screen: Geolocation
+        .contramap((props: object) => ({ ...props, formSectionName: props.navigation.state.params.data.formSectionName }))
+        .fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle

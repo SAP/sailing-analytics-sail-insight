@@ -157,7 +157,7 @@ const MarkPositionTracking = Component((props: object) =>
     fold(props),
     touchableOpacity({
       onPress: () => navigateToCourseTrackerBinding({
-        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
+        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) })
     view({}),
     reduce(concat, nothing()))([
       text({}, hasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),
@@ -166,7 +166,9 @@ const MarkPositionTracking = Component((props: object) =>
 const MarkPositionGeolocation = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: navigateToCourseGeolocation }),
+    touchableOpacity({
+      onPress: () => navigateToCourseGeolocation({
+        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
     reduce(concat, nothing()))([
       text({}, hasGeolocation(props) ? geolocationAsString(props) : 'No geolocation specified. Please configure geolocation.'),
       nothingWhenHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))

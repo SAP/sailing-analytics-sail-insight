@@ -10,7 +10,7 @@ import {
   nothing,
 } from 'components/fp/component'
 import { view } from 'components/fp/react-native'
-import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
+import { field as reduxFormField, reduxForm, formSection } from 'components/fp/redux-form'
 import TextInput from 'components/TextInput'
 
 import { courseConfigCommonFormSettings, FORM_LOCATION } from 'forms/courseConfig'
@@ -74,6 +74,7 @@ export default Component((props: object) =>
   compose(
     fold(props),
     reduxForm(courseConfigCommonFormSettings),
+    formSection({ name: props.formSectionName }),
     reduce(concat, nothing()),
   )([
     mapField({

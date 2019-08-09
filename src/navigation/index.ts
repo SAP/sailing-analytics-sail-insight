@@ -30,7 +30,7 @@ export const navigateToSessionDetail = (data: string) => NavigationService.navig
 export const navigateToRaceDetails = (data: string) => NavigationService.navigate(Screens.RaceDetails, { data })
 export const navigateToRaceSetup = (data: string) => NavigationService.navigate(Screens.RaceSetup, { data })
 export const navigateToRaceCourseLayout = () => NavigationService.navigate(Screens.RaceCourseLayout)
-export const navigateToCourseGeolocation = () => NavigationService.navigate(Screens.CourseGeolocation)
+export const navigateToCourseGeolocation = (data: object) => NavigationService.navigate(Screens.CourseGeolocation, { data })
 export const navigateToCourseTrackerBinding = (data: object) => NavigationService.navigate(Screens.CourseTrackerBinding, { data })
 export const navigateToNewSessionBasics = () => NavigationService.navigate(Screens.NewSessionBasics)
 export const navigateToNewSessionTypeAndBoatClass = () => NavigationService.navigate(Screens.NewSessionTypeAndBoatClass)
