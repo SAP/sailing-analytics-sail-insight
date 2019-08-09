@@ -23,10 +23,10 @@ import {
   courseConfigCommonFormSettings,
   FORM_WAYPOINT_SECTION_NAME,
   FORM_ROUNDING_DIRECTION,
-  FORM_SHORT_NAME,
-  FORM_LONG_NAME,
-  initialValues,
-  formMarkSectionNameByGateSide
+  FORM_MARK_SHORT_NAME,
+  FORM_MARK_LONG_NAME,
+  formMarkSectionNameByGateSide,
+  getFormInitialValues
 } from 'forms/courseConfig'
 import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
 
@@ -50,7 +50,7 @@ const controlPointClassToLabel = {
 }
 
 const mapStateToProps = (state: any, props: any) => ({
-      initialValues,
+      initialValues: getFormInitialValues(state),
       isFormChanged: true,
       selectedWaypoint: getSelectedWaypoint(state),
       selectedMark: getSelectedMark(state),
@@ -250,8 +250,8 @@ const ShortAndLongName = Component((props: object) =>
       reduxFormField,
       merge({ component: FormTextInput }),
       objOf('name'))))([
-    FORM_SHORT_NAME,
-    FORM_LONG_NAME ]))
+    FORM_MARK_SHORT_NAME,
+    FORM_MARK_LONG_NAME ]))
 
 const RoundingDirectionItem = Component((props: object) =>
   compose(
