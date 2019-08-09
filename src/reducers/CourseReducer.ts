@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, keyBy, take } from 'lodash'
 import { compose, findIndex, isNil, propEq, unless } from 'ramda'
 import { handleActions } from 'redux-actions'
 
@@ -11,7 +11,7 @@ import {
   loadMark,
   loadMarkPair,
   removeWaypoint,
-  saveMark,
+  saveWaypoint,
   selectCourse,
   selectEvent,
   selectGateSide,
@@ -20,7 +20,6 @@ import {
   toggleSameStartFinish,
   updateControlPoint,
   updateCourseLoading,
-  updateWaypoint,
 } from 'actions/courses'
 import {
   ControlPointClass,
@@ -168,36 +167,6 @@ const reducer = handleActions(
       courseLoading: !!action.payload,
     }),
 
-    // (mark: Mark)
-    [saveMark as any]: (state: any = {}, action: any) => {
-      const mark: Mark = action.payload
-      const selectedControlPoint: ControlPointState | undefined =
-        getSelectedControlPoint(state)
-      const selectedGateSide: GateSide = getSelectedGateSide(state)
-
-      const changedControlPoint = selectedControlPoint && {
-        ...selectedControlPoint,
-        ...(selectedControlPoint.class === ControlPointClass.Mark
-          ? { id: mark.id }
-          : {
-            leftMark: selectedGateSide === GateSide.LEFT ? mark.id : selectedControlPoint.leftMark,
-            rightMark: selectedGateSide === GateSide.RIGHT ? mark.id : selectedControlPoint.rightMark,
-          }
-        )
-      }
-      if (!mark || !mark.id) return state
-      return {
-        ...state,
-        ...(changedControlPoint
-          ? updateControlPointReducer(state, changedControlPoint)
-          : {}),
-        marks: {
-          ...state.marks,
-          [mark.id]: mark,
-        },
-      }
-    },
-
     // Select course for loading into the course creation state
     // Course template (e.g. from scratch) or an existing course (when it is fetched from the server)
     // ({ courseId?: string, UUIDs: string[] }) => void
@@ -275,12 +244,13 @@ const reducer = handleActions(
       }
     },
 
-    // Change waypoint state at the selectedWaypoint id
-    [updateWaypoint as any]: (state: any = {}, action: any) => {
+    [saveWaypoint as any]: (state: any = {}, action: any) => {
       const {
+        marks,
         passingInstruction,
         markPairLongName,
       }: {
+        marks: Mark[]
         passingInstruction: PassingInstruction
         markPairLongName?: string
       } = action.payload
@@ -289,23 +259,41 @@ const reducer = handleActions(
 
       if (!selectedWaypoint) return state
 
+      const controlPoint = selectedWaypoint.controlPoint
+
+      if (
+        (controlPoint.class === ControlPointClass.Mark && marks.length < 1) ||
+        (controlPoint.class === ControlPointClass.MarkPair && marks.length < 2)
+      ) return state
+
+      const changedControlPoint = {
+        ...controlPoint,
+        ...(controlPoint.class === ControlPointClass.Mark
+          ? { id: marks[0].id }
+          : {
+            leftMark: marks[0].id,
+            rightMark: marks[1].id,
+            longName: markPairLongName || controlPoint.longName,
+          }
+        )
+      }
+
       const changedWaypoint = {
         ...selectedWaypoint,
         passingInstruction,
-        ...(markPairLongName &&
-        selectedWaypoint.controlPoint.class === ControlPointClass.MarkPair
-          ? {
-              controlPoint: {
-                ...selectedWaypoint.controlPoint,
-                longName: markPairLongName,
-              },
-            }
-          : {}),
+        controlPoint: changedControlPoint,
       }
+
+      const marksToSave = controlPoint.class === ControlPointClass.Mark ?
+        take(marks, 1) : take(marks, 2)
 
       return {
         ...state,
         ...updateWaypointReducer(state, changedWaypoint),
+        marks: {
+          ...state.marks,
+          ...keyBy(marksToSave, 'id'),
+        }
       }
     },
 

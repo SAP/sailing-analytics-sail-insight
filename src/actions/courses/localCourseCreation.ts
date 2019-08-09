@@ -9,16 +9,13 @@ import {
   waypointFromFormValues,
 } from 'forms/courseConfig'
 
-import { saveMark, updateControlPoint, updateWaypoint } from 'actions/courses'
+import { saveWaypoint, updateControlPoint } from 'actions/courses'
 import {
   ControlPoint,
   ControlPointClass,
   ControlPointState,
-  GateSide,
   Mark,
-  PassingInstruction,
 } from 'models/Course'
-import { getSelectedGateSide } from 'selectors/course'
 
 export const assignControlPointClass = (controlPointClass: ControlPointClass) =>
   updateControlPoint({
@@ -47,15 +44,6 @@ export const assignControlPoint = (controlPoint: ControlPoint) => compose(
   controlPointToControlPointState,
 )(controlPoint)
 
-export const saveWaypoint = (
-  mark: Mark,
-  passingInstruction: PassingInstruction,
-  markPairLongName?: string,
-) => (dispatch: DispatchType) => {
-  dispatch(saveMark(mark))
-  dispatch(updateWaypoint({ passingInstruction, markPairLongName }))
-}
-
 export const saveWaypointFromForm = () => (
   dispatch: DispatchType,
   getState: GetStateType,
@@ -65,9 +53,7 @@ export const saveWaypointFromForm = () => (
     getFormValues(COURSE_CONFIG_FORM_NAME),
   )(getState())
 
-  const selectedGateSide = getSelectedGateSide(getState())
+  const marks: Mark[] = [leftMark, rightMark]
 
-  const mark = selectedGateSide === GateSide.LEFT ? leftMark : rightMark
-
-  dispatch(saveWaypoint(mark, passingInstruction, markPairLongName))
+  dispatch(saveWaypoint({ marks, passingInstruction, markPairLongName }))
 }

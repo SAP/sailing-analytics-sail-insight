@@ -34,10 +34,8 @@ export const addWaypoint = createAction(
   ),
 )
 
-export const saveMark = createAction('SAVE_MARK')
-
+export const saveWaypoint = createAction('SAVE_WAYPOINT')
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
-export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 export const updateControlPoint = createAction('UPDATE_CONTROL_POINT')
 
 export const selectEvent = createAction('SELECT_EVENT')
