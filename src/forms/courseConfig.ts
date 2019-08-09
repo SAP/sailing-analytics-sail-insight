@@ -65,8 +65,6 @@ export const getFormInitialValues = createSelector(
 export const courseConfigCommonFormSettings = {
   form: COURSE_CONFIG_FORM_NAME,
   destroyOnUnmount: false,        // <-- preserve form data across different steps
-  forceUnregisterOnUnmount: false,
-  keepDirtyOnReinitialize: true,
   enableReinitialize: true
 }
 
