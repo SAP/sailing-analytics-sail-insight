@@ -51,7 +51,6 @@ const controlPointClassToLabel = {
 
 const mapStateToProps = (state: any, props: any) => ({
       initialValues,
-      isFormChanged: true,
       selectedWaypoint: getSelectedWaypoint(state),
       selectedMark: getSelectedMark(state),
       selectedGateSide: getSelectedGateSide(state),
@@ -156,7 +155,9 @@ const PositionSelectorItem = Component((props: object) =>
 const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: navigateToCourseTrackerBinding }),
+    touchableOpacity({
+      onPress: () => navigateToCourseTrackerBinding({
+        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
     view({}),
     reduce(concat, nothing()))([
       text({}, hasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),

@@ -62,7 +62,6 @@ public class MainApplication extends Application implements ReactApplication {
             new BackgroundTimerPackage(),
             new RealmReactPackage(),
             new RNDeviceInfo(),
-            new SvgPackage(),
             new LinearGradientPackage(),
             new RNI18nPackage(),
             new RNBranchPackage(),

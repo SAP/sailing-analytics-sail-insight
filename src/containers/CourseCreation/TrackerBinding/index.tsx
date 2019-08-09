@@ -1,4 +1,9 @@
 import { __,  compose, concat,  reduce } from 'ramda'
+import { field as reduxFormField, reduxForm, formSection } from 'components/fp/redux-form'
+
+import {
+  courseConfigCommonFormSettings
+} from 'forms/courseConfig'
 
 import QRCode from 'react-native-qrcode-svg'
 
@@ -27,6 +32,8 @@ export default Component((props: object) =>
   compose(
     fold(props),
     connect(mapStateToProps),
+    reduxForm(courseConfigCommonFormSettings),
+    formSection({ name: props.formSectionName }),
     reduce(concat, nothing()),
   )([
     trackingQRCode,

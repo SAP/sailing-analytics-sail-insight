@@ -99,7 +99,9 @@ export default createStackNavigator(
       }),
     },
     [Screens.CourseTrackerBinding]: {
-      screen: TrackerBinding.fold,
+      screen: TrackerBinding
+        .contramap((props: object) => ({ ...props, formSectionName: props.navigation.state.params.data.formSectionName }))
+        .fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
