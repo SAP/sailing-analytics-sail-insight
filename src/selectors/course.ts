@@ -1,4 +1,5 @@
 import { concat, find, mapValues, values } from 'lodash'
+import { append, compose, gt, length, map, prepend, slice, unless } from 'ramda'
 import { createSelector } from 'reselect'
 
 import {
@@ -55,9 +56,20 @@ const getSelectedCourseWaypointState = createSelector(
   selectedCourseState => selectedCourseState && selectedCourseState.waypoints,
 )
 
+// The first and last array elements should be ['S', 'F']
 export const getCourseShortNameLabel = (courseId: string) => createSelector(
   getCourseById(courseId),
-  course => course && course.waypoints.map((waypoint: any) => waypoint.controlPoint.shortName || '?')
+  course => course && compose(
+    unless(
+      compose(gt(2), length),
+      compose(
+        prepend('S'),
+        append('F'),
+        slice(1, -1),
+      ),
+    ),
+    map((waypoint: any) => waypoint.controlPoint.shortName || '?')
+  )(course.waypoints)
 )
 
 export const markByIdPresent = (markId: string) =>

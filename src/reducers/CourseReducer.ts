@@ -211,8 +211,6 @@ const reducer = handleActions(
             name: 'New course',
             waypoints: [
               {
-                shortName: 'S',
-                longName: 'Start',
                 passingInstruction: 'Gate',
                 id: UUIDs[0],
                 controlPoint: {
@@ -221,8 +219,6 @@ const reducer = handleActions(
                 },
               },
               {
-                shortName: 'F',
-                longName: 'Finish',
                 passingInstruction: 'Gate',
                 id: UUIDs[2],
                 controlPoint: {
