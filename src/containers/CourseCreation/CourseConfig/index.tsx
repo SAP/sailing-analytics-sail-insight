@@ -157,7 +157,7 @@ const MarkPositionTracking = Component((props: object) =>
     fold(props),
     touchableOpacity({
       onPress: () => navigateToCourseTrackerBinding({
-        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) })
+        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
     view({}),
     reduce(concat, nothing()))([
       text({}, hasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),

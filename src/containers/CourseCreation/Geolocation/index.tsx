@@ -13,6 +13,8 @@ import { view } from 'components/fp/react-native'
 import { field as reduxFormField, reduxForm, formSection } from 'components/fp/redux-form'
 import TextInput from 'components/TextInput'
 
+import { MarkPositionType } from 'models/Course'
+
 import { courseConfigCommonFormSettings, FORM_LOCATION } from 'forms/courseConfig'
 
 import styles from './styles'
@@ -56,6 +58,7 @@ const coordinatesInput = ({ propName }: any) => Component((props: any) => compos
       onChangeText: (value: any) => props.input.onChange({
         ...props.input.value,
         [propName]: parseFloat(value),
+        positionType: MarkPositionType.Geolocation
       }),
       placeholder: propName,
     })),
