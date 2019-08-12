@@ -72,6 +72,7 @@
     "redux-actions": "2.6.1",
     "redux-form": "7.4.2",
     "redux-persist": "5.10.0",
+    "redux-saga": "^1.0.5",
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0",
     "string-format": "2.0.0",

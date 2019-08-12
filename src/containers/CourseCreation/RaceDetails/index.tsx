@@ -65,16 +65,12 @@ const raceNumberFormField = reduxFormField({
 })
 
 const onSeeCourse = (props: any) => {
-  props.fetchCourse('TW 2013 (Finn)', 'Finn Race 4', 'TW 2013 (Finn)')
-  props.selectRace(props.item.raceName)
+  props.selectCourse({ newCourse: false, raceName: 'Finn Race 4' })
   navigateToRaceCourseLayout()
 }
 
 const onNewCourse = (props: any) => {
-  // const raceId = getRaceId(regattaName, raceName)
-  const raceId = 'TW 2013 (Finn) - Finn Race 5'
-  props.selectCourse(raceId)
-  props.selectRace(props.item.raceName)
+  props.selectCourse({ newCourse: true, raceName: 'Finn Race 5' })
   navigateToRaceCourseLayout()
 }
 

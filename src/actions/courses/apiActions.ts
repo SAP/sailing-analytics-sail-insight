@@ -9,8 +9,6 @@ import {
   loadCourse,
   loadMark,
   loadMarkPair,
-  selectCourse,
-  updateCourseLoading,
 } from 'actions/courses'
 import {
   ControlPointClass,
@@ -32,7 +30,7 @@ import {
 } from 'selectors/course'
 
 
-const getRaceId = (regattaName: string, raceName: string) =>
+export const getRaceId = (regattaName: string, raceName: string) =>
   `${regattaName} - ${raceName}`
 
 const getNowInMillis = () => Date.now() * 1000
@@ -139,7 +137,7 @@ const apiControlPointToLocalFormat = (
   } as MarkState
 }
 
-const apiCourseToLocalFormat = (
+export const apiCourseToLocalFormat = (
   apiCourse: any,
   raceId: string,
   leaderboardName: string,
@@ -168,28 +166,6 @@ const apiCourseToLocalFormat = (
   return {
     [raceId]: course,
   }
-}
-
-
-export const fetchCourse = (
-  regattaName: string,
-  raceName: string,
-  leaderboardName: string,
-) => async (dispatch: DispatchType) => {
-  dispatch(updateCourseLoading(true))
-
-  // TODO: Inject serverURL
-  const api = dataApi('https://sapsailing.com')
-  const raceId = getRaceId(regattaName, raceName)
-  const apiCourse = await api.requestCourse(regattaName, raceName)
-  const course: { [id: string]: CourseState } = await dispatch(
-    apiCourseToLocalFormat(apiCourse, raceId, leaderboardName),
-  )
-
-  dispatch(loadCourse(course))
-  dispatch(selectCourse(raceId))
-  dispatch(updateCourseLoading(false))
-  return course
 }
 
 const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
