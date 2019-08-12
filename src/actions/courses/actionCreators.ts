@@ -9,6 +9,9 @@ const addUUIDs = curry((amount: number, payload: any) => ({
 
 const addUUID = addUUIDs(1)
 
+
+export const SELECT_COURSE = 'SELECT_COURSE'
+
 // Actions to store the appropriate objects as they are into the state
 export const loadCourse = createAction('LOAD_COURSE')
 export const loadMark = createAction('LOAD_MARK')
@@ -16,10 +19,12 @@ export const loadMarkPair = createAction('LOAD_MARK_PAIR')
 
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
+export const selectCourse = createAction(SELECT_COURSE)
+
 // TODO: the addUUIDs(4) should be replaced with an actual number of
 //       required UUIDs for a given template, besides the start from scratch
-export const selectCourse = createAction(
-  'SELECT_COURSE',
+export const selectCourseForEditing = createAction(
+  'SELECT_COURSE_FOR_EDITING',
   compose(
     addUUIDs(4),
     objOf('courseId'),

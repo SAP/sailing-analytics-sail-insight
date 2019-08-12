@@ -12,7 +12,7 @@ import {
   loadMarkPair,
   removeWaypoint,
   saveWaypoint,
-  selectCourse,
+  selectCourseForEditing,
   selectEvent,
   selectGateSide,
   selectRace,
@@ -170,7 +170,7 @@ const reducer = handleActions(
     // Select course for loading into the course creation state
     // Course template (e.g. from scratch) or an existing course (when it is fetched from the server)
     // ({ courseId?: string, UUIDs: string[] }) => void
-    [selectCourse as any]: (state: any = {}, action: any) => {
+    [selectCourseForEditing as any]: (state: any = {}, action: any) => {
       const { courseId, UUIDs } = action.payload
       const courseExists =
         courseId && Object.keys(state.allCourses).includes(courseId)
