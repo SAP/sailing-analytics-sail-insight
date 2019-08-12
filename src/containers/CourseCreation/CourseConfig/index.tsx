@@ -49,8 +49,11 @@ const controlPointClassToLabel = {
   [ControlPointClass.Mark]: 'Mark'
 }
 
+const mapInitialValuesToProps = (state: any, props: any) => ({
+  initialValues: getFormInitialValues(state)
+})
+
 const mapStateToProps = (state: any, props: any) => ({
-      initialValues: getFormInitialValues(state),
       selectedWaypoint: getSelectedWaypoint(state),
       selectedMark: getSelectedMark(state),
       selectedGateSide: getSelectedGateSide(state),
@@ -326,11 +329,11 @@ const waypointItemToComponent = (waypoint: any) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
+    connect(mapInitialValuesToProps),
+    reduxForm(courseConfigCommonFormSettings),
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectGateSide, saveWaypointFromForm,
-      addWaypoint, assignControlPointClass, assignControlPoint
-    }),
-    reduxForm(courseConfigCommonFormSettings),
+      addWaypoint, assignControlPointClass, assignControlPoint }),
     concat(__, nothingWhenNoSelectedWaypoint(WaypointEditForm)),
     view({}),
     scrollView({ horizontal: true, style: { height: 100 } }),
