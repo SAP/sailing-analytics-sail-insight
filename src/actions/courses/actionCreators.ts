@@ -11,6 +11,9 @@ const addUUID = addUUIDs(1)
 
 
 export const SELECT_COURSE = 'SELECT_COURSE'
+export const SAVE_COURSE = 'SAVE_COURSE'
+
+export const saveCourse = createAction(SAVE_COURSE)
 
 // Actions to store the appropriate objects as they are into the state
 export const loadCourse = createAction('LOAD_COURSE')
