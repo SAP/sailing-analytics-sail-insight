@@ -163,7 +163,7 @@ const toLocationFormField = (component: any) => Component((props: object) =>
     formSection({ name: formMarkSectionNameByGateSide(props.selectedGateSide) }))(
     reduxFormField({
       name: FORM_LOCATION,
-      component: component.fold
+      component: component.contramap(merge(props)).fold
     })))
 
 const MarkPositionTracking = Component((props: object) =>
@@ -183,7 +183,7 @@ const MarkPositionGeolocation = Component((props: object) =>
     fold(props),
     touchableOpacity({
       onPress: () => navigateToCourseGeolocation({
-        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
+            formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
     reduce(concat, nothing()))([
       text({}, formHasGeolocation(props) ? geolocationAsString(props) : 'No geolocation specified. Please configure geolocation.'),
       nothingWhenFormHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))
