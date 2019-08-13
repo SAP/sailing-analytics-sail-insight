@@ -65,12 +65,14 @@ const raceNumberFormField = reduxFormField({
 })
 
 const onSeeCourse = (props: any) => {
-  props.selectCourse({ newCourse: false, raceName: 'Finn Race 4' })
+  const { raceName } = props.item
+  props.selectCourse({ raceName, newCourse: false })
   navigateToRaceCourseLayout()
 }
 
 const onNewCourse = (props: any) => {
-  props.selectCourse({ newCourse: true, raceName: 'Finn Race 5' })
+  const { raceName } = props.item
+  props.selectCourse({ raceName, newCourse: true })
   navigateToRaceCourseLayout()
 }
 

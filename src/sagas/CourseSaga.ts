@@ -30,6 +30,7 @@ import {
 import {
   getMarks,
   getSelectedCourseState,
+  getSelectedEventInfo,
   getSelectedRaceInfo,
   markByIdPresent,
 } from 'selectors/course'
@@ -158,18 +159,14 @@ function* apiCourseToLocalFormat(apiCourse: any) {
 }
 
 
-function* fetchCourse() {
+function* fetchCourse(raceName: string) {
   yield put(updateCourseLoading(true))
 
   // TODO: Replace with selected data
-  // const { regattaName, raceName, serverURL } = yield select(getSelectedRaceInfo)
-  const { regattaName, raceName } = {
-    regattaName: 'TW 2013 (Finn)',
-    raceName: 'Finn Race 4',
-  }
+  const { regattaName, serverUrl } = yield select(getSelectedRaceInfo)
   const api = dataApi('https://sapsailing.com')
   const raceId = getRaceId(regattaName, raceName)
-  const apiCourse = yield call(api.requestCourse, regattaName, raceName)
+  const apiCourse = yield call(api.requestCourse, 'TW 2013 (Finn)', 'Finn Race 4')
   const course: CourseState  = yield call(apiCourseToLocalFormat, apiCourse)
 
   yield put(loadCourse({
@@ -179,17 +176,13 @@ function* fetchCourse() {
 
 function* selectCourseFlow({ payload }: any) {
   const { newCourse, raceName } = payload
-  // TODO: Replace with selected data
-  // const { regattaName } = yield select(getSelectedEventInfo)
-  const { regattaName } = { regattaName: 'TW 2013 (Finn)' }
+  const { regattaName } = yield select(getSelectedEventInfo)
 
-  // yield put(selectRace(raceName))
-  // TODO: Uncomment the line on top when not using the Finn leaderboard with
-  yield put(selectRace('R2'))
+  yield put(selectRace(raceName))
 
   const raceId = getRaceId(regattaName, raceName)
   if (!newCourse) {
-    yield call(fetchCourse)
+    yield call(fetchCourse, raceName)
   }
   yield put(selectCourseForEditing(raceId))
   yield put(updateCourseLoading(false))
