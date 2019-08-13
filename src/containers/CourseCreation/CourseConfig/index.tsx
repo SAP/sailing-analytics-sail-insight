@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, insert, isNil, not, either, equals, cond,
+  objOf, insert, isNil, not, either, equals, cond, pick, tap,
   propEq } from 'ramda'
 
 import {
@@ -25,6 +25,7 @@ import {
   FORM_ROUNDING_DIRECTION,
   FORM_MARK_SHORT_NAME,
   FORM_MARK_LONG_NAME,
+  FORM_LOCATION,
   formMarkSectionNameByGateSide,
   getFormInitialValues
 } from 'forms/courseConfig'
@@ -67,12 +68,13 @@ const isMarkWaypoint = compose(equals(ControlPointClass.Mark), waypointClass)
 const isEmptyWaypoint = compose(isNil, path(['waypoint', 'controlPoint']))
 const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('waypoint')))
 const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
-const hasMarkPositionType = (type: string) => compose(propEq('positionType', type), defaultTo({}), path(['selectedMark', 'position']))
-const hasGeolocation = hasMarkPositionType(MarkPositionType.Geolocation)
-const hasTracking = hasMarkPositionType(MarkPositionType.TrackingDevice)
-const hasPing = hasMarkPositionType(MarkPositionType.PingedLocation)
 
-const geolocationAsString = compose(coordinatesToString, path(['selectedMark', 'position']))
+const formHasPositionType = (type: string) => compose(propEq('positionType', type), defaultTo({}), path(['input', 'value']))
+const formHasGeolocation = formHasPositionType(MarkPositionType.Geolocation)
+const formHasTracking = formHasPositionType(MarkPositionType.TrackingDevice)
+const formHasPing = formHasPositionType(MarkPositionType.PingedLocation)
+
+const geolocationAsString = compose(coordinatesToString, path(['input', 'value']))
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
@@ -84,9 +86,9 @@ const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothin
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotPingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.PingedLocation)), nothingAsClass)
-const nothingWhenHasGeolocation = branch(hasGeolocation, nothingAsClass)
-const nothingWhenHasTracking = branch(hasTracking, nothingAsClass)
-const nothingWhenHasPing = branch(hasPing, nothingAsClass)
+const nothingWhenFormHasGeolocation = branch(formHasGeolocation, nothingAsClass)
+const nothingWhenFormHasTracking = branch(formHasTracking, nothingAsClass)
+const nothingWhenFormHasPing = branch(formHasPing, nothingAsClass)
 const nothingWhenPristineForm = branch(propEq('pristine', true), nothingAsClass)
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
@@ -155,16 +157,26 @@ const PositionSelectorItem = Component((props: object) =>
     text({}))(
     props.type))
 
+const toLocationFormField = (component: any) => Component((props: object) =>
+  compose(
+    fold(props),
+    formSection({ name: formMarkSectionNameByGateSide(props.selectedGateSide) }))(
+    reduxFormField({
+      name: FORM_LOCATION,
+      component: component.fold
+    })))
+
 const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({
       onPress: () => navigateToCourseTrackerBinding({
-        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
+        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) })
+    }),
     view({}),
     reduce(concat, nothing()))([
-      text({}, hasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),
-      nothingWhenHasTracking(text({}, 'CONFIGURE OR CHANGE TRACKER BINDING')) ]))
+      text({}, formHasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),
+      nothingWhenFormHasTracking(text({}, 'CONFIGURE OR CHANGE TRACKER BINDING')) ]))
 
 const MarkPositionGeolocation = Component((props: object) =>
   compose(
@@ -173,27 +185,33 @@ const MarkPositionGeolocation = Component((props: object) =>
       onPress: () => navigateToCourseGeolocation({
         formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
     reduce(concat, nothing()))([
-      text({}, hasGeolocation(props) ? geolocationAsString(props) : 'No geolocation specified. Please configure geolocation.'),
-      nothingWhenHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))
+      text({}, formHasGeolocation(props) ? geolocationAsString(props) : 'No geolocation specified. Please configure geolocation.'),
+      nothingWhenFormHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))
     ]))
 
-const MarkPositionPing = Component((props: object) =>
-  compose(
-    fold(props),
-    reduce(concat, nothing()))([
-    text({}, hasPing(props) ? geolocationAsString(props) : 'No ping specified. Please configure ping.'),
-    nothingWhenHasPing(text({}, 'CONFIGURE OR CHANGE PING'))]))
+const MarkPositionPing = Component((props: object) => compose(
+  fold(props),
+  touchableOpacity({
+    onPress: (props: object) => navigator.geolocation.getCurrentPosition(compose(
+      props.input.onChange,
+      merge({ positionType: MarkPositionType.PingedLocation }),
+      pick(['latitude', 'longitude']),
+      prop('coords')
+    ))
+  }),
+  reduce(concat, nothing()))([
+  text({}, formHasPing(props) ? geolocationAsString(props) : 'No ping specified. Please configure ping.'),
+  nothingWhenFormHasPing(text({}, 'CONFIGURE OR CHANGE PING'))]))
 
 const MarkPosition = Component((props: object) =>
   compose(
     fold(props),
-    withSelectedPositionType,
     concat(text({}, 'LOCATE OR TRACK')),
     reduce(concat, nothing()),
     concat(__, [
-      nothingWhenNotPingSelected(MarkPositionPing),
-      nothingWhenNotGeolocationSelected(MarkPositionGeolocation),
-      nothingWhenNotTrackingSelected(MarkPositionTracking)]),
+      nothingWhenNotPingSelected(toLocationFormField(MarkPositionPing)),
+      nothingWhenNotGeolocationSelected(toLocationFormField(MarkPositionGeolocation)),
+      nothingWhenNotTrackingSelected(toLocationFormField(MarkPositionTracking))]),
     map(compose(
       PositionSelectorItem.contramap,
       merge,
@@ -331,6 +349,7 @@ export default Component((props: object) =>
     fold(props),
     connect(mapInitialValuesToProps),
     reduxForm(courseConfigCommonFormSettings),
+    withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectGateSide, saveWaypointFromForm,
       addWaypoint, assignControlPointClass, assignControlPoint }),
