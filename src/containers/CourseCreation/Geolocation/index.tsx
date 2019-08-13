@@ -1,4 +1,4 @@
-import { __, compose, concat, head, mergeLeft, objOf, reduce, tap, merge } from 'ramda'
+import { __, compose, concat, head, mergeLeft, objOf, reduce, merge, pick } from 'ramda'
 
 import MapView, { Marker } from 'react-native-maps'
 
@@ -34,12 +34,12 @@ const mapView = (settings: any = {}) => Component((props: any) => compose(
     mergeLeft({
       ...settings,
       region: mergeLeft(props.input.value, { latitudeDelta: 1, longitudeDelta: 1 }),
-      onRegionChangeComplete: (region: any) => {
-        props.input.onChange(region)
-      },
+      onRegionChangeComplete: compose(
+        props.input.onChange,
+        merge({ positionType: MarkPositionType.Geolocation }),
+        pick(['latitude', 'longitude']))
     }),
     objOf('children'),
-    tap(() => console.log(props.input)),
     head,
     fold(props),
   )(marker),
