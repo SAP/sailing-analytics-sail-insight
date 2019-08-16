@@ -240,6 +240,7 @@ const reducer = handleActions(
       const { courseId, UUIDs } = action.payload
       const courseExists =
         courseId && Object.keys(state.allCourses).includes(courseId)
+      const defaultMarkMap = state.defaultMarkMap
       const selectedCourse: SelectedCourseState = courseExists
         ? state.allCourses[courseId]
         : {
@@ -251,6 +252,10 @@ const reducer = handleActions(
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
                   id: UUIDs[1],
+                  leftMark: defaultMarkMap[DefaultMark.StartFinishPin],
+                  rightMark: defaultMarkMap[DefaultMark.StartFinishBoat],
+                  longName: 'Start',
+                  shortName: 'S',
                 },
               },
               {
@@ -259,6 +264,10 @@ const reducer = handleActions(
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
                   id: UUIDs[3],
+                  leftMark: defaultMarkMap[DefaultMark.StartFinishPin],
+                  rightMark: defaultMarkMap[DefaultMark.StartFinishBoat],
+                  longName: 'Finish',
+                  shortName: 'F',
                 },
               },
             ],
