@@ -1,5 +1,5 @@
 import { get, keyBy, mapKeys, mapValues, take  } from 'lodash'
-import { compose, findIndex, isNil, propEq, unless } from 'ramda'
+import { findIndex, propEq } from 'ramda'
 import { handleActions } from 'redux-actions'
 import uuidv4 from 'uuid/v4'
 
@@ -45,22 +45,16 @@ const insertItem = (array: any[], index: number, item: any) => {
 const removeItem = (array: any[], index: number) =>
   array.filter((item: any, i: number) => i !== index)
 
-interface itemWithId {
-  id: string
-}
-
 // Update items but preserve ID
-const updateItems = (array: itemWithId[], indices: number[], item: any = {}) =>
-  array.map((it: itemWithId, ind: number) => {
-    if (!indices.includes(ind)) {
+const updateItem = (array: any[], index: number, item: any) => (
+  array.map((it: any, ind: number) => {
+    if (ind !== index) {
       return it
     }
 
-    return {
-      ...item,
-      id: it.id,
-    }
+    return item
   })
+)
 
 const getArrayIndexByWaypointId = (state: any) => (id: string) =>
   findIndex(propEq('id', id))(state.selectedCourse.waypoints)
@@ -74,15 +68,6 @@ const getWaypointIdByArrayIndex = (state: any) => (index: number) =>
 const getFinishWaypointIndex = (state: any) =>
   state.selectedCourse.waypoints.length - 1
 
-const startOrFinishWaypointSelected = (state: any) =>
-  getSelectedWaypointArrayIndex(state) === 0 ||
-  getSelectedWaypointArrayIndex(state) === getFinishWaypointIndex(state)
-
-const getWaypointIndicesToUpdate = (state: any) =>
-  state.sameStartFinish && startOrFinishWaypointSelected(state)
-    ? [0, getFinishWaypointIndex(state)]
-    : [getSelectedWaypointArrayIndex(state)]
-
 const getWaypointById = (state: any) => (id: string) =>
   get(state, [
     'selectedCourse',
@@ -93,22 +78,15 @@ const getWaypointById = (state: any) => (id: string) =>
 const getSelectedWaypoint = (state: any) =>
   state.selectedWaypoint && getWaypointById(state)(state.selectedWaypoint)
 
-const getSelectedControlPoint = compose(
-  unless(isNil, (waypoint: any) => waypoint.controlPoint),
-  getSelectedWaypoint,
-)
-
-const getSelectedGateSide = (state: any) => state.selectedGateSide
-
 const updateWaypointReducer = (
   state: any,
   waypointState: Partial<WaypointState>,
 ) => ({
   selectedCourse: {
     ...state.selectedCourse,
-    waypoints: updateItems(
+    waypoints: updateItem(
       state.selectedCourse.waypoints,
-      getWaypointIndicesToUpdate(state),
+      getSelectedWaypointArrayIndex(state),
       waypointState,
     ),
   },
