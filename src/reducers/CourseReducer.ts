@@ -1,6 +1,7 @@
-import { get, keyBy, take } from 'lodash'
+import { get, keyBy, mapKeys, mapValues, take  } from 'lodash'
 import { compose, findIndex, isNil, propEq, unless } from 'ramda'
 import { handleActions } from 'redux-actions'
+import uuidv4 from 'uuid/v4'
 
 import { CourseReducerState } from 'reducers/config'
 
@@ -24,8 +25,12 @@ import {
 import {
   ControlPointClass,
   ControlPointState,
+  DefaultMark,
+  DefaultMarkMap,
   GateSide,
   Mark,
+  MarkMap,
+  MarkType,
   PassingInstruction,
   SelectedCourseState,
   WaypointState,
@@ -122,9 +127,68 @@ const SAME_START_FINISH_DEFAULT = true
 const SELECTED_WAYPOINT_DEFAULT = undefined
 const SELECTED_GATE_SIDE_DEFAULT = GateSide.LEFT
 
+const constructDefaultMarks = () => {
+  const defaultMarkNames = {
+    [DefaultMark.StartFinishPin]: {
+      longName: 'Start/Finish Pin',
+      shortName: 'SFP',
+    },
+    [DefaultMark.StartFinishBoat]: {
+      longName: 'Start/Finish Boat',
+      shortName: 'SFB',
+    },
+    [DefaultMark.WindwardMark]: {
+      longName: 'Windward Mark',
+      shortName: '1',
+    },
+    [DefaultMark.ReachingMark]: {
+      longName: 'Reaching Mark',
+      shortName: '2',
+    },
+    [DefaultMark.LeewardMark]: {
+      longName: 'Leeward Mark',
+      shortName: '3',
+    },
+    [DefaultMark.StartPin]: {
+      longName: 'Start Pin',
+      shortName: 'SP',
+    },
+    [DefaultMark.StartBoat]: {
+      longName: 'Start Boat',
+      shortName: 'SB',
+    },
+    [DefaultMark.FinishPin]: {
+      longName: 'Finish Pin',
+      shortName: 'FP',
+    },
+    [DefaultMark.FinishBoat]: {
+      longName: 'Finish Boat',
+      shortName: 'FB',
+    },
+  }
+
+  // This mapping can be considered as what the API returns when creating the marks
+  const defaultMarksWithFullInformation = mapValues(
+    defaultMarkNames,
+    mark => ({
+      ...mark,
+      id: uuidv4(),
+      class: ControlPointClass.Mark,
+      type: MarkType.Buoy,
+    }),
+  )
+
+  const defaultMarks: MarkMap = mapKeys(defaultMarksWithFullInformation, value => value.id)
+  const defaultMarkMap: DefaultMarkMap = mapValues(defaultMarksWithFullInformation, value => value.id)
+
+  return { defaultMarks, defaultMarkMap }
+}
+
+const { defaultMarks, defaultMarkMap } = constructDefaultMarks()
+
 const initialState: CourseReducerState = {
   allCourses: {},
-  marks: {},
+  marks: defaultMarks,
   markPairs: {},
   courseLoading: false,
   selectedCourse: undefined,
@@ -134,6 +198,8 @@ const initialState: CourseReducerState = {
 
   selectedEvent: undefined,
   selectedRace: undefined,
+
+  defaultMarkMap,
 } as CourseReducerState
 
 const reducer = handleActions(

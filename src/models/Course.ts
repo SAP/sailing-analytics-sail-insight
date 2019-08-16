@@ -1,3 +1,15 @@
+export enum DefaultMark {
+  StartFinishPin = 'START_FINISH_PIN',
+  StartFinishBoat = 'START_FINISH_BOAT',
+  StartPin = 'START_PIN',
+  StartBoat = 'START_BOAT',
+  FinishPin = 'FINISH_PIN',
+  FinishBoat = 'FINISH_BOAT',
+  WindwardMark = 'WINDWARD_MARK',
+  ReachingMark = 'REACHING_MARK',
+  LeewardMark = 'LEEWARD_MARK',
+}
+
 export enum GateSide {
   LEFT = 'LEFT',
   RIGHT = 'RIGHT',
@@ -137,3 +149,4 @@ export interface SelectedRaceInfo extends SelectedEventInfo {
 export interface CourseStateMap { [id: string]: CourseState }
 export interface MarkMap { [id: string]: Mark }
 export interface MarkPairMap { [id: string]: MarkPairState }
+export interface DefaultMarkMap { [defaultMark: string]: string }
