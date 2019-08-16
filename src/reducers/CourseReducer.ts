@@ -1,4 +1,4 @@
-import { get, keyBy, mapKeys, mapValues, take  } from 'lodash'
+import { get, head, keyBy, keys, last, mapKeys, mapValues, take } from 'lodash'
 import { findIndex, propEq } from 'ramda'
 import { handleActions } from 'redux-actions'
 import uuidv4 from 'uuid/v4'
@@ -45,16 +45,14 @@ const insertItem = (array: any[], index: number, item: any) => {
 const removeItem = (array: any[], index: number) =>
   array.filter((item: any, i: number) => i !== index)
 
-// Update items but preserve ID
-const updateItem = (array: any[], index: number, item: any) => (
-  array.map((it: any, ind: number) => {
-    if (ind !== index) {
-      return it
-    }
-
-    return item
-  })
-)
+const updateItems = (array: any[], payload: { [index: number]: any }) =>
+  array.map((it: any, ind: number) =>
+    keys(payload)
+      .map(Number)
+      .includes(ind)
+      ? payload[ind]
+      : it,
+  )
 
 const getArrayIndexByWaypointId = (state: any) => (id: string) =>
   findIndex(propEq('id', id))(state.selectedCourse.waypoints)
@@ -80,26 +78,39 @@ const getSelectedWaypoint = (state: any) =>
 
 const updateWaypointReducer = (
   state: any,
-  waypointState: Partial<WaypointState>,
+  payload: { [index: number]: Partial<WaypointState> },
 ) => ({
   selectedCourse: {
     ...state.selectedCourse,
-    waypoints: updateItem(
+    waypoints: updateItems(
       state.selectedCourse.waypoints,
-      getSelectedWaypointArrayIndex(state),
-      waypointState,
+      payload,
     ),
   },
 })
 
+const updateSelectedWaypointReducer = (
+  state: any,
+  waypointState: Partial<WaypointState>,
+) => updateWaypointReducer(state, { [getSelectedWaypointArrayIndex(state)]: waypointState })
+
+
 const updateControlPointReducer = (
   state: any,
-  controlPointState: ControlPointState,
-) =>
-  updateWaypointReducer(state, {
-    ...(getSelectedWaypoint(state) || {}),
+  payload: { [index: number]: ControlPointState },
+) => {
+  const changedWaypointPayload = mapValues(payload, (controlPointState, index) => ({
+    ...(state.selectedCourse.waypoints[index] || {}),
     controlPoint: controlPointState,
-  })
+  }))
+
+  return updateWaypointReducer(state, changedWaypointPayload)
+}
+
+const updateSelectedControlPointReducer = (
+  state: any,
+  controlPointState: ControlPointState,
+) => updateControlPointReducer(state, { [getSelectedWaypointArrayIndex(state)]: controlPointState })
 
 const SAME_START_FINISH_DEFAULT = true
 const SELECTED_WAYPOINT_DEFAULT = undefined
@@ -342,7 +353,7 @@ const reducer = handleActions(
 
       return {
         ...state,
-        ...updateWaypointReducer(state, changedWaypoint),
+        ...updateSelectedWaypointReducer(state, changedWaypoint),
         marks: {
           ...state.marks,
           ...keyBy(marksToSave, 'id'),
@@ -354,7 +365,7 @@ const reducer = handleActions(
     // (controlPointState: Partial<ControlPointState>) => void
     [updateControlPoint as any]: (state: any = {}, action: any) => ({
       ...state,
-      ...updateControlPointReducer(state, action.payload),
+      ...updateSelectedControlPointReducer(state, action.payload),
     }),
 
     // Change selectedWaypoint
@@ -372,10 +383,82 @@ const reducer = handleActions(
       selectedGateSide: action.payload,
     }),
 
-    [toggleSameStartFinish as any]: (state: any = {}) => ({
-      ...state,
-      sameStartFinish: !state.sameStartFinish,
-    }),
+    [toggleSameStartFinish as any]: (state: any = {}) => {
+      const sameStartFinish = state.sameStartFinish
+
+      const startControlPoint = head(state.selectedCourse.waypoints).controlPoint
+      const finishControlPoint = last(state.selectedCourse.waypoints).controlPoint
+
+      const { defaultMarkMap, marks } = state
+
+      const changedControlPointPayload = {
+        0: {
+          ...startControlPoint,
+          ...(sameStartFinish
+            ? {
+              leftMark: defaultMarkMap[DefaultMark.StartPin],
+              rightMark: defaultMarkMap[DefaultMark.StartBoat],
+            }
+            : {
+              leftMark: defaultMarkMap[DefaultMark.StartFinishPin],
+              rightMark: defaultMarkMap[DefaultMark.StartFinishBoat],
+            }
+          )
+        },
+
+        [getFinishWaypointIndex(state)]: {
+          ...finishControlPoint,
+          ...(sameStartFinish
+            ? {
+              leftMark: defaultMarkMap[DefaultMark.FinishPin],
+              rightMark: defaultMarkMap[DefaultMark.FinishBoat],
+            }
+            : {
+              leftMark: defaultMarkMap[DefaultMark.StartFinishPin],
+              rightMark: defaultMarkMap[DefaultMark.StartFinishBoat],
+            }
+          )
+        },
+      }
+
+      const defaultMarks = mapValues(defaultMarkMap, id => marks[id])
+      console.log({ defaultMarks })
+      const changedMarks = sameStartFinish
+        ? {
+          [defaultMarkMap[DefaultMark.StartPin]]: {
+            ...defaultMarks[DefaultMark.StartPin],
+            position: defaultMarks[DefaultMark.StartFinishPin].position ||
+                      defaultMarks[DefaultMark.StartPin].position,
+          },
+          [defaultMarkMap[DefaultMark.StartBoat]]: {
+            ...defaultMarks[DefaultMark.StartBoat],
+            position: defaultMarks[DefaultMark.StartFinishBoat].position ||
+                      defaultMarks[DefaultMark.StartBoat].position,
+          },
+        }
+        : {
+          [defaultMarkMap[DefaultMark.StartFinishPin]]: {
+            ...defaultMarks[DefaultMark.StartFinishPin],
+            position: defaultMarks[DefaultMark.StartPin].position ||
+                      defaultMarks[DefaultMark.StartFinishPin].position,
+          },
+          [defaultMarkMap[DefaultMark.StartFinishBoat]]: {
+            ...defaultMarks[DefaultMark.StartFinishBoat],
+            position: defaultMarks[DefaultMark.StartBoat].position ||
+                      defaultMarks[DefaultMark.StartFinishBoat].position,
+          },
+        }
+
+      return {
+        ...state,
+        ...updateControlPointReducer(state, changedControlPointPayload),
+        sameStartFinish: !sameStartFinish,
+        marks: {
+          ...state.marks,
+          ...changedMarks,
+        },
+      }
+    },
 
     [selectEvent as any]: (state: any = {}, action: any) => ({
       ...state,
