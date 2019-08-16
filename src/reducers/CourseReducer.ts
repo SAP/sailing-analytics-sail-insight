@@ -26,7 +26,7 @@ import {
   ControlPointClass,
   ControlPointState,
   DefaultMark,
-  DefaultMarkMap,
+  DefaultMarkIdMap,
   GateSide,
   Mark,
   MarkMap,
@@ -168,12 +168,12 @@ const constructDefaultMarks = () => {
   )
 
   const defaultMarks: MarkMap = mapKeys(defaultMarksWithFullInformation, value => value.id)
-  const defaultMarkMap: DefaultMarkMap = mapValues(defaultMarksWithFullInformation, value => value.id)
+  const defaultMarkIds: DefaultMarkIdMap = mapValues(defaultMarksWithFullInformation, value => value.id)
 
-  return { defaultMarks, defaultMarkMap }
+  return { defaultMarks, defaultMarkIds }
 }
 
-const { defaultMarks, defaultMarkMap } = constructDefaultMarks()
+const { defaultMarks, defaultMarkIds } = constructDefaultMarks()
 
 const initialState: CourseReducerState = {
   allCourses: {},
@@ -188,7 +188,7 @@ const initialState: CourseReducerState = {
   selectedEvent: undefined,
   selectedRace: undefined,
 
-  defaultMarkMap,
+  defaultMarkIds,
 } as CourseReducerState
 
 const reducer = handleActions(
@@ -229,7 +229,7 @@ const reducer = handleActions(
       const { courseId, UUIDs } = action.payload
       const courseExists =
         courseId && Object.keys(state.allCourses).includes(courseId)
-      const defaultMarkMap = state.defaultMarkMap
+      const defaultMarkIds = state.defaultMarkIds
       const selectedCourse: SelectedCourseState = courseExists
         ? state.allCourses[courseId]
         : {
@@ -241,8 +241,8 @@ const reducer = handleActions(
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
                   id: UUIDs[1],
-                  leftMark: defaultMarkMap[DefaultMark.StartFinishPin],
-                  rightMark: defaultMarkMap[DefaultMark.StartFinishBoat],
+                  leftMark: defaultMarkIds[DefaultMark.StartFinishPin],
+                  rightMark: defaultMarkIds[DefaultMark.StartFinishBoat],
                   longName: 'Start',
                   shortName: 'S',
                 },
@@ -253,8 +253,8 @@ const reducer = handleActions(
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
                   id: UUIDs[3],
-                  leftMark: defaultMarkMap[DefaultMark.StartFinishPin],
-                  rightMark: defaultMarkMap[DefaultMark.StartFinishBoat],
+                  leftMark: defaultMarkIds[DefaultMark.StartFinishPin],
+                  rightMark: defaultMarkIds[DefaultMark.StartFinishBoat],
                   longName: 'Finish',
                   shortName: 'F',
                 },
@@ -389,19 +389,19 @@ const reducer = handleActions(
       const startControlPoint = head(state.selectedCourse.waypoints).controlPoint
       const finishControlPoint = last(state.selectedCourse.waypoints).controlPoint
 
-      const { defaultMarkMap, marks } = state
+      const { defaultMarkIds, marks } = state
 
       const changedControlPointPayload = {
         0: {
           ...startControlPoint,
           ...(sameStartFinish
             ? {
-              leftMark: defaultMarkMap[DefaultMark.StartPin],
-              rightMark: defaultMarkMap[DefaultMark.StartBoat],
+              leftMark: defaultMarkIds[DefaultMark.StartPin],
+              rightMark: defaultMarkIds[DefaultMark.StartBoat],
             }
             : {
-              leftMark: defaultMarkMap[DefaultMark.StartFinishPin],
-              rightMark: defaultMarkMap[DefaultMark.StartFinishBoat],
+              leftMark: defaultMarkIds[DefaultMark.StartFinishPin],
+              rightMark: defaultMarkIds[DefaultMark.StartFinishBoat],
             }
           )
         },
@@ -410,39 +410,38 @@ const reducer = handleActions(
           ...finishControlPoint,
           ...(sameStartFinish
             ? {
-              leftMark: defaultMarkMap[DefaultMark.FinishPin],
-              rightMark: defaultMarkMap[DefaultMark.FinishBoat],
+              leftMark: defaultMarkIds[DefaultMark.FinishPin],
+              rightMark: defaultMarkIds[DefaultMark.FinishBoat],
             }
             : {
-              leftMark: defaultMarkMap[DefaultMark.StartFinishPin],
-              rightMark: defaultMarkMap[DefaultMark.StartFinishBoat],
+              leftMark: defaultMarkIds[DefaultMark.StartFinishPin],
+              rightMark: defaultMarkIds[DefaultMark.StartFinishBoat],
             }
           )
         },
       }
 
-      const defaultMarks = mapValues(defaultMarkMap, id => marks[id])
-      console.log({ defaultMarks })
+      const defaultMarks = mapValues(defaultMarkIds, id => marks[id])
       const changedMarks = sameStartFinish
         ? {
-          [defaultMarkMap[DefaultMark.StartPin]]: {
+          [defaultMarkIds[DefaultMark.StartPin]]: {
             ...defaultMarks[DefaultMark.StartPin],
             position: defaultMarks[DefaultMark.StartFinishPin].position ||
                       defaultMarks[DefaultMark.StartPin].position,
           },
-          [defaultMarkMap[DefaultMark.StartBoat]]: {
+          [defaultMarkIds[DefaultMark.StartBoat]]: {
             ...defaultMarks[DefaultMark.StartBoat],
             position: defaultMarks[DefaultMark.StartFinishBoat].position ||
                       defaultMarks[DefaultMark.StartBoat].position,
           },
         }
         : {
-          [defaultMarkMap[DefaultMark.StartFinishPin]]: {
+          [defaultMarkIds[DefaultMark.StartFinishPin]]: {
             ...defaultMarks[DefaultMark.StartFinishPin],
             position: defaultMarks[DefaultMark.StartPin].position ||
                       defaultMarks[DefaultMark.StartFinishPin].position,
           },
-          [defaultMarkMap[DefaultMark.StartFinishBoat]]: {
+          [defaultMarkIds[DefaultMark.StartFinishBoat]]: {
             ...defaultMarks[DefaultMark.StartFinishBoat],
             position: defaultMarks[DefaultMark.StartBoat].position ||
                       defaultMarks[DefaultMark.StartFinishBoat].position,

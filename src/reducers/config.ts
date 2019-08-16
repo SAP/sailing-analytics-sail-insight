@@ -1,7 +1,7 @@
 import { AutoCourseUpdateState } from 'helpers/types'
 import {
   CourseStateMap,
-  DefaultMarkMap,
+  DefaultMarkIdMap,
   GateSide,
   MarkMap,
   MarkPairMap,
@@ -99,5 +99,5 @@ export interface CourseReducerState {
   selectedEvent?: string
   selectedRace?: string
 
-  defaultMarkMap: DefaultMarkMap
+  defaultMarkIds: DefaultMarkIdMap
 }

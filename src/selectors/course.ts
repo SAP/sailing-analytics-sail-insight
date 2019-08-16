@@ -9,7 +9,7 @@ import {
   CourseState,
   CourseStateMap,
   DefaultMark,
-  DefaultMarkMap,
+  DefaultMarkIdMap,
   GateSide,
   MarkMap,
   MarkPairMap,
@@ -54,7 +54,7 @@ export const getSelectedGateSide = (state: any): GateSide =>
   state.courses.selectedGateSide
 
 const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
-const getDefaultMarkMap = (state: any): DefaultMarkMap => state.courses.defaultMarkMap
+const getDefaultMarkIds = (state: any): DefaultMarkIdMap => state.courses.defaultMarkIds
 
 const getSelectedCourseWaypointState = createSelector(
   getSelectedCourseState,
@@ -104,8 +104,8 @@ const sameStartFinishOffFilteredDefaultMarks = [
 export const getMarkInventory = createSelector(
   getCompleteMarkInventory,
   getSameStartFinish,
-  getDefaultMarkMap,
-  (markInventory, sameStartFinish, defaultMarkMap) => {
+  getDefaultMarkIds,
+  (markInventory, sameStartFinish, defaultMarkIds) => {
     return reject(compose(
       flip(contains)(compose(
         values,
@@ -113,7 +113,7 @@ export const getMarkInventory = createSelector(
           ? sameStartFinishOnFilteredDefaultMarks
           : sameStartFinishOffFilteredDefaultMarks
         )
-      )(defaultMarkMap)),
+      )(defaultMarkIds)),
       prop('id'),
     ))(markInventory)
   },

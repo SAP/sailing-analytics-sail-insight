@@ -149,4 +149,4 @@ export interface SelectedRaceInfo extends SelectedEventInfo {
 export interface CourseStateMap { [id: string]: CourseState }
 export interface MarkMap { [id: string]: Mark }
 export interface MarkPairMap { [id: string]: MarkPairState }
-export interface DefaultMarkMap { [defaultMark: string]: string }
+export interface DefaultMarkIdMap { [defaultMark: string]: string }
