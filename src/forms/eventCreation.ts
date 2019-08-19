@@ -1,6 +1,9 @@
-import EventCreationData from 'models/EventCreationData'
-import { validateRequired } from './validators'
+import EventCreationData, {
+  HandicapRatingSystem,
+  RegattaType,
+} from 'models/EventCreationData'
 import { generateNewSessionName } from 'services/SessionService'
+import { validateRequired } from './validators'
 
 export const EVENT_CREATION_FORM_NAME = 'eventCreation'
 
@@ -32,7 +35,8 @@ export const initialValues = {
   [FORM_KEY_DATE_TO]: datePickerDateFormat(new Date()),
   [FORM_KEY_NUMBER_OF_RACES]: 3,
   [FORM_KEY_DISCARDS_START]: 3,
-  [FORM_KEY_REGATTA_TYPE]: 'oneDesign',
+  [FORM_KEY_REGATTA_TYPE]: RegattaType.OneDesign,
+  [FORM_KEY_RATING_SYSTEM]: HandicapRatingSystem.TimeOnTimeAndDistance,
 }
 
 export const eventCreationDataFromFormValues = (values: any) => values && ({
