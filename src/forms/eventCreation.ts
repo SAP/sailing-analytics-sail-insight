@@ -19,13 +19,6 @@ export const FORM_KEY_RATING_SYSTEM = 'ratingSystem'
 export const FORM_KEY_NUMBER_OF_RACES = 'numberOfRaces'
 export const FORM_KEY_DISCARDS_START = 'discardsStart'
 
-
-export const eventWizardCommonFormSettings = {
-  form: EVENT_CREATION_FORM_NAME,
-  destroyOnUnmount: false,        // <-- preserve form data across different steps
-  forceUnregisterOnUnmount: true,
-}
-
 const datePickerDateFormat = (date: Date) =>
   `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
 
@@ -51,11 +44,8 @@ export const eventCreationDataFromFormValues = (values: any) => values && ({
   discardsStart: values[FORM_KEY_DISCARDS_START],
 } as EventCreationData)
 
-export const validateBasics = (values: any = {}) => ({
+export const validate = (values: any = {}) => ({
   [FORM_KEY_NAME]: validateRequired(values[FORM_KEY_NAME]),
   [FORM_KEY_LOCATION]: validateRequired(values[FORM_KEY_LOCATION]),
-})
-
-export const validateTypeAndBoatClass   = (values: any = {}) => ({
   [FORM_KEY_BOAT_CLASS]: validateRequired(values[FORM_KEY_BOAT_CLASS]),
 })

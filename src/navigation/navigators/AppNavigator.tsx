@@ -20,7 +20,6 @@ import ExpertSettings from '../../containers/ExpertSettings'
 import { navigateToTracking } from '../index'
 
 import MainNavigator from './MainNavigator'
-import NewSessionNavigator from './NewSessionNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 import TrackingNavigator from './TrackingNavigator'
 
@@ -34,7 +33,6 @@ export default createStackNavigator(
         header: null,
       },
     },
-    [Screens.NewSessionBasics]: { screen: NewSessionNavigator, navigationOptions: { header: null } },
     [Screens.TrackingNavigator]: {
       screen: TrackingNavigator,
       navigationOptions: { header: null, gesturesEnabled: false },

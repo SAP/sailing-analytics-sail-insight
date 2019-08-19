@@ -4,17 +4,20 @@ import { createStackNavigator } from 'react-navigation'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
+import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 import { getFormTeamName } from 'selectors/boat'
 
 import HeaderTitle from 'components/HeaderTitle'
 import ImageButton from 'components/ImageButton'
+import ModalBackButton from 'components/ModalBackButton'
 import ShareButton from 'components/ShareIconButton'
 import WebView from 'components/WebView'
 
 import Geolocation from 'containers/CourseCreation/Geolocation'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
+import EventCreation from 'containers/session/EventCreation'
 import SessionDetail from 'containers/session/SessionDetail'
 import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
@@ -44,6 +47,14 @@ export default createStackNavigator(
       navigationOptions: {
         header: null,
       },
+    },
+    [Screens.EventCreation]: {
+      screen: EventCreation.fold,
+      navigationOptions: () => ({
+        title: I18n.t('caption_new_session'),
+        headerLeft: null,
+        headerRight: <ModalBackButton/>,
+      }),
     },
     [Screens.SessionDetail]: {
       screen: SessionDetail.fold,

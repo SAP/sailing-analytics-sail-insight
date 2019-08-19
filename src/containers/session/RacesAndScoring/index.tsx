@@ -1,25 +1,19 @@
-import { __, compose, concat, map, merge, mergeLeft, reduce, range, objOf } from 'ramda'
+import { __, compose, concat, map, merge, objOf, range, reduce } from 'ramda'
 
 import Slider from '@react-native-community/slider'
-import { forwardingPropsFlatList } from 'components/fp/react-native'
-
-import I18n from 'i18n'
 
 import {
   Component,
   fold,
   fromClass,
-  nothing
+  nothing,
 } from 'components/fp/component'
-import { text, touchableOpacity, view } from 'components/fp/react-native'
-import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
-import { nextButton, reviewButton } from 'containers/session/common'
+import { forwardingPropsFlatList, text, touchableOpacity, view } from 'components/fp/react-native'
+import { field as reduxFormField } from 'components/fp/redux-form'
 import {
-  eventWizardCommonFormSettings,
   FORM_KEY_DISCARDS_START,
   FORM_KEY_NUMBER_OF_RACES,
 } from 'forms/eventCreation'
-import { navigateToNewSessionCompetitors } from 'navigation'
 
 const sliderSettings = {
   minimumValue: 1,
@@ -30,14 +24,13 @@ const sliderSettings = {
 const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
-    reduce(concat, nothing()))
-  ([
-    text({}, 'Planned number of races'),
-    fromClass(Slider).contramap(merge({
-      value: Number(props.input.value),
-      onValueChange: props.input.onChange
-    })),
-    text({}, `${props.input.value}`) ]))
+    reduce(concat, nothing()))([
+      text({}, 'Planned number of races'),
+      fromClass(Slider).contramap(merge({
+        value: Number(props.input.value),
+        onValueChange: props.input.onChange,
+      })),
+      text({}, `${props.input.value}`)]))
 
 const raceNumberFormField = reduxFormField({
   name: FORM_KEY_NUMBER_OF_RACES,
@@ -49,10 +42,9 @@ const scoringSystemLabel = Component((props: object) =>
   compose(
     fold(props),
     reduce(concat, nothing()),
-    map(text({})))
-  ([
-    'Low point scoring applies',
-    'Please contact us if you require any other scoring system.' ]))
+    map(text({})))([
+      'Low point scoring applies',
+      'Please contact us if you require any other scoring system.']))
 
 const discardSelectorItem = Component((props: any) =>
   compose(
@@ -64,13 +56,12 @@ const discardSelectorItem = Component((props: any) =>
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
-        backgroundColor: props.item.key == props.input.value ? '#2699FB' : '#F1F9FF',
+        backgroundColor: props.item.key === props.input.value ? '#2699FB' : '#F1F9FF',
         margin: 10,
       },
-      onPress: () => props.input.onChange(props.item.key)
+      onPress: () => props.input.onChange(props.item.key),
     }),
-    text({}))
-  (props.item.key))
+    text({}))(props.item.key))
 
 const discardInputFormField = reduxFormField({
   name: FORM_KEY_DISCARDS_START,
@@ -84,17 +75,11 @@ const discardInputFormField = reduxFormField({
 export default Component((props: Object) =>
   compose(
     fold(props),
-    reduxForm(eventWizardCommonFormSettings),
     view({ style: [] }),
-    reduce(concat, nothing()))
-  ([
-    text({}, 'Races & Scoring'),
-    raceNumberFormField,
-    scoringSystemLabel,
-    text({}, 'Discards starting from ... races'),
-    discardInputFormField,
-    reviewButton(),
-    nextButton({
-      onPress: navigateToNewSessionCompetitors,
-      label: 'Competitors'
-    }) ]))
+    reduce(concat, nothing()))([
+      text({}, 'Races & Scoring'),
+      raceNumberFormField,
+      scoringSystemLabel,
+      text({}, 'Discards starting from ... races'),
+      discardInputFormField,
+    ]))
