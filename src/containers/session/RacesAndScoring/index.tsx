@@ -15,6 +15,8 @@ import {
   FORM_KEY_NUMBER_OF_RACES,
 } from 'forms/eventCreation'
 
+import styles from './styles'
+
 const sliderSettings = {
   minimumValue: 1,
   maximumValue: 20,
@@ -25,7 +27,7 @@ const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-      text({}, 'Planned number of races'),
+      text({ style: styles.textHeader }, 'Planned Number of Races'),
       fromClass(Slider).contramap(merge({
         value: Number(props.input.value),
         onValueChange: props.input.onChange,
@@ -41,10 +43,10 @@ const raceNumberFormField = reduxFormField({
 const scoringSystemLabel = Component((props: object) =>
   compose(
     fold(props),
-    reduce(concat, nothing()),
-    map(text({})))([
-      'Low point scoring applies',
-      'Please contact us if you require any other scoring system.']))
+    reduce(concat, nothing()))([
+      text({ style: styles.textHeader }, 'Low Point scoring applies'),
+      text({ style: styles.textDescription }, 'Please contact us if you require any other scoring system.'),
+    ]))
 
 const discardSelectorItem = Component((props: any) =>
   compose(
@@ -75,11 +77,11 @@ const discardInputFormField = reduxFormField({
 export default Component((props: Object) =>
   compose(
     fold(props),
-    view({ style: [] }),
+    view({ style: styles.container }),
     reduce(concat, nothing()))([
-      text({}, 'Races & Scoring'),
+      text({ style: styles.sectionHeaderStyle }, 'RACES & SCORING'),
       raceNumberFormField,
-      scoringSystemLabel,
-      text({}, 'Discards starting from ... races'),
+      text({ style: styles.textHeader }, 'Discard after race numbers'),
       discardInputFormField,
+      scoringSystemLabel,
     ]))

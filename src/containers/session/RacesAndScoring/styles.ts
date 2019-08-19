@@ -5,7 +5,16 @@ import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
 export default EStyleSheets.create({
   sectionHeaderStyle,
   container: {
-    backgroundColor: '$DarkBlue',
+    backgroundColor: '$LightBlue',
     paddingHorizontal: '$smallSpacing',
+  },
+  textHeader: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: '$regularFontSize',
+  },
+  textDescription: {
+    color: 'white',
+    fontSize: '$largeFontSize',
   },
 })

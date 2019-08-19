@@ -19,6 +19,8 @@ import {
 import { navigateBack } from 'navigation'
 import { getFormFieldValue } from 'selectors/form'
 
+import styles from './styles'
+
 const mapStateToProps = (state: any) => ({
   initialValues,
   regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state),
@@ -38,15 +40,16 @@ const formSettings = {
 const createButton = Component((props: any) => compose(
   fold(props),
   touchableOpacity({
-      onPress: props.handleSubmit(createEvent(props)),
+    onPress: props.handleSubmit(createEvent(props)),
+    style: styles.createButton,
     })
-)(text({}, 'Create')))
+)(text({ style: styles.createButtonText }, 'CREATE')))
 
 export default Component((props: Object) => compose(
   fold(props),
   connect(mapStateToProps, { createEventActionQueue }),
   reduxForm(formSettings),
-  scrollView({}),
+  scrollView({ style: styles.container}),
   reduce(concat, nothing()))([
     BasicsSetup,
     TypeAndBoatClass,

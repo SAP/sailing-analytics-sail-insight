@@ -25,6 +25,8 @@ import RaceSetup from 'containers/CourseCreation/RaceSetUp'
 import TeamDetails from 'containers/TeamDetails'
 
 import { button } from 'styles/commons'
+import { $DarkBlue } from 'styles/colors'
+
 
 import MainTabNavigator from './MainTabNavigator'
 
@@ -52,8 +54,10 @@ export default createStackNavigator(
       screen: EventCreation.fold,
       navigationOptions: () => ({
         title: I18n.t('caption_new_session'),
-        headerLeft: null,
-        headerRight: <ModalBackButton/>,
+        headerTintColor: 'white',
+        headerStyle: {
+          backgroundColor: $DarkBlue
+        }
       }),
     },
     [Screens.SessionDetail]: {

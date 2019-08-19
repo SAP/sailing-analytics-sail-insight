@@ -19,7 +19,7 @@ import {
 import CheckBox from 'react-native-check-box'
 import ModalDropdown from 'react-native-modal-dropdown'
 
-
+import styles from './styles'
 
 const isOneDesignSelected = propEq('regattaType', RegattaType.OneDesign)
 const isHandicapSelected = propEq('regattaType', RegattaType.Handicap)
@@ -73,12 +73,11 @@ const ratingSystemDropdown = reduxFormField({
 export default Component((props: Object) =>
   compose(
     fold(props),
-    view({ style: { backgroundColor: 'red' } }),
+    view({ style: styles.container }),
     reduce(concat, nothing()))([
-      text({}, 'Regatta Type and Boat Class'),
+      text({ style: styles.sectionHeaderStyle }, 'REGATTA DETAILS'),
       oneDesignCheckbox,
       handicapCheckbox,
       nothingIfHandicapSelected(boatClassInput),
       nothingIfOneDesignSelected(ratingSystemDropdown),
-      text({ style: { marginTop: 100 } }, "Additional settings are optional. Click 'Review and create' to create your event now."),
     ]))

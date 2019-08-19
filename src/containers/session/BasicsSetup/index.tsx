@@ -14,6 +14,8 @@ import {
 } from 'forms/eventCreation'
 import DatePicker from 'react-native-datepicker'
 
+import styles from './styles'
+
 const datePickerSettings = {
   androidMode: 'spinner',
   mode: 'datetime',
@@ -54,11 +56,10 @@ const endDateInput = reduxFormField({
 
 export default Component((props: Object) => compose(
   fold(props),
-  view({ style: [] }),
+  view({ style: styles.container }),
   reduce(concat, nothing()))([
-    text({}, 'Basics'),
+    text({ style: styles.sectionHeaderStyle }, 'BASICS'),
     nameInput,
-    text({}, 'Date'),
     startDateInput,
     endDateInput,
     locationInput,
