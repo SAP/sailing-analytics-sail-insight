@@ -20,7 +20,7 @@ export const FORM_KEY_NUMBER_OF_RACES = 'numberOfRaces'
 export const FORM_KEY_DISCARDS_START = 'discardsStart'
 
 const datePickerDateFormat = (date: Date) =>
-  `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`
+  `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 
 export const initialValues = {
   [FORM_KEY_NAME]: generateNewSessionName(),

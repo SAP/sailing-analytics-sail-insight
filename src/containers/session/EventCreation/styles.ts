@@ -4,6 +4,7 @@ export const sectionHeaderStyle = {
   fontSize: '$titleFontSize',
   color: 'white',
   letterSpacing: 0.5,
+  marginBottom: '$smallSpacing',
 }
 
 export default EStyleSheets.create({
