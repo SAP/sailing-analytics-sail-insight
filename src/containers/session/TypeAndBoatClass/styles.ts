@@ -7,5 +7,9 @@ export default EStyleSheets.create({
   container: {
     backgroundColor: '$MediumBlue',
     paddingHorizontal: '$smallSpacing',
-  }
+  },
+  regattaTypeSelectorText: {
+    fontSize: '$largeFontSize',
+    letterSpacing: 0.8,
+  },
 })

@@ -10,11 +10,11 @@ export default EStyleSheets.create({
   },
   textHeader: {
     color: 'white',
-    fontWeight: '500',
+    fontWeight: 'bold',
     fontSize: '$regularFontSize',
   },
   textDescription: {
     color: 'white',
-    fontSize: '$largeFontSize',
+    fontSize: '$regularFontSize',
   },
 })
