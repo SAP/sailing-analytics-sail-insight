@@ -39,7 +39,7 @@ export const createEvent = (eventData: EventCreationData) => async (
     createleaderboardgroup:     true,
     createregatta:              true,
     numberofraces:              eventData.numberOfRaces,
-    leaderboardDiscardThresholds: eventData.discardsStart - 1,
+    leaderboardDiscardThresholds: eventData.discards,
     ...regattaTypeAndBoatClassSettings(eventData),
     ...(eventData.dateFrom ? { startdate: new Date(eventData.dateFrom).toISOString() } : {}),
     ...(eventData.dateTo   ? { enddate: new Date(eventData.dateTo).toISOString() } : {}),

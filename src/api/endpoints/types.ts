@@ -10,7 +10,7 @@ export interface CreateEventBody {
   startdate?: string
   enddate?: string
   rankingMetric?: 'ONE_DESIGN' | 'ORC_PERFORMANCE_CURVE' | 'TIME_ON_TIME_AND_DISTANCE'
-  leaderboardDiscardThresholds?: number
+  leaderboardDiscardThresholds?: number[]
 }
 
 export interface UpdateEventBody {

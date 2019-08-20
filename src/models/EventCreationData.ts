@@ -17,5 +17,5 @@ export default interface EventCreationData {
   boatClass: string
   ratingSystem: HandicapRatingSystem
   numberOfRaces: number
-  discardsStart: number
+  discards?: number[]
 }
