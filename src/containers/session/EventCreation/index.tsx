@@ -1,7 +1,8 @@
-import { compose, concat, reduce } from 'ramda'
+import { always, compose, concat, reduce } from 'ramda'
+import { Image } from 'react-native'
 
-import { Component,  fold, nothing, reduxConnect as connect } from 'components/fp/component'
-import { scrollView, text, touchableOpacity } from 'components/fp/react-native'
+import { Component,  fold, fromClass, nothing, reduxConnect as connect } from 'components/fp/component'
+import { scrollView, text, touchableOpacity, view } from 'components/fp/react-native'
 import { reduxForm } from 'components/fp/redux-form'
 
 import BasicsSetup from 'containers/session/BasicsSetup'
@@ -19,6 +20,7 @@ import {
 import { navigateBack } from 'navigation'
 import { getFormFieldValue } from 'selectors/form'
 
+import Images from '@assets/Images'
 import styles from './styles'
 
 const mapStateToProps = (state: any) => ({
@@ -45,12 +47,26 @@ const createButton = Component((props: any) => compose(
     })
 )(text({ style: styles.createButtonText }, 'CREATE')))
 
+const arrowLeft = fromClass(Image).contramap(always({
+  source: Images.actions.arrowLeft,
+  style: { tintColor: 'white' },
+}))
+
+const backNavigation = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.backNavigationContainer }),
+  touchableOpacity({ onPress: navigateBack }),
+  view({ style: styles.backNavigationButtonContainer }),
+  concat(arrowLeft)
+)(text({ style: styles.backNavigationText }, 'Event overview')))
+
 export default Component((props: Object) => compose(
   fold(props),
   connect(mapStateToProps, { createEventActionQueue }),
   reduxForm(formSettings),
   scrollView({ style: styles.container}),
   reduce(concat, nothing()))([
+    backNavigation,
     BasicsSetup,
     TypeAndBoatClass,
     RacesAndScoring,

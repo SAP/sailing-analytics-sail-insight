@@ -53,11 +53,7 @@ export default createStackNavigator(
     [Screens.EventCreation]: {
       screen: EventCreation.fold,
       navigationOptions: () => ({
-        title: I18n.t('caption_new_session'),
-        headerTintColor: 'white',
-        headerStyle: {
-          backgroundColor: $DarkBlue
-        }
+        header: null,
       }),
     },
     [Screens.SessionDetail]: {

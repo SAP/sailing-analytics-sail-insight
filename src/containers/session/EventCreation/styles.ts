@@ -24,8 +24,17 @@ export default EStyleSheets.create({
     fontSize: '$titleFontSize',
     letterSpacing: 1.5,
   },
-  formDatePickerContainer: {
-    backgroundColor: 'red',
+  backNavigationContainer: {
+    backgroundColor: '$DarkBlue',
+    paddingTop: '$tinySpacing',
+    paddingBottom: '$mediumSpacing',
+  },
+  backNavigationButtonContainer: {
     flexDirection: 'row',
-  }
+    alignItems: 'center',
+  },
+  backNavigationText: {
+    fontSize:  '$largeFontSize',
+    color: 'white',
+  },
 })
