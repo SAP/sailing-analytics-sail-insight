@@ -1,5 +1,6 @@
 import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
+import { CreateEventBody } from 'api/endpoints/types'
 import { ActionQueue } from 'helpers/actions'
 import { DispatchType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
@@ -42,7 +43,7 @@ export const createEvent = (eventData: EventCreationData) => async (
     ...regattaTypeAndBoatClassSettings(eventData),
     ...(eventData.dateFrom ? { startdate: new Date(eventData.dateFrom).toISOString() } : {}),
     ...(eventData.dateTo   ? { enddate: new Date(eventData.dateTo).toISOString() } : {}),
-  })
+  } as CreateEventBody)
   return eventCreationResponseToCheckIn(response, {
     secret,
     trackPrefix: 'R',
