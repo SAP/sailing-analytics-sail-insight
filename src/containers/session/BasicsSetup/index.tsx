@@ -60,7 +60,7 @@ const formDatePicker = Component((props: any) => compose(
     androidMode: 'spinner',
     mode: 'date',
     showIcon: false,
-    format: 'DD/MM/YYYY',
+    format: 'MM/DD/YYYY',
     customStyles: {
       dateInput: {
         height: 'auto',
