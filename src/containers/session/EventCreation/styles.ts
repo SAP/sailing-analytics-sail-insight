@@ -24,4 +24,8 @@ export default EStyleSheets.create({
     fontSize: '$titleFontSize',
     letterSpacing: 1.5,
   },
+  formDatePickerContainer: {
+    backgroundColor: 'red',
+    flexDirection: 'row',
+  }
 })

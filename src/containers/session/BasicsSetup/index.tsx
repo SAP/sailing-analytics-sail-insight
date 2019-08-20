@@ -1,5 +1,5 @@
 import { __, compose, concat, mergeLeft, reduce } from 'ramda'
-import { TextInput } from 'react-native'
+import { Image, TextInput } from 'react-native'
 
 import I18n from 'i18n'
 
@@ -13,11 +13,10 @@ import {
   FORM_KEY_NAME,
 } from 'forms/eventCreation'
 
-import IconText from 'components/IconText'
 import DatePicker from 'react-native-datepicker'
 
 import Images from '@assets/Images'
-import styles from './styles'
+import styles, { darkerGray, lighterGray } from './styles'
 
 
 const fieldBox = (child: any) => Component((props: any) => compose(
@@ -32,7 +31,7 @@ const boxedTextInput = fieldBox(
   fromClass(TextInput).contramap((props: any) => ({
     value: props.input.value,
     onChangeText: props.input.onChange,
-    underlineColorAndroid: '#C5C5C5',
+    underlineColorAndroid: darkerGray,
   })),
 )
 
@@ -48,12 +47,15 @@ const locationInput = reduxFormField({
   component: boxedTextInput.fold,
 })
 
-const arrowIcon = fromClass(IconText).contramap({
-  source: Images.actions.arrowRight,
-})
+const arrowIcon = fromClass(Image).contramap((props: any) => ({
+  source: props.icon,
+  style: { tintColor: lighterGray },
+}))
 
 const formDatePicker = Component((props: any) => compose(
   fold(props),
+  view({ style: styles.formDatePickerContainer }),
+  concat(arrowIcon),
   contramap((props: any) => ({
     onDateChange: props.input.onChange,
     date: props.input.value,
@@ -68,21 +70,19 @@ const formDatePicker = Component((props: any) => compose(
         borderWidth: 0,
       }
     },
-    style: {
-      width: '100%',
-      flex: 1,
-    }
   }))
 )(fromClass(DatePicker)))
 
 const startDateInput = reduxFormField({
   name: FORM_KEY_DATE_FROM,
   component: formDatePicker.fold,
+  icon: Images.actions.arrowRight,
 })
 
 const endDateInput = reduxFormField({
   name: FORM_KEY_DATE_TO,
   component: formDatePicker.fold,
+  icon: Images.actions.arrowLeft,
 })
 
 const dateInput = Component((props: any) => compose(
