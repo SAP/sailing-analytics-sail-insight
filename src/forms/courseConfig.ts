@@ -16,6 +16,7 @@ export const COURSE_CONFIG_FORM_NAME = 'courseConfig'
 export const FORM_WAYPOINT_SECTION_NAME = 'waypoint'
 
 export const FORM_ROUNDING_DIRECTION = 'roundingDirection'
+export const FORM_MARK_PAIR_LONG_NAME = 'markPairLongName'
 export const FORM_LOCATION = 'location'
 
 export const FORM_MARK_ID = 'id'
@@ -42,7 +43,7 @@ export const waypointFromFormValues = (values: any) => ({
   leftMark: markFromFormSection(values[sectionNameByGateSide[GateSide.LEFT]]),
   rightMark: markFromFormSection(values[sectionNameByGateSide[GateSide.RIGHT]]),
   passingInstruction: values[FORM_ROUNDING_DIRECTION],
-  markPairLongName: 'New Gate Name',
+  markPairLongName: 'New Gate Name REPlACE ME WHEN THERE IS AN INPUT FOR GATE NAME',
 })
 
 const markFormValuesFromMark = (mark: any) => mark && ({
@@ -58,7 +59,10 @@ const formValuesFromWaypoint = (waypoint: any) => waypoint && waypoint.controlPo
     (waypoint.controlPoint.class === ControlPointClass.Mark
       ? PassingInstruction.Port
       : PassingInstruction.Gate),
-  // MarkPairLongName
+  [FORM_MARK_PAIR_LONG_NAME]:
+    waypoint.controlPoint.class === ControlPointClass.MarkPair
+      ? waypoint.controlPoint.longName
+      : '',
   ...(waypoint.controlPoint.class === ControlPointClass.Mark
     ? {
       [sectionNameByGateSide[GateSide.LEFT]]: markFormValuesFromMark(waypoint.controlPoint),
