@@ -3,11 +3,6 @@ export enum RegattaType {
   Handicap = 'HANDICAP',
 }
 
-export enum HandicapRatingSystem {
-  TimeOnTimeAndDistance = 'TIME_ON_TIME_AND_DISTANCE',
-  ORCPerformanceCurve = 'ORC_PERFORMANCE_CURVE',
-}
-
 export default interface EventCreationData {
   name: string
   dateFrom: string
@@ -15,7 +10,6 @@ export default interface EventCreationData {
   location: string
   regattaType: RegattaType
   boatClass: string
-  ratingSystem: HandicapRatingSystem
   numberOfRaces: number
   discards?: number[]
 }

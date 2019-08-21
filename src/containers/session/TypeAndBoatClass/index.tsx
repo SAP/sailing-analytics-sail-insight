@@ -10,13 +10,9 @@ import { field as reduxFormField } from 'components/fp/redux-form'
 import IconText from 'components/IconText'
 import {
   FORM_KEY_BOAT_CLASS,
-  FORM_KEY_RATING_SYSTEM,
   FORM_KEY_REGATTA_TYPE,
 } from 'forms/eventCreation'
-import {
-  HandicapRatingSystem,
-  RegattaType,
-} from 'models/EventCreationData'
+import { RegattaType } from 'models/EventCreationData'
 import SwitchSelector from 'react-native-switch-selector'
 import ModalDropdown from 'react-native-modal-dropdown'
 
@@ -68,11 +64,11 @@ const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLe
   defaultIndex: props.options.indexOf(props.input.value),
 }, props))
 
-const ratingSystemDropdown = reduxFormField({
-  name: FORM_KEY_RATING_SYSTEM,
-  component: modalDropdown.fold,
-  options: Object.values(HandicapRatingSystem),
-})
+// const ratingSystemDropdown = reduxFormField({
+//   name: FORM_KEY_RATING_SYSTEM,
+//   component: modalDropdown.fold,
+//   options: Object.values(HandicapRatingSystem),
+// })
 
 export default Component((props: Object) =>
   compose(
@@ -82,5 +78,5 @@ export default Component((props: Object) =>
       text({ style: styles.sectionHeaderStyle }, 'REGATTA DETAILS'),
       regattaTypeInput,
       nothingIfHandicapSelected(boatClassInput),
-      nothingIfOneDesignSelected(ratingSystemDropdown),
+      // nothingIfOneDesignSelected(ratingSystemDropdown),
     ]))

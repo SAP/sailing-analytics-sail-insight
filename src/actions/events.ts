@@ -5,31 +5,15 @@ import { ActionQueue } from 'helpers/actions'
 import { DispatchType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
 import { CheckIn } from 'models'
-import EventCreationData, {
-  HandicapRatingSystem,
-  RegattaType
-} from 'models/EventCreationData'
+import EventCreationData, { RegattaType } from 'models/EventCreationData'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
-const mapRatingSystemToApiConstant = (ratingSystem: HandicapRatingSystem) => ({
-  [HandicapRatingSystem.ORCPerformanceCurve]: 'ORC_PERFORMANCE_CURVE',
-  [HandicapRatingSystem.TimeOnTimeAndDistance]: 'TIME_ON_TIME_AND_DISTANCE',
-})[ratingSystem]
+const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
+  [RegattaType.OneDesign]: 'ONE_DESIGN',
+  [RegattaType.Handicap]:  'TIME_ON_TIME_AND_DISTANCE',
+})[regattaType]
 
-const regattaTypeAndBoatClassSettings = (eventData: EventCreationData) =>
-  eventData.regattaType === RegattaType.OneDesign
-    ? {
-        rankingMetric: 'ONE_DESIGN',
-        boatclassname: eventData.boatClass,
-      }
-    : {
-        rankingMetric: mapRatingSystemToApiConstant(eventData.ratingSystem),
-        boatclassname: 'ORC', // Proxy boat class
-    }
-
-export const createEvent = (eventData: EventCreationData) => async (
-  dispatch: DispatchType,
-) => {
+const createEvent = (eventData: EventCreationData) => async () => {
   const secret = getSharingUuid()
   const response = await selfTrackingApi().createEvent({
     secret,
@@ -40,7 +24,11 @@ export const createEvent = (eventData: EventCreationData) => async (
     createregatta:              true,
     numberofraces:              eventData.numberOfRaces,
     leaderboardDiscardThresholds: eventData.discards,
-    ...regattaTypeAndBoatClassSettings(eventData),
+    rankingMetric: mapRegattaTypeToApiConstant(eventData.regattaType),
+    boatclassname:
+      eventData.regattaType === RegattaType.OneDesign
+        ? eventData.boatClass
+        : 'Handicap', // Proxy boat class
     ...(eventData.dateFrom ? { startdate: new Date(eventData.dateFrom).toISOString() } : {}),
     ...(eventData.dateTo   ? { enddate: new Date(eventData.dateTo).toISOString() } : {}),
   } as CreateEventBody)
