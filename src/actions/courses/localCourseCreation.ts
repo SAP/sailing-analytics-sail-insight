@@ -72,6 +72,7 @@ export const saveWaypointFromForm = () => (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
+  // TODO: Validate form before `getFormValues` call
   const { leftMark, rightMark, passingInstruction, markPairLongName } = compose(
     waypointFromFormValues,
     getFormValues(COURSE_CONFIG_FORM_NAME),

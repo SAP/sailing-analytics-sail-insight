@@ -23,13 +23,14 @@ const sectionNameByGateSide = {
 
 export const formMarkSectionNameByGateSide = prop(__, sectionNameByGateSide)
 
-export const markFromFormSection = (values: any): Mark => ({
-  class: ControlPointClass.Mark,
-  id: values[FORM_MARK_ID] || uuidv4(),
-  longName: values[FORM_MARK_LONG_NAME],
-  shortName: values[FORM_MARK_SHORT_NAME],
-  type: MarkType.Buoy,
-})
+export const markFromFormSection = (values: any): Mark | undefined =>
+  values && ({
+    class: ControlPointClass.Mark,
+    id: values[FORM_MARK_ID] || uuidv4(),
+    longName: values[FORM_MARK_LONG_NAME],
+    shortName: values[FORM_MARK_SHORT_NAME],
+    type: MarkType.Buoy,
+  })
 
 export const waypointFromFormValues = (values: any) => ({
   leftMark: markFromFormSection(values[sectionNameByGateSide[GateSide.LEFT]]),
