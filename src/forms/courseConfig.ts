@@ -3,7 +3,13 @@ import { prop, __ } from 'ramda'
 import { createSelector } from 'reselect'
 import uuidv4 from 'uuid/v4'
 
-import { ControlPointClass, GateSide, Mark, MarkType } from 'models/Course'
+import {
+  ControlPointClass,
+  GateSide,
+  Mark,
+  MarkType,
+  PassingInstruction,
+} from 'models/Course'
 import { getSelectedWaypoint } from 'selectors/course'
 
 export const COURSE_CONFIG_FORM_NAME = 'courseConfig'
@@ -47,7 +53,11 @@ const markFormValuesFromMark = (mark: any) => mark && ({
 })
 
 const formValuesFromWaypoint = (waypoint: any) => waypoint && waypoint.controlPoint && ({
-  [FORM_ROUNDING_DIRECTION]: waypoint.passingInstruction,
+  [FORM_ROUNDING_DIRECTION]:
+    waypoint.passingInstruction || // The || is for the default passingInstruction
+    (waypoint.controlPoint.class === ControlPointClass.Mark
+      ? PassingInstruction.Port
+      : PassingInstruction.Gate),
   // MarkPairLongName
   ...(waypoint.controlPoint.class === ControlPointClass.Mark
     ? {
