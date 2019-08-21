@@ -1,3 +1,5 @@
+import { isNil } from 'ramda'
+
 import EventCreationData, {
   RegattaType,
 } from 'models/EventCreationData'
@@ -40,9 +42,19 @@ export const eventCreationDataFromFormValues = (values: any) => values && ({
   discards: values[FORM_KEY_DISCARDS],
 } as EventCreationData)
 
+const validateNoUndefined = (arr: any[]) =>
+  arr.some(isNil) ? 'Discard races must not be undefined' : undefined
+
+const validateAscendingOrder = (arr: number[]) =>
+  arr.every((item: number, ind: number) => ind === 0 || item > arr[ind - 1])
+    ? undefined
+    : 'Discard values must be in ascending order'
+
 export const validate = (values: any = {}) => ({
   [FORM_KEY_NAME]: validateRequired(values[FORM_KEY_NAME]),
   [FORM_KEY_LOCATION]: validateRequired(values[FORM_KEY_LOCATION]),
   [FORM_KEY_BOAT_CLASS]: validateRequired(values[FORM_KEY_BOAT_CLASS]),
-  // TODO: Validate discards ascending
+  [FORM_KEY_DISCARDS]:
+    validateNoUndefined(values[FORM_KEY_DISCARDS]) ||
+    validateAscendingOrder(values[FORM_KEY_DISCARDS]),
 })
