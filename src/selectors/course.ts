@@ -159,7 +159,7 @@ export const getSelectedCourseWithMarks = createSelector(
   populateCourseWithMarks,
 )
 
-const getSelectedWaypointState = createSelector(
+export const getSelectedWaypointState = createSelector(
   getSelectedCourseWaypointState,
   (state: any): string | undefined => state.courses.selectedWaypoint,
   (selectedCourseWaypointState, selectedWaypoint) =>

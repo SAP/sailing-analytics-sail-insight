@@ -14,8 +14,10 @@ import {
   ControlPoint,
   ControlPointClass,
   ControlPointState,
+  GateSide,
   Mark,
 } from 'models/Course'
+import { getSelectedGateSide, getSelectedWaypointState } from 'selectors/course'
 
 export const assignControlPointClass = (controlPointClass: ControlPointClass) =>
   updateControlPoint({
@@ -43,6 +45,28 @@ export const assignControlPoint = (controlPoint: ControlPoint) => compose(
   assignControlPointState,
   controlPointToControlPointState,
 )(controlPoint)
+
+export const assignGateMark = (mark: Mark) => (
+  dispatch: DispatchType,
+  getState: GetStateType,
+) => {
+  const selectedGateSide = getSelectedGateSide(getState())
+  const selectedWaypoint = getSelectedWaypointState(getState())
+  const selectedControlPoint = selectedWaypoint && selectedWaypoint.controlPoint
+
+  if (!selectedControlPoint) {
+    throw new Error('State error: selected waypoint empty or doesnt have controlPoint')
+  }
+
+  const updatedControlPoint = {
+    ...selectedControlPoint,
+    ...(selectedGateSide === GateSide.LEFT
+      ? { leftMark: mark.id }
+      : { rightMark: mark.id }),
+  }
+
+  dispatch(updateControlPoint(updatedControlPoint))
+}
 
 export const saveWaypointFromForm = () => (
   dispatch: DispatchType,
