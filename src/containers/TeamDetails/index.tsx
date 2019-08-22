@@ -296,7 +296,8 @@ export default connect(
 )(
   reduxForm<{}, Props>({
     form: teamForm.TEAM_FORM_NAME,
-    destroyOnUnmount: true,
+    destroyOnUnmount: false,
+    enableReinitialize: true,
     forceUnregisterOnUnmount: true,
   })(TeamDetails),
 )
