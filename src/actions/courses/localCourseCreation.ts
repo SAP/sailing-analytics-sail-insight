@@ -6,6 +6,7 @@ import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
   COURSE_CONFIG_FORM_NAME,
+  getFormIsValid,
   waypointFromFormValues,
 } from 'forms/courseConfig'
 
@@ -72,7 +73,8 @@ export const saveWaypointFromForm = () => (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
-  // TODO: Validate form before `getFormValues` call
+  const formIsValid = getFormIsValid(getState())
+  if (!formIsValid) return
   const { leftMark, rightMark, passingInstruction, markPairLongName } = compose(
     waypointFromFormValues,
     getFormValues(COURSE_CONFIG_FORM_NAME),

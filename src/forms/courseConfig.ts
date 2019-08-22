@@ -1,5 +1,7 @@
+import { isObject, values } from 'lodash'
 import { prop, __ } from 'ramda'
 
+import { getFormSyncErrors } from 'redux-form'
 import { createSelector } from 'reselect'
 import uuidv4 from 'uuid/v4'
 
@@ -11,6 +13,7 @@ import {
   PassingInstruction,
 } from 'models/Course'
 import { getSelectedWaypoint } from 'selectors/course'
+import { validateRequired } from './validators'
 
 export const COURSE_CONFIG_FORM_NAME = 'courseConfig'
 export const FORM_WAYPOINT_SECTION_NAME = 'waypoint'
@@ -23,9 +26,14 @@ export const FORM_MARK_ID = 'id'
 export const FORM_MARK_SHORT_NAME = 'shortName'
 export const FORM_MARK_LONG_NAME = 'longName'
 
+const FORM_CONTROL_POINT_CLASS = 'controlPointClass'
+
+const LEFT_MARK_SECTION = 'leftMark'
+const RIGHT_MARK_SECTION = 'rightMark'
+
 const sectionNameByGateSide = {
-  [GateSide.LEFT]: 'leftMark',
-  [GateSide.RIGHT]: 'rightMark'
+  [GateSide.LEFT]: LEFT_MARK_SECTION,
+  [GateSide.RIGHT]: RIGHT_MARK_SECTION
 }
 
 export const formMarkSectionNameByGateSide = prop(__, sectionNameByGateSide)
@@ -40,8 +48,8 @@ export const markFromFormSection = (values: any): Mark | undefined =>
   })
 
 export const waypointFromFormValues = (values: any) => ({
-  leftMark: markFromFormSection(values[sectionNameByGateSide[GateSide.LEFT]]),
-  rightMark: markFromFormSection(values[sectionNameByGateSide[GateSide.RIGHT]]),
+  leftMark: markFromFormSection(values[LEFT_MARK_SECTION]),
+  rightMark: markFromFormSection(values[RIGHT_MARK_SECTION]),
   passingInstruction: values[FORM_ROUNDING_DIRECTION],
   markPairLongName: 'New Gate Name REPlACE ME WHEN THERE IS AN INPUT FOR GATE NAME',
 })
@@ -54,6 +62,7 @@ const markFormValuesFromMark = (mark: any) => mark && ({
 })
 
 const formValuesFromWaypoint = (waypoint: any) => waypoint && waypoint.controlPoint && ({
+  [FORM_CONTROL_POINT_CLASS]: waypoint.controlPoint.class,
   [FORM_ROUNDING_DIRECTION]:
     waypoint.passingInstruction || // The || is for the default passingInstruction
     (waypoint.controlPoint.class === ControlPointClass.Mark
@@ -65,11 +74,11 @@ const formValuesFromWaypoint = (waypoint: any) => waypoint && waypoint.controlPo
       : '',
   ...(waypoint.controlPoint.class === ControlPointClass.Mark
     ? {
-      [sectionNameByGateSide[GateSide.LEFT]]: markFormValuesFromMark(waypoint.controlPoint),
+      [LEFT_MARK_SECTION]: markFormValuesFromMark(waypoint.controlPoint),
     }
     : {
-      [sectionNameByGateSide[GateSide.LEFT]] : markFormValuesFromMark(waypoint.controlPoint.leftMark),
-      [sectionNameByGateSide[GateSide.RIGHT]]: markFormValuesFromMark(waypoint.controlPoint.rightMark),
+      [LEFT_MARK_SECTION] : markFormValuesFromMark(waypoint.controlPoint.leftMark),
+      [RIGHT_MARK_SECTION]: markFormValuesFromMark(waypoint.controlPoint.rightMark),
     }),
 })
 
@@ -78,7 +87,32 @@ export const getFormInitialValues = createSelector(
   formValuesFromWaypoint,
 )
 
+// This is needed because form validation doesn't work for fields which are not
+// rendered. See:
+// https://redux-form.com/8.2.2/examples/syncvalidation/
+// https://github.com/erikras/redux-form/issues/2321
+export const getFormIsValid = (state: any) =>
+  values(getFormSyncErrors(COURSE_CONFIG_FORM_NAME)(state)).every(
+    (field: any) =>
+      isObject(field)
+        ? values(field).every((sectionField: any) => !sectionField)
+        : !field,
+  )
+
+const validateMarkSection = (values: any = {}) => ({
+  [FORM_MARK_LONG_NAME]: validateRequired(values[FORM_MARK_LONG_NAME]),
+})
+
+const validate = (values: any = {}) => ({
+  [LEFT_MARK_SECTION]: validateMarkSection(values[LEFT_MARK_SECTION]),
+  ...(values[FORM_CONTROL_POINT_CLASS] === ControlPointClass.MarkPair
+    ? { [RIGHT_MARK_SECTION]: validateMarkSection(values[RIGHT_MARK_SECTION]) }
+    : {}
+  ),
+})
+
 export const courseConfigCommonFormSettings = {
+  validate,
   form: COURSE_CONFIG_FORM_NAME,
   destroyOnUnmount: false,        // <-- preserve form data across different steps
   enableReinitialize: true

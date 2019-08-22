@@ -309,7 +309,7 @@ const CancelButton = Component((props: object) =>
 const SaveButton = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.saveWaypointFromForm() }),
+    touchableOpacity({ onPress: props.handleSubmit(props.saveWaypointFromForm) }),
     text({}))(
     'Save'))
 
