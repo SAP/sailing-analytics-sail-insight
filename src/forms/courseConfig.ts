@@ -1,15 +1,15 @@
-import { prop, __ } from 'ramda'
+import { prop, __, when, either, isNil, equals, always, ifElse } from 'ramda'
 
 import { createSelector } from 'reselect'
 import uuidv4 from 'uuid/v4'
 
-import { ControlPointClass, GateSide, Mark, MarkType } from 'models/Course'
+import { ControlPointClass, GateSide, Mark, MarkType, PassingInstruction } from 'models/Course'
 import { getSelectedWaypoint } from 'selectors/course'
 
 export const COURSE_CONFIG_FORM_NAME = 'courseConfig'
 export const FORM_WAYPOINT_SECTION_NAME = 'waypoint'
 
-export const FORM_ROUNDING_DIRECTION = 'roundingDirection'
+export const FORM_PASSING_INSTRUCTION = 'passingInstruction'
 export const FORM_LOCATION = 'location'
 
 export const FORM_MARK_ID = 'id'
@@ -34,7 +34,7 @@ export const markFromFormSection = (values: any): Mark => ({
 export const waypointFromFormValues = (values: any) => ({
   leftMark: markFromFormSection(values[sectionNameByGateSide[GateSide.LEFT]]),
   rightMark: markFromFormSection(values[sectionNameByGateSide[GateSide.RIGHT]]),
-  passingInstruction: values[FORM_ROUNDING_DIRECTION],
+  passingInstruction: values[FORM_PASSING_INSTRUCTION],
   markPairLongName: 'New Gate Name',
 })
 
@@ -46,7 +46,13 @@ const markFormValuesFromMark = (mark: any) => mark && ({
 })
 
 const formValuesFromWaypoint = (waypoint: any) => waypoint && waypoint.controlPoint && ({
-  [FORM_ROUNDING_DIRECTION]: waypoint.passingInstruction,
+  [FORM_PASSING_INSTRUCTION]: 
+    when(either(isNil, equals('None')),
+      ifElse(
+        always(equals(waypoint.controlPoint.class, ControlPointClass.Mark)),
+        always(PassingInstruction.Starboard),
+        always(PassingInstruction.Gate)))(
+      waypoint.passingInstruction),
   // MarkPairLongName
   ...(waypoint.controlPoint.class === ControlPointClass.Mark
     ? {

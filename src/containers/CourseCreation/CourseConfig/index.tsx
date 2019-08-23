@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, insert, isNil, not, either, equals, cond, pick, tap,
-  propEq } from 'ramda'
+  objOf, insert, isNil, not, either, equals, pick, tap, ifElse,
+  propEq, addIndex, mergeLeft, intersperse, prepend } from 'ramda'
 
 import {
   Component,
@@ -11,7 +11,8 @@ import {
   nothingAsClass,
   reduxConnect as connect,
   recomposeBranch as branch,
-  recomposeWithState as withState
+  recomposeWithState as withState,
+  recomposeMapProps as mapProps
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
 
@@ -22,14 +23,14 @@ import { field as reduxFormField, reduxForm, formSection } from 'components/fp/r
 import {
   courseConfigCommonFormSettings,
   FORM_WAYPOINT_SECTION_NAME,
-  FORM_ROUNDING_DIRECTION,
+  FORM_PASSING_INSTRUCTION,
   FORM_MARK_SHORT_NAME,
   FORM_MARK_LONG_NAME,
   FORM_LOCATION,
   formMarkSectionNameByGateSide,
   getFormInitialValues
 } from 'forms/courseConfig'
-import { ControlPointClass, GateSide, MarkPositionType } from 'models/Course'
+import { ControlPointClass, GateSide, MarkPositionType, PassingInstruction } from 'models/Course'
 
 import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint,
   assignControlPointClass, assignControlPoint, saveWaypointFromForm } from 'actions/courses'
@@ -42,8 +43,12 @@ import { coordinatesToString } from 'helpers/utils'
 import FormTextInput from 'components/form/FormTextInput'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
+import Dash from 'react-native-dash'
 
+import EStyleSheets from 'react-native-extended-stylesheet'
 import styles from './styles'
+
+const mapIndexed = addIndex(map)
 
 const controlPointClassToLabel = {
   [ControlPointClass.MarkPair]: 'Gate/Line',
@@ -64,10 +69,9 @@ const mapStateToProps = (state: any, props: any) => ({
 
 const waypointClass = path(['waypoint', 'controlPoint', 'class'])
 const isGateWaypoint = compose(equals(ControlPointClass.MarkPair), waypointClass)
-const isMarkWaypoint = compose(equals(ControlPointClass.Mark), waypointClass)
 const isEmptyWaypoint = compose(isNil, path(['waypoint', 'controlPoint']))
 const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('waypoint')))
-const isWaypointSelected = (props: any) => props.selectedWaypoint && props.selectedWaypoint.id === props.waypoint.id
+const isWaypointSelected = (waypoint: any, props: any) => props.selectedWaypoint && props.selectedWaypoint.id === waypoint.id
 
 const formHasPositionType = (type: string) => compose(propEq('positionType', type), defaultTo({}), path(['input', 'value']))
 const formHasGeolocation = formHasPositionType(MarkPositionType.Geolocation)
@@ -77,7 +81,6 @@ const formHasPing = formHasPositionType(MarkPositionType.PingedLocation)
 const geolocationAsString = compose(coordinatesToString, path(['input', 'value']))
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
-const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
 const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
@@ -90,56 +93,59 @@ const nothingWhenFormHasGeolocation = branch(formHasGeolocation, nothingAsClass)
 const nothingWhenFormHasTracking = branch(formHasTracking, nothingAsClass)
 const nothingWhenFormHasPing = branch(formHasPing, nothingAsClass)
 const nothingWhenPristineForm = branch(propEq('pristine', true), nothingAsClass)
+const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
+
+const selectedWaypointAsWaypoint = mapProps(props => ({ ...props, waypoint: props.selectedWaypoint }))
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 
-const icon = ({ source, style }) => fromClass(IconText).contramap(always({ source, style }))
-const gateIcon = icon({ source: Images.actions.minus })
+const icon = compose(
+  fromClass(IconText).contramap,
+  always)
+
 const deleteIcon = icon({ source: Images.actions.delete })
+const roundingLeftIcon = icon({ source: Images.courseConfig.roundingDirectionLeft })
+const roundingRightIcon = icon({ source: Images.courseConfig.roundingDirectionRight })
+const arrowUp = icon({
+  source: Images.courseConfig.arrowUp,
+  style: { justifyContent: 'flex-end', height: 25 },
+  iconStyle: { height: 12 } })
 
 const plusIcon = icon({
   source: Images.actions.add,
-  style: { width: 100, height: 100 }
+  iconTintColor: 'white',
+  style: { justifyContent: 'center', alignItems: 'center' }
 })
 
-const GateWaypoint = Component((props: object) =>
-  compose(
-    fold(props),
-    view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
-    concat(gateIcon),
-    text({}),
-    defaultTo(''),
-    path(['waypoint', 'controlPoint', 'longName']))(
-    props))
+const dashLine = fromClass(Dash).contramap(always({
+  style: { height: 50, width: 90, alignItems: 'center' },
+  dashColor: 'white'
+}))
 
 const GateMarkSelectorItem = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.selectGateSide(props.mark.side) }),
-    text({}),
-    defaultTo(props.mark.side))(
-    props.mark.longName))
+    view({ style: styles.gateMarkSelectorItemContainer }),
+    concat(__, nothingWhenNotSelected(arrowUp)),
+    touchableOpacity({
+      style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
+      onPress: (props: any) => props.selectGateSide(props.side) }),
+    text({ style: styles.gateMarkSelectorText }),
+    defaultTo(props.side))(
+    props.mark.shortName))
 
 const GateMarkSelector = Component((props: object) =>
   compose(
     fold(props),
-    view({}),
+    view({ style: styles.gateMarkSelectorContainer }),
     reduce(concat, nothing()),
-    map(compose(GateMarkSelectorItem.contramap, merge, objOf('mark'))),
+    intersperse(dashLine),
+    map(compose(GateMarkSelectorItem.contramap, merge)),
     map(when(compose(equals(props.selectedGateSide), prop('side')), merge({ selected: true }))),
     zipWith(merge, [{ side: GateSide.LEFT }, { side: GateSide.RIGHT }]),
+    map(objOf('mark')),
     rProps(['leftMark', 'rightMark']),
     path(['selectedWaypoint', 'controlPoint']))(
-    props))
-
-const MarkWaypoint = Component((props: object) =>
-  compose(
-    fold(props),
-    view({ style: [styles.waypointContainer, isWaypointSelected(props) && styles.selectedWaypointContainer] }),
-    concat(gateIcon),
-    text({}),
-    defaultTo('Choose'),
-    path(['waypoint', 'controlPoint', 'longName']))(
     props))
 
 const SameStartFinish = Component((props: object) =>
@@ -206,7 +212,7 @@ const MarkPositionPing = Component((props: object) => compose(
 const MarkPosition = Component((props: object) =>
   compose(
     fold(props),
-    concat(text({}, 'LOCATE OR TRACK')),
+    concat(text({ style: styles.sectionTitle }, 'Locate or track')),
     reduce(concat, nothing()),
     concat(__, [
       nothingWhenNotPingSelected(toLocationFormField(MarkPositionPing)),
@@ -222,7 +228,7 @@ const MarkPosition = Component((props: object) =>
 const Appearance = Component((props: object) =>
   compose(
     fold(props))(
-    text({}, 'APPEARANCE')))
+    text({ style: styles.sectionTitle }, 'Appearance')))
 
 const DeleteButton = Component((props: object) =>
   compose(
@@ -277,27 +283,39 @@ const ShortAndLongName = Component((props: object) =>
     FORM_MARK_SHORT_NAME,
     FORM_MARK_LONG_NAME ]))
 
-const RoundingDirectionItem = Component((props: object) =>
+const PassingInstructionItem = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.input.onChange(props.type) }),
-    text({}))(
-    props.type))
+    touchableOpacity({
+      onPress: (props: any) => props.input.onChange(props.type),
+      style: [
+        styles.passingInstruction,
+        props.input.value === props.type ? styles.selectedPassingInstruction : '' ]}))(
+    props.icon))
 
-const RoundingDirection = Component((props: object) =>
+const singleMarkPassingInstructions = [
+  { type: PassingInstruction.Port, icon: roundingLeftIcon },
+  { type: PassingInstruction.Starboard, icon: roundingRightIcon }]
+
+const gatePassingInstructions = [
+  { type: PassingInstruction.Gate, icon: roundingLeftIcon },
+  { type: PassingInstruction.Line, icon: roundingLeftIcon }]
+
+const PassingInstructions = Component((props: object) =>
   compose(
     fold(props),
     formSection({ name: FORM_WAYPOINT_SECTION_NAME }),
-    concat(text({}, 'ROUNDING DIRECTION')),
+    concat(text({ style: styles.sectionTitle }, 'Rounding direction')),
+    view({ style: styles.passingInstructionContainer }),
     reduce(concat, nothing()),
     map(compose(
       reduxFormField,
-      merge({
-        name: FORM_ROUNDING_DIRECTION,
-        component: RoundingDirectionItem.fold
-      }),
-      objOf('type'))))(
-    ['left', 'right']))
+      mergeLeft({
+        name: FORM_PASSING_INSTRUCTION,
+        component: PassingInstructionItem.contramap(merge(props)).fold
+      }))),
+    ifElse(isGateWaypoint, always(gatePassingInstructions), always(singleMarkPassingInstructions)))(
+    props))
 
 const CancelButton = Component((props: object) =>
   compose(
@@ -315,34 +333,48 @@ const SaveButton = Component((props: object) =>
 
 const WaypointEditForm = Component((props: any) =>
   compose(
-    fold(merge(props, { waypoint: props.selectedWaypoint })),
-    reduce(concat, nothing()))([
-      nothingWhenPristineForm(CancelButton),
-      nothingWhenPristineForm(SaveButton),
-      nothingWhenStartOrFinishGate(DeleteButton),
+    fold(props),
+    view({ style: [styles.editContainer, !isGateWaypoint(props) && styles.indentedContainer ] }),
+    concat(compose(
+      view({ style: isGateWaypoint(props) && styles.indentedContainer }),
+      reduce(concat, nothing()))([
       nothingWhenNotStartOrFinishGate(SameStartFinish),
+      nothingWhenEmptyWaypoint(PassingInstructions),
       nothingWhenNotAGate(GateMarkSelector),
-      nothingWhenEmptyWaypoint(ShortAndLongName),
-      compose(nothingWhenGate, nothingWhenEmptyWaypoint)(RoundingDirection),
+      //nothingWhenEmptyWaypoint(ShortAndLongName)
+    ])),
+    when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
+    reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(MarkPosition),
       nothingWhenEmptyWaypoint(Appearance),
-      nothingWhenNotEmptyWaypoint(CreateNewSelector)
+      nothingWhenNotEmptyWaypoint(CreateNewSelector),
+      nothingWhenPristineForm(CancelButton),
+      nothingWhenPristineForm(SaveButton),
+      nothingWhenStartOrFinishGate(DeleteButton)
   ]))
 
 const AddButton = Component((props: any) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.addWaypoint(1) }))(
+    touchableOpacity({
+      style: styles.addButton,
+      onPress: (props: any) => props.addWaypoint(1),
+     }))(
     plusIcon))
 
-const waypointItemToComponent = (waypoint: any) => compose(
-  touchableOpacity({ onPress: (props: any) => props.selectWaypoint(waypoint.id) }),
-  cond([[
-    isGateWaypoint, compose(GateWaypoint.contramap, merge)],[
-    isMarkWaypoint, compose(MarkWaypoint.contramap, merge)],[
-    isEmptyWaypoint, compose(MarkWaypoint.contramap, merge) ]]),
-  objOf('waypoint'))(
-  waypoint)
+const waypointItemToComponent = (waypoint: any, index: number, list: any[]) => Component((props: any) => compose(
+  fold(props),
+  touchableOpacity({
+    onPress: (props: any) => props.selectWaypoint(waypoint.id),
+    style: [
+      EStyleSheets.child(styles, 'waypointContainer', index, list.length),
+      isWaypointSelected(waypoint, props) && styles.selectedWaypoint
+    ]
+  }),
+  text({ style: styles.waypointText }),
+  defaultTo('\u2022'),
+  path(['controlPoint', index === 0 || index === list.length - 1 ? 'longName' : 'shortName']))(
+  waypoint))
 
 export default Component((props: object) =>
   compose(
@@ -353,10 +385,10 @@ export default Component((props: object) =>
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectGateSide, saveWaypointFromForm,
       addWaypoint, assignControlPointClass, assignControlPoint }),
-    concat(__, nothingWhenNoSelectedWaypoint(WaypointEditForm)),
-    view({}),
-    scrollView({ horizontal: true, style: { height: 100 } }),
+    view({ style: styles.mainContainer }),
+    concat(__, nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))),
+    scrollView({ horizontal: true }),
     reduce(concat, nothing()),
     items => insert(items.length - 1, AddButton, items),
-    map(waypointItemToComponent))(
+    mapIndexed(waypointItemToComponent))(
     props.course.waypoints))

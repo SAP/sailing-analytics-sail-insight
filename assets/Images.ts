@@ -53,4 +53,10 @@ export default {
     waveLoadingIndicatorGif: require('./img/animations/wave_loading.gif'),
     waveLoadingIndicatorBackground: require('./img/animations/wave_loading_background.png'),
   },
+
+  courseConfig: {
+    roundingDirectionLeft: require('./img/icons/icon-rounding-direction-left.png'),
+    roundingDirectionRight: require('./img/icons/icon-rounding-direction-right.png'),
+    arrowUp: require('./img/icons/arrow-up.png')
+  }
 }
