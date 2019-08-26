@@ -1,28 +1,37 @@
 import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
+import { CreateEventBody } from 'api/endpoints/types'
 import { ActionQueue } from 'helpers/actions'
 import { DispatchType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
 import { CheckIn } from 'models'
-import EventCreationData from 'models/EventCreationData'
+import EventCreationData, { RegattaType } from 'models/EventCreationData'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
-export const createEvent = (eventData: EventCreationData) => async (
-  dispatch: DispatchType,
-) => {
+const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
+  [RegattaType.OneDesign]: 'ONE_DESIGN',
+  [RegattaType.Handicap]:  'TIME_ON_TIME_AND_DISTANCE',
+})[regattaType]
+
+const createEvent = (eventData: EventCreationData) => async () => {
   const secret = getSharingUuid()
   const response = await selfTrackingApi().createEvent({
     secret,
     eventName:                  eventData.name,
-    boatclassname:              eventData.boatClass,
     venuename:                  eventData.location,
     competitorRegistrationType: 'OPEN_UNMODERATED', // To be dynamic in the FUTURE
     createleaderboardgroup:     true,
     createregatta:              true,
     numberofraces:              eventData.numberOfRaces,
+    leaderboardDiscardThresholds: eventData.discards,
+    rankingMetric: mapRegattaTypeToApiConstant(eventData.regattaType),
+    boatclassname:
+      eventData.regattaType === RegattaType.OneDesign
+        ? eventData.boatClass
+        : 'Handicap', // Proxy boat class
     ...(eventData.dateFrom ? { startdate: new Date(eventData.dateFrom).toISOString() } : {}),
     ...(eventData.dateTo   ? { enddate: new Date(eventData.dateTo).toISOString() } : {}),
-  })
+  } as CreateEventBody)
   return eventCreationResponseToCheckIn(response, {
     secret,
     trackPrefix: 'R',

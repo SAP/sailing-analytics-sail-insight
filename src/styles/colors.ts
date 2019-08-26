@@ -18,3 +18,9 @@ export const $primaryInactiveColor = '#D9D9D9'
 export const $activeTagColor = '#F0AB00'
 
 export const $headerTintColor = 'black'
+
+export const $DarkBlue   = '#123748'
+export const $MediumBlue = '#476987'
+export const $LightBlue  = '#4B7B90'
+
+export const $Orange = '#FF6C52'

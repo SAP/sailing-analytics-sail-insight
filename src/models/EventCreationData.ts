@@ -1,11 +1,15 @@
+export enum RegattaType {
+  OneDesign = 'ONE_DESIGN',
+  Handicap = 'HANDICAP',
+}
+
 export default interface EventCreationData {
   name: string
-  dateFrom?: string
-  dateTo?: string
+  dateFrom: string
+  dateTo: string
   location: string
-  regattaType: string
+  regattaType: RegattaType
   boatClass: string
-  ratingSystem?: string
   numberOfRaces: number
-  discardsStart: number
+  discards?: number[]
 }

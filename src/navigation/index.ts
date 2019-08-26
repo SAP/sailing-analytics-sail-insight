@@ -32,11 +32,7 @@ export const navigateToRaceSetup = (data: string) => NavigationService.navigate(
 export const navigateToRaceCourseLayout = () => NavigationService.navigate(Screens.RaceCourseLayout)
 export const navigateToCourseGeolocation = (data: object) => NavigationService.navigate(Screens.CourseGeolocation, { data })
 export const navigateToCourseTrackerBinding = (data: object) => NavigationService.navigate(Screens.CourseTrackerBinding, { data })
-export const navigateToNewSessionBasics = () => NavigationService.navigate(Screens.NewSessionBasics)
-export const navigateToNewSessionTypeAndBoatClass = () => NavigationService.navigate(Screens.NewSessionTypeAndBoatClass)
-export const navigateToNewSessionsRacesAndScoring = () => NavigationService.navigate(Screens.NewSessionRacesAndScoring)
-export const navigateToNewSessionCompetitors = () => NavigationService.navigate(Screens.NewSessionCompetitors)
-export const navigateToNewSessionReviewAndCreate = () => NavigationService.navigate(Screens.NewSessionReviewAndCreate)
+export const navigateToEventCreation = () => NavigationService.navigate(Screens.EventCreation)
 export const navigateToJoinRegatta = (checkInData: CheckIn, alreadyJoined: boolean) =>
   NavigationService.navigate(Screens.JoinRegatta, { data: { checkInData, alreadyJoined } })
 export const navigateToTrackDetails = (url?: string, eventName?: string) =>

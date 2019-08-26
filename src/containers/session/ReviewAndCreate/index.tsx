@@ -49,10 +49,6 @@ const getViewCardPropsFromEventData = (eventData: EventCreationData) => ({
   acceptations: 2
 })
 
-const createEvent = async (props: any) => {
-  await props.createEventActionQueue(props.eventData).execute()
-  navigateToMain()
-}
 
 export default Component((props: any) =>
   compose(

@@ -1,5 +1,5 @@
 import { concat, find, mapValues, values } from 'lodash'
-import { append, compose, gt, length, map, prepend, slice, unless } from 'ramda'
+import { append, compose, contains, flip, gt, length, map, pick, prepend, prop, reject, slice, unless } from 'ramda'
 import { createSelector } from 'reselect'
 
 import {
@@ -8,6 +8,8 @@ import {
   ControlPointState,
   CourseState,
   CourseStateMap,
+  DefaultMark,
+  DefaultMarkIdMap,
   GateSide,
   MarkMap,
   MarkPairMap,
@@ -51,6 +53,9 @@ export const getSelectedCourseState = (state: any): SelectedCourseState | undefi
 export const getSelectedGateSide = (state: any): GateSide =>
   state.courses.selectedGateSide
 
+const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
+const getDefaultMarkIds = (state: any): DefaultMarkIdMap => state.courses.defaultMarkIds
+
 const getSelectedCourseWaypointState = createSelector(
   getSelectedCourseState,
   selectedCourseState => selectedCourseState && selectedCourseState.waypoints,
@@ -78,10 +83,40 @@ export const markByIdPresent = (markId: string) =>
     (markIds: string[]) => markIds.includes(markId),
   )
 
-export const getMarkInventory = createSelector(
+const getCompleteMarkInventory = createSelector(
   getMarks,
   getMarkPairs,
   (marks, markPairs) => concat(values(marks), values(markPairs)) as ControlPoint[]
+)
+
+const sameStartFinishOnFilteredDefaultMarks = [
+  DefaultMark.StartPin,
+  DefaultMark.StartBoat,
+  DefaultMark.FinishPin,
+  DefaultMark.FinishBoat,
+]
+
+const sameStartFinishOffFilteredDefaultMarks = [
+  DefaultMark.StartFinishPin,
+  DefaultMark.StartFinishBoat,
+]
+
+export const getMarkInventory = createSelector(
+  getCompleteMarkInventory,
+  getSameStartFinish,
+  getDefaultMarkIds,
+  (markInventory, sameStartFinish, defaultMarkIds) => {
+    return reject(compose(
+      flip(contains)(compose(
+        values,
+        pick(sameStartFinish
+          ? sameStartFinishOnFilteredDefaultMarks
+          : sameStartFinishOffFilteredDefaultMarks
+        )
+      )(defaultMarkIds)),
+      prop('id'),
+    ))(markInventory)
+  },
 )
 
 const populateControlPointWithMarkData = (marks: MarkMap) => (
@@ -124,7 +159,7 @@ export const getSelectedCourseWithMarks = createSelector(
   populateCourseWithMarks,
 )
 
-const getSelectedWaypointState = createSelector(
+export const getSelectedWaypointState = createSelector(
   getSelectedCourseWaypointState,
   (state: any): string | undefined => state.courses.selectedWaypoint,
   (selectedCourseWaypointState, selectedWaypoint) =>

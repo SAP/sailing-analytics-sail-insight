@@ -13,34 +13,6 @@ export const ArrowRight = fromClass(IconText).contramap(merge({
   source: Images.actions.arrowRight,
   style: { justifyContent: 'center' } }));
 
-export const nextButton = ({ onPress, label }: { onPress?: any, label?: any} = {}) =>
-  Component((props: any) =>
-    compose(
-      fold(props),
-      touchableOpacity({ onPress }),
-      contramap(merge({
-        source: Images.actions.arrowRight,
-        alignment: 'horizontal',
-        iconPosition: 'second',
-        children: label,
-      })))
-    (fromClass(IconText)))
-
-export const reviewButton = ({ onPress }: { onPress?: any} = {}) => Component((props: object) => compose(
-  fold(props),
-  touchableOpacity({
-    onPress: (props: any) => onPress ? onPress(props) : navigateToNewSessionReviewAndCreate(),
-    style: {
-      backgroundColor: '#1897FE',
-      marginHorizontal: '5%',
-      height: 50,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }
-  }),
-  text({ style: { color: '#FFFFFF' }}))(
-  'Review and create'))
-
 const toTouchableCard = curry(({ onPress, icon }, content: any) =>
   Component((props: any) =>
     compose(

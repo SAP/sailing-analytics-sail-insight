@@ -6,6 +6,7 @@ import { DispatchType, GetStateType } from 'helpers/types'
 
 import {
   COURSE_CONFIG_FORM_NAME,
+  getFormIsValid,
   waypointFromFormValues,
 } from 'forms/courseConfig'
 
@@ -14,8 +15,10 @@ import {
   ControlPoint,
   ControlPointClass,
   ControlPointState,
+  GateSide,
   Mark,
 } from 'models/Course'
+import { getSelectedGateSide, getSelectedWaypointState } from 'selectors/course'
 
 export const assignControlPointClass = (controlPointClass: ControlPointClass) =>
   updateControlPoint({
@@ -44,10 +47,34 @@ export const assignControlPoint = (controlPoint: ControlPoint) => compose(
   controlPointToControlPointState,
 )(controlPoint)
 
+export const assignGateMark = (mark: Mark) => (
+  dispatch: DispatchType,
+  getState: GetStateType,
+) => {
+  const selectedGateSide = getSelectedGateSide(getState())
+  const selectedWaypoint = getSelectedWaypointState(getState())
+  const selectedControlPoint = selectedWaypoint && selectedWaypoint.controlPoint
+
+  if (!selectedControlPoint) {
+    throw new Error('State error: selected waypoint empty or doesnt have controlPoint')
+  }
+
+  const updatedControlPoint = {
+    ...selectedControlPoint,
+    ...(selectedGateSide === GateSide.LEFT
+      ? { leftMark: mark.id }
+      : { rightMark: mark.id }),
+  }
+
+  dispatch(updateControlPoint(updatedControlPoint))
+}
+
 export const saveWaypointFromForm = () => (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
+  const formIsValid = getFormIsValid(getState())
+  if (!formIsValid) return
   const { leftMark, rightMark, passingInstruction, markPairLongName } = compose(
     waypointFromFormValues,
     getFormValues(COURSE_CONFIG_FORM_NAME),

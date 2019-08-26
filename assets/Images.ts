@@ -19,6 +19,7 @@ export default {
     visibilityOff: require('./img/icons/icon-visibility-off.png'),
     help: require('./img/icons/icon-help.png'),
     arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
+    arrowLeft: require('./img/icons/icon-arrow-chevron-left.png'),
     close: require('./img/icons/icon-cross.png'),
     expandLess: require('./img/icons/icon-arrow-expand-less.png'),
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),

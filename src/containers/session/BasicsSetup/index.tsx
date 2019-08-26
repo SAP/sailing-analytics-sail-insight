@@ -1,85 +1,104 @@
-import { compose, reduce, concat, mergeLeft } from 'ramda'
+import { __, compose, concat, mergeLeft, reduce } from 'ramda'
+import { Image, TextInput } from 'react-native'
 
 import I18n from 'i18n'
 
-import { navigateToNewSessionTypeAndBoatClass } from 'navigation'
-import { Component, fold, nothing, reduxConnect as connect, fromClass, contramap } from 'components/fp/component'
-import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
-import { view, text } from 'components/fp/react-native'
-import FormTextInput from 'components/form/FormTextInput'
-import { nextButton } from 'containers/session/common'
+import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
+import { text, view } from 'components/fp/react-native'
+import { field as reduxFormField } from 'components/fp/redux-form'
 import {
-  eventWizardCommonFormSettings,
   FORM_KEY_DATE_FROM,
   FORM_KEY_DATE_TO,
   FORM_KEY_LOCATION,
   FORM_KEY_NAME,
-  initialValues,
-  validateBasics,
 } from 'forms/eventCreation'
+
 import DatePicker from 'react-native-datepicker'
 
-const mapStateToProps = (state: any, props: any) => ({ initialValues })
+import Images from '@assets/Images'
+import styles, { darkerGray, lighterGray } from './styles'
 
-const datePickerSettings = {
-  androidMode: 'spinner',
-  mode: 'datetime',
-  showIcon: false
-}
 
-const datePicker = Component((props: any) => compose(
+const fieldBox = (child: any) => Component((props: any) => compose(
   fold(props),
-  contramap(mergeLeft({
-    onDateChange: props.input.onChange,
-    date: props.input.value,
-  }))
-)(fromClass(DatePicker)))
+  view({ style: styles.fieldBoxContainer }),
+  reduce(concat, nothing()))([
+    text({ style: styles.fieldBoxLabel }, props.label),
+    child,
+  ]))
+
+const boxedTextInput = fieldBox(
+  fromClass(TextInput).contramap((props: any) => ({
+    value: props.input.value,
+    onChangeText: props.input.onChange,
+    underlineColorAndroid: darkerGray,
+  })),
+)
 
 const nameInput = reduxFormField({
   label: I18n.t('text_placeholder_session_name'),
   name: FORM_KEY_NAME,
-  component: FormTextInput
+  component: boxedTextInput.fold,
 })
 
 const locationInput = reduxFormField({
   label: I18n.t('text_location'),
   name: FORM_KEY_LOCATION,
-  component: FormTextInput,
+  component: boxedTextInput.fold,
 })
+
+const arrowIcon = fromClass(Image).contramap((props: any) => ({
+  source: props.icon,
+  style: { tintColor: lighterGray },
+}))
+
+const formDatePicker = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.formDatePickerContainer }),
+  concat(arrowIcon),
+  contramap((props: any) => ({
+    onDateChange: props.input.onChange,
+    date: props.input.value,
+    androidMode: 'spinner',
+    mode: 'date',
+    showIcon: false,
+    format: 'MM/DD/YYYY',
+    customStyles: {
+      dateInput: {
+        height: 'auto',
+        alignItems: 'flex-start',
+        borderWidth: 0,
+      }
+    },
+  }))
+)(fromClass(DatePicker)))
 
 const startDateInput = reduxFormField({
   name: FORM_KEY_DATE_FROM,
-  component: datePicker.fold,
-  ...datePickerSettings,
+  component: formDatePicker.fold,
+  icon: Images.actions.arrowRight,
 })
 
 const endDateInput = reduxFormField({
   name: FORM_KEY_DATE_TO,
-  component: datePicker.fold,
-  ...datePickerSettings,
+  component: formDatePicker.fold,
+  icon: Images.actions.arrowLeft,
 })
 
-const formSettings = {
-  ...eventWizardCommonFormSettings,
-  enableReinitialize: true,       // <-- Reset the form to initial values when newly entering the form
-  validate: validateBasics,
-  onSubmit: navigateToNewSessionTypeAndBoatClass,
-}
+const dateInput = Component((props: any) => compose(
+  fold(props),
+  contramap(mergeLeft({ label: 'Date' })),
+  fieldBox,
+  view({ style: styles.dateInputContainer }),
+  reduce(concat, nothing())
+)([startDateInput, endDateInput]))
 
 export default Component((props: Object) => compose(
   fold(props),
-  connect(mapStateToProps),
-  reduxForm(formSettings),
-  view({ style: []}),
+  view({ style: styles.container }),
   reduce(concat, nothing()))([
-    text({}, 'Basics'),
+    text({ style: styles.sectionHeaderStyle }, 'BASICS'),
     nameInput,
-    text({}, 'Date'),
-    startDateInput,
-    endDateInput,
+    dateInput,
     locationInput,
-    nextButton({
-      onPress: (p: any) => p.handleSubmit(),
-      label: 'Continue'
-    }),
   ]))
