@@ -1,5 +1,5 @@
 import { findIndex } from 'lodash'
-import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt } from 'ramda'
+import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __ } from 'ramda'
 
 import Images from '@assets/Images'
 import FormTextInput from 'components/form/FormTextInput'
@@ -45,6 +45,7 @@ const regattaTypeSelector = fromClass(SwitchSelector).contramap((props: any) => 
   height: 55,
   textStyle: styles.regattaTypeSelectorText,
   selectedTextStyle: styles.regattaTypeSelectorText,
+  style: styles.switchSelector
 }))
 
 const regattaTypeInput = reduxFormField({
@@ -73,6 +74,7 @@ const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLe
 export default Component((props: Object) =>
   compose(
     fold(props),
+    concat(__, view({ style: styles.containerAngledBorder }, nothing())),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
       text({ style: styles.sectionHeaderStyle }, 'REGATTA DETAILS'),

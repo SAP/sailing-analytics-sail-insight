@@ -1,10 +1,18 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withDefaultBoldFont, withDefaultFont, white, withTitleSize } from 'styles/compositions/text'
 
 export const sectionHeaderStyle = {
-  fontSize: '$titleFontSize',
-  color: 'white',
+  ...withDefaultBoldFont,
+  ...white,
+  ...withTitleSize,
   letterSpacing: 0.5,
   marginBottom: '$smallSpacing',
+}
+
+export const textInput = {
+  ...withDefaultFont,
+  flex: 1,
+  fontSize: '$largeFontSize'
 }
 
 export default EStyleSheets.create({
@@ -20,8 +28,8 @@ export default EStyleSheets.create({
     height: '$defaultImageButtonSize',
   },
   createButtonText: {
-    color: 'white',
-    fontSize: '$titleFontSize',
+    ...white,
+    ...withTitleSize,
     letterSpacing: 1.5,
   },
   backNavigationContainer: {

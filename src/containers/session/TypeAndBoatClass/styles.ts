@@ -7,6 +7,17 @@ export default EStyleSheets.create({
   container: {
     backgroundColor: '$MediumBlue',
     paddingHorizontal: '$smallSpacing',
+    paddingBottom: 18
+  },
+  switchSelector: {
+    paddingBottom: 18
+  },
+  containerAngledBorder: {
+    height: 10,
+    borderRightColor: '$MediumBlue',
+    borderRightWidth: 500,
+    borderBottomWidth: 20,
+    borderBottomColor: '$LightBlue',
   },
   regattaTypeSelectorText: {
     fontSize: '$largeFontSize',

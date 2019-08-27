@@ -1,11 +1,12 @@
-import { __, compose, concat, mergeLeft, reduce } from 'ramda'
-import { Image, TextInput } from 'react-native'
+import { __, compose, concat, mergeLeft, reduce, always, merge, defaultTo } from 'ramda'
+import { TextInput } from 'react-native'
 
 import I18n from 'i18n'
 
 import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
 import { text, view } from 'components/fp/react-native'
 import { field as reduxFormField } from 'components/fp/redux-form'
+import IconText from 'components/IconText'
 import {
   FORM_KEY_DATE_FROM,
   FORM_KEY_DATE_TO,
@@ -18,13 +19,24 @@ import DatePicker from 'react-native-datepicker'
 import Images from '@assets/Images'
 import styles, { darkerGray, lighterGray } from './styles'
 
+const icon = compose(
+  fromClass(IconText).contramap,
+  always)
+
+const locationIcon = icon({
+  source: Images.courseConfig.location,
+  iconStyle: { width: 11, height: 11, tintColor: 'black' },
+  style: { position: 'absolute', bottom: 15, right: 5 }
+})
 
 const fieldBox = (child: any) => Component((props: any) => compose(
   fold(props),
   view({ style: styles.fieldBoxContainer }),
+  concat(text({ style: styles.fieldBoxLabel }, props.label)),
+  view({style: { flexDirection: 'row' }}),
   reduce(concat, nothing()))([
-    text({ style: styles.fieldBoxLabel }, props.label),
     child,
+    defaultTo(nothing(), props.icon)
   ]))
 
 const boxedTextInput = fieldBox(
@@ -32,8 +44,8 @@ const boxedTextInput = fieldBox(
     value: props.input.value,
     onChangeText: props.input.onChange,
     underlineColorAndroid: darkerGray,
-  })),
-)
+    style: styles.textInput
+  })))
 
 const nameInput = reduxFormField({
   label: I18n.t('text_placeholder_session_name'),
@@ -44,18 +56,13 @@ const nameInput = reduxFormField({
 const locationInput = reduxFormField({
   label: I18n.t('text_location'),
   name: FORM_KEY_LOCATION,
-  component: boxedTextInput.fold,
+  component: boxedTextInput.contramap(merge({ icon: locationIcon })).fold,
 })
-
-const arrowIcon = fromClass(Image).contramap((props: any) => ({
-  source: props.icon,
-  style: { tintColor: lighterGray },
-}))
 
 const formDatePicker = Component((props: any) => compose(
   fold(props),
   view({ style: styles.formDatePickerContainer }),
-  concat(arrowIcon),
+  concat(icon({ source: props.icon, style: { tintColor: lighterGray }})),
   contramap((props: any) => ({
     onDateChange: props.input.onChange,
     date: props.input.value,
@@ -95,6 +102,7 @@ const dateInput = Component((props: any) => compose(
 
 export default Component((props: Object) => compose(
   fold(props),
+  concat(__, view({ style: styles.containerAngledBorder }, nothing())),
   view({ style: styles.container }),
   reduce(concat, nothing()))([
     text({ style: styles.sectionHeaderStyle }, 'BASICS'),
