@@ -33,6 +33,10 @@ target 'sap_sailing_insight' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
+  pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
+
+  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing
