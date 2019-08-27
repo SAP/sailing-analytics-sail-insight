@@ -76,7 +76,6 @@ const isWaypointSelected = (waypoint: any, props: any) => props.selectedWaypoint
 const formHasPositionType = (type: string) => compose(propEq('positionType', type), defaultTo({}), path(['input', 'value']))
 const formHasGeolocation = formHasPositionType(MarkPositionType.Geolocation)
 const formHasTracking = formHasPositionType(MarkPositionType.TrackingDevice)
-const formHasPing = formHasPositionType(MarkPositionType.PingedLocation)
 
 const geolocationAsString = compose(coordinatesToString, path(['input', 'value']))
 
@@ -88,10 +87,8 @@ const nothingWhenEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
-const nothingWhenNotPingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.PingedLocation)), nothingAsClass)
 const nothingWhenFormHasGeolocation = branch(formHasGeolocation, nothingAsClass)
 const nothingWhenFormHasTracking = branch(formHasTracking, nothingAsClass)
-const nothingWhenFormHasPing = branch(formHasPing, nothingAsClass)
 const nothingWhenPristineForm = branch(propEq('pristine', true), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
 
@@ -106,6 +103,8 @@ const icon = compose(
 const deleteIcon = icon({ source: Images.actions.delete })
 const roundingLeftIcon = icon({ source: Images.courseConfig.roundingDirectionLeft })
 const roundingRightIcon = icon({ source: Images.courseConfig.roundingDirectionRight })
+const trackerIcon = icon({ source: Images.courseConfig.tracker, iconStyle: { width: 11, height: 11 } })
+const locationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 11, height: 11 } })
 const arrowUp = icon({
   source: Images.courseConfig.arrowUp,
   style: { justifyContent: 'flex-end', height: 25 },
@@ -159,9 +158,10 @@ const SameStartFinish = Component((props: object) =>
 const PositionSelectorItem = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.setSelectedPositionType(props.type) }),
+    touchableOpacity({ style: { flexDirection: 'row' }, onPress: (props: any) => props.setSelectedPositionType(props.type) }),
+    concat(props.icon),
     text({}))(
-    props.type))
+    'lalallaa'))
 
 const toLocationFormField = (component: any) => Component((props: object) =>
   compose(
@@ -200,7 +200,7 @@ const MarkPositionPing = Component((props: object) => compose(
   touchableOpacity({
     onPress: (props: object) => navigator.geolocation.getCurrentPosition(compose(
       props.input.onChange,
-      merge({ positionType: MarkPositionType.PingedLocation }),
+      //merge({ positionType: MarkPositionType.PingedLocation }),
       pick(['latitude', 'longitude']),
       prop('coords')
     ))
@@ -215,15 +215,11 @@ const MarkPosition = Component((props: object) =>
     concat(text({ style: styles.sectionTitle }, 'Locate or track')),
     reduce(concat, nothing()),
     concat(__, [
-      nothingWhenNotPingSelected(toLocationFormField(MarkPositionPing)),
-      nothingWhenNotGeolocationSelected(toLocationFormField(MarkPositionGeolocation)),
-      nothingWhenNotTrackingSelected(toLocationFormField(MarkPositionTracking))]),
-    map(compose(
-      PositionSelectorItem.contramap,
-      merge,
-      objOf('type')
-    )))(
-    [MarkPositionType.TrackingDevice, MarkPositionType.Geolocation, MarkPositionType.PingedLocation]))
+      nothingWhenNotTrackingSelected(toLocationFormField(MarkPositionTracking)),
+      nothingWhenNotGeolocationSelected(toLocationFormField(MarkPositionGeolocation))]),
+    map(compose(PositionSelectorItem.contramap, merge)))(
+    [{ type: MarkPositionType.TrackingDevice, label: 'TRACKER', icon: trackerIcon },
+     { type: MarkPositionType.Geolocation, label: 'LOCATION', icon: locationIcon }]))
 
 const Appearance = Component((props: object) =>
   compose(

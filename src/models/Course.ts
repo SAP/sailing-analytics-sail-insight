@@ -40,7 +40,6 @@ export enum MarkPattern {
 
 export enum MarkPositionType {
   Geolocation =  'GEOLOCATION',
-  PingedLocation =  'PINGED_LOCATION',
   TrackingDevice = 'TRACKING_DEVICE',
 }
 
@@ -51,10 +50,6 @@ export interface Location {
 
 export interface Geolocation extends Location {
   positionType: MarkPositionType.Geolocation
-}
-
-export interface PingedLocation extends Location {
-  positionType: MarkPositionType.PingedLocation
 }
 
 export interface TrackingDevice {
@@ -68,7 +63,7 @@ export interface Mark {
   longName: string
   shortName?: string
   type: MarkType
-  position?: Geolocation | TrackingDevice | PingedLocation
+  position?: Geolocation | TrackingDevice
   shape?: MarkShape
   color?: string
   pattern?: MarkPattern

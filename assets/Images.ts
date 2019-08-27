@@ -58,6 +58,8 @@ export default {
   courseConfig: {
     roundingDirectionLeft: require('./img/icons/icon-rounding-direction-left.png'),
     roundingDirectionRight: require('./img/icons/icon-rounding-direction-right.png'),
-    arrowUp: require('./img/icons/arrow-up.png')
+    arrowUp: require('./img/icons/arrow-up.png'),
+    tracker: require('./img/icons/icon-tracker.png'),
+    location: require('./img/icons/icon-location.png')
   }
 }
