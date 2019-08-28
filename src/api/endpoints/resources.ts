@@ -11,7 +11,7 @@ import {
   AddMarkFixBody,
   AddRaceColumnResponseData,
   AddRaceColumnsBody,
-  BoatClassesdBody,
+  BoatClassesBody,
   CompetitorBody,
   CompetitorManeuverItem,
   CompetitorResponseData,
@@ -155,7 +155,7 @@ export interface DataApi {
     raceName: string,
     filter?: {competitorId?: string, fromTime?: number},
   ) => Promise<CompetitorManeuverItem[]>
-  requestBoatClasses: () => Promise<BoatClassesdBody[]>
+  requestBoatClasses: () => Promise<BoatClassesBody[]>
   requestCountryCodes: () => Promise<CountryCodeBody[]>
   uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
   addMarkToRegatta: (regattaName: string, markName: string) => any,

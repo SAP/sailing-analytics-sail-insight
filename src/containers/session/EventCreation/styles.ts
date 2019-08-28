@@ -20,16 +20,19 @@ export default EStyleSheets.create({
     backgroundColor: '$LightBlue',
   },
   createButton: {
+    marginTop: 100,
+    marginBottom: 30,
     backgroundColor: '$Orange',
     marginHorizontal: '$largeSpacing',
     borderRadius: '$smallBorderRadius',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '$defaultImageButtonSize',
+    height: 50,
   },
   createButtonText: {
     ...white,
     ...withTitleSize,
+    ...withDefaultBoldFont,
     letterSpacing: 1.5,
   },
   backNavigationContainer: {

@@ -212,7 +212,7 @@ export interface CompetitorManeuverItem {
   maneuvers: Maneuver[]
 }
 
-export interface BoatClassesdBody {
+export interface BoatClassesBody {
   name: string
   typicallyStartsUpwind: boolean,
   hullLengthInMeters: number,

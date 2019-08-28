@@ -24,6 +24,7 @@ export default EStyleSheets.create({
     paddingHorizontal: '$smallSpacing',
     paddingVertical: '$smallSpacing',
     marginBottom: '$smallSpacing',
+    borderRadius: 2
   },
   fieldBoxLabel: {
     fontSize: '$largeFontSize',

@@ -1,7 +1,10 @@
-import { always, compose, concat, reduce } from 'ramda'
-import { Image } from 'react-native'
+import { always, compose, concat, reduce, objOf } from 'ramda'
+import { Image, Alert } from 'react-native'
 
-import { Component,  fold, fromClass, nothing, reduxConnect as connect } from 'components/fp/component'
+import { Component,  fold, fromClass, nothing,
+  reduxConnect as connect,
+  recomposeLifecycle as lifecycle,
+  recomposeWithStateHandlers as withStateHandlers } from 'components/fp/component'
 import { scrollView, text, touchableOpacity, view } from 'components/fp/react-native'
 import { reduxForm } from 'components/fp/redux-form'
 
@@ -19,6 +22,11 @@ import {
 } from 'forms/eventCreation'
 import { navigateBack } from 'navigation'
 import { getFormFieldValue } from 'selectors/form'
+
+import I18n from 'i18n'
+
+import { selfTrackingApi } from 'api'
+import { BoatClassesBody } from '../../../api/endpoints/types'
 
 import Images from '@assets/Images'
 import styles from './styles'
@@ -39,13 +47,27 @@ const formSettings = {
   form: EVENT_CREATION_FORM_NAME,
 }
 
+const withBoatClasses = compose(
+  withStateHandlers(null, {
+    setBoatClasses: always(objOf('boatClasses'))
+  }),
+  lifecycle({
+    componentDidMount() {
+      selfTrackingApi().requestBoatClasses().then((boatClasses: BoatClassesBody[]) => {
+        this.props.setBoatClasses(boatClasses)
+      }).catch((err) => {
+        Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
+      })
+    }
+  }))
+
 const createButton = Component((props: any) => compose(
   fold(props),
   touchableOpacity({
     onPress: props.handleSubmit(createEvent(props)),
     style: styles.createButton,
-    })
-)(text({ style: styles.createButtonText }, 'CREATE')))
+    }))(
+    text({ style: styles.createButtonText }, 'CREATE')))
 
 const arrowLeft = fromClass(Image).contramap(always({
   source: Images.actions.arrowLeft,
@@ -57,11 +79,12 @@ const backNavigation = Component((props: any) => compose(
   view({ style: styles.backNavigationContainer }),
   touchableOpacity({ onPress: navigateBack }),
   view({ style: styles.backNavigationButtonContainer }),
-  concat(arrowLeft)
-)(text({ style: styles.backNavigationText }, 'Event overview')))
+  concat(arrowLeft))(
+  text({ style: styles.backNavigationText }, 'Event overview')))
 
 export default Component((props: Object) => compose(
   fold(props),
+  withBoatClasses,
   connect(mapStateToProps, { createEventActionQueue }),
   reduxForm(formSettings),
   scrollView({ style: styles.container}),

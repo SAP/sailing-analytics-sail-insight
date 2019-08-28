@@ -1,8 +1,7 @@
 import { findIndex } from 'lodash'
-import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __ } from 'ramda'
+import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __, merge } from 'ramda'
 
 import Images from '@assets/Images'
-import FormTextInput from 'components/form/FormTextInput'
 import { Component, fold, fromClass, nothing, nothingAsClass,
   recomposeBranch as branch } from 'components/fp/component'
 import { text, view } from 'components/fp/react-native'
@@ -15,6 +14,7 @@ import {
 import { RegattaType } from 'models/EventCreationData'
 import SwitchSelector from 'react-native-switch-selector'
 import ModalDropdown from 'react-native-modal-dropdown'
+import FormBoatClassInput from 'components/form/FormBoatClassInput'
 
 import { $DarkBlue, $MediumBlue } from 'styles/colors'
 import styles from './styles'
@@ -53,11 +53,15 @@ const regattaTypeInput = reduxFormField({
   component: regattaTypeSelector.fold,
 })
 
-const boatClassInput = reduxFormField({
-  label: 'Boat class (autocomplete)',
-  name: FORM_KEY_BOAT_CLASS,
-  component: FormTextInput,
-})
+const boatClassInput = Component(props => compose(
+  fold(props))(
+    reduxFormField({
+    label: 'Boat class (autocomplete)',
+    name: FORM_KEY_BOAT_CLASS,
+    component: fromClass(FormBoatClassInput)
+      .contramap(merge({ ...props, containerStyle: styles.boatClassInput }))
+      .fold,
+  })))
 
 const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLeft({
   onSelect: (index: any, value: any) => props.input.onChange(value),
@@ -70,6 +74,8 @@ const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLe
 //   component: modalDropdown.fold,
 //   options: Object.values(HandicapRatingSystem),
 // })
+
+
 
 export default Component((props: Object) =>
   compose(

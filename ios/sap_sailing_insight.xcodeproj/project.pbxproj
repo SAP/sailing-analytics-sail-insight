@@ -82,6 +82,8 @@
 		DCADCDE2F89442A4AE2450D7 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 664FD40D1A794E639258B3B7 /* libsqlite3.tbd */; };
 		FD221B8871AF417A8B12A0DB /* TSBackgroundFetch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 280EA5E601CD4238B22A674C /* TSBackgroundFetch.framework */; };
 		FE9D32BC651645C2875D5BAC /* libRNI18n-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE9F00F02FC407EA88B89C3 /* libRNI18n-tvOS.a */; };
+		21D7FFAE7A7D4621B11FC888 /* sfcompact_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 54498E37A5F44333A85BF448 /* sfcompact_bold.otf */; };
+		8C225E402F6D4983BF846A5D /* sfcompact_regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 78FB2C6D6FDC411CB9CC5640 /* sfcompact_regular.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -640,6 +642,8 @@
 		F72175598D7CBB3C030658FD /* libPods-sap_sailing_insightTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insightTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F81971C8EFD34E708D20A666 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
 		FCE39D05504C4265BDE0AD26 /* libReactNativePermissions.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativePermissions.a; sourceTree = "<group>"; };
+		54498E37A5F44333A85BF448 /* sfcompact_bold.otf */ = {isa = PBXFileReference; name = "sfcompact_bold.otf"; path = "../assets/fonts/sfcompact_bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		78FB2C6D6FDC411CB9CC5640 /* sfcompact_regular.otf */ = {isa = PBXFileReference; name = "sfcompact_regular.otf"; path = "../assets/fonts/sfcompact_regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -870,6 +874,8 @@
 				2444D8AAC4A94E06B14E1619 /* bentonsans_light.otf */,
 				3281F93E519F464983190728 /* bentonsans_medium.otf */,
 				2F54F786A71945108688604E /* bentonsans_thin.otf */,
+				54498E37A5F44333A85BF448 /* sfcompact_bold.otf */,
+				78FB2C6D6FDC411CB9CC5640 /* sfcompact_regular.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1915,6 +1921,8 @@
 				39B02C161FDF4356BFD9A53D /* bentonsans_medium.otf in Resources */,
 				9305B9B167824E1FA4A23E48 /* bentonsans_thin.otf in Resources */,
 				4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */,
+				21D7FFAE7A7D4621B11FC888 /* sfcompact_bold.otf in Resources */,
+				8C225E402F6D4983BF846A5D /* sfcompact_regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

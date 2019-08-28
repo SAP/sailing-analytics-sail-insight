@@ -1,6 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
+import { withDefaultBoldFont, white } from 'styles/compositions/text'
 
 const discardSelectorCircleDiameter = 50
 
@@ -13,7 +14,7 @@ export default EStyleSheets.create({
   textHeader: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: '$regularFontSize',
+    fontSize: '$regularLargeFontSize'
   },
   textDescription: {
     color: 'white',
@@ -27,11 +28,39 @@ export default EStyleSheets.create({
     marginHorizontal: '$largeSpacing',
     borderWidth: 1,
     borderColor: 'white',
+    marginBottom: 20
+  },
+  raceNumberContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    borderWidth: 0
+  },
+  framedNumber: {
+    flexDirection: 'row'
+  },
+  framedNumberItem: {
+    width: 70,
+    height: 70,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5,
+    borderRadius: 2
+  },
+  framedNumberItemText: {
+    ...withDefaultBoldFont,
+    color: 'black',
+    fontSize: 44
   },
   setDiscardText: {
     color: 'white',
     fontSize: '$largeFontSize',
     letterSpacing: 1,
+  },
+  discardContainer: {
+    marginBottom: 20
   },
   discardSelectorItemContainer: {
     height: discardSelectorCircleDiameter,

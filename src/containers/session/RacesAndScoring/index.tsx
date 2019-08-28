@@ -1,6 +1,5 @@
-import { __, compose, concat, equals, length, merge, not, path, reduce } from 'ramda'
-
-import Slider from '@react-native-community/slider'
+import { __, compose, concat, equals, length, objOf, prepend, split,
+  merge, not, path, reduce, range, map, always, when, tap, toString } from 'ramda'
 
 import {
   Component,
@@ -18,40 +17,56 @@ import {
   FORM_KEY_NUMBER_OF_RACES,
 } from 'forms/eventCreation'
 
+import { Picker } from 'react-native'
+
 import styles from './styles'
 
 const areDiscardsEmpty = compose(equals(0), length, path(['input', 'value']))
 const nothingWhenDiscardsEmpty = branch(areDiscardsEmpty, nothingAsClass)
 const nothingWhenDiscardsNotEmpty = branch(compose(not, areDiscardsEmpty), nothingAsClass)
 
-const sliderSettings = {
-  minimumValue: 1,
-  maximumValue: 20,
-  step: 1,
-}
+const FramedNumberItem = Component(props => compose(
+  fold(props),
+  view({ style: styles.framedNumberItem }),
+  text({ style: styles.framedNumberItemText }))(
+  props.value))
+
+const FramedNumber = Component(props => compose(
+  fold(props),
+  view({ style: styles.framedNumber }),
+  reduce(concat, nothing()),
+  map(compose(FramedNumberItem.contramap, always, objOf('value'))),
+  when(compose(equals(1), length), prepend('0')),
+  split(''),
+  toString)(
+  props.value))
 
 const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
-    reduce(concat, nothing()))([
-      text({ style: styles.textHeader }, 'Planned Number of Races'),
-      fromClass(Slider).contramap(merge({
-        value: Number(props.input.value),
-        onValueChange: props.input.onChange,
-      })),
-      text({}, `${props.input.value}`)]))
+    concat(text({ style: styles.textHeader }, 'Planned Number of Races')),
+    view({ style: styles.raceNumberContainer }),
+    concat(FramedNumber.contramap(always({ value: props.input.value }))))(
+    fromClass(Picker).contramap(merge({
+      style: { position: 'absolute', top: 0, width: 1000, height: 1000 },
+      selectedValue: Number(props.input.value),
+      onValueChange: props.input.onChange,
+      children: compose(
+        map(fromClass(Picker.Item).fold),
+        map(v => ({ value: v, label: v.toString() })))(
+        range(1, 51))
+    }))))
 
 const raceNumberFormField = reduxFormField({
   name: FORM_KEY_NUMBER_OF_RACES,
   component: raceNumberSelector.fold,
-  ...sliderSettings,
 })
 
 const scoringSystemLabel = Component((props: object) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-      text({ style: styles.textHeader }, 'Low Point scoring applies'),
+      text({ style: styles.textHeader }, 'Low Point scoring applies.'),
       text({ style: styles.textDescription }, 'Please contact us if you require any other scoring system.'),
     ]))
 
@@ -71,12 +86,12 @@ const discardSelectorItem = Component((props: any) => compose(
       styles.discardSelectorItemText,
       ...(props.item.value === '+' ? [styles.discardSelectorPlusText] : []),
     ]
-  })
-)(props.item.value || ''))
+  }))(
+  props.item.value || ''))
 
 const discardInput = Component((props: any) => compose(
   fold(props),
-  view({}),
+  view({ style: styles.discardContainer }),
   concat(text({ style: styles.textHeader }, 'Discard after race numbers')),
   contramap(merge({
     data: [

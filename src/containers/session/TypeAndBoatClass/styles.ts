@@ -1,6 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
+import { withDefaultFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   sectionHeaderStyle,
@@ -10,7 +11,7 @@ export default EStyleSheets.create({
     paddingBottom: 18
   },
   switchSelector: {
-    paddingBottom: 18
+    paddingBottom: 25
   },
   containerAngledBorder: {
     height: 10,
@@ -21,6 +22,11 @@ export default EStyleSheets.create({
   },
   regattaTypeSelectorText: {
     fontSize: '$largeFontSize',
-    letterSpacing: 0.8,
+    letterSpacing: 0.8
   },
+  boatClassInput: {
+    ...withDefaultFont,
+    backgroundColor: 'white',
+    borderRadius: 2
+  }
 })

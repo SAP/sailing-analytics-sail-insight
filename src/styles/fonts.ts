@@ -6,6 +6,6 @@ export const $defaultBoldFontFamily = isPlatformAndroid ? 'sfcompact_bold' : 'Be
 export const $microFontSize = 8
 export const $smallFontSize = 11
 export const $regularFontSize = 12
-export const $regularLargeFontSize = 13
+export const $regularLargeFontSize = 14
 export const $largeFontSize = 16
 export const $titleFontSize = 20

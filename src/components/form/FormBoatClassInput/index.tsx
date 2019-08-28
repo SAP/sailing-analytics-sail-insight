@@ -8,7 +8,7 @@ import I18n from 'i18n'
 
 import { assetApiEndpoint, selfTrackingApi } from '../../../api'
 import { getApiServerUrl } from '../../../api/config'
-import { BoatClassesdBody } from '../../../api/endpoints/types'
+import { BoatClassesBody } from '../../../api/endpoints/types'
 import { getErrorDisplayMessage } from 'helpers/texts'
 
 import Image from '../../Image'
@@ -17,7 +17,7 @@ import TextInput, { TextInputProps } from '../../TextInput'
 import styles from './styles'
 
 interface State {
-  boatClasses: BoatClassesdBody[],
+  boatClasses: BoatClassesBody[],
   query: string,
   selected: boolean,
   focused: boolean,
@@ -27,21 +27,37 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   label?: string,
   input?: any,
   meta?: any,
+  query?: string,
+  boatClasses?: any[]
 }, State > {
+  protected isMounted:boolean = false
 
   public readonly state: Readonly<State> = {
     boatClasses: [],
-    query: '',
     selected: false,
     focused: true,
   }
 
   public componentDidMount() {
-    selfTrackingApi().requestBoatClasses().then((boatClasses: BoatClassesdBody[]) => {
-      this.setState({ boatClasses })
-    }).catch((err) => {
-      Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
-    })
+    this.isMounted = true;
+
+    this.setState({ query: this.props.input.value, boatClasses: this.props.boatClasses })
+
+    if (!this.props.boatClasses) {
+      selfTrackingApi().requestBoatClasses().then((boatClasses: BoatClassesBody[]) => {
+        this.isMounted && this.setState({ boatClasses })
+      }).catch((err) => {
+        Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
+      })
+    }
+  }
+
+  public componentWillReceiveProps(props:any) {
+    this.setState({ query: props.input.value })
+  }
+
+  public componentWillUnmount() {
+    this.isMounted = false;
   }
 
   public render() {
@@ -49,6 +65,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       label,
       input: { name, ...restInput } = { name: undefined },
       style,
+      containerStyle,
       ...additionalProps
     } = this.props
     const { query, selected, focused } = this.state
@@ -59,6 +76,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     ).slice(0, 5)
     const comp = (a: string, b: string) => a.toLowerCase().trim() === b.toLowerCase().trim()
     const hideResults = !focused || selected
+
     return (
         <View>
           <View style={styles.autocompleteContainer}>
@@ -68,7 +86,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
                 defaultValue={query}
                 renderTextInput={this.renderTextInput}
                 renderItem={this.renderItem}
-                inputContainerStyle={styles.inputContainer}
+                inputContainerStyle={[styles.inputContainer, containerStyle]}
                 listStyle={styles.list}
                 hideResults={hideResults}
                 {...restInput}
@@ -105,7 +123,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     input.onChange(suggestionValue)
   }
 
-  protected renderItem = (item: BoatClassesdBody) => {
+  protected renderItem = (item: BoatClassesBody) => {
     const iconSource = item.iconUrl ? { uri: assetApiEndpoint(getApiServerUrl())(item.iconUrl)() } : ''
     return (
         <TouchableOpacity
