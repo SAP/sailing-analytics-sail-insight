@@ -5,6 +5,26 @@ import { withDefaultBoldFont, white } from 'styles/compositions/text'
 
 const discardSelectorCircleDiameter = 50
 
+
+const discardSelectorItemContainer = {
+  height: discardSelectorCircleDiameter,
+  width: discardSelectorCircleDiameter,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'white',
+  margin: 5,
+  borderRadius: discardSelectorCircleDiameter / 2,
+}
+
+const discardSelectorPlusContainer = {
+  ...discardSelectorItemContainer,
+  borderWidth: 1,
+  borderColor: 'white',
+  backgroundColor: '$LightBlue',
+  justifyContent: 'center',
+  alignItems: 'center'
+}
+
 export default EStyleSheets.create({
   sectionHeaderStyle,
   container: {
@@ -60,27 +80,16 @@ export default EStyleSheets.create({
     letterSpacing: 1,
   },
   discardContainer: {
-    marginBottom: 20
+    marginBottom: 20,
+    flexDirection: 'row',
+    overflow: 'scroll'
   },
-  discardSelectorItemContainer: {
-    height: discardSelectorCircleDiameter,
-    width: discardSelectorCircleDiameter,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1,
-    backgroundColor: 'white',
-    margin: 5,
-    borderRadius: discardSelectorCircleDiameter / 2,
-  },
+  discardSelectorItemContainer,
+  discardSelectorPlusContainer,
   discardSelectorItemText: {
     fontSize: '$titleFontSize',
     fontWeight: 'bold',
     color: 'black',
-  },
-  discardSelectorPlusContainer: {
-    borderWidth: 1,
-    borderColor: 'white',
-    backgroundColor: '$LightBlue'
   },
   discardSelectorPlusText: {
     color: 'white',
