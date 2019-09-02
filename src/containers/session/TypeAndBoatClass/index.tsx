@@ -56,12 +56,12 @@ const regattaTypeInput = reduxFormField({
 const boatClassInput = Component(props => compose(
   fold(props))(
     reduxFormField({
-    label: 'Boat class (autocomplete)',
-    name: FORM_KEY_BOAT_CLASS,
-    component: fromClass(FormBoatClassInput)
-      .contramap(merge({ ...props, containerStyle: styles.boatClassInput }))
-      .fold,
-  })))
+      label: 'Boat class (autocomplete)',
+      name: FORM_KEY_BOAT_CLASS,
+      component: fromClass(FormBoatClassInput)
+        .contramap(merge({ ...props, containerStyle: styles.boatClassInput }))
+        .fold,
+    })))
 
 const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLeft({
   onSelect: (index: any, value: any) => props.input.onChange(value),
@@ -74,8 +74,6 @@ const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLe
 //   component: modalDropdown.fold,
 //   options: Object.values(HandicapRatingSystem),
 // })
-
-
 
 export default Component((props: Object) =>
   compose(
