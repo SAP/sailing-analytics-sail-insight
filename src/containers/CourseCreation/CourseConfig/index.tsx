@@ -105,6 +105,8 @@ const icon = compose(
 const deleteIcon = icon({ source: Images.actions.delete })
 const roundingLeftIcon = icon({ source: Images.courseConfig.roundingDirectionLeft })
 const roundingRightIcon = icon({ source: Images.courseConfig.roundingDirectionRight })
+const gatePassingIcon = icon({ source: Images.courseConfig.gatePassing, iconStyle: { width: 35, height: 35 } })
+const linePassingIcon = icon({ source: Images.courseConfig.linePassing, iconStyle: { width: 30, height: 30 } })
 const trackerIcon = icon({ source: Images.courseConfig.tracker, iconStyle: { width: 11, height: 11 } })
 const locationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 11, height: 11 } })
 const bigLocationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 25, height: 25 } })
@@ -139,6 +141,7 @@ const GateMarkSelectorItem = Component((props: object) =>
 const GateMarkSelector = Component((props: object) =>
   compose(
     fold(props),
+    concat(text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, 'Defining gate marks')),
     view({ style: styles.gateMarkSelectorContainer }),
     reduce(concat, nothing()),
     intersperse(dashLine),
@@ -315,14 +318,14 @@ const singleMarkPassingInstructions = [
   { type: PassingInstruction.Starboard, icon: roundingRightIcon }]
 
 const gatePassingInstructions = [
-  { type: PassingInstruction.Gate, icon: roundingLeftIcon },
-  { type: PassingInstruction.Line, icon: roundingLeftIcon }]
+  { type: PassingInstruction.Gate, icon: gatePassingIcon },
+  { type: PassingInstruction.Line, icon: linePassingIcon }]
 
 const PassingInstructions = Component((props: object) =>
   compose(
     fold(props),
     formSection({ name: FORM_WAYPOINT_SECTION_NAME }),
-    concat(text({ style: styles.sectionTitle }, 'Rounding direction')),
+    concat(text({ style: styles.sectionTitle }, isGateWaypoint(props) ? 'Passing Gate' : 'Rounding direction')),
     view({ style: styles.passingInstructionContainer }),
     reduce(concat, nothing()),
     map(compose(

@@ -60,6 +60,8 @@ export default {
     roundingDirectionRight: require('./img/icons/icon-rounding-direction-right.png'),
     arrowUp: require('./img/icons/arrow-up.png'),
     tracker: require('./img/icons/icon-tracker.png'),
-    location: require('./img/icons/icon-location.png')
+    location: require('./img/icons/icon-location.png'),
+    gatePassing: require('./img/icons/gate-passing.png'),
+    linePassing: require('./img/icons/line-passing.png')
   }
 }

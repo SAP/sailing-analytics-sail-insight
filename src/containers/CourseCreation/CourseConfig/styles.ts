@@ -67,9 +67,13 @@ export default EStyleSheets.create({
   },
 
   sectionTitle: {
+    ...withDefaultBoldFont,
     ...white,
     marginBottom: 10,
-    fontFamily: 'sfcompact_regular'
+  },
+
+  indentedSectionTitle: {
+    marginTop: 25
   },
 
   editContainer: {
@@ -100,7 +104,6 @@ export default EStyleSheets.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    marginTop: 30,
     marginBottom: 0,
     paddingBottom: 0
   },
