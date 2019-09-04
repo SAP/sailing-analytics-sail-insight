@@ -8,7 +8,7 @@ import {
   recomposeBranch as branch,
   reduxConnect as connect,
 } from 'components/fp/component'
-import { text, touchableOpacity } from 'components/fp/react-native'
+import { text, touchableOpacity, scrollView } from 'components/fp/react-native'
 import CourseConfig from '../CourseConfig'
 
 import { saveCourse, saveWaypointFromForm } from 'actions/courses'
@@ -44,8 +44,8 @@ export default Component((props: object) =>
   compose(
     fold(props),
     connect(mapStateToProps, { saveCourse, saveWaypointFromForm }),
-    reduce(concat, nothing()),
-  )([
+    scrollView({ vertical: true, style: { flex: 1 } }),
+    reduce(concat, nothing()))([
     nothingIfNotLoading(spinner),
     nothingIfLoading(CourseConfig),
     saveCourseButton

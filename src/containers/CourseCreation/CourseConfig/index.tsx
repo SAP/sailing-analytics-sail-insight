@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, insert, isNil, not, either, equals, pick, tap, ifElse,
-  propEq, addIndex, mergeLeft, intersperse, prepend } from 'ramda'
+  objOf, isNil, not, either, equals, pick, tap, ifElse,
+  propEq, addIndex, mergeLeft, intersperse, gt, findIndex } from 'ramda'
 
 import {
   Component,
@@ -9,7 +9,6 @@ import {
   fromClass,
   nothing,
   nothingAsClass,
-  contramap,
   reduxConnect as connect,
   recomposeBranch as branch,
   recomposeWithState as withState,
@@ -42,12 +41,15 @@ import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'nav
 import { coordinatesToString } from 'helpers/utils'
 
 import FormTextInput from 'components/form/FormTextInput'
+import SwitchSelector from 'react-native-switch-selector'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
 
 import EStyleSheets from 'react-native-extended-stylesheet'
 import styles from './styles'
+
+import { $MediumBlue, $Orange, $DarkBlue } from 'styles/colors'
 
 const mapIndexed = addIndex(map)
 
@@ -88,7 +90,6 @@ const nothingWhenEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
-const nothingWhenFormHasGeolocation = branch(formHasGeolocation, nothingAsClass)
 const nothingWhenFormHasTracking = branch(formHasTracking, nothingAsClass)
 const nothingWhenPristineForm = branch(propEq('pristine', true), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
@@ -106,10 +107,11 @@ const roundingLeftIcon = icon({ source: Images.courseConfig.roundingDirectionLef
 const roundingRightIcon = icon({ source: Images.courseConfig.roundingDirectionRight })
 const trackerIcon = icon({ source: Images.courseConfig.tracker, iconStyle: { width: 11, height: 11 } })
 const locationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 11, height: 11 } })
-const arrowUp = icon({
+const bigLocationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 25, height: 25 } })
+const arrowUp = ({ color = $MediumBlue }: any = {}) => icon({
   source: Images.courseConfig.arrowUp,
   style: { justifyContent: 'flex-end', height: 25 },
-  iconStyle: { height: 12 } })
+  iconStyle: { height: 12, tintColor: color } })
 
 const plusIcon = icon({
   source: Images.actions.add,
@@ -126,7 +128,7 @@ const GateMarkSelectorItem = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.gateMarkSelectorItemContainer }),
-    concat(__, nothingWhenNotSelected(arrowUp)),
+    concat(__, nothingWhenNotSelected(arrowUp())),
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
       onPress: (props: any) => props.selectGateSide(props.side) }),
@@ -156,14 +158,6 @@ const SameStartFinish = Component((props: object) =>
     fromClass(Switch)
   ]))
 
-const PositionSelectorItem = Component((props: object) =>
-  compose(
-    fold(props),
-    touchableOpacity({ style: { flexDirection: 'row' }, onPress: (props: any) => props.setSelectedPositionType(props.type) }),
-    concat(props.icon),
-    text({}))(
-    'lalallaa'))
-
 const toLocationFormField = (component: any) => Component((props: object) =>
   compose(
     fold(props),
@@ -176,51 +170,77 @@ const toLocationFormField = (component: any) => Component((props: object) =>
 const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
+    view({ style: styles.locationContainer }),
+    concat(text({ style: styles.trackingText }, formHasTracking(props) ? 'tracking device info' : 'No device tracked')),
     touchableOpacity({
       onPress: () => navigateToCourseTrackerBinding({
         formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) })
-    }),
-    view({}),
-    reduce(concat, nothing()))([
-      text({}, formHasTracking(props) ? 'tracking device info' : 'No tracker bound yet. Please configure tracker binding.'),
-      nothingWhenFormHasTracking(text({}, 'CONFIGURE OR CHANGE TRACKER BINDING')) ]))
-
-const MarkPositionGeolocation = Component((props: object) =>
-  compose(
-    fold(props),
-    touchableOpacity({
-      onPress: () => navigateToCourseGeolocation({
-            formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }),
-    reduce(concat, nothing()))([
-      text({}, formHasGeolocation(props) ? geolocationAsString(props) : 'No geolocation specified. Please configure geolocation.'),
-      nothingWhenFormHasGeolocation(text({}, 'CONFIGURE OR CHANGE GEOLOCATION'))
-    ]))
+    }))(
+    text({ style: styles.trackingText }, 'Change Tracking Device')))
 
 const MarkPositionPing = Component((props: object) => compose(
   fold(props),
   touchableOpacity({
+    style: styles.pingPositionButton,
     onPress: (props: object) => navigator.geolocation.getCurrentPosition(compose(
       props.input.onChange,
-      //merge({ positionType: MarkPositionType.PingedLocation }),
+      merge({ positionType: MarkPositionType.Geolocation }),
       pick(['latitude', 'longitude']),
-      prop('coords')
-    ))
-  }),
-  reduce(concat, nothing()))([
-  text({}, formHasPing(props) ? geolocationAsString(props) : 'No ping specified. Please configure ping.'),
-  nothingWhenFormHasPing(text({}, 'CONFIGURE OR CHANGE PING'))]))
+      prop('coords')))
+  }))(
+  text({ style: [styles.locationText, styles.pingText] }, 'PING POSITION')))
+
+const MarkPositionCoordinates = Component(props => compose(
+  fold(props),
+  view({ style: styles.coordinatesContainer }),
+  concat(bigLocationIcon),
+  text({ style: styles.coordinatesText }),
+  ifElse(formHasGeolocation, geolocationAsString, always('')))(props))
+
+const MarkPositionGeolocation = Component((props: object) =>
+  compose(
+    fold(props),
+    view({ style: styles.locationContainer }),
+    concat(MarkPositionCoordinates),
+    concat(MarkPositionPing),
+    touchableOpacity({
+      style: styles.editPositionButton,
+      onPress: () => navigateToCourseGeolocation({
+        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }))(
+    text({ style: styles.locationText }, 'Edit Position')))
+
+const locationTypes = [
+  { value: MarkPositionType.TrackingDevice, label: 'TRACKER', customIcon: trackerIcon.fold },
+  { value: MarkPositionType.Geolocation, label: 'LOCATION', customIcon: locationIcon.fold }]
+
+const PositionSelector = fromClass(SwitchSelector).contramap((props: any) => ({
+  options: locationTypes,
+  initial: compose(
+    when(gt(0), always(0)),
+    findIndex(i => i.value === props.selectedPositionType))(
+    locationTypes),
+  onPress: props.setSelectedPositionType,
+  backgroundColor: $MediumBlue,
+  selectedColor: 'white',
+  buttonColor: $Orange,
+  textColor: 'white',
+  borderColor: 'white',
+  borderRadius: 2,
+  hasPadding: true,
+  height: 55,
+  textStyle: styles.locationSwitchText
+}))
 
 const MarkPosition = Component((props: object) =>
   compose(
     fold(props),
-    concat(text({ style: styles.sectionTitle }, 'Locate or track')),
-    reduce(concat, nothing()),
-    concat(__, [
+    reduce(concat, nothing()))([
+      text({ style: styles.sectionTitle }, 'Locate or track'),
+      PositionSelector,
+      arrowUp({color: $DarkBlue }),
       nothingWhenNotTrackingSelected(toLocationFormField(MarkPositionTracking)),
-      nothingWhenNotGeolocationSelected(toLocationFormField(MarkPositionGeolocation))]),
-    map(compose(PositionSelectorItem.contramap, merge)))(
-    [{ type: MarkPositionType.TrackingDevice, label: 'TRACKER', icon: trackerIcon },
-     { type: MarkPositionType.Geolocation, label: 'LOCATION', icon: locationIcon }]))
+      nothingWhenNotGeolocationSelected(toLocationFormField(MarkPositionGeolocation))
+    ]))
 
 const Appearance = Component((props: object) =>
   compose(
@@ -388,7 +408,7 @@ export default Component((props: object) =>
       addWaypoint, assignControlPointClass, assignControlPoint }),
     view({ style: styles.mainContainer }),
     concat(__, nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))),
-    scrollView({ horizontal: true }),
+    scrollView({ style: styles.waypointsContainer, horizontal: true }),
     reduce(concat, nothing()),
     mapIndexed(waypointItemToComponent))(
     props.course.waypoints))

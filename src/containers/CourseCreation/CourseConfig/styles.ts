@@ -1,5 +1,8 @@
 import EStyleSheets from 'react-native-extended-stylesheet' 
 
+import { $Orange, $DarkBlue, $MediumBlue } from 'styles/colors'
+import { withDefaultBoldFont, withDefaultFont, white } from 'styles/compositions/text'
+
 const roundElementContainer = {
   width: 50,
   height: 50,
@@ -21,7 +24,12 @@ export default EStyleSheets.create({
   $itemHeight: 80,
 
   mainContainer: {
+    flexDirection: 'column',
     backgroundColor: '#476987',
+  },
+
+  waypointsContainer: {
+    flexShrink: 0
   },
 
   waypointContainer: {
@@ -46,7 +54,7 @@ export default EStyleSheets.create({
   },
 
   waypointText: {
-    color: 'white',
+    ...white,
     textAlign: 'center',
     fontWeight: 'bold'
   },
@@ -59,13 +67,13 @@ export default EStyleSheets.create({
   },
 
   sectionTitle: {
-    color: 'white',
+    ...white,
     marginBottom: 10,
     fontFamily: 'sfcompact_regular'
   },
 
   editContainer: {
-    paddingTop: 15
+    //paddingTop: 15
   },
 
   indentedContainer: { ...withPadding },
@@ -73,7 +81,7 @@ export default EStyleSheets.create({
   gateEditContainer: {
     ...withPadding,
     paddingTop: 15,
-    backgroundColor: '#263A49',
+    backgroundColor: $MediumBlue,
   },
 
   passingInstruction: roundElementContainer,
@@ -109,11 +117,73 @@ export default EStyleSheets.create({
   },
 
   gateMarkSelectorText: {
-    color: 'white'
+    ...withDefaultFont,
+    ...white
   },
 
   gateMarkSelectorItemSelected: {
     backgroundColor: '#1D3F4E',
     borderColor: '#1D3F4E'
+  },
+
+  locationContainer: {
+    backgroundColor: $DarkBlue,
+    padding: 10,
+    borderRadius: 2,
+    flexDirection: 'column',
+    alignItems: 'stretch'
+  },
+
+  locationSwitchText: {
+    ...withDefaultFont,
+    paddingLeft: 5
+  },
+
+  editPositionButton: {
+    justifyContent: 'center',
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+
+  pingPositionButton: {
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: $Orange,
+    borderRadius: 4,
+    marginLeft: 20,
+    marginRight: 20,
+    paddingTop: 12,
+    paddingBottom: 12
+  },
+
+  locationText: {
+    ...withDefaultFont,
+    ...white,
+    textAlign: 'center',
+  },
+
+  coordinatesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+
+  coordinatesText: {
+    ...withDefaultBoldFont,
+    ...white,
+    fontSize: 18,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 5
+  },
+
+  pingText: {
+    ...withDefaultBoldFont,
+    color: $Orange,
+    fontSize: 15
+  },
+
+  trackingText: {
+    ...white,
+    textAlign: 'center'
   }
 })
