@@ -209,5 +209,30 @@ export default EStyleSheets.create({
     ...withDefaultFont,
     ...white,
     paddingLeft: 5
+  },
+
+  textInputLabel: {
+    ...withDefaultBoldFont,
+    ...white
+  },
+
+  textInput: {
+    backgroundColor: 'transparent',
+    color: 'white'
+  },
+
+  textInputContainer: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    paddingRight: 0,
+    paddingLeft: 0
+  },
+
+  textInputInputContainer: {
+    backgroundColor: 'transparent',
+    borderBottomWidth: 2,
+    borderColor: 'white',
+    borderRadius: 0,
+    paddingHorizontal: 0
   }
 })

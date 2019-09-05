@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, isNil, not, either, equals, pick, tap, ifElse,
+  objOf, isNil, not, either, equals, pick, tap, ifElse, mergeDeepRight,
   propEq, addIndex, mergeLeft, intersperse, gt, findIndex } from 'ramda'
 
 import {
@@ -292,18 +292,29 @@ const CreateNewSelector = Component((props: object) =>
     ControlPointClass.MarkPair,
     ControlPointClass.Mark ]))
 
+const FormTextInputWithLabel = Component((props: any) => compose(
+  fold(props),
+  view({ style: props.isShort ? { flexBasis: 10 } : { flexBasis: 50 }}),
+  concat(__, fromClass(FormTextInput)),
+  text({ style: styles.textInputLabel }))(
+  props.inputLabel))
+
 const ShortAndLongName = Component((props: object) =>
   compose(
     fold(props),
-    view({}),
     formSection({ name: formMarkSectionNameByGateSide(props.selectedGateSide) }),
+    view({ style: { flexDirection: 'row' } }),
     reduce(concat, nothing()),
-    map(compose(
+    mapIndexed((props, index) => compose(
+      view({ style: index === 1 ? { width: 100, marginLeft: 30 } : { flex: 1 }}),
       reduxFormField,
-      merge({ component: FormTextInput }),
-      objOf('name'))))([
-    FORM_MARK_SHORT_NAME,
-    FORM_MARK_LONG_NAME ]))
+      mergeDeepRight({
+        component: FormTextInputWithLabel.fold,
+        inputStyle: styles.textInput,
+        inputContainerStyle: styles.textInputContainer,
+        containerStyle: styles.textInputInputContainer }))(props)))([
+    { name: FORM_MARK_LONG_NAME, inputLabel: 'Name' },
+    { name: FORM_MARK_SHORT_NAME, inputLabel: 'Short Name' } ]))
 
 const PassingInstructionItem = Component((props: object) =>
   compose(
