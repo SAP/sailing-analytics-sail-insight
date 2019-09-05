@@ -10,7 +10,6 @@ import { getSelectedWaypoint } from 'selectors/course'
 import { validateRequired } from './validators'
 
 export const COURSE_CONFIG_FORM_NAME = 'courseConfig'
-export const FORM_WAYPOINT_SECTION_NAME = 'waypoint'
 
 export const FORM_PASSING_INSTRUCTION = 'passingInstruction'
 export const FORM_MARK_PAIR_LONG_NAME = 'markPairLongName'

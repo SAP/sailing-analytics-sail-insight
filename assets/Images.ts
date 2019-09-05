@@ -62,6 +62,7 @@ export default {
     tracker: require('./img/icons/icon-tracker.png'),
     location: require('./img/icons/icon-location.png'),
     gatePassing: require('./img/icons/gate-passing.png'),
-    linePassing: require('./img/icons/line-passing.png')
+    linePassing: require('./img/icons/line-passing.png'),
+    deleteIcon: require('./img/icons/delete-icon.png')
   }
 }

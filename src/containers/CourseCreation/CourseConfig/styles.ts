@@ -188,5 +188,26 @@ export default EStyleSheets.create({
   trackingText: {
     ...white,
     textAlign: 'center'
+  },
+
+  deleteWaypointContainer: {
+    margin: 40
+  },
+
+  deleteWaypointButton: {
+    borderWidth: 2,
+    borderRadius: 3,
+    borderColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 15,
+    paddingBottom: 15
+  },
+
+  deleteButtonText: {
+    ...withDefaultFont,
+    ...white,
+    paddingLeft: 5
   }
 })

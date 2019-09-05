@@ -22,7 +22,6 @@ import { field as reduxFormField, reduxForm, formSection } from 'components/fp/r
 
 import {
   courseConfigCommonFormSettings,
-  FORM_WAYPOINT_SECTION_NAME,
   FORM_PASSING_INSTRUCTION,
   FORM_MARK_SHORT_NAME,
   FORM_MARK_LONG_NAME,
@@ -59,8 +58,8 @@ const controlPointClassToLabel = {
 }
 
 const mapInitialValuesToProps = (state: any, props: any) => ({
-  initialValues: getFormInitialValues(state)
-})
+    initialValues: getFormInitialValues(state)
+  })
 
 const mapStateToProps = (state: any, props: any) => ({
       selectedWaypoint: getSelectedWaypoint(state),
@@ -102,7 +101,7 @@ const icon = compose(
   fromClass(IconText).contramap,
   always)
 
-const deleteIcon = icon({ source: Images.actions.delete })
+const deleteIcon = icon({ source: Images.courseConfig.deleteIcon, iconStyle: { width: 13, height: 13 } })
 const roundingLeftIcon = icon({ source: Images.courseConfig.roundingDirectionLeft })
 const roundingRightIcon = icon({ source: Images.courseConfig.roundingDirectionRight })
 const gatePassingIcon = icon({ source: Images.courseConfig.gatePassing, iconStyle: { width: 35, height: 35 } })
@@ -248,13 +247,16 @@ const MarkPosition = Component((props: object) =>
 const Appearance = Component((props: object) =>
   compose(
     fold(props))(
-    text({ style: styles.sectionTitle }, 'Appearance')))
+    text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, 'Appearance')))
 
 const DeleteButton = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.removeWaypoint() }))(
-    deleteIcon))
+    view({ style: styles.deleteWaypointContainer }),
+    touchableOpacity({ onPress: (props: any) => props.removeWaypoint() }),
+    view({ style: styles.deleteWaypointButton }),
+    concat(deleteIcon))(
+    text({ style: styles.deleteButtonText }, 'Delete this mark from course')))
 
 const ControlPointClassSelectorItem = Component((props: object) =>
   compose(
@@ -324,15 +326,14 @@ const gatePassingInstructions = [
 const PassingInstructions = Component((props: object) =>
   compose(
     fold(props),
-    formSection({ name: FORM_WAYPOINT_SECTION_NAME }),
-    concat(text({ style: styles.sectionTitle }, isGateWaypoint(props) ? 'Passing Gate' : 'Rounding direction')),
+    concat(text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, isGateWaypoint(props) ? 'Passing Gate' : 'Rounding direction')),
     view({ style: styles.passingInstructionContainer }),
     reduce(concat, nothing()),
     map(compose(
       reduxFormField,
       mergeLeft({
         name: FORM_PASSING_INSTRUCTION,
-        component: PassingInstructionItem.contramap(merge(props)).fold
+        component: PassingInstructionItem.fold
       }))),
     ifElse(isGateWaypoint, always(gatePassingInstructions), always(singleMarkPassingInstructions)))(
     props))
@@ -359,9 +360,9 @@ const WaypointEditForm = Component((props: any) =>
       view({ style: isGateWaypoint(props) && styles.indentedContainer }),
       reduce(concat, nothing()))([
       nothingWhenNotStartOrFinishGate(SameStartFinish),
+      nothingWhenEmptyWaypoint(ShortAndLongName),
       nothingWhenEmptyWaypoint(PassingInstructions),
-      nothingWhenNotAGate(GateMarkSelector),
-      //nothingWhenEmptyWaypoint(ShortAndLongName)
+      nothingWhenNotAGate(GateMarkSelector)
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
