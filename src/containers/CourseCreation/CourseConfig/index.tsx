@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, isNil, not, either, equals, pick, tap, ifElse,
+  objOf, isNil, not, either, equals, pick, tap, ifElse, insert, reverse,
   propEq, addIndex, mergeLeft, intersperse, gt, findIndex } from 'ramda'
 
 import {
@@ -84,6 +84,7 @@ const formHasTracking = formHasPositionType(MarkPositionType.TrackingDevice)
 const geolocationAsString = compose(coordinatesToString, path(['input', 'value']))
 
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
+const nothingWhenSelectedWaypoint = branch(compose(not, isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
 const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
@@ -437,5 +438,8 @@ export default Component((props: object) =>
     concat(__, nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))),
     scrollView({ style: styles.waypointsContainer, horizontal: true }),
     reduce(concat, nothing()),
+    reverse,
+    insert(1, nothingWhenSelectedWaypoint(AddButton.contramap(merge({ index: 1 })))),
+    reverse,
     mapIndexed(waypointItemToComponent))(
     props.course.waypoints))
