@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, append, zipWith,
   prop, map, reduce, concat, merge, props as rProps, defaultTo,
-  objOf, isNil, not, either, equals, pick, tap, ifElse, mergeDeepRight,
+  objOf, isNil, not, either, equals, pick, tap, ifElse,
   propEq, addIndex, mergeLeft, intersperse, gt, findIndex } from 'ramda'
 
 import {
@@ -25,6 +25,8 @@ import {
   FORM_PASSING_INSTRUCTION,
   FORM_MARK_SHORT_NAME,
   FORM_MARK_LONG_NAME,
+  FORM_MARK_PAIR_SHORT_NAME,
+  FORM_MARK_PAIR_LONG_NAME,
   FORM_LOCATION,
   formMarkSectionNameByGateSide,
   getFormInitialValues
@@ -135,7 +137,7 @@ const GateMarkSelectorItem = Component((props: object) =>
       onPress: (props: any) => props.selectGateSide(props.side) }),
     text({ style: styles.gateMarkSelectorText }),
     defaultTo(props.side))(
-    props.mark.shortName))
+    props.mark && props.mark.shortName))
 
 const GateMarkSelector = Component((props: object) =>
   compose(
@@ -237,7 +239,7 @@ const MarkPosition = Component((props: object) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-      text({ style: styles.sectionTitle }, 'Locate or track'),
+      text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, 'Locate or track'),
       PositionSelector,
       arrowUp({color: $DarkBlue }),
       nothingWhenNotTrackingSelected(toLocationFormField(MarkPositionTracking)),
@@ -299,22 +301,29 @@ const FormTextInputWithLabel = Component((props: any) => compose(
   text({ style: styles.textInputLabel }))(
   props.inputLabel))
 
+const gateNameInputData = [
+  { name: FORM_MARK_PAIR_LONG_NAME, inputLabel: 'Name' },
+  { name: FORM_MARK_PAIR_SHORT_NAME, inputLabel: 'Short Name' } ]
+
+const markNamesInputData = [
+  { name: FORM_MARK_LONG_NAME, inputLabel: 'Name' },
+  { name: FORM_MARK_SHORT_NAME, inputLabel: 'Short Name' }]
+
 const ShortAndLongName = Component((props: object) =>
   compose(
     fold(props),
-    formSection({ name: formMarkSectionNameByGateSide(props.selectedGateSide) }),
+    when(always(compose(not, isNil)(props.formSection)), formSection(props.formSection)),
     view({ style: { flexDirection: 'row' } }),
     reduce(concat, nothing()),
     mapIndexed((props, index) => compose(
       view({ style: index === 1 ? { width: 100, marginLeft: 30 } : { flex: 1 }}),
       reduxFormField,
-      mergeDeepRight({
+      merge({
         component: FormTextInputWithLabel.fold,
         inputStyle: styles.textInput,
         inputContainerStyle: styles.textInputContainer,
-        containerStyle: styles.textInputInputContainer }))(props)))([
-    { name: FORM_MARK_LONG_NAME, inputLabel: 'Name' },
-    { name: FORM_MARK_SHORT_NAME, inputLabel: 'Short Name' } ]))
+        containerStyle: styles.textInputInputContainer }))(props)))(
+    props.items))
 
 const PassingInstructionItem = Component((props: object) =>
   compose(
@@ -371,12 +380,15 @@ const WaypointEditForm = Component((props: any) =>
       view({ style: isGateWaypoint(props) && styles.indentedContainer }),
       reduce(concat, nothing()))([
       nothingWhenNotStartOrFinishGate(SameStartFinish),
-      nothingWhenEmptyWaypoint(ShortAndLongName),
+      nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: gateNameInputData }))),
       nothingWhenEmptyWaypoint(PassingInstructions),
       nothingWhenNotAGate(GateMarkSelector)
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
+      nothingWhenEmptyWaypoint(ShortAndLongName.contramap((props: any) => merge({
+        items: markNamesInputData,
+        formSection: { name: formMarkSectionNameByGateSide(props.selectedGateSide) } }, props))),
       nothingWhenEmptyWaypoint(MarkPosition),
       nothingWhenEmptyWaypoint(Appearance),
       nothingWhenNotEmptyWaypoint(CreateNewSelector),

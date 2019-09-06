@@ -12,12 +12,13 @@ import { validateRequired } from './validators'
 export const COURSE_CONFIG_FORM_NAME = 'courseConfig'
 
 export const FORM_PASSING_INSTRUCTION = 'passingInstruction'
-export const FORM_MARK_PAIR_LONG_NAME = 'markPairLongName'
 export const FORM_LOCATION = 'location'
 
 export const FORM_MARK_ID = 'id'
 export const FORM_MARK_SHORT_NAME = 'shortName'
 export const FORM_MARK_LONG_NAME = 'longName'
+export const FORM_MARK_PAIR_SHORT_NAME = 'markPairShortName'
+export const FORM_MARK_PAIR_LONG_NAME = 'markPairLongName'
 
 const FORM_CONTROL_POINT_CLASS = 'controlPointClass'
 
@@ -44,7 +45,7 @@ export const waypointFromFormValues = (values: any) => ({
   leftMark: markFromFormSection(values[LEFT_MARK_SECTION]),
   rightMark: markFromFormSection(values[RIGHT_MARK_SECTION]),
   passingInstruction: values[FORM_PASSING_INSTRUCTION],
-  markPairLongName: 'New Gate Name REPlACE ME WHEN THERE IS AN INPUT FOR GATE NAME',
+  markPairLongName: values[FORM_MARK_PAIR_LONG_NAME],
 })
 
 const markFormValuesFromMark = (mark: any) => mark && ({
@@ -68,13 +69,17 @@ const formValuesFromWaypoint = (waypoint: any) => waypoint && waypoint.controlPo
     waypoint.controlPoint.class === ControlPointClass.MarkPair
       ? waypoint.controlPoint.longName
       : '',
+  [FORM_MARK_PAIR_SHORT_NAME]:
+    waypoint.controlPoint.class === ControlPointClass.MarkPair
+      ? waypoint.controlPoint.shortName
+      : '',
   ...(waypoint.controlPoint.class === ControlPointClass.Mark
     ? {
       [LEFT_MARK_SECTION]: markFormValuesFromMark(waypoint.controlPoint),
     }
     : {
       [LEFT_MARK_SECTION] : markFormValuesFromMark(waypoint.controlPoint.leftMark),
-      [RIGHT_MARK_SECTION]: markFormValuesFromMark(waypoint.controlPoint.rightMark),
+      [RIGHT_MARK_SECTION]: markFormValuesFromMark(waypoint.controlPoint.rightMark)
     }),
 })
 
