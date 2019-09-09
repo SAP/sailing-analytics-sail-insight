@@ -54,11 +54,6 @@ import { $MediumBlue, $Orange, $DarkBlue } from 'styles/colors'
 
 const mapIndexed = addIndex(map)
 
-const controlPointClassToLabel = {
-  [ControlPointClass.MarkPair]: 'Gate/Line',
-  [ControlPointClass.Mark]: 'Mark'
-}
-
 const mapInitialValuesToProps = (state: any, props: any) => ({
     initialValues: getFormInitialValues(state)
   })
@@ -92,7 +87,6 @@ const nothingWhenEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
-const nothingWhenFormHasTracking = branch(formHasTracking, nothingAsClass)
 const nothingWhenPristineForm = branch(propEq('pristine', true), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
 
@@ -104,6 +98,8 @@ const icon = compose(
   fromClass(IconText).contramap,
   always)
 
+const gateIcon = icon({ source: Images.courseConfig.gateIcon, iconStyle: { width: 80, height: 80 } })
+const markIcon = icon({ source: Images.courseConfig.markIcon, iconStyle: { width: 80, height: 80 } })
 const deleteIcon = icon({ source: Images.courseConfig.deleteIcon, iconStyle: { width: 13, height: 13 } })
 const roundingLeftIcon = icon({ source: Images.courseConfig.roundingDirectionLeft })
 const roundingRightIcon = icon({ source: Images.courseConfig.roundingDirectionRight })
@@ -264,22 +260,22 @@ const DeleteButton = Component((props: object) =>
 const ControlPointClassSelectorItem = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.assignControlPointClass(props.class) }),
-    text({}),
-    prop(__, controlPointClassToLabel))(
-    props.class))
+    touchableOpacity({ onPress: (props: any) => props.assignControlPointClass(props.class) }))(
+    props.icon))
 
 const InventoryItem = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.assignControlPoint(props.item) }),
-    text({}))(
+    touchableOpacity({
+      style: styles.inventoryItem,
+      onPress: (props: any) => props.assignControlPoint(props.item) }),
+    text({ style: styles.inventoryItemText }))(
     props.item.longName))
 
 const InventoryList = Component((props: object) =>
   compose(
     fold(props),
-    view({}),
+    view({ style: styles.inventoryList }),
     reduce(concat, nothing()),
     map(compose(InventoryItem.contramap, merge, objOf('item'))))(
     props.inventory))
@@ -287,13 +283,14 @@ const InventoryList = Component((props: object) =>
 const CreateNewSelector = Component((props: object) =>
   compose(
     fold(props),
-    view({}),
-    concat(text({}, 'CREATE NEW')),
+    view({ style: styles.createNewContainer }),
+    concat(text({ style: styles.createNewTitle }, 'Create new')),
+    concat(__, InventoryList),
+    view({ style: styles.createNewClassContainer }),
     reduce(concat, nothing()),
-    append(InventoryList),
-    map(compose(ControlPointClassSelectorItem.contramap, merge, objOf('class'))))([
-    ControlPointClass.MarkPair,
-    ControlPointClass.Mark ]))
+    map(compose(ControlPointClassSelectorItem.contramap, merge)))([
+    { ['class']: ControlPointClass.MarkPair, icon: gateIcon },
+    { ['class']: ControlPointClass.Mark, icon: markIcon }]))
 
 const FormTextInputWithLabel = Component((props: any) => compose(
   fold(props),

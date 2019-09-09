@@ -63,6 +63,8 @@ export default {
     location: require('./img/icons/icon-location.png'),
     gatePassing: require('./img/icons/gate-passing.png'),
     linePassing: require('./img/icons/line-passing.png'),
-    deleteIcon: require('./img/icons/delete-icon.png')
+    deleteIcon: require('./img/icons/delete-icon.png'),
+    gateIcon: require('./img/icons/gate-icon.png'),
+    markIcon: require('./img/icons/mark-icon.png')
   }
 }

@@ -234,5 +234,44 @@ export default EStyleSheets.create({
     borderColor: 'white',
     borderRadius: 0,
     paddingHorizontal: 0
+  },
+
+  createNewContainer: {
+    marginTop: 20,
+    paddingTop: 10,
+    backgroundColor: $DarkBlue
+  },
+
+  createNewClassContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 55,
+    marginRight: 55
+  },
+
+  createNewTitle: {
+    ...withDefaultBoldFont,
+    ...white,
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10
+  },
+
+  inventoryItem: {
+    ...withDefaultFont,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#C5C5C5',
+    height: 50,
+    paddingLeft: 15,
+    justifyContent: 'center'
+  },
+
+  inventoryText: {
+    color: 'black'
+  },
+
+  inventoryList: {
+    marginTop: 15
   }
 })
