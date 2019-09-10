@@ -36,7 +36,7 @@ const overlayPicker = ({ selectedValue, onValueChange, style }: any) =>
   concat(__, fromClass(Picker).contramap(mergeLeft({
     style,
     selectedValue,
-    onValueChange,
+    onValueChange: (v: number) => setTimeout(() => onValueChange(v), 0),
     children: compose(
       map(fromClass(Picker.Item).fold),
       map(v => ({ value: v, label: v.toString() })))(
