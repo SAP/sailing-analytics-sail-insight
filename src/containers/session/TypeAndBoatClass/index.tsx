@@ -1,5 +1,5 @@
 import { findIndex } from 'lodash'
-import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __, merge } from 'ramda'
+import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __, merge, tap } from 'ramda'
 
 import Images from '@assets/Images'
 import { Component, fold, fromClass, nothing, nothingAsClass,
@@ -56,11 +56,11 @@ const regattaTypeInput = reduxFormField({
 const boatClassInput = Component(props => compose(
   fold(props))(
     reduxFormField({
-    label: 'Boat class (autocomplete)',
-    name: FORM_KEY_BOAT_CLASS,
-    component: fromClass(FormBoatClassInput)
-      .contramap(merge({ ...props, containerStyle: styles.boatClassInput }))
-      .fold,
+      label: 'Boat class (autocomplete)',
+      name: FORM_KEY_BOAT_CLASS,
+      component: fromClass(FormBoatClassInput)
+        .contramap(merge({ ...props, containerStyle: styles.boatClassInput }))
+        .fold,
   })))
 
 const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLeft({
@@ -74,8 +74,6 @@ const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLe
 //   component: modalDropdown.fold,
 //   options: Object.values(HandicapRatingSystem),
 // })
-
-
 
 export default Component((props: Object) =>
   compose(

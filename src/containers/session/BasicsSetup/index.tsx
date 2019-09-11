@@ -5,7 +5,7 @@ import I18n from 'i18n'
 
 import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
 import { text, view } from 'components/fp/react-native'
-import { field as reduxFormField } from 'components/fp/redux-form'
+import { field as reduxFormField, textInputWithMeta } from 'components/fp/redux-form'
 import IconText from 'components/IconText'
 import {
   FORM_KEY_DATE_FROM,
@@ -40,7 +40,8 @@ const fieldBox = (child: any) => Component((props: any) => compose(
   ]))
 
 const boxedTextInput = fieldBox(
-  fromClass(TextInput).contramap((props: any) => ({
+  textInputWithMeta.contramap((props: any) => ({
+    ...props,
     value: props.input.value,
     onChangeText: props.input.onChange,
     underlineColorAndroid: darkerGray,
@@ -77,8 +78,8 @@ const formDatePicker = Component((props: any) => compose(
         borderWidth: 0,
       }
     },
-  }))
-)(fromClass(DatePicker)))
+  })))(
+  fromClass(DatePicker)))
 
 const startDateInput = reduxFormField({
   name: FORM_KEY_DATE_FROM,

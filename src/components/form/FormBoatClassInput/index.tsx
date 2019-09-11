@@ -145,8 +145,10 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       ...additionalProps
     } = this.props
 
+    const errorText = showError ? <Text style={{ color: 'red', marginLeft: 5, marginTop: 3 }}>{ error }</Text> : null
     const { query }: Readonly<any> = this.state
-    return (
+
+    return [
         <TextInput
             style={style}
             placeholder={label}
@@ -157,8 +159,8 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
             {...additionalProps}
             onBlur={this.onTextInputFocusChange(false)}
             onFocus={this.onTextInputFocusChange(true)}
-        />
-    )
+        />,
+        errorText]
   }
 
   protected onTextInputFocusChange = (focused: boolean) =>

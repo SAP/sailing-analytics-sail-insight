@@ -25,8 +25,6 @@ export default EStyleSheets.create({
     letterSpacing: 0.8
   },
   boatClassInput: {
-    ...withDefaultFont,
-    backgroundColor: 'white',
-    borderRadius: 2
+    ...withDefaultFont
   }
 })
