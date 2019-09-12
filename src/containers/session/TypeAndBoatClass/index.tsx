@@ -54,7 +54,12 @@ const regattaTypeInput = reduxFormField({
 })
 
 const boatClassInput = Component(props => compose(
-  fold(props))(
+  fold(props),
+  // Due to the boat class input being redrawn each time,
+  // having the nothingIfHandicapSelected, the form unregisters
+  // the boatClass field. Manually triggering change solves it,
+  // and validates the boatClass input value as well.
+  tap(() => props.change('fixForDynamicBoatClassInput', Date.now())))(
     reduxFormField({
       label: 'Boat class (autocomplete)',
       name: FORM_KEY_BOAT_CLASS,

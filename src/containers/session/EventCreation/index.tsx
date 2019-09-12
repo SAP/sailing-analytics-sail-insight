@@ -43,7 +43,6 @@ const createEvent = (props: any) => async (formValues: any) => {
 }
 
 const formSettings = {
-  shouldValidate: () => true,
   validate,
   form: EVENT_CREATION_FORM_NAME,
 }
