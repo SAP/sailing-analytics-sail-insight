@@ -26,7 +26,7 @@ target 'sap_sailing_insight' do
 
   pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
 
-  pod 'Firebase/Core'
+  pod 'Firebase/Core', '~> 6.3.0'
 
   pod 'Fabric', '~> 1.7.13'
   pod 'Crashlytics', '~> 3.10.7'
