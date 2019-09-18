@@ -6,6 +6,7 @@ import com.facebook.react.ReactApplication;
 import com.horcrux.svg.SvgPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
+import io.branch.rnbranch.RNBranchPackage;
 import com.rnfs.RNFSPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
@@ -24,7 +25,6 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 
 import io.branch.referral.Branch;
-import io.branch.rnbranch.RNBranchPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -49,6 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
             new SvgPackage(),
             new MapsPackage(),
             new ReactSliderPackage(),
+            new RNBranchPackage(),
             new RNFSPackage(),
             new RNFirebasePackage(),
             new RNFirebaseCrashlyticsPackage(),
@@ -64,7 +65,6 @@ public class MainApplication extends Application implements ReactApplication {
             new RNDeviceInfo(),
             new LinearGradientPackage(),
             new RNI18nPackage(),
-            new RNBranchPackage(),
             new RNCameraPackage(),
             new ShowAppSettingsPackage()
       );
