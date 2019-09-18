@@ -66,7 +66,7 @@ const boatClassInput = Component(props => compose(
       component: fromClass(FormBoatClassInput)
         .contramap(merge({ ...props, containerStyle: styles.boatClassInput }))
         .fold,
-  })))
+    })))
 
 const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLeft({
   onSelect: (index: any, value: any) => props.input.onChange(value),

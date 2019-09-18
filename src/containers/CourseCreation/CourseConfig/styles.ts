@@ -30,7 +30,11 @@ export default EStyleSheets.create({
     backgroundColor: '#1D3F4E',
     justifyContent: 'center',
     borderRightColor: '#476987',
-    borderRightWidth: 1
+    borderRightWidth: 1,
+  },
+
+  selectedWaypoint: {
+    backgroundColor: '#476987'
   },
 
   'waypointContainer:first-child': {
@@ -45,10 +49,6 @@ export default EStyleSheets.create({
     color: 'white',
     textAlign: 'center',
     fontWeight: 'bold'
-  },
-
-  selectedWaypoint: {
-    backgroundColor: '#476987'
   },
 
   addButton: {

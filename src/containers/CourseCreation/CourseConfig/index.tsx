@@ -9,6 +9,7 @@ import {
   fromClass,
   nothing,
   nothingAsClass,
+  contramap,
   reduxConnect as connect,
   recomposeBranch as branch,
   recomposeWithState as withState,
@@ -354,12 +355,16 @@ const AddButton = Component((props: any) =>
     fold(props),
     touchableOpacity({
       style: styles.addButton,
-      onPress: (props: any) => props.addWaypoint(1),
+      onPress: (props: any) => props.addWaypoint(props.index),
      }))(
     plusIcon))
 
 const waypointItemToComponent = (waypoint: any, index: number, list: any[]) => Component((props: any) => compose(
   fold(props),
+  when(always(isWaypointSelected(waypoint, props)),
+    index === list.length - 1 ?
+      concat(AddButton.contramap(merge({ index }))) :
+      concat(__, AddButton.contramap(merge({ index: index + 1 })))),
   touchableOpacity({
     onPress: (props: any) => props.selectWaypoint(waypoint.id),
     style: [
@@ -385,6 +390,5 @@ export default Component((props: object) =>
     concat(__, nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))),
     scrollView({ horizontal: true }),
     reduce(concat, nothing()),
-    items => insert(items.length - 1, AddButton, items),
     mapIndexed(waypointItemToComponent))(
     props.course.waypoints))

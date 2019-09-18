@@ -2,6 +2,7 @@ import { Text, View, Image, TouchableHighlight, TouchableOpacity, FlatList, Scro
 import { compose, objOf, merge, always, curry, when, __, has, head, mergeLeft } from 'ramda';
 import { fromClass, fold, Component, contramap } from './component';
 
+import Svg from 'react-native-svg'
 
 const buildComponentWithChildren = curry((Comp, settings, c) =>
   Component((props: Object) =>
@@ -17,6 +18,7 @@ const buildComponentWithChildren = curry((Comp, settings, c) =>
 export const view = buildComponentWithChildren(View)
 export const scrollView = buildComponentWithChildren(ScrollView)
 export const text = buildComponentWithChildren(Text)
+export const svg = buildComponentWithChildren(Svg)
 
 export const image = (settings: Object) => Component((props: Object) => compose(
   fold(props),
