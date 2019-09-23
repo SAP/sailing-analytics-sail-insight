@@ -78,6 +78,8 @@
 		<string>bentonsans_light.otf</string>
 		<string>bentonsans_medium.otf</string>
 		<string>bentonsans_thin.otf</string>
+		<string>sfcompact_bold.otf</string>
+		<string>sfcompact_regular.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

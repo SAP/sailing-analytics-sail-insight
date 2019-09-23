@@ -7,9 +7,11 @@ import {
   UrlOptions,
 } from 'api/config'
 import {
+  AddCourseDefinitionToRaceLogBody,
+  AddMarkFixBody,
   AddRaceColumnResponseData,
   AddRaceColumnsBody,
-  BoatClassesdBody,
+  BoatClassesBody,
   CompetitorBody,
   CompetitorManeuverItem,
   CompetitorResponseData,
@@ -49,6 +51,7 @@ const apiEndpoints = (serverUrl: string) => {
     regattaRaces: getUrlV1('/regattas/{0}/races'),
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
+    course: getUrlV1('/regattas/{0}/races/{1}/course'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
@@ -74,6 +77,9 @@ const apiEndpoints = (serverUrl: string) => {
     boatClasses: getUrlV1('/boatclasses'),
     countryCodes: getUrlV1('/countrycodes'),
     teamImage: getUrlV1('/competitors/{0}/team/image'),
+    addMarkToRegatta: getUrlV1('/mark/addMarkToRegatta'),
+    addMarkFix: getUrlV1('/mark/addMarkFix'),
+    addCourseDefinitionToRaceLog: getUrlV1('/mark/addCourseDefinitionToRaceLog'),
   }
 }
 
@@ -111,6 +117,7 @@ export interface DataApi {
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
+  requestCourse: (regattaName: string, raceName: string) => any
   startDeviceMapping: (leaderboardName: string, data: any) => any
   stopDeviceMapping: (leaderboardName: string, data: any) => any
   sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
@@ -148,9 +155,12 @@ export interface DataApi {
     raceName: string,
     filter?: {competitorId?: string, fromTime?: number},
   ) => Promise<CompetitorManeuverItem[]>
-  requestBoatClasses: () => Promise<BoatClassesdBody[]>
+  requestBoatClasses: () => Promise<BoatClassesBody[]>
   requestCountryCodes: () => Promise<CountryCodeBody[]>
   uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
+  addMarkToRegatta: (regattaName: string, markName: string) => any,
+  addMarkFix: (body: AddMarkFixBody) => any,
+  addCourseDefinitionToRaceLog: (body: AddCourseDefinitionToRaceLogBody) => any,
 }
 
 const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
@@ -189,6 +199,9 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestBoat: (leaderboardName, boatId, secret)  => dataRequest(
         endpoints.boats({ pathParams: [boatId], urlParams: { leaderboardName, secret } }),
         { dataSchema: boatSchema },
+    ),
+    requestCourse: (regattaName, raceName) => dataRequest(
+      endpoints.course({ pathParams: [regattaName, raceName] }),
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),
@@ -289,6 +302,30 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         bodyType: 'image',
         timeout: 60000,
       },
+    ),
+    addMarkToRegatta: (regattaName, markName) => dataRequest(
+      endpoints.addMarkToRegatta(),
+      {
+        body: {
+          markName,
+          regattaName,
+        },
+        method: HttpMethods.POST,
+      }
+    ),
+    addMarkFix: (body) => dataRequest(
+      endpoints.addMarkFix(),
+      {
+        body,
+        method: HttpMethods.POST,
+      }
+    ),
+    addCourseDefinitionToRaceLog: (body) => dataRequest(
+      endpoints.addCourseDefinitionToRaceLog(),
+      {
+        body,
+        method: HttpMethods.POST,
+      }
     ),
   }
 }

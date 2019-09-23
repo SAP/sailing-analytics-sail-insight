@@ -31,7 +31,6 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TrackingContext from 'components/session/TrackingContext'
 
-
 class JoinRegatta extends React.Component<{
   checkInData: CheckIn,
   alreadyJoined: boolean
@@ -157,6 +156,7 @@ interface ScreenParamProps {
 
 const mapStateToProps = (state: any, props: any) => {
   const { checkInData, alreadyJoined }: ScreenParamProps = getCustomScreenParamData(props) || {}
+
   return {
     checkInData,
     alreadyJoined,

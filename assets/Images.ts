@@ -19,6 +19,7 @@ export default {
     visibilityOff: require('./img/icons/icon-visibility-off.png'),
     help: require('./img/icons/icon-help.png'),
     arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
+    arrowLeft: require('./img/icons/icon-arrow-chevron-left.png'),
     close: require('./img/icons/icon-cross.png'),
     expandLess: require('./img/icons/icon-arrow-expand-less.png'),
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
@@ -53,4 +54,17 @@ export default {
     waveLoadingIndicatorGif: require('./img/animations/wave_loading.gif'),
     waveLoadingIndicatorBackground: require('./img/animations/wave_loading_background.png'),
   },
+
+  courseConfig: {
+    roundingDirectionLeft: require('./img/icons/icon-rounding-direction-left.png'),
+    roundingDirectionRight: require('./img/icons/icon-rounding-direction-right.png'),
+    arrowUp: require('./img/icons/arrow-up.png'),
+    tracker: require('./img/icons/icon-tracker.png'),
+    location: require('./img/icons/icon-location.png'),
+    gatePassing: require('./img/icons/gate-passing.png'),
+    linePassing: require('./img/icons/line-passing.png'),
+    deleteIcon: require('./img/icons/delete-icon.png'),
+    gateIcon: require('./img/icons/gate-icon.png'),
+    markIcon: require('./img/icons/mark-icon.png')
+  }
 }

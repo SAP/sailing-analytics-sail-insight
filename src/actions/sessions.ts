@@ -37,11 +37,11 @@ import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'se
 import { getLocationTrackingStatus } from 'selectors/location'
 import { getUserBoatByBoatName } from 'selectors/user'
 
-
 export const shareSession = (checkIn: CheckIn) => async () => {
   if (!checkIn || !checkIn.leaderboardName || !checkIn.eventId || !checkIn.secret) {
     throw new CheckInException('errror creating share link.')
   }
+
   const sharingData: SharingData = {
     title: checkIn.leaderboardName,
     // TODO: venue from generated event?

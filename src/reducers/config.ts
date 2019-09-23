@@ -1,4 +1,12 @@
 import { AutoCourseUpdateState } from 'helpers/types'
+import {
+  CourseStateMap,
+  DefaultMarkIdMap,
+  GateSide,
+  MarkMap,
+  MarkPairMap,
+  SelectedCourseState,
+} from 'models/Course'
 
 
 export interface RootState {
@@ -12,6 +20,7 @@ export interface RootState {
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
+  courses?: any | CourseReducerState
 }
 
 
@@ -72,4 +81,23 @@ export interface UserState {
 export interface CheckInState {
   active: any
   isLoadingCheckIn: boolean
+}
+
+export interface CourseReducerState {
+  allCourses: CourseStateMap // Should be Map<RaceID, Course>
+  marks: MarkMap
+  markPairs: MarkPairMap
+  courseLoading: boolean
+  selectedCourse?: SelectedCourseState
+  // ID of the waypoint that is selected for editing
+  selectedWaypoint?: string
+  sameStartFinish: boolean
+  selectedGateSide?: GateSide
+
+  // These should not be in the courseReducer but there is nowhere else to put
+  // them currently
+  selectedEvent?: string
+  selectedRace?: string
+
+  defaultMarkIds: DefaultMarkIdMap
 }

@@ -121,6 +121,7 @@
   "text_upwind": "Upwind:",
   "text_downwind": "Downwind:",
   "text_session": "Event",
+  "text_location": "Location",
   "text_mock_track_name": "My Track",
   "text_set_wind_missing_data": "Missing location data, please try again later.",
   "text_placeholder_team_picker": "Select a team...",
