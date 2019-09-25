@@ -129,18 +129,6 @@ export interface SelectedCourseState {
   waypoints: Partial<WaypointState>[]
 }
 
-export interface SelectedEventInfo {
-  serverUrl: string
-  regattaName: string
-  leaderboardName: string
-  secret?: string
-}
-
-export interface SelectedRaceInfo extends SelectedEventInfo {
-  raceColumnName: string
-  fleet: string
-}
-
 export interface CourseStateMap { [id: string]: CourseState }
 export interface MarkMap { [id: string]: Mark }
 export interface MarkPairMap { [id: string]: MarkPairState }

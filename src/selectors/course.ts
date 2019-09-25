@@ -14,8 +14,6 @@ import {
   MarkMap,
   MarkPairMap,
   SelectedCourseState,
-  SelectedEventInfo,
-  SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
 
@@ -200,23 +198,4 @@ export const getSelectedMark = createSelector(
   (selectedWaypoint, selectedGateSide) =>
     selectedWaypoint &&
     getSelectedGateSideMarkFromWaypoint(selectedGateSide)(selectedWaypoint),
-)
-
-export const getSelectedEventInfo = createSelector(
-  (state: any): string | undefined => state.courses.selectedEvent,
-  (state: any): any[] => values(state.checkIn.active),
-  (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
-    selectedEvent && find(activeCheckIns, { eventId: selectedEvent }),
-)
-
-export const getSelectedRaceInfo = createSelector(
-  getSelectedEventInfo,
-  (state: any): string | undefined => state.courses.selectedRace,
-  (selectedEvent, selectedRace): SelectedRaceInfo | undefined =>
-    selectedEvent &&
-    selectedRace && {
-      ...selectedEvent,
-      raceColumnName: selectedRace,
-      fleet: 'Default', // TODO: This has to be the real fleet, but it will work with most cases with 'Default'
-    } || undefined,
 )

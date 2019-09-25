@@ -14,9 +14,7 @@ import {
   removeWaypoint,
   saveWaypoint,
   selectCourseForEditing,
-  selectEvent,
   selectGateSide,
-  selectRace,
   selectWaypoint,
   toggleSameStartFinish,
   updateControlPoint,
@@ -184,10 +182,6 @@ const initialState: CourseReducerState = {
   selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
   sameStartFinish: SAME_START_FINISH_DEFAULT,
   selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
-
-  selectedEvent: undefined,
-  selectedRace: undefined,
-
   defaultMarkIds,
 } as CourseReducerState
 
@@ -458,16 +452,6 @@ const reducer = handleActions(
         },
       }
     },
-
-    [selectEvent as any]: (state: any = {}, action: any) => ({
-      ...state,
-      selectedEvent: action.payload,
-    }),
-
-    [selectRace as any]: (state: any = {}, action: any) => ({
-      ...state,
-      selectedRace: action.payload,
-    }),
 
     [removeUserData as any]: () => initialState,
   },

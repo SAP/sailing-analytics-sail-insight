@@ -1,3 +1,4 @@
+import { createAction } from 'redux-actions'
 import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
 import { CreateEventBody } from 'api/endpoints/types'
@@ -51,3 +52,6 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
       updateCheckIn(data),
     ),
   ])
+
+export const selectEvent = createAction('SELECT_EVENT')
+export const selectRace = createAction('SELECT_RACE')

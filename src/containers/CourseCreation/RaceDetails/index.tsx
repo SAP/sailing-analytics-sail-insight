@@ -25,7 +25,8 @@ import {
 import { ArrowRight } from 'containers/session/common'
 import IconText from 'components/IconText'
 
-import { fetchCourse, selectCourse, selectRace } from 'actions/courses'
+import { fetchCourse, selectCourse } from 'actions/courses'
+import { selectRace } from 'actions/events'
 import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
 const sliderSettings = {

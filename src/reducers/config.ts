@@ -20,7 +20,8 @@ export interface RootState {
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
-  courses?: any | CourseReducerState
+  courses?: any | CourseReducerState,
+  events?: any
 }
 
 
@@ -93,11 +94,5 @@ export interface CourseReducerState {
   selectedWaypoint?: string
   sameStartFinish: boolean
   selectedGateSide?: GateSide
-
-  // These should not be in the courseReducer but there is nowhere else to put
-  // them currently
-  selectedEvent?: string
-  selectedRace?: string
-
   defaultMarkIds: DefaultMarkIdMap
 }

@@ -46,8 +46,6 @@ export const saveWaypoint = createAction('SAVE_WAYPOINT')
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const updateControlPoint = createAction('UPDATE_CONTROL_POINT')
 
-export const selectEvent = createAction('SELECT_EVENT')
-export const selectRace = createAction('SELECT_RACE')
 export const selectWaypoint = createAction('SELECT_WAYPOINT')
 export const selectGateSide = createAction('SELECT_GATE_SIDE')
 export const toggleSameStartFinish = createAction('TOGGLE_SAME_START_FINISH')

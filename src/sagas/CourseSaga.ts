@@ -12,9 +12,11 @@ import {
   SAVE_COURSE,
   SELECT_COURSE,
   selectCourseForEditing,
-  selectRace,
   updateCourseLoading,
 } from 'actions/courses'
+import {
+  selectRace
+} from 'actions/events'
 import {
   ControlPointClass,
   CourseState,
@@ -24,16 +26,22 @@ import {
   MarkPairState,
   MarkPositionType,
   MarkState,
-  SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
 import {
+  SelectedRaceInfo
+} from 'models/Event'
+
+import {
   getMarks,
   getSelectedCourseState,
-  getSelectedEventInfo,
-  getSelectedRaceInfo,
   markByIdPresent,
 } from 'selectors/course'
+
+import {
+  getSelectedEventInfo,
+  getSelectedRaceInfo
+} from 'selectors/event'
 
 const getRaceId = (regattaName: string, raceName: string) =>
   `${regattaName} - ${raceName}`

@@ -11,7 +11,7 @@ import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
 
 import { authBasedNewSession } from 'actions/auth'
-import { selectEvent } from 'actions/courses'
+import { selectEvent } from 'actions/events'
 import { CheckIn, Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getSessionList } from 'selectors/session'
