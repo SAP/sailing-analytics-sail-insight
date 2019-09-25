@@ -13,7 +13,7 @@ export const getEvents = (state: any) => getEntityArrayByType(state, EVENT_ENTIT
 export const getEvent = (eventId: string) => (state: any) => getEntityById(state, EVENT_ENTITY_NAME, eventId)
 
 export const getSelectedEventInfo = createSelector(
-    (state: any): string | undefined => state.courses.selectedEvent,
+    (state: any): string | undefined => state.events.selectedEvent,
     (state: any): any[] => values(state.checkIn.active),
     (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
       selectedEvent && find(propEq('eventId', selectedEvent), activeCheckIns),)
