@@ -67,6 +67,7 @@ const apiEndpoints = (serverUrl: string) => {
     createAutoCourse: getUrlV1('/leaderboards/{0}/autocourse'),
     boats: getUrlV1('/boats/{0}'),
     events: getUrlV1('/events/{0}'),
+    eventRaceStates: getUrlV1('/events/{0}/racestates'),
     gpsFixes: getUrlV1('/gps_fixes'),
     competitors: getUrlV1('/competitors/{0}'),
     createEvent: getUrlV1('/events/createEvent'),
@@ -114,6 +115,7 @@ export interface DataApi {
   requestLeaderboard: (leaderboardName: string, secret?: string) => any
   requestLeaderboardV2: (leaderboardName: string, secret?: string, competitorId?: string) => any
   requestEvent: (eventId: string, secret?: string) => any
+  requestEventRacestates: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
@@ -174,6 +176,10 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestRaces: (regattaName, secret) => dataRequest(
       endpoints.regattaRaces({ pathParams: [regattaName], urlParams: { secret } }),
       { dataSchema: regattaSchema },
+    ),
+    requestEventRacestates: (eventId, secret) => dataRequest(
+      endpoints.eventRaceStates({ pathParams: [eventId], urlParams: { secret } }),
+      { dataSchema: eventSchema },
     ),
     requestRace: (regattaName, raceName, raceId, secret) => dataRequest(
       endpoints.regattaRaceTimes({ pathParams: [regattaName, raceName], urlParams: { secret } }),

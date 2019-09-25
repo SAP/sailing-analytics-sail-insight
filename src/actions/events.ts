@@ -9,6 +9,9 @@ import { CheckIn } from 'models'
 import EventCreationData, { RegattaType } from 'models/EventCreationData'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
+export const SELECT_EVENT = 'SELECT_EVENT'
+export const SELECT_RACE = 'SELECT_RACE'
+
 const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
   [RegattaType.OneDesign]: 'ONE_DESIGN',
   [RegattaType.Handicap]:  'TIME_ON_TIME_AND_DISTANCE',
@@ -53,5 +56,5 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
     ),
   ])
 
-export const selectEvent = createAction('SELECT_EVENT')
-export const selectRace = createAction('SELECT_RACE')
+export const selectEvent = createAction(SELECT_EVENT)
+export const selectRace = createAction(SELECT_RACE)
