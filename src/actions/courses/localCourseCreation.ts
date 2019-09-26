@@ -33,6 +33,7 @@ const controlPointToControlPointState = (
   controlPoint: ControlPoint,
 ): ControlPointState => ({
   id: controlPoint.id,
+  passingInstruction: controlPoint.passingInstruction,
   ...(controlPoint.class === ControlPointClass.Mark
     ? { class: controlPoint.class }
     : {

@@ -22,7 +22,7 @@ const migrations = {
 
 const persistConfig = {
   key: 'root',
-  version: 0,
+  version: 1,
   debounce: 1000,
   timeout: 10000,
   blacklist: ['network', 'form'],

@@ -99,6 +99,7 @@ const updateControlPointReducer = (
 ) => {
   const changedWaypointPayload = mapValues(payload, (controlPointState, index) => ({
     ...(state.selectedCourse.waypoints[index] || {}),
+    passingInstruction: controlPointState.passingInstruction,
     controlPoint: controlPointState,
   }))
 
@@ -162,6 +163,7 @@ const constructDefaultMarks = () => {
       id: uuidv4(),
       class: ControlPointClass.Mark,
       type: MarkType.Buoy,
+      passingInstruction: PassingInstruction.Port
     }),
   )
 
@@ -230,7 +232,7 @@ const reducer = handleActions(
             name: 'New course',
             waypoints: [
               {
-                passingInstruction: 'Gate',
+                passingInstruction: PassingInstruction.Gate,
                 id: UUIDs[0],
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
@@ -242,7 +244,7 @@ const reducer = handleActions(
                 },
               },
               {
-                passingInstruction: 'Gate',
+                passingInstruction: PassingInstruction.Gate,
                 id: UUIDs[2],
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
