@@ -41,7 +41,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 
   public onTrackingPress = (checkIn: CheckIn) => () => this.props.startTracking(checkIn)
   public onSessionItemPress = (checkIn: CheckIn) => () => {
-    this.props.selectEvent(checkIn.eventId)
+    this.props.selectEvent(checkIn)
     navigateToSessionDetail(checkIn.leaderboardName)
   }
 

@@ -17,7 +17,7 @@ export const getSelectedEventInfo = createSelector(
     (state: any): any[] => values(state.checkIn.active),
     (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
       selectedEvent && find(propEq('eventId', selectedEvent), activeCheckIns),)
-  
+
   export const getSelectedRaceInfo = createSelector(
     getSelectedEventInfo,
     (state: any): string | undefined => state.events.selectedRace,

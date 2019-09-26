@@ -5,13 +5,13 @@ import { getSelectedEventInfo } from 'selectors/event'
 
 import { dataApi } from 'api'
 
-function* selectEventFlow({ payload: eventId }: any) {
+function* selectEventFlow({ payload }: any) {
   const { serverUrl } = yield select(getSelectedEventInfo)
 
   const api = dataApi(serverUrl)
-  const response = yield call(api.requestEventRacestates, eventId)
+  const raceStates = yield call(api.requestEventRacestates, payload.eventId)
   
-  yield put(receiveEntities(response))
+  yield put(receiveEntities(raceStates))
 }
 
 export default function* watchEvents() {

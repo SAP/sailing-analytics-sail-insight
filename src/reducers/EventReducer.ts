@@ -5,7 +5,8 @@ const reducer = handleActions(
   {
     [selectEvent as any]: (state: any = {}, action: any) => ({
       ...state,
-      selectedEvent: action.payload,
+      selectedEvent: action.payload.eventId,
+      selectedRegatta: action.payload.regattaName
     }),
 
     [selectRace as any]: (state: any = {}, action: any) => ({

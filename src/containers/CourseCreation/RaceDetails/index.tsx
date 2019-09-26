@@ -1,4 +1,4 @@
-import { __, compose, concat, map, merge, mergeLeft, reduce, range, objOf } from 'ramda'
+import { __, compose, concat, map, merge, defaultTo, reduce, objOf } from 'ramda'
 
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
@@ -27,6 +27,7 @@ import IconText from 'components/IconText'
 
 import { fetchCourse, selectCourse } from 'actions/courses'
 import { selectRace } from 'actions/events'
+import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
 const sliderSettings = {
@@ -43,7 +44,8 @@ const mapStateToProps = (state: any, props: any) => {
     session,
     initialValues: {
       [FORM_KEY_NUMBER_OF_RACES]: session.regatta && session.regatta.races.length
-    }
+    },
+    races: getRegattaPlannedRaces(getSelectedRegatta(state))(state)
   }
 }
 
@@ -91,22 +93,17 @@ const RaceItem = Component(props =>
     view({ style: { flex: 1, flexDirection: 'row' }}),
     reduce(concat, nothing()))
   ([
-    text({}, props.item.raceName),
+    text({}, defaultTo('', props.item.raceName)),
     fromClass(IconText).contramap(merge({ source: Images.info.time })),
-    text({}, props.item.startDate),
+    text({}, defaultTo('', props.item.startDate)),
     DefineLayoutButton,
     ArrowRight ]))
 
-const raceList = forwardingPropsFlatList.contramap(
+const raceList = forwardingPropsFlatList.contramap((props: any) =>
   merge({
-    data: [
-      { raceName: 'R1', startDate: '08:30', courseDefined: false },
-      { raceName: 'R2', startDate: '09:30', courseDefined: true },
-      { raceName: 'R3', startDate: '10:30', courseDefined: true },
-    ],
+    data: map(objOf('raceName'), props.races),
     renderItem: RaceItem.fold,
-  }),
-)
+  }, props))
 
 export default Component((props: Object) =>
   compose(
