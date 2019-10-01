@@ -33,6 +33,10 @@ import {
 } from 'models/Event'
 
 import {
+  getServerUrlSetting
+} from 'selectors/settings'
+
+import {
   getMarks,
   getSelectedCourseState,
   markByIdPresent,
@@ -166,7 +170,13 @@ function* apiCourseToLocalFormat(apiCourse: any) {
   return course
 }
 
+function* fetchMarkProperties() {
+  const api = dataApi(getServerUrlSetting())
+  const marks = yield call(api.requestMarkProperties)
 
+  console.log('inventory marks', marks)
+}
+  
 function* fetchCourse(raceName: string) {
   yield put(updateCourseLoading(true))
 
@@ -186,6 +196,7 @@ function* selectCourseFlow({ payload }: any) {
   const { newCourse, raceName } = payload
   const { regattaName } = yield select(getSelectedEventInfo)
 
+  yield fetchMarkProperties()
   yield put(selectRace(raceName))
 
   const raceId = getRaceId(regattaName, raceName)

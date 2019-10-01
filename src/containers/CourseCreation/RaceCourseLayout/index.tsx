@@ -14,7 +14,10 @@ import CourseConfig from '../CourseConfig'
 import { saveCourse, saveWaypointFromForm } from 'actions/courses'
 import { getCourseLoading, getSelectedCourseWithMarks } from 'selectors/course'
 
+import { Alert } from 'react-native'
+
 import { navigateBack } from 'navigation'
+import Snackbar from 'react-native-snackbar'
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
@@ -32,12 +35,27 @@ const saveCourseButton = Component((props: any) =>
   compose(
     fold(props),
     touchableOpacity({
-      onPress: async () => {
-        await props.saveCourse()
-        navigateBack()
+      onPress: () => {
+        Alert.alert(
+          'How would you like to save?',
+          'You can overwrite the existing course or save a new course.',
+          [
+            { text: 'Overwrite course', onPress: async () => {
+              await props.saveCourse()
+              navigateBack()
+
+              Snackbar.show({
+                title: 'Course successfully saved',
+                duration: Snackbar.LENGTH_LONG
+              })
+            }},
+            { text: 'Save as new course'},
+            { text: 'Don\'t save'},
+            { text: 'Cancel' }
+          ])
       },
-    }),
-  )(text({}, 'Save course')),
+    }))(
+    text({}, 'Save course')),
 )
 
 export default Component((props: object) =>

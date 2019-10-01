@@ -57,6 +57,8 @@ target 'sap_sailing_insight' do
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
+  pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing

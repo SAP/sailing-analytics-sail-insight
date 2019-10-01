@@ -21,7 +21,8 @@ export const getCourseLoading = (state: any): boolean =>
   state.courses.courseLoading
 
 const getCourses = (state: any): CourseStateMap => state.courses.allCourses
-const getCourseStateById = (courseId: string) => createSelector(
+
+export const getCourseStateById = (courseId: string) => createSelector(
   getCourses,
   courses => courses[courseId] as CourseState | undefined
 )

@@ -59,6 +59,7 @@ const apiEndpoints = (serverUrl: string) => {
     leaderboard: getUrlV1('/leaderboards/{0}'),
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
+    markProperties: getUrlV1('/markproperties'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
@@ -117,6 +118,7 @@ export interface DataApi {
   requestEvent: (eventId: string, secret?: string) => any
   requestEventRacestates: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
+  requestMarkProperties: ApiFunction
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
   requestCourse: (regattaName: string, raceName: string) => any
@@ -198,6 +200,7 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         endpoints.competitors({ pathParams: [competitorId], urlParams: { leaderboardName, secret } }),
         { dataSchema: competitorSchema },
     ),
+    requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: markSchema }),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }),
         { dataSchema: markSchema },

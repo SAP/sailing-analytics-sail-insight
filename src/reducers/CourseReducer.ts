@@ -229,7 +229,6 @@ const reducer = handleActions(
       const selectedCourse: SelectedCourseState = courseExists
         ? state.allCourses[courseId]
         : {
-            name: 'New course',
             waypoints: [
               {
                 passingInstruction: PassingInstruction.Gate,

@@ -1,4 +1,4 @@
-import { __, compose, concat, map, merge, defaultTo, reduce, objOf } from 'ramda'
+import { __, compose, concat, map, merge, defaultTo, reduce, objOf, uncurryN, tap } from 'ramda'
 
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
@@ -28,6 +28,7 @@ import IconText from 'components/IconText'
 import { fetchCourse, selectCourse } from 'actions/courses'
 import { selectRace } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
+import { getCourseStateById } from 'selectors/course'
 import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
 const sliderSettings = {
@@ -35,6 +36,8 @@ const sliderSettings = {
   maximumValue: 20,
   step: 1,
 }
+
+const getRegattaPlannedRacesN = uncurryN(2, getRegattaPlannedRaces)
 
 const mapStateToProps = (state: any, props: any) => {
   const { leaderboardName } = getCustomScreenParamData(props)
@@ -45,7 +48,14 @@ const mapStateToProps = (state: any, props: any) => {
     initialValues: {
       [FORM_KEY_NUMBER_OF_RACES]: session.regatta && session.regatta.races.length
     },
-    races: getRegattaPlannedRaces(getSelectedRegatta(state))(state)
+    races: compose(
+      map((raceName: string) => ({
+        raceName,
+        courseDefined: !!getCourseStateById(`${session.regattaName} - ${raceName}`)(state)
+      })),
+      getRegattaPlannedRacesN(__, state),
+      getSelectedRegatta)(
+      state)
   }
 }
 
@@ -101,7 +111,7 @@ const RaceItem = Component(props =>
 
 const raceList = forwardingPropsFlatList.contramap((props: any) =>
   merge({
-    data: map(objOf('raceName'), props.races),
+    data: props.races,
     renderItem: RaceItem.fold,
   }, props))
 
