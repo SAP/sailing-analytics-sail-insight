@@ -51,7 +51,7 @@ const apiEndpoints = (serverUrl: string) => {
     regattaRaces: getUrlV1('/regattas/{0}/races'),
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
-    course: getUrlV1('/regattas/{0}/races/{1}/course'),
+    course: getUrlV1('/regattas/{0}/structure/{1}/{2}/course'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
@@ -121,7 +121,7 @@ export interface DataApi {
   requestMarkProperties: ApiFunction
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
-  requestCourse: (regattaName: string, raceName: string) => any
+  requestCourse: (regattaName: string, raceName: string, fleet: String) => any
   startDeviceMapping: (leaderboardName: string, data: any) => any
   stopDeviceMapping: (leaderboardName: string, data: any) => any
   sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
@@ -209,8 +209,8 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         endpoints.boats({ pathParams: [boatId], urlParams: { leaderboardName, secret } }),
         { dataSchema: boatSchema },
     ),
-    requestCourse: (regattaName, raceName) => dataRequest(
-      endpoints.course({ pathParams: [regattaName, raceName] }),
+    requestCourse: (regattaName, raceName, fleet) => dataRequest(
+      endpoints.course({ pathParams: [regattaName, raceName, fleet] }),
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),

@@ -75,10 +75,9 @@ const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
 function* fetchMark(markId: string) {
 
   // TODO: Replace with selected data
-  // const { leaderboardName, serverURL } = yield select(getSelectedEventInfo)
-  const { leaderboardName } = { leaderboardName: 'TW 2013 (Finn)' }
+  const { leaderboardName, serverURL } = yield select(getSelectedEventInfo)
 
-  const api = dataApi('https://sapsailing.com')
+  const api = dataApi(serverURL)
   const res = yield call(api.requestMark, leaderboardName, markId)
   const apiMark = get(res, 'entities.mark')
 
@@ -176,15 +175,15 @@ function* fetchMarkProperties() {
 
   console.log('inventory marks', marks)
 }
-  
+
 function* fetchCourse(raceName: string) {
   yield put(updateCourseLoading(true))
 
-  // TODO: Replace with selected data
-  const { regattaName, serverUrl } = yield select(getSelectedRaceInfo)
-  const api = dataApi('https://sapsailing.com')
+  const { regattaName, serverUrl, raceColumnName, fleet } = yield select(getSelectedRaceInfo)
+
+  const api = dataApi(serverUrl)
   const raceId = getRaceId(regattaName, raceName)
-  const apiCourse = yield call(api.requestCourse, 'TW 2013 (Finn)', 'Finn Race 4')
+  const apiCourse = yield call(api.requestCourse, regattaName, raceColumnName, fleet)
   const course: CourseState  = yield call(apiCourseToLocalFormat, apiCourse)
 
   yield put(loadCourse({
