@@ -14,7 +14,7 @@ const styles = EStyleSheet.create({
     alignSelf: 'center',
     marginTop: '$tinySpacing',
     paddingLeft: 20,
-    paddingRight: 20
+    paddingRight: 20,
   },
 })
 

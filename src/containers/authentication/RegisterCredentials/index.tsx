@@ -1,17 +1,17 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { View } from 'react-native'
+import { ImageBackground, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import { register, RegisterActionType } from 'actions/auth'
 import * as registrationForm from 'forms/registration'
-import { validateEmail, validateRequired, validateUsername, validatePassword } from 'forms/validators'
+import { validateEmail, validatePassword, validateRequired, validateUsername } from 'forms/validators'
 import { helpActionSheetOptions } from 'helpers/actionSheets'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToUserRegistrationBoat } from 'navigation'
+import { navigateToUserRegistrationBoat, navigateToLogin } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import EulaLink from 'components/EulaLink'
@@ -20,9 +20,10 @@ import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
-import { button, container, text } from 'styles/commons'
+import { button } from 'styles/commons'
 import { registration } from 'styles/components'
-import { $extraSpacingScrollContent } from 'styles/dimensions'
+
+import Images from '../../../../assets/Images'
 import styles from './styles'
 
 
@@ -52,64 +53,81 @@ class RegisterCredentials extends TextInputForm<Props> {
   public render() {
     const { error, isLoading } = this.state
     return (
-      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-        <View style={[container.stretchContent, container.largeHorizontalMargin]}>
-          <Text style={registration.claim()}>
-            <Text>{I18n.t('text_register_credentials_claim_01')}</Text>
-            <Text style={text.claimHighlighted}>{I18n.t('text_register_credentials_claim_02')}</Text>
-          </Text>
-          <Text style={styles.taskText}>
-            {I18n.t('text_registration_create_account')}
-          </Text>
-        </View>
-        <View style={registration.bottomContainer()}>
-          <Field
-            label={I18n.t('text_placeholder_your_username')}
-            name={registrationForm.FORM_KEY_USERNAME}
-            component={FormTextInput}
-            validate={[validateRequired, validateUsername]}
-            keyboardType={'default'}
-            returnKeyType="next"
-            autoCapitalize="none"
-            onSubmitEditing={this.handleOnSubmitInput(registrationForm.FORM_KEY_EMAIL)}
-            inputRef={this.handleInputRef(registrationForm.FORM_KEY_USERNAME)}
-          />
-          <Field
-            style={styles.lowerTextInput}
-            label={I18n.t('text_placeholder_your_email')}
-            name={registrationForm.FORM_KEY_EMAIL}
-            component={FormTextInput}
-            validate={[validateRequired, validateEmail]}
-            keyboardType={'email-address'}
-            returnKeyType="next"
-            autoCapitalize="none"
-            onSubmitEditing={this.handleOnSubmitInput(registrationForm.FORM_KEY_PASSWORD)}
-            inputRef={this.handleInputRef(registrationForm.FORM_KEY_EMAIL)}
-          />
-          <Field
-            style={styles.lowerTextInput}
-            label={I18n.t('text_placeholder_enter_password')}
-            name={registrationForm.FORM_KEY_PASSWORD}
-            component={FormTextInput}
-            validate={[validateRequired, validatePassword]}
-            keyboardType={'default'}
-            returnKeyType="go"
-            onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
-            secureTextEntry={true}
-            inputRef={this.handleInputRef(registrationForm.FORM_KEY_PASSWORD)}
-          />
-          <EulaLink/>
-          {error && <Text style={registration.errorText()}>{error}</Text>}
-          <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
-            onPress={this.props.handleSubmit(this.onSubmit)}
-            isLoading={isLoading}
-          >
-            {I18n.t('caption_create_account')}
-          </TextButton>
-        </View>
-      </ScrollContentView >
+      <ImageBackground source={Images.defaults.background} style={{ width: '100%', height: '100%' }}>
+        <ScrollContentView style={styles.scrollContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.claim}>{I18n.t('text_registration').toUpperCase()}</Text>
+          </View>
+          <View style={styles.inputField}>
+            <Field
+              style={styles.textInput}
+              containerStyle={styles.inputContainer}
+              label={I18n.t('text_name')}
+              name={registrationForm.FORM_KEY_NAME}
+              component={FormTextInput}
+              validate={[validateRequired]}
+              keyboardType={'default'}
+              returnKeyType="next"
+              onSubmitEditing={this.handleOnSubmitInput(registrationForm.FORM_KEY_USERNAME)}
+              inputRef={this.handleInputRef(registrationForm.FORM_KEY_NAME)}
+            />
+            <Field
+              style={styles.textInput}
+              containerStyle={styles.inputContainer}
+              label={I18n.t('text_placeholder_your_username')}
+              name={registrationForm.FORM_KEY_USERNAME}
+              component={FormTextInput}
+              validate={[validateRequired, validateUsername]}
+              keyboardType={'default'}
+              returnKeyType="next"
+              autoCapitalize="none"
+              onSubmitEditing={this.handleOnSubmitInput(registrationForm.FORM_KEY_EMAIL)}
+              inputRef={this.handleInputRef(registrationForm.FORM_KEY_USERNAME)}
+            />
+            <Field
+              style={styles.lowerTextInput}
+              containerStyle={styles.inputContainer}
+              label={I18n.t('text_placeholder_email')}
+              name={registrationForm.FORM_KEY_EMAIL}
+              component={FormTextInput}
+              validate={[validateRequired, validateEmail]}
+              keyboardType={'email-address'}
+              returnKeyType="next"
+              autoCapitalize="none"
+              onSubmitEditing={this.handleOnSubmitInput(registrationForm.FORM_KEY_PASSWORD)}
+              inputRef={this.handleInputRef(registrationForm.FORM_KEY_EMAIL)}
+            />
+            <Field
+              style={styles.lowerTextInput}
+              containerStyle={styles.inputContainer}
+              label={I18n.t('text_placeholder_enter_password')}
+              name={registrationForm.FORM_KEY_PASSWORD}
+              component={FormTextInput}
+              validate={[validateRequired, validatePassword]}
+              keyboardType={'default'}
+              returnKeyType="go"
+              onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
+              secureTextEntry={true}
+              inputRef={this.handleInputRef(registrationForm.FORM_KEY_PASSWORD)}
+            />
+            <EulaLink/>
+            {error && <Text style={registration.errorText()}>{error}</Text>}
+          </View>
+          <View style={styles.bottomButtonField}>
+            <TextButton
+              style={styles.registrationButton}
+              textStyle={styles.registrationButtonText}
+              onPress={this.props.handleSubmit(this.onSubmit)}
+              isLoading={isLoading}
+            >
+              {I18n.t('caption_register').toUpperCase()}
+            </TextButton>
+            <Text onPress={navigateToLogin} style={styles.loginText}>
+              {I18n.t('text_login_already_account')}
+            </Text>
+          </View>
+        </ScrollContentView >
+      </ImageBackground>
     )
   }
 

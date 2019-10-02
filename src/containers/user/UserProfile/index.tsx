@@ -68,7 +68,7 @@ class UserProfile extends TextInputForm<Props> {
             />
             <TitleLabel
               style={input.topMargin}
-              title={I18n.t('text_username')}
+              title={I18n.t('text_user_name')}
             >
               <Text style={text.propertyValue}>{user.username}</Text>
             </TitleLabel>

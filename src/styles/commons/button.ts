@@ -45,7 +45,9 @@ export default EStyleSheet.create({
   },
   textButtonText: {
     color: '$textButtonTextColor',
-    fontSize: '$textButtonTextFontSize',
+    // fontSize: '$textButtonTextFontSize',
+    fontSize: 14,
+    fontFamily: 'SFProDisplay-Medium',
   },
   textButtonSecondaryText: {
     color: '$textButtonTextColor',
