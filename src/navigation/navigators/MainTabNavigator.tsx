@@ -82,11 +82,11 @@ export default createBottomTabNavigator(
           activeTintColor: $primaryTextColor,
           inactiveTintColor: $secondaryTextColor,
           indicatorStyle: {
-            backgroundColor: 'white',
+            backgroundColor: '#123748', // 'white',
             height: 3,
           },
           style: {
-            backgroundColor: 'white',
+            backgroundColor: '#123748', // 'white',
           },
         },
       },
@@ -104,7 +104,7 @@ export default createBottomTabNavigator(
       inactiveTintColor: $secondaryTextColor,
       style: {
         height: 56,
-        backgroundColor: 'white',
+        backgroundColor: '#123748', // 'white',
       },
       showLabel: false,
       showIcon: true,

@@ -37,7 +37,7 @@ export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTa
       activeTintColor: $primaryTextColor,
       inactiveTintColor: $secondaryTextColor,
       style: {
-        backgroundColor: 'white',
+        backgroundColor: '#123748', // 'white',
       },
       tabStyle: platformSelect(
         {

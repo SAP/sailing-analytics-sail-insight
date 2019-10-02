@@ -47,7 +47,7 @@ export const Leaderboard = 'Leaderboard'
 
 // auth
 export const Register = 'Register'
-export const RegisterName = 'RegisterName'
+// export const RegisterName = 'RegisterName'
 export const RegisterCredentials = 'RegisterCredentials'
 export const RegisterBoat = 'RegisterBoat'
 export const Login = 'Login'
