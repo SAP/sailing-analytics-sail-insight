@@ -18,8 +18,8 @@ import {
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import { forwardingPropsFlatList, text, view, touchableOpacity } from 'components/fp/react-native'
 import {
-  eventWizardCommonFormSettings,
   FORM_KEY_NUMBER_OF_RACES,
+  EVENT_CREATION_FORM_NAME
 } from 'forms/eventCreation'
 
 import { ArrowRight } from 'containers/session/common'
@@ -119,7 +119,7 @@ export default Component((props: Object) =>
   compose(
     fold(props),
     connect(mapStateToProps, { fetchCourse, selectCourse, selectRace }),
-    reduxForm(eventWizardCommonFormSettings),
+    reduxForm({ form: EVENT_CREATION_FORM_NAME }),
     view({ style: [] }),
     reduce(concat, nothing()))
   ([
