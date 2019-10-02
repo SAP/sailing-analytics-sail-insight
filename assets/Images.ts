@@ -1,5 +1,11 @@
 
 export default {
+  defaults: {
+    background: require('./img/defaults/SignUp_Background.png'),
+    app_logo: require('./img/defaults/AppLogo.png'),
+    ws_logo: require('./img/defaults/WorldSailingLogo.png'),
+    sap_logo: require('./img/defaults/SAP.png'),
+  },
   corporateIdentity: {
     sapSailingLogo: require('./img/app_icon_sap_us_sailing.png'),
     sapTagLine: require('./img/ci/logo-sap-tagline.png'),
@@ -54,7 +60,6 @@ export default {
     waveLoadingIndicatorGif: require('./img/animations/wave_loading.gif'),
     waveLoadingIndicatorBackground: require('./img/animations/wave_loading_background.png'),
   },
-
   courseConfig: {
     roundingDirectionLeft: require('./img/icons/icon-rounding-direction-left.png'),
     roundingDirectionRight: require('./img/icons/icon-rounding-direction-right.png'),
@@ -65,6 +70,6 @@ export default {
     linePassing: require('./img/icons/line-passing.png'),
     deleteIcon: require('./img/icons/delete-icon.png'),
     gateIcon: require('./img/icons/gate-icon.png'),
-    markIcon: require('./img/icons/mark-icon.png')
-  }
+    markIcon: require('./img/icons/mark-icon.png'),
+  },
 }

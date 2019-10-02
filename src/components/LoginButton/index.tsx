@@ -12,7 +12,7 @@ import { button } from 'styles/commons'
 
 
 class LoginButton extends React.Component<ViewProps & {isModal?: boolean}> {
-  public defaultProps = {
+  public static defaultProps = {
     isModal: false,
   }
 
