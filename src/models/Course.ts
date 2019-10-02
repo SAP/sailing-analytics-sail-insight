@@ -78,7 +78,6 @@ export interface MarkPair<T = Mark> {
   rightMark?: T
 }
 
-// Got this from https://www.sapsailing.com/sailingserver/webservices/api/v1/addCourseDefinitionToRaceLog.html
 export enum PassingInstruction {
   Port = 'Port',
   Starboard = 'Starboard',

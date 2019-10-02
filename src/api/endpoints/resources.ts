@@ -18,6 +18,7 @@ import {
   CompetitorWithBoatBody,
   CountryCodeBody,
   CreateEventBody,
+  CreateCourseBody,
   CreateEventResponseData,
   ManeuverChangeItem,
   RaceLogOptions,
@@ -82,6 +83,7 @@ const apiEndpoints = (serverUrl: string) => {
     addMarkToRegatta: getUrlV1('/mark/addMarkToRegatta'),
     addMarkFix: getUrlV1('/mark/addMarkFix'),
     addCourseDefinitionToRaceLog: getUrlV1('/mark/addCourseDefinitionToRaceLog'),
+    createCourse: getUrlV1('/courseconfiguration/createCourse/{0}/{1}/{2}')
   }
 }
 
@@ -162,9 +164,10 @@ export interface DataApi {
   requestBoatClasses: () => Promise<BoatClassesBody[]>
   requestCountryCodes: () => Promise<CountryCodeBody[]>
   uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
-  addMarkToRegatta: (regattaName: string, markName: string) => any,
+  addMarkToRegatta: (regattaName: string, markName: string, markShortName: string) => any,
   addMarkFix: (body: AddMarkFixBody) => any,
   addCourseDefinitionToRaceLog: (body: AddCourseDefinitionToRaceLogBody) => any,
+  createCourse: (regattaName: string, race: string, fleet: string, body: CreateCourseBody) => any
 }
 
 const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
@@ -312,12 +315,13 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         timeout: 60000,
       },
     ),
-    addMarkToRegatta: (regattaName, markName) => dataRequest(
+    addMarkToRegatta: (regattaName, markName, markShortName) => dataRequest(
       endpoints.addMarkToRegatta(),
       {
         body: {
           markName,
-          regattaName,
+          markShortName,
+          regattaName
         },
         method: HttpMethods.POST,
       }
@@ -336,6 +340,15 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         method: HttpMethods.POST,
       }
     ),
+    createCourse: (regattaName, race, fleet, body: any) => dataRequest(
+      endpoints.createCourse({
+        pathParams: [regattaName, race, fleet]
+      }),
+      {
+        body,
+        method: HttpMethods.POST
+      }
+    )
   }
 }
 

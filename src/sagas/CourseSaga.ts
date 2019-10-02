@@ -1,5 +1,6 @@
 import { first, get, values } from 'lodash'
-import { compose } from 'ramda'
+import { compose, flatten, map, prop, objOf,
+  merge, uniqBy, find, propEq, dissoc } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import uuidv4 from 'uuid/v4'
 
@@ -238,6 +239,7 @@ function* saveMarkToServer(mark: Mark) {
     api.addMarkToRegatta,
     selectedRaceInfo.regattaName,
     mark.longName,
+    mark.shortName
   )
 
   if (!response || !response.markId) {
@@ -270,6 +272,8 @@ function* waypointToApiControlPoint(waypoint: WaypointState) {
   const marks = yield select(getMarks)
   return {
     passingInstruction,
+    controlPointName: controlPoint.longName,
+    controlPointShortName: controlPoint.shortName,
     marks:
       controlPoint.class === ControlPointClass.Mark
         ? [yield call(saveMarkToServer, marks[controlPoint.id])]
@@ -282,8 +286,8 @@ function* waypointToApiControlPoint(waypoint: WaypointState) {
 }
 
 function* saveCourseFlow() {
-  const selectedRaceInfo: SelectedRaceInfo = yield select(getSelectedRaceInfo)
-  const api = dataApi(selectedRaceInfo.serverUrl)
+  const { serverUrl, regattaName, raceColumnName, fleet } = yield select(getSelectedRaceInfo)
+  const api = dataApi(serverUrl)
   // TODO: There should be a validation step here to see that the object
   // is actually CourseState, i.e. without Partial information
   const selectedCourseState: CourseState = yield select(getSelectedCourseState)
@@ -292,14 +296,33 @@ function* saveCourseFlow() {
     waypoint => call(waypointToApiControlPoint, waypoint),
   ))
 
-  yield call(api.addCourseDefinitionToRaceLog, {
-    leaderboardName: selectedRaceInfo.leaderboardName,
-    raceColumnName: selectedRaceInfo.raceColumnName,
-    fleetName: selectedRaceInfo.fleet,
-    controlPoints: apiControlPoints,
+  const markConfigurations = compose(
+    map(m => merge(m, { id: uuidv4() })),
+    uniqBy(prop('markId')),
+    map(objOf('markId')),
+    flatten,
+    map(prop('marks')))(
+    apiControlPoints)
+
+  const markConfigurationIdByMarkId = (markId: string) => compose(
+    prop('id'),
+    find(propEq('markId', markId)))(
+    markConfigurations)
+
+  const waypoints = compose(
+    map(dissoc('marks')),
+    map((waypoint: any) => ({
+      ...waypoint,
+      markConfigurationIds: map(markConfigurationIdByMarkId, waypoint.marks)
+    })))(
+    apiControlPoints)
+
+  yield call(api.createCourse, regattaName, raceColumnName, fleet, {
+    markConfigurations,
+    waypoints
   })
 
-  const courseID = getRaceId(selectedRaceInfo.regattaName, selectedRaceInfo.raceColumnName)
+  const courseID = getRaceId(regattaName, raceColumnName)
   yield put(loadCourse({ [courseID]: selectedCourseState }))
 }
 
