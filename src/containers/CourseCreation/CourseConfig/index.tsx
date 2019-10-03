@@ -1,5 +1,5 @@
-import { __, compose, always, both, path, when, append, zipWith,
-  prop, map, reduce, concat, merge, props as rProps, defaultTo,
+import { __, compose, always, both, path, when, append, zipWith, move,
+  prop, map, reduce, concat, merge, props as rProps, defaultTo, any, take,
   objOf, isNil, not, either, equals, pick, tap, ifElse, insert, reverse,
   propEq, addIndex, mergeLeft, intersperse, gt, findIndex } from 'ramda'
 
@@ -33,9 +33,11 @@ import {
 } from 'forms/courseConfig'
 import { ControlPointClass, GateSide, MarkPositionType, PassingInstruction } from 'models/Course'
 
-import { selectWaypoint, removeWaypoint, selectGateSide, addWaypoint,
-  assignControlPointClass, assignControlPoint, saveWaypointFromForm } from 'actions/courses'
-import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide, getMarkInventory } from 'selectors/course'
+import { selectWaypoint, removeWaypoint, selectGateSide,
+  addWaypoint, assignControlPointClass, assignControlPoint,
+  saveWaypointFromForm, toggleSameStartFinish } from 'actions/courses'
+import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide,
+  getMarkInventory, getSameStartFinish } from 'selectors/course'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 
@@ -62,6 +64,7 @@ const mapStateToProps = (state: any, props: any) => ({
       selectedWaypoint: getSelectedWaypoint(state),
       selectedMark: getSelectedMark(state),
       selectedGateSide: getSelectedGateSide(state),
+      sameStartFinish: getSameStartFinish(state),
       inventory: getMarkInventory(state),
       // required for properly updating the redux form fields
       key: getSelectedGateSide(state) })
@@ -69,8 +72,13 @@ const mapStateToProps = (state: any, props: any) => ({
 const waypointClass = path(['waypoint', 'controlPoint', 'class'])
 const isGateWaypoint = compose(equals(ControlPointClass.MarkPair), waypointClass)
 const isEmptyWaypoint = compose(isNil, path(['waypoint', 'controlPoint']))
-const isStartOrFinishGate = both(isGateWaypoint, compose(either(equals('Start'), equals('Finish')), prop('longName'), prop('waypoint')))
 const isWaypointSelected = (waypoint: any, props: any) => props.selectedWaypoint && props.selectedWaypoint.id === waypoint.id
+const isStartOrFinishGate = both(isGateWaypoint,
+  props => compose(
+    any(compose(equals(props.waypoint.id), prop('id'))),
+    take(2),
+    move(-1, 0))(
+    props.course.waypoints))
 
 const formHasPositionType = (type: string) => compose(propEq('positionType', type), defaultTo({}), path(['input', 'value']))
 const formHasGeolocation = formHasPositionType(MarkPositionType.Geolocation)
@@ -81,7 +89,7 @@ const geolocationAsString = compose(coordinatesToString, path(['input', 'value']
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenSelectedWaypoint = branch(compose(not, isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
-const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
+const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate, tap(v => console.log('###', v))), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
 const nothingWhenEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
@@ -154,9 +162,15 @@ const GateMarkSelector = Component((props: object) =>
 const SameStartFinish = Component((props: object) =>
   compose(
     fold(props),
+    view({ style: styles.sameStartFinishContainer }),
     reduce(concat, nothing()))([
-    text({}, 'Start/Finish are the same'),
-    fromClass(Switch)
+    fromClass(Switch).contramap(merge({
+      value: props.sameStartFinish,
+      onValueChange: props.toggleSameStartFinish,
+      trackColor: { false: 'gray', true: 'white' },
+      thumbColor: 'white'
+    })),
+    text({ style: styles.sameStartFinishText }, 'Start & finish are the same')
   ]))
 
 const toLocationFormField = (component: any) => Component((props: object) =>
@@ -430,7 +444,7 @@ export default Component((props: object) =>
     withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectGateSide, saveWaypointFromForm,
-      addWaypoint, assignControlPointClass, assignControlPoint }),
+      addWaypoint, assignControlPointClass, assignControlPoint, toggleSameStartFinish }),
     view({ style: styles.mainContainer }),
     concat(__, nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))),
     scrollView({ style: styles.waypointsContainer, horizontal: true }),

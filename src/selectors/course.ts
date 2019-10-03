@@ -52,7 +52,7 @@ export const getSelectedCourseState = (state: any): SelectedCourseState | undefi
 export const getSelectedGateSide = (state: any): GateSide =>
   state.courses.selectedGateSide
 
-const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
+export const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
 const getDefaultMarkIds = (state: any): DefaultMarkIdMap => state.courses.defaultMarkIds
 
 const getSelectedCourseWaypointState = createSelector(

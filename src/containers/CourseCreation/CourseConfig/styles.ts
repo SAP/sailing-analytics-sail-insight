@@ -236,6 +236,18 @@ export default EStyleSheets.create({
     paddingHorizontal: 0
   },
 
+  sameStartFinishContainer: {
+    paddingTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  sameStartFinishText: {
+    ...withDefaultFont,
+    ...white
+  },
+
   createNewContainer: {
     marginTop: 20,
     paddingTop: 10,
