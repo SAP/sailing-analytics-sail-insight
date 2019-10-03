@@ -89,7 +89,7 @@ const geolocationAsString = compose(coordinatesToString, path(['input', 'value']
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenSelectedWaypoint = branch(compose(not, isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
-const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate, tap(v => console.log('###', v))), nothingAsClass)
+const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
 const nothingWhenEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
@@ -440,7 +440,14 @@ export default Component((props: object) =>
   compose(
     fold(props),
     connect(mapInitialValuesToProps),
-    reduxForm(courseConfigCommonFormSettings),
+    reduxForm({
+      ...courseConfigCommonFormSettings,
+      onChange: (values, dispatch, props) => {
+        if (!props.pristine) {
+          dispatch(props.saveWaypointFromForm)
+        }
+      }
+    }),
     withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectGateSide, saveWaypointFromForm,
@@ -452,5 +459,6 @@ export default Component((props: object) =>
     reverse,
     insert(1, nothingWhenSelectedWaypoint(AddButton.contramap(merge({ index: 1 })))),
     reverse,
-    mapIndexed(waypointItemToComponent))(
-    props.course.waypoints))
+    mapIndexed(waypointItemToComponent),
+    path(['course', 'waypoints']))(
+    props))

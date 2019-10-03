@@ -1,4 +1,4 @@
-import { __, complement, compose, concat, propEq, reduce } from 'ramda'
+import { __, complement, compose, concat, propEq, reduce, isNil, prop } from 'ramda'
 
 import {
   Component,
@@ -23,6 +23,7 @@ const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
 const nothingIfLoading = branch(isLoading, nothingAsClass)
 const nothingIfNotLoading = branch(isNotLoading, nothingAsClass)
+const nothingIfNoCourse = branch(compose(isNil, prop('course')), nothingAsClass)
 
 const spinner = text({}, 'Loading ...')
 
@@ -65,7 +66,7 @@ export default Component((props: object) =>
     scrollView({ vertical: true, style: { flex: 1 } }),
     reduce(concat, nothing()))([
     nothingIfNotLoading(spinner),
-    nothingIfLoading(CourseConfig),
+    nothingIfLoading(nothingIfNoCourse(CourseConfig)),
     saveCourseButton
   ]),
 )
