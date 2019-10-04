@@ -210,7 +210,8 @@ const MarkPositionCoordinates = Component(props => compose(
   view({ style: styles.coordinatesContainer }),
   concat(bigLocationIcon),
   text({ style: styles.coordinatesText }),
-  ifElse(formHasGeolocation, geolocationAsString, always('')))(props))
+  ifElse(formHasGeolocation, geolocationAsString, always('')))(
+  props))
 
 const MarkPositionGeolocation = Component((props: object) =>
   compose(

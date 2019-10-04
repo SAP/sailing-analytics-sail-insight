@@ -173,8 +173,6 @@ function* apiCourseToLocalFormat(apiCourse: any) {
 function* fetchMarkProperties() {
   const api = dataApi(getServerUrlSetting())
   const marks = yield call(api.requestMarkProperties)
-
-  console.log('inventory marks', marks)
 }
 
 function* fetchCourse(raceName: string) {
@@ -208,14 +206,15 @@ function* selectCourseFlow({ payload }: any) {
 }
 
 const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
-  const position = mark.position
+  const location = mark.location
   const api = dataApi(selectedRaceInfo.serverUrl)
-  if (!position) return
 
-  if (position.positionType === MarkPositionType.TrackingDevice) {
+  if (!location) return
+
+  if (location.positionType === MarkPositionType.TrackingDevice) {
     await api.startDeviceMapping(selectedRaceInfo.leaderboardName, {
       markId: mark.id,
-      deviceUuid: position.deviceUuid,
+      deviceUuid: location.deviceUuid,
       fromMillis: getNowInMillis(),
       ...(selectedRaceInfo.secret ? { secret: selectedRaceInfo.secret } : {}),
     })
@@ -225,8 +224,8 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
       raceColumnName: selectedRaceInfo.raceColumnName,
       fleetName: selectedRaceInfo.fleet,
       markId: mark.id,
-      lonDeg: position.longitude.toString(),
-      latDeg: position.latitude.toString(),
+      lonDeg: location.longitude.toString(),
+      latDeg: location.latitude.toString(),
       timeMillis: getNowInMillis().toString(),
     })
   }

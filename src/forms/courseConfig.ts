@@ -39,6 +39,7 @@ export const markFromFormSection = (values: any): Mark | undefined =>
     longName: values[FORM_MARK_LONG_NAME],
     shortName: values[FORM_MARK_SHORT_NAME],
     type: MarkType.Buoy,
+    location: values[FORM_LOCATION]
   })
 
 export const waypointFromFormValues = (values: any) => ({
@@ -52,7 +53,7 @@ const markFormValuesFromMark = (mark: any) => mark && ({
   [FORM_MARK_ID]: mark.id,
   [FORM_MARK_SHORT_NAME]: mark.shortName,
   [FORM_MARK_LONG_NAME]: mark.longName,
-  [FORM_LOCATION]: mark.position
+  [FORM_LOCATION]: mark.location
 })
 
 const formValuesFromWaypoint = (waypoint: any) => waypoint && waypoint.controlPoint && ({
