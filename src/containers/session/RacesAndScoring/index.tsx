@@ -88,7 +88,7 @@ const DiscardSelectorItem = Component((props: any) => compose(
   fold(props),
   overlayPicker({
     onValueChange: (value: number) => props.updateDiscardItem(props.item.index, value),
-    style: { position: 'absolute', top: 5, left: 5, width: 50, height: 50 }
+    style: { position: 'absolute', top: 0, left: 0, width: 60, height: 60 }
   }),
   view({ style: styles.discardSelectorItemContainer }),
   text({ style: styles.discardSelectorItemText }))(
@@ -98,7 +98,7 @@ const AddDiscardButton = Component((props: any) => compose(
   fold(props),
   overlayPicker({
     onValueChange: (value: number) => props.addDiscard(value),
-    style: { position: 'absolute', top: 5, left: 5, width: 50, height: 50 }
+    style: { position: 'absolute', top: 0, left: 0, width: 60, height: 60 }
   }),
   view({ style: styles.discardSelectorPlusContainer }),
   text({ style: styles.discardSelectorPlusText }))(

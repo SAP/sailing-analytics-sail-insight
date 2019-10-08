@@ -1,15 +1,15 @@
 export const withDefaultFont = {
-    fontFamily: '$defaultFontFamily'
+  fontFamily: '$defaultFontFamily',
 }
 
 export const withDefaultBoldFont = {
-    fontFamily: '$defaultBoldFontFamily'
+  fontFamily: '$defaultBoldFontFamily',
 }
 
 export const withTitleSize = {
-    fontSize: '$titleFontSize'
+  fontSize: '$titleFontSize',
 }
 
 export const white = {
-    color: 'white'
+  color: 'white',
 }

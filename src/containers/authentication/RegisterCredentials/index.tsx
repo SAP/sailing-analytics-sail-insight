@@ -11,7 +11,7 @@ import { validateEmail, validatePassword, validateRequired, validateUsername } f
 import { helpActionSheetOptions } from 'helpers/actionSheets'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToUserRegistrationBoat, navigateToLogin } from 'navigation'
+import { navigateToLogin, navigateToUserRegistrationBoat } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import EulaLink from 'components/EulaLink'
@@ -20,7 +20,6 @@ import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
-import { button } from 'styles/commons'
 import { registration } from 'styles/components'
 
 import Images from '../../../../assets/Images'

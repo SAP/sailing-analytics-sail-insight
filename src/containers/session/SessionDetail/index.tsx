@@ -1,28 +1,28 @@
-import { compose, reduce, concat, merge } from 'ramda'
+import { compose, concat, merge, reduce } from 'ramda'
 
 import { checkOut, collectCheckInData } from 'actions/checkIn'
+import { navigateToRaceDetails } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
-import { navigateToRaceDetails } from 'navigation'
 
-import { Component, fold, nothing, reduxConnect as connect } from 'components/fp/component';
-import { view } from 'components/fp/react-native';
+import { Component, fold, nothing, reduxConnect as connect } from 'components/fp/component'
+import { view } from 'components/fp/react-native'
 
 import { container } from 'styles/commons'
 import styles from './styles'
 
 import {
+  competitorsCard,
   overallStatusCard,
-  typeAndBoatClassCard,
-  sessionDetailsCard,
   racesAndScoringCard,
-  competitorsCard
+  sessionDetailsCard,
+  typeAndBoatClassCard,
 } from '../common'
 
 const mapStateToProps = (state: any, props: any) => {
   const leaderboardName = getCustomScreenParamData(props)
   return {
-    session: getSession(leaderboardName)(state)
+    session: getSession(leaderboardName)(state),
   }
 }
 
@@ -42,14 +42,18 @@ const sessionData = {
   entries: 7,
   invitations: 4,
   acceptations: 2,
-  racesAndScoringOnPress: (props: any) => navigateToRaceDetails(props.session)
+  racesAndScoringOnPress: (props: any) => navigateToRaceDetails(props.session),
 }
 
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
     connect(mapStateToProps, { checkOut, collectCheckInData }),
-    view({ style: [ container.list, styles.cardsContainer ]}),
-    reduce(concat, nothing()))
-  ([
-    overallStatusCard, sessionDetailsCard, typeAndBoatClassCard, racesAndScoringCard, competitorsCard ]));
+    view({ style: [container.list, styles.cardsContainer] }),
+    reduce(concat, nothing()))([
+      overallStatusCard,
+      sessionDetailsCard,
+      typeAndBoatClassCard,
+      racesAndScoringCard,
+      competitorsCard,
+    ]))

@@ -12,7 +12,7 @@ import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 class SessionItem extends React.Component<ViewProps & {
   session: Session,
   onTrackingPress?: OnPressType,
-  onItemPress: onPressType
+  onItemPress: onPressType,
 } > {
   public render() {
     const {

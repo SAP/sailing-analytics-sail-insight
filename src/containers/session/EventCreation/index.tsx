@@ -1,10 +1,10 @@
-import { always, compose, concat, reduce, objOf } from 'ramda'
-import { Image, Alert } from 'react-native'
+import { always, compose, concat, objOf, reduce } from 'ramda'
+import { Alert, Image } from 'react-native'
 
 import { Component,  fold, fromClass, nothing,
-  reduxConnect as connect,
   recomposeLifecycle as lifecycle,
-  recomposeWithStateHandlers as withStateHandlers } from 'components/fp/component'
+  recomposeWithStateHandlers as withStateHandlers,
+  reduxConnect as connect } from 'components/fp/component'
 import { scrollView, text, touchableOpacity, view } from 'components/fp/react-native'
 import { reduxForm } from 'components/fp/redux-form'
 
@@ -29,6 +29,7 @@ import { selfTrackingApi } from 'api'
 import { BoatClassesBody } from '../../../api/endpoints/types'
 
 import Images from '@assets/Images'
+import { getErrorDisplayMessage } from 'helpers/texts'
 import styles from './styles'
 
 const mapStateToProps = (state: any) => ({
@@ -49,7 +50,7 @@ const formSettings = {
 
 const withBoatClasses = compose(
   withStateHandlers(null, {
-    setBoatClasses: always(objOf('boatClasses'))
+    setBoatClasses: always(objOf('boatClasses')),
   }),
   lifecycle({
     componentDidMount() {
@@ -58,7 +59,7 @@ const withBoatClasses = compose(
       }).catch((err) => {
         Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
       })
-    }
+    },
   }))
 
 const createButton = Component((props: any) => compose(
@@ -66,7 +67,7 @@ const createButton = Component((props: any) => compose(
   touchableOpacity({
     onPress: props.handleSubmit(createEvent(props)),
     style: styles.createButton,
-    }))(
+  }))(
     text({ style: styles.createButtonText }, 'CREATE')))
 
 const arrowLeft = fromClass(Image).contramap(always({
@@ -87,11 +88,11 @@ export default Component((props: Object) => compose(
   withBoatClasses,
   connect(mapStateToProps, { createEventActionQueue }),
   reduxForm(formSettings),
-  scrollView({ style: styles.container}),
+  scrollView({ style: styles.container }),
   reduce(concat, nothing()))([
     backNavigation,
     BasicsSetup,
     TypeAndBoatClass,
     RacesAndScoring,
-    createButton
+    createButton,
   ]))

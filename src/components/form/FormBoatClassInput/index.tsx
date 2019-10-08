@@ -28,7 +28,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   input?: any,
   meta?: any,
   query?: string,
-  boatClasses?: any[]
+  boatClasses?: any[],
 }, State > {
   protected isMounted:boolean = false
 
