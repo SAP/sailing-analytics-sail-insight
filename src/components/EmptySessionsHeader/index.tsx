@@ -13,6 +13,7 @@ import styles from './styles'
 import HintCard from 'components/HintCard'
 import LoginButton from 'components/LoginButton'
 import { isLoggedIn } from 'selectors/auth'
+import Image from '../Image/index';
 
 
 class EmptySessionsHeader extends React.Component<{
@@ -47,7 +48,9 @@ class EmptySessionsHeader extends React.Component<{
     } = this.props
     return showHints ? (
       <View style={styles.container}>
+        <Image source={Images.defaults.background_empty} style={styles.image}/>
         {
+          /*
           showJoinRegatta &&
           <HintCard
             imageSource={Images.info.coloredBoat}
@@ -57,8 +60,10 @@ class EmptySessionsHeader extends React.Component<{
             onCancelPress={this.onCancelJoinPress}
             onPress={this.onJoinPress}
           />
+          */
         }
         {
+          /*
           showCreateAccount &&
           <HintCard
             style={showJoinRegatta && styles.separator}
@@ -74,6 +79,7 @@ class EmptySessionsHeader extends React.Component<{
               isModal={true}
             />
           </HintCard>
+          */
         }
       </View>
     ) :

@@ -3,6 +3,7 @@ export default {
   defaults: {
     background: require('./img/defaults/SignUp_Background.png'),
     background_map: require('./img/tracking/TrackingMap_Background.png'),
+    background_empty: require('./img/session/LooksEmpty.png'),
     app_logo: require('./img/defaults/AppLogo.png'),
     ws_logo: require('./img/defaults/WorldSailingLogo.png'),
     sap_logo: require('./img/defaults/SAP.png'),

@@ -30,6 +30,8 @@ import { $DarkBlue } from 'styles/colors'
 
 import MainTabNavigator from './MainTabNavigator'
 
+import FirstContact from 'containers/user/FirstContact'
+
 
 const teamDetailsHeader = connect((state: any) =>
   ({ text: getFormTeamName(state) }))((props: any) => <HeaderTitle firstLine={props.text}/>)
@@ -44,6 +46,12 @@ const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.para
 
 export default createStackNavigator(
   {
+    [Screens.FirstContact]: {
+      screen: FirstContact,
+      navigationOptions: {
+        header: null,
+      },
+    },
     [Screens.MainTabs]: {
       screen: MainTabNavigator,
       navigationOptions: {
@@ -146,7 +154,7 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.MainTabs,
+    initialRouteName: Screens.FirstContact, // if user is logged in it redirect to Screens.MainTabs
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },
