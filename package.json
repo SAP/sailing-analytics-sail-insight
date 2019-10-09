@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "1.1.2",
+    "@react-native-community/async-storage": "^1.6.2",
     "@types/ramda": "^0.26.6",
     "@types/react-native-loading-spinner-overlay": "^0.5.1",
     "buffer": "^4.9.1",
