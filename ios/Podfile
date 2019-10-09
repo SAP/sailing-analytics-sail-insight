@@ -53,6 +53,8 @@ target 'sap_sailing_insight' do
   pod 'RNFS', :path => '../node_modules/react-native-fs'
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing

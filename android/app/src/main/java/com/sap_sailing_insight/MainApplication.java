@@ -3,6 +3,7 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import io.branch.rnbranch.RNBranchPackage;
 import com.rnfs.RNFSPackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -43,6 +44,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new AsyncStoragePackage(),
             new RNBranchPackage(),
             new RNFSPackage(),
             new RNFirebasePackage(),
