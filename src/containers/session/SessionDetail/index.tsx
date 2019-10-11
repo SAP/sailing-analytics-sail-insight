@@ -51,7 +51,7 @@ export default Component((props: any) =>
     connect(mapStateToProps, { checkOut, collectCheckInData }),
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
-      overallStatusCard,
+      // overallStatusCard,
       sessionDetailsCard,
       typeAndBoatClassCard,
       racesAndScoringCard,

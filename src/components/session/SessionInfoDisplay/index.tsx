@@ -101,7 +101,7 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                 <IconText
                   style={[styles.infoItem, session.trackingContext === 'BOAT' ? styles.infoItemFull : undefined]}
                   source={Images.info.boat}
-                  iconTintColor={$secondaryTextColor}
+                  iconTintColor={'#C5C5C5'} // $secondaryTextColor}
                   textStyle={{ flex: 1 }}
                   alignment="horizontal"
                 >
@@ -117,7 +117,7 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                 <IconText
                   style={styles.textMargins}
                   source={Images.info.location}
-                  iconTintColor={$secondaryTextColor}
+                  iconTintColor={'#C5C5C5'} // $secondaryTextColor}
                   alignment="horizontal"
                 >
                   {session.event && session.event.venue && session.event.venue.name}

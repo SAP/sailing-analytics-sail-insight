@@ -81,7 +81,7 @@ const backNavigation = Component((props: any) => compose(
   touchableOpacity({ onPress: navigateBack }),
   view({ style: styles.backNavigationButtonContainer }),
   concat(arrowLeft))(
-  text({ style: styles.backNavigationText }, 'Event overview')))
+  text({ style: styles.backNavigationText }, 'Event Overview')))
 
 export default Component((props: Object) => compose(
   fold(props),

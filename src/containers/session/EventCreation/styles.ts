@@ -18,7 +18,7 @@ export const textInput = {
 
 export default EStyleSheets.create({
   container: {
-    backgroundColor: '$DarkBlue',
+    backgroundColor: '$primaryBackgroundColor',
   },
   createButton: {
     marginTop: 50,
@@ -37,7 +37,7 @@ export default EStyleSheets.create({
     letterSpacing: 1.5,
   },
   backNavigationContainer: {
-    backgroundColor: '$DarkBlue',
+    backgroundColor: '$primaryBackgroundColor',
     paddingTop: '$largeSpacing',
     paddingBottom: '$mediumSpacing',
   },
@@ -46,7 +46,7 @@ export default EStyleSheets.create({
     alignItems: 'center',
   },
   backNavigationText: {
-    fontSize:  '$largeFontSize',
+    fontSize:  17, // '$largeFontSize',
     color: 'white',
   },
 })

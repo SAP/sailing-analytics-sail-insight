@@ -44,7 +44,9 @@ const boxedTextInput = fieldBox(
     ...props,
     value: props.input.value,
     onChangeText: props.input.onChange,
-    underlineColorAndroid: darkerGray,
+    // underlineColorAndroid: darkerGray,
+    borderBottomWidth: 1,
+    borderBottomColor: darkerGray,
     style: styles.textInput
   })))
 
