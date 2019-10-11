@@ -56,6 +56,7 @@ target 'sap_sailing_insight' do
   pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
