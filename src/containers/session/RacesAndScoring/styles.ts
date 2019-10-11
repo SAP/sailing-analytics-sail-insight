@@ -18,11 +18,11 @@ const discardSelectorItemContainer = {
 
 const discardSelectorPlusContainer = {
   ...discardSelectorItemContainer,
+  backgroundColor: '$LightBlue',
   borderWidth: 1,
   borderColor: 'white',
-  backgroundColor: '$LightBlue',
   justifyContent: 'center',
-  alignItems: 'center',
+  alignItems: 'center'
 }
 
 export default EStyleSheets.create({

@@ -98,8 +98,8 @@ const dateInput = Component((props: any) => compose(
   contramap(mergeLeft({ label: 'Date' })),
   fieldBox,
   view({ style: styles.dateInputContainer }),
-  reduce(concat, nothing())
-)([startDateInput, endDateInput]))
+  reduce(concat, nothing()))(
+  [startDateInput, endDateInput]))
 
 export default Component((props: Object) => compose(
   fold(props),

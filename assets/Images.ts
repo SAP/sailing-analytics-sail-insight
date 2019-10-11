@@ -35,6 +35,7 @@ export default {
     pickImage: require('./img/icons/icon-camera.png'),
     delete: require('./img/icons/icon-delete.png'),
     share: require('./img/icons/icon-open-in-new.png'),
+    plus: require('./img/icons/plus.png')
   },
   tabs: {
     // tracking: require('./img/icons/icon-start.png'),

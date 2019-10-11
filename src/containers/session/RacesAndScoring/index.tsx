@@ -22,6 +22,8 @@ import {
   FORM_KEY_NUMBER_OF_RACES,
 } from 'forms/eventCreation'
 
+import Images from '@assets/Images'
+import IconText from 'components/IconText'
 import { Picker } from 'react-native'
 
 import styles from './styles'
@@ -32,9 +34,16 @@ const areDiscardsEmpty = compose(equals(0), length, path(['input', 'value']))
 const nothingWhenDiscardsEmpty = branch(areDiscardsEmpty, nothingAsClass)
 const nothingWhenDiscardsNotEmpty = branch(compose(not, areDiscardsEmpty), nothingAsClass)
 
+const plusIcon = fromClass(IconText).contramap(always({
+  source: Images.actions.plus,
+  iconTintColor: 'white',
+  style: { justifyContent: 'center', alignItems: 'center' },
+  iconStyle: { width: 25, height: 25 }
+}))
+
 const overlayPicker = ({ selectedValue, onValueChange, style }: any) =>
   concat(__, fromClass(Picker).contramap(mergeLeft({
-    style,
+    style: merge(style, { backgroundColor: 'transparent' }),
     selectedValue,
     onValueChange: (v: number) => setTimeout(() => onValueChange(v), 0),
     children: compose(
@@ -100,9 +109,8 @@ const AddDiscardButton = Component((props: any) => compose(
     onValueChange: (value: number) => props.addDiscard(value),
     style: { position: 'absolute', top: 0, left: 0, width: 60, height: 60 }
   }),
-  view({ style: styles.discardSelectorPlusContainer }),
-  text({ style: styles.discardSelectorPlusText }))(
-  '+'))
+  view({ style: styles.discardSelectorPlusContainer }))(
+  plusIcon))
 
 const DiscardSelector = Component((props: any) => compose(
   fold(props),
