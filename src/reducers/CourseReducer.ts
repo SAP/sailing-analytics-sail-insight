@@ -1,5 +1,5 @@
 import { get, head, keyBy, keys, last, mapKeys, mapValues, take } from 'lodash'
-import { findIndex, propEq } from 'ramda'
+import { findIndex, propEq, compose, not, isNil, prop } from 'ramda'
 import { handleActions } from 'redux-actions'
 import uuidv4 from 'uuid/v4'
 
@@ -223,9 +223,10 @@ const reducer = handleActions(
     // ({ courseId?: string, UUIDs: string[] }) => void
     [selectCourseForEditing as any]: (state: any = {}, action: any) => {
       const { courseId, UUIDs } = action.payload
-      const courseExists =
-        courseId && Object.keys(state.allCourses).includes(courseId)
+
+      const courseExists = compose(not, isNil, prop(courseId), prop('allCourses'))(state)
       const defaultMarkIds = state.defaultMarkIds
+
       const selectedCourse: SelectedCourseState = courseExists
         ? state.allCourses[courseId]
         : {

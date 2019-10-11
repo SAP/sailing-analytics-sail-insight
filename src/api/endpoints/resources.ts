@@ -52,7 +52,7 @@ const apiEndpoints = (serverUrl: string) => {
     regattaRaces: getUrlV1('/regattas/{0}/races'),
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
-    course: getUrlV1('/regattas/{0}/structure/{1}/{2}/course'),
+    course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),

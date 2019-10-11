@@ -1,4 +1,4 @@
-import { __, complement, compose, concat, propEq, reduce, isNil, prop } from 'ramda'
+import { __, complement, compose, concat, propEq, reduce, isNil, prop, tap } from 'ramda'
 
 import {
   Component,
@@ -11,7 +11,7 @@ import {
 import { text, touchableOpacity, scrollView } from 'components/fp/react-native'
 import CourseConfig from '../CourseConfig'
 
-import { saveCourse, saveWaypointFromForm } from 'actions/courses'
+import { saveCourse } from 'actions/courses'
 import { getCourseLoading, getSelectedCourseWithMarks } from 'selectors/course'
 
 import { Alert } from 'react-native'
@@ -32,41 +32,13 @@ const mapStateToProps = (state: any) => ({
   loading: getCourseLoading(state),
 })
 
-const saveCourseButton = Component((props: any) =>
-  compose(
-    fold(props),
-    touchableOpacity({
-      onPress: () => {
-        Alert.alert(
-          'How would you like to save?',
-          'You can overwrite the existing course or save a new course.',
-          [
-            { text: 'Overwrite course', onPress: async () => {
-              await props.saveCourse()
-              navigateBack()
-
-              Snackbar.show({
-                title: 'Course successfully saved',
-                duration: Snackbar.LENGTH_LONG
-              })
-            }},
-            { text: 'Save as new course'},
-            { text: 'Don\'t save'},
-            { text: 'Cancel' }
-          ])
-      },
-    }))(
-    text({}, 'Save course')),
-)
-
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { saveCourse, saveWaypointFromForm }),
+    connect(mapStateToProps, { saveCourse }),
     scrollView({ vertical: true, style: { flex: 1 } }),
     reduce(concat, nothing()))([
     nothingIfNotLoading(spinner),
-    nothingIfLoading(nothingIfNoCourse(CourseConfig)),
-    saveCourseButton
+    nothingIfLoading(nothingIfNoCourse(CourseConfig))
   ]),
 )

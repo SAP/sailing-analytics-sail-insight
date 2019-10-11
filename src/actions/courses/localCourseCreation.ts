@@ -75,7 +75,9 @@ export const saveWaypointFromForm = () => (
   getState: GetStateType,
 ) => {
   const formIsValid = getFormIsValid(getState())
+
   if (!formIsValid) return
+
   const { leftMark, rightMark, passingInstruction, markPairLongName } = compose(
     waypointFromFormValues,
     getFormValues(COURSE_CONFIG_FORM_NAME),

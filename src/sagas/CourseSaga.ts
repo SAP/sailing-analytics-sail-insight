@@ -6,6 +6,8 @@ import uuidv4 from 'uuid/v4'
 
 import { dataApi } from 'api'
 
+import { navigateBack } from 'navigation'
+
 import {
   loadCourse,
   loadMark,
@@ -50,8 +52,6 @@ import {
 
 const getRaceId = (regattaName: string, raceName: string) =>
   `${regattaName} - ${raceName}`
-
-const getNowInMillis = () => Date.now() * 1000
 
 const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
   const mark: Mark = {
@@ -150,8 +150,8 @@ function* apiControlPointToLocalFormat(controlPoint: any) {
 
 function* apiWaypointToLocalFormat(apiWaypoint: any) {
   const controlPoint = yield call(
-    apiControlPointToLocalFormat, apiWaypoint.controlPoint,
-  )
+    apiControlPointToLocalFormat, apiWaypoint.controlPoint)
+
   return {
     controlPoint,
     id: uuidv4(),
@@ -191,6 +191,8 @@ function* fetchCourse(raceName: string) {
 }
 
 function* selectCourseFlow({ payload }: any) {
+  //yield put(selectCourseForEditing(null))
+
   const { newCourse, raceName } = payload
   const { regattaName } = yield select(getSelectedEventInfo)
 
@@ -201,6 +203,7 @@ function* selectCourseFlow({ payload }: any) {
   if (!newCourse) {
     yield call(fetchCourse, raceName)
   }
+
   yield put(selectCourseForEditing(raceId))
   yield put(updateCourseLoading(false))
 }
@@ -215,7 +218,7 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
     await api.startDeviceMapping(selectedRaceInfo.leaderboardName, {
       markId: mark.id,
       deviceUuid: location.deviceUuid,
-      fromMillis: getNowInMillis(),
+      fromMillis: Date.now().toString(),
       ...(selectedRaceInfo.secret ? { secret: selectedRaceInfo.secret } : {}),
     })
   } else {
@@ -226,42 +229,42 @@ const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRa
       markId: mark.id,
       lonDeg: location.longitude.toString(),
       latDeg: location.latitude.toString(),
-      timeMillis: getNowInMillis().toString(),
+      timeMillis: Date.now().toString(),
     })
   }
 }
 
-function* saveMarkToServer(mark: Mark) {
-  const selectedRaceInfo: SelectedRaceInfo = yield select(getSelectedRaceInfo)
-  const api = dataApi(selectedRaceInfo.serverUrl)
-  const response = yield call(
-    api.addMarkToRegatta,
-    selectedRaceInfo.regattaName,
-    mark.longName,
-    mark.shortName
-  )
+// function* saveMarkToServer(mark: Mark) {
+//   const selectedRaceInfo: SelectedRaceInfo = yield select(getSelectedRaceInfo)
+//   const api = dataApi(selectedRaceInfo.serverUrl)
+//   const response = yield call(
+//     api.addMarkToRegatta,
+//     selectedRaceInfo.regattaName,
+//     mark.longName,
+//     mark.shortName
+//   )
 
-  if (!response || !response.markId) {
-    console.log({ response })
-    throw new Error('Failed to create mark on the server')
-  }
+//   if (!response || !response.markId) {
+//     console.log({ response })
+//     throw new Error('Failed to create mark on the server')
+//   }
 
-  const { markId } = response
-  const markWithServerId: Mark = {
-    ...mark,
-    id: markId,
-  }
-  //   TODO: This is the code that saves the mark id for the server/regatta.
-  //   This has to be changed according to the way we will handle markIds
-  // dispatch(loadMark({ [markWithServerId.id]: mark }))
+//   const { markId } = response
+//   const markWithServerId: Mark = {
+//     ...mark,
+//     id: markId,
+//   }
+//   //   TODO: This is the code that saves the mark id for the server/regatta.
+//   //   This has to be changed according to the way we will handle markIds
+//   // dispatch(loadMark({ [markWithServerId.id]: mark }))
 
-  //   Right now we could also do CHANGE_MARK
-  //   to replace existing mark with new mark with server id,
-  //   and change mark ID in selectedCourse
+//   //   Right now we could also do CHANGE_MARK
+//   //   to replace existing mark with new mark with server id,
+//   //   and change mark ID in selectedCourse
 
-  yield call(bindMarkLocationOnServer, markWithServerId, selectedRaceInfo)
-  return markId
-}
+//   yield call(bindMarkLocationOnServer, markWithServerId, selectedRaceInfo)
+//   return markId
+// }
 
 // Convert waypoint to apiControlPoint and add mark to regatta if missing
 function* waypointToApiControlPoint(waypoint: WaypointState) {
@@ -275,11 +278,9 @@ function* waypointToApiControlPoint(waypoint: WaypointState) {
     controlPointShortName: controlPoint.shortName,
     marks:
       controlPoint.class === ControlPointClass.Mark
-        ? [yield call(saveMarkToServer, marks[controlPoint.id])]
-        : [
-            // The `as string` should not be necessary and be taken care of by the typing
-            yield call(saveMarkToServer, marks[controlPoint.leftMark as string]),
-            yield call(saveMarkToServer, marks[controlPoint.rightMark as string]),
+        ? [marks[controlPoint.id].id]
+        : [marks[controlPoint.leftMark as string].id,
+           marks[controlPoint.rightMark as string].id,
           ],
   }
 }
@@ -295,9 +296,30 @@ function* saveCourseFlow() {
     waypoint => call(waypointToApiControlPoint, waypoint),
   ))
 
+  const marks = yield select(getMarks)
+
+  const addFreestyleAndPositioning = ({ markId }: any) => {
+    const mark = marks[markId]
+
+    return {
+      markId,
+      freestyleProperties: {
+        name: mark.longName,
+        shortName: mark.shortName,
+        markType: mark.type
+      },
+
+      positioning: mark.location && (mark.location.positionType === MarkPositionType.Geolocation ?
+        { position: { latitude_deg: mark.location.latitude, longitude_deg: mark.location.longitude } } :
+        { deviceUUID: 'test' })
+    }
+  }
+
   const markConfigurations = compose(
     map(m => merge(m, { id: uuidv4() })),
     uniqBy(prop('markId')),
+    map(merge({ storeToInventory: true })),
+    map(addFreestyleAndPositioning),
     map(objOf('markId')),
     flatten,
     map(prop('marks')))(
@@ -317,12 +339,16 @@ function* saveCourseFlow() {
     apiControlPoints)
 
   yield call(api.createCourse, regattaName, raceColumnName, fleet, {
-    markConfigurations,
+    // Todo: leave markId and remove freestyleProps if the configuration
+    // is based on a mark from inventory
+    markConfigurations: markConfigurations.map(dissoc('markId')),
     waypoints
   })
 
   const courseID = getRaceId(regattaName, raceColumnName)
   yield put(loadCourse({ [courseID]: selectedCourseState }))
+
+  navigateBack()
 }
 
 

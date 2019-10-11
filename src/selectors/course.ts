@@ -149,7 +149,7 @@ const populateCourseWithMarks = (
 ) =>
   courseState && {
     ...courseState,
-    waypoints: courseState.waypoints.map(populateWaypointWithMarkData(marks)),
+    waypoints: courseState.waypoints.map(populateWaypointWithMarkData(marks))
   }
 
 export const getSelectedCourseWithMarks = createSelector(
