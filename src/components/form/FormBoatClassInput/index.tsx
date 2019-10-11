@@ -151,6 +151,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     return [
         <TextInput
             style={style}
+            inputStyle={styles.input}
             placeholder={label}
             defaultValue={query}
             error={showError ? error : undefined}

@@ -10,14 +10,14 @@ export default EStyleSheets.create({
   sectionHeaderStyle,
   textInput,
   container: {
-    backgroundColor: '$DarkBlue',
+    backgroundColor: '#1D3F4E',
     paddingHorizontal: '$smallSpacing',
   },
   containerAngledBorder: {
     width: Dimensions.get('window').width,
     height: 0,
     borderTopWidth: 40,
-    borderTopColor: '$DarkBlue',
+    borderTopColor: '$primaryBackgroundColor',
     borderBottomWidth: 0,
     borderLeftWidth: Dimensions.get('window').width * 2,
     borderLeftColor: '$MediumBlue',
@@ -43,7 +43,7 @@ export default EStyleSheets.create({
   formDatePickerContainer: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: lighterGray,
+    borderBottomColor: darkerGray,
     alignItems: 'center',
     marginRight: '$smallSpacing',
   },

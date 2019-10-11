@@ -62,5 +62,5 @@ export default Component((props: any) =>
       competitorsCard,
       nextButton({
         onPress: createEvent,
-        label: 'Create Event'
-      }) ]))
+        label: 'Create Event',
+      })]))

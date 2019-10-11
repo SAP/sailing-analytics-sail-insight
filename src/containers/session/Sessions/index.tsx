@@ -1,6 +1,6 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { TouchableOpacity, ViewProps, View } from 'react-native'
+import { TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import { navigateToNewSession, navigateToQRScanner, navigateToSessionDetail } from 'navigation'

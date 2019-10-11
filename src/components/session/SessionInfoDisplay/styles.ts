@@ -25,6 +25,7 @@ export default EStyleSheets.create({
   tracksText: {
     marginLeft: '$microSpacing+2',
     marginRight: '$microSpacing-1',
+    color: '#333333',
   },
   tracksCountText: {
     fontSize: '$regularFontSize',

@@ -6,20 +6,20 @@ import Images from '@assets/Images'
 import { dismissCreateAccountOnboarding, dismissJoinRegattaOnboarding } from 'actions/onboarding'
 import I18n from 'i18n'
 import { navigateToCheckIn, navigateToUserRegistration } from 'navigation'
-import { isCreateAccountDismissalExpired, isJoinRegattaDismissalExpired } from 'selectors/onboarding'
+// import { isCreateAccountDismissalExpired, isJoinRegattaDismissalExpired } from 'selectors/onboarding'
 import { isSessionListEmpty } from 'selectors/session'
 import styles from './styles'
 
-import HintCard from 'components/HintCard'
-import LoginButton from 'components/LoginButton'
-import { isLoggedIn } from 'selectors/auth'
+// import HintCard from 'components/HintCard'
+// import LoginButton from 'components/LoginButton'
+// import { isLoggedIn } from 'selectors/auth'
 import Image from '../Image/index';
 
 
 class EmptySessionsHeader extends React.Component<{
   showHints: boolean,
-  showJoinRegatta: boolean,
-  showCreateAccount: boolean,
+  // showJoinRegatta: boolean,
+  // showCreateAccount: boolean,
   dismissCreateAccountOnboarding: () => void,
   dismissJoinRegattaOnboarding: () => void,
 } > {
@@ -43,8 +43,8 @@ class EmptySessionsHeader extends React.Component<{
   public render() {
     const {
       showHints,
-      showJoinRegatta,
-      showCreateAccount,
+      // showJoinRegatta,
+      // showCreateAccount,
     } = this.props
     return showHints ? (
       <View style={styles.container}>
@@ -89,8 +89,8 @@ class EmptySessionsHeader extends React.Component<{
 
 const mapStateToProps = (state: any) => ({
   showHints: isSessionListEmpty(state),
-  showJoinRegatta: isJoinRegattaDismissalExpired(state),
-  showCreateAccount: isCreateAccountDismissalExpired(state) && !isLoggedIn(state),
+  // showJoinRegatta: isJoinRegattaDismissalExpired(state),
+  // showCreateAccount: isCreateAccountDismissalExpired(state) && !isLoggedIn(state),
 })
 
 export default connect(mapStateToProps, {

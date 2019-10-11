@@ -9,7 +9,8 @@ export default EStyleSheets.create({
   cardsContainer: {
     flexDirection: 'column',
     alignItems: 'stretch',
-    padding: 10,
+    // padding: 10,
+    backgroundColor: '$primaryBackgroundColor',
   },
   card: {
     padding: 12,
