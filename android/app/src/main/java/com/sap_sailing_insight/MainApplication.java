@@ -3,13 +3,10 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-<<<<<<< HEAD
 import com.horcrux.svg.SvgPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.reactnativecommunity.slider.ReactSliderPackage;
-=======
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
->>>>>>> hotfix/fix-build-issues
 import io.branch.rnbranch.RNBranchPackage;
 import com.rnfs.RNFSPackage;
 import io.invertase.firebase.RNFirebasePackage;
