@@ -9,7 +9,7 @@ import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { getStore } from 'store'
 
 import IconText from 'components/IconText'
-import CheckIn from 'containers/session/CheckIn'
+// import CheckIn from 'containers/session/CheckIn'
 import Sessions from 'containers/session/Sessions'
 import MarkInventory from 'containers/Inventory/MarkInventory'
 
@@ -86,10 +86,6 @@ export default createBottomTabNavigator(
         tabBarOptions: {
           activeTintColor: $primaryTextColor,
           inactiveTintColor: $secondaryTextColor,
-          indicatorStyle: {
-            backgroundColor: '#123748', // 'white',
-            height: 3,
-          },
           style: {
             backgroundColor: '#123748', // 'white',
           },
@@ -97,7 +93,7 @@ export default createBottomTabNavigator(
       },
     ),
     // [Screens.TrackingSetupAction]: TrackingSetup,
-    [Screens.CheckIn]: CheckIn,
+    // [Screens.CheckIn]: CheckIn,
     [Screens.Account]: AccountNavigator,
   },
   {

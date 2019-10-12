@@ -11,13 +11,14 @@ import {
   $primaryActiveColor,
   $primaryTextColor,
   $secondaryTextColor,
+  $primaryBackgroundColor,
 } from 'styles/colors'
 import { tab } from 'styles/commons'
 
 
 const TAB_BAR_PADDING = 20
 const TAB_BAR_HEIGHT = 30 + TAB_BAR_PADDING
-const INDICATOR_HEIGHT = 3
+const INDICATOR_HEIGHT = 0 // we dont want a line under the screen head title
 
 export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTabNavigator(
   screenConfig,
@@ -37,7 +38,7 @@ export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTa
       activeTintColor: $primaryTextColor,
       inactiveTintColor: $secondaryTextColor,
       style: {
-        backgroundColor: '#123748', // 'white',
+        backgroundColor: $primaryBackgroundColor, //'#123748', // 'white',
       },
       tabStyle: platformSelect(
         {

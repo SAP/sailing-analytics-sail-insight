@@ -1,5 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { withDefaultBoldFont, withDefaultFont, white, withTitleSize } from 'styles/compositions/text'
+import { white, withDefaultBoldFont, withDefaultFont, withTitleSize } from 'styles/compositions/text'
 
 export const sectionHeaderStyle = {
   ...withDefaultBoldFont,
@@ -12,16 +12,17 @@ export const sectionHeaderStyle = {
 export const textInput = {
   ...withDefaultFont,
   flex: 1,
-  fontSize: '$largeFontSize'
+  fontSize: '$largeFontSize',
+  marginTop: 5,
 }
 
 export default EStyleSheets.create({
   container: {
-    backgroundColor: '$LightBlue',
+    backgroundColor: '$DarkBlue',
   },
   createButton: {
-    marginTop: 100,
-    marginBottom: 30,
+    marginTop: 50,
+    marginBottom: 50,
     backgroundColor: '$Orange',
     marginHorizontal: '$largeSpacing',
     borderRadius: '$smallBorderRadius',
@@ -32,12 +33,12 @@ export default EStyleSheets.create({
   createButtonText: {
     ...white,
     ...withTitleSize,
-    ...withDefaultBoldFont,
+    fontFamily: 'SFProDisplay-Heavy',
     letterSpacing: 1.5,
   },
   backNavigationContainer: {
     backgroundColor: '$DarkBlue',
-    paddingTop: '$tinySpacing',
+    paddingTop: '$largeSpacing',
     paddingBottom: '$mediumSpacing',
   },
   backNavigationButtonContainer: {

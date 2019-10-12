@@ -77,7 +77,7 @@
   "text_leaderboard_column_distanceTravelled": "Gesamtdistanz",
   "text_leaderboard_column_maneuvers": "Manöver",
   "text_statistics_empty_state": "Leider gibt es hier noch keine Statistiken!",
-  "text_join_and_track": "Mit Sail Insight powered by SAP an einer Regatta teilnehmen und diese tracken",
+  "text_join_and_track": "An einer Regatta teilnehmen und diese tracken",
   "text_join_code_on_confirmation": "Der QR-Code befindet sich auf ihrer Teilnahmebestätigung",
   "text_maneuver_cog_change": "COG-Änderung",
   "text_maneuver_loss": "Manöververlust",
@@ -142,7 +142,7 @@
   "text_passwort_reset_or" : "oder",
   "text_passwort_reset_submit" : "Passwort zurücksetzen",
   "text_passwort_reset_confirm_title" : "Prüfe deinen Posteingang",
-  "text_passwort_reset_confirm_message" : "WeWir haben dir eine Email mit einem Link zum Zurücksetzen deines Passwortes geschickt. Bitte überprüfe dazu auch deinen SPAM Ordner.",
+  "text_passwort_reset_confirm_message" : "Wir haben dir eine Email mit einem Link zur Passwortänderung gesendet. Bitte überprüfe dazu auch deinen SPAM-Ordner.",
   "text_race_not_started_yet": "Das Rennen wurde vom Organisator noch nicht gestartet. Dein Tracking wird starten, aber die GPS Fixe werden keinem Rennen zugeordnet bis der Organisator eins startet.",
   "text_notification_tracking": "Event-Tracking aktiv",
   "text_deep_link_tracking_active_title": "Aktives Tracking",
@@ -256,6 +256,6 @@
   "text_name": "Name",
   "text_placeholder_email": "Email Adresse",
   "text_login_already_account": "Login. Ich habe bereits einen Account.",
-  "text_passwort_reset_title_info" : "Bitte geben Sie Ihren Benutzernamen oder Ihre Email Adresse ein, um das Passwort Zurücksetzen über Email zu bekommen"
-
+  "text_passwort_reset_title_info" : "Bitte geben Sie Ihren Benutzernamen oder Ihre Email Adresse ein, um das Passwort Zurücksetzen über Email zu bekommen",
+  "session_create_new_event" : "Erstelle ein neues Event"
 }

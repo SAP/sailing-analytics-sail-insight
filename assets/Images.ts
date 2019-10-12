@@ -2,6 +2,8 @@
 export default {
   defaults: {
     background: require('./img/defaults/SignUp_Background.png'),
+    background_map: require('./img/tracking/TrackingMap_Background.png'),
+    background_empty: require('./img/session/LooksEmpty.png'),
     app_logo: require('./img/defaults/AppLogo.png'),
     ws_logo: require('./img/defaults/WorldSailingLogo.png'),
     sap_logo: require('./img/defaults/SAP.png'),
@@ -16,7 +18,8 @@ export default {
     team: require('./img/team_placeholder.png'),
   },
   actions: {
-    add: require('./img/icons/icon-plus.png'),
+    // add: require('./img/icons/icon-plus.png'),
+    add: require('./img/new_icons/add_icon_circle.png'),
     decrease: require('./img/icons/icon-minus.png'),
     settings: require('./img/icons/icon-settings.png'),
     recordColored: require('./img/icons/icon-start.png'), // TODO: replace
@@ -34,7 +37,8 @@ export default {
     share: require('./img/icons/icon-open-in-new.png'),
   },
   tabs: {
-    tracking: require('./img/icons/icon-start.png'),
+    // tracking: require('./img/icons/icon-start.png'),
+    tracking: require('./img/new_icons/tracking_icon.png'),
     account: require('./img/icons/icon-account-outlined.png'),
     sessions: require('./img/icons/icon-session.png'),
     join: require('./img/icons/icon-scan.png'),

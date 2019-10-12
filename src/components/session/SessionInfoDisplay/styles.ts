@@ -39,7 +39,7 @@ export default EStyleSheets.create({
     padding: 12.5,
   },
   trackingImage: {
-    tintColor: '$importantHighlightColor',
+    tintColor: '$Orange', // '$importantHighlightColor',
   },
   coverImage: {
     height: 176,

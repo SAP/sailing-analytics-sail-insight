@@ -6,4 +6,7 @@ export default EStyleSheets.create({
     backgroundColor: 'white',
     padding: '$tinySpacing',
   },
+  lastButton: {
+    marginBottom: 16,
+  },
 })

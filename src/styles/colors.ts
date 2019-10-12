@@ -1,4 +1,4 @@
-export const $primaryBackgroundColor = '#123748' // 'white'
+export const $primaryBackgroundColor = '#1D3F4E' // 'white'
 export const $secondaryBackgroundColor = '#EEEEEE'
 export const $placeholderBackgroundColor = '#008FD31A'
 
@@ -13,9 +13,9 @@ export const $primaryTextColor = '#FFFFFF' // 'black'
 export const $secondaryTextColor = '#EEEEEE' // '#777777'
 export const $detailsTextColor = '#333333'
 
-export const $primaryActiveColor = '#F0AB00'
+export const $primaryActiveColor = '#FF6C52'
 export const $primaryInactiveColor = '#D9D9D9'
-export const $activeTagColor = '#F0AB00'
+export const $activeTagColor = '#FF6C52'
 
 export const $headerTintColor = '#FFFFFF' // 'black'
 

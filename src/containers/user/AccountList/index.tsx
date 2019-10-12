@@ -11,12 +11,12 @@ import {
   navigateToUserProfile,
 } from 'navigation'
 import { container } from 'styles/commons'
-import styles from './styles'
 import Images from '../../../../assets/Images'
 import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
+import styles from './styles'
 
 const EMPTY_VALUE = '-'
 

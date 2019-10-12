@@ -1,7 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
-import { withDefaultBoldFont, white } from 'styles/compositions/text'
+import { withDefaultBoldFont } from 'styles/compositions/text'
 
 const discardSelectorCircleDiameter = 50
 
@@ -22,7 +22,7 @@ const discardSelectorPlusContainer = {
   borderColor: 'white',
   backgroundColor: '$LightBlue',
   justifyContent: 'center',
-  alignItems: 'center'
+  alignItems: 'center',
 }
 
 export default EStyleSheets.create({
@@ -34,11 +34,12 @@ export default EStyleSheets.create({
   textHeader: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: '$regularLargeFontSize'
+    fontSize: '$regularLargeFontSize',
   },
   textDescription: {
     color: 'white',
     fontSize: '$regularFontSize',
+    marginBottom: '$tinySpacing',
   },
   setDiscardButton: {
     height: 40,
@@ -48,17 +49,17 @@ export default EStyleSheets.create({
     marginHorizontal: '$largeSpacing',
     borderWidth: 1,
     borderColor: 'white',
-    marginBottom: 20
+    marginBottom: 20,
   },
   raceNumberContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 20,
-    borderWidth: 0
+    borderWidth: 0,
   },
   framedNumber: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   framedNumberItem: {
     width: 70,
@@ -67,12 +68,14 @@ export default EStyleSheets.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 5,
-    borderRadius: 2
+    borderRadius: 2,
   },
   framedNumberItemText: {
     ...withDefaultBoldFont,
     color: 'black',
-    fontSize: 44
+    fontSize: 44,
+    textAlign: 'center',
+    marginTop: 13,
   },
   setDiscardText: {
     color: 'white',
@@ -82,7 +85,7 @@ export default EStyleSheets.create({
   discardContainer: {
     marginBottom: 20,
     flexDirection: 'row',
-    overflow: 'scroll'
+    overflow: 'scroll',
   },
   discardSelectorItemContainer,
   discardSelectorPlusContainer,
@@ -95,5 +98,9 @@ export default EStyleSheets.create({
     color: 'white',
     fontSize: 50,
     fontWeight: 'normal',
+    lineHeight: 51,
+    width: 50,
+    height: 50,
+    textAlign: 'center',
   },
 })

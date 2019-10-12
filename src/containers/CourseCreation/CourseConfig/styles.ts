@@ -1,7 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet' 
 
-import { $Orange, $DarkBlue, $MediumBlue } from 'styles/colors'
-import { withDefaultBoldFont, withDefaultFont, white } from 'styles/compositions/text'
+import { $DarkBlue, $MediumBlue, $Orange  } from 'styles/colors'
+import { white, withDefaultBoldFont, withDefaultFont } from 'styles/compositions/text'
 
 const roundElementContainer = {
   width: 50,
@@ -12,12 +12,12 @@ const roundElementContainer = {
   justifyContent: 'center',
   alignItems: 'center',
   marginRight: 45,
-  marginLeft: 45
+  marginLeft: 45,
 }
 
 const withPadding = {
   paddingLeft: 15,
-  paddingRight: 15
+  paddingRight: 15,
 }
 
 export default EStyleSheets.create({
@@ -29,7 +29,7 @@ export default EStyleSheets.create({
   },
 
   waypointsContainer: {
-    flexShrink: 0
+    flexShrink: 0,
   },
 
   waypointContainer: {
@@ -42,28 +42,28 @@ export default EStyleSheets.create({
   },
 
   selectedWaypoint: {
-    backgroundColor: '#476987'
+    backgroundColor: '#476987',
   },
 
   'waypointContainer:first-child': {
-    width: 130
+    width: 130,
   },
 
   'waypointContainer:last-child': {
-    width: 130
+    width: 130,
   },
 
   waypointText: {
     ...white,
     textAlign: 'center',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 
   addButton: {
     width: 45,
     height: '$itemHeight',
     backgroundColor: '#FF6C52',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   sectionTitle: {
@@ -73,11 +73,11 @@ export default EStyleSheets.create({
   },
 
   indentedSectionTitle: {
-    marginTop: 25
+    marginTop: 25,
   },
 
   editContainer: {
-    //paddingTop: 15
+    // paddingTop: 15,
   },
 
   indentedContainer: { ...withPadding },
@@ -92,7 +92,7 @@ export default EStyleSheets.create({
 
   selectedPassingInstruction: {
     backgroundColor: '#1D3F4E',
-    borderColor: '#1D3F4E'
+    borderColor: '#1D3F4E',
   },
 
   passingInstructionContainer: {
@@ -105,7 +105,7 @@ export default EStyleSheets.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     marginBottom: 0,
-    paddingBottom: 0
+    paddingBottom: 0,
   },
 
   gateMarkSelectorItemContainer: {
@@ -116,12 +116,12 @@ export default EStyleSheets.create({
   gateMarkSelectorItem: {
     ...roundElementContainer,
     marginRight: 0,
-    marginLeft: 0
+    marginLeft: 0,
   },
 
   gateMarkSelectorText: {
     ...withDefaultFont,
-    ...white
+    ...white,
   },
 
   gateMarkSelectorItemSelected: {
@@ -134,18 +134,18 @@ export default EStyleSheets.create({
     padding: 10,
     borderRadius: 2,
     flexDirection: 'column',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
   },
 
   locationSwitchText: {
     ...withDefaultFont,
-    paddingLeft: 5
+    paddingLeft: 5,
   },
 
   editPositionButton: {
     justifyContent: 'center',
     paddingTop: 10,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
 
   pingPositionButton: {
@@ -156,7 +156,7 @@ export default EStyleSheets.create({
     marginLeft: 20,
     marginRight: 20,
     paddingTop: 12,
-    paddingBottom: 12
+    paddingBottom: 12,
   },
 
   locationText: {
@@ -167,7 +167,7 @@ export default EStyleSheets.create({
 
   coordinatesContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   coordinatesText: {
@@ -176,22 +176,22 @@ export default EStyleSheets.create({
     fontSize: 18,
     paddingTop: 10,
     paddingBottom: 10,
-    paddingLeft: 5
+    paddingLeft: 5,
   },
 
   pingText: {
     ...withDefaultBoldFont,
     color: $Orange,
-    fontSize: 15
+    fontSize: 15,
   },
 
   trackingText: {
     ...white,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 
   deleteWaypointContainer: {
-    margin: 40
+    margin: 40,
   },
 
   deleteWaypointButton: {
@@ -202,30 +202,30 @@ export default EStyleSheets.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 15,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
 
   deleteButtonText: {
     ...withDefaultFont,
     ...white,
-    paddingLeft: 5
+    paddingLeft: 5,
   },
 
   textInputLabel: {
     ...withDefaultBoldFont,
-    ...white
+    ...white,
   },
 
   textInput: {
     backgroundColor: 'transparent',
-    color: 'white'
+    color: 'white',
   },
 
   textInputContainer: {
     paddingTop: 0,
     paddingBottom: 0,
     paddingRight: 0,
-    paddingLeft: 0
+    paddingLeft: 0,
   },
 
   textInputInputContainer: {
@@ -233,7 +233,7 @@ export default EStyleSheets.create({
     borderBottomWidth: 2,
     borderColor: 'white',
     borderRadius: 0,
-    paddingHorizontal: 0
+    paddingHorizontal: 0,
   },
 
   sameStartFinishContainer: {
@@ -251,14 +251,14 @@ export default EStyleSheets.create({
   createNewContainer: {
     marginTop: 20,
     paddingTop: 10,
-    backgroundColor: $DarkBlue
+    backgroundColor: $DarkBlue,
   },
 
   createNewClassContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginLeft: 55,
-    marginRight: 55
+    marginRight: 55,
   },
 
   createNewTitle: {
@@ -266,7 +266,7 @@ export default EStyleSheets.create({
     ...white,
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 10
+    marginBottom: 10,
   },
 
   inventoryItem: {
@@ -276,11 +276,11 @@ export default EStyleSheets.create({
     borderBottomColor: '#C5C5C5',
     height: 50,
     paddingLeft: 15,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   inventoryText: {
-    color: 'black'
+    color: 'black',
   },
 
   inventoryList: {

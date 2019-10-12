@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "1.1.2",
+    "@react-native-community/async-storage": "^1.6.2",
     "@react-native-community/slider": "^1.1.4",
     "@types/ramda": "^0.26.6",
     "@types/react-native-datepicker": "^1.7.0",

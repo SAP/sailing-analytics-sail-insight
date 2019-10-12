@@ -77,7 +77,7 @@ class AppSettings extends React.Component<ViewProps & {
             {I18n.t('title_eula')}
           </TextButton>
           <TextButton
-            style={registration.nextButton()}
+            style={[registration.nextButton(), styles.lastButton]}
             textStyle={button.actionText}
             onPress={openPrivacyPolicy}
           >

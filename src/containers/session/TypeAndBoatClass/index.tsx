@@ -40,7 +40,7 @@ const regattaTypeSelector = fromClass(SwitchSelector).contramap((props: any) => 
   buttonColor: $DarkBlue,
   textColor: 'white',
   borderColor: 'white',
-  borderRadius: 2,
+  borderRadius: 5,
   hasPadding: true,
   height: 55,
   textStyle: styles.regattaTypeSelectorText,

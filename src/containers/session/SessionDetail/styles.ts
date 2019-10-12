@@ -9,7 +9,7 @@ export default EStyleSheets.create({
   cardsContainer: {
     flexDirection: 'column',
     alignItems: 'stretch',
-    padding: 10
+    padding: 10,
   },
   card: {
     padding: 12,
@@ -17,11 +17,11 @@ export default EStyleSheets.create({
     backgroundColor: '#FAFAFA',
     flexDirection: 'row',
     margin: 10,
-    marginTop: 0
+    marginTop: 0,
   },
   cardContent: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: 10,
   },
   sectionHeaderContainer: {
     backgroundColor: '$secondaryBackgroundColor',
