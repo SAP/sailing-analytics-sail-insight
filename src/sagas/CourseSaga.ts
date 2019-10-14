@@ -1,6 +1,6 @@
-import { first, get, values } from 'lodash'
-import { compose, flatten, map, prop, objOf,
-  merge, uniqBy, find, propEq, dissoc } from 'ramda'
+import { first, get } from 'lodash'
+import { compose, flatten, map, prop, objOf, __, pick, reject, isNil,
+  merge, uniqBy, find, propEq, dissoc, evolve, indexBy, values } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import uuidv4 from 'uuid/v4'
 
@@ -100,11 +100,9 @@ function* fetchMark(markId: string) {
   return id
 }
 
-function* fetchMissingMarkInformationIfNeeded(markId: string) {
-  const markPresent = yield select(markByIdPresent(markId))
-  if (!markPresent) {
-    return yield call(fetchMark, markId)
-  }
+function* fetchMarkInformation(markId: string) {
+  yield call(fetchMark, markId)
+
   // TODO: return the local id instead of the api id
   // TODO: Maybe update the mark location if the mark exists
   return markId
@@ -160,11 +158,41 @@ function* apiWaypointToLocalFormat(apiWaypoint: any) {
 }
 
 function* apiCourseToLocalFormat(apiCourse: any) {
-  const course: CourseState = {
+  const configurationsById = indexBy(prop('id'), apiCourse.markConfigurations)
+
+  const waypoints = compose(
+    map((waypoint: any) => ({
+      passingInstruction: waypoint.passingInstruction,
+      id: uuidv4(),
+      controlPoint: waypoint.markConfigurationIds.length > 1 ?
+        {
+          leftMark: waypoint.markConfigurationIds[0],
+          rightMark: waypoint.markConfigurationIds[1],
+          longName: waypoint.controlPointName,
+          shortName: waypoint.controlPointShortName,
+          class: ControlPointClass.MarkPair,
+        } :
+        {
+          class: ControlPointClass.Mark,
+          id: waypoint.markConfigurationIds[0]
+        }
+    })),
+    map(evolve({
+      markConfigurationIds: map(compose(prop('markId'), prop(__, configurationsById)))
+    })))(
+    apiCourse.waypoints)
+
+  const marksToLoad = compose(
+    reject(isNil),
+    flatten,
+    map(compose(values, pick(['id', 'leftMark', 'rightMark']), prop('controlPoint'))))(
+    waypoints)
+
+  yield all(marksToLoad.map(id => call(fetchMarkInformation, id)))
+
+  const course = {
     name: apiCourse.name,
-    waypoints: yield all(
-      apiCourse.waypoints.map((apiWaypoint: any) => call(apiWaypointToLocalFormat, apiWaypoint)),
-    ),
+    waypoints
   }
 
   return course
@@ -208,31 +236,31 @@ function* selectCourseFlow({ payload }: any) {
   yield put(updateCourseLoading(false))
 }
 
-const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
-  const location = mark.location
-  const api = dataApi(selectedRaceInfo.serverUrl)
+// const bindMarkLocationOnServer = async (mark: Mark, selectedRaceInfo: SelectedRaceInfo) => {
+//   const location = mark.location
+//   const api = dataApi(selectedRaceInfo.serverUrl)
 
-  if (!location) return
+//   if (!location) return
 
-  if (location.positionType === MarkPositionType.TrackingDevice) {
-    await api.startDeviceMapping(selectedRaceInfo.leaderboardName, {
-      markId: mark.id,
-      deviceUuid: location.deviceUuid,
-      fromMillis: Date.now().toString(),
-      ...(selectedRaceInfo.secret ? { secret: selectedRaceInfo.secret } : {}),
-    })
-  } else {
-    await api.addMarkFix({
-      leaderboardName: selectedRaceInfo.leaderboardName,
-      raceColumnName: selectedRaceInfo.raceColumnName,
-      fleetName: selectedRaceInfo.fleet,
-      markId: mark.id,
-      lonDeg: location.longitude.toString(),
-      latDeg: location.latitude.toString(),
-      timeMillis: Date.now().toString(),
-    })
-  }
-}
+//   if (location.positionType === MarkPositionType.TrackingDevice) {
+//     await api.startDeviceMapping(selectedRaceInfo.leaderboardName, {
+//       markId: mark.id,
+//       deviceUuid: location.deviceUuid,
+//       fromMillis: Date.now().toString(),
+//       ...(selectedRaceInfo.secret ? { secret: selectedRaceInfo.secret } : {}),
+//     })
+//   } else {
+//     await api.addMarkFix({
+//       leaderboardName: selectedRaceInfo.leaderboardName,
+//       raceColumnName: selectedRaceInfo.raceColumnName,
+//       fleetName: selectedRaceInfo.fleet,
+//       markId: mark.id,
+//       lonDeg: location.longitude.toString(),
+//       latDeg: location.latitude.toString(),
+//       timeMillis: Date.now().toString(),
+//     })
+//   }
+// }
 
 // function* saveMarkToServer(mark: Mark) {
 //   const selectedRaceInfo: SelectedRaceInfo = yield select(getSelectedRaceInfo)
