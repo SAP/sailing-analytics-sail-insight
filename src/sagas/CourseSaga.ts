@@ -74,8 +74,6 @@ const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
 }
 
 function* fetchMark(markId: string) {
-
-  // TODO: Replace with selected data
   const { leaderboardName, serverURL } = yield select(getSelectedEventInfo)
 
   const api = dataApi(serverURL)
@@ -92,30 +90,22 @@ function* fetchMark(markId: string) {
   const { mark, id } = compose(
     apiMarkToLocalFormat,
     first,
-    values,
-  )(apiMark)
+    values)(
+    apiMark)
 
   yield put(loadMark({ [id]: mark }))
 
   return id
 }
 
-function* fetchMarkInformation(markId: string) {
-  yield call(fetchMark, markId)
-
-  // TODO: return the local id instead of the api id
-  // TODO: Maybe update the mark location if the mark exists
-  return markId
-}
-
 function* apiControlPointToLocalFormat(controlPoint: any) {
   if (controlPoint.left) {
     const leftMark = yield call(
-      fetchMissingMarkInformationIfNeeded,
+      fetchMark,
       controlPoint.left.id,
     )
     const rightMark = yield call(
-      fetchMissingMarkInformationIfNeeded,
+      fetchMark,
       controlPoint.right.id,
     )
 
@@ -141,21 +131,21 @@ function* apiControlPointToLocalFormat(controlPoint: any) {
   return {
     class: ControlPointClass.Mark,
     id: yield call(
-      fetchMissingMarkInformationIfNeeded, controlPoint.id,
+      fetchMark, controlPoint.id,
     ),
   } as MarkState
 }
 
-function* apiWaypointToLocalFormat(apiWaypoint: any) {
-  const controlPoint = yield call(
-    apiControlPointToLocalFormat, apiWaypoint.controlPoint)
+// function* apiWaypointToLocalFormat(apiWaypoint: any) {
+//   const controlPoint = yield call(
+//     apiControlPointToLocalFormat, apiWaypoint.controlPoint)
 
-  return {
-    controlPoint,
-    id: uuidv4(),
-    passingInstruction: apiWaypoint.passingInstruction,
-  } as WaypointState
-}
+//   return {
+//     controlPoint,
+//     id: uuidv4(),
+//     passingInstruction: apiWaypoint.passingInstruction,
+//   } as WaypointState
+// }
 
 function* apiCourseToLocalFormat(apiCourse: any) {
   const configurationsById = indexBy(prop('id'), apiCourse.markConfigurations)
@@ -188,7 +178,7 @@ function* apiCourseToLocalFormat(apiCourse: any) {
     map(compose(values, pick(['id', 'leftMark', 'rightMark']), prop('controlPoint'))))(
     waypoints)
 
-  yield all(marksToLoad.map(id => call(fetchMarkInformation, id)))
+  yield all(marksToLoad.map(id => call(fetchMark, id)))
 
   const course = {
     name: apiCourse.name,
