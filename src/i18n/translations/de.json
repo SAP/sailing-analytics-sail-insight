@@ -57,13 +57,13 @@
   "text_handicap_label": "Handicap",
   "text_registration_boat_class_hint": "Gib den ersten Buchstaben oder die erste Zahl ein, z.B. \"4\"",
   "text_registration_sail_number_hint": "z.B. GER123",
-  "text_tracking_sog": "SOG",
-  "text_tracking_cog": "COG",
+  "text_tracking_sog": "Speed over Ground",
+  "text_tracking_cog": "Course over Ground",
   "text_tracking_gps_accuracy": "GPS-Genauigkeit",
   "text_tracking_time": "Zeit",
   "text_tracking_distance": "Strecke",
   "text_tracking_wind": "Wind",
-  "text_tracking_rank": "Platz",
+  "text_tracking_rank": "Mein Platz",
   "text_tracking_unit_knots": "kts",
   "text_tracking_unit_meters": "m",
   "text_leaderboard_enabled_setting": "Enable leaderboard",
@@ -256,5 +256,6 @@
   "text_placeholder_email": "Email Adresse",
   "text_login_already_account": "Login. Ich habe bereits einen Account.",
   "text_passwort_reset_title_info" : "Bitte geben Sie Ihren Benutzernamen oder Ihre Email Adresse ein, um das Passwort Zurücksetzen über Email zu bekommen",
-  "session_create_new_event" : "Erstelle ein neues Event"
+  "session_create_new_event" : "Erstelle ein neues Event",
+  "title_tracking": "Tracking"
 }

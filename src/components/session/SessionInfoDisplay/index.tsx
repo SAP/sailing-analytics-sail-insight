@@ -60,13 +60,12 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
     const eventImage = getEventPreviewImageUrl(session.event)
     return (
       <View style={style}>
-        {
-          eventImage &&
+        <View style={styles.imageContainer}>
           <Image
-            style={eventImageSize === 'large' ? image.headerMediumLarge : image.headerMedium}
-            source={eventImage}
+            style={styles.image}
+            source={eventImage ? eventImage : Images.events.placeholder_event_pic}
           />
-        }
+        </View>
         <View style={styles.detailContainer}>
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
@@ -132,6 +131,11 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
               onPress={this.onTrackingPress}
             />
           </View>
+        </View>
+        <View style={styles.arrowContainer}>
+          <Image
+            source={Images.actions.arrowRight}
+          />
         </View>
       </View>
     )

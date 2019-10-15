@@ -77,4 +77,7 @@ export default {
     gateIcon: require('./img/icons/gate-icon.png'),
     markIcon: require('./img/icons/mark-icon.png'),
   },
+  events: {
+    placeholder_event_pic: require('./img/events/placeholder_eventlist.png'),
+  },
 }

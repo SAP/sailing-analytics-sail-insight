@@ -35,7 +35,7 @@ export default createStackNavigator(
     },
     [Screens.TrackingNavigator]: {
       screen: TrackingNavigator,
-      navigationOptions: { header: null, gesturesEnabled: false },
+      navigationOptions: { headerLeft: null, title: I18n.t('title_tracking'), gesturesEnabled: false },
     },
     [Screens.QRScanner]: {
       screen: QRScanner,

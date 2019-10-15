@@ -11,12 +11,13 @@ export default EStyleSheets.create({
     paddingBottom: 110,
   },
   cardsContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'stretch',
     marginTop: 10,
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 0,
+    backgroundColor: 'white',
   },
   createButton: {
     backgroundColor: '$primaryBackgroundColor',
@@ -48,5 +49,5 @@ export default EStyleSheets.create({
     color: 'white',
     fontSize: 24,
     fontFamily: 'SFProDisplay-Heavy',
-  },
+  }
 })

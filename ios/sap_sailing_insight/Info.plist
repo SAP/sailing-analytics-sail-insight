@@ -78,8 +78,9 @@
 		<string>bentonsans_light.otf</string>
 		<string>bentonsans_medium.otf</string>
 		<string>bentonsans_thin.otf</string>
-		<string>SF-Pro-Display-Medium.otf</string>
 		<string>SF-Pro-Display-Heavy.otf</string>
+		<string>SF-Pro-Display-Light.otf</string>
+		<string>SF-Pro-Display-Medium.otf</string>
 		<string>sfcompact_bold.otf</string>
 		<string>sfcompact_regular.otf</string>
 		<string>Signika-Regular.ttf</string>

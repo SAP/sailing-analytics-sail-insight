@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -33,6 +34,7 @@
 		195A914BAA404C6D906E1E3B /* bentonsans_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2444D8AAC4A94E06B14E1619 /* bentonsans_light.otf */; };
 		21D7FFAE7A7D4621B11FC888 /* sfcompact_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 54498E37A5F44333A85BF448 /* sfcompact_bold.otf */; };
 		232BAA0D233A3F8400BBAF21 /* Signika-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 232BAA0B233A3F8400BBAF21 /* Signika-Regular.ttf */; };
+		233FBF97235603C900657214 /* SF-Pro-Display-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 233FBF66235603C800657214 /* SF-Pro-Display-Light.otf */; };
 		23627B56234222DB0068CBD7 /* SF-Pro-Display-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 23627B25234222DA0068CBD7 /* SF-Pro-Display-Heavy.otf */; };
 		23627BCB23449C9E0068CBD7 /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 23627B9A23449C9D0068CBD7 /* SF-Pro-Display-Medium.otf */; };
 		24835D55349A49238F5E79A6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 48801B0D5D4B4D46A81DDB39 /* libz.tbd */; };
@@ -678,6 +680,7 @@
 		1EB01ED479C641E0B1A5CB20 /* FastImage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		216ABF84BF4E45C39286AA40 /* Lumberjack.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Lumberjack.xcodeproj; path = "../node_modules/cocoa-lumberjack/CocoaLumberjack/Lumberjack.xcodeproj"; sourceTree = "<group>"; };
 		232BAA0B233A3F8400BBAF21 /* Signika-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Signika-Regular.ttf"; path = "../assets/fonts/Signika-Regular.ttf"; sourceTree = "<group>"; };
+		233FBF66235603C800657214 /* SF-Pro-Display-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Light.otf"; path = "../assets/fonts/SF-Pro-Display-Light.otf"; sourceTree = "<group>"; };
 		2354102185664676B9B5030E /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		23627B25234222DA0068CBD7 /* SF-Pro-Display-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Heavy.otf"; path = "../assets/fonts/SF-Pro-Display-Heavy.otf"; sourceTree = "<group>"; };
 		23627B9A23449C9D0068CBD7 /* SF-Pro-Display-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Medium.otf"; path = "../assets/fonts/SF-Pro-Display-Medium.otf"; sourceTree = "<group>"; };
@@ -965,6 +968,7 @@
 				3281F93E519F464983190728 /* bentonsans_medium.otf */,
 				2F54F786A71945108688604E /* bentonsans_thin.otf */,
 				23627B25234222DA0068CBD7 /* SF-Pro-Display-Heavy.otf */,
+				233FBF66235603C800657214 /* SF-Pro-Display-Light.otf */,
 				23627B9A23449C9D0068CBD7 /* SF-Pro-Display-Medium.otf */,
 				54498E37A5F44333A85BF448 /* sfcompact_bold.otf */,
 				78FB2C6D6FDC411CB9CC5640 /* sfcompact_regular.otf */,
@@ -2039,6 +2043,7 @@
 				23627B56234222DB0068CBD7 /* SF-Pro-Display-Heavy.otf in Resources */,
 				4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */,
 				21D7FFAE7A7D4621B11FC888 /* sfcompact_bold.otf in Resources */,
+				233FBF97235603C900657214 /* SF-Pro-Display-Light.otf in Resources */,
 				8C225E402F6D4983BF846A5D /* sfcompact_regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

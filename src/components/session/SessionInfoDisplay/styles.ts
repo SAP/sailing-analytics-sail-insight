@@ -1,11 +1,16 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
+  imageContainer: {
+    backgroundColor: 'white',
+    marginBottom: '$tinySpacing',
+  },
   detailContainer: {
     paddingHorizontal: '$smallSpacing',
     paddingVertical: '$tinySpacing',
     backgroundColor: 'white',
     marginBottom: '$tinySpacing',
+    alignSelf: 'stretch',
   },
   innerContainer: {
     alignItems: 'center',
@@ -56,5 +61,16 @@ export default EStyleSheets.create({
   },
   fullInfoItem: {
     maxWidth: '100%',
+  },
+  image: {
+    width: 44,
+    resizeMode: 'cover',
+    height: 44,
+    margin: '$smallSpacing',
+    borderRadius: 11,
+  },
+  arrowContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
 })
