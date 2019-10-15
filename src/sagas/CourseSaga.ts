@@ -191,6 +191,8 @@ function* apiCourseToLocalFormat(apiCourse: any) {
 function* fetchMarkProperties() {
   const api = dataApi(getServerUrlSetting())
   const marks = yield call(api.requestMarkProperties)
+
+  console.log('got marks', marks)
 }
 
 function* fetchCourse(raceName: string) {

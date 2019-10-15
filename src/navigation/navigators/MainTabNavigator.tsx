@@ -93,7 +93,7 @@ export default createBottomTabNavigator(
       },
     ),
     // [Screens.TrackingSetupAction]: TrackingSetup,
-    // [Screens.CheckIn]: CheckIn,
+    [Screens.Inventory]: MarkInventory.fold,
     [Screens.Account]: AccountNavigator,
   },
   {

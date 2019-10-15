@@ -1,4 +1,4 @@
-export const $primaryBackgroundColor = '#1D3F4E' // 'white'
+export const $primaryBackgroundColor = '#1D3F4E'
 export const $secondaryBackgroundColor = '#EEEEEE'
 export const $placeholderBackgroundColor = '#008FD31A'
 
