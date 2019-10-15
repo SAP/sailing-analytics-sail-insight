@@ -1,4 +1,4 @@
-import { when, isEmpty, always } from 'ramda'
+import { when, isEmpty, always, prop, compose } from 'ramda'
 import { takeLatest, all, select, call, put } from 'redux-saga/effects'
 import { SELECT_EVENT } from 'actions/events'
 import { getSelectedEventInfo } from 'selectors/event'
@@ -19,7 +19,7 @@ function* selectEventFlow({ payload }: any) {
   ))
 
   yield all(raceCourses.map((course: object, index: number) => put(loadCourse({
-    [`${regattaName} - ${races[index]}`]: when(isEmpty, always(null), course)
+    [`${regattaName} - ${races[index]}`]: when(compose(isEmpty, prop('waypoints')), always(null), course)
   }))))
 }
 
