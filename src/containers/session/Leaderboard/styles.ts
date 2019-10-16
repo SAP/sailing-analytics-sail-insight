@@ -1,6 +1,7 @@
 import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { $smallSpacing, $tinySpacing } from 'styles/dimensions';
 
 const windowHeight = Dimensions.get('window').height
 const skipAndroid = true
@@ -11,7 +12,8 @@ const indicatorSize = 24
 export default EStyleSheets.create({
   container: {
     flex: 1,
-    marginTop: 10,
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   listItemContainer: {
     flex: 1,
@@ -22,10 +24,9 @@ export default EStyleSheets.create({
     alignItems: 'center',
   },
   title: {
-    color: '$secondaryTextColor',
-    fontSize: '$regularFontSize',
-    fontWeight: '500',
-    letterSpacing: -0.3,
+    color: '#476987',
+    fontSize: 14,
+    fontFamily: 'SFCompactText-Bold',
     maxWidth: 170,
   },
   picker: {
@@ -41,17 +42,25 @@ export default EStyleSheets.create({
   flag: {
     marginLeft: 35,
   },
+  rankTitle: {
+    color: 'black',
+    fontSize: 14,
+    fontFamily: 'SFCompactText-Bold',
+  },
   rankText: {
-    color: '$primaryTextColor',
-    fontSize: 32,
-    fontWeight: 'bold',
-    letterSpacing: -0.8,
+    color: 'black',
+    fontSize: 56,
+    fontFamily: 'SFProDisplay-Heavy',
+  },
+  rankValue: {
+    color: 'black',
+    fontSize: 56,
+    fontFamily: 'SFProDisplay-Heavy',
   },
   gapText: {
-    color: '$primaryTextColor',
-    fontSize: 24,
-    fontWeight: 'bold',
-    letterSpacing: -0.8,
+    color: 'black',
+    fontSize: 56,
+    fontFamily: 'SFProDisplay-Heavy',
   },
   textContainer: {
     flexDirection: 'row',
@@ -71,20 +80,25 @@ export default EStyleSheets.create({
   },
   dropdownRowText: {
     padding: 10,
-    color: 'gray',
-    backgroundColor: 'white',
-    textAlignVertical: 'center'
+    color: 'white',
+    backgroundColor: '#476987',
+    textAlignVertical: 'center',
+    width: Dimensions.get('window').width - 2 *  $smallSpacing,
   },
   connectivity: {
     marginTop: getStatusBarHeight(skipAndroid),
   },
   propertyRow: {
-    marginTop: topMargin,
+    backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  leftPropertyContainer: {
+    margin: '$tinySpacing',
+  },
   rightPropertyContainer: {
-    marginLeft: '$tinySpacing',
+    margin: '$tinySpacing',
+    width: Dimensions.get('window').width / 2 - $smallSpacing - 2 * $tinySpacing,
   },
   triangle: {
     marginLeft: 5,

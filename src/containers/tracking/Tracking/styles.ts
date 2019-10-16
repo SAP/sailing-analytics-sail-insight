@@ -89,9 +89,6 @@ export default EStyleSheets.create({
     marginLeft: $tinySpacing / 2,
     width: Dimensions.get('window').width / 2 - $tinySpacing / 2 - $smallSpacing,
   },
-  singleValue: {
-    // justifyContent: 'flex-end',
-  },
   rankIcon: {
     tintColor: '$Orange',
   },

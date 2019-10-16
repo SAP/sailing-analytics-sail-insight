@@ -137,9 +137,7 @@ class Tracking extends React.Component<{
               />
             </View>
             <View
-              style={[styles.rightPropertyContainer,
-                checkInData.isSelfTracking ? undefined : styles.singleValue,
-              ]}
+              style={styles.rightPropertyContainer}
             >
               {
                 !checkInData.isSelfTracking ? null :
