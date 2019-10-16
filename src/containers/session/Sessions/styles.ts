@@ -25,6 +25,7 @@ export default EStyleSheets.create({
     borderWidth: 2,
     borderColor: '#FFFFFF',
     margin: 10,
+    marginBottom: 0,
   },
   createButtonIcon: {
     width: 54,

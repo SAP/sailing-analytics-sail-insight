@@ -6,7 +6,6 @@ export default EStyleSheets.create({
     marginBottom: '$tinySpacing',
   },
   detailContainer: {
-    paddingHorizontal: '$smallSpacing',
     paddingVertical: '$tinySpacing',
     backgroundColor: 'white',
     marginBottom: '$tinySpacing',
@@ -72,5 +71,6 @@ export default EStyleSheets.create({
   arrowContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
+    marginLeft: 'auto',
   },
 })
