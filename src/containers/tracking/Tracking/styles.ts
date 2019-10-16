@@ -65,7 +65,6 @@ export default EStyleSheets.create({
     justifyContent: 'space-between',
   },
   propertyReverseRow: {
-    marginTop: topMargin,
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
   },

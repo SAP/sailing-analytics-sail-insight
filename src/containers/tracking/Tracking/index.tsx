@@ -97,7 +97,7 @@ class Tracking extends React.Component<{
               />
             }
           </View>
-          <View style={[container.stretchContent, styles.property]}>
+          <View style={styles.property}>
             <TrackingPropertyAutoFit
               style={[styles.measurementContainer]}
               titleStyle={styles.measurementTitle}
@@ -106,7 +106,7 @@ class Tracking extends React.Component<{
               value={courseOverGround}
             />
           </View>
-          <View style={[styles.stretchContent, styles.property]}>
+          <View style={styles.property}>
             <View>
               <TrackingPropertyAutoFit
                 style={styles.measurementContainer}
