@@ -73,7 +73,7 @@ class SetWind extends React.Component<ViewProps & {
           </View>
           <View style={styles.speedContainer}>
             <ImageButton
-              style={styles.speedButton}
+              style={styles.speedStepButton}
               source={Images.actions.decrease}
               onPress={this.handleSpeedChange(-1)}
             />
@@ -86,7 +86,7 @@ class SetWind extends React.Component<ViewProps & {
               )
             }
             <ImageButton
-              style={styles.speedButton}
+              style={styles.speedStepButton}
               source={Images.actions.add}
               onPress={this.handleSpeedChange(1)}
             />

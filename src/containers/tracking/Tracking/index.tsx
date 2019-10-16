@@ -206,7 +206,7 @@ class Tracking extends React.Component<{
   }
 
   protected onSetWindPress = () => {
-    const {trackingStats} = this.props
+    const { trackingStats } = this.props
     if (!trackingStats || !trackingStats.lastLatitude || !trackingStats.lastLongitude) {
       Alert.alert(
         I18n.t('caption_set_wind'),
