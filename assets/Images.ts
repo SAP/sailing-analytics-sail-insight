@@ -20,7 +20,8 @@ export default {
   actions: {
     // add: require('./img/icons/icon-plus.png'),
     add: require('./img/new_icons/add_icon_circle.png'),
-    decrease: require('./img/icons/icon-minus.png'),
+    // decrease: require('./img/icons/icon-minus.png'),
+    decrease: require('./img/new_icons/minus_icon_circle.png'),
     settings: require('./img/icons/icon-settings.png'),
     recordColored: require('./img/icons/icon-start.png'), // TODO: replace
     pen: require('./img/icons/icon-edit.png'),
