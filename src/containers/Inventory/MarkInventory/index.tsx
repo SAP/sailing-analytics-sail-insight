@@ -33,6 +33,7 @@ const icon = compose(
 
 const gateIcon = icon({ source: Images.courseConfig.gateIcon, iconStyle: { width: 80, height: 80 } })
 const markIcon = icon({ source: Images.courseConfig.markIcon, iconStyle: { width: 80, height: 80 } })
+const markIconSmall = icon({ source: Images.markInventory.markIcon, width: 40, height: 40, iconStyle: { width: 40, height: 40 } })
 
 const ControlPointClassSelectorItem = Component((props: object) =>
   compose(
@@ -58,8 +59,11 @@ const CreateNewSelector = Component((props: object) =>
 const MarkItem = Component((props: object) =>
   compose(
     fold(props),
-    view({ style: styles.markContainer }))(
-    text({}, `(${props.shortName})${props.name}`)))
+    view({ style: styles.markContainer }),
+    reduce(concat, nothing()))([
+    markIconSmall,
+    text({}, `(${props.shortName})`),
+    text({ style: styles.markName }, props.name)]))
 
 const List = Component((props: object) =>
   compose(

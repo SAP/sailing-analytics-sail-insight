@@ -76,4 +76,7 @@ export default {
     gateIcon: require('./img/icons/gate-icon.png'),
     markIcon: require('./img/icons/mark-icon.png'),
   },
+  markInventory: {
+    markIcon: require('./img/icons/mark-icon-small.png')
+  }
 }

@@ -53,6 +53,8 @@ export default EStyleSheets.create({
   markContainer: {
     backgroundColor: 'white',
     marginBottom: 15,
-    height: 90
+    height: 90,
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 })
