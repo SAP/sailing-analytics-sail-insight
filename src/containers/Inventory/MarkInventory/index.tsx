@@ -59,7 +59,7 @@ const MarkItem = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.markContainer }))(
-    text({}, props.name)))
+    text({}, `(${props.shortName})${props.name}`)))
 
 const List = Component((props: object) =>
   compose(
