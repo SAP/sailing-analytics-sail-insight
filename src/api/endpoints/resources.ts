@@ -203,10 +203,9 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         endpoints.competitors({ pathParams: [competitorId], urlParams: { leaderboardName, secret } }),
         { dataSchema: competitorSchema },
     ),
-    requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: markSchema }),
+    requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markSchema] }),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }),
-        { dataSchema: markSchema },
     ),
     requestBoat: (leaderboardName, boatId, secret)  => dataRequest(
         endpoints.boats({ pathParams: [boatId], urlParams: { leaderboardName, secret } }),

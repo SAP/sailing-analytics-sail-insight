@@ -1,23 +1,31 @@
 import { __, compose, always,
-    prop, map, reduce, concat, merge } from 'ramda'
+  prop, map, reduce, concat, merge } from 'ramda'
 
 import {
   Component,
   fold,
   fromClass,
   nothing,
-  nothingAsClass,
   reduxConnect as connect,
-  recomposeBranch as branch,
-  recomposeWithState as withState,
-  recomposeMapProps as mapProps
+  recomposeLifecycle as lifeCycle
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
-import { ControlPointClass, GateSide, MarkPositionType, PassingInstruction } from 'models/Course'
+import { ControlPointClass } from 'models/Course'
+
+import { getMarks } from 'selectors/mark'
+import { loadMarkInventory } from 'actions/inventory'
 
 import styles from './styles'
 import IconText from 'components/IconText'
 import Images from '@assets/Images'
+
+const mapStateToProps = (state, props) => ({
+  marks: getMarks(state)
+})
+
+const withLoadingMarks = lifeCycle({
+  componentDidMount() { this.props.loadMarkInventory() }
+})
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -29,22 +37,45 @@ const markIcon = icon({ source: Images.courseConfig.markIcon, iconStyle: { width
 const ControlPointClassSelectorItem = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.assignControlPointClass(props.class) }))(
+    touchableOpacity({
+      style: styles.createNewClassSelectorItem,
+      onPress: (props: any) => props.assignControlPointClass(props.class) }),
+    view({}),
+    concat(__, text({ style: styles.createNewClassSelectorItemText }, props.label)))(
     props.icon))
 
 const CreateNewSelector = Component((props: object) =>
   compose(
     fold(props),
+    view({ style: styles.createNewContainer }),
+    concat(text({ style: styles.createNewTitle }, 'Create new')),
     view({ style: styles.createNewClassContainer }),
     reduce(concat, nothing()),
     map(compose(ControlPointClassSelectorItem.contramap, merge)))([
-    { ['class']: ControlPointClass.MarkPair, icon: gateIcon },
-    { ['class']: ControlPointClass.Mark, icon: markIcon }]))
+    { ['class']: ControlPointClass.MarkPair, icon: gateIcon, label: 'Line/Gate' },
+    { ['class']: ControlPointClass.Mark, icon: markIcon, label: 'Mark' }]))
+
+const MarkItem = Component((props: object) =>
+  compose(
+    fold(props),
+    view({ style: styles.markContainer }))(
+    text({}, props.name)))
+
+const List = Component((props: object) =>
+  compose(
+    fold(props),
+    view({ style: styles.markListContainer }),
+    reduce(concat, nothing()),
+    map(compose(MarkItem.contramap, always)))(
+    props.marks))
 
 export default Component((props: object) =>
   compose(
     fold(props),
+    connect(mapStateToProps, { loadMarkInventory }),
+    withLoadingMarks,
     view({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),
-    concat(CreateNewSelector))(
+    concat(CreateNewSelector),
+    concat(List))(
     nothing()))
