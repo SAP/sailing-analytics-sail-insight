@@ -18,6 +18,7 @@ import {
   CompetitorWithBoatBody,
   CountryCodeBody,
   CreateEventBody,
+  CreateCourseBody,
   CreateEventResponseData,
   ManeuverChangeItem,
   RaceLogOptions,
@@ -51,7 +52,7 @@ const apiEndpoints = (serverUrl: string) => {
     regattaRaces: getUrlV1('/regattas/{0}/races'),
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
-    course: getUrlV1('/regattas/{0}/races/{1}/course'),
+    course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
@@ -59,6 +60,7 @@ const apiEndpoints = (serverUrl: string) => {
     leaderboard: getUrlV1('/leaderboards/{0}'),
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
+    markProperties: getUrlV1('/markproperties'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
@@ -67,6 +69,7 @@ const apiEndpoints = (serverUrl: string) => {
     createAutoCourse: getUrlV1('/leaderboards/{0}/autocourse'),
     boats: getUrlV1('/boats/{0}'),
     events: getUrlV1('/events/{0}'),
+    eventRaceStates: getUrlV1('/events/{0}/racestates'),
     gpsFixes: getUrlV1('/gps_fixes'),
     competitors: getUrlV1('/competitors/{0}'),
     createEvent: getUrlV1('/events/createEvent'),
@@ -80,6 +83,7 @@ const apiEndpoints = (serverUrl: string) => {
     addMarkToRegatta: getUrlV1('/mark/addMarkToRegatta'),
     addMarkFix: getUrlV1('/mark/addMarkFix'),
     addCourseDefinitionToRaceLog: getUrlV1('/mark/addCourseDefinitionToRaceLog'),
+    createCourse: getUrlV1('/courseconfiguration/createCourse/{0}/{1}/{2}')
   }
 }
 
@@ -114,10 +118,12 @@ export interface DataApi {
   requestLeaderboard: (leaderboardName: string, secret?: string) => any
   requestLeaderboardV2: (leaderboardName: string, secret?: string, competitorId?: string) => any
   requestEvent: (eventId: string, secret?: string) => any
+  requestEventRacestates: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
+  requestMarkProperties: ApiFunction
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
-  requestCourse: (regattaName: string, raceName: string) => any
+  requestCourse: (regattaName: string, raceName: string, fleet: String) => any
   startDeviceMapping: (leaderboardName: string, data: any) => any
   stopDeviceMapping: (leaderboardName: string, data: any) => any
   sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
@@ -158,9 +164,10 @@ export interface DataApi {
   requestBoatClasses: () => Promise<BoatClassesBody[]>
   requestCountryCodes: () => Promise<CountryCodeBody[]>
   uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
-  addMarkToRegatta: (regattaName: string, markName: string) => any,
+  addMarkToRegatta: (regattaName: string, markName: string, markShortName: string) => any,
   addMarkFix: (body: AddMarkFixBody) => any,
   addCourseDefinitionToRaceLog: (body: AddCourseDefinitionToRaceLogBody) => any,
+  createCourse: (regattaName: string, race: string, fleet: string, body: CreateCourseBody) => any
 }
 
 const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
@@ -174,6 +181,10 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestRaces: (regattaName, secret) => dataRequest(
       endpoints.regattaRaces({ pathParams: [regattaName], urlParams: { secret } }),
       { dataSchema: regattaSchema },
+    ),
+    requestEventRacestates: (eventId, secret) => dataRequest(
+      endpoints.eventRaceStates({ pathParams: [eventId], urlParams: { secret } }),
+      { dataSchema: eventSchema },
     ),
     requestRace: (regattaName, raceName, raceId, secret) => dataRequest(
       endpoints.regattaRaceTimes({ pathParams: [regattaName, raceName], urlParams: { secret } }),
@@ -192,16 +203,16 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         endpoints.competitors({ pathParams: [competitorId], urlParams: { leaderboardName, secret } }),
         { dataSchema: competitorSchema },
     ),
+    requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markSchema] }),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }),
-        { dataSchema: markSchema },
     ),
     requestBoat: (leaderboardName, boatId, secret)  => dataRequest(
         endpoints.boats({ pathParams: [boatId], urlParams: { leaderboardName, secret } }),
         { dataSchema: boatSchema },
     ),
-    requestCourse: (regattaName, raceName) => dataRequest(
-      endpoints.course({ pathParams: [regattaName, raceName] }),
+    requestCourse: (regattaName, raceName, fleet) => dataRequest(
+      endpoints.course({ pathParams: [regattaName, raceName, fleet] }),
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),
@@ -303,12 +314,13 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         timeout: 60000,
       },
     ),
-    addMarkToRegatta: (regattaName, markName) => dataRequest(
+    addMarkToRegatta: (regattaName, markName, markShortName) => dataRequest(
       endpoints.addMarkToRegatta(),
       {
         body: {
           markName,
-          regattaName,
+          markShortName,
+          regattaName
         },
         method: HttpMethods.POST,
       }
@@ -327,6 +339,15 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         method: HttpMethods.POST,
       }
     ),
+    createCourse: (regattaName, race, fleet, body: any) => dataRequest(
+      endpoints.createCourse({
+        pathParams: [regattaName, race, fleet]
+      }),
+      {
+        body,
+        method: HttpMethods.POST
+      }
+    )
   }
 }
 

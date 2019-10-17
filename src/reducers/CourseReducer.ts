@@ -1,5 +1,5 @@
 import { get, head, keyBy, keys, last, mapKeys, mapValues, take } from 'lodash'
-import { findIndex, propEq } from 'ramda'
+import { findIndex, propEq, compose, not, isNil, prop } from 'ramda'
 import { handleActions } from 'redux-actions'
 import uuidv4 from 'uuid/v4'
 
@@ -14,9 +14,7 @@ import {
   removeWaypoint,
   saveWaypoint,
   selectCourseForEditing,
-  selectEvent,
   selectGateSide,
-  selectRace,
   selectWaypoint,
   toggleSameStartFinish,
   updateControlPoint,
@@ -101,6 +99,7 @@ const updateControlPointReducer = (
 ) => {
   const changedWaypointPayload = mapValues(payload, (controlPointState, index) => ({
     ...(state.selectedCourse.waypoints[index] || {}),
+    passingInstruction: controlPointState.passingInstruction,
     controlPoint: controlPointState,
   }))
 
@@ -164,6 +163,7 @@ const constructDefaultMarks = () => {
       id: uuidv4(),
       class: ControlPointClass.Mark,
       type: MarkType.Buoy,
+      passingInstruction: PassingInstruction.Port
     }),
   )
 
@@ -184,10 +184,6 @@ const initialState: CourseReducerState = {
   selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
   sameStartFinish: SAME_START_FINISH_DEFAULT,
   selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
-
-  selectedEvent: undefined,
-  selectedRace: undefined,
-
   defaultMarkIds,
 } as CourseReducerState
 
@@ -227,16 +223,16 @@ const reducer = handleActions(
     // ({ courseId?: string, UUIDs: string[] }) => void
     [selectCourseForEditing as any]: (state: any = {}, action: any) => {
       const { courseId, UUIDs } = action.payload
-      const courseExists =
-        courseId && Object.keys(state.allCourses).includes(courseId)
+
+      const courseExists = compose(not, isNil, prop(courseId), prop('allCourses'))(state)
       const defaultMarkIds = state.defaultMarkIds
+
       const selectedCourse: SelectedCourseState = courseExists
         ? state.allCourses[courseId]
         : {
-            name: 'New course',
             waypoints: [
               {
-                passingInstruction: 'Gate',
+                passingInstruction: PassingInstruction.Gate,
                 id: UUIDs[0],
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
@@ -248,7 +244,7 @@ const reducer = handleActions(
                 },
               },
               {
-                passingInstruction: 'Gate',
+                passingInstruction: PassingInstruction.Gate,
                 id: UUIDs[2],
                 controlPoint: {
                   class: ControlPointClass.MarkPair,
@@ -458,16 +454,6 @@ const reducer = handleActions(
         },
       }
     },
-
-    [selectEvent as any]: (state: any = {}, action: any) => ({
-      ...state,
-      selectedEvent: action.payload,
-    }),
-
-    [selectRace as any]: (state: any = {}, action: any) => ({
-      ...state,
-      selectedRace: action.payload,
-    }),
 
     [removeUserData as any]: () => initialState,
   },

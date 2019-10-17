@@ -248,3 +248,9 @@ export interface AddCourseDefinitionToRaceLogBody {
   fleetName: string
   controlPoints: any[]
 }
+
+export interface CreateCourseBody {
+  name: string,
+  markConfigurations: any[],
+  waypoints: any[]
+}

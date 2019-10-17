@@ -14,8 +14,6 @@ import {
   MarkMap,
   MarkPairMap,
   SelectedCourseState,
-  SelectedEventInfo,
-  SelectedRaceInfo,
   WaypointState,
 } from 'models/Course'
 
@@ -23,7 +21,8 @@ export const getCourseLoading = (state: any): boolean =>
   state.courses.courseLoading
 
 const getCourses = (state: any): CourseStateMap => state.courses.allCourses
-const getCourseStateById = (courseId: string) => createSelector(
+
+export const getCourseStateById = (courseId: string) => createSelector(
   getCourses,
   courses => courses[courseId] as CourseState | undefined
 )
@@ -53,7 +52,7 @@ export const getSelectedCourseState = (state: any): SelectedCourseState | undefi
 export const getSelectedGateSide = (state: any): GateSide =>
   state.courses.selectedGateSide
 
-const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
+export const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
 const getDefaultMarkIds = (state: any): DefaultMarkIdMap => state.courses.defaultMarkIds
 
 const getSelectedCourseWaypointState = createSelector(
@@ -150,7 +149,7 @@ const populateCourseWithMarks = (
 ) =>
   courseState && {
     ...courseState,
-    waypoints: courseState.waypoints.map(populateWaypointWithMarkData(marks)),
+    waypoints: courseState.waypoints.map(populateWaypointWithMarkData(marks))
   }
 
 export const getSelectedCourseWithMarks = createSelector(
@@ -200,23 +199,4 @@ export const getSelectedMark = createSelector(
   (selectedWaypoint, selectedGateSide) =>
     selectedWaypoint &&
     getSelectedGateSideMarkFromWaypoint(selectedGateSide)(selectedWaypoint),
-)
-
-export const getSelectedEventInfo = createSelector(
-  (state: any): string | undefined => state.courses.selectedEvent,
-  (state: any): any[] => values(state.checkIn.active),
-  (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
-    selectedEvent && find(activeCheckIns, { eventId: selectedEvent }),
-)
-
-export const getSelectedRaceInfo = createSelector(
-  getSelectedEventInfo,
-  (state: any): string | undefined => state.courses.selectedRace,
-  (selectedEvent, selectedRace): SelectedRaceInfo | undefined =>
-    selectedEvent &&
-    selectedRace && {
-      ...selectedEvent,
-      raceColumnName: selectedRace,
-      fleet: 'Default', // TODO: This has to be the real fleet, but it will work with most cases with 'Default'
-    } || undefined,
 )

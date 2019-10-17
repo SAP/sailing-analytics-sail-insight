@@ -13,7 +13,8 @@ import OnboardingReducer from './OnboardingReducer'
 import CourseReducer from './CourseReducer'
 import SettingsReducer from './SettingsReducer'
 import UserReducer from './UserReducer'
-
+import EventReducer from './EventReducer'
+import MarkInventory from './InventoryReducer'
 
 const reducer: RootState = {
   auth: AuthReducer,
@@ -27,6 +28,8 @@ const reducer: RootState = {
   settings: SettingsReducer,
   network: networkReducer,
   courses: CourseReducer,
+  events: EventReducer,
+  markInventory: MarkInventory
 }
 
 const reducers = combineReducers(reducer)

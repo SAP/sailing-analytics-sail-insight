@@ -78,7 +78,6 @@ export interface MarkPair<T = Mark> {
   rightMark?: T
 }
 
-// Got this from https://www.sapsailing.com/sailingserver/webservices/api/v1/addCourseDefinitionToRaceLog.html
 export enum PassingInstruction {
   Port = 'Port',
   Starboard = 'Starboard',
@@ -127,18 +126,6 @@ export type ControlPointState = MarkPairState | MarkState
 export interface SelectedCourseState {
   name: string
   waypoints: Partial<WaypointState>[]
-}
-
-export interface SelectedEventInfo {
-  serverUrl: string
-  regattaName: string
-  leaderboardName: string
-  secret?: string
-}
-
-export interface SelectedRaceInfo extends SelectedEventInfo {
-  raceColumnName: string
-  fleet: string
 }
 
 export interface CourseStateMap { [id: string]: CourseState }

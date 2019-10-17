@@ -59,6 +59,7 @@
     "react-native-qrcode-scanner": "1.1.0",
     "react-native-qrcode-svg": "^5.1.2",
     "react-native-slider": "0.11.0",
+    "react-native-snackbar": "^1.0.2",
     "react-native-snap-carousel": "^3.8.0",
     "react-native-status-bar-height": "2.1.0",
     "react-native-svg": "^8.0.0",

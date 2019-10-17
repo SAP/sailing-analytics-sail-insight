@@ -1,3 +1,4 @@
+import { createAction } from 'redux-actions'
 import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
 import { CreateEventBody } from 'api/endpoints/types'
@@ -7,6 +8,9 @@ import { getSharingUuid } from 'helpers/uuid'
 import { CheckIn } from 'models'
 import EventCreationData, { RegattaType } from 'models/EventCreationData'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
+
+export const SELECT_EVENT = 'SELECT_EVENT'
+export const SELECT_RACE = 'SELECT_RACE'
 
 const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
   [RegattaType.OneDesign]: 'ONE_DESIGN',
@@ -51,3 +55,6 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
       updateCheckIn(data),
     ),
   ])
+
+export const selectEvent = createAction(SELECT_EVENT)
+export const selectRace = createAction(SELECT_RACE)

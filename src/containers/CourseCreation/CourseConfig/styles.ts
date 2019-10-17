@@ -236,6 +236,18 @@ export default EStyleSheets.create({
     paddingHorizontal: 0,
   },
 
+  sameStartFinishContainer: {
+    paddingTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  sameStartFinishText: {
+    ...withDefaultFont,
+    ...white
+  },
+
   createNewContainer: {
     marginTop: 20,
     paddingTop: 10,
@@ -272,6 +284,16 @@ export default EStyleSheets.create({
   },
 
   inventoryList: {
-    marginTop: 15,
+    marginTop: 15
   },
+
+  saveCourseButtonContainer: {
+    backgroundColor: '#FF6C52'
+  },
+
+  saveCourseButtonLabel: {
+    ...withDefaultBoldFont,
+    ...white,
+    fontSize: 16
+  }
 })

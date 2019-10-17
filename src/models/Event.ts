@@ -48,3 +48,15 @@ export default interface Event {
   videos?: any[]
   sailorsInfoWebsiteURLs?: string
 }
+
+export interface SelectedEventInfo {
+  serverUrl: string
+  regattaName: string
+  leaderboardName: string
+  secret?: string
+}
+
+export interface SelectedRaceInfo extends SelectedEventInfo {
+  raceColumnName: string
+  fleet: string
+}

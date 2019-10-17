@@ -1,4 +1,4 @@
-import { __, compose, concat, map, merge, mergeLeft, reduce, range, objOf } from 'ramda'
+import { __, compose, concat, map, merge, defaultTo, reduce, objOf, uncurryN, tap } from 'ramda'
 
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
@@ -18,14 +18,17 @@ import {
 import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import { forwardingPropsFlatList, text, view, touchableOpacity } from 'components/fp/react-native'
 import {
-  eventWizardCommonFormSettings,
   FORM_KEY_NUMBER_OF_RACES,
+  EVENT_CREATION_FORM_NAME
 } from 'forms/eventCreation'
 
 import { ArrowRight } from 'containers/session/common'
 import IconText from 'components/IconText'
 
-import { fetchCourse, selectCourse, selectRace } from 'actions/courses'
+import { fetchCourse, selectCourse } from 'actions/courses'
+import { selectRace } from 'actions/events'
+import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
+import { getCourseStateById } from 'selectors/course'
 import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
 const sliderSettings = {
@@ -33,6 +36,8 @@ const sliderSettings = {
   maximumValue: 20,
   step: 1,
 }
+
+const getRegattaPlannedRacesN = uncurryN(2, getRegattaPlannedRaces)
 
 const mapStateToProps = (state: any, props: any) => {
   const { leaderboardName } = getCustomScreenParamData(props)
@@ -42,7 +47,15 @@ const mapStateToProps = (state: any, props: any) => {
     session,
     initialValues: {
       [FORM_KEY_NUMBER_OF_RACES]: session.regatta && session.regatta.races.length
-    }
+    },
+    races: compose(
+      map((raceName: string) => ({
+        raceName,
+        courseDefined: !!getCourseStateById(`${session.regattaName} - ${raceName}`)(state)
+      })),
+      getRegattaPlannedRacesN(__, state),
+      getSelectedRegatta)(
+      state)
   }
 }
 
@@ -90,28 +103,23 @@ const RaceItem = Component(props =>
     view({ style: { flex: 1, flexDirection: 'row' }}),
     reduce(concat, nothing()))
   ([
-    text({}, props.item.raceName),
+    text({}, defaultTo('', props.item.raceName)),
     fromClass(IconText).contramap(merge({ source: Images.info.time })),
-    text({}, props.item.startDate),
+    text({}, defaultTo('', props.item.startDate)),
     DefineLayoutButton,
     ArrowRight ]))
 
-const raceList = forwardingPropsFlatList.contramap(
+const raceList = forwardingPropsFlatList.contramap((props: any) =>
   merge({
-    data: [
-      { raceName: 'R1', startDate: '08:30', courseDefined: false },
-      { raceName: 'R2', startDate: '09:30', courseDefined: true },
-      { raceName: 'R3', startDate: '10:30', courseDefined: true },
-    ],
+    data: props.races,
     renderItem: RaceItem.fold,
-  }),
-)
+  }, props))
 
 export default Component((props: Object) =>
   compose(
     fold(props),
     connect(mapStateToProps, { fetchCourse, selectCourse, selectRace }),
-    reduxForm(eventWizardCommonFormSettings),
+    reduxForm({ form: EVENT_CREATION_FORM_NAME }),
     view({ style: [] }),
     reduce(concat, nothing()))
   ([

@@ -97,8 +97,8 @@ def enableProguardInReleaseBuilds = false
 
 def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.sailtracks.android.sailinginsight'
 def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
-def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "30") as Integer
-def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.10"
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "32") as Integer
+def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.12"
 
 android {
 	purgeBackgroundGeolocationDebugResources(applicationVariants)
@@ -187,6 +187,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-snackbar')
     compile project(':react-native-svg')
     compile project(':react-native-maps')
     compile project(':@react-native-community_slider')
