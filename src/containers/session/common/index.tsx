@@ -10,7 +10,7 @@ const defineButton = curry(({ onPress }, content: any) =>
   Component((props: any) =>
     compose(
       fold(props),
-      touchableOpacity({ onPress }),
+      touchableOpacity({ onPress }))(
       view({ style: styles.button }, content))))
 
 /*
@@ -74,11 +74,9 @@ export const racesAndScoringCard = Component((props: any) =>
       text({ style: styles.text }, `${props.races} Races Planned`),
       text({ style: styles.text }, props.scoring),
       text({ style: styles.textLast }, `Discard starting from ${props.discardRace}. race`),
-      /*
       defineButton({
         onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
       }, text({ style: styles.buttonContent }, 'Define Races'.toUpperCase()))
-      */
     ]))
 
 export const competitorsCard = Component((props: any) =>
