@@ -22,7 +22,6 @@ import {
   EVENT_CREATION_FORM_NAME
 } from 'forms/eventCreation'
 
-import { ArrowRight } from 'containers/session/common'
 import IconText from 'components/IconText'
 
 import { fetchCourse, selectCourse } from 'actions/courses'
@@ -36,6 +35,10 @@ const sliderSettings = {
   maximumValue: 20,
   step: 1,
 }
+
+export const ArrowRight = fromClass(IconText).contramap(merge({
+  source: Images.actions.arrowRight,
+  style: { justifyContent: 'center' } }))
 
 const getRegattaPlannedRacesN = uncurryN(2, getRegattaPlannedRaces)
 
