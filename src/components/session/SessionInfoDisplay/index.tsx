@@ -69,7 +69,12 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
         <View style={styles.detailContainer}>
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
-              <Text style={text.itemName}>
+              <Text
+                style={[text.itemName, styles.itemText]}
+                numberOfLines={1}
+                allowFontScaling={false}
+                ellipsizeMode="tail"
+              >
                 {
                   session.userStrippedDisplayName ||
                   (session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name))

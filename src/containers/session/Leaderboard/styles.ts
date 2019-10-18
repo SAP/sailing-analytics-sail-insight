@@ -27,7 +27,7 @@ export default EStyleSheets.create({
     color: '#476987',
     fontSize: 14,
     fontFamily: 'SFCompactText-Bold',
-    maxWidth: 170,
+    maxWidth: Dimensions.get('window').width / 2 - $smallSpacing - $tinySpacing,
   },
   picker: {
     width: 200,

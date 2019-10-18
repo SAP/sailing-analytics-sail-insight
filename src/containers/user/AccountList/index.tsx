@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList, View } from 'react-native'
+import { FlatList, View, ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
 
 import AccountListItem from 'components/AccountListItem'
@@ -12,6 +12,7 @@ import {
 } from 'navigation'
 import { container } from 'styles/commons'
 import Images from '../../../../assets/Images'
+import Image from '../../../components/Image'
 import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
@@ -65,7 +66,12 @@ class AccountList extends React.Component<{
 
     return (
       <View style={[container.main, styles.container]}>
-        <FlatList data={data} renderItem={this.renderItem} />
+        <View>
+          <Image source={Images.account.account_placeholder} style={{ width: '100%' }} />
+        </View>
+        <View style={{ marginTop: 'auto' }}>
+          <FlatList data={data} renderItem={this.renderItem} />
+        </View>
       </View>
     )
   }
@@ -77,7 +83,7 @@ class AccountList extends React.Component<{
       <AccountListItem
         title={title}
         subtitle={subtitle}
-        icon={icon}
+        // icon={icon}
         big={big}
         onPress={onPress}
       />

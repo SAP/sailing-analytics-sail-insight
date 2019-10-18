@@ -13,7 +13,7 @@ import styles from './styles'
 // import HintCard from 'components/HintCard'
 // import LoginButton from 'components/LoginButton'
 // import { isLoggedIn } from 'selectors/auth'
-import Image from '../Image/index';
+import Image from '../Image'
 
 
 class EmptySessionsHeader extends React.Component<{

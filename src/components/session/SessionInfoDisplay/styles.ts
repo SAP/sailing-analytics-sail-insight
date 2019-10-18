@@ -1,4 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { Dimensions } from 'react-native';
+import { $smallSpacing } from 'styles/dimensions';
 
 export default EStyleSheets.create({
   imageContainer: {
@@ -22,6 +24,9 @@ export default EStyleSheets.create({
   },
   textMargins: {
     marginTop: '$microSpacing',
+  },
+  itemText: {
+    maxWidth: Dimensions.get('window').width - 44 - 4 * $smallSpacing,
   },
   dateText: {
     fontSize: '$regularFontSize',

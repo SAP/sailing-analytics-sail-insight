@@ -14,10 +14,10 @@ import { openEmailToContact } from 'helpers/user'
 import { CheckIn } from 'models'
 import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
+import { getBoat } from 'selectors/boat'
+import { getCompetitor } from 'selectors/competitor'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
-import { getCompetitor } from 'selectors/competitor'
-import { getBoat } from 'selectors/boat'
 import { getMark } from 'selectors/mark'
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
 import { registration } from 'styles/components'
@@ -27,9 +27,9 @@ import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
 import ScrollContentView from 'components/ScrollContentView'
+import TrackingContext from 'components/session/TrackingContext'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import TrackingContext from 'components/session/TrackingContext'
 
 class JoinRegatta extends React.Component<{
   checkInData: CheckIn,
@@ -80,7 +80,7 @@ class JoinRegatta extends React.Component<{
       leaderboard = {},
       competitor = {},
       boat = {},
-      mark = {}
+      mark = {},
     } = this.props
     const eventImageUrl = getEventPreviewImageUrl(event)
     const logoImageUrl = getEventLogoImageUrl(event)
@@ -90,16 +90,15 @@ class JoinRegatta extends React.Component<{
     this.getTrackingContext()
 
     return (
-      <ScrollContentView>
+      <ScrollContentView style={{ backgroundColor: 'white' }}>
         <View style={container.stretchContent}>
           <Image style={image.headerLarge} source={eventImageUrl || Images.header.sailors}/>
           {logoImageUrl && <Image style={[image.logoAbsoluteLeft, styles.logo]} source={logoImageUrl}/>}
-          <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
-          <View style={[styles.textContainer, registration.topContainer()]}>
-            <Text style={registration.claim()}>
+          <View style={[registration.topContainer(), styles.textContainer]}>
+            <Text style={[text.propertyValue, styles.timeText]}>{dateTimeText(event.startDate)}</Text>
+            <Text style={[registration.claim(), styles.textClaim]}>
               {title}
             </Text>
-            <Text style={[text.propertyValue, styles.timeText]}>{dateTimeText(event.startDate)}</Text>
             {
               event.venue &&
               event.venue.name &&
@@ -122,10 +121,10 @@ class JoinRegatta extends React.Component<{
             }} />
           </View>
         </View>
-        <View style={registration.bottomContainer()}>
+        <View style={styles.bottomButtonField}>
           <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
+            style={styles.joinButton}
+            textStyle={styles.joinButtonText}
             onPress={this.onJoinPress}
             isLoading={this.state.isLoading}
           >
@@ -134,7 +133,7 @@ class JoinRegatta extends React.Component<{
           <EulaLink mode="JOIN"/>
           <TextButton
             style={registration.lowerButton()}
-            textStyle={button.textButtonSecondaryText}
+            textStyle={styles.textButtonTextInverted}
             onPress={openEmailToContact}
           >
             {I18n.t('caption_need_help')}
@@ -143,7 +142,8 @@ class JoinRegatta extends React.Component<{
         <ImageButton
             style={button.closeButton}
             source={Images.actions.close}
-            onPress={navigateToSessions}/>
+            onPress={navigateToSessions}
+        />
       </ScrollContentView>
     )
   }

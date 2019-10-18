@@ -149,9 +149,8 @@ class AppSettings extends React.Component<ViewProps & {
   protected renderDeviceId = () => {
     return (
       <View style={styles.item}>
-        <TitleLabel title={I18n.t('text_device_id')}>
-          {getDeviceId()}
-        </TitleLabel>
+        <Text style={styles.boldText}>{I18n.t('text_device_id').toUpperCase()}</Text>
+        <Text style={styles.text}>{getDeviceId()}</Text>
       </View>
     )
   }
