@@ -61,6 +61,7 @@ const apiEndpoints = (serverUrl: string) => {
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
     markProperties: getUrlV1('/markproperties'),
+    markProperty: getUrlV1('/markproperties/{0}'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
@@ -120,7 +121,7 @@ export interface DataApi {
   requestEvent: (eventId: string, secret?: string) => any
   requestEventRacestates: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
-  requestMarkProperties: ApiFunction
+  requestMarkProperties: ApiFunction,
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
   requestCourse: (regattaName: string, raceName: string, fleet: String) => any
@@ -156,6 +157,7 @@ export interface DataApi {
   requestPreference: (key: string) => any
   updatePreference: (key: string, body: any) => any
   removePreference: (key: string) => any
+  removeMarkProperty: (markId: string) => any
   requestManeuvers: (
     regattaName: string,
     raceName: string,
@@ -294,6 +296,10 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     removePreference: key => dataRequest(
       endpoints.preferences({ pathParams: [key] }),
       { method: HttpMethods.DELETE },
+    ),
+    removeMarkProperty: id => dataRequest(
+      endpoints.markProperty({ pathParams: [id]}),
+      { method: HttpMethods.DELETE }
     ),
     requestManeuvers: (regattaName, raceName, filters) => dataRequest(
       endpoints.regattaRaceManeuvers({ pathParams: [regattaName, raceName], urlParams: filters }),

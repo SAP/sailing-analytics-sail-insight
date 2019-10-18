@@ -1,6 +1,8 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { white, withDefaultBoldFont, withDefaultFont } from 'styles/compositions/text'
 
+const markTextFontSize = 17;
+
 export default EStyleSheets.create({
   mainContainer: {
     backgroundColor: '$primaryBackgroundColor',
@@ -55,6 +57,23 @@ export default EStyleSheets.create({
     marginBottom: 15,
     height: 90,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingRight: 15
+  },
+
+  markName: {
+    ...withDefaultBoldFont,
+    fontSize: markTextFontSize,
+    flex: 1
+  },
+
+  markShortName: {
+    ...withDefaultFont,
+    fontSize: markTextFontSize
+  },
+
+  markEllipses: {
+    ...withDefaultFont,
+    fontSize: markTextFontSize
   }
 })

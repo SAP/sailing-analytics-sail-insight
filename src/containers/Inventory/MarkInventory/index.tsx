@@ -1,4 +1,4 @@
-import { __, compose, always,
+import { __, compose, always, objOf,
   prop, map, reduce, concat, merge } from 'ramda'
 
 import {
@@ -13,8 +13,9 @@ import { text, view, scrollView, touchableOpacity } from 'components/fp/react-na
 import { ControlPointClass } from 'models/Course'
 
 import { getMarks } from 'selectors/mark'
-import { loadMarkInventory } from 'actions/inventory'
+import { loadMarkInventory, deleteMark } from 'actions/inventory'
 
+import { Alert } from 'react-native'
 import styles from './styles'
 import IconText from 'components/IconText'
 import Images from '@assets/Images'
@@ -59,26 +60,45 @@ const CreateNewSelector = Component((props: object) =>
 const MarkItem = Component((props: object) =>
   compose(
     fold(props),
+    touchableOpacity({
+      onPress: () => {
+        Alert.alert(
+          '',
+          'Decide for an action',
+          [
+            { text: 'Edit mark'},
+            { text: 'Share mark'},
+            { text: 'Delete mark', onPress: () => {
+              Alert.alert('Deleting Mark', `Do you really want to irretrievably delete ${props.item.name}?`, [
+                { text: 'Yes', onPress: () => props.deleteMark(props.item) },
+                { text: 'No' }
+              ])
+            }},
+            { text: 'Cancel' }
+          ])
+      }
+    }),
     view({ style: styles.markContainer }),
     reduce(concat, nothing()))([
     markIconSmall,
-    text({}, `(${props.shortName})`),
-    text({ style: styles.markName }, props.name)]))
+    text({ style: styles.markShortName }, `(${props.item.shortName})`),
+    text({ style: styles.markName }, props.item.name),
+    text({ style: styles.markEllipses }, '...')]))
 
 const List = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.markListContainer }),
     reduce(concat, nothing()),
-    map(compose(MarkItem.contramap, always)))(
+    map(compose(MarkItem.contramap, merge, objOf('item'))))(
     props.marks))
 
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { loadMarkInventory }),
+    connect(mapStateToProps, { loadMarkInventory, deleteMark }),
     withLoadingMarks,
-    view({ style: styles.mainContainer }),
+    scrollView({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),
     concat(CreateNewSelector),
     concat(List))(
