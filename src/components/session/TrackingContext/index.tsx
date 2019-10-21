@@ -1,11 +1,11 @@
 import React from 'react'
 import {
-  Image, View, ViewProps,
+  StyleProp, ViewProps, ViewStyle,
 } from 'react-native'
 
 import Images from '@assets/Images'
-import { Session } from 'models'
 import IconText from 'components/IconText'
+import { Session } from 'models'
 
 import { $secondaryTextColor } from 'styles/colors'
 import styles from './styles'
@@ -13,7 +13,7 @@ import styles from './styles'
 
 class TrackingContext extends React.Component<ViewProps & {
   session: Session,
-  withoutBoat?: Boolean,
+  withoutBoat?: boolean,
 } > {
 
   public state = {
@@ -42,7 +42,7 @@ class TrackingContext extends React.Component<ViewProps & {
   }
 
   public render = () => {
-    const { session } = this.props
+    const style = this.props
     this.getTrackingContext()
 
     if (!this.state.infoImage) return null

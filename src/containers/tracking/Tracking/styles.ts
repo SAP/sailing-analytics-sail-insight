@@ -78,6 +78,9 @@ export default EStyleSheets.create({
   property: {
     marginTop: '$tinySpacing',
   },
+  propertyBottom: {
+    marginBottom: '$tinySpacing',
+  },
   dynamicPropertyContainer: {
     flex: 0.5,
   },
