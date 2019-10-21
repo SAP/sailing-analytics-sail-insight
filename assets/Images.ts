@@ -87,5 +87,6 @@ export default {
   },
   account: {
     account_placeholder: require('./img/account/account_placeholder.png'),
+    account_gradient: require('./img/account/gradient.png'),
   },
 }

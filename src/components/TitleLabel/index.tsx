@@ -17,7 +17,7 @@ class TitleLabel extends React.Component<TextProps & {
       <View style={[style]}>
         {title && <Text style={[styles.title]}>{title.toUpperCase()}</Text>}
         <ComponentType style={styles.text} {...remainingProps}>{children}</ComponentType>
-    </View>
+      </View>
     )
   }
 }
