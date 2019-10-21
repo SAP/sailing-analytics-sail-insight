@@ -23,8 +23,8 @@ export default EStyleSheets.create({
   },
   title: {
     color: 'white',
-    fontSize: 20,
-    fontFamily: 'SFProDisplay-Medium',
+    fontSize: 16,
+    fontFamily: 'SFProDisplay-Light',
   },
   text: {
     color: 'white',
