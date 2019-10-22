@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList, View } from 'react-native'
+import { FlatList, Text, View } from 'react-native'
 import { connect } from 'react-redux'
 
 import AccountListItem from 'components/AccountListItem'
@@ -12,6 +12,7 @@ import {
 } from 'navigation'
 import { container } from 'styles/commons'
 import Images from '../../../../assets/Images'
+import Image from '../../../components/Image'
 import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
@@ -65,19 +66,27 @@ class AccountList extends React.Component<{
 
     return (
       <View style={[container.main, styles.container]}>
-        <FlatList data={data} renderItem={this.renderItem} />
+        <View style={{ flex: 1, position: 'relative' }}>
+          <Image source={Images.account.account_placeholder} resizeMode="cover" style={styles.backendImage} />
+          <Image source={Images.account.account_gradient} resizeMode="stretch" style={styles.gradient} />
+          <Image source={Images.defaults.sap_logo} style={styles.sap_logo} />
+          <Text style={styles.headline}>{I18n.t('tilte_Account').toUpperCase()}</Text>
+        </View>
+        <View style={{ width: '100%' , marginTop: 'auto' }}>
+          <FlatList data={data} renderItem={this.renderItem} />
+        </View>
       </View>
     )
   }
 
   private renderItem = ({ item }: any) => {
-    const { title, subtitle, icon, big, onPress } = item
+    const { title, subtitle, big, onPress } = item
 
     return (
       <AccountListItem
         title={title}
         subtitle={subtitle}
-        icon={icon}
+        // icon={icon}
         big={big}
         onPress={onPress}
       />

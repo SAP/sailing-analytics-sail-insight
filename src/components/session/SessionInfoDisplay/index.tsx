@@ -18,9 +18,9 @@ import ImageButton from 'components/ImageButton'
 import TrackingContext from 'components/session/TrackingContext'
 import Text from 'components/Text'
 
-import { $secondaryTextColor } from 'styles/colors'
-import { button, container, image, text } from 'styles/commons'
+import { button, text } from 'styles/commons'
 import styles from './styles'
+import { $smallSpacing } from 'styles/dimensions';
 
 
 class SessionInfoDisplay extends React.Component<ViewProps & {
@@ -69,7 +69,12 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
         <View style={styles.detailContainer}>
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
-              <Text style={text.itemName}>
+              <Text
+                style={[text.itemName, styles.itemText]}
+                numberOfLines={1}
+                allowFontScaling={false}
+                ellipsizeMode="tail"
+              >
                 {
                   session.userStrippedDisplayName ||
                   (session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name))
@@ -96,32 +101,30 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
           </View>
           <View style={[styles.innerContainer, styles.textMargins]}>
             <View style={{ flex: 1 }}>
-              <View style={[container.rowCentered]}>
+              <View style={{ flexDirection: 'column' }}>
                 <IconText
                   style={[styles.infoItem, session.trackingContext === 'BOAT' ? styles.infoItemFull : undefined]}
                   source={Images.info.boat}
                   iconTintColor={'#C5C5C5'} // $secondaryTextColor}
-                  textStyle={{ flex: 1 }}
                   alignment="horizontal"
                 >
                   {boatInfoText}
                 </IconText>
                 <TrackingContext session={session} withoutBoat={true} />
+                {
+                  session.event &&
+                  session.event.venue &&
+                  session.event.venue.name &&
+                  session.event.venue.name !== 'default' &&
+                  <IconText
+                    source={Images.info.location}
+                    iconTintColor={'#C5C5C5'} // $secondaryTextColor}
+                    alignment="horizontal"
+                  >
+                    {session.event && session.event.venue && session.event.venue.name}
+                  </IconText>
+                }
               </View>
-              {
-                session.event &&
-                session.event.venue &&
-                session.event.venue.name &&
-                session.event.venue.name !== 'default' &&
-                <IconText
-                  style={styles.textMargins}
-                  source={Images.info.location}
-                  iconTintColor={'#C5C5C5'} // $secondaryTextColor}
-                  alignment="horizontal"
-                >
-                  {session.event && session.event.venue && session.event.venue.name}
-                </IconText>
-              }
             </View>
             <ImageButton
               source={Images.actions.recordColored}

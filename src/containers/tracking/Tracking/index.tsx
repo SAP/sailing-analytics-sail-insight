@@ -121,14 +121,14 @@ class Tracking extends React.Component<{
           <View style={styles.propertyRow}>
             <View style={styles.leftPropertyContainer}>
               <TrackingProperty
-                style={styles.measurementContainer}
+                style={[styles.measurementContainer, styles.propertyBottom]}
                 titleStyle={styles.measurementTitle}
                 valueStyle={styles.measurementValue}
                 title={I18n.t('text_tracking_time')}
                 value={this.state.durationText || EMPTY_DURATION_TEXT}
               />
               <TrackingProperty
-                style={[styles.measurementContainer, styles.property]}
+                style={styles.measurementContainer}
                 titleStyle={styles.measurementTitle}
                 valueStyle={styles.measurementValue}
                 title={I18n.t('text_tracking_distance')}
@@ -142,7 +142,7 @@ class Tracking extends React.Component<{
               {
                 !checkInData.isSelfTracking ? null :
                 <TrackingProperty
-                  style={[styles.measurementContainer]}
+                  style={[styles.measurementContainer, styles.propertyBottom]}
                   titleStyle={styles.measurementTitle}
                   valueStyle={styles.measurementValue}
                   iconStyle={styles.windIcon}
@@ -152,7 +152,7 @@ class Tracking extends React.Component<{
                 />
               }
               <TrackingProperty
-                style={[styles.measurementContainer, styles.property]}
+                style={[styles.measurementContainer]}
                 titleStyle={styles.measurementTitle}
                 valueStyle={styles.measurementValue}
                 title={I18n.t('text_tracking_gps_accuracy')}

@@ -169,7 +169,7 @@
   "caption_tab_trackingsetupaction": "Tracking",
   "caption_tab_sessions": "Events",
   "caption_tab_checkin": "Teilnehmen",
-  "caption_tab_account": "Mein Account",
+  "caption_tab_account": "Account",
   "caption_tab_usersessions": "Meine Events",
   "caption_tab_tracks": "Tracks",
   "caption_tab_inventory": "Inventory",
@@ -258,5 +258,6 @@
   "text_login_already_account": "Login. Ich habe bereits einen Account.",
   "text_passwort_reset_title_info" : "Bitte geben Sie Ihren Benutzernamen oder Ihre Email Adresse ein, um das Passwort Zurücksetzen über Email zu bekommen",
   "session_create_new_event" : "Erstelle ein neues Event",
-  "title_tracking": "Tracking"
+  "title_tracking": "Tracking",
+  "tilte_Account": "Dein Account"
 }

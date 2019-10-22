@@ -36,7 +36,8 @@ export default {
     pickImage: require('./img/icons/icon-camera.png'),
     delete: require('./img/icons/icon-delete.png'),
     share: require('./img/icons/icon-open-in-new.png'),
-    plus: require('./img/icons/plus.png')
+    plus: require('./img/icons/plus.png'),
+    arrowUp: require('./img/new_icons/arrow-chevron-up.png'),
   },
   tabs: {
     // tracking: require('./img/icons/icon-start.png'),
@@ -82,6 +83,10 @@ export default {
     placeholder_event_pic: require('./img/events/placeholder_eventlist.png'),
   },
   markInventory: {
-    markIcon: require('./img/icons/mark-icon-small.png')
-  }
+    markIcon: require('./img/icons/mark-icon-small.png'),
+  },
+  account: {
+    account_placeholder: require('./img/account/account_placeholder.png'),
+    account_gradient: require('./img/account/gradient.png'),
+  },
 }

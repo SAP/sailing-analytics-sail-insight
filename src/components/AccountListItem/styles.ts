@@ -1,12 +1,14 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { $tinySpacing } from 'styles/dimensions'
 
 export default EStyleSheets.create({
   buttonContainer: {
-    backgroundColor: '$primaryBackgroundColor',
+    backgroundColor: '#0E2A37',
     height: 70,
+    marginBottom: $tinySpacing,
   },
   buttonContainerBig: {
-    height: 120,
+    height: 100,
   },
   buttonContentContainer: {
     flexDirection: 'row',
@@ -51,6 +53,7 @@ export default EStyleSheets.create({
   subtitle: {
     color: '$secondaryTextColor',
     fontSize: '$regularFontSize',
+    marginTop: $tinySpacing,
   },
   arrowContainer: {
     flex: 0.5,

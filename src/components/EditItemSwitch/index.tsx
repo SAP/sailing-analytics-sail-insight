@@ -28,8 +28,8 @@ class EditItemSwitch extends React.Component<ViewProps & {
   public renderSwitch = () => {
     const { switchValue, isLoading } = this.props
     const switchProps = Platform.OS !== 'android' ? {
-      trackColor: { true: $primaryButtonColor, false: $secondaryBackgroundColor },
-      tintColor: $primaryButtonColor,
+      trackColor: { true: '#476987', false: $secondaryBackgroundColor },
+      tintColor: '#476987',
     } : {}
     return (
       <Switch

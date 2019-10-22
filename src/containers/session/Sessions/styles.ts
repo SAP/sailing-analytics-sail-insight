@@ -50,5 +50,5 @@ export default EStyleSheets.create({
     color: 'white',
     fontSize: 24,
     fontFamily: 'SFProDisplay-Heavy',
-  }
+  },
 })

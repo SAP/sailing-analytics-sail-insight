@@ -1,7 +1,9 @@
 import { difference, find, get, sortBy } from 'lodash'
 import React from 'react'
 import {
+  Dimensions,
   FlatList,
+  Image,
   ListRenderItemInfo,
   TouchableHighlight,
   View,
@@ -24,12 +26,11 @@ import MyColumnValue from './MyColumnValue'
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import { container } from 'styles/commons'
+import { $smallSpacing } from 'styles/dimensions'
+import Images from '../../../../assets/Images'
 import styles from './styles'
-import { $smallSpacing } from 'styles/dimensions';
 
 export const EMPTY_VALUE = '-'
-
-const TRIANGLE_DOWN = '▼'
 
 export enum ColumnValueType {
   GapToLeader = 'text_leaderboard_column_gap',
@@ -49,6 +50,11 @@ const Seperator = () => {
   )
 }
 
+const TRIANGLE_UP = () => {
+  return (
+    <Image source={Images.actions.arrowUp} />
+  )
+}
 class Leaderboard extends React.Component<{
   trackedCheckInCompetitorId: string | undefined
   leaderboard: LeaderboardCompetitorCurrentTrack[]
@@ -103,9 +109,9 @@ class Leaderboard extends React.Component<{
                 rankingMetric={rankingMetric}
               />
               <ModalDropdown
-                style={{ marginLeft: $smallSpacing }}
                 options={difference(Object.values(ColumnValueType), [ColumnValueType.GapToCompetitor])}
                 onSelect={this.onDropdownSelect}
+                adjustFrame={this.renderAdjustFrame}
                 renderRow={this.renderDropdownRow}
               >
                 <Text
@@ -113,7 +119,7 @@ class Leaderboard extends React.Component<{
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {`${columnText}${TRIANGLE_DOWN}`}
+                  {`${columnText} `}<TRIANGLE_UP />
                 </Text>
               </ModalDropdown>
             </View>
@@ -139,6 +145,13 @@ class Leaderboard extends React.Component<{
       selectedCompetitor: competitorId,
       selectedColumn: ColumnValueType.GapToCompetitor,
     })
+  }
+
+  private renderAdjustFrame = (propertyStyle: any) => {
+    propertyStyle.left = $smallSpacing
+    propertyStyle.width = Dimensions.get('window').width - 2 *  $smallSpacing
+    propertyStyle.height = 222
+    return propertyStyle
   }
 
   private renderDropdownRow = (option: any) => (

@@ -1,4 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { Dimensions } from 'react-native';
+import { $smallSpacing, $tinySpacing } from 'styles/dimensions';
 
 export default EStyleSheets.create({
   imageContainer: {
@@ -23,6 +25,9 @@ export default EStyleSheets.create({
   textMargins: {
     marginTop: '$microSpacing',
   },
+  itemText: {
+    width: Dimensions.get('window').width - 44 - 4 * $smallSpacing,
+  },
   dateText: {
     fontSize: '$regularFontSize',
   },
@@ -37,6 +42,7 @@ export default EStyleSheets.create({
   trackingButton: {
     width: 49,
     height: 49,
+    marginRight: $tinySpacing,
   },
   settingsButton: {
     width: 49,
@@ -57,6 +63,7 @@ export default EStyleSheets.create({
   infoItem: {
     maxWidth: '50%',
     marginRight: '$tinySpacing',
+    marginBottom: '$microSpacing',
   },
   fullInfoItem: {
     maxWidth: '100%',

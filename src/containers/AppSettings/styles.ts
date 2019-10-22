@@ -5,8 +5,17 @@ export default EStyleSheets.create({
   item: {
     backgroundColor: 'white',
     padding: '$tinySpacing',
+    marginBottom: 8,
   },
   lastButton: {
     marginBottom: 16,
+  },
+  boldText: {
+    fontSize: 20,
+    fontFamily: 'SFProDisplay-Heavy',
+  },
+  text: {
+    marginTop: '$microSpacing',
+    fontSize: '$regularLargeFontSize',
   },
 })

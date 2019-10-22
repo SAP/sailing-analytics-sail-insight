@@ -170,7 +170,7 @@
   "caption_tab_trackingsetupaction": "Tracking",
   "caption_tab_sessions": "Events",
   "caption_tab_checkin": "Join Regatta",
-  "caption_tab_account": "My Account",
+  "caption_tab_account": "Account",
   "caption_tab_usersessions": "My events",
   "caption_tab_tracks": "All tracks",
   "caption_tab_inventory": "Inventory",
@@ -259,5 +259,6 @@
   "text_login_already_account": "Login. I have already an account.",
   "text_passwort_reset_title_info" : "Please enter your user name or e-mail address to get a passwort reset via e-mail",
   "session_create_new_event" : "Create a new event",
-  "title_tracking" : "Tracking"
+  "title_tracking" : "Tracking",
+  "tilte_Account": "Your Account"
 }
