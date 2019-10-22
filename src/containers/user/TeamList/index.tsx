@@ -51,7 +51,7 @@ class TeamList extends React.Component<ViewProps & {
     navigateToTeamDetails()
   }
 
-  protected renderAddItem = () => <AddButton onPress={this.onNewBoatPress}>{I18n.t('caption_new_team')}</AddButton>
+  protected renderAddItem = () => <AddButton onPress={this.onNewBoatPress}>{I18n.t('caption_new_team').toUpperCase()}</AddButton>
 
   protected renderItem = ({ item }: {item: TeamTemplate}) => {
     const { lastUsedTeam } = this.props

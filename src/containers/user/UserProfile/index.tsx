@@ -20,7 +20,7 @@ import TextButton from 'components/TextButton'
 
 import { getUserInfo } from 'selectors/auth'
 import { getFormFieldValue } from 'selectors/form'
-import { container, input } from 'styles/commons'
+import { container } from 'styles/commons'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 import Logger from '../../../helpers/Logger'
