@@ -1,5 +1,6 @@
 import Text from 'components/Text'
 import { sortBy } from 'lodash'
+import { isNil } from 'ramda'
 import React from 'react'
 import { Alert, TextInputProps as RNTextInputProps, TouchableOpacity, View, ViewProps } from 'react-native'
 import Autocomplete from 'react-native-autocomplete-input'
@@ -30,8 +31,6 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   query?: string,
   boatClasses?: any[],
 }, State > {
-  protected isMounted:boolean = false
-
   public readonly state: Readonly<State> = {
     boatClasses: [],
     selected: false,
@@ -39,13 +38,11 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   }
 
   public componentDidMount() {
-    this.isMounted = true;
-
     this.setState({ query: this.props.input.value, boatClasses: this.props.boatClasses })
 
     if (!this.props.boatClasses) {
       selfTrackingApi().requestBoatClasses().then((boatClasses: BoatClassesBody[]) => {
-        this.isMounted && this.setState({ boatClasses })
+        this.setState({ boatClasses })
       }).catch((err) => {
         Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
       })
@@ -54,10 +51,6 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
 
   public componentWillReceiveProps(props:any) {
     this.setState({ query: props.input.value })
-  }
-
-  public componentWillUnmount() {
-    this.isMounted = false;
   }
 
   public render() {
@@ -98,7 +91,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   }
 
   protected findBoatClass = (query: string) => {
-    if (query === '') {
+    if (query === '' || isNil(this.state.boatClasses)) {
       return []
     }
 
