@@ -122,6 +122,7 @@ class JoinRegatta extends React.Component<{
           </View>
         </View>
         <View style={styles.bottomButtonField}>
+          <EulaLink mode="JOIN"/>
           <TextButton
             style={styles.joinButton}
             textStyle={styles.joinButtonText}
@@ -130,7 +131,6 @@ class JoinRegatta extends React.Component<{
           >
             {this.state.buttonText}
           </TextButton>
-          <EulaLink mode="JOIN"/>
           <TextButton
             style={registration.lowerButton()}
             textStyle={styles.textButtonTextInverted}
