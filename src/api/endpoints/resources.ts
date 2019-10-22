@@ -207,7 +207,7 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     ),
     requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markSchema] }),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
-        endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }),
+        endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }), { dataSchema: markSchema }
     ),
     requestBoat: (leaderboardName, boatId, secret)  => dataRequest(
         endpoints.boats({ pathParams: [boatId], urlParams: { leaderboardName, secret } }),

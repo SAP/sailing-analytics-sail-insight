@@ -461,9 +461,8 @@ export default Component((props: object) =>
     concat(__, nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))),
     scrollView({ style: styles.waypointsContainer, horizontal: true }),
     reduce(concat, nothing()),
-    reverse,
-    insert(1, nothingWhenSelectedWaypoint(AddButton.contramap(merge({ index: 1 })))),
-    reverse,
+    insert(props.course.waypoints.length - 1,
+      nothingWhenSelectedWaypoint(AddButton.contramap(merge({ index: props.course.waypoints.length - 1 })))),
     mapIndexed(waypointItemToComponent),
     path(['course', 'waypoints']))(
     props))

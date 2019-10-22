@@ -1,6 +1,6 @@
 import { first, get } from 'lodash'
 import { compose, flatten, map, prop, objOf, __, pick, reject, isNil,
-  merge, uniqBy, find, propEq, dissoc, evolve, indexBy, values } from 'ramda'
+  merge, uniqBy, find, propEq, dissoc, evolve, indexBy, values, uniq } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import uuidv4 from 'uuid/v4'
 
@@ -169,6 +169,7 @@ function* apiCourseToLocalFormat(apiCourse: any) {
     apiCourse.waypoints)
 
   const marksToLoad = compose(
+    uniq,
     reject(isNil),
     flatten,
     map(compose(values, pick(['id', 'leftMark', 'rightMark']), prop('controlPoint'))))(

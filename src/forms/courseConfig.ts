@@ -119,10 +119,3 @@ export const courseConfigCommonFormSettings = {
   destroyOnUnmount: false,        // <-- preserve form data across different steps
   enableReinitialize: true
 }
-
-const initalLocation = {
-  latitude: 37.78825,
-  longitude: -122.4324,
-  latitudeDelta: 1,
-  longitudeDelta: 1,
-}

@@ -127,15 +127,15 @@ const constructDefaultMarks = () => {
     },
     [DefaultMark.WindwardMark]: {
       longName: 'Windward Mark',
-      shortName: '1',
+      shortName: 'W',
     },
     [DefaultMark.ReachingMark]: {
       longName: 'Reaching Mark',
-      shortName: '2',
+      shortName: 'R',
     },
     [DefaultMark.LeewardMark]: {
       longName: 'Leeward Mark',
-      shortName: '3',
+      shortName: 'L',
     },
     [DefaultMark.StartPin]: {
       longName: 'Start Pin',
