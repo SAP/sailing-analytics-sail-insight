@@ -58,7 +58,8 @@ class UserProfile extends TextInputForm<Props> {
             <Field
               style={styles.topInput}
               containerStyle={styles.inputContainer}
-              label={I18n.t('text_name')}
+              inputStyle={styles.inputStyle}
+              label={I18n.t('text_name').toUpperCase()}
               name={userForm.FORM_KEY_NAME}
               component={FormTextInput}
               validate={[validateRequired]}

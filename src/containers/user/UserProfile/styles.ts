@@ -11,6 +11,10 @@ export default EStyleSheets.create({
   inputContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0)',
   },
+  inputStyle: {
+    fontSize: 20,
+    fontFamily: 'SFProDisplay-Heavy',
+  },
   inputField: {
     paddingLeft: '$smallSpacing',
     paddingRight: '$smallSpacing',
