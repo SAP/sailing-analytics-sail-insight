@@ -1,4 +1,4 @@
-import { __, compose, concat, map, merge, defaultTo, reduce, objOf, uncurryN, tap } from 'ramda'
+import { __, compose, concat, map, merge, defaultTo, reduce, objOf, uncurryN, tap, always } from 'ramda'
 
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
@@ -23,6 +23,7 @@ import {
 } from 'forms/eventCreation'
 
 import IconText from 'components/IconText'
+import { overlayPicker, FramedNumber } from '../../session/common'
 
 import { fetchCourse, selectCourse } from 'actions/courses'
 import { selectRace } from 'actions/events'
@@ -30,13 +31,15 @@ import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getCourseStateById } from 'selectors/course'
 import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
+import styles from './styles'
+
 const sliderSettings = {
   minimumValue: 1,
   maximumValue: 20,
   step: 1,
 }
 
-export const ArrowRight = fromClass(IconText).contramap(merge({
+export const arrowRight = fromClass(IconText).contramap(merge({
   source: Images.actions.arrowRight,
   style: { justifyContent: 'center' } }))
 
@@ -65,14 +68,14 @@ const mapStateToProps = (state: any, props: any) => {
 const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
-    reduce(concat, nothing()))
-  ([
-    text({}, 'Planned number of races'),
-    fromClass(Slider).contramap(merge({
-      value: Number(props.input.value),
-      onValueChange: props.input.onChange
-    })),
-    text({}, `${props.input.value}`) ]))
+    concat(text({ style: styles.textHeader }, 'Planned number of races')),
+    view({ style: styles.raceNumberContainer }),
+    overlayPicker({
+      style: { position: 'absolute', top: 0, width: 160, height: 80, color: 'white' },
+      selectedValue: Number(props.input.value),
+      onValueChange: props.input.onChange,
+    }))(
+    FramedNumber.contramap(always({ value: props.input.value }))))
 
 const raceNumberFormField = reduxFormField({
   name: FORM_KEY_NUMBER_OF_RACES,
@@ -92,7 +95,7 @@ const onNewCourse = (props: any) => {
   navigateToRaceCourseLayout()
 }
 
-const DefineLayoutButton = Component(props =>
+const defineLayoutButton = Component(props =>
   compose(
     fold(props),
     touchableOpacity({
@@ -100,33 +103,43 @@ const DefineLayoutButton = Component(props =>
     }))(
     text({}, props.item.courseDefined ? 'See Layout' : 'Define Layout')))
 
-const RaceItem = Component(props =>
+const raceItem = Component(props =>
   compose(
     fold(props),
-    view({ style: { flex: 1, flexDirection: 'row' }}),
+    view({ style: styles.raceItemContainer }),
     reduce(concat, nothing()))
   ([
-    text({}, defaultTo('', props.item.raceName)),
     fromClass(IconText).contramap(merge({ source: Images.info.time })),
     text({}, defaultTo('', props.item.startDate)),
-    DefineLayoutButton,
-    ArrowRight ]))
+    text({}, defaultTo('', props.item.raceName)),
+    defineLayoutButton,
+    arrowRight ]))
 
-const raceList = forwardingPropsFlatList.contramap((props: any) =>
-  merge({
-    data: props.races,
-    renderItem: RaceItem.fold,
-  }, props))
+const raceList = Component((props: object) => compose(
+  fold(props),
+  view({ style: styles.racesListContainer }))(
+  forwardingPropsFlatList.contramap((props: any) =>
+    merge({
+      data: props.races,
+      renderItem: raceItem.fold
+    }, props))))
+
+const detailsContainer = Component((props: Object) =>
+  compose(
+    fold(props),
+    view({ style: styles.detailsContainer }),
+    reduce(concat, nothing()))
+  ([
+    text({ style: styles.sectionHeaderStyle }, 'LIST OF RACES'),
+    raceNumberFormField,
+    text({}, 'Discards starting from ... races')]))
 
 export default Component((props: Object) =>
   compose(
     fold(props),
     connect(mapStateToProps, { fetchCourse, selectCourse, selectRace }),
     reduxForm({ form: EVENT_CREATION_FORM_NAME }),
-    view({ style: [] }),
+    view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
-  ([
-    text({}, 'Number of Races'),
-    raceNumberFormField,
-    text({}, 'Discards starting from ... races'),
+  ([detailsContainer,
     raceList ]))

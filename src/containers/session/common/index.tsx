@@ -1,8 +1,9 @@
-import {  __, compose, concat, curry, reduce } from 'ramda'
+import { __, compose, concat, curry, reduce, mergeLeft, map, range,
+  equals, length, prepend, objOf, always, toString, split, when, merge } from 'ramda'
 
-import { Component, fold, nothing } from 'components/fp/component'
+import { Component, fold, nothing, fromClass } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
-
+import { Picker } from 'react-native'
 
 import styles from './styles'
 
@@ -42,6 +43,34 @@ export const overallStatusCard = Component((props: any) =>
       text({ style: styles.text }, props.trackingStatus),
     ]))
 */
+
+export const overlayPicker = ({ selectedValue, onValueChange, style, min = 1, max = 51 }: any) =>
+  concat(__, fromClass(Picker).contramap(mergeLeft({
+    style: merge(style, { backgroundColor: 'transparent' }),
+    selectedValue,
+    onValueChange: (v: number) => setTimeout(() => onValueChange(v), 0),
+    children: compose(
+      map(fromClass(Picker.Item).fold),
+      map(v => ({ value: v, label: v.toString() })))(
+      range(min, max))
+  })))
+
+export const FramedNumberItem = Component(props => compose(
+  fold(props),
+  view({ style: styles.framedNumberItem }),
+  text({ style: styles.framedNumberItemText }))(
+  props.value))
+
+export const FramedNumber = Component(props => compose(
+  fold(props),
+  view({ style: styles.framedNumber }),
+  reduce(concat, nothing()),
+  map(compose(FramedNumberItem.contramap, always, objOf('value'))),
+  when(compose(equals(1), length), prepend('0')),
+  split(''),
+  toString)(
+  props.value))
+
 export const sessionDetailsCard = Component((props: any) =>
   compose(
     fold(props),

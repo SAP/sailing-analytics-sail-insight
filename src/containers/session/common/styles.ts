@@ -1,5 +1,6 @@
 import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withDefaultBoldFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   button: {
@@ -92,5 +93,24 @@ export default EStyleSheets.create({
     color: 'white',
     marginTop: 10,
     marginBottom: 10,
+  },
+  framedNumber: {
+    flexDirection: 'row',
+  },
+  framedNumberItem: {
+    width: 70,
+    height: 70,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5,
+    borderRadius: 2,
+  },
+  framedNumberItemText: {
+    ...withDefaultBoldFont,
+    color: 'black',
+    fontSize: 44,
+    textAlign: 'center',
+    marginTop: 13,
   },
 })

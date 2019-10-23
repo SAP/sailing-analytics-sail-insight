@@ -1,8 +1,7 @@
 import {
   __, compose, concat, equals, length, objOf,
-  prepend, split, addIndex, append, merge, not,
-  path, reduce, range, map, always, when, tap,
-  toString, prop, update, propEq, reject, mergeLeft } from 'ramda'
+  addIndex, append, merge, not, path, reduce,
+  map, always, prop, update, propEq, reject } from 'ramda'
 
 import {
   Component,
@@ -24,7 +23,7 @@ import {
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
-import { Picker } from 'react-native'
+import { overlayPicker, FramedNumber } from '../common'
 
 import styles from './styles'
 
@@ -40,33 +39,6 @@ const plusIcon = fromClass(IconText).contramap(always({
   style: { justifyContent: 'center', alignItems: 'center' },
   iconStyle: { width: 25, height: 25 }
 }))
-
-const overlayPicker = ({ selectedValue, onValueChange, style }: any) =>
-  concat(__, fromClass(Picker).contramap(mergeLeft({
-    style: merge(style, { backgroundColor: 'transparent' }),
-    selectedValue,
-    onValueChange: (v: number) => setTimeout(() => onValueChange(v), 0),
-    children: compose(
-      map(fromClass(Picker.Item).fold),
-      map(v => ({ value: v, label: v.toString() })))(
-      range(1, 51))
-  })))
-
-const FramedNumberItem = Component(props => compose(
-  fold(props),
-  view({ style: styles.framedNumberItem }),
-  text({ style: styles.framedNumberItemText }))(
-  props.value))
-
-const FramedNumber = Component(props => compose(
-  fold(props),
-  view({ style: styles.framedNumber }),
-  reduce(concat, nothing()),
-  map(compose(FramedNumberItem.contramap, always, objOf('value'))),
-  when(compose(equals(1), length), prepend('0')),
-  split(''),
-  toString)(
-  props.value))
 
 const raceNumberSelector = Component((props: any) =>
   compose(
