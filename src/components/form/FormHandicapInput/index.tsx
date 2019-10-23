@@ -27,7 +27,7 @@ class FormHandicapInput extends React.Component<
     } = this.getHandicapTypeProps()
 
     return (
-      <View style={style}>
+      <View style={[style, { borderBottomWidth: 0 }]}>
         <Text style={styles.label}>
           {label.toUpperCase()}
         </Text>

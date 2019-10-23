@@ -13,9 +13,9 @@ export default {
     sapTagLine: require('./img/ci/logo-sap-tagline.png'),
   },
   header: {
-    sailors: require('./img/header_small.png'),
+    sailors: require('./img/header_sailors.png'), // require('./img/header_small.png'),
     boat: require('./img/boat_placeholder.png'),
-    team: require('./img/team_placeholder.png'),
+    team: require('./img/competitor_placeholder.png'), // require('./img/team_placeholder.png'),
   },
   actions: {
     // add: require('./img/icons/icon-plus.png'),
@@ -33,11 +33,12 @@ export default {
     close: require('./img/icons/icon-cross.png'),
     expandLess: require('./img/icons/icon-arrow-expand-less.png'),
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
-    pickImage: require('./img/icons/icon-camera.png'),
+    pickImage: require('./img/new_icons/camera.png'), // require('./img/icons/icon-camera.png'),
     delete: require('./img/icons/icon-delete.png'),
     share: require('./img/icons/icon-open-in-new.png'),
     plus: require('./img/icons/plus.png'),
     arrowUp: require('./img/new_icons/arrow-chevron-up.png'),
+    arrowDown: require('./img/new_icons/arrow-chevron-down.png'),
   },
   tabs: {
     // tracking: require('./img/icons/icon-start.png'),

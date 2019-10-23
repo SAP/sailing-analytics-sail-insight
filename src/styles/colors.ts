@@ -1,6 +1,6 @@
 export const $primaryBackgroundColor = '#1D3F4E'
 export const $secondaryBackgroundColor = '#EEEEEE'
-export const $placeholderBackgroundColor = '#008FD31A'
+export const $placeholderBackgroundColor = '#FFFFFF1A' // '#008FD31A'
 
 export const $primaryButtonColor = '#FF6C52' // '#008FD3'
 export const $secondaryButtonColor = 'black'

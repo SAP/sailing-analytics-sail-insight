@@ -29,7 +29,8 @@ export default EStyleSheet.create({
   },
   actionText: {
     color: 'white',
-    fontSize: '$titleFontSize',
+    fontSize: 24,
+    fontFamily: 'SFProDisplay-Heavy',
   },
   trackingActionText: {
     color: 'white',
@@ -74,7 +75,7 @@ export default EStyleSheet.create({
     tintColor: '$secondaryButtonColor',
     width: '$defaultIconSize+$actionIconSizeAddition',
     height: '$defaultIconSize+$actionIconSizeAddition',
-    padding: '$microSpacing',
+    // padding: '$microSpacing',
   },
 
   closeButton: {

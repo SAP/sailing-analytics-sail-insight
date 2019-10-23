@@ -40,9 +40,8 @@ class AppSettings extends React.Component<ViewProps & {
   public render() {
     return (
       <ScrollContentView>
-        <View style={container.stretchContent}>
+        <View style={styles.container}>
           {this.renderDeviceId()}
-          <LineSeparator/>
           <View>
             <EditItemSwitch
               style={styles.item}
@@ -60,25 +59,23 @@ class AppSettings extends React.Component<ViewProps & {
               {I18n.t('text_setting_gps_bulk', { timeInSeconds: BULK_UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
             </Text>
           </View>
-        </View>
-        <View style={container.smallHorizontalMargin}>
           <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
+            style={[styles.button, styles.firstButton]}
+            textStyle={styles.buttonContent}
             onPress={openEmailToContact}
           >
             {I18n.t('caption_feedback_and_questions')}
           </TextButton>
           <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
+            style={styles.button}
+            textStyle={styles.buttonContent}
             onPress={openTerms}
           >
             {I18n.t('title_eula')}
           </TextButton>
           <TextButton
-            style={[registration.nextButton(), styles.lastButton]}
-            textStyle={button.actionText}
+            style={[styles.button, styles.lastButton]}
+            textStyle={styles.buttonContent}
             onPress={openPrivacyPolicy}
           >
             {I18n.t('title_privacy_policy')}
