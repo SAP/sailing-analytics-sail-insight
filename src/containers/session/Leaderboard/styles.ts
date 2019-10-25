@@ -52,6 +52,11 @@ export default EStyleSheets.create({
     fontSize: 56,
     fontFamily: 'SFProDisplay-Heavy',
   },
+  rankTextSmall: {
+    color: 'black',
+    fontSize: 24,
+    fontFamily: 'SFProDisplay-Heavy',
+  },
   rankValue: {
     color: 'black',
     fontSize: 56,
@@ -73,7 +78,7 @@ export default EStyleSheets.create({
     marginBottom: 3,
   },
   listRowContainer: {
-    backgroundColor: '$primaryBackgroundColor',
+    backgroundColor: 'white',
   },
   listContainer: {
     flex: 3.5,

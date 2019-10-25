@@ -90,11 +90,11 @@ class JoinRegatta extends React.Component<{
     this.getTrackingContext()
 
     return (
-      <ScrollContentView style={{ backgroundColor: 'white' }}>
+      <ScrollContentView style={{ backgroundColor: '#1D3F4E' }}>
         <View style={container.stretchContent}>
           <Image style={image.headerLarge} source={eventImageUrl || Images.header.sailors}/>
           {logoImageUrl && <Image style={[image.logoAbsoluteLeft, styles.logo]} source={logoImageUrl}/>}
-          <View style={[registration.topContainer(), styles.textContainer]}>
+          <View style={styles.textContainer}>
             <Text style={[text.propertyValue, styles.timeText]}>{dateTimeText(event.startDate)}</Text>
             <Text style={[registration.claim(), styles.textClaim]}>
               {title}
@@ -106,19 +106,22 @@ class JoinRegatta extends React.Component<{
               <IconText
                 style={styles.location}
                 iconStyle={styles.locationIcon}
-                textStyle={[text.propertyValue, styles.locationText]}
+                textStyle={[text.propertyValue, { color: '#FFFFFF' }]}
                 source={Images.info.location}
                 alignment="horizontal"
               >
                 {event.venue && event.venue.name}
               </IconText>
             }
-            <TrackingContext session={{
-              trackingContext: this.state.trackingContext,
-              competitor,
-              boat,
-              mark
-            }} />
+            <TrackingContext
+              textStyle={{ color: '#FFFFFF' }}
+              session={{
+                trackingContext: this.state.trackingContext,
+                competitor,
+                boat,
+                mark
+              }}
+            />
           </View>
         </View>
         <View style={styles.bottomButtonField}>
@@ -133,7 +136,7 @@ class JoinRegatta extends React.Component<{
           </TextButton>
           <TextButton
             style={registration.lowerButton()}
-            textStyle={styles.textButtonTextInverted}
+            textStyle={styles.textButtonTextWhite}
             onPress={openEmailToContact}
           >
             {I18n.t('caption_need_help')}
@@ -141,6 +144,7 @@ class JoinRegatta extends React.Component<{
         </View>
         <ImageButton
             style={button.closeButton}
+            imageStyle={{ tintColor: '#FFFFFF' }}
             source={Images.actions.close}
             onPress={navigateToSessions}
         />

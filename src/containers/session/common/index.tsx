@@ -1,7 +1,7 @@
-import { __, compose, concat, curry, reduce, mergeLeft, map, range,
-  equals, length, prepend, objOf, always, toString, split, when, merge } from 'ramda'
+import { __, always, compose, concat, curry, equals, length, map,
+  merge, mergeLeft, objOf, prepend, range, reduce, split, toString, when } from 'ramda'
 
-import { Component, fold, nothing, fromClass } from 'components/fp/component'
+import { Component, fold, fromClass, nothing } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import { Picker } from 'react-native'
 

@@ -4,26 +4,27 @@ import { getStatusBarHeight } from 'react-native-status-bar-height'
 
 export default EStyleSheets.create({
   textContainer: {
+    marginLeft: '$largeRelativeSpacing',
+    marginRight: '$largeRelativeSpacing',
     alignSelf: 'center',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
   textClaim: {
     marginTop: '$tinySpacing',
-    fontSize: 24,
+    marginBottom: '$tinySpacing',
+    fontSize: 26,
     fontFamily: 'SFProDisplay-Heavy',
   },
   timeText: {
-    color: '$detailsTextColor',
+    color: 'white',
     marginTop: '$largeSpacing',
   },
   location: {
-    marginTop: 9,
+    marginTop: 16,
   },
   locationIcon: {
-    tintColor: '$secondaryTextColor',
-  },
-  locationText: {
-    color: '$primaryTextColor',
+    tintColor: 'white',
   },
   logo: {
     width: 80,
@@ -39,7 +40,7 @@ export default EStyleSheets.create({
     paddingRight: '$largeSpacing',
   },
   joinButton: {
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$Orange',
     marginTop: 20,
     alignSelf: 'stretch',
     height: 56,
@@ -50,8 +51,13 @@ export default EStyleSheets.create({
     fontSize: 24,
     fontFamily: 'SFProDisplay-Heavy',
   },
-  textButtonTextInverted: {
-    color: '#476987',
+  textButtonText: {
+    color: '$primaryButtonColor',
+    fontSize: 14,
+    fontFamily: 'SFProDisplay-Medium',
+  },
+  textButtonTextWhite: {
+    color: 'white',
     fontSize: 14,
     fontFamily: 'SFProDisplay-Medium',
   },

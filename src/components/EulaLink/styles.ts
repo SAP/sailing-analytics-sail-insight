@@ -8,21 +8,16 @@ export default EStyleSheet.create({
     fontWeight: '300',
     marginTop: '$smallSpacing',
     marginBottom: '$smallSpacing',
+    textAlign: 'center',
   },
   textButtonText: {
     color: '$primaryButtonColor',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
-  },
-  textButtonTextInverted: {
-    color: '#476987',
-    fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
+    fontFamily: 'SFProDisplay-Bold',
   },
   textColorRegister: {
-    color: 'white',
-  },
-  textColorJoin: {
-    color: '#C5C5C5',
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontFamily: 'SFProDisplay-Medium',
   },
 })

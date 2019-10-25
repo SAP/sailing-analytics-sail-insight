@@ -19,4 +19,8 @@ export default EStyleSheet.create({
   inputContainer: {
     backgroundColor: 'rgba(0, 0, 0, 0)',
   },
+  bottomButton: {
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
+  },
 })

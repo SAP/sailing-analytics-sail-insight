@@ -1,5 +1,4 @@
-import { __, compose, concat, mergeLeft, reduce, always, merge, defaultTo } from 'ramda'
-import { TextInput } from 'react-native'
+import { __, always, compose, concat, defaultTo, merge, mergeLeft, reduce } from 'ramda'
 
 import I18n from 'i18n'
 
@@ -17,6 +16,8 @@ import {
 import DatePicker from 'react-native-datepicker'
 
 import Images from '@assets/Images'
+import { Dimensions } from 'react-native'
+import { $smallSpacing } from 'styles/dimensions'
 import styles, { darkerGray, lighterGray } from './styles'
 
 const icon = compose(
@@ -67,6 +68,7 @@ const formDatePicker = Component((props: any) => compose(
   view({ style: styles.formDatePickerContainer }),
   concat(icon({ source: props.icon, style: { tintColor: lighterGray }})),
   contramap((props: any) => ({
+    style: { width: Dimensions.get('window').width / 2 - 24 - 2 * $smallSpacing - 8 },
     onDateChange: props.input.onChange,
     date: props.input.value,
     androidMode: 'spinner',
@@ -78,8 +80,13 @@ const formDatePicker = Component((props: any) => compose(
         height: 'auto',
         alignItems: 'flex-start',
         borderWidth: 0,
-      }
+      },
+      btnTextConfirm: {
+        color: '#FF6C52',
+      },
     },
+    confirmBtnText: I18n.t('caption_ok'),
+    cancelBtnText: I18n.t('caption_cancel'),
   })))(
   fromClass(DatePicker)))
 

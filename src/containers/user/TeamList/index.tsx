@@ -1,5 +1,5 @@
 import React from 'react'
-import { ViewProps } from 'react-native'
+import { TouchableOpacity, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import { fetchUserInfo } from 'actions/user'
@@ -9,9 +9,11 @@ import { TeamTemplate } from 'models'
 import { navigateToTeamDetails } from 'navigation'
 import { getLastUsedTeam, getUserTeams } from 'selectors/user'
 
-import AddButton from 'components/AddButton'
 import FloatingComponentList from 'components/FloatingComponentList'
 import TeamItem from 'components/TeamItem'
+import Text from 'components/Text'
+import { button } from 'styles/commons'
+import styles from './styles'
 
 
 class TeamList extends React.Component<ViewProps & {
@@ -27,6 +29,7 @@ class TeamList extends React.Component<ViewProps & {
   public render() {
     return (
       <FloatingComponentList
+        style={styles.list}
         data={this.props.teams}
         renderItem={this.renderItem}
         renderFloatingItem={this.renderAddItem}
@@ -51,7 +54,18 @@ class TeamList extends React.Component<ViewProps & {
     navigateToTeamDetails()
   }
 
-  protected renderAddItem = () => <AddButton onPress={this.onNewBoatPress}>{I18n.t('caption_new_team').toUpperCase()}</AddButton>
+  protected renderAddItem = () => {
+    return(
+      <TouchableOpacity
+        style={button.actionRectangular}
+        onPress={this.onNewBoatPress}
+      >
+        <Text style={styles.textStyle}>
+          {I18n.t('caption_new_team').toUpperCase()}
+        </Text>
+      </TouchableOpacity>
+    )
+  }
 
   protected renderItem = ({ item }: {item: TeamTemplate}) => {
     const { lastUsedTeam } = this.props

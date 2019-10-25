@@ -51,9 +51,9 @@ class TrackingContext extends React.Component<ViewProps & {
       <IconText
         style={styles.infoItem}
         source={this.state.infoImage}
-        iconTintColor={$secondaryTextColor}
+        iconTintColor="#C5C5C5"
         alignment="horizontal"
-        textStyle={{ flex: 1 }}
+        textStyle={{ flex: 1, color: 'white' }}
       >
         {this.state.infoText}
       </IconText>

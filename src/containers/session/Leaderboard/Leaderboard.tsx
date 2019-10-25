@@ -183,7 +183,7 @@ class Leaderboard extends React.Component<{
               ]}
             >
               <View style={[styles.textContainer]}>
-                <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
+                <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
                 <Flag style={[styles.flag]} code={countryCode} size={24} />
                 <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
               </View>
@@ -191,6 +191,7 @@ class Leaderboard extends React.Component<{
                 selectedColumn={selectedColumn}
                 competitorData={item}
                 rankingMetric={rankingMetric}
+                fontSize={24}
               />
             </View>
           </View>

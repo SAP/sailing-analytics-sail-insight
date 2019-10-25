@@ -1,7 +1,7 @@
 import {
-  __, compose, concat, equals, length, objOf,
-  addIndex, append, merge, not, path, reduce,
-  map, always, prop, update, propEq, reject } from 'ramda'
+  __, addIndex, always, append, compose, concat,
+  equals, length, map, merge, not, objOf,
+  path, prop, propEq, reduce, reject, update } from 'ramda'
 
 import {
   Component,
@@ -12,18 +12,16 @@ import {
   nothingAsClass,
   recomposeBranch as branch,
   recomposeMapProps as mapProps,
-  recomposeWithHandlers as withHandlers
-} from 'components/fp/component'
+  recomposeWithHandlers as withHandlers } from 'components/fp/component'
 import { forwardingPropsFlatList, text, view } from 'components/fp/react-native'
 import { field as reduxFormField } from 'components/fp/redux-form'
 import {
   FORM_KEY_DISCARDS,
-  FORM_KEY_NUMBER_OF_RACES,
-} from 'forms/eventCreation'
+  FORM_KEY_NUMBER_OF_RACES } from 'forms/eventCreation'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
-import { overlayPicker, FramedNumber } from '../common'
+import { FramedNumber, overlayPicker } from '../common'
 
 import styles from './styles'
 

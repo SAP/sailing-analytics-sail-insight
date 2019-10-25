@@ -3,6 +3,7 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 import { sectionHeaderStyle, textInput } from 'containers/session/EventCreation/styles'
 import { Dimensions } from 'react-native'
 import { withDefaultBoldFont } from 'styles/compositions/text'
+import { $smallSpacing } from 'styles/dimensions'
 
 export const lighterGray = '#C7C7C7'
 export const darkerGray = '#C5C5C5'
@@ -37,7 +38,7 @@ export default EStyleSheets.create({
     color: 'black',
   },
   dateInputContainer: {
-    width: 200,
+    width: Dimensions.get('window').width - 4 * $smallSpacing,
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: '$tinySpacing',

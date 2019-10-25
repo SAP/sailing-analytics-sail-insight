@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import {
+  StyleProp,
+  TextStyle,
   TouchableOpacity,
   View,
   ViewProps,
@@ -15,6 +17,7 @@ import styles from './styles'
 
 class EditItem extends React.Component<ViewProps & {
   title: string,
+  titleStyle: StyleProp<TextStyle>
   onEdit?: () => void,
   renderEditControl?: () => Component | Element | JSX.Element,
 } > {
@@ -24,11 +27,12 @@ class EditItem extends React.Component<ViewProps & {
       title,
       children,
       style,
+      titleStyle,
     } = this.props
 
     return (
       <View style={[styles.container, style]}>
-        <TitleLabel style={styles.title} title={title}>
+        <TitleLabel style={styles.title} titleStyle={titleStyle} title={title}>
           {children}
         </TitleLabel>
         {this.renderEditView()}
