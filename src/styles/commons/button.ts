@@ -82,7 +82,7 @@ export default EStyleSheet.create({
     width:       '$defaultIconSize',
     height:      '$defaultIconSize',
     position:    'absolute',
-    top:         0,
+    top:         8,
     right:       0,
     resizeMode:  'contain',
     tintColor:   '$secondaryButtonColor',

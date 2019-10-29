@@ -166,7 +166,7 @@ class TeamDetails extends TextInputForm<Props> {
             component={FormHandicapInput}
           />
           <TextButton
-            style={registration.nextButton()}
+            style={[registration.nextButton(), styles.bottomButton]}
             textStyle={button.actionText}
             onPress={this.props.handleSubmit(this.onSavePress)}
             isLoading={this.state.isLoading}

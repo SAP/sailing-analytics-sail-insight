@@ -21,7 +21,7 @@ const discardSelectorPlusContainer = {
   borderWidth: 1,
   borderColor: 'white',
   justifyContent: 'center',
-  alignItems: 'center'
+  alignItems: 'center',
 }
 
 export default EStyleSheets.create({

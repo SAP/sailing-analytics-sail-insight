@@ -15,7 +15,6 @@ import LineSeparator from 'components/LineSeparator'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import TitleLabel from 'components/TitleLabel'
 
 import { button, container } from 'styles/commons'
 import { registration } from 'styles/components'
@@ -45,12 +44,14 @@ class AppSettings extends React.Component<ViewProps & {
           <View>
             <EditItemSwitch
               style={styles.item}
+              titleStyle={{ color: 'black' }}
               title={I18n.t('caption_setting_analytics')}
               switchValue={this.props.enableAnalytics}
               onSwitchValueChange={this.props.changeAnalyticsSetting}
             />
             <EditItemSwitch
               style={styles.item}
+              titleStyle={{ color: 'black' }}
               title={I18n.t('caption_setting_bulk_gps')}
               switchValue={this.props.bulkGpsSetting}
               onSwitchValueChange={this.props.updateGpsBulkSetting}

@@ -110,7 +110,7 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                 >
                   {boatInfoText}
                 </IconText>
-                <TrackingContext session={session} withoutBoat={true} />
+                <TrackingContext textStyle={{ color: '#000000' }} session={session} withoutBoat={true} />
                 {
                   session.event &&
                   session.event.venue &&
