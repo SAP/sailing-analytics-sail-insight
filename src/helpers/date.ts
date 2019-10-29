@@ -93,6 +93,11 @@ export const dateTimeText = (dateValue: string | number | Date) => {
   return moment(dateValue).locale(supportedLocale).format(`${dateFormat} - ${timeFormat}`)
 }
 
+export const dateTimeShortHourText = (dateValue: string | number | Date) => {
+  const supportedLocale = getSupportedLocale(I18n.locale)
+  return moment(dateValue).locale(supportedLocale).format('h:mm')
+}
+
 export const timeText = (seconds?: number) => {
   if (!seconds) {
     return 0

@@ -53,6 +53,7 @@ const apiEndpoints = (serverUrl: string) => {
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
     course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
+    raceTime: getUrlV1('/leaderboards/{0}/starttime'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
@@ -125,6 +126,8 @@ export interface DataApi {
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
   requestCourse: (regattaName: string, raceName: string, fleet: String) => any
+  requestRaceTime: (regattaName: string, raceName: string, fleet: String) => any
+  updateRaceTime: (regattaName: string, raceName: string, fleet: String, data: object) => any
   startDeviceMapping: (leaderboardName: string, data: any) => any
   stopDeviceMapping: (leaderboardName: string, data: any) => any
   sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
@@ -214,7 +217,19 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         { dataSchema: boatSchema },
     ),
     requestCourse: (regattaName, raceName, fleet) => dataRequest(
-      endpoints.course({ pathParams: [regattaName, raceName, fleet] }),
+      endpoints.course({ pathParams: [regattaName, raceName, fleet] })
+    ),
+    requestRaceTime: (regattaName, raceName, fleet, secret) => dataRequest(
+      endpoints.raceTime({ pathParams: [regattaName], urlParams: {race_column: raceName, fleet, secret}})
+    ),
+    updateRaceTime: (regattaName, raceName, fleet, data, secret) => dataRequest(
+      endpoints.raceTime({
+        pathParams: [regattaName],
+        urlParams: {race_column: raceName, fleet, ...data, secret }}),
+      {
+        method: HttpMethods.PUT,
+        bodyType: 'x-www-form-urlencoded',
+      },
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),

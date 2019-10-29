@@ -1,4 +1,4 @@
-import { values, propEq, find } from 'ramda'
+import { values, propEq, find, identity } from 'ramda'
 import { EVENT_ENTITY_NAME } from 'api/schemas'
 import { getEntities, getEntityArrayByType, getEntityById } from './entity'
 import { createSelector } from 'reselect'
@@ -29,3 +29,7 @@ export const getSelectedEventInfo = createSelector(
         fleet: 'Default', // TODO: This has to be the real fleet, but it will work with most cases with 'Default'
       } || undefined,
   )
+
+export const getRaceTime = (leaderboard: string, raceName: string) =>
+  createSelector((state: any) =>
+    state.events.raceTimes[`${leaderboard}-${raceName}`], identity)

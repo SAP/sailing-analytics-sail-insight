@@ -1,6 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
+import { white, withDefaultFont, withDefaultBoldFont } from 'styles/compositions/text'
 
 export const lighterGray = '#C7C7C7'
 export const darkerGray = '#C5C5C5'
@@ -26,7 +27,7 @@ export default EStyleSheets.create({
     borderWidth: 0,
   },
   racesListContainer: {
-    backgroundColor: '#4B7B90'
+    backgroundColor: '#4B7B90',
   },
   raceItemContainer: {
     marginTop: 5,
@@ -38,5 +39,36 @@ export default EStyleSheets.create({
     alignItems: 'center',
     flexDirection: 'row',
     backgroundColor: 'white'
+  },
+
+  raceTimeContainer: {
+    paddingLeft: 5,
+    paddingRight: 5,
+    backgroundColor: '#123748',
+    height: 60,
+    width: 100,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+
+  raceTimeContainerWithTime: {
+    backgroundColor: '#FF6C52'
+  },
+
+  raceTimeText: {
+    ...white,
+    ...withDefaultFont,
+  },
+
+  raceTimeTextSet: {
+    fontSize: 20
+  },
+
+  raceNameText: {
+    ...withDefaultBoldFont,
+    marginLeft: 5,
+    marginRight: 5,
+    color: 'black',
+    fontSize: 20
   }
 })

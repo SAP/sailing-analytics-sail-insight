@@ -1,9 +1,11 @@
-import { __, compose, concat, map, merge, defaultTo, reduce, objOf, uncurryN, tap, always } from 'ramda'
+import { __, compose, concat, map, merge, defaultTo,
+  reduce, when, uncurryN, tap, always, isNil, unless,
+  prop } from 'ramda'
 
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
+import moment from 'moment/min/moment-with-locales'
 
-import Slider from '@react-native-community/slider'
 import Images from '@assets/Images'
 
 import I18n from 'i18n'
@@ -25,12 +27,16 @@ import {
 import IconText from 'components/IconText'
 import { overlayPicker, FramedNumber } from '../../session/common'
 
-import { fetchCourse, selectCourse } from 'actions/courses'
-import { selectRace } from 'actions/events'
+import { selectCourse } from 'actions/courses'
+import { selectRace, setRaceTime } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getCourseStateById } from 'selectors/course'
+import { getRaceTime } from 'selectors/event'
 import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
 
+import DatePicker from 'react-native-datepicker'
+
+import { dateTimeShortHourText } from 'helpers/date'
 import styles from './styles'
 
 const sliderSettings = {
@@ -57,7 +63,8 @@ const mapStateToProps = (state: any, props: any) => {
     races: compose(
       map((raceName: string) => ({
         raceName,
-        courseDefined: !!getCourseStateById(`${session.regattaName} - ${raceName}`)(state)
+        courseDefined: !!getCourseStateById(`${session.regattaName} - ${raceName}`)(state),
+        raceTime: getRaceTime(leaderboardName, raceName)(state)
       })),
       getRegattaPlannedRacesN(__, state),
       getSelectedRegatta)(
@@ -103,15 +110,43 @@ const defineLayoutButton = Component(props =>
     }))(
     text({}, props.item.courseDefined ? 'See Layout' : 'Define Layout')))
 
-const raceItem = Component(props =>
+const raceTime = Component((props: object) => compose(
+  fold(props),
+  view({ style: [styles.raceTimeContainer, props.item.raceTime.startTimeAsMillis && styles.raceTimeContainerWithTime] }),
+  concat(__, fromClass(DatePicker).contramap(always({
+    onDateChange: (value: number) => props.setRaceTime({
+      race: props.item.raceName,
+      raceTime: props.item.raceTime,
+      value
+    }),
+    date: moment(props.item.raceTime.startTimeAsMillis || new Date()),
+    androidMode: 'spinner',
+    mode: 'time',
+    hideText: true,
+    showIcon: false,
+    style: {position: 'absolute', width: 100, height: 60, top: 0, left: 0 },
+    customStyles: {
+      dateInput: {
+        height: 60,
+        width: 100,
+        borderWidth: 0,
+      }
+    },
+  }))),
+  concat(fromClass(IconText).contramap(merge({ source: Images.info.time, iconStyle: { tintColor: 'white' }}))),
+  text({ style: [styles.raceTimeText, props.item.raceTime.startTimeAsMillis && styles.raceTimeTextSet] }),
+  when(isNil, always('Set time')),
+  unless(isNil, dateTimeShortHourText))(
+  props.item.raceTime.startTimeAsMillis))
+
+const raceItem = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.raceItemContainer }),
     reduce(concat, nothing()))
   ([
-    fromClass(IconText).contramap(merge({ source: Images.info.time })),
-    text({}, defaultTo('', props.item.startDate)),
-    text({}, defaultTo('', props.item.raceName)),
+    raceTime,
+    text({ style: styles.raceNameText }, defaultTo('', props.item.raceName)),
     defineLayoutButton,
     arrowRight ]))
 
@@ -137,7 +172,7 @@ const detailsContainer = Component((props: Object) =>
 export default Component((props: Object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { fetchCourse, selectCourse, selectRace }),
+    connect(mapStateToProps, { selectCourse, selectRace, setRaceTime }),
     reduxForm({ form: EVENT_CREATION_FORM_NAME }),
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))

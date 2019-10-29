@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { selectRace, selectEvent } from 'actions/events'
+import { selectRace, selectEvent, updateRaceTime } from 'actions/events'
 
 const reducer = handleActions(
   {
@@ -13,6 +13,13 @@ const reducer = handleActions(
         ...state,
         selectedRace: action.payload,
     }),
+    [updateRaceTime as any]: (state: any = {}, action: any) => ({
+      ...state,
+      raceTimes: {
+        ...state.raceTimes,
+        ...action.payload
+      }
+    })
   },
   {},
 )

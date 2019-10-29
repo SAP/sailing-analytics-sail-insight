@@ -11,6 +11,8 @@ import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
+export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
+export const SET_RACE_TIME = 'SET_RACE_TIME'
 
 const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
   [RegattaType.OneDesign]: 'ONE_DESIGN',
@@ -58,3 +60,5 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
 
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)
+export const setRaceTime = createAction(SET_RACE_TIME)
+export const updateRaceTime = createAction(UPDATE_RACE_TIME)
