@@ -1,6 +1,6 @@
 import { __, compose, concat, map, merge, defaultTo,
   reduce, when, uncurryN, tap, always, isNil, unless,
-  prop } from 'ramda'
+  prop, isEmpty } from 'ramda'
 
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
@@ -55,20 +55,24 @@ const mapStateToProps = (state: any, props: any) => {
   const { leaderboardName } = getCustomScreenParamData(props)
   const session = getSession(leaderboardName)(state)
 
+  const races = compose(
+    map((raceName: string) => ({
+      raceName,
+      courseDefined: !!getCourseStateById(`${session.regattaName} - ${raceName}`)(state),
+      raceTime: getRaceTime(leaderboardName, raceName)(state)
+    })),
+    getRegattaPlannedRacesN(__, state),
+    getSelectedRegatta)(
+    state)
+
+  console.log('number of races', races.length)
+
   return {
     session,
     initialValues: {
-      [FORM_KEY_NUMBER_OF_RACES]: session.regatta && session.regatta.races.length
+      [FORM_KEY_NUMBER_OF_RACES]: races.length
     },
-    races: compose(
-      map((raceName: string) => ({
-        raceName,
-        courseDefined: !!getCourseStateById(`${session.regattaName} - ${raceName}`)(state),
-        raceTime: getRaceTime(leaderboardName, raceName)(state)
-      })),
-      getRegattaPlannedRacesN(__, state),
-      getSelectedRegatta)(
-      state)
+    races
   }
 }
 
@@ -79,10 +83,10 @@ const raceNumberSelector = Component((props: any) =>
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       style: { position: 'absolute', top: 0, width: 160, height: 80, color: 'white' },
-      selectedValue: Number(props.input.value),
+      selectedValue: when(isEmpty, always(props.meta.initial))(props.input.value),
       onValueChange: props.input.onChange,
     }))(
-    FramedNumber.contramap(always({ value: props.input.value }))))
+    FramedNumber.contramap(always({ value: props.input.value, foo: console.log(props) }))))
 
 const raceNumberFormField = reduxFormField({
   name: FORM_KEY_NUMBER_OF_RACES,

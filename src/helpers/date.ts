@@ -95,7 +95,7 @@ export const dateTimeText = (dateValue: string | number | Date) => {
 
 export const dateTimeShortHourText = (dateValue: string | number | Date) => {
   const supportedLocale = getSupportedLocale(I18n.locale)
-  return moment(dateValue).locale(supportedLocale).format('h:mm')
+  return moment(dateValue).locale(supportedLocale).format('HH:mm')
 }
 
 export const timeText = (seconds?: number) => {

@@ -8,7 +8,8 @@ export const darkerGray = '#C5C5C5'
 
 export default EStyleSheets.create({
   mainContainer: {
-    backgroundColor: '#1D3F4E'
+    backgroundColor: '#1D3F4E',
+    flex: 1
   },
   detailsContainer: {
     paddingLeft: 10
@@ -28,6 +29,7 @@ export default EStyleSheets.create({
   },
   racesListContainer: {
     backgroundColor: '#4B7B90',
+    flex: 1
   },
   raceItemContainer: {
     marginTop: 5,
