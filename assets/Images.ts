@@ -1,17 +1,27 @@
 
 export default {
+  defaults: {
+    background: require('./img/defaults/SignUp_Background.png'),
+    background_map: require('./img/tracking/TrackingMap_Background.png'),
+    background_empty: require('./img/session/LooksEmpty.png'),
+    app_logo: require('./img/defaults/AppLogo.png'),
+    ws_logo: require('./img/defaults/WorldSailingLogo.png'),
+    sap_logo: require('./img/defaults/SAP.png'),
+  },
   corporateIdentity: {
     sapSailingLogo: require('./img/app_icon_sap_us_sailing.png'),
     sapTagLine: require('./img/ci/logo-sap-tagline.png'),
   },
   header: {
-    sailors: require('./img/header_small.png'),
+    sailors: require('./img/header_sailors.png'), // require('./img/header_small.png'),
     boat: require('./img/boat_placeholder.png'),
-    team: require('./img/team_placeholder.png'),
+    team: require('./img/competitor_placeholder.png'), // require('./img/team_placeholder.png'),
   },
   actions: {
-    add: require('./img/icons/icon-plus.png'),
-    decrease: require('./img/icons/icon-minus.png'),
+    // add: require('./img/icons/icon-plus.png'),
+    add: require('./img/new_icons/add_icon_circle.png'),
+    // decrease: require('./img/icons/icon-minus.png'),
+    decrease: require('./img/new_icons/minus_icon_circle.png'),
     settings: require('./img/icons/icon-settings.png'),
     recordColored: require('./img/icons/icon-start.png'), // TODO: replace
     pen: require('./img/icons/icon-edit.png'),
@@ -19,15 +29,20 @@ export default {
     visibilityOff: require('./img/icons/icon-visibility-off.png'),
     help: require('./img/icons/icon-help.png'),
     arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
+    arrowLeft: require('./img/icons/icon-arrow-chevron-left.png'),
     close: require('./img/icons/icon-cross.png'),
     expandLess: require('./img/icons/icon-arrow-expand-less.png'),
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
-    pickImage: require('./img/icons/icon-camera.png'),
+    pickImage: require('./img/new_icons/camera.png'), // require('./img/icons/icon-camera.png'),
     delete: require('./img/icons/icon-delete.png'),
     share: require('./img/icons/icon-open-in-new.png'),
+    plus: require('./img/icons/plus.png'),
+    arrowUp: require('./img/new_icons/arrow-chevron-up.png'),
+    arrowDown: require('./img/new_icons/arrow-chevron-down.png'),
   },
   tabs: {
-    tracking: require('./img/icons/icon-start.png'),
+    // tracking: require('./img/icons/icon-start.png'),
+    tracking: require('./img/new_icons/tracking_icon.png'),
     account: require('./img/icons/icon-account-outlined.png'),
     sessions: require('./img/icons/icon-session.png'),
     join: require('./img/icons/icon-scan.png'),
@@ -52,5 +67,27 @@ export default {
     waveLoadingIndicator: require('./img/animations/wave_loading.json'),
     waveLoadingIndicatorGif: require('./img/animations/wave_loading.gif'),
     waveLoadingIndicatorBackground: require('./img/animations/wave_loading_background.png'),
+  },
+  courseConfig: {
+    roundingDirectionLeft: require('./img/icons/icon-rounding-direction-left.png'),
+    roundingDirectionRight: require('./img/icons/icon-rounding-direction-right.png'),
+    arrowUp: require('./img/icons/arrow-up.png'),
+    tracker: require('./img/icons/icon-tracker.png'),
+    location: require('./img/icons/icon-location.png'),
+    gatePassing: require('./img/icons/gate-passing.png'),
+    linePassing: require('./img/icons/line-passing.png'),
+    deleteIcon: require('./img/icons/delete-icon.png'),
+    gateIcon: require('./img/icons/gate-icon.png'),
+    markIcon: require('./img/icons/mark-icon.png'),
+  },
+  events: {
+    placeholder_event_pic: require('./img/events/placeholder_eventlist.png'),
+  },
+  markInventory: {
+    markIcon: require('./img/icons/mark-icon-small.png'),
+  },
+  account: {
+    account_placeholder: require('./img/account/account_placeholder.png'),
+    account_gradient: require('./img/account/gradient.png'),
   },
 }

@@ -95,13 +95,14 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
           <View style={[styles.container, containerStyle]}>
             <View
               style={[
-                styles.inputContainer,
                 showTopPlaceholder ? styles.containerWithTitle : styles.containerNoTitle,
+                styles.inputContainer,
+                additionalProps.inputContainerStyle
               ]}
             >
               {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
               <ComponentType
-                style={[styles.input, heightStyle]}
+                style={[styles.input, heightStyle, additionalProps.inputStyle]}
                 onContentSizeChange={this.contentSizeChanged}
                 onChangeText={this.onChangeText}
                 ref={this.handleInputRef}

@@ -1,3 +1,4 @@
+import { darkerGray } from 'containers/session/BasicsSetup/styles';
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
@@ -14,6 +15,11 @@ export default EStyleSheet.create({
   inputContainer: {
     borderWidth: 0,
     marginBottom: 0,
+  },
+  input: {
+    color: 'black',
+    borderBottomWidth: 1,
+    borderBottomColor: darkerGray,
   },
   list: {
     backgroundColor: 'white',

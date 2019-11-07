@@ -15,7 +15,7 @@ export default EStyleSheet.create({
     fontSize: '$regularFontSize',
   },
   separator: {
-    height: 4,
+    height: 0,
     width: 4,
   },
 })

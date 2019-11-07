@@ -1,7 +1,9 @@
 import { difference, find, get, sortBy } from 'lodash'
 import React from 'react'
 import {
+  Dimensions,
   FlatList,
+  Image,
   ListRenderItemInfo,
   TouchableHighlight,
   View,
@@ -17,18 +19,18 @@ import { getTrackedLeaderboard } from 'selectors/leaderboard'
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import LineSeparator from 'components/LineSeparator'
 import Text from 'components/Text'
-import TrackingProperty from 'components/TrackingProperty'
+import TrackingPropertyReverse from 'components/TrackingPropertyReverse'
 import ColumnValue from './ColumnValue'
 import MyColumnValue from './MyColumnValue'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import { container } from 'styles/commons'
+import { $smallSpacing } from 'styles/dimensions'
+import Images from '../../../../assets/Images'
 import styles from './styles'
 
 export const EMPTY_VALUE = '-'
-
-const TRIANGLE_DOWN = '▼'
 
 export enum ColumnValueType {
   GapToLeader = 'text_leaderboard_column_gap',
@@ -48,6 +50,11 @@ const Seperator = () => {
   )
 }
 
+const TRIANGLE_UP = () => {
+  return (
+    <Image source={Images.actions.arrowUp} />
+  )
+}
 class Leaderboard extends React.Component<{
   trackedCheckInCompetitorId: string | undefined
   leaderboard: LeaderboardCompetitorCurrentTrack[]
@@ -83,18 +90,28 @@ class Leaderboard extends React.Component<{
     return (
       <View style={[container.main]}>
         <ConnectivityIndicator style={styles.connectivity} />
-        <View style={[container.mediumHorizontalMargin, styles.container]}>
+        <View style={styles.container}>
           <View style={styles.propertyRow}>
-            <View>
-              <TrackingProperty
+            <View style={styles.leftPropertyContainer}>
+              <TrackingPropertyReverse
+                titleStyle={styles.rankTitle}
+                valueStyle={styles.rankValue}
                 title={I18n.t('text_leaderboard_my_rank')}
                 value={(rank && String(rank)) || EMPTY_VALUE}
               />
             </View>
             <View style={[styles.rightPropertyContainer]}>
+              <MyColumnValue
+                selectedColumn={selectedColumn}
+                competitorData={myCompetitorData}
+                comparedCompetitorData={comparedCompetitorData}
+                fontSize={56}
+                rankingMetric={rankingMetric}
+              />
               <ModalDropdown
                 options={difference(Object.values(ColumnValueType), [ColumnValueType.GapToCompetitor])}
                 onSelect={this.onDropdownSelect}
+                adjustFrame={this.renderAdjustFrame}
                 renderRow={this.renderDropdownRow}
               >
                 <Text
@@ -102,21 +119,13 @@ class Leaderboard extends React.Component<{
                   numberOfLines={1}
                   ellipsizeMode="tail"
                 >
-                  {`${columnText}${TRIANGLE_DOWN}`}
+                  {`${columnText} `}<TRIANGLE_UP />
                 </Text>
               </ModalDropdown>
-              <MyColumnValue
-                selectedColumn={selectedColumn}
-                competitorData={myCompetitorData}
-                comparedCompetitorData={comparedCompetitorData}
-                fontSize={32}
-                rankingMetric={rankingMetric}
-              />
             </View>
           </View>
         </View>
         <View style={[styles.listContainer]}>
-          <LineSeparator style={{ backgroundColor: '#000000', height: 2 }} />
           <FlatList data={leaderboard} renderItem={this.renderItem} />
         </View>
       </View>
@@ -138,9 +147,16 @@ class Leaderboard extends React.Component<{
     })
   }
 
+  private renderAdjustFrame = (propertyStyle: any) => {
+    propertyStyle.left = $smallSpacing
+    propertyStyle.width = Dimensions.get('window').width - 2 *  $smallSpacing
+    propertyStyle.height = 222
+    return propertyStyle
+  }
+
   private renderDropdownRow = (option: any) => (
     <Text style={[styles.dropdownRowText]}>
-      {I18n.t(option).toUpperCase()}
+      {I18n.t(option)}
     </Text>
   )
 
@@ -167,7 +183,7 @@ class Leaderboard extends React.Component<{
               ]}
             >
               <View style={[styles.textContainer]}>
-                <Text style={[styles.rankText]}>{rank || EMPTY_VALUE}</Text>
+                <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
                 <Flag style={[styles.flag]} code={countryCode} size={24} />
                 <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
               </View>
@@ -175,6 +191,7 @@ class Leaderboard extends React.Component<{
                 selectedColumn={selectedColumn}
                 competitorData={item}
                 rankingMetric={rankingMetric}
+                fontSize={24}
               />
             </View>
           </View>

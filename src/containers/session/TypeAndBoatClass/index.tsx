@@ -1,0 +1,93 @@
+import { findIndex } from 'lodash'
+import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __, merge, tap } from 'ramda'
+
+import Images from '@assets/Images'
+import { Component, fold, fromClass, nothing, nothingAsClass,
+  recomposeBranch as branch } from 'components/fp/component'
+import { text, view } from 'components/fp/react-native'
+import { field as reduxFormField } from 'components/fp/redux-form'
+import IconText from 'components/IconText'
+import {
+  FORM_KEY_BOAT_CLASS,
+  FORM_KEY_REGATTA_TYPE,
+} from 'forms/eventCreation'
+import { RegattaType } from 'models/EventCreationData'
+import SwitchSelector from 'react-native-switch-selector'
+import ModalDropdown from 'react-native-modal-dropdown'
+import FormBoatClassInput from 'components/form/FormBoatClassInput'
+
+import { $DarkBlue, $MediumBlue } from 'styles/colors'
+import styles from './styles'
+
+const isOneDesignSelected = propEq('regattaType', RegattaType.OneDesign)
+const isHandicapSelected = propEq('regattaType', RegattaType.Handicap)
+const nothingIfOneDesignSelected = branch(isOneDesignSelected, nothingAsClass)
+const nothingIfHandicapSelected = branch(isHandicapSelected, nothingAsClass)
+
+const regattaTypeOptions = [
+  { label: 'ONE DESIGN', value: RegattaType.OneDesign },
+  { label: 'HANDICAP', value: RegattaType.Handicap },
+]
+
+const regattaTypeSelector = fromClass(SwitchSelector).contramap((props: any) => ({
+  options: regattaTypeOptions,
+  initial: when(gt(0), always(0))(
+    findIndex(regattaTypeOptions, ['value', props.input.value]),
+  ),
+  onPress: props.input.onChange,
+  backgroundColor: $MediumBlue,
+  selectedColor: 'white',
+  buttonColor: $DarkBlue,
+  textColor: 'white',
+  borderColor: 'white',
+  borderRadius: 5,
+  hasPadding: true,
+  height: 55,
+  textStyle: styles.regattaTypeSelectorText,
+  selectedTextStyle: styles.regattaTypeSelectorText,
+  style: styles.switchSelector
+}))
+
+const regattaTypeInput = reduxFormField({
+  name: FORM_KEY_REGATTA_TYPE,
+  component: regattaTypeSelector.fold,
+})
+
+const boatClassInput = Component(props => compose(
+  fold(props),
+  // Due to the boat class input being redrawn each time,
+  // having the nothingIfHandicapSelected, the form unregisters
+  // the boatClass field. Manually triggering change solves it,
+  // and validates the boatClass input value as well.
+  tap(() => props.change('fixForDynamicBoatClassInput', Date.now())))(
+    reduxFormField({
+      label: 'Boat class (autocomplete)',
+      name: FORM_KEY_BOAT_CLASS,
+      component: fromClass(FormBoatClassInput)
+        .contramap(merge({ ...props, containerStyle: styles.boatClassInput }))
+        .fold,
+    })))
+
+const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLeft({
+  onSelect: (index: any, value: any) => props.input.onChange(value),
+  defaultValue: props.input.value,
+  defaultIndex: props.options.indexOf(props.input.value),
+}, props))
+
+// const ratingSystemDropdown = reduxFormField({
+//   name: FORM_KEY_RATING_SYSTEM,
+//   component: modalDropdown.fold,
+//   options: Object.values(HandicapRatingSystem),
+// })
+
+export default Component((props: Object) =>
+  compose(
+    fold(props),
+    concat(__, view({ style: styles.containerAngledBorder }, nothing())),
+    view({ style: styles.container }),
+    reduce(concat, nothing()))([
+      text({ style: styles.sectionHeaderStyle }, 'REGATTA DETAILS'),
+      regattaTypeInput,
+      nothingIfHandicapSelected(boatClassInput),
+      // nothingIfOneDesignSelected(ratingSystemDropdown),
+    ]))

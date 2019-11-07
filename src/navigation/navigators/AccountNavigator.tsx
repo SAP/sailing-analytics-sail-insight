@@ -31,7 +31,7 @@ export default createStackNavigator(
         />
       ),
       navigationOptions: {
-        title: I18n.t('caption_tab_userprofile'),
+        title: I18n.t('tilte_Account'),
       },
     },
     [Screens.TeamList]: {

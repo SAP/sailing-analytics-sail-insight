@@ -14,6 +14,7 @@ import { text } from 'styles/commons'
 import I18n from '../../../i18n'
 import { $importantHighlightColor, $secondaryTextColor } from '../../../styles/colors'
 import styles from './styles'
+import { $smallSpacing } from 'styles/dimensions'
 
 interface State {
   countryList: any,
@@ -61,6 +62,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
       highlight,
       meta: { touched: showError, error },
       style,
+      containerStyle,
       ...additionalProps
     } = this.props
 
@@ -73,7 +75,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     const highlightStyle = isHighlighted ? text.error : undefined
     return (
       <View style={style}>
-        <View style={[styles.container]}>
+        <View style={[styles.container, containerStyle]}>
             <View
               style={[
                 styles.inputContainer,
@@ -90,12 +92,12 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                   value={stateText}
                   onValueChange={this.onValueChange}
                   placeholderTextColor={isHighlighted ? $importantHighlightColor : $secondaryTextColor}
-                  style={{
+                  style={[{
                     inputIOS: styles.inputIOS,
                     inputAndroid: styles.inputAndroid,
                     underline: styles.underline,
                     icon: styles.icon,
-                  }}
+                  }, containerStyle]}
                   {...additionalProps}
               />
             </View>

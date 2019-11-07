@@ -15,12 +15,12 @@ import { getEventPreviewImageUrl } from 'services/SessionService'
 import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
-import Text from 'components/Text'
 import TrackingContext from 'components/session/TrackingContext'
+import Text from 'components/Text'
 
-import { $secondaryTextColor } from 'styles/colors'
-import { button, container, image, text } from 'styles/commons'
+import { button, text } from 'styles/commons'
 import styles from './styles'
+import { $smallSpacing } from 'styles/dimensions';
 
 
 class SessionInfoDisplay extends React.Component<ViewProps & {
@@ -60,17 +60,21 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
     const eventImage = getEventPreviewImageUrl(session.event)
     return (
       <View style={style}>
-        {
-          eventImage &&
+        <View style={styles.imageContainer}>
           <Image
-            style={eventImageSize === 'large' ? image.headerMediumLarge : image.headerMedium}
-            source={eventImage}
+            style={styles.image}
+            source={eventImage ? eventImage : Images.events.placeholder_event_pic}
           />
-        }
+        </View>
         <View style={styles.detailContainer}>
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
-              <Text style={text.itemName}>
+              <Text
+                style={[text.itemName, styles.itemText]}
+                numberOfLines={1}
+                allowFontScaling={false}
+                ellipsizeMode="tail"
+              >
                 {
                   session.userStrippedDisplayName ||
                   (session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name))
@@ -97,32 +101,30 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
           </View>
           <View style={[styles.innerContainer, styles.textMargins]}>
             <View style={{ flex: 1 }}>
-              <View style={[container.rowCentered]}>
+              <View style={{ flexDirection: 'column' }}>
                 <IconText
                   style={[styles.infoItem, session.trackingContext === 'BOAT' ? styles.infoItemFull : undefined]}
                   source={Images.info.boat}
-                  iconTintColor={$secondaryTextColor}
-                  textStyle={{ flex: 1 }}
+                  iconTintColor={'#C5C5C5'} // $secondaryTextColor}
                   alignment="horizontal"
                 >
                   {boatInfoText}
                 </IconText>
-                <TrackingContext session={session} withoutBoat={true} />
+                <TrackingContext textStyle={{ color: '#000000' }} session={session} withoutBoat={true} />
+                {
+                  session.event &&
+                  session.event.venue &&
+                  session.event.venue.name &&
+                  session.event.venue.name !== 'default' &&
+                  <IconText
+                    source={Images.info.location}
+                    iconTintColor={'#C5C5C5'} // $secondaryTextColor}
+                    alignment="horizontal"
+                  >
+                    {session.event && session.event.venue && session.event.venue.name}
+                  </IconText>
+                }
               </View>
-              {
-                session.event &&
-                session.event.venue &&
-                session.event.venue.name &&
-                session.event.venue.name !== 'default' &&
-                <IconText
-                  style={styles.textMargins}
-                  source={Images.info.location}
-                  iconTintColor={$secondaryTextColor}
-                  alignment="horizontal"
-                >
-                  {session.event && session.event.venue && session.event.venue.name}
-                </IconText>
-              }
             </View>
             <ImageButton
               source={Images.actions.recordColored}
@@ -132,6 +134,11 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
               onPress={this.onTrackingPress}
             />
           </View>
+        </View>
+        <View style={styles.arrowContainer}>
+          <Image
+            source={Images.actions.arrowRight}
+          />
         </View>
       </View>
     )

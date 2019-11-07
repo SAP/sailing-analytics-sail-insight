@@ -6,6 +6,24 @@ export default EStyleSheets.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  cardsContainer: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    // padding: 10,
+    backgroundColor: '$primaryBackgroundColor',
+  },
+  card: {
+    padding: 12,
+    paddingRight: 5,
+    backgroundColor: '#FAFAFA',
+    flexDirection: 'row',
+    margin: 10,
+    marginTop: 0,
+  },
+  cardContent: {
+    flex: 1,
+    marginLeft: 10,
+  },
   sectionHeaderContainer: {
     backgroundColor: '$secondaryBackgroundColor',
   },

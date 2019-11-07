@@ -9,8 +9,9 @@ import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { getStore } from 'store'
 
 import IconText from 'components/IconText'
-import CheckIn from 'containers/session/CheckIn'
+// import CheckIn from 'containers/session/CheckIn'
 import Sessions from 'containers/session/Sessions'
+import MarkInventory from 'containers/Inventory/MarkInventory'
 
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
@@ -34,6 +35,10 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
       break
     case Screens.Account:
       icon = Images.tabs.account
+      break
+    
+    case Screens.Inventory:
+      icon = Images.tabs.sessions
       break
   }
 
@@ -81,18 +86,14 @@ export default createBottomTabNavigator(
         tabBarOptions: {
           activeTintColor: $primaryTextColor,
           inactiveTintColor: $secondaryTextColor,
-          indicatorStyle: {
-            backgroundColor: 'white',
-            height: 3,
-          },
           style: {
-            backgroundColor: 'white',
+            backgroundColor: '#123748', // 'white',
           },
         },
       },
     ),
     // [Screens.TrackingSetupAction]: TrackingSetup,
-    [Screens.CheckIn]: CheckIn,
+    [Screens.Inventory]: MarkInventory.fold,
     [Screens.Account]: AccountNavigator,
   },
   {
@@ -104,7 +105,7 @@ export default createBottomTabNavigator(
       inactiveTintColor: $secondaryTextColor,
       style: {
         height: 56,
-        backgroundColor: 'white',
+        backgroundColor: '#123748', // 'white',
       },
       showLabel: false,
       showIcon: true,

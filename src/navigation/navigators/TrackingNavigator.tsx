@@ -14,7 +14,8 @@ export default createStackNavigator(
       screen: Tracking,
       navigationOptions: {
         gesturesEnabled: false,
-        header: null,
+        // header: null,
+        title: I18n.t('title_tracking')
       },
     },
     [Screens.SetWind]: {

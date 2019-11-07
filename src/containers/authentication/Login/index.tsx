@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash'
 import React from 'react'
-import { Image, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
@@ -17,11 +17,6 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
 
-import { button, container, image, text } from 'styles/commons'
-import { registration } from 'styles/components'
-import { $extraSpacingScrollContent } from 'styles/dimensions'
-import IconText from '../../../components/IconText'
-import { $primaryButtonColor } from '../../../styles/colors'
 import styles from './styles'
 
 
@@ -60,21 +55,17 @@ class Login extends TextInputForm<{
   public render() {
     const { error, isLoading } = this.state
     return (
-        <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-          <View style={container.stretchContent}>
-            <Image style={image.headerMedium} source={Images.header.sailors}/>
-            <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
-            <View style={[registration.topContainer(), styles.textContainer]}>
-              <Text style={registration.claim()}>
-                <Text>{I18n.t('text_login_claim_01')}</Text>
-                <Text style={text.claimHighlighted}>{I18n.t('text_login_claim_02')}</Text>
-              </Text>
-            </View>
+      <ImageBackground source={Images.defaults.background} style={{ width: '100%', height: '100%' }}>
+        <ScrollContentView style={styles.scrollContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.claim}>{I18n.t('text_login').toUpperCase()}</Text>
           </View>
-          <View style={registration.bottomContainer()}>
+          <View style={styles.inputField}>
             <TextInput
                 value={this.state.username}
                 onChangeText={this.onUsernameChange}
+                style={styles.userName}
+                containerStyle={styles.inputContainer}
                 placeholder={I18n.t('text_placeholder_your_username')}
                 keyboardType={'default'}
                 returnKeyType="next"
@@ -86,6 +77,7 @@ class Login extends TextInputForm<{
                 value={this.state.password}
                 onChangeText={this.onPasswordChange}
                 style={styles.password}
+                containerStyle={styles.inputContainer}
                 placeholder={I18n.t('text_placeholder_enter_password')}
                 keyboardType={'default'}
                 returnKeyType="go"
@@ -93,28 +85,26 @@ class Login extends TextInputForm<{
                 secureTextEntry={true}
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}
             />
-            {error && <Text style={registration.errorText()}>{error}</Text>}
+            <TouchableOpacity style={styles.forgotPassword} onPress={this.onPasswordResetPress}>
+              <Text style={{ color: '#FFFFFF' }}>
+                {I18n.t('caption_forgot_password')}
+              </Text>
+            </TouchableOpacity>
+            {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text></View>}
+
+          </View>
+          <View style={styles.bottomButtonField}>
             <TextButton
-                style={registration.nextButton()}
-                textStyle={button.actionText}
+                style={styles.loginButton}
+                textStyle={styles.loginButtonText}
                 onPress={this.onSubmit}
                 isLoading={isLoading}
             >
-              {I18n.t('caption_lets_go')}
+              {I18n.t('caption_login').toUpperCase()}
             </TextButton>
-
-            <TouchableOpacity style={styles.forgotPassword} onPress={this.onPasswordResetPress}>
-              <IconText
-                  source={Images.actions.help}
-                  iconTintColor={$primaryButtonColor}
-                  textStyle={button.textButtonSecondaryText}
-                  alignment="horizontal"
-              >
-                {I18n.t('caption_forgot_password')}
-              </IconText>
-            </TouchableOpacity>
           </View>
         </ScrollContentView>
+      </ImageBackground>
     )
   }
 

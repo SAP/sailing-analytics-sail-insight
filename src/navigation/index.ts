@@ -7,6 +7,7 @@ import * as Screens from './Screens'
 export const navigateBack = NavigationService.navigateBack
 export const initialNavigation = () => NavigationService.navigate(Screens.App)
 export const navigateToMain = () => NavigationService.navigate(Screens.Main)
+export const navigateToMainTabs = () => NavigationService.navigate(Screens.MainTabs)
 export const navigateToQRScanner = () => NavigationService.navigate(Screens.QRScanner)
 export const navigateToCheckIn = () => NavigationService.navigate(Screens.CheckIn)
 export const navigateToAppSettings = () => NavigationService.navigate(Screens.AppSettings)
@@ -27,7 +28,12 @@ export const navigateToManeuver = (data?: Maneuver) => NavigationService.navigat
 export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
 export const navigateToLeaderboard = () => NavigationService.navigate(Screens.Leaderboard)
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
-export const navigateToNewSession = (data?: TrackingSession) => NavigationService.navigate(Screens.NewSession, { data })
+export const navigateToRaceDetails = (data: string) => NavigationService.navigate(Screens.RaceDetails, { data })
+export const navigateToRaceSetup = (data: string) => NavigationService.navigate(Screens.RaceSetup, { data })
+export const navigateToRaceCourseLayout = () => NavigationService.navigate(Screens.RaceCourseLayout)
+export const navigateToCourseGeolocation = (data: object) => NavigationService.navigate(Screens.CourseGeolocation, { data })
+export const navigateToCourseTrackerBinding = (data: object) => NavigationService.navigate(Screens.CourseTrackerBinding, { data })
+export const navigateToEventCreation = () => NavigationService.navigate(Screens.EventCreation)
 export const navigateToJoinRegatta = (checkInData: CheckIn, alreadyJoined: boolean) =>
   NavigationService.navigate(Screens.JoinRegatta, { data: { checkInData, alreadyJoined } })
 export const navigateToTrackDetails = (url?: string, eventName?: string) =>

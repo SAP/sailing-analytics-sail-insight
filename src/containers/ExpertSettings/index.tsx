@@ -51,16 +51,15 @@ class ExpertSettings extends TextInputForm<Props> {
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
           <Image style={image.headerMedium} source={Images.header.sailors}/>
-          <View style={[registration.topContainer(), styles.textContainer]}>
-            <Text style={registration.claim()}>
-              <Text>{I18n.t('text_development_claim_01')}</Text>
-              <Text style={text.claimHighlighted}>{I18n.t('text_development_claim_02')}</Text>
-            </Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.claim}>{I18n.t('text_development_claim_01')}</Text>
+            <Text style={[styles.claim, text.claimHighlighted]}>{I18n.t('text_development_claim_02')}</Text>
           </View>
         </View>
         <View style={container.largeHorizontalMargin}>
           <EditItemSwitch
             style={styles.item}
+            titleStyle={{ color: 'white' }}
             title={I18n.t('text_leaderboard_enabled_setting')}
             switchValue={this.props.leaderboardEnabled}
             onSwitchValueChange={this.props.updateLeaderboardEnabledSetting}
@@ -69,6 +68,7 @@ class ExpertSettings extends TextInputForm<Props> {
         <View style={container.largeHorizontalMargin}>
           <EditItemSwitch
             style={styles.item}
+            titleStyle={{ color: 'white' }}
             title={I18n.t('text_verbose_logging')}
             switchValue={this.props.verboseLogging}
             onSwitchValueChange={this.props.updateVerboseLoggingSetting}
@@ -76,8 +76,8 @@ class ExpertSettings extends TextInputForm<Props> {
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
           <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
+            style={styles.button}
+            textStyle={styles.buttonText}
             onPress={this.onLogToEmailSubmit}
             isLoading={this.state.emailLoading}
           >
@@ -86,6 +86,8 @@ class ExpertSettings extends TextInputForm<Props> {
         </View>
         <View style={registration.bottomContainer()}>
           <Field
+            style={styles.textInput}
+            containerStyle={styles.inputContainer}
             label={I18n.t('text_base_server')}
             name={expertSettingsForm.FORM_KEY_SERVER_URL}
             component={FormTextInput}
