@@ -68,7 +68,6 @@ export const FramedNumber = Component(props => compose(
   map(compose(FramedNumberItem.contramap, always, objOf('value'))),
   when(compose(equals(1), length), prepend('0')),
   split(''),
-  tap(() => console.log('framed number', props.value)),
   toString)(
   props.value))
 

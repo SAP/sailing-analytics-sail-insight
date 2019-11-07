@@ -9,6 +9,7 @@ import { CheckIn } from 'models'
 import EventCreationData, { RegattaType } from 'models/EventCreationData'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
+export const CREATE_EVENT = 'CREATE_EVENT'
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
 export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
@@ -42,6 +43,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     secret,
     trackPrefix: 'R',
     leaderboardName: eventData.name,
+    numberOfRaces: eventData.numberOfRaces
   })
 }
 
@@ -56,6 +58,9 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
       updateCheckIn(data),
     ),
+    ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
+      createAction(CREATE_EVENT)(data),
+    )
   ])
 
 export const selectEvent = createAction(SELECT_EVENT)

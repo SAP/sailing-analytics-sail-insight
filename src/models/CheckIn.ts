@@ -85,6 +85,7 @@ export interface CheckInUpdate {
   currentRaceName?: string
   currentFleet?: string
   trackPrefix?: string
+  numberOfRaces?: number
   secret?: string
   trackingContext?: TrackingContext
 }

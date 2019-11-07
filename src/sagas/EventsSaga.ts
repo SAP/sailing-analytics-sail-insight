@@ -1,6 +1,6 @@
-import { when, isEmpty, always, prop, compose, isNil } from 'ramda'
+import { when, isEmpty, always, prop, compose, isNil, map, range, inc, concat, toString } from 'ramda'
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
-import { SELECT_EVENT, SET_RACE_TIME } from 'actions/events'
+import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME } from 'actions/events'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getUserInfo } from 'selectors/auth'
@@ -61,7 +61,21 @@ function* setRaceTime({ payload }: any) {
   })
 }
 
+function* createEvent({ payload: { payload: data} }: any) {
+  const api = dataApi(data.serverUrl)
+
+  const races = compose(
+    map(compose(concat('R'), toString)),
+    range(1),
+    inc)(
+    data.numberOfRaces)
+
+  yield all(races.map(race =>
+    call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
+}
+
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventFlow)
     yield takeEvery(SET_RACE_TIME, setRaceTime)
+    yield takeEvery(CREATE_EVENT, createEvent)
 }

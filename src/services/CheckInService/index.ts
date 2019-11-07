@@ -136,8 +136,9 @@ export const eventCreationResponseToCheckIn = (
   regattaName: response.regatta,
   isTraining: false,
   serverUrl: getApiServerUrl(),
-  isSelfTracking: true,
+  //isSelfTracking: true,
   trackPrefix: additionalProperties && additionalProperties.trackPrefix,
   secret: additionalProperties && additionalProperties.secret,
+  numberOfRaces: additionalProperties && additionalProperties.numberOfRaces
 } as CheckIn)
 

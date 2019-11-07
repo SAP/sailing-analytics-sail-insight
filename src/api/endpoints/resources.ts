@@ -55,6 +55,7 @@ const apiEndpoints = (serverUrl: string) => {
     course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
     raceTime: getUrlV1('/leaderboards/{0}/starttime'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
+    denoteRaceForTracking: getUrlV1('/leaderboards/{0}/denoteForTracking'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
     registerCompetitorToRegatta: getUrlV1('/regattas/{0}/competitors/{1}/add'),
@@ -128,6 +129,7 @@ export interface DataApi {
   requestCourse: (regattaName: string, raceName: string, fleet: String) => any
   requestRaceTime: (regattaName: string, raceName: string, fleet: String) => any
   updateRaceTime: (regattaName: string, raceName: string, fleet: String, data: object) => any
+  denoteRaceForTracking: (leaderboardName: string, raceName: string, fleet: string) => any
   startDeviceMapping: (leaderboardName: string, data: any) => any
   stopDeviceMapping: (leaderboardName: string, data: any) => any
   sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
@@ -230,6 +232,14 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         method: HttpMethods.PUT,
         bodyType: 'x-www-form-urlencoded',
       },
+    ),
+    denoteRaceForTracking: (leaderboardName, raceName, fleet) => dataRequest(
+      endpoints.denoteRaceForTracking({
+        pathParams: [leaderboardName],
+        urlParams: { raceColumnName: raceName, raceName, fleetName: fleet }}),
+      {
+        method: HttpMethods.POST
+      }
     ),
     startDeviceMapping: deviceMapping(endpoints.startDeviceMapping),
     stopDeviceMapping: deviceMapping(endpoints.endDeviceMapping),
