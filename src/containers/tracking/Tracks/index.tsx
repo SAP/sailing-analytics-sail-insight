@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { openTrackDetails } from 'actions/navigation'
 import { listKeyExtractor } from 'helpers/utils'
-import { Race } from 'models'
+import { Race, Session } from 'models'
 import { getUserRaces } from 'selectors/race'
 import { container } from 'styles/commons'
 
@@ -13,10 +13,12 @@ import TrackItem from 'components/session/TrackItem'
 
 class Tracks extends React.Component<{
   tracks: Race[],
-  openTrackDetails: (race: Race) => void,
+  openTrackDetails: (race: Race, session?: Session) => void,
 } > {
 
   public onTrackPress = (race: Race) => () => {
+    // openTrackDetails requires a Session object to use the event name
+    // for the share link
     this.props.openTrackDetails(race)
   }
 

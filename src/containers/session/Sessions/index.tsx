@@ -1,9 +1,9 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { ViewProps } from 'react-native'
+import { TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
-import { navigateToNewSession } from 'navigation'
+import { navigateToNewSession, navigateToQRScanner, navigateToSessionDetail } from 'navigation'
 
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
@@ -11,6 +11,7 @@ import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
 
 import { authBasedNewSession } from 'actions/auth'
+import { selectEvent } from 'actions/events'
 import { CheckIn, Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
@@ -18,7 +19,13 @@ import { getFilteredSessionList } from 'selectors/session'
 import AddButton from 'components/AddButton'
 import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import FloatingComponentList from 'components/FloatingComponentList'
+import IconText from 'components/IconText'
+import ScrollContentView from 'components/ScrollContentView'
 import SessionItem from 'components/session/SessionItem'
+import TextButton from 'components/TextButton'
+import { button, container } from 'styles/commons'
+import Images from '../../../../assets/Images'
+import styles from './styles'
 
 
 @connectActionSheet
@@ -27,6 +34,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   sessions: Session[],
   startTracking: StartTrackingAction,
   authBasedNewSession: () => void,
+  selectEvent: any,
 } > {
 
   public state = {
@@ -38,12 +46,14 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public onTrackingPress = (checkIn: CheckIn) => () => this.props.startTracking(checkIn)
+  public onSessionItemPress = (checkIn: CheckIn) => () => {
+    this.props.selectEvent(checkIn)
+    navigateToSessionDetail(checkIn.leaderboardName)
+  }
 
   public renderAddItem = () => (
-    <AddButton
-      onPress={this.props.authBasedNewSession}
-    >
-      {I18n.t('caption_new_session')}
+    <AddButton onPress={this.props.authBasedNewSession}>
+      {I18n.t('session_create_new_event').toUpperCase()}
     </AddButton>
   )
 
@@ -51,18 +61,54 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     return <EmptySessionsHeader/>
   }
 
-  public renderItem = ({ item }: any) => {
-    return <SessionItem onTrackingPress={this.onTrackingPress(item)} session={item}/>
+  public renderItem = ({ item }: any) => (
+      <SessionItem
+        style={styles.cardsContainer}
+        onTrackingPress={this.onTrackingPress(item)}
+        onItemPress={this.onSessionItemPress(item)}
+        session={item}
+      />
+  )
+
+  public onQRPress = () => {
+    navigateToQRScanner()
   }
 
   public render() {
     return (
-      <FloatingComponentList
-        data={this.props.sessions}
-        ListHeaderComponent={this.renderHeader}
-        renderItem={this.renderItem}
-        renderFloatingItem={this.renderAddItem}
-      />
+      <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
+        <ScrollContentView style={styles.scrollContainer}>
+          <TouchableOpacity
+            style={styles.createButton}
+            onPress={this.props.authBasedNewSession}
+          >
+            <IconText
+              source={Images.actions.add}
+              iconStyle={styles.createButtonIcon}
+              textStyle={styles.createButtonText}
+              iconTintColor="white"
+              alignment="horizontal"
+            >
+              {I18n.t('session_create_new_event').toUpperCase()}
+            </IconText>
+          </TouchableOpacity>
+          <FloatingComponentList
+            style={styles.list}
+            data={this.props.sessions}
+            ListHeaderComponent={this.renderHeader}
+            renderItem={this.renderItem}
+          />
+        </ScrollContentView>
+        <View style={styles.bottomButton}>
+          <TextButton
+              style={[button.actionFullWidth, container.largeHorizontalMargin, styles.qrButton]}
+              textStyle={styles.qrButtonText}
+              onPress={this.onQRPress}
+          >
+            {I18n.t('caption_qr_scanner').toUpperCase()}
+          </TextButton>
+        </View>
+      </View>
     )
   }
 
@@ -77,4 +123,4 @@ const mapStateToProps = (state: any) => ({
   sessions: getFilteredSessionList(state),
 })
 
-export default connect(mapStateToProps, { startTracking, authBasedNewSession })(Sessions)
+export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)

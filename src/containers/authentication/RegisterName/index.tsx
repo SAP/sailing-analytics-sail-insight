@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, View } from 'react-native'
+import { Image, View, ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
@@ -34,45 +34,45 @@ class RegisterName extends TextInputForm {
 
   public render() {
     return (
-      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-        <View style={container.stretchContent}>
-          <Image style={image.headerMedium} source={Images.header.sailors}/>
-          <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
-          <View style={[registration.topContainer(), styles.textContainer]}>
-            <Text style={registration.claim()}>
-              <Text>{I18n.t('text_register_claim_01')}</Text>
-              <Text style={text.claimHighlighted}>{I18n.t('text_register_claim_02')}</Text>
-            </Text>
+      <ImageBackground source={Images.defaults.background} style={{ width: '100%', height: '100%' }}>
+        <ScrollContentView extraHeight={$extraSpacingScrollContent}>
+          <View style={container.stretchContent}>
+            <View style={[registration.topContainer(), styles.textContainer]}>
+              <Text style={registration.claim()}>
+                <Text>{I18n.t('text_register_claim_01')}</Text>
+                <Text style={text.claimHighlighted}>{I18n.t('text_register_claim_02')}</Text>
+              </Text>
+            </View>
           </View>
-        </View>
-        <View style={registration.bottomContainer()}>
-          <Field
-            label={I18n.t('text_your_name')}
-            name={FORM_KEY_NAME}
-            component={FormTextInput}
-            validate={[validateRequired]}
-            keyboardType={'default'}
-            returnKeyType="next"
-            inputRef={this.handleInputRef(FORM_KEY_NAME)}
-            onSubmitEditing={this.onSubmit}
-          />
-          <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
-            onPress={this.onSubmit}
-          >
-            {I18n.t('caption_lets_go')}
-          </TextButton>
-          <LoginButton style={styles.loginButton}/>
-          <TextButton
-            style={registration.lowerButton()}
-            textStyle={button.textButtonSecondaryText}
-            onPress={openEmailToContact}
-          >
-            {I18n.t('caption_need_help')}
-          </TextButton>
-        </View>
-      </ScrollContentView >
+          <View style={registration.bottomContainer()}>
+            <Field
+              label={I18n.t('text_user_name')}
+              name={FORM_KEY_NAME}
+              component={FormTextInput}
+              validate={[validateRequired]}
+              keyboardType={'default'}
+              returnKeyType="next"
+              inputRef={this.handleInputRef(FORM_KEY_NAME)}
+              onSubmitEditing={this.onSubmit}
+            />
+            <TextButton
+              style={registration.nextButton()}
+              textStyle={button.actionText}
+              onPress={this.onSubmit}
+            >
+              {I18n.t('caption_register').toUpperCase()}
+            </TextButton>
+            <LoginButton style={styles.loginButton}/>
+            <TextButton
+              style={registration.lowerButton()}
+              textStyle={button.textButtonSecondaryText}
+              onPress={openEmailToContact}
+            >
+              {I18n.t('caption_need_help')}
+            </TextButton>
+          </View>
+        </ScrollContentView >
+      </ImageBackground>
     )
   }
 }

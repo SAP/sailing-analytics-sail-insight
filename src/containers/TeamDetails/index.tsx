@@ -8,7 +8,14 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
 import Images from '@assets/Images'
-import { deleteTeam, DeleteTeamAction, saveTeam, SaveTeamAction } from 'actions/user'
+import {
+  deleteTeam,
+  DeleteTeamAction,
+  saveTeam,
+  SaveTeamAction,
+  updateTeamImage,
+  updateTeamImageAction,
+} from 'actions/user'
 import * as teamForm from 'forms/team'
 import { ComparisonValidatorViewProps, validateNameExists, validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
@@ -28,12 +35,14 @@ import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import TextButton from 'components/TextButton'
 
-import { button, container, input } from 'styles/commons'
+import { button, container } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import FormBoatClassInput from '../../components/form/FormBoatClassInput'
 import FormNationalityPicker from '../../components/form/FormNationalityPicker'
 import FormSailNumberInput from '../../components/form/FormSailNumberInput'
+
+import styles from './styles'
 
 interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
   team: TeamTemplate
@@ -42,10 +51,12 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
   formNationality?: string
   formBoatClass?: string
   formBoatName?: string
+  formTeamImage?: any
   formHandicap?: Handicap
   paramTeamName?: string
   saveTeam: SaveTeamAction
   deleteTeam: DeleteTeamAction
+  updateTeamImage: updateTeamImageAction
 }
 
 class TeamDetails extends TextInputForm<Props> {
@@ -78,11 +89,14 @@ class TeamDetails extends TextInputForm<Props> {
             name={teamForm.FORM_KEY_IMAGE}
             component={FormImagePicker}
             placeholder={Images.header.team}
-            disabled={true}
+            onChange={this.onImageChange}
           />
         </View>
-        <View style={registration.bottomContainer()}>
+        <View style={[styles.bottomContainer]}>
           <Field
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_team_name')}
             name={teamForm.FORM_KEY_TEAM_NAME}
             component={FormTextInput}
@@ -92,7 +106,9 @@ class TeamDetails extends TextInputForm<Props> {
             validate={[validateRequired, validateNameExists]}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_boat_class')}
             name={teamForm.FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
@@ -102,7 +118,9 @@ class TeamDetails extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_nationality')}
             name={teamForm.FORM_KEY_NATIONALITY}
             component={FormNationalityPicker}
@@ -113,7 +131,9 @@ class TeamDetails extends TextInputForm<Props> {
             validate={[validateRequired]}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_sail_number')}
             name={teamForm.FORM_KEY_SAIL_NUMBER}
             component={FormSailNumberInput}
@@ -128,7 +148,9 @@ class TeamDetails extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_boat_name')}
             name={teamForm.FORM_KEY_BOAT_NAME}
             component={FormTextInput}
@@ -136,23 +158,32 @@ class TeamDetails extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_handicap_label')}
             name={teamForm.FORM_KEY_HANDICAP}
             component={FormHandicapInput}
           />
           <TextButton
-            style={registration.nextButton()}
+            style={[registration.nextButton(), styles.bottomButton]}
             textStyle={button.actionText}
             onPress={this.props.handleSubmit(this.onSavePress)}
             isLoading={this.state.isLoading}
             disabled={isSaveDisabled}
           >
-            {I18n.t('caption_save')}
+            {I18n.t('caption_save').toUpperCase()}
           </TextButton>
         </View>
       </ScrollContentView>
     )
+  }
+
+  protected onImageChange = (imageData: any) => {
+    const { team } = this.props
+    if (team) {
+      this.props.updateTeamImage(team.name, imageData)
+    }
   }
 
   protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
@@ -224,6 +255,7 @@ class TeamDetails extends TextInputForm<Props> {
     const nationalityHasChanged = !team || formNationality !== team.nationality
     const boatClassHasChanged = !team || formBoatClass !== team.boatClass
     const boatNameHasChanged = !team || formBoatName !== team.boatName
+
     const handicapHasChanged = !team || hasHandicapChanged(team.handicap, formHandicap)
 
     return (
@@ -244,6 +276,7 @@ const mapStateToProps = (state: any, props: any) => {
   const formNationality = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_NATIONALITY)(state)
   const formBoatClass = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_CLASS)(state)
   const formBoatName = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_BOAT_NAME)(state)
+  const formTeamImage = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_IMAGE)(state)
   const formHandicap = getFormFieldValue(teamForm.TEAM_FORM_NAME, teamForm.FORM_KEY_HANDICAP)(state)
   const paramTeamName = team && team.name
   return {
@@ -253,6 +286,7 @@ const mapStateToProps = (state: any, props: any) => {
     formNationality,
     formBoatClass,
     formBoatName,
+    formTeamImage,
     formHandicap,
     paramTeamName,
     comparisonValue: getUserTeamNames(state),
@@ -263,6 +297,7 @@ const mapStateToProps = (state: any, props: any) => {
       [teamForm.FORM_KEY_BOAT_NAME]: team.boatName,
       [teamForm.FORM_KEY_SAIL_NUMBER]: team.sailNumber,
       [teamForm.FORM_KEY_BOAT_CLASS]: team.boatClass,
+      [teamForm.FORM_KEY_IMAGE]: team.imageData,
       [teamForm.FORM_KEY_HANDICAP]: team.handicap || getDefaultHandicap(),
     } : {
       [teamForm.FORM_KEY_HANDICAP]: getDefaultHandicap(),
@@ -270,8 +305,14 @@ const mapStateToProps = (state: any, props: any) => {
   } as ComparisonValidatorViewProps
 }
 
-export default connect(mapStateToProps, { saveTeam, deleteTeam })(reduxForm<{}, Props>({
-  form: teamForm.TEAM_FORM_NAME,
-  destroyOnUnmount: true,
-  forceUnregisterOnUnmount: true,
-})(TeamDetails))
+export default connect(
+  mapStateToProps,
+  { saveTeam, deleteTeam, updateTeamImage },
+)(
+  reduxForm<{}, Props>({
+    form: teamForm.TEAM_FORM_NAME,
+    destroyOnUnmount: false,
+    enableReinitialize: true,
+    forceUnregisterOnUnmount: true,
+  })(TeamDetails),
+)

@@ -8,6 +8,7 @@ import {
   FORM_KEY_BOAT_CLASS,
   FORM_KEY_BOAT_NAME,
   FORM_KEY_HANDICAP,
+  FORM_KEY_IMAGE,
   FORM_KEY_NATIONALITY,
   FORM_KEY_SAIL_NUMBER,
   FORM_KEY_TEAM_NAME,
@@ -29,8 +30,10 @@ import TextButton from 'components/TextButton'
 import { button, container, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
+import Images from '../../../../assets/Images'
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
 import FormHandicapInput from '../../../components/form/FormHandicapInput'
+import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import { getFormFieldValue } from '../../../selectors/form'
 import styles from './styles'
@@ -53,6 +56,11 @@ class RegisterBoat extends TextInputForm<Props> {
     const { error, isLoading } = this.state
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
+        <Field
+          name={FORM_KEY_IMAGE}
+          component={FormImagePicker}
+          placeholder={Images.header.team}
+        />
         <View style={[container.stretchContent, container.largeHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_register_boat_claim_01')}</Text>
@@ -61,6 +69,8 @@ class RegisterBoat extends TextInputForm<Props> {
         </View>
         <View style={registration.bottomContainer()}>
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_team_name')}
             name={FORM_KEY_TEAM_NAME}
             component={FormTextInput}
@@ -72,6 +82,8 @@ class RegisterBoat extends TextInputForm<Props> {
           />
           <Field
             style={styles.inputMargin}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_boat_class')}
             name={FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
@@ -83,6 +95,8 @@ class RegisterBoat extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_nationality')}
             name={FORM_KEY_NATIONALITY}
             component={FormNationalityPicker}
@@ -95,6 +109,8 @@ class RegisterBoat extends TextInputForm<Props> {
           />
           <Field
             style={styles.inputMargin}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_sail_number')}
             name={FORM_KEY_SAIL_NUMBER}
             component={FormTextInput}
@@ -106,6 +122,8 @@ class RegisterBoat extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_boat_name')}
             name={FORM_KEY_BOAT_NAME}
             component={FormTextInput}
@@ -116,13 +134,15 @@ class RegisterBoat extends TextInputForm<Props> {
           />
           <Field
             style={styles.inputMargin}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_handicap_label')}
             name={FORM_KEY_HANDICAP}
             component={FormHandicapInput}
           />
           {error && <Text style={registration.errorText()}>{error}</Text>}
           <TextButton
-            style={registration.nextButton()}
+            style={[registration.nextButton(), styles.bottomButton]}
             textStyle={button.actionText}
             onPress={this.props.handleSubmit(this.onSubmit)}
             isLoading={isLoading}
@@ -161,6 +181,7 @@ class RegisterBoat extends TextInputForm<Props> {
         nationality: values[FORM_KEY_NATIONALITY],
         boatClass: values[FORM_KEY_BOAT_CLASS],
         sailNumber: values[FORM_KEY_SAIL_NUMBER],
+        imageData: values[FORM_KEY_IMAGE],
         handicap: values[FORM_KEY_HANDICAP],
       } as TeamTemplate)
       navigateBack()

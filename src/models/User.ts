@@ -28,5 +28,4 @@ export default interface User {
   fullName?: string
   email?: string
   nationality?: string
-  imageData?: string,
 }

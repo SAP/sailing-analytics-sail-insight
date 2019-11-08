@@ -3,7 +3,7 @@ import { createAction } from 'redux-actions'
 import { authApi } from 'api'
 import AuthException from 'api/AuthException'
 import { DispatchType, GetStateType } from 'helpers/types'
-import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
+import { navigateToEventCreation, navigateToUserRegistration } from 'navigation'
 
 import { ApiAccessToken, User } from 'models'
 import { mapUserToRes } from 'models/User'
@@ -48,12 +48,10 @@ export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
 
 export const authBasedNewSession = () => (dispatch: DispatchType, getState: GetStateType) => {
   const isLoggedIn = isLoggedInSelector(getState())
-  return isLoggedIn ? navigateToNewSession() : navigateToUserRegistration()
+  return isLoggedIn ? navigateToEventCreation() : navigateToUserRegistration()
 }
 
 export const updateUser = (user: User) => async (dispatch: DispatchType) => {
-  // store imageData locally
-  dispatch(updateCurrentUserInformation({ imageData: user.imageData }))
   // sync with server
   await authApi().updateUser(mapUserToRes(user))
   dispatch(fetchCurrentUser())

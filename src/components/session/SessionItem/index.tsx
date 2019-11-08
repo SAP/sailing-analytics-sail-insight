@@ -9,7 +9,6 @@ import Images from '@assets/Images'
 import { OnPressType } from 'helpers/types'
 import I18n from 'i18n'
 import { Session } from 'models'
-import { navigateToSessionDetail } from 'navigation'
 
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
 import SwipeableButton from 'components/session/SwipeableButton'
@@ -44,9 +43,8 @@ class SessionItem extends React.Component<ViewProps & {
   session: Session,
   onTrackingPress?: OnPressType,
   archiveEvent: any,
+  onItemPress: OnPressType,
 } > {
-  public onItempPress = () => navigateToSessionDetail(this.props.session.leaderboardName)
-
   public render() {
     const {
       style,
@@ -64,7 +62,7 @@ class SessionItem extends React.Component<ViewProps & {
           rightButtonWidth={SWIPE_BUTTON_WIDTH}
         >
           <TouchableOpacity
-            onPress={this.onItempPress}
+            onPress={this.props.onItempPress}
           >
             <SessionInfoDisplay
               style={style}

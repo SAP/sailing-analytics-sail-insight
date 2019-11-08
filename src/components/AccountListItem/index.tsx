@@ -8,7 +8,7 @@ import styles from './styles'
 
 class AccountListItem extends React.Component<{
   title: string
-  icon: any
+  icon?: any
   onPress: () => void
   subtitle?: string
   big?: boolean,
@@ -23,9 +23,11 @@ class AccountListItem extends React.Component<{
           onPress={onPress}
         >
           <View style={styles.buttonContentContainer}>
+            {icon && 
             <View style={styles.avatarContainer}>
               <Image style={[styles.baseIcon, big && styles.bigIcon]} source={icon} />
             </View>
+            }
             <View style={styles.textContainer}>
               <Text
                 style={subtitle ? styles.title : styles.titleWithoutSubtitle}
@@ -45,8 +47,7 @@ class AccountListItem extends React.Component<{
               />
             </View>
           </View>
-        </TouchableHighlight>,
-        <LineSeparator />]
+        </TouchableHighlight>]
   }
 }
 

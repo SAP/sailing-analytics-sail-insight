@@ -204,7 +204,7 @@ class TrackingSetup extends TextInputForm<Props> {
 
     try {
       this.setState({
-        ...(options.loadingFlagName && { [options.loadingFlagName]: true }),
+        ...(options.loadingFlagName ? { [options.loadingFlagName]: true } : {}),
         creationError: null,
         disableActionButtons: true,
       })
@@ -216,7 +216,7 @@ class TrackingSetup extends TextInputForm<Props> {
       return null
     } finally {
       this.setState({
-        ...(options.loadingFlagName && { [options.loadingFlagName]: false }),
+        ...(options.loadingFlagName ? { [options.loadingFlagName]: false } : {}),
         disableActionButtons: false,
       })
     }
@@ -224,7 +224,7 @@ class TrackingSetup extends TextInputForm<Props> {
 
   protected onShareSubmit = async (values: any) => {
     await this.setState({ isShareSheetLoading: true })
-    this.session = await this.createSession(values, { isPublic: true })
+    this.session = this.session || await this.createSession(values, { isPublic: true })
 
     try {
       if (!this.session) { return }
@@ -243,7 +243,7 @@ class TrackingSetup extends TextInputForm<Props> {
   }
 
   protected onStartSubmit = async (values: any) => {
-    this.session = await this.createSession(values, { loadingFlagName: 'isCreationLoading' })
+    this.session = this.session || await this.createSession(values, { loadingFlagName: 'isCreationLoading' })
     if (!this.session) {
       return
     }

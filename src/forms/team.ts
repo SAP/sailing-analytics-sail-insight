@@ -14,7 +14,7 @@ export const FORM_KEY_HANDICAP = 'handicap'
 export const teamFromFormValues = (values: any) => values && ({
   name: values[FORM_KEY_TEAM_NAME],
   nationality: values[FORM_KEY_NATIONALITY],
-  imageUrl: undefined,
+  imageData: values[FORM_KEY_IMAGE] || undefined,
   boatClass: values[FORM_KEY_BOAT_CLASS],
   boatName: values[FORM_KEY_BOAT_NAME],
   sailNumber: values[FORM_KEY_SAIL_NUMBER],

@@ -1,8 +1,13 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { Dimensions } from 'react-native';
+import { $smallSpacing, $tinySpacing } from 'styles/dimensions';
 
 export default EStyleSheets.create({
+  imageContainer: {
+    backgroundColor: 'white',
+    marginBottom: '$tinySpacing',
+  },
   detailContainer: {
-    paddingHorizontal: '$smallSpacing',
     paddingVertical: '$tinySpacing',
     backgroundColor: 'white',
   },
@@ -18,12 +23,16 @@ export default EStyleSheets.create({
   textMargins: {
     marginTop: '$microSpacing',
   },
+  itemText: {
+    width: Dimensions.get('window').width - 44 - 4 * $smallSpacing,
+  },
   dateText: {
     fontSize: '$regularFontSize',
   },
   tracksText: {
     marginLeft: '$microSpacing+2',
     marginRight: '$microSpacing-1',
+    color: '#333333',
   },
   tracksCountText: {
     fontSize: '$regularFontSize',
@@ -31,6 +40,7 @@ export default EStyleSheets.create({
   trackingButton: {
     width: 49,
     height: 49,
+    marginRight: $tinySpacing,
   },
   settingsButton: {
     width: 49,
@@ -38,7 +48,7 @@ export default EStyleSheets.create({
     padding: 12.5,
   },
   trackingImage: {
-    tintColor: '$importantHighlightColor',
+    tintColor: '$Orange', // '$importantHighlightColor',
   },
   coverImage: {
     height: 176,
@@ -51,8 +61,21 @@ export default EStyleSheets.create({
   infoItem: {
     maxWidth: '50%',
     marginRight: '$tinySpacing',
+    marginBottom: '$microSpacing',
   },
   fullInfoItem: {
     maxWidth: '100%',
+  },
+  image: {
+    width: 44,
+    resizeMode: 'cover',
+    height: 44,
+    margin: '$smallSpacing',
+    borderRadius: 11,
+  },
+  arrowContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginLeft: 'auto',
   },
 })

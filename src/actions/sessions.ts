@@ -37,11 +37,11 @@ import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'se
 import { getLocationTrackingStatus } from 'selectors/location'
 import { getUserBoatByBoatName } from 'selectors/user'
 
-
 export const shareSession = (checkIn: CheckIn) => async () => {
   if (!checkIn || !checkIn.leaderboardName || !checkIn.eventId || !checkIn.secret) {
     throw new CheckInException('errror creating share link.')
   }
+
   const sharingData: SharingData = {
     title: checkIn.leaderboardName,
     // TODO: venue from generated event?
@@ -85,7 +85,7 @@ export const createEvent = (session: TrackingSession, isPublic?: boolean) => asy
       venuename: 'default', // TODO: get venue name? or position?
       eventName: session.name,
       competitorRegistrationType: isPublic ? 'OPEN_UNMODERATED' : 'CLOSED',
-      ...(secret && { secret }),
+      ...(secret ? { secret } : {}),
     },
   )
   return eventCreationResponseToCheckIn(
@@ -173,8 +173,8 @@ export const createUserAttachmentToSession = (
         boatclass: competitorInfo.boatClass,
         sailid: competitorInfo.sailNumber,
         timeontimefactor: getTimeOnTimeFactor(competitorInfo),
-        ...(secret && { secret }),
-        ...(secret && { deviceUuid: getDeviceId() }),
+        ...(secret ? { secret } : {}),
+        ...(secret ? { deviceUuid: getDeviceId() } : {}),
       })
 
       competitorId = newCompetitorWithBoat.id
@@ -198,15 +198,16 @@ export const createUserAttachmentToSession = (
             boatClass: competitorInfo.boatClass,
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
+            imageData: competitorInfo.teamImage,
             handicap: competitorInfo.handicap,
             id: {
-              ...(userBoat && typeof userBoat.id === 'object' && { ...userBoat.id }),
+              ...(userBoat && typeof userBoat.id === 'object' ? { ...userBoat.id } : {}),
               ...(newCompetitorWithBoat &&
-                newCompetitorWithBoat.boat && { [serverUrl]: newCompetitorWithBoat.boat.id }),
+                newCompetitorWithBoat.boat ? { [serverUrl]: newCompetitorWithBoat.boat.id } : {}),
             },
             competitorId: {
-              ...(userBoat && { ...userBoat.competitorId }),
-              ...(newCompetitorWithBoat && { [serverUrl]: newCompetitorWithBoat.id }),
+              ...(userBoat ? { ...userBoat.competitorId } : {}),
+              ...(newCompetitorWithBoat ? { [serverUrl]: newCompetitorWithBoat.id } : {}),
             },
           },
           { updateLastUsed: true },

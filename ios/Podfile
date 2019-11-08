@@ -12,6 +12,8 @@ target 'sap_sailing_insight' do
   pod 'yoga', path: "#{rn_path}/ReactCommon/yoga/yoga.podspec"
   pod 'React', path: rn_path, subspecs: [
     'Core',
+    'CxxBridge',
+    'DevSupport',
     'RCTActionSheet',
     'RCTAnimation',
     'RCTGeolocation',
@@ -24,12 +26,39 @@ target 'sap_sailing_insight' do
     'RCTWebSocket'
   ]
 
+  pod 'CocoaLumberjack'
+  pod 'DoubleConversion', :podspec => "#{rn_path}/third-party-podspecs/DoubleConversion.podspec"
+  pod 'glog', :podspec => "#{rn_path}/third-party-podspecs/glog.podspec"
+  pod 'Folly', :podspec => "#{rn_path}/third-party-podspecs/Folly.podspec"
+
   pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
 
-  pod 'Firebase/Core'
+  pod 'Firebase/Core', '~> 5.20.1'
+  # pod 'Firebase/AdMob', '~> 5.20.1'
+  # pod 'Firebase/Auth', '~> 5.20.1'
+  # pod 'Firebase/Database', '~> 5.20.1'
+  # pod 'Firebase/Functions', '~> 5.20.1'
+  # pod 'Firebase/DynamicLinks', '~> 5.20.1'
+  # pod 'Firebase/Firestore', '~> 5.20.1'
+  # pod 'Firebase/Invites', '~> 5.20.1'
+  # pod 'Firebase/Messaging', '~> 5.20.1'
+  # pod 'Firebase/RemoteConfig', '~> 5.20.1'
+  # pod 'Firebase/Storage', '~> 5.20.1'
+  # pod 'Firebase/Performance', '~> 5.20.1'
 
-  pod 'Fabric', '~> 1.7.13'
-  pod 'Crashlytics', '~> 3.10.7'
+  pod 'Fabric', '~> 1.9.0'
+  pod 'Crashlytics', '~> 3.12.0'
+
+  pod 'react-native-branch', path: '../node_modules/react-native-branch'
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
+  pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
+
+  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+  pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
 
   target 'sap_sailing_insightTests' do
     inherit! :search_paths

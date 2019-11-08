@@ -5,12 +5,14 @@ export default EStyleSheet.create({
   container: {
     marginBottom: 30,
   },
-  separator: {
-    marginTop: 9,
-  },
   loginButton: {
     alignSelf: 'center',
     marginTop: 32,
     marginBottom: 16,
+  },
+  image: {
+    marginTop: 20,
+    marginLeft: '$largeRelativeSpacing',
+    marginRight: '$largeRelativeSpacing',
   },
 })

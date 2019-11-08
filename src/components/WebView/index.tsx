@@ -44,7 +44,7 @@ class WebView extends React.Component<{
 }
 
 const mapStateToProps = (state: any, props: any) => ({
-  url: getCustomScreenParamData(props),
+  url: getCustomScreenParamData(props).url,
   accessToken: getAccessToken(state),
 })
 

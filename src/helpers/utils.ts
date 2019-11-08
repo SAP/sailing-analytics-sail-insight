@@ -113,7 +113,35 @@ export const openEmailTo = (email: string, subject?: string, body?: string) =>
   Linking.openURL(addUrlParams(
     `mailto:${email}`,
     {
-      ...(subject && { subject }),
-      ...(body && { body }),
+      ...(subject ? { subject } : {}),
+      ...(body ? { body } : {}),
     },
   ))
+
+const convertDMS = (coords: number, longitude: boolean) => {
+  const cardinalDirection = longitude ? (coords > 0 ? 'E' : 'W') : (coords > 0 ? 'N' : 'S')
+  const absolute = Math.abs(coords)
+  const degrees = Math.floor(absolute)
+  const minutesNotTruncated = (absolute - degrees) * 60
+  const minutes = Math.floor(minutesNotTruncated)
+  const seconds = Math.floor((minutesNotTruncated - minutes) * 60)
+
+  return {
+    cardinalDirection,
+    degrees,
+    minutes,
+    seconds,
+  }
+}
+
+const coordinateToString = (coords: number, longitude: boolean) => {
+  const { cardinalDirection, degrees, minutes, seconds } = convertDMS(coords, longitude)
+  return `${cardinalDirection} ${degrees}° ${minutes}' ${seconds}''`
+}
+
+export const coordinatesToString = ({ latitude, longitude }: any) => {
+  const lonString = coordinateToString(longitude, true)
+  const latString = coordinateToString(latitude, false)
+
+  return `${latString}/ ${lonString}`
+}

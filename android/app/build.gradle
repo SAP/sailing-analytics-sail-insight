@@ -97,10 +97,11 @@ def enableProguardInReleaseBuilds = false
 
 def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.sailtracks.android.sailinginsight'
 def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
-def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "26") as Integer
-def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.6"
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "35") as Integer
+def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.15"
 
 android {
+	purgeBackgroundGeolocationDebugResources(applicationVariants)
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
@@ -112,7 +113,7 @@ android {
         vectorDrawables.useSupportLibrary = true // for react-native-crop-picker
         multiDexEnabled true
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
         }
     }
     splits {
@@ -149,7 +150,7 @@ android {
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
-            def versionCodes = ["armeabi-v7a":1, "x86":2]
+            def versionCodes = ["armeabi-v7a":1, "x86":2, "arm64-v8a": 3]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
@@ -186,6 +187,12 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-snackbar')
+    compile project(':react-native-svg')
+    compile project(':react-native-maps')
+    compile project(':@react-native-community_slider')
+    compile project(':react-native-fs')
+    implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-firebase')
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-version-number')
@@ -212,6 +219,7 @@ dependencies {
 
     // Firebase dependencies
     implementation "com.google.android.gms:play-services-base:16.0.1"
+    implementation "com.google.android.gms:play-services-tasks:16.0.1"
     implementation "com.google.firebase:firebase-core:16.0.6"
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true
@@ -220,6 +228,9 @@ dependencies {
     configurations.all {
         resolutionStrategy {
             force 'com.android.support:support-v4:28.0.0'
+            force 'com.google.android.gms:play-services-base:16.0.1'
+            force 'com.google.android.gms:play-services-tasks:16.0.1'
+            force 'com.google.android.gms:play-services-basement:16.0.1'
         }
     }
 }
@@ -233,3 +244,16 @@ task copyDownloadableDepsToLibs(type: Copy) {
 
 apply plugin: 'com.google.gms.google-services'
 com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+
+// [Added by react-native-background-geolocation] Purge debug sounds from release build.
+def purgeBackgroundGeolocationDebugResources(applicationVariants) {
+    if ((rootProject.ext.has("removeBackgroundGeolocationDebugSoundsInRelease")) && (rootProject.ext.removeBackgroundGeolocationDebugSoundsInRelease == false)) return
+    applicationVariants.all { variant ->
+        if (variant.buildType.name == "release") {
+            println("[react-native-background-geolocation] Purging debug resources in release build")
+            variant.mergeResources.doLast {
+                delete(fileTree(dir: variant.mergeResources.outputDir, includes: ["raw_tslocationmanager*"]))
+            }
+        }
+    }
+}

@@ -1,3 +1,4 @@
+import { compose, intersperse, when, always, equals, not, isNil, append, reverse} from 'ramda'
 import React from 'react'
 import {
   Image,
@@ -12,9 +13,9 @@ import Text from 'components/Text'
 
 import styles from './styles'
 
-
 class IconText extends React.Component<ViewProps & {
   iconStyle?: ImageStyle | ImageStyle[],
+  iconOnly: Boolean,
   iconTintColor?: string | null,
   textStyle?: TextStyle | TextStyle[],
   source: ImageSourcePropType,
@@ -36,31 +37,23 @@ class IconText extends React.Component<ViewProps & {
     const tintStyle = iconTintColor ? { tintColor: iconTintColor } : null
     const alignmentStyle = { flexDirection: alignment === 'vertical' ? 'column' : 'row' }
 
-    const icon = (
-      <Image
+    const icon = <Image
         style={[styles.baseIcon, iconStyle, tintStyle]}
         source={source}
       />
-    )
     const text = <Text style={[styles.baseText, textStyle]}>{children}</Text>
     const separator = <View style={styles.separator} />
 
-    return iconPosition === 'second' ? (
-      <View style={[styles.baseItem, alignmentStyle, style]}>
-        {text}
-        {separator}
-        {icon}
-      </View>
+    const content = compose(
+      intersperse(separator),
+      when(always(equals('second', iconPosition)), reverse),
+      when(always(compose(not, isNil)(children)), append(text)))(
+      [icon])
 
-    ) : (
-      <View style={[styles.baseItem, alignmentStyle, style]}>
-        {icon}
-        {separator}
-        {text}
+    return <View style={[styles.baseItem, alignmentStyle, style]}>
+        {content}
       </View>
-    )
   }
 }
-
 
 export default IconText

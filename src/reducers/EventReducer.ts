@@ -1,12 +1,11 @@
-import { get } from 'lodash'
+import { path } from 'ramda'
 import { handleActions } from 'redux-actions'
-
-import { EventFilter } from 'models/EventFilter'
-import { EventState } from 'reducers/config'
-
+import { selectRace, selectEvent, updateRaceTime } from 'actions/events'
 import { removeUserData } from 'actions/auth'
 import { receiveEvent, updateEvent, updateEventFilters } from 'actions/events'
 
+import { EventFilter } from 'models/EventFilter'
+import { EventState } from 'reducers/config'
 
 const initialState: EventState = {
   all: {} as Map<string, any>,
@@ -15,8 +14,25 @@ const initialState: EventState = {
 
 const reducer = handleActions(
   {
+    [selectEvent as any]: (state: any = {}, action: any) => ({
+      ...state,
+      selectedEvent: action.payload.eventId,
+      selectedRegatta: action.payload.regattaName
+    }),
+
+    [selectRace as any]: (state: any = {}, action: any) => ({
+        ...state,
+        selectedRace: action.payload,
+    }),
+    [updateRaceTime as any]: (state: any = {}, action: any) => ({
+      ...state,
+      raceTimes: {
+        ...state.raceTimes,
+        ...action.payload
+      }
+    }),
     [receiveEvent as any]: (state: any = {}, action: any) => {
-      const event = action && get(action, ['payload', 'entities', 'event'])
+      const event = action && path(['payload', 'entities', 'event'], action)
       if (!event) {
         return state
       }
@@ -59,7 +75,7 @@ const reducer = handleActions(
     },
     [removeUserData as any]: () => initialState,
   },
-  initialState,
+  initialState
 )
 
 export default reducer

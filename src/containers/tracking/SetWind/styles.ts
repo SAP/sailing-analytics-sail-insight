@@ -43,15 +43,11 @@ export default EStyleSheets.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  speedButton: {
+  speedStepButton: {
     width: 45,
     height: 45,
-    padding: 10.5,
-    borderRadius: 22.5,
     resizeMode: 'contain',
-    tintColor: '$secondaryButtonColor',
-    borderColor: '$secondaryButtonColor',
-    borderWidth: 2,
+    tintColor: 'white',
   },
   infoValue: {
     fontSize: 56,

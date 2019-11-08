@@ -36,12 +36,12 @@ const config: Config = {
   preventSuspend: true,
   // Android:
   allowIdenticalLocations: true,
-  // notificationTitle: 'Background tracking',
-  // notificationText: 'enabled',
   locationUpdateInterval: 333,
   fastestLocationUpdateInterval: 333,
   activityRecognitionInterval: 0,
-  notificationText: I18n.t('text_notification_tracking'),
+  notification: {
+    text: I18n.t('text_notification_tracking'),
+  },
 }
 
 const locationListeners: any[] = []
@@ -63,18 +63,16 @@ export const registerEvents = () => {
     const location = await BackgroundGeolocation.getCurrentPosition({
       samples: 1,
       persist: true,
-      desiredAccuracy: 15
-    });
+      desiredAccuracy: 15,
+    })
 
     await handleGeolocation(location)
   })
-
 }
 
 export const unregisterEvents = () => {
   BackgroundGeolocation.removeListeners()
 }
-
 
 const handleGeolocation = async (location: any = {}) => {
   const { coords, timestamp } = location

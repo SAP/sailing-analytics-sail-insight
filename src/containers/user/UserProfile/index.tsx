@@ -4,7 +4,6 @@ import { Alert, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
-import Images from '@assets/Images'
 import { removeUserData, updateUser } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
@@ -14,17 +13,14 @@ import I18n from 'i18n'
 import User from 'models/User'
 
 import TextInputForm from 'components/base/TextInputForm'
-import FormImagePicker from 'components/form/FormImagePicker'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import TitleLabel from 'components/TitleLabel'
 
 import { getUserInfo } from 'selectors/auth'
 import { getFormFieldValue } from 'selectors/form'
-import { button, container, input, text } from 'styles/commons'
-import { registration } from 'styles/components'
+import { container } from 'styles/commons'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 import Logger from '../../../helpers/Logger'
@@ -34,7 +30,6 @@ import styles from './styles'
 interface Props {
   user: User,
   formFullName?: string,
-  formImageData?: string,
   removeUserData: () => void,
   fetchUserInfo: () => void,
   updateUser: (u: User) => void,
@@ -59,41 +54,32 @@ class UserProfile extends TextInputForm<Props> {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
-          <Field
-            name={userForm.FORM_KEY_IMAGE}
-            component={FormImagePicker}
-            placeholder={Images.header.sailors}
-            onChange={this.saveImage}
-          />
-          <View style={container.largeHorizontalMargin}>
+          <View style={styles.inputField}>
             <Field
-              style={input.topMargin}
-              label={I18n.t('text_your_name')}
+              style={styles.topInput}
+              containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
+              label={I18n.t('text_name').toUpperCase()}
               name={userForm.FORM_KEY_NAME}
               component={FormTextInput}
               validate={[validateRequired]}
               keyboardType="default"
               returnKeyType="next"
             />
-            <TitleLabel
-              style={input.topMargin}
-              title={I18n.t('text_username')}
-            >
-              <Text style={text.propertyValue}>{user.username}</Text>
-            </TitleLabel>
-            <TitleLabel
-              style={input.topMargin}
-              title={I18n.t('text_email')}
-            >
-              <Text style={text.propertyValue}>{user.email}</Text>
-            </TitleLabel>
-            {/* <Text style={[text.propertyValue, input.topMargin]}>{user.nationality}</Text> */}
+            <View style={styles.buttonContainer}>
+              <Text style={styles.title}>{I18n.t('text_user_name').toUpperCase()}</Text>
+              <Text style={styles.text}>{user.username}</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Text style={styles.title}>{I18n.t('text_email').toUpperCase()}</Text>
+              <Text style={styles.text}>{user.email}</Text>
+            </View>
           </View>
         </View>
-        <View style={[registration.bottomContainer(), styles.bottomContainer]}>
+        <View style={styles.bottomButtonField}>
           <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
+            style={styles.saveButton}
+            textStyle={styles.saveButtonText}
             isLoading={this.state.isLoading}
             onPress={this.props.handleSubmit(this.onSubmit)}
             disabled={isSaveDisabled}
@@ -101,7 +87,7 @@ class UserProfile extends TextInputForm<Props> {
             {I18n.t('caption_save')}
           </TextButton>
           <TextButton
-            style={styles.logoutButton}
+            textStyle={styles.logoutButton}
             onPress={this.deleteUserDataAlert}
           >
             Log out
@@ -122,17 +108,8 @@ class UserProfile extends TextInputForm<Props> {
     }
   }
 
-  protected saveImage = async (image: any) => {
-    this.updateUserData({
-      imageData: image
-    })
-  }
-
   protected onSubmit = async (values: any) => {
-    this.updateUserData({
-      fullName: values[userForm.FORM_KEY_NAME],
-      imageData: values[userForm.FORM_KEY_IMAGE]
-    })
+    this.updateUserData({ fullName: values[userForm.FORM_KEY_NAME] })
   }
 
   protected deleteUserDataAlert = () => {
@@ -171,11 +148,7 @@ const mapStateToProps = (state: any) => {
   return {
     user,
     formFullName: getFormFieldValue(userForm.USER_FORM_NAME, userForm.FORM_KEY_NAME)(state),
-    formImageData: getFormFieldValue(userForm.USER_FORM_NAME, userForm.FORM_KEY_IMAGE)(state),
-    initialValues: {
-      [userForm.FORM_KEY_NAME]: user.fullName,
-      [userForm.FORM_KEY_IMAGE]: user.imageData,
-    },
+    initialValues: { [userForm.FORM_KEY_NAME]: user.fullName },
   }
 }
 

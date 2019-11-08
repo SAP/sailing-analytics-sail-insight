@@ -1,4 +1,12 @@
 import { AutoCourseUpdateState } from 'helpers/types'
+import {
+  CourseStateMap,
+  DefaultMarkIdMap,
+  GateSide,
+  MarkMap,
+  MarkPairMap,
+  SelectedCourseState,
+} from 'models/Course'
 
 
 export interface RootState {
@@ -6,12 +14,15 @@ export interface RootState {
   network?: any
   checkIn?: any | CheckInState
   entities?: any
+  leaderboardTracking?: any | LeaderboardTrackingState
   locationTracking?: any | LocationTrackingState
   form?: any
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
   events?: any | EventState
+  courses?: any | CourseReducerState
+  markInventory?: any
 }
 
 
@@ -34,6 +45,17 @@ export interface LocationTrackingState {
   startAutoCourseUpdateStatus: AutoCourseUpdateState
 }
 
+export interface CompetitorGap {
+  gap: number
+  gaining: boolean | undefined
+}
+
+export type CompetitorGapMap = Map<string, CompetitorGap>
+
+export interface LeaderboardTrackingState {
+  competitorGaps: CompetitorGapMap
+}
+
 export interface OnboardingState {
   joinRegattaDismissedAt: number | null
   createAccountDismissedAt: number | null
@@ -44,6 +66,7 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
+  leaderboardEnabled: boolean,
 }
 
 export interface AuthState {
@@ -54,6 +77,7 @@ export interface AuthState {
 export interface UserState {
   currentBoat?: any | null
   boats?: any | null
+  images?: any
 }
 
 export interface EventState {
@@ -64,4 +88,17 @@ export interface EventState {
 export interface CheckInState {
   active: any
   isLoadingCheckIn: boolean
+}
+
+export interface CourseReducerState {
+  allCourses: CourseStateMap // Should be Map<RaceID, Course>
+  marks: MarkMap
+  markPairs: MarkPairMap
+  courseLoading: boolean
+  selectedCourse?: SelectedCourseState
+  // ID of the waypoint that is selected for editing
+  selectedWaypoint?: string
+  sameStartFinish: boolean
+  selectedGateSide?: GateSide
+  defaultMarkIds: DefaultMarkIdMap
 }
