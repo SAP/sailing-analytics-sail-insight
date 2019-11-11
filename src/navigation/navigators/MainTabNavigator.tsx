@@ -77,27 +77,7 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
 
 export default createBottomTabNavigator(
   {
-    [Screens.Sessions]: createStackNavigator({
-      [Screens.UserSessions]: {
-        screen: Sessions,
-        navigationOptions: ({ navigation }: any) => ({
-          headerTitle: (
-            <Text style={[tab.topTabItemText, { color: $primaryTextColor }]}>
-              {getTabItemTitleTranslation(navigation.state.routeName).toUpperCase()}
-            </Text>
-          ),
-          headerRight: (
-            <HeaderIconButton
-              icon={Images.actions.share}
-              onPress={navigateToFilterSessions}
-            />
-          ),
-        }),
-      }
-    },
-    {
-      headerLayoutPreset: 'center',
-    }),
+    [Screens.Sessions]: Sessions,
     // [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.Inventory]: MarkInventory.fold,
     [Screens.Account]: AccountNavigator,
@@ -111,7 +91,7 @@ export default createBottomTabNavigator(
       inactiveTintColor: $secondaryTextColor,
       style: {
         height: 56,
-        backgroundColor: '#123748', // 'white',
+        backgroundColor: '#123748'
       },
       showLabel: false,
       showIcon: true,

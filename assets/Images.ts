@@ -82,6 +82,7 @@ export default {
   },
   events: {
     placeholder_event_pic: require('./img/events/placeholder_eventlist.png'),
+    archive: require('./img/icons/icon-event-archive.png'),
   },
   markInventory: {
     markIcon: require('./img/icons/mark-icon-small.png'),
