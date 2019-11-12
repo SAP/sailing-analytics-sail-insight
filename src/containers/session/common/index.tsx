@@ -7,7 +7,7 @@ import { Picker } from 'react-native'
 
 import styles from './styles'
 
-const defineButton = curry(({ onPress }, content: any) =>
+const styledButton = curry(({ onPress }, content: any) =>
   Component((props: any) =>
     compose(
       fold(props),
@@ -103,9 +103,9 @@ export const racesAndScoringCard = Component((props: any) =>
       text({ style: styles.text }, `${props.races} Races Planned`),
       text({ style: styles.text }, props.scoring),
       text({ style: styles.textLast }, `Discard starting from ${props.discardRace}. race`),
-      defineButton({
+      styledButton({
         onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
-      }, text({ style: styles.buttonContent }, 'Define Races'.toUpperCase()))
+      }, text({ style: styles.buttonContent }, 'DEFINE RACES'))
     ]))
 
 export const competitorsCard = Component((props: any) =>
@@ -116,5 +116,7 @@ export const competitorsCard = Component((props: any) =>
     reduce(concat, nothing()))([
       text({ style: styles.headline }, 'Competitors'),
       text({ style: styles.text }, `${props.registrationType} – ${props.entries} Entries`),
-      text({ style: styles.textLast }, 'Invitations: 4 / Acceptations: 2'),
+      styledButton({
+        onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
+      }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS'))
     ]))
