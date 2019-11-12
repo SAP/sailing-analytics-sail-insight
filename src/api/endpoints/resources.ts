@@ -116,6 +116,7 @@ type ApiFunction = () => any
 export interface DataApi {
   requestRegattas: ApiFunction
   requestRegatta: (regattaName: string, secret?: string) => any
+  updateRegatta: (regattaName: string, body: object, secret?: string) => any
   requestRaces: (regattaName: string, secret?: string) => any
   requestRace: (regattaName: string, raceName: string, raceId?: string, secret?: string) => any
   requestLeaderboard: (leaderboardName: string, secret?: string) => any
@@ -184,6 +185,13 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestRegatta: (regattaName, secret) => dataRequest(
         endpoints.regattaDetails({ pathParams: [regattaName], urlParams: { secret } }),
         { dataSchema: regattaSchema },
+    ),
+    updateRegatta: (regattaName, body, secret) => dataRequest(
+      endpoints.regattaDetails({ pathParams: [regattaName], urlParams: { secret } }),
+      {
+        body,
+        method: HttpMethods.PUT
+      },
     ),
     requestRaces: (regattaName, secret) => dataRequest(
       endpoints.regattaRaces({ pathParams: [regattaName], urlParams: { secret } }),

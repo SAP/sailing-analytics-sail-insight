@@ -70,6 +70,10 @@ function* createEvent({ payload: { payload: data} }: any) {
     inc)(
     data.numberOfRaces)
 
+  yield call(api.updateRegatta, data.regattaName,
+    { controlTrackingFromStartAndFinishTimes: true,
+      useStartTimeInference: false })
+
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
 }
