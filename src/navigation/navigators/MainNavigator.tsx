@@ -1,5 +1,6 @@
 import { get } from 'lodash'
 import React from 'react'
+import { Share } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
 import { connect } from 'react-redux'
 
@@ -9,10 +10,9 @@ import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 import { getFormTeamName } from 'selectors/boat'
 
+import HeaderIconButton from 'components/HeaderIconButton'
 import HeaderTitle from 'components/HeaderTitle'
 import ImageButton from 'components/ImageButton'
-import ModalBackButton from 'components/ModalBackButton'
-import ShareButton from 'components/ShareIconButton'
 import WebView from 'components/WebView'
 
 import Geolocation from 'containers/CourseCreation/Geolocation'
@@ -43,6 +43,11 @@ const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.para
     onPress={get(navigation, 'state.params.onOptionsPressed')}
   />
 )
+
+const shareOnPress = (url = '') => () => {
+  const message = `${I18n.t('text_track_share')}${url}`
+  Share.share({ message })
+}
 
 export default createStackNavigator(
   {
@@ -137,9 +142,9 @@ export default createStackNavigator(
         return {
           headerTitle: 'Track Details',
           headerRight: (
-            <ShareButton
-              url={get(navigationProps, 'state.params.data.url')}
-              eventName={get(navigationProps, 'state.params.data.eventName')}
+            <HeaderIconButton
+              icon={Images.actions.share}
+              onPress={shareOnPress(get(navigationProps, 'state.params.data'))}
             />
           ),
         }

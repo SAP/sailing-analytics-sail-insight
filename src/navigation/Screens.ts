@@ -16,6 +16,8 @@ export const TeamDetails = 'TeamDetails'
 export const UserSessions = 'UserSessions'
 export const SessionDetail = 'SessionDetail'
 export const EditSession = 'EditSession'
+export const NewSession = 'NewSession'
+export const FilterSessions = 'FilterSessions'
 export const EventCreation = 'EventCreation'
 
 export const RaceDetails = 'RaceDetails'

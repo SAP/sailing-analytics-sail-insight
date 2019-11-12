@@ -20,8 +20,8 @@ export interface RootState {
   onboarding?: any | OnboardingState
   settings?: any | SettingsState
   user?: any | UserState
-  courses?: any | CourseReducerState,
-  events?: any,
+  events?: any | EventState
+  courses?: any | CourseReducerState
   markInventory?: any
 }
 
@@ -78,6 +78,11 @@ export interface UserState {
   currentBoat?: any | null
   boats?: any | null
   images?: any
+}
+
+export interface EventState {
+  all: Map<string, any>
+  activeFilters: string[]
 }
 
 export interface CheckInState {

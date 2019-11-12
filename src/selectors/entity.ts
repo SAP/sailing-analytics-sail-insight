@@ -60,8 +60,14 @@ export const getEntityArrayByType = (
  * @param {string} id - The desireds entity ID
  * @param {string} idParam  - parameter to use to save the keys (IDs) default is 'id'
  */
-export const getEntityById = (state: any, type: string, id: string, idParam?: string) => {
-  const entities = getEntities(state, type)
+export const getEntityById = (
+  state: any,
+  type: string,
+  id: string,
+  options: { idParam?: string, reducerName?: string } = {},
+) => {
+  const { idParam, reducerName } = options
+  const entities = getEntities(state, type, reducerName)
 
   if (!entities || !entities[id]) {
     return undefined

@@ -60,6 +60,8 @@ target 'sap_sailing_insight' do
 
   pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing

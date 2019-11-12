@@ -10,8 +10,6 @@ export default EStyleSheets.create({
   detailContainer: {
     paddingVertical: '$tinySpacing',
     backgroundColor: 'white',
-    marginBottom: '$tinySpacing',
-    alignSelf: 'stretch',
   },
   innerContainer: {
     alignItems: 'center',

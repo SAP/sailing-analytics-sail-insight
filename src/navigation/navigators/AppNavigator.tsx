@@ -13,6 +13,7 @@ import ModalBackButton from 'components/ModalBackButton'
 import Login from 'containers/authentication/Login'
 import PasswordReset from 'containers/authentication/PasswordReset'
 import EditCompetitor from 'containers/session/EditCompetitor'
+import FilterSessions from 'containers/session/FilterSessions'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
@@ -95,6 +96,12 @@ export default createStackNavigator(
         headerRight: <ModalBackButton type="icon" />,
         headerLeft: null,
       }),
+    },
+    [Screens.FilterSessions]: {
+      screen: FilterSessions,
+      navigationOptions: {
+        header: null,
+      },
     },
   },
   {

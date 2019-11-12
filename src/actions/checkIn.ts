@@ -14,6 +14,7 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { spreadableList } from 'helpers/utils'
 
+import { fetchEvent } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { getCheckInByLeaderboardName, getActiveCheckInEntity } from 'selectors/checkIn'
 import { LocationTrackingStatus } from 'services/LocationService'
@@ -49,7 +50,7 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
     } = checkInData
 
     const queue = ActionQueue.create(dispatch, [
-      ...spreadableList(eventId, fetchEntityAction(dataApi.requestEvent)(eventId, secret)),
+      ...spreadableList(eventId, fetchEvent(dataApi.requestEvent)(eventId, secret)),
       fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName, secret),
       fetchRegatta(regattaName, secret, serverUrl),
       fetchAllRaces(regattaName, secret, serverUrl),

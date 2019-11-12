@@ -8,9 +8,12 @@ import {
   SelectedRaceInfo,
 } from 'models/Event'
 
-export const getEventEntity = (state: any) => getEntities(state, EVENT_ENTITY_NAME)
+export const getEventEntity = (state: any) => getEntities(state, 'all', 'events')
 export const getEvents = (state: any) => getEntityArrayByType(state, EVENT_ENTITY_NAME)
-export const getEvent = (eventId: string) => (state: any) => getEntityById(state, EVENT_ENTITY_NAME, eventId)
+export const getEvent = (eventId: string) => (state: any) =>
+  getEntityById(state, 'all', eventId, { reducerName: 'events' })
+
+export const getActiveEventFilters = (state: any) => state.events.activeFilters
 
 export const getSelectedEventInfo = createSelector(
     (state: any): string | undefined => state.events.selectedEvent,

@@ -14,7 +14,7 @@ import { authBasedNewSession } from 'actions/auth'
 import { selectEvent } from 'actions/events'
 import { CheckIn, Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
-import { getSessionList } from 'selectors/session'
+import { getFilteredSessionList } from 'selectors/session'
 
 import AddButton from 'components/AddButton'
 import EmptySessionsHeader from 'components/EmptySessionsHeader'
@@ -120,7 +120,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 }
 
 const mapStateToProps = (state: any) => ({
-  sessions: getSessionList(state),
+  sessions: getFilteredSessionList(state),
 })
 
 export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)

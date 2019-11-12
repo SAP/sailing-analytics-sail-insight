@@ -13,6 +13,7 @@ export const ApiBodyKeys = {
   Videos: 'videos',
   SailorsInfoWebsiteURLs: 'sailorsInfoWebsiteURLs',
   VenueName: 'name',
+  Archived: 'archived',
 }
 
 
@@ -30,6 +31,7 @@ export const mapResToEvent = (map: any) => map && ({
   images : map[ApiBodyKeys.Images],
   videos : map[ApiBodyKeys.Videos],
   sailorsInfoWebsiteURLs : map[ApiBodyKeys.SailorsInfoWebsiteURLs],
+  archived : map[ApiBodyKeys.Archived],
 } as Event)
 
 
@@ -47,6 +49,7 @@ export default interface Event {
   images?: any[]
   videos?: any[]
   sailorsInfoWebsiteURLs?: string
+  archived?: boolean
 }
 
 export interface SelectedEventInfo {
