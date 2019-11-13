@@ -77,10 +77,11 @@ function* createEvent({ payload: { payload: data} }: any) {
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
 
-  yield call(api.startTracking, data.leaderboardName, {
-    race_column: races[0],
-    fleet: 'Default'
-  })
+  yield all(races.map(race =>
+      call(api.startTracking, data.leaderboardName, {
+        race_column: race,
+        fleet: 'Default'
+    })))
 }
 
 export default function* watchEvents() {
