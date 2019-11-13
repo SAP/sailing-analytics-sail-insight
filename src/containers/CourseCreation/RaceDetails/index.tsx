@@ -17,33 +17,22 @@ import {
   nothing,
   reduxConnect as connect
 } from 'components/fp/component'
-import { field as reduxFormField, reduxForm } from 'components/fp/redux-form'
 import { forwardingPropsFlatList, text, view, touchableOpacity } from 'components/fp/react-native'
-import {
-  FORM_KEY_NUMBER_OF_RACES,
-  EVENT_CREATION_FORM_NAME
-} from 'forms/eventCreation'
 
 import IconText from 'components/IconText'
 import { overlayPicker, FramedNumber } from '../../session/common'
 
 import { selectCourse } from 'actions/courses'
-import { selectRace, setRaceTime } from 'actions/events'
+import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getCourseStateById } from 'selectors/course'
 import { getRaceTime } from 'selectors/event'
-import { navigateToRaceCourseLayout, navigateToRaceSetup } from 'navigation'
+import { navigateToRaceCourseLayout } from 'navigation'
 
 import DatePicker from 'react-native-datepicker'
 
 import { dateTimeShortHourText } from 'helpers/date'
 import styles from './styles'
-
-const sliderSettings = {
-  minimumValue: 1,
-  maximumValue: 20,
-  step: 1,
-}
 
 export const arrowRight = fromClass(IconText).contramap(merge({
   source: Images.actions.arrowRight,
@@ -65,13 +54,9 @@ const mapStateToProps = (state: any, props: any) => {
     getSelectedRegatta)(
     state)
 
-  console.log('number of races', races.length)
-
   return {
     session,
-    initialValues: {
-      [FORM_KEY_NUMBER_OF_RACES]: races.length
-    },
+    numberOfRaces: races.length,
     races
   }
 }
@@ -83,16 +68,10 @@ const raceNumberSelector = Component((props: any) =>
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       style: { position: 'absolute', top: 0, width: 160, height: 80, color: 'white' },
-      selectedValue: when(isEmpty, always(props.meta.initial))(props.input.value),
-      onValueChange: props.input.onChange,
+      selectedValue: props.numberOfRaces,
+      onValueChange: v => props.updateEventSettings(props.session, { numberOfRaces: v })
     }))(
-    FramedNumber.contramap(always({ value: props.input.value, foo: console.log(props) }))))
-
-const raceNumberFormField = reduxFormField({
-  name: FORM_KEY_NUMBER_OF_RACES,
-  component: raceNumberSelector.fold,
-  ...sliderSettings,
-})
+    FramedNumber.contramap(always({ value: props.numberOfRaces }))))
 
 const onSeeCourse = (props: any) => {
   const { raceName } = props.item
@@ -170,14 +149,13 @@ const detailsContainer = Component((props: Object) =>
     reduce(concat, nothing()))
   ([
     text({ style: styles.sectionHeaderStyle }, 'LIST OF RACES'),
-    raceNumberFormField,
+    raceNumberSelector,
     text({}, 'Discards starting from ... races')]))
 
 export default Component((props: Object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { selectCourse, selectRace, setRaceTime }),
-    reduxForm({ form: EVENT_CREATION_FORM_NAME }),
+    connect(mapStateToProps, { selectCourse, selectRace, setRaceTime, updateEventSettings }),
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
   ([detailsContainer,

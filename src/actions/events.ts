@@ -19,6 +19,7 @@ export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
 export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
 export const SET_RACE_TIME = 'SET_RACE_TIME'
+export const ADD_RACE_COLUMNS = 'ADD_RACE_COLUMNS'
 
 export const updateEvent = createAction('UPDATE_EVENT')
 export const receiveEvent = createAction('RECEIVE_EVENT')
@@ -94,6 +95,19 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
       createAction(CREATE_EVENT)(data),
     )
   ])
+
+export const updateEventSettings = (session, data: object) => (dispatch: DispatchType) => {
+  if (session.numberOfRaces < data.numberOfRaces) {
+    dispatch(createAction(ADD_RACE_COLUMNS)({
+      regattaName: session.regattaName,
+      leaderboardName: session.leaderboardName,
+      existingNumberOfRaces: session.numberOfRaces,
+      numberofraces: data.numberOfRaces - session.numberOfRaces,
+      prefix: session.trackPrefix,
+      serverUrl: session.serverUrl
+    }))
+  }
+}
 
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)
