@@ -2,7 +2,8 @@ import { when, isEmpty, always, prop, compose,
   isNil, map, range, inc, concat, toString, __,
   apply } from 'ramda'
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
-import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME, ADD_RACE_COLUMNS } from 'actions/events'
+import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
+  ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS } from 'actions/events'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getUserInfo } from 'selectors/auth'
@@ -87,7 +88,6 @@ function* createEvent({ payload: { payload: data} }: any) {
 }
 
 function* addRaceColumns({ payload }: any) {
-  console.log('add race columns', payload)
   const api = dataApi(payload.serverUrl)
 
   yield call(api.addRaceColumns, payload.regattaName, payload)
@@ -105,9 +105,23 @@ function* addRaceColumns({ payload }: any) {
     })))
 }
 
+function* removeRaceColumns({ payload }: any) {
+  const api = dataApi(payload.serverUrl)
+
+  const races = compose(
+    map(compose(concat('R'), toString)),
+    apply(range),
+    map(inc))(
+    [payload.existingNumberOfRaces - payload.numberofraces, payload.existingNumberOfRaces])
+
+    yield all(races.map((race: string) =>
+      call(api.removeRaceColumn, payload.regattaName, race)))
+}
+
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventFlow)
     yield takeEvery(SET_RACE_TIME, setRaceTime)
     yield takeEvery(CREATE_EVENT, createEvent)
     yield takeEvery(ADD_RACE_COLUMNS, addRaceColumns)
+    yield takeEvery(REMOVE_RACE_COLUMNS, removeRaceColumns)
 }

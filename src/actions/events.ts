@@ -20,6 +20,7 @@ export const SELECT_RACE = 'SELECT_RACE'
 export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
 export const SET_RACE_TIME = 'SET_RACE_TIME'
 export const ADD_RACE_COLUMNS = 'ADD_RACE_COLUMNS'
+export const REMOVE_RACE_COLUMNS = 'REMOVE_RACE_COLUMNS'
 
 export const updateEvent = createAction('UPDATE_EVENT')
 export const receiveEvent = createAction('RECEIVE_EVENT')
@@ -96,15 +97,24 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
     )
   ])
 
-export const updateEventSettings = (session, data: object) => (dispatch: DispatchType) => {
+export const updateEventSettings = (session: object, data: object) => (dispatch: DispatchType) => {
+  const sessionData = {
+    regattaName: session.regattaName,
+    leaderboardName: session.leaderboardName,
+    prefix: session.trackPrefix,
+    serverUrl: session.serverUrl,
+    existingNumberOfRaces: session.numberOfRaces
+  }
+
   if (session.numberOfRaces < data.numberOfRaces) {
     dispatch(createAction(ADD_RACE_COLUMNS)({
-      regattaName: session.regattaName,
-      leaderboardName: session.leaderboardName,
-      existingNumberOfRaces: session.numberOfRaces,
-      numberofraces: data.numberOfRaces - session.numberOfRaces,
-      prefix: session.trackPrefix,
-      serverUrl: session.serverUrl
+      ...sessionData,
+      numberofraces: data.numberOfRaces - session.numberOfRaces
+    }))
+  } else if (session.numberOfRaces > data.numberOfRaces) {
+    dispatch(createAction(REMOVE_RACE_COLUMNS)({
+      ...sessionData,
+      numberofraces: session.numberOfRaces - data.numberOfRaces
     }))
   }
 }
