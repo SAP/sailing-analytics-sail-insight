@@ -141,4 +141,3 @@ export const eventCreationResponseToCheckIn = (
   secret: additionalProperties && additionalProperties.secret,
   numberOfRaces: additionalProperties && additionalProperties.numberOfRaces
 } as CheckIn)
-
