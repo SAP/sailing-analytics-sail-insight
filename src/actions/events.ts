@@ -5,6 +5,7 @@ import { Session } from 'models'
 import { fetchAction } from 'helpers/actions'
 
 import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
+import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { selfTrackingApi } from 'api'
 import { CreateEventBody } from 'api/endpoints/types'
 import { ActionQueue } from 'helpers/actions'
@@ -97,24 +98,26 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
     )
   ])
 
-export const updateEventSettings = (session: object, data: object) => (dispatch: DispatchType) => {
+export const updateEventSettings = (session: object, data: object) => (dispatch: DispatchType, getState) => {
+  const regattaRaces = getRegattaPlannedRaces(session.regattaName)(getState())
+
   const sessionData = {
     regattaName: session.regattaName,
     leaderboardName: session.leaderboardName,
     prefix: session.trackPrefix,
     serverUrl: session.serverUrl,
-    existingNumberOfRaces: session.numberOfRaces
+    existingNumberOfRaces: regattaRaces.length
   }
 
-  if (session.numberOfRaces < data.numberOfRaces) {
+  if (regattaRaces.length < data.numberOfRaces) {
     dispatch(createAction(ADD_RACE_COLUMNS)({
       ...sessionData,
-      numberofraces: data.numberOfRaces - session.numberOfRaces
+      numberofraces: data.numberOfRaces - regattaRaces.length
     }))
-  } else if (session.numberOfRaces > data.numberOfRaces) {
+  } else if (regattaRaces.length > data.numberOfRaces) {
     dispatch(createAction(REMOVE_RACE_COLUMNS)({
       ...sessionData,
-      numberofraces: session.numberOfRaces - data.numberOfRaces
+      numberofraces: regattaRaces.length - data.numberOfRaces
     }))
   }
 }

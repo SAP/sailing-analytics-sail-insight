@@ -4,6 +4,7 @@ import { when, isEmpty, always, prop, compose,
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
 import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
   ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS } from 'actions/events'
+import { receiveEntities } from 'actions/entities'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getUserInfo } from 'selectors/auth'
@@ -103,6 +104,8 @@ function* addRaceColumns({ payload }: any) {
         race_column: race,
         fleet: 'Default'
     })))
+
+    yield call(reloadRegattaAfterRaceColumnsChange, payload)
 }
 
 function* removeRaceColumns({ payload }: any) {
@@ -116,6 +119,15 @@ function* removeRaceColumns({ payload }: any) {
 
     yield all(races.map((race: string) =>
       call(api.removeRaceColumn, payload.regattaName, race)))
+
+    yield call(reloadRegattaAfterRaceColumnsChange, payload)
+}
+
+function* reloadRegattaAfterRaceColumnsChange(payload: any) {
+  const api = dataApi(payload.serverUrl)
+  const entities = yield call(api.requestRegatta, payload.regattaName)
+
+  yield put(receiveEntities(entities))
 }
 
 export default function* watchEvents() {

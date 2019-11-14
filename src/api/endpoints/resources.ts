@@ -55,7 +55,7 @@ const apiEndpoints = (serverUrl: string) => {
     course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
     raceTime: getUrlV1('/leaderboards/{0}/starttime'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
-    removeRaceColumn: getUrlV1('/api/v1/regattas/{0}/removeracecolumn'),
+    removeRaceColumn: getUrlV1('/regattas/{0}/removeracecolumn'),
     denoteRaceForTracking: getUrlV1('/leaderboards/{0}/denoteForTracking'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),

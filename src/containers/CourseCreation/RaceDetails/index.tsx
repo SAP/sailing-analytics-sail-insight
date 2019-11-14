@@ -93,16 +93,21 @@ const defineLayoutButton = Component(props =>
     }))(
     text({}, props.item.courseDefined ? 'See Layout' : 'Define Layout')))
 
+const getRaceStartTime = compose(
+  prop('startTimeAsMillis'),
+  defaultTo({}),
+  prop('raceTime'))
+
 const raceTime = Component((props: object) => compose(
   fold(props),
-  view({ style: [styles.raceTimeContainer, props.item.raceTime.startTimeAsMillis && styles.raceTimeContainerWithTime] }),
+  view({ style: [styles.raceTimeContainer, getRaceStartTime(props.item) && styles.raceTimeContainerWithTime] }),
   concat(__, fromClass(DatePicker).contramap(always({
     onDateChange: (value: number) => props.setRaceTime({
       race: props.item.raceName,
       raceTime: props.item.raceTime,
       value
     }),
-    date: moment(props.item.raceTime.startTimeAsMillis || new Date()),
+    date: moment(getRaceStartTime(props.item) || new Date()),
     androidMode: 'spinner',
     mode: 'time',
     hideText: true,
@@ -117,10 +122,11 @@ const raceTime = Component((props: object) => compose(
     },
   }))),
   concat(fromClass(IconText).contramap(merge({ source: Images.info.time, iconStyle: { tintColor: 'white' }}))),
-  text({ style: [styles.raceTimeText, props.item.raceTime.startTimeAsMillis && styles.raceTimeTextSet] }),
+  text({ style: [styles.raceTimeText, getRaceStartTime(props.item) && styles.raceTimeTextSet] }),
   when(isNil, always('Set time')),
-  unless(isNil, dateTimeShortHourText))(
-  props.item.raceTime.startTimeAsMillis))
+  unless(isNil, dateTimeShortHourText),
+  getRaceStartTime)(
+  props.item))
 
 const raceItem = Component((props: object) =>
   compose(
