@@ -26,7 +26,7 @@ const icon = compose(
 
 const locationIcon = icon({
   source: Images.courseConfig.location,
-  iconStyle: { width: 11, height: 11, tintColor: 'black' },
+  iconStyle: { width: 14, height: 18, tintColor: 'black' },
   style: { position: 'absolute', bottom: 15, right: 5 }
 })
 

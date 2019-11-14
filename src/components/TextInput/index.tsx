@@ -86,7 +86,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
     const assistiveText = error || hint
     const isHighlighted = error || highlight
     const highlightStyle = isHighlighted ? text.error : undefined
-
+    
     return (
       <View style={style}>
         <TouchableWithoutFeedback
@@ -110,7 +110,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && isEntrySecured}
-                placeholderTextColor={isHighlighted ? $importantHighlightColor : $secondaryTextColor}
+                placeholderTextColor={isHighlighted ? $importantHighlightColor : '#000000'}
                 placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}
