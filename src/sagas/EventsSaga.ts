@@ -1,6 +1,10 @@
-import { when, isEmpty, always, prop, compose, isNil, map, range, inc, concat, toString } from 'ramda'
+import { when, isEmpty, always, prop, compose,
+  isNil, map, range, inc, concat, toString, __,
+  apply } from 'ramda'
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
-import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME } from 'actions/events'
+import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
+  ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS } from 'actions/events'
+import { receiveEntities } from 'actions/entities'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getUserInfo } from 'selectors/auth'
@@ -84,8 +88,52 @@ function* createEvent({ payload: { payload: data} }: any) {
     })))
 }
 
+function* addRaceColumns({ payload }: any) {
+  const api = dataApi(payload.serverUrl)
+
+  yield call(api.addRaceColumns, payload.regattaName, payload)
+
+  const races = compose(
+    map(compose(concat('R'), toString)),
+    apply(range),
+    map(inc))(
+    [payload.existingNumberOfRaces, payload.existingNumberOfRaces + payload.numberofraces])
+
+    yield all(races.map((race: string) =>
+      call(api.startTracking, payload.leaderboardName, {
+        race_column: race,
+        fleet: 'Default'
+    })))
+
+    yield call(reloadRegattaAfterRaceColumnsChange, payload)
+}
+
+function* removeRaceColumns({ payload }: any) {
+  const api = dataApi(payload.serverUrl)
+
+  const races = compose(
+    map(compose(concat('R'), toString)),
+    apply(range),
+    map(inc))(
+    [payload.existingNumberOfRaces - payload.numberofraces, payload.existingNumberOfRaces])
+
+    yield all(races.map((race: string) =>
+      call(api.removeRaceColumn, payload.regattaName, race)))
+
+    yield call(reloadRegattaAfterRaceColumnsChange, payload)
+}
+
+function* reloadRegattaAfterRaceColumnsChange(payload: any) {
+  const api = dataApi(payload.serverUrl)
+  const entities = yield call(api.requestRegatta, payload.regattaName)
+
+  yield put(receiveEntities(entities))
+}
+
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventFlow)
     yield takeEvery(SET_RACE_TIME, setRaceTime)
     yield takeEvery(CREATE_EVENT, createEvent)
+    yield takeEvery(ADD_RACE_COLUMNS, addRaceColumns)
+    yield takeEvery(REMOVE_RACE_COLUMNS, removeRaceColumns)
 }

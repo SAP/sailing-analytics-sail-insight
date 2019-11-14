@@ -55,6 +55,7 @@ const apiEndpoints = (serverUrl: string) => {
     course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
     raceTime: getUrlV1('/leaderboards/{0}/starttime'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
+    removeRaceColumn: getUrlV1('/regattas/{0}/removeracecolumn'),
     denoteRaceForTracking: getUrlV1('/leaderboards/{0}/denoteForTracking'),
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
@@ -137,6 +138,7 @@ export interface DataApi {
   createEvent: (body: CreateEventBody) => Promise<CreateEventResponseData>
   updateEvent: (id: string, body: UpdateEventBody) => any
   addRaceColumns: (regattaName: string, data?: AddRaceColumnsBody) => Promise<AddRaceColumnResponseData[]>
+  removeRaceColumn: (regattaName: string, raceColumnName: string) => any
   startTracking: (leaderboardName: string, data: StartTrackingBody) => any
   stopTracking: (leaderboardName: string, data?: StopTrackingBody) => any
   setTrackingTimes: (leaderboardName: string, data: SetTrackingTimesBody) => any
@@ -277,6 +279,10 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     ),
     addRaceColumns: (regattaName, data) => dataRequest(
       endpoints.addRaceColumns({ urlParams: data, pathParams: [regattaName] }),
+      { method: HttpMethods.POST },
+    ),
+    removeRaceColumn: (regattaName, raceColumnName) => dataRequest(
+      endpoints.removeRaceColumn({ pathParams: [regattaName], urlParams: { racecolumn: raceColumnName } }),
       { method: HttpMethods.POST },
     ),
     startTracking: (leaderboardName, data) => dataRequest(

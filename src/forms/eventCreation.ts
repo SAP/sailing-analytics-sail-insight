@@ -7,6 +7,7 @@ import { generateNewSessionName } from 'services/SessionService'
 import { validateRequired } from './validators'
 
 export const EVENT_CREATION_FORM_NAME = 'eventCreation'
+export const EVENT_EDIT_FORM_NAME = 'eventEdit'
 
 export const FORM_KEY_NAME = 'name'
 export const FORM_KEY_DATE_FROM = 'dateFrom'
