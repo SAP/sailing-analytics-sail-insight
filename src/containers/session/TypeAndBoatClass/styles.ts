@@ -30,5 +30,5 @@ export default EStyleSheets.create({
   },
   boatClassInput: {
     ...withDefaultFont,
-  },
+  }
 })

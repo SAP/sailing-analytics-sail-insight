@@ -116,13 +116,12 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     input.onChange(suggestionValue)
   }
 
-  protected renderItem = (item: BoatClassesBody) => {
+  protected renderItem = ({ item }: any) => {
     const iconSource = item.iconUrl ? { uri: assetApiEndpoint(getApiServerUrl())(item.iconUrl)() } : ''
     return (
         <TouchableOpacity
             style={styles.listItem}
-            onPress={this.setCurrentInput(item.name)}
-        >
+            onPress={this.setCurrentInput(item.name)}>
           <Text>{item.name}</Text>
           {iconSource ? (<Image style={styles.icon} source={iconSource} />) : null}
         </TouchableOpacity>
@@ -138,11 +137,12 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       ...additionalProps
     } = this.props
 
-    const errorText = showError ? <Text style={{ color: 'red', marginLeft: 5, marginTop: 3 }}>{ error }</Text> : null
+    const errorText = showError ? <Text key={2} style={{ color: 'red', marginLeft: 5, marginTop: 3 }}>{ error }</Text> : null
     const { query }: Readonly<any> = this.state
 
     return [
         <TextInput
+            key={1}
             style={style}
             inputStyle={styles.input}
             placeholder={label}

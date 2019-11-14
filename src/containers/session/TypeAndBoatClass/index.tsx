@@ -61,10 +61,9 @@ const boatClassInput = Component(props => compose(
   // and validates the boatClass input value as well.
   tap(() => props.change('fixForDynamicBoatClassInput', Date.now())))(
     reduxFormField({
-      label: 'Boat class (autocomplete)',
       name: FORM_KEY_BOAT_CLASS,
       component: fromClass(FormBoatClassInput)
-        .contramap(merge({ ...props, containerStyle: styles.boatClassInput }))
+        .contramap(merge({ ...props, style: styles.boatClassInput, label: 'Boat class (autocomplete)' }))
         .fold,
     })))
 

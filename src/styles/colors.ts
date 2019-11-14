@@ -20,7 +20,7 @@ export const $activeTagColor = '#FF6C52'
 export const $headerTintColor = '#FFFFFF' // 'black'
 
 export const $DarkBlue   = '#123748'
-export const $MediumBlue = '#264756'
+export const $MediumBlue = '#476987'
 export const $LightBlue  = '#4B7B90'
 
 export const $Orange = '#FF6C52'
