@@ -4,6 +4,7 @@ import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { navigateToRaceDetails } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
+import { getRegattaPlannedRaces } from 'selectors/regatta'
 
 import { Component, fold, nothing, reduxConnect as connect } from 'components/fp/component'
 import { view, scrollView } from 'components/fp/react-native'
@@ -24,11 +25,12 @@ import {
 const mapStateToProps = (state: any, props: any) => {
   const leaderboardName = getCustomScreenParamData(props)
   const session = getSession(leaderboardName)(state)
+  const regattaRaces = getRegattaPlannedRaces(session.regattaName)(state)
 
   return {
     session,
     name: session.regattaName,
-    races: session.numberOfRaces
+    races: regattaRaces.length
   }
 }
 
