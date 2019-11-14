@@ -1,4 +1,6 @@
-import { compose, intersperse, when, always, equals, not, isNil, append, reverse} from 'ramda'
+import { compose, intersperse, when, always,
+  equals, not, isNil, append, reverse,
+  addIndex, map } from 'ramda'
 import React from 'react'
 import {
   Image,
@@ -12,6 +14,8 @@ import {
 import Text from 'components/Text'
 
 import styles from './styles'
+
+const mapIndexed = addIndex(map)
 
 class IconText extends React.Component<ViewProps & {
   iconStyle?: ImageStyle | ImageStyle[],
@@ -45,6 +49,7 @@ class IconText extends React.Component<ViewProps & {
     const separator = <View style={styles.separator} />
 
     const content = compose(
+      mapIndexed((element, i) => React.cloneElement(element, { key: i })),
       intersperse(separator),
       when(always(equals('second', iconPosition)), reverse),
       when(always(compose(not, isNil)(children)), append(text)))(
