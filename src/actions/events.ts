@@ -35,7 +35,8 @@ export const fetchEvent = (requestFunction: ((...args: any[]) => void)) =>
 export const archiveEvent = (session: Session, archived: boolean) => (
   dispatch: DispatchType,
 ) => {
-  const eventId = session.event && session.event.id
+  const eventId = session.eventId || session.event && session.event.id
+
   if (!eventId) {
     return
   }
