@@ -1,4 +1,5 @@
-import { __, compose, concat, head, mergeLeft, objOf, reduce, merge, pick } from 'ramda'
+import { __, compose, concat, head, mergeLeft, toString,
+  objOf, reduce, merge, isEmpty, path, unless, prop } from 'ramda'
 
 import MapView, { Marker } from 'react-native-maps'
 
@@ -8,6 +9,7 @@ import {
   fold,
   fromClass,
   nothing,
+  recomposeWithState as withState
 } from 'components/fp/component'
 import { view } from 'components/fp/react-native'
 import { field as reduxFormField, reduxForm, formSection } from 'components/fp/redux-form'
@@ -19,52 +21,55 @@ import { courseConfigCommonFormSettings, FORM_LOCATION } from 'forms/courseConfi
 
 import styles from './styles'
 
+const withRegion = withState('region', 'setRegion', null)
+
 const marker = Component((props: any) => compose(
   fold(props),
   contramap(mergeLeft({
     coordinate: props.input.value,
-  })),
-)(fromClass(Marker)))
+  })))(
+  fromClass(Marker)))
 
 const mapView = (settings: any = {}) => Component((props: any) => compose(
     fold(props),
     view({ style: styles.mapContainer }),
     fromClass(MapView).contramap,
-    mergeLeft,
-    mergeLeft({
+    merge,
+    merge({
       ...settings,
-      region: mergeLeft(props.input.value, { latitudeDelta: 1, longitudeDelta: 1 }),
-      onRegionChangeComplete: compose(
+      onPress: compose(
         props.input.onChange,
         merge({ positionType: MarkPositionType.Geolocation }),
-        pick(['latitude', 'longitude']))
+        path(['nativeEvent', 'coordinate'])),
+      region: props.region,
+      onRegionChange: props.setRegion
+      // onRegionChangeComplete: compose(
+      //   props.input.onChange,
+      //   merge({ positionType: MarkPositionType.Geolocation }),
+      //   pick(['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta']))
     }),
     objOf('children'),
     head,
-    fold(props),
-  )(marker),
-)
+    fold(props))(
+    isEmpty(props.input.value) ? nothing() : marker))
 
 const mapField = (settings: any = {}) => reduxFormField({
   name: FORM_LOCATION,
   component: mapView(settings).fold,
 })
 
-const COORDS_PRECISION = 7
 const coordinatesInput = ({ propName }: any) => Component((props: any) => compose(
     fold(props),
-    contramap(mergeLeft({
-      // value: props.region[propName].toPrecision(COORDS_PRECISION).toString(),
-      value: props.input.value[propName].toString(),
+    contramap(merge({
+      value: unless(isEmpty, compose(toString, prop(propName)))(props.input.value),
       onChangeText: (value: any) => props.input.onChange({
         ...props.input.value,
         [propName]: parseFloat(value),
         positionType: MarkPositionType.Geolocation
       }),
       placeholder: propName,
-    })),
-  )(fromClass(TextInput)),
-)
+    })))(
+    fromClass(TextInput)))
 
 const coordinatesInputField = (...args: any[]) => reduxFormField({
   name: FORM_LOCATION,
@@ -79,12 +84,10 @@ export default Component((props: object) =>
     fold(props),
     reduxForm(courseConfigCommonFormSettings),
     formSection({ name: props.formSectionName }),
-    reduce(concat, nothing()),
-  )([
+    withRegion,
+    reduce(concat, nothing()))([
     mapField({
       style: styles.map,
     }),
     latitudeInput,
-    longitudeInput,
-  ]),
-)
+    longitudeInput ]))

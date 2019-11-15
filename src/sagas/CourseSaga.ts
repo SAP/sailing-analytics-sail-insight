@@ -309,6 +309,7 @@ function* saveCourseFlow() {
 
   const addFreestyleAndPositioning = ({ markId }: any) => {
     const mark = marks[markId]
+    const markPosition = mark.position || mark.location
 
     return {
       markId,
@@ -318,8 +319,8 @@ function* saveCourseFlow() {
         markType: mark.type
       },
 
-      positioning: mark.location && (mark.location.positionType === MarkPositionType.Geolocation ?
-        { position: { latitude_deg: mark.location.latitude, longitude_deg: mark.location.longitude } } :
+      positioning: markPosition && (markPosition.positionType === MarkPositionType.Geolocation ?
+        { position: { latitude_deg: markPosition.latitude, longitude_deg: markPosition.longitude } } :
         { deviceUUID: 'test' })
     }
   }
