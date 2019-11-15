@@ -41,7 +41,7 @@ const ControlPointClassSelectorItem = Component((props: object) =>
     fold(props),
     touchableOpacity({
       style: styles.createNewClassSelectorItem,
-      onPress: (props: any) => props.assignControlPointClass(props.class) }),
+      onPress: (props: any) => {}/*props.assignControlPointClass(props.class)*/ }),
     view({}),
     concat(__, text({ style: styles.createNewClassSelectorItemText }, props.label)))(
     props.icon))
