@@ -281,6 +281,7 @@ const reducer = handleActions(
         ),
       },
       selectedWaypoint: action.payload.UUID,
+      selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
     }),
 
     // Remove a new waypoint at the selectedWaypoint id

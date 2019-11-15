@@ -53,7 +53,7 @@ const markFormValuesFromMark = (mark: any) => mark && ({
   [FORM_MARK_ID]: mark.id,
   [FORM_MARK_SHORT_NAME]: mark.shortName,
   [FORM_MARK_LONG_NAME]: mark.longName,
-  [FORM_LOCATION]: mark.location
+  [FORM_LOCATION]: mark.location || mark.position
 })
 
 const formValuesFromWaypoint = (waypoint: any) => waypoint && waypoint.controlPoint && ({

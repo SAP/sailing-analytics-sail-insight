@@ -80,8 +80,8 @@ export const saveWaypointFromForm = () => (
 
   const { leftMark, rightMark, passingInstruction, markPairLongName } = compose(
     waypointFromFormValues,
-    getFormValues(COURSE_CONFIG_FORM_NAME),
-  )(getState())
+    getFormValues(COURSE_CONFIG_FORM_NAME))(
+    getState())
 
   const marks: Mark[] = [leftMark, rightMark]
 
