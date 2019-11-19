@@ -110,7 +110,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && isEntrySecured}
-                placeholderTextColor={isHighlighted ? $importantHighlightColor : '#000000'}
+                placeholderTextColor={isHighlighted ? $importantHighlightColor : containerStyle && containerStyle.backgroundColor == 'transparent' ? $secondaryTextColor : '#000000'}
                 placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}

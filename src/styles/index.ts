@@ -9,7 +9,8 @@ import * as fonts from 'styles/fonts'
 export const initStyles = () => {
   StatusBar.setBarStyle('light-content', true)
   if (isPlatformAndroid) {
-    StatusBar.setBackgroundColor('white')
+    StatusBar.setBackgroundColor('transparent')
+    StatusBar.setTranslucent(true)
   }
 
   EStyleSheet.build({

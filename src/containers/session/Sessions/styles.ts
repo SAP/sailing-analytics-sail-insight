@@ -5,9 +5,10 @@ export default EStyleSheets.create({
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '$primaryBackgroundColor',
+    paddingTop: 40,
   },
   list: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'transparent',
     paddingBottom: 110,
   },
   cardsContainer: {

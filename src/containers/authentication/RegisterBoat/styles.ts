@@ -10,7 +10,7 @@ export default EStyleSheets.create({
     borderBottomWidth: 1,
   },
   inputContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'transparent',
   },
   bottomButton: {
     marginLeft: '$smallSpacing',
