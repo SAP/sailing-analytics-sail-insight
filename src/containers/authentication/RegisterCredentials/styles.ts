@@ -19,7 +19,7 @@ export default EStyleSheets.create({
     fontFamily: 'SFProDisplay-Heavy',
   },
   inputContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'transparent',
   },
   inputField: {
     flex: 1,

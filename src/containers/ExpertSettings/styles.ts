@@ -17,7 +17,7 @@ export default EStyleSheets.create({
     color: 'white',
   },
   inputContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'transparent',
   },
   textInput: {
     borderBottomColor: '#FFFFFF',

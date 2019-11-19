@@ -13,7 +13,7 @@ export default EStyleSheets.create({
     marginRight: '$smallSpacing',
   },
   inputContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'transparent',
   },
   userName: {
     borderBottomColor: '#FFFFFF',

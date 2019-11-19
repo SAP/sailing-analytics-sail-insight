@@ -6,7 +6,7 @@ export default EStyleSheets.create({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'transparent',
   },
   textContainer: {
     flexDirection: 'column',
