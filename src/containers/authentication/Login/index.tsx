@@ -1,13 +1,12 @@
 import { isEmpty } from 'lodash'
 import React from 'react'
-import { ImageBackground, TouchableOpacity, View } from 'react-native'
+import { Image, ImageBackground, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
 import { login } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
-import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { navigateToMain, navigateToPasswordReset } from 'navigation'
 
@@ -34,16 +33,33 @@ class Login extends TextInputForm<{
   public onSubmit = async () => {
     this.setState({ error: null })
     const { username, password } = this.state
-    if (isEmpty(username) || isEmpty(password)) {
+
+    // custom validation
+    let errorMsg = null
+    if (isEmpty(username)) {
+      errorMsg = I18n.t('error_need_username')
+    }
+    if (isEmpty(password)) {
+      const errMsg = I18n.t('error_need_password')
+      if (errorMsg != null) {
+        errorMsg = `${errorMsg}\n${errMsg}`
+      } else {
+        errorMsg = errMsg
+      }
+    }
+    if (errorMsg != null) {
+      this.setState({ error: errorMsg })
       return
     }
+
+    // try to login
     try {
       this.setState({ isLoading: true })
       await this.props.login(username, password)
       this.props.fetchUserInfo()
       navigateToMain()
     } catch (err) {
-      this.setState({ error: getErrorDisplayMessage(err) })
+      this.setState({ error: I18n.t('error_login_incorrect') })
     } finally {
       this.setState({ isLoading: false })
     }
@@ -90,7 +106,7 @@ class Login extends TextInputForm<{
                 {I18n.t('caption_forgot_password')}
               </Text>
             </TouchableOpacity>
-            {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text></View>}
+            {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>}
 
           </View>
           <View style={styles.bottomButtonField}>
