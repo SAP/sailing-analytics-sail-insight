@@ -249,6 +249,11 @@
   "error_leaderboard_group_already_exists": "An event with this name already exists, please choose a different name.",
   "error_regatta_already_exists": "A regatta with this name exists already. Please choose another name.",
   "error_leaderboard_already_exists": "A leaderboard with this name exists already. Please choose another name.",
+  "error_need_name": "Please enter your name",
+  "error_need_username": "Please enter a user name",
+  "error_need_password": "Please enter a password",
+  "error_need_email": "Please enter your e-mail address",
+  "error_login_incorrect": "The username or password you entered is incorrect",
 
   "url_eula": "http://konzeptwerft.com/en/sail-insight-powered-sap-app/sail-insight-powered-sap-terms-conditions/",
   "url_privacy_policy": "http://konzeptwerft.com/en/privacy/",

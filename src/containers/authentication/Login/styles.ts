@@ -64,17 +64,21 @@ export default EStyleSheets.create({
     marginTop: '$smallSpacing',
     paddingLeft: '$largeSpacing',
     paddingRight: '$largeSpacing',
-    paddingBottom: '$tinySpacing',
     marginBottom: 'auto',
     backgroundColor: '#FD3737',
     borderRadius: '$baseBorderRadius',
-
+    position: 'relative',
   },
   redBalloonText: {
     color: '#FFFFFF',
     alignSelf: 'center',
     marginTop: '$tinySpacing',
-    paddingLeft: 20,
-    paddingRight: 20,
+    marginBottom: '$tinySpacing',
+  },
+  attention: {
+    position: 'absolute',
+    left: 20,
+    height: '100%',
+    width: 16,
   },
 })

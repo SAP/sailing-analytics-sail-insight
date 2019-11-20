@@ -72,4 +72,25 @@ export default EStyleSheets.create({
     fontSize: 14,
     fontFamily: 'SFProDisplay-Medium',
   },
+  redBalloon: {
+    marginTop: '$smallSpacing',
+    paddingLeft: '$largeSpacing',
+    paddingRight: '$largeSpacing',
+    marginBottom: 'auto',
+    backgroundColor: '#FD3737',
+    borderRadius: '$baseBorderRadius',
+    position: 'relative',
+  },
+  redBalloonText: {
+    color: '#FFFFFF',
+    alignSelf: 'center',
+    marginTop: '$tinySpacing',
+    marginBottom: '$tinySpacing',
+  },
+  attention: {
+    position: 'absolute',
+    left: 20,
+    height: '100%',
+    width: 16,
+  },
 })

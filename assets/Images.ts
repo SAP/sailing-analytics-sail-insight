@@ -7,6 +7,7 @@ export default {
     app_logo: require('./img/defaults/AppLogo.png'),
     ws_logo: require('./img/defaults/WorldSailingLogo.png'),
     sap_logo: require('./img/defaults/SAP.png'),
+    attention: require('./img/new_icons/attention.png'),
   },
   corporateIdentity: {
     sapSailingLogo: require('./img/app_icon_sap_us_sailing.png'),
