@@ -1,5 +1,5 @@
-import { __, compose, concat, head, mergeLeft, toString,
-  objOf, reduce, merge, isEmpty, path, unless, prop } from 'ramda'
+import { __, compose, concat, head, mergeLeft, toString, not,
+  objOf, reduce, merge, isEmpty, path, unless, prop, when, always, isNil, has } from 'ramda'
 
 import MapView, { Marker } from 'react-native-maps'
 
@@ -41,12 +41,12 @@ const mapView = (settings: any = {}) => Component((props: any) => compose(
         props.input.onChange,
         merge({ positionType: MarkPositionType.Geolocation }),
         path(['nativeEvent', 'coordinate'])),
-      region: props.region,
+      region: compose(
+        unless(has('latitudeDelta'), merge({ latitudeDelta: 0.005, longitudeDelta: 0.005 })),
+        when(isEmpty, always(settings.currentPosition)),
+        when(isNil, always(props.input.value)))(
+        props.region),
       onRegionChange: props.setRegion
-      // onRegionChangeComplete: compose(
-      //   props.input.onChange,
-      //   merge({ positionType: MarkPositionType.Geolocation }),
-      //   pick(['latitude', 'longitude', 'latitudeDelta', 'longitudeDelta']))
     }),
     objOf('children'),
     head,
@@ -87,6 +87,7 @@ export default Component((props: object) =>
     withRegion,
     reduce(concat, nothing()))([
     mapField({
+      currentPosition: props.currentPosition,
       style: styles.map,
     }),
     latitudeInput,

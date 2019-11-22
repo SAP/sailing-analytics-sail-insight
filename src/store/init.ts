@@ -25,7 +25,7 @@ const persistConfig = {
   version: 1,
   debounce: 1000,
   timeout: 10000,
-  blacklist: ['network', 'form', 'courses'],
+  blacklist: ['network', 'form', 'courses', 'markInventory'],
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
   migrate: createMigrate(migrations, { debug: true })

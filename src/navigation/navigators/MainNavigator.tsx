@@ -114,7 +114,10 @@ export default createStackNavigator(
     },
     [Screens.CourseGeolocation]: {
       screen: Geolocation
-        .contramap((props: object) => ({ ...props, formSectionName: props.navigation.state.params.data.formSectionName }))
+        .contramap((props: object) => ({
+          ...props,
+          formSectionName: props.navigation.state.params.data.formSectionName,
+          currentPosition: props.navigation.state.params.data.currentPosition }))
         .fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
