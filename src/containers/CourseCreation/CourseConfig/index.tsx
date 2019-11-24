@@ -214,7 +214,6 @@ const MarkPositionGeolocation = Component((props: object) =>
       onPress: () => navigator.geolocation.getCurrentPosition(({ coords }) =>
         navigateToCourseGeolocation({
           currentPosition: coords,
-          foo: console.log('#@#@#@#@', coords),
           formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) })) }))(
     text({ style: styles.locationText }, 'Edit Position')))
 

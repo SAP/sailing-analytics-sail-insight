@@ -47,7 +47,7 @@ function* setRaceTime({ payload }: any) {
     when(isNil, always(new Date())))(
     payload.raceTime.startTimeAsMillis)
 
-  const { leaderboardName, serverUrl } = yield select(getSelectedEventInfo)
+  const { leaderboardName, serverUrl, regattaName } = yield select(getSelectedEventInfo)
   const api = dataApi(serverUrl)
   
   yield put(updateRaceTime({
@@ -63,6 +63,16 @@ function* setRaceTime({ payload }: any) {
     startTime: date,
     startProcedureType: 'BASIC'
   })
+
+  const races = yield select(getRegattaPlannedRaces(regattaName))
+
+  try {
+    yield all(races.map((race: string) =>
+      call(api.startTracking, leaderboardName, {
+        race_column: race,
+        fleet: 'Default'
+    })))
+  } catch {}
 }
 
 function* createEvent({ payload: { payload: data} }: any) {
@@ -80,12 +90,6 @@ function* createEvent({ payload: { payload: data} }: any) {
 
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
-
-  yield all(races.map(race =>
-      call(api.startTracking, data.leaderboardName, {
-        race_column: race,
-        fleet: 'Default'
-    })))
 }
 
 function* addRaceColumns({ payload }: any) {
