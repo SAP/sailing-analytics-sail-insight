@@ -303,7 +303,7 @@ const FormTextInputWithLabel = Component((props: any) => compose(
   fold(props),
   view({ style: props.isShort ? { flexBasis: 10 } : { flexBasis: 50 }}),
   concat(__, fromClass(FormTextInput)),
-  text({ style: styles.textInputLabel }))(
+  text({ style: styles.textInputLabel, numberOfLines: 1 }))(
   props.inputLabel))
 
 const gateNameInputData = [
@@ -321,10 +321,11 @@ const ShortAndLongName = Component((props: object) =>
     view({ style: { flexDirection: 'row' } }),
     reduce(concat, nothing()),
     mapIndexed((data, index) => compose(
-      view({ style: index === 1 ? { width: 100, marginLeft: 30 } : { flex: 1 }}),
+      view({ style: index === 1 ? { marginLeft: 30 } : { flex: 1, flexBasis: 1 }}),
       reduxFormField,
       merge({
         component: FormTextInputWithLabel.fold,
+        maxLength: index === 1 ? 5 : 100,
         inputStyle: styles.textInput,
         inputContainerStyle: styles.textInputContainer,
         containerStyle: styles.textInputInputContainer }))(data)))(
