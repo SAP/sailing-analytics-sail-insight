@@ -21,17 +21,17 @@ export const getSelectedEventInfo = createSelector(
     (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
       selectedEvent && find(propEq('eventId', selectedEvent), activeCheckIns),)
 
-  export const getSelectedRaceInfo = createSelector(
-    getSelectedEventInfo,
-    (state: any): string | undefined => state.events.selectedRace,
-    (selectedEvent, selectedRace): SelectedRaceInfo | undefined =>
-      selectedEvent &&
-      selectedRace && {
-        ...selectedEvent,
-        raceColumnName: selectedRace,
-        fleet: 'Default', // TODO: This has to be the real fleet, but it will work with most cases with 'Default'
-      } || undefined,
-  )
+export const getSelectedRaceInfo = createSelector(
+  getSelectedEventInfo,
+  (state: any): string | undefined => state.events.selectedRace,
+  (selectedEvent, selectedRace): SelectedRaceInfo | undefined =>
+    selectedEvent &&
+    selectedRace && {
+      ...selectedEvent,
+      raceColumnName: selectedRace,
+      fleet: 'Default', // TODO: This has to be the real fleet, but it will work with most cases with 'Default'
+    } || undefined,
+)
 
 export const getRaceTime = (leaderboard: string, raceName: string) =>
   createSelector((state: any) =>

@@ -211,8 +211,10 @@ const MarkPositionGeolocation = Component((props: object) =>
     concat(MarkPositionPing),
     touchableOpacity({
       style: styles.editPositionButton,
-      onPress: () => navigateToCourseGeolocation({
-        formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) }) }))(
+      onPress: () => navigator.geolocation.getCurrentPosition(({ coords }) =>
+        navigateToCourseGeolocation({
+          currentPosition: coords,
+          formSectionName: formMarkSectionNameByGateSide(props.selectedGateSide) })) }))(
     text({ style: styles.locationText }, 'Edit Position')))
 
 const locationTypes = [
