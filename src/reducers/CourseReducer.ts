@@ -112,7 +112,6 @@ const updateSelectedControlPointReducer = (
 ) => updateControlPointReducer(state, { [getSelectedWaypointArrayIndex(state)]: controlPointState })
 
 const SAME_START_FINISH_DEFAULT = true
-const SELECTED_WAYPOINT_DEFAULT = undefined
 const SELECTED_GATE_SIDE_DEFAULT = GateSide.LEFT
 
 const constructDefaultMarks = () => {
@@ -181,7 +180,7 @@ const initialState: CourseReducerState = {
   markPairs: {},
   courseLoading: false,
   selectedCourse: undefined,
-  selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
+  selectedWaypoint: undefined,
   sameStartFinish: SAME_START_FINISH_DEFAULT,
   selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
   defaultMarkIds,
@@ -261,7 +260,7 @@ const reducer = handleActions(
       return {
         ...state,
         selectedCourse,
-        selectedWaypoint: SELECTED_WAYPOINT_DEFAULT,
+        selectedWaypoint: selectedCourse.waypoints[0].id,
         sameStartFinish: SAME_START_FINISH_DEFAULT,
         selectedGateSide: SELECTED_GATE_SIDE_DEFAULT,
       }
