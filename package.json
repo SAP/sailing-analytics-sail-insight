@@ -41,7 +41,7 @@
     "react-native-fast-image": "5.0.10",
     "react-native-firebase": "5.3.1",
     "react-native-flags": "^1.0.0",
-    "react-native-fs": "^2.13.3",
+    "react-native-fs": "2.15.2",
     "react-native-gesture-handler": "1.1.3",
     "react-native-hyperlink": "^0.0.14",
     "react-native-i18n": "2.0.15",
