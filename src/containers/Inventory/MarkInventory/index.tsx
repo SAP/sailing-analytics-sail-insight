@@ -9,7 +9,7 @@ import {
   reduxConnect as connect,
   recomposeLifecycle as lifeCycle
 } from 'components/fp/component'
-import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
+import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { ControlPointClass } from 'models/Course'
 
 import { getMarks } from 'selectors/mark'
@@ -85,13 +85,14 @@ const MarkItem = Component((props: object) =>
     text({ style: styles.markName }, props.item.name),
     text({ style: styles.markEllipses }, '...')]))
 
-const List = Component((props: object) =>
-  compose(
-    fold(props),
-    view({ style: styles.markListContainer }),
-    reduce(concat, nothing()),
-    map(compose(MarkItem.contramap, merge, objOf('item'))))(
-    props.marks))
+const List = Component((props: object) => compose(
+  fold(props),
+  view({ style: styles.markListContainer }))(
+  forwardingPropsFlatList.contramap((props: any) =>
+    merge({
+      data: props.marks,
+      renderItem: MarkItem.fold
+    }, props))))
 
 export default Component((props: object) =>
   compose(
