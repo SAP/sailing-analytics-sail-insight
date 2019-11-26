@@ -69,7 +69,7 @@ const apiMarkToLocalFormat = (apiMark: any): { mark: Mark; id: MarkID } => {
   return { mark, id }
 }
 
-function* fetchMark(markId: string) {
+function* fetchMark(markId: string, { position }: any) {
   const { leaderboardName, serverURL } = yield select(getSelectedEventInfo)
 
   const api = dataApi(serverURL)
@@ -88,6 +88,8 @@ function* fetchMark(markId: string) {
     first,
     values)(
     apiMark)
+
+  mark.position = position
 
   yield put(loadMark({ [id]: mark }))
 
@@ -168,6 +170,17 @@ function* apiCourseToLocalFormat(apiCourse: any) {
     })))(
     apiCourse.waypoints)
 
+  const positioningByMarkId = compose(
+    indexBy(prop('markId')),
+    map(evolve({
+      effectivePositioning: v => v.position && ({
+        positionType: MarkPositionType.Geolocation,
+        latitude: v.position.latitude_deg,
+        longitude: v.position.longitude_deg
+      })
+    })))(
+    apiCourse.markConfigurations)
+
   const marksToLoad = compose(
     uniq,
     reject(isNil),
@@ -175,7 +188,8 @@ function* apiCourseToLocalFormat(apiCourse: any) {
     map(compose(values, pick(['id', 'leftMark', 'rightMark']), prop('controlPoint'))))(
     waypoints)
 
-  yield all(marksToLoad.map(id => call(fetchMark, id)))
+  yield all(marksToLoad.map(id =>
+    call(fetchMark, id, { position: positioningByMarkId[id].effectivePositioning })))
 
   const course = {
     name: apiCourse.name,
