@@ -16,16 +16,15 @@ import ImageButton from 'components/ImageButton'
 import WebView from 'components/WebView'
 
 import Geolocation from 'containers/CourseCreation/Geolocation'
-import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
-import EventCreation from 'containers/session/EventCreation'
-import SessionDetail from 'containers/session/SessionDetail'
 import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import RaceSetup from 'containers/CourseCreation/RaceSetUp'
+import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
+import EventCreation from 'containers/session/EventCreation'
+import SessionDetail from 'containers/session/SessionDetail'
 import TeamDetails from 'containers/TeamDetails'
 
 import { button } from 'styles/commons'
-import { $DarkBlue } from 'styles/colors'
 
 
 import MainTabNavigator from './MainTabNavigator'
@@ -40,6 +39,7 @@ const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.para
   <ImageButton
     source={Images.actions.delete}
     style={button.actionIconNavBar}
+    imageStyle={{ tintColor: 'white' }}
     onPress={get(navigation, 'state.params.onOptionsPressed')}
   />
 )

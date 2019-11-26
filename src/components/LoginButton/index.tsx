@@ -3,7 +3,7 @@ import { TouchableOpacity, ViewProps } from 'react-native'
 
 import Images from '@assets/Images'
 import I18n from 'i18n'
-import { navigateToLogin, navigateToModalLogin } from 'navigation'
+import { navigateToLogin } from 'navigation'
 
 import IconText from 'components/IconText'
 
@@ -34,8 +34,7 @@ class LoginButton extends React.Component<ViewProps & {isModal?: boolean}> {
   }
 
   private onLoginPress = () => {
-    const { isModal } = this.props
-    return isModal ? navigateToModalLogin() : navigateToLogin()
+    return navigateToLogin()
   }
 }
 

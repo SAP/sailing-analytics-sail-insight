@@ -127,8 +127,8 @@ class TeamDetails extends TextInputForm<Props> {
             inputRef={this.handleInputRef(teamForm.FORM_KEY_NATIONALITY)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_SAIL_NUMBER)}
             onChange={this.handleNationalityChanged}
-            {...this.commonProps}
             validate={[validateRequired]}
+            {...this.commonProps}
           />
           <Field
             style={styles.topInput}

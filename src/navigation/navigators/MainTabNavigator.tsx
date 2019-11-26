@@ -91,7 +91,7 @@ export default createBottomTabNavigator(
       inactiveTintColor: $secondaryTextColor,
       style: {
         height: 56,
-        backgroundColor: '#123748'
+        backgroundColor: '#123748',
       },
       showLabel: false,
       showIcon: true,

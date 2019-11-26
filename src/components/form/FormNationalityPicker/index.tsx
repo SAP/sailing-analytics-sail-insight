@@ -3,6 +3,7 @@ import { isEmpty, orderBy } from 'lodash'
 import React from 'react'
 import { Alert, TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
+import { Chevron } from 'react-native-shapes'
 import { WrappedFieldProps } from 'redux-form'
 import { selfTrackingApi } from '../../../api'
 import { CountryCodeBody } from '../../../api/endpoints/types'
@@ -12,9 +13,8 @@ import { TextInputProps } from 'components/TextInput'
 
 import { text } from 'styles/commons'
 import I18n from '../../../i18n'
-import { $importantHighlightColor, $secondaryTextColor } from '../../../styles/colors'
+import { $importantHighlightColor } from '../../../styles/colors'
 import styles from './styles'
-import { $smallSpacing } from 'styles/dimensions'
 
 interface State {
   countryList: any,
@@ -88,16 +88,20 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                     label: I18n.t('text_placeholder_nationality'),
                     value: null,
                   }}
+                  textInputProps={{ color: 'white' }}
                   items={this.state.countryList}
                   value={stateText}
+                  Icon={() => {
+                    return <Chevron size={1.5} color="white" />;
+                  }}
                   onValueChange={this.onValueChange}
-                  placeholderTextColor={isHighlighted ? $importantHighlightColor : $secondaryTextColor}
-                  style={[{
+                  placeholderTextColor={isHighlighted ? $importantHighlightColor : 'white'}
+                  style={{
                     inputIOS: styles.inputIOS,
                     inputAndroid: styles.inputAndroid,
                     underline: styles.underline,
                     icon: styles.icon,
-                  }, containerStyle]}
+                  }}
                   {...additionalProps}
               />
             </View>

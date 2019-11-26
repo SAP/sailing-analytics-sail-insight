@@ -21,9 +21,10 @@ export default EStyleSheet.create({
     flex: 1,
     borderBottomColor: '#FFFFFF',
     borderBottomWidth: 1,
+    paddingRight: 4,
   },
   title: {
-    color: '$secondaryTextColor',
+    color: 'white',
     fontSize: '$regularFontSize',
     position: 'absolute',
     top: 0,
@@ -36,16 +37,16 @@ export default EStyleSheet.create({
   },
   inputIOS: {
     fontSize: '$largeFontSize',
-    paddingHorizontal: '$smallSpacing',
-    backgroundColor: '$secondaryBackgroundColor',
+    paddingHorizontal: 0,
+    backgroundColor: 'transparent',
     color: '$primaryTextColor',
-
   },
   inputAndroid: {
     alignSelf: 'stretch',
     paddingBottom: 1,
     paddingVertical: 0, // remove Android default padding
     height: 29,
+    backgroundColor: 'transparent',
   },
   underline: {
     borderTopWidth: 0,

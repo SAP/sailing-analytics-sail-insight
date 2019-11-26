@@ -71,15 +71,6 @@ export default createStackNavigator(
         headerLeft: null,
       }),
     },
-    [Screens.ModalLogin]: {
-      screen: Login,
-      navigationOptions: () => ({
-        ...commons.navHeaderTransparentProps,
-        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
-        headerLeft: null,
-      }),
-    },
     [Screens.PasswordReset]: {
       screen: PasswordReset,
       navigationOptions: () => ({

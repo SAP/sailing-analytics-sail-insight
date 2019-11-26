@@ -266,12 +266,11 @@
 
   "subtitle": "Sail-Track-Analyze",
   "text_login": "Login",
-  "text_registration": "Your first Track is just one step Away.",
+  "text_registration": "Dein erster Track ist nur einen Schritt entfernt.",
   "text_name": "Name",
   "text_placeholder_email": "Email Adresse",
   "text_login_already_account": "Login. Ich habe bereits einen Account.",
   "text_passwort_reset_title_info" : "Bitte geben Sie Ihren Benutzernamen oder Ihre Email Adresse ein, um das Passwort Zurücksetzen über Email zu bekommen",
   "session_create_new_event" : "Erstelle ein neues Event",
-  "title_tracking": "Tracking",
-  "tilte_Account": "Dein Account"
+  "title_tracking": "Tracking"
 }

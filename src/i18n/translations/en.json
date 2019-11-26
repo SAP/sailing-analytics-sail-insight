@@ -166,7 +166,7 @@
   "caption_back": "Back",
   "caption_close": "Close",
   "caption_confirm": "Confirm",
-  "caption_qr_scanner": "Scan QR-Code",
+  "caption_qr_scanner": "Scan a QR-Code",
   "caption_start_tracking": "Start tracking",
   "caption_stop_tracking": "Stop tracking",
   "caption_to_event": "To the event",
@@ -219,7 +219,7 @@
   "caption_take_photo" : "Take a photo",
   "caption_clear_photo": "Clear photo",
   "caption_delete" : "Delete",
-  "caption_feedback_and_questions" : "Feedback and questions?",
+  "caption_feedback_and_questions" : "Feedback and Questions?",
   "caption_forgot_password": "I forgot my password",
   "caption_beta_self_tracking": "Beta Feature",
   "text_beta_self_tracking": "The start and finish lines are set by the backend automatically. We are currently working on a user friendly editor, so that you can adjust the lines. The statistics are calculated based on these lines and can only be shown if a valid start and end line was recognized by our system.",
@@ -273,6 +273,5 @@
   "text_login_already_account": "Login. I have already an account.",
   "text_passwort_reset_title_info" : "Please enter your user name or e-mail address to get a passwort reset via e-mail",
   "session_create_new_event" : "Create a new event",
-  "title_tracking" : "Tracking",
-  "tilte_Account": "Your Account"
+  "title_tracking" : "Tracking"
 }
