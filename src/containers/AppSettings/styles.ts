@@ -13,6 +13,11 @@ export default EStyleSheets.create({
     padding: '$tinySpacing',
     marginBottom: 8,
   },
+  item2: {
+    backgroundColor: 'white',
+    padding: '$tinySpacing',
+    marginBottom: 0,
+  },
   firstButton: {
     marginTop: '$mediumSpacing',
   },

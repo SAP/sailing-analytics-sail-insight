@@ -16,7 +16,6 @@ export const navigateToExpertSettings = () => NavigationService.navigate(Screens
 export const navigateToUserRegistrationCredentials = () => NavigationService.navigate(Screens.RegisterCredentials)
 export const navigateToUserRegistrationBoat = () => NavigationService.navigateWithReset(Screens.RegisterBoat)
 export const navigateToLogin = () => NavigationService.navigate(Screens.Login)
-export const navigateToModalLogin = () => NavigationService.navigate(Screens.ModalLogin)
 export const navigateToPasswordReset = () => NavigationService.navigate(Screens.PasswordReset)
 export const navigateToSessions = () => NavigationService.navigate(Screens.Sessions)
 export const navigateToTracking = () => NavigationService.navigate(Screens.Tracking)

@@ -4,10 +4,10 @@ export const $placeholderBackgroundColor = '#FFFFFF1A' // '#008FD31A'
 
 export const $primaryButtonColor = '#FF6C52' // '#008FD3'
 export const $secondaryButtonColor = 'black'
-export const $importantHighlightColor = '#D0021B'
+export const $importantHighlightColor = '#FD3737' // new red
 
 export const $improvementColor = '#7ED321'
-export const $declineColor = '#D0021B'
+export const $declineColor = '#FD3737' // new red
 
 export const $primaryTextColor = '#FFFFFF' // 'black'
 export const $secondaryTextColor = '#EEEEEE' // '#777777'

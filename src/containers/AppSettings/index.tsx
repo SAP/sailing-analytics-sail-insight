@@ -50,7 +50,7 @@ class AppSettings extends React.Component<ViewProps & {
               onSwitchValueChange={this.props.changeAnalyticsSetting}
             />
             <EditItemSwitch
-              style={styles.item}
+              style={styles.item2}
               titleStyle={{ color: 'black' }}
               title={I18n.t('caption_setting_bulk_gps')}
               switchValue={this.props.bulkGpsSetting}

@@ -22,30 +22,8 @@ import { $headerTintColor } from 'styles/colors'
 
 export default createStackNavigator(
   {
-    /*
-    [Screens.RegisterName]: {
-      screen: RegisterName,
-      navigationOptions: () => ({
-        ...commons.navHeaderTransparentProps,
-        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
-      }),
-    },
-    */
     [Screens.RegisterCredentials]: {
       screen: RegisterCredentials,
-      /*
-      navigationOptions: ({ navigation: navigationProps }: any) => ({
-        title: I18n.t('title_your_account'),
-        headerRight: (
-          <ImageButton
-            style={button.actionIconNavBar}
-            source={Images.actions.help}
-            onPress={get(navigationProps, 'state.params.onOptionsPressed')}
-          />
-        ),
-      }),
-      */
       navigationOptions: () => ({
         ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
