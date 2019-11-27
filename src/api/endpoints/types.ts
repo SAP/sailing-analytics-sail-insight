@@ -1,5 +1,6 @@
 export interface CreateEventBody {
   eventName?: string
+  ispublic?: boolean
   boatclassname: string
   venuename: string
   numberofraces?: number

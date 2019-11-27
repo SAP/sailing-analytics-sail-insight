@@ -62,6 +62,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     secret,
     eventName:                  eventData.name,
     venuename:                  eventData.location,
+    ispublic:                   true,
     competitorRegistrationType: 'OPEN_UNMODERATED', // To be dynamic in the FUTURE
     createleaderboardgroup:     true,
     createregatta:              true,
