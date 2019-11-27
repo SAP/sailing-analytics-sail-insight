@@ -108,7 +108,7 @@ const raceTime = Component((props: object) => compose(
       value
     }),
     date: moment(getRaceStartTime(props.item) || new Date()),
-    androidMode: 'spinner',
+    androidMode: 'spinner', 
     mode: 'time',
     confirmBtnText: I18n.t('caption_confirm'),
     cancelBtnText: I18n.t('caption_cancel'),
