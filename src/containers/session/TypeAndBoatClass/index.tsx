@@ -1,12 +1,11 @@
 import { findIndex } from 'lodash'
 import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __, merge, tap } from 'ramda'
 
-import Images from '@assets/Images'
 import { Component, fold, fromClass, nothing, nothingAsClass,
   recomposeBranch as branch } from 'components/fp/component'
 import { text, view } from 'components/fp/react-native'
 import { field as reduxFormField } from 'components/fp/redux-form'
-import IconText from 'components/IconText'
+
 import {
   FORM_KEY_BOAT_CLASS,
   FORM_KEY_REGATTA_TYPE,
@@ -54,18 +53,13 @@ const regattaTypeInput = reduxFormField({
 })
 
 const boatClassInput = Component(props => compose(
-  fold(props),
-  // Due to the boat class input being redrawn each time,
-  // having the nothingIfHandicapSelected, the form unregisters
-  // the boatClass field. Manually triggering change solves it,
-  // and validates the boatClass input value as well.
-  tap(() => props.change('fixForDynamicBoatClassInput', Date.now())))(
-    reduxFormField({
-      name: FORM_KEY_BOAT_CLASS,
-      component: fromClass(FormBoatClassInput)
-        .contramap(merge({ ...props, style: styles.boatClassInput, label: 'Boat class (autocomplete)' }))
-        .fold,
-    })))
+  fold(props))(
+  reduxFormField({
+    name: FORM_KEY_BOAT_CLASS,
+    component: nothingIfHandicapSelected(fromClass(FormBoatClassInput))
+      .contramap(merge({ ...props, style: styles.boatClassInput, label: 'Boat class (autocomplete)' }))
+      .fold,
+  })))
 
 const modalDropdown = fromClass(ModalDropdown).contramap((props: any) => mergeLeft({
   onSelect: (index: any, value: any) => props.input.onChange(value),
@@ -87,6 +81,6 @@ export default Component((props: Object) =>
     reduce(concat, nothing()))([
       text({ style: styles.sectionHeaderStyle }, 'REGATTA DETAILS'),
       regattaTypeInput,
-      nothingIfHandicapSelected(boatClassInput),
+      boatClassInput,
       // nothingIfOneDesignSelected(ratingSystemDropdown),
     ]))

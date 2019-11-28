@@ -29,7 +29,8 @@ export const initialValues = {
   [FORM_KEY_DATE_TO]: datePickerDateFormat(new Date()),
   [FORM_KEY_NUMBER_OF_RACES]: 3,
   [FORM_KEY_DISCARDS]: [],
-  [FORM_KEY_REGATTA_TYPE]: RegattaType.OneDesign
+  [FORM_KEY_REGATTA_TYPE]: RegattaType.OneDesign,
+  [FORM_KEY_BOAT_CLASS]: null
 }
 
 export const eventCreationDataFromFormValues = (values: any) => values && ({
@@ -54,7 +55,7 @@ const validateAscendingOrder = (arr: number[]) =>
 export const validate = (values: any = {}) => ({
   [FORM_KEY_NAME]: validateRequired(values[FORM_KEY_NAME]),
   [FORM_KEY_LOCATION]: validateRequired(values[FORM_KEY_LOCATION]),
-  [FORM_KEY_BOAT_CLASS]: validateRequired(values[FORM_KEY_BOAT_CLASS]),
+  [FORM_KEY_BOAT_CLASS]: values[FORM_KEY_REGATTA_TYPE] === RegattaType.OneDesign ? validateRequired(values[FORM_KEY_BOAT_CLASS]) : undefined,
   // [FORM_KEY_DISCARDS]:
   //   validateNoUndefined(values[FORM_KEY_DISCARDS]) ||
   //   validateAscendingOrder(values[FORM_KEY_DISCARDS]),
