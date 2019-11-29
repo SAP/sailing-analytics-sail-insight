@@ -70,7 +70,6 @@ const raceNumberSelector = Component((props: any) =>
     concat(text({ style: styles.textHeader }, 'Planned number of races')),
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
-      style: { position: 'absolute', top: 0, width: 160, height: 80, color: 'white' },
       selectedValue: props.numberOfRaces,
       onValueChange: v => props.updateEventSettings(props.session, { numberOfRaces: v })
     }))(

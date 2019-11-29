@@ -44,7 +44,6 @@ const raceNumberSelector = Component((props: any) =>
     concat(text({ style: styles.textHeader }, 'Planned Number of Races')),
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
-      style: { position: 'absolute', top: 0, width: 160, height: 80, color: 'white' },
       selectedValue: Number(props.input.value),
       onValueChange: props.input.onChange,
     }))(
@@ -66,8 +65,7 @@ const scoringSystemLabel = Component((props: object) =>
 const DiscardSelectorItem = Component((props: any) => compose(
   fold(props),
   overlayPicker({
-    onValueChange: (value: number) => props.updateDiscardItem(props.item.index, value),
-    style: { position: 'absolute', top: 0, left: 0, width: 60, height: 60 }
+    onValueChange: (value: number) => props.updateDiscardItem(props.item.index, value)
   }),
   view({ style: styles.discardSelectorItemContainer }),
   text({ style: styles.discardSelectorItemText }))(
@@ -76,8 +74,7 @@ const DiscardSelectorItem = Component((props: any) => compose(
 const AddDiscardButton = Component((props: any) => compose(
   fold(props),
   overlayPicker({
-    onValueChange: (value: number) => props.addDiscard(value),
-    style: { position: 'absolute', top: 0, left: 0, width: 60, height: 60 }
+    onValueChange: (value: number) => props.addDiscard(value)
   }),
   view({ style: styles.discardSelectorPlusContainer }))(
   plusIcon))
