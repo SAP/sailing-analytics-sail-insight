@@ -68,8 +68,8 @@ PODS:
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
   - QBImagePickerController (3.4.0)
-  - React (0.58.3):
-    - React/Core (= 0.58.3)
+  - React (0.59.8):
+    - React/Core (= 0.59.8)
   - react-native-branch (3.1.1):
     - Branch (= 0.27.1)
     - React
@@ -77,50 +77,56 @@ PODS:
     - React
   - react-native-slider (1.1.4):
     - React
-  - React/Core (0.58.3):
-    - yoga (= 0.58.3.React)
-  - React/CxxBridge (0.58.3):
+  - React/Core (0.59.8):
+    - yoga (= 0.59.8.React)
+  - React/CxxBridge (0.59.8):
     - Folly (= 2018.10.22.00)
     - React/Core
     - React/cxxreact
     - React/jsiexecutor
-  - React/cxxreact (0.58.3):
+  - React/cxxreact (0.59.8):
     - boost-for-react-native (= 1.63.0)
+    - DoubleConversion
     - Folly (= 2018.10.22.00)
+    - glog
     - React/jsinspector
-  - React/DevSupport (0.58.3):
+  - React/DevSupport (0.59.8):
     - React/Core
     - React/RCTWebSocket
-  - React/fishhook (0.58.3)
-  - React/jsi (0.58.3):
+  - React/fishhook (0.59.8)
+  - React/jsi (0.59.8):
+    - DoubleConversion
     - Folly (= 2018.10.22.00)
-  - React/jsiexecutor (0.58.3):
+    - glog
+  - React/jsiexecutor (0.59.8):
+    - DoubleConversion
     - Folly (= 2018.10.22.00)
+    - glog
     - React/cxxreact
     - React/jsi
-  - React/jsinspector (0.58.3)
-  - React/RCTActionSheet (0.58.3):
+  - React/jsinspector (0.59.8)
+  - React/RCTActionSheet (0.59.8):
     - React/Core
-  - React/RCTAnimation (0.58.3):
+  - React/RCTAnimation (0.59.8):
     - React/Core
-  - React/RCTBlob (0.58.3):
+  - React/RCTBlob (0.59.8):
     - React/Core
-  - React/RCTGeolocation (0.58.3):
+  - React/RCTGeolocation (0.59.8):
     - React/Core
-  - React/RCTImage (0.58.3):
+  - React/RCTImage (0.59.8):
     - React/Core
     - React/RCTNetwork
-  - React/RCTLinkingIOS (0.58.3):
+  - React/RCTLinkingIOS (0.59.8):
     - React/Core
-  - React/RCTNetwork (0.58.3):
+  - React/RCTNetwork (0.59.8):
     - React/Core
-  - React/RCTSettings (0.58.3):
+  - React/RCTSettings (0.59.8):
     - React/Core
-  - React/RCTText (0.58.3):
+  - React/RCTText (0.59.8):
     - React/Core
-  - React/RCTVibration (0.58.3):
+  - React/RCTVibration (0.59.8):
     - React/Core
-  - React/RCTWebSocket (0.58.3):
+  - React/RCTWebSocket (0.59.8):
     - React/Core
     - React/fishhook
     - React/RCTBlob
@@ -137,7 +143,7 @@ PODS:
   - RNSnackbar (1.0.2):
     - React
   - RSKImageCropper (2.2.3)
-  - yoga (0.58.3.React)
+  - yoga (0.59.8.React)
 
 DEPENDENCIES:
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
@@ -236,7 +242,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 04fce34bcd5620c1ee76fb79172105c74a4df335
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
-  React: d099597d6ba7001f0219dbc48532b63cfd8d0eca
+  React: 76e6aa2b87d05eb6cccb6926d72685c9a07df152
   react-native-branch: b95430177fc90d4a5d414b33c6bc7b1e8e3a2ea5
   react-native-maps: 190c02ca533fddac5bb49cf17bdece3644612107
   react-native-slider: 9fb33ac32cb788360adb5c38685aa3642bebd93c
@@ -246,7 +252,7 @@ SPEC CHECKSUMS:
   RNImageCropPicker: 287fc8b372e49855fd00470393005fca674628f3
   RNSnackbar: 9aec9b5d14aefc3441e5b58112e167cdf61a01ff
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
-  yoga: 220e7595ec3cfe80c5ce02a0d0881be66b405e81
+  yoga: 92b2102c3d373d1a790db4ab761d2b0ffc634f64
 
 PODFILE CHECKSUM: adf46f7ed2928288b39fdfa222ae8cde1987a26f
 
