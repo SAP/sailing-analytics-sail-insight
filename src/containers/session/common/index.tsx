@@ -1,9 +1,9 @@
-import { __, always, compose, concat, curry, equals, length, map, tap,
+import { __, always, compose, concat, curry, equals, length, map, tap, head, has,
   merge, mergeLeft, objOf, prepend, range, reduce, split, toString, when } from 'ramda'
 
 import { Component, fold, fromClass, nothing } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
-import { Picker } from 'react-native'
+import ModalSelector from 'react-native-modal-selector'
 
 import styles from './styles'
 
@@ -44,16 +44,22 @@ export const overallStatusCard = Component((props: any) =>
     ]))
 */
 
-export const overlayPicker = ({ selectedValue, onValueChange, style, min = 1, max = 51 }: any) =>
-  concat(__, fromClass(Picker).contramap(mergeLeft({
-    style: merge(style, { backgroundColor: 'transparent' }),
-    selectedValue,
-    onValueChange: (v: number) => setTimeout(() => onValueChange(v), 0),
-    children: compose(
-      map(fromClass(Picker.Item).fold),
-      map(v => ({ value: v, label: v.toString() })))(
-      range(min, max))
-  })))
+export const overlayPicker = curry(({ selectedValue, onValueChange, style, min = 1, max = 51 }, c) => Component(props => compose(
+    fold(props),
+    fromClass(ModalSelector).contramap,
+    always,
+    merge({
+      style: merge(style, { backgroundColor: 'transparent' }),
+      selectedKey: selectedValue,
+      onChange: (v: any) => onValueChange(v.key),
+      data: compose(
+        map(v => ({ key: v, label: v.toString() })))(
+        range(min, max))
+    }),
+    objOf('children'),
+    head,
+    when(has('fold'), fold(props)))(
+    c)))
 
 export const FramedNumberItem = Component(props => compose(
   fold(props),

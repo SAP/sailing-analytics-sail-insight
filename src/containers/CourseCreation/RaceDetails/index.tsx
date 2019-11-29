@@ -2,6 +2,8 @@ import { __, compose, concat, map, merge, defaultTo,
   reduce, when, uncurryN, tap, always, isNil, unless,
   prop, isEmpty } from 'ramda'
 
+import { openTrackDetails } from 'actions/navigation'
+
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
 import moment from 'moment/min/moment-with-locales'
@@ -41,14 +43,15 @@ export const arrowRight = fromClass(IconText).contramap(merge({
 const getRegattaPlannedRacesN = uncurryN(2, getRegattaPlannedRaces)
 
 const mapStateToProps = (state: any, props: any) => {
-  const { leaderboardName } = getCustomScreenParamData(props)
+  const { leaderboardName, regattaName } = getCustomScreenParamData(props)
   const session = getSession(leaderboardName)(state)
 
   const races = compose(
-    map((raceName: string) => ({
-      raceName,
-      courseDefined: !!getCourseStateById(`${session.regattaName} - ${raceName}`)(state),
-      raceTime: getRaceTime(leaderboardName, raceName)(state)
+    map((name: string) => ({
+      name,
+      regattaName,
+      courseDefined: !!getCourseStateById(`${session.regattaName} - ${name}`)(state),
+      raceTime: getRaceTime(leaderboardName, name)(state)
     })),
     getRegattaPlannedRacesN(__, state),
     getSelectedRegatta)(
@@ -67,31 +70,39 @@ const raceNumberSelector = Component((props: any) =>
     concat(text({ style: styles.textHeader }, 'Planned number of races')),
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
-      style: { position: 'absolute', top: 0, width: 160, height: 80, color: 'white' },
       selectedValue: props.numberOfRaces,
       onValueChange: v => props.updateEventSettings(props.session, { numberOfRaces: v })
     }))(
     FramedNumber.contramap(always({ value: props.numberOfRaces }))))
 
 const onSeeCourse = (props: any) => {
-  const { raceName } = props.item
-  props.selectCourse({ raceName, newCourse: false })
+  const { name } = props.item
+  props.selectCourse({ raceName: name, newCourse: false })
   navigateToRaceCourseLayout()
 }
 
 const onNewCourse = (props: any) => {
-  const { raceName } = props.item
-  props.selectCourse({ raceName, newCourse: true })
+  const { name } = props.item
+  props.selectCourse({ raceName: name, newCourse: true })
   navigateToRaceCourseLayout()
 }
 
-const defineLayoutButton = Component(props =>
+const defineLayoutButton = Component((props: any) =>
   compose(
     fold(props),
     touchableOpacity({
+      style: { flexGrow: 1 },
       onPress: () => props.item.courseDefined ? onSeeCourse(props) : onNewCourse(props)
     }))(
     text({}, props.item.courseDefined ? 'See Layout' : 'Define Layout')))
+
+const raceAnalyticsButton = Component((props: any) =>
+  compose(
+    fold(props),
+    touchableOpacity({
+      onPress: () => props.openTrackDetails(props.item)
+    }))(
+    text({}, 'SAP Analytics')))
 
 const getRaceStartTime = compose(
   prop('startTimeAsMillis'),
@@ -103,7 +114,7 @@ const raceTime = Component((props: object) => compose(
   view({ style: [styles.raceTimeContainer, getRaceStartTime(props.item) && styles.raceTimeContainerWithTime] }),
   concat(__, fromClass(DatePicker).contramap(always({
     onDateChange: (value: number) => props.setRaceTime({
-      race: props.item.raceName,
+      race: props.item.name,
       raceTime: props.item.raceTime,
       value
     }),
@@ -137,8 +148,9 @@ const raceItem = Component((props: object) =>
     reduce(concat, nothing()))
   ([
     raceTime,
-    text({ style: styles.raceNameText }, defaultTo('', props.item.raceName)),
+    text({ style: styles.raceNameText }, defaultTo('', props.item.name)),
     defineLayoutButton,
+    raceAnalyticsButton,
     arrowRight ]))
 
 const raceList = Component((props: object) => compose(
@@ -163,7 +175,9 @@ const detailsContainer = Component((props: Object) =>
 export default Component((props: Object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { selectCourse, selectRace, setRaceTime, updateEventSettings }),
+    connect(mapStateToProps, {
+      selectCourse, selectRace, setRaceTime,
+      updateEventSettings, openTrackDetails }),
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
   ([detailsContainer,
