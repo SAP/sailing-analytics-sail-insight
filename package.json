@@ -27,7 +27,7 @@
     "query-string": "6.2.0",
     "ramda": "^0.26.1",
     "react": "16.6.3",
-    "react-native": "0.58.3",
+    "react-native": "0.59.8",
     "react-native-autocomplete-input": "^4.1.0",
     "react-native-background-geolocation": "^3.2.0",
     "react-native-background-timer": "2.1.1",
