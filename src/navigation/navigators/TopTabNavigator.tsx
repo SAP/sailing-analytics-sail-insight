@@ -9,9 +9,9 @@ import Text from 'components/Text'
 
 import {
   $primaryActiveColor,
+  $primaryBackgroundColor,
   $primaryTextColor,
   $secondaryTextColor,
-  $primaryBackgroundColor,
 } from 'styles/colors'
 import { tab } from 'styles/commons'
 
@@ -38,7 +38,7 @@ export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTa
       activeTintColor: $primaryTextColor,
       inactiveTintColor: $secondaryTextColor,
       style: {
-        backgroundColor: $primaryBackgroundColor, //'#123748', // 'white',
+        backgroundColor: $primaryBackgroundColor,
       },
       tabStyle: platformSelect(
         {

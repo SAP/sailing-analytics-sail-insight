@@ -1,4 +1,3 @@
-import React from 'react'
 import { createStackNavigator } from 'react-navigation'
 
 import I18n from 'i18n'
@@ -6,11 +5,11 @@ import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 
 import AppSettings from 'containers/AppSettings'
-import RegisterPrompt from 'containers/authentication/RegisterPrompt'
 import AccountList from 'containers/user/AccountList'
 import TeamList from 'containers/user/TeamList'
+
 import UserProfile from 'containers/user/UserProfile'
-import AuthComponentSelector from 'navigation/navigators/AuthComponentSelector'
+import RegistrationNavigator from './RegistrationNavigator'
 
 export default createStackNavigator(
   {
@@ -21,15 +20,7 @@ export default createStackNavigator(
       },
     },
     [Screens.UserProfile]: {
-      // This is so that after logging in it doesn't return to the RegisterPrompt
-      // Because the Login modal is global, you cannot force it to navigate away
-      // after the login
-      screen: () => (
-        <AuthComponentSelector
-          LoggedInComponent={UserProfile}
-          NotLoggedInComponent={RegisterPrompt}
-        />
-      ),
+      screen: UserProfile,
       navigationOptions: {
         title: I18n.t('title_your_account'),
       },
@@ -44,6 +35,12 @@ export default createStackNavigator(
       screen: AppSettings,
       navigationOptions: {
         title: I18n.t('caption_tab_appsettings'),
+      },
+    },
+    [Screens.Register2]: {
+      screen: RegistrationNavigator,
+      navigationOptions: {
+        header: null,
       },
     },
   },

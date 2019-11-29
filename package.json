@@ -19,7 +19,7 @@
     "@types/recompose": "^0.30.6",
     "buffer": "^4.9.1",
     "country-data": "^0.0.31",
-    "lodash": "4.17.11",
+    "lodash": "4.17.12",
     "moment": "2.22.2",
     "moment-duration-format": "2.2.2",
     "normalizr": "3.2.4",

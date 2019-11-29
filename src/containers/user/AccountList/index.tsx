@@ -1,7 +1,8 @@
-import React from 'react'
-import { FlatList, Text, View } from 'react-native'
+import React, { ReactNode } from 'react'
+import { FlatList, Text, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
+import { authBasedUserProfile } from 'actions/auth'
 import AccountListItem from 'components/AccountListItem'
 import I18n from 'i18n'
 import User from 'models/User'
@@ -10,6 +11,7 @@ import {
   navigateToTeamList,
   navigateToUserProfile,
 } from 'navigation'
+import { NavigationScreenProps } from 'react-navigation'
 import { container } from 'styles/commons'
 import Images from '../../../../assets/Images'
 import Image from '../../../components/Image'
@@ -25,42 +27,39 @@ const loggedInItems = (user: User) => [
   {
     title: user.fullName || EMPTY_VALUE,
     subtitle: user.email || EMPTY_VALUE,
-    icon: Images.info.competitor,
     big: true,
     onPress: navigateToUserProfile,
   },
   {
     title: I18n.t('caption_my_teams'),
-    icon: Images.info.team,
     onPress: navigateToTeamList,
   },
 ]
 
-const notLoggedInItems = [
+const notLoggedInItems = (props: Readonly<{ children?: ReactNode }> & Readonly<any>) => [
   {
     title: I18n.t('caption_register'),
     subtitle: I18n.t('caption_login'),
-    icon: Images.info.competitor,
     big: true,
-    onPress: navigateToUserProfile,
+    onPress: props.authBasedUserProfile,
   },
 ]
 
 const settingsItem = {
   title: I18n.t('caption_settings'),
-  icon: Images.actions.settings,
   onPress: navigateToAppSettings,
 }
 
-class AccountList extends React.Component<{
+class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean
-  user: User
+  user: User,
+  authBasedUserProfile: () => void,
 }> {
   public render() {
     const { isLoggedIn, user } = this.props
 
     const data = [
-      ...(isLoggedIn ? loggedInItems(user) : notLoggedInItems),
+      ...(isLoggedIn ? loggedInItems(user) : notLoggedInItems(this.props)),
       settingsItem,
     ]
 
@@ -80,15 +79,13 @@ class AccountList extends React.Component<{
   }
 
   private renderItem = ({ item }: any) => {
-    const { title, subtitle, big, onPress } = item
 
     return (
       <AccountListItem
-        title={title}
-        subtitle={subtitle}
-        // icon={icon}
-        big={big}
-        onPress={onPress}
+        title={item.title}
+        subtitle={item.subtitle}
+        big={item.big}
+        onPress={item.onPress}
       />
     )
   }
@@ -99,4 +96,4 @@ const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
 })
 
-export default connect(mapStateToProps)(AccountList)
+export default connect(mapStateToProps, { authBasedUserProfile })(AccountList)

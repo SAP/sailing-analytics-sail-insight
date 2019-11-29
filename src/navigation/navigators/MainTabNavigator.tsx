@@ -1,23 +1,20 @@
 import React from 'react'
-import { createBottomTabNavigator, createStackNavigator } from 'react-navigation'
+import { createBottomTabNavigator } from 'react-navigation'
 
 import Images from '@assets/Images'
 import { getTabItemTitleTranslation } from 'helpers/texts'
-import { navigateToFilterSessions, navigateToNewSession, navigateToUserRegistration } from 'navigation'
+import { navigateToEventCreation, navigateToUserRegistration } from 'navigation'
 import * as Screens from 'navigation/Screens'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { getStore } from 'store'
 
 import IconText from 'components/IconText'
-import Text from 'components/Text'
-import CheckIn from 'containers/session/CheckIn'
-import Sessions from 'containers/session/Sessions'
 import MarkInventory from 'containers/Inventory/MarkInventory'
+import Sessions from 'containers/session/Sessions'
 
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 
-import HeaderIconButton from 'components/HeaderIconButton'
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
 
 
@@ -37,7 +34,6 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
     case Screens.Account:
       icon = Images.tabs.account
       break
-    
     case Screens.Inventory:
       icon = Images.tabs.sessions
       break
@@ -69,7 +65,7 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
   switch (navigation.state.routeName) {
     case Screens.TrackingSetupAction:
       const isLoggedIn = isLoggedInSelector(getStore().getState())
-      return isLoggedIn ? navigateToNewSession() : navigateToUserRegistration()
+      return isLoggedIn ? navigateToEventCreation() : navigateToUserRegistration()
     default:
       return props.defaultHandler(props.navigation)
   }
@@ -78,7 +74,6 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
 export default createBottomTabNavigator(
   {
     [Screens.Sessions]: Sessions,
-    // [Screens.TrackingSetupAction]: TrackingSetup,
     [Screens.Inventory]: MarkInventory.fold,
     [Screens.Account]: AccountNavigator,
   },

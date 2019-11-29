@@ -68,7 +68,7 @@ const createButton = Component((props: any) => compose(
     onPress: props.handleSubmit(createEvent(props)),
     style: styles.createButton,
   }))(
-    text({ style: styles.createButtonText }, 'CREATE')))
+    text({ style: styles.createButtonText }, I18n.t('caption_create'))))
 
 const arrowLeft = fromClass(Image).contramap(always({
   source: Images.actions.arrowLeft,
@@ -81,7 +81,7 @@ const backNavigation = Component((props: any) => compose(
   touchableOpacity({ onPress: navigateBack }),
   view({ style: styles.backNavigationButtonContainer }),
   concat(arrowLeft))(
-  text({ style: styles.backNavigationText }, 'Event Overview')))
+  text({ style: styles.backNavigationText }, I18n.t('title_event_creation'))))
 
 export default Component((props: Object) => compose(
   fold(props),
