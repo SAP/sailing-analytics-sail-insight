@@ -274,5 +274,6 @@
   "text_login_already_account": "Login. Ich habe bereits einen Account.",
   "text_passwort_reset_title_info" : "Bitte geben Sie Ihren Benutzernamen oder Ihre Email Adresse ein, um das Passwort Zurücksetzen über Email zu bekommen",
   "session_create_new_event" : "Erstelle ein neues Event",
-  "title_tracking": "Tracking"
+  "title_tracking": "Tracking",
+  "text_place_QR_code": "Bitte platziere den QR Code vor deiner Kamera"
 }

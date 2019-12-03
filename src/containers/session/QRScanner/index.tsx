@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, View } from 'react-native'
+import { Alert, Text, View } from 'react-native'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { connect } from 'react-redux'
 
@@ -84,11 +84,17 @@ class QRScanner extends React.Component<{
       <View style={container.main}>
         <QRCodeScanner
           cameraStyle={styles.camera}
+          markerStyle={styles.marker}
           onRead={this.onRead}
           showMarker={true}
           ref={this.onQrScannerRef}
         />
         {this.state.isLoading && <WaveActivityIndicatorFullscreen/>}
+        <View style={styles.bottomInfoField}>
+          <View style={styles.infoBalloon}>
+            <Text style={styles.infoBalloonText}>{I18n.t('text_place_QR_code')}</Text>
+          </View>
+        </View>
       </View>
     )
   }

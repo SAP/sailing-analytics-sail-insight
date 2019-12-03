@@ -44,6 +44,7 @@ const raceNumberSelector = Component((props: any) =>
     concat(text({ style: styles.textHeader }, 'Planned Number of Races')),
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
+      style: { },
       selectedValue: Number(props.input.value),
       onValueChange: props.input.onChange,
     }))(

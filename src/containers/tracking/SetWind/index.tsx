@@ -59,9 +59,9 @@ class SetWind extends React.Component<ViewProps & {
               )
             }
             <SpaceEvenlyContainer style={styles.sliderCaptionContainer}>
-              <Text>{'0°'}</Text>
-              <Text>{'180°'}</Text>
-              <Text>{'360°'}</Text>
+              <Text style={{ color: 'white' }}>{'0°'}</Text>
+              <Text style={{ color: 'white' }}>{'180°'}</Text>
+              <Text style={{ color: 'white' }}>{'360°'}</Text>
             </SpaceEvenlyContainer>
             <Slider
               value={this.state.windAngleInDeg}
