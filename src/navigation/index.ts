@@ -1,5 +1,5 @@
 import { Maneuver } from 'api/endpoints/types'
-import { CheckIn, Session, TeamTemplate, TrackingSession, WindFix } from 'models'
+import { CheckIn, Session, TeamTemplate, WindFix } from 'models'
 import * as  NavigationService from './NavigationService'
 import * as Screens from './Screens'
 

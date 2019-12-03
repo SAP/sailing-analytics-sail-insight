@@ -3,7 +3,7 @@ import { createAction } from 'redux-actions'
 import { authApi } from 'api'
 import AuthException from 'api/AuthException'
 import { DispatchType, GetStateType } from 'helpers/types'
-import { navigateToEventCreation, navigateToUserRegistration } from 'navigation'
+import { navigateToEventCreation, navigateToUserProfile, navigateToUserRegistration } from 'navigation'
 
 import { ApiAccessToken, User } from 'models'
 import { mapUserToRes } from 'models/User'
@@ -49,6 +49,11 @@ export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
 export const authBasedNewSession = () => (dispatch: DispatchType, getState: GetStateType) => {
   const isLoggedIn = isLoggedInSelector(getState())
   return isLoggedIn ? navigateToEventCreation() : navigateToUserRegistration()
+}
+
+export const authBasedUserProfile = () => (dispatch: DispatchType, getState: GetStateType) => {
+  const isLoggedIn = isLoggedInSelector(getState())
+  return isLoggedIn ? navigateToUserProfile() : navigateToUserRegistration()
 }
 
 export const updateUser = (user: User) => async (dispatch: DispatchType) => {

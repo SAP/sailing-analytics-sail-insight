@@ -1,23 +1,18 @@
-// import { get } from 'lodash'
 import React from 'react'
 import { createStackNavigator } from 'react-navigation'
 
-// import Images from '@assets/Images'
 import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 
 import GradientNavigationBar from 'components/GradientNavigationBar'
-// import ImageButton from 'components/ImageButton'
 import ModalBackButton from 'components/ModalBackButton'
 import Login from 'containers/authentication/Login'
 import PasswordReset from 'containers/authentication/PasswordReset'
 import RegisterBoat from 'containers/authentication/RegisterBoat'
 import RegisterCredentials from 'containers/authentication/RegisterCredentials'
-// import RegisterName from 'containers/authentication/RegisterName'
 
 import { $headerTintColor } from 'styles/colors'
-// import { button } from 'styles/commons'
 
 
 export default createStackNavigator(

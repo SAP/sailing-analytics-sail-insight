@@ -23,6 +23,7 @@ import { getFormFieldValue } from 'selectors/form'
 import { container } from 'styles/commons'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
+import { pop } from 'navigation/NavigationService'
 import Logger from '../../../helpers/Logger'
 import styles from './styles'
 
@@ -100,7 +101,7 @@ class UserProfile extends TextInputForm<Props> {
   protected updateUserData = async (updatedProps: any) => {
     try {
       await this.setState({ isLoading: true })
-      await this.props.updateUser({...this.props.user, ...updatedProps} as User)
+      await this.props.updateUser({ ...this.props.user, ...updatedProps } as User)
     } catch (err) {
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
@@ -121,7 +122,12 @@ class UserProfile extends TextInputForm<Props> {
             onPress: () => Logger.debug('Cancel Pressed'),
             style: 'cancel',
           },
-          { text: I18n.t('caption_ok'), onPress: this.props.removeUserData },
+          { text: I18n.t('caption_ok'),
+            onPress: () => {
+              this.props.removeUserData(),
+              pop()
+            },
+          },
         ],
         { cancelable: false },
     )

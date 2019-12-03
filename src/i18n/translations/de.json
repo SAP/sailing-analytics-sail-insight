@@ -12,6 +12,7 @@
   "title_eula": "AGB",
   "title_privacy_policy": "Datenschutzrichtlinie",
   "title_expert_settings": "Experteneinstellungen",
+  "title_event_creation": "Event Übersicht",
 
   "text_more_information_at" : "Mehr Informationen auf",
   "text_device_id": "Geräte-ID",
@@ -223,6 +224,7 @@
   "caption_beta_self_tracking": "Beta Feature",
   "text_beta_self_tracking": "Das setzen von Start- und Ziellinie geschieht bisher automatisch im Backend. Wir arbeiten gerade an einem nutzerfreundlichen Editor dafür, so dass du diese Linien entsprechend anpassen kannst. Die Statistiken berechnen sich nur, wenn eine Start- und Ziellinie von unserem System auch richtig erkannt wurde.",
   "caption_race_not_started_yet": "Rennen noch nicht gestartet",
+  "caption_create": "ERSTELLEN",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",

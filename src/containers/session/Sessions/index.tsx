@@ -16,7 +16,6 @@ import { CheckIn, Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
 
-import AddButton from 'components/AddButton'
 import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
@@ -50,12 +49,6 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     this.props.selectEvent(checkIn)
     navigateToSessionDetail(checkIn.leaderboardName)
   }
-
-  public renderAddItem = () => (
-    <AddButton onPress={this.props.authBasedNewSession}>
-      {I18n.t('session_create_new_event').toUpperCase()}
-    </AddButton>
-  )
 
   public renderHeader() {
     return <EmptySessionsHeader/>

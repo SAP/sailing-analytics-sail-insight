@@ -13,10 +13,10 @@ class GradientNavigationBar extends React.Component<HeaderProps & {
   public render() {
     const { transparent, ...remainingProps } = this.props
     return (
-      <View >
+      <View>
         <LinearGradient
           colors={transparent ? ['transparent', 'transparent'] : ['black', 'transparent']}
-          style={[StyleSheet.absoluteFill, { height: Header.HEIGHT +  getStatusBarHeight(true) }]}
+          style={[StyleSheet.absoluteFill, { height: Header.HEIGHT + getStatusBarHeight(true) }]}
         >
           <Header
             {...remainingProps}

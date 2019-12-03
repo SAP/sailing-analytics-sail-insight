@@ -10,7 +10,6 @@ import { $headerTintColor } from 'styles/colors'
 import GradientNavigationBar from 'components/GradientNavigationBar'
 import HeaderTitle from 'components/HeaderTitle'
 import ModalBackButton from 'components/ModalBackButton'
-import Login from 'containers/authentication/Login'
 import PasswordReset from 'containers/authentication/PasswordReset'
 import EditCompetitor from 'containers/session/EditCompetitor'
 import FilterSessions from 'containers/session/FilterSessions'
@@ -27,7 +26,10 @@ import TrackingNavigator from './TrackingNavigator'
 
 export default createStackNavigator(
   {
-    [Screens.Main]: { screen: MainNavigator, navigationOptions: { header: null } },
+    [Screens.Main]: {
+      screen: MainNavigator,
+      navigationOptions: { header: null },
+    },
     [Screens.Register]: {
       screen: RegistrationNavigator,
       navigationOptions: {
