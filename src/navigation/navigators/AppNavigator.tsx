@@ -5,7 +5,7 @@ import I18n from 'i18n'
 
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
-import { $headerTintColor } from 'styles/colors'
+import { $headerTintColor, $primaryButtonColor } from 'styles/colors'
 
 import GradientNavigationBar from 'components/GradientNavigationBar'
 import HeaderTitle from 'components/HeaderTitle'
@@ -43,8 +43,9 @@ export default createStackNavigator(
     [Screens.QRScanner]: {
       screen: QRScanner,
       navigationOptions: () => ({
-        title: I18n.t('title_regattas'),
-        headerRight: <ModalBackButton/>,
+        ...commons.navHeaderTransparentProps,
+        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+        headerRight: <ModalBackButton type="icon" iconColor={$primaryButtonColor}/>,
         headerLeft: null,
       }),
     },
