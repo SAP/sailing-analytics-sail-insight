@@ -24,6 +24,8 @@ export const navigateToTeamList = () => NavigationService.navigate(Screens.TeamL
 export const navigateToAccountList = () => NavigationService.navigate(Screens.AccountList)
 export const navigateToFilterSessions = () => NavigationService.navigate(Screens.FilterSessions)
 
+export const navigateToWelcomeTracking = () => NavigationService.navigate(Screens.WelcomeTracking)
+export const navigateToTrackingList = () => NavigationService.navigate(Screens.TrackingList)
 export const navigateToManeuver = (data?: Maneuver) => NavigationService.navigate(Screens.ManeuverMonitor, { data })
 export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
 export const navigateToLeaderboard = () => NavigationService.navigate(Screens.Leaderboard)

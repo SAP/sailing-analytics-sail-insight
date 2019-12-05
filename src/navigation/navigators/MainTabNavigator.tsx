@@ -3,10 +3,7 @@ import { createBottomTabNavigator } from 'react-navigation'
 
 import Images from '@assets/Images'
 import { getTabItemTitleTranslation } from 'helpers/texts'
-import { navigateToEventCreation, navigateToUserRegistration } from 'navigation'
 import * as Screens from 'navigation/Screens'
-import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { getStore } from 'store'
 
 import IconText from 'components/IconText'
 import MarkInventory from 'containers/Inventory/MarkInventory'
@@ -15,6 +12,7 @@ import Sessions from 'containers/session/Sessions'
 import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 
+import TrackingList from 'containers/tracking/TrackingList'
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
 
 
@@ -22,7 +20,7 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
   const { routeName = '' } = navigation.state
   let icon
   switch (routeName) {
-    case Screens.TrackingSetupAction:
+    case Screens.TrackingList:
       icon = Images.tabs.tracking
       break
     case Screens.Sessions:
@@ -35,7 +33,7 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
       icon = Images.tabs.account
       break
     case Screens.Inventory:
-      icon = Images.tabs.sessions
+      icon = Images.tabs.inventory
       break
   }
 
@@ -62,23 +60,18 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
   if (!props.navigation.state) {
     return props.defaultHandler(navigation)
   }
-  switch (navigation.state.routeName) {
-    case Screens.TrackingSetupAction:
-      const isLoggedIn = isLoggedInSelector(getStore().getState())
-      return isLoggedIn ? navigateToEventCreation() : navigateToUserRegistration()
-    default:
-      return props.defaultHandler(props.navigation)
-  }
+  return props.defaultHandler(props.navigation)
 }
 
 export default createBottomTabNavigator(
   {
+    [Screens.TrackingList]: TrackingList,
     [Screens.Sessions]: Sessions,
     [Screens.Inventory]: MarkInventory.fold,
     [Screens.Account]: AccountNavigator,
   },
   {
-    initialRouteName: Screens.Sessions,
+    initialRouteName: Screens.TrackingList,
     backBehavior: 'none',
     swipeEnabled: false,
     tabBarOptions: {

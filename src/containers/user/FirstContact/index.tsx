@@ -8,6 +8,7 @@ import {
   navigateToMainTabs,
   navigateToQRScanner,
   navigateToUserRegistration,
+  navigateToWelcomeTracking,
 } from 'navigation'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
@@ -24,7 +25,7 @@ class FirstContact extends React.Component<ViewProps> {
     const isLoggedIn = isLoggedInSelector(getStore().getState())
 
     if (isLoggedIn) {
-      navigateToMainTabs()
+      navigateToWelcomeTracking()
     }
   }
 

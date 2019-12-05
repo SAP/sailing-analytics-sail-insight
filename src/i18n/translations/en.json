@@ -178,6 +178,8 @@
   "caption_checkout": "Checkout",
   "caption_tab_trackingsetup": "Tracking",
   "caption_tab_trackingsetupaction": "Tracking",
+  "caption_tab_welcometracking": "Tracking",
+  "caption_tab_trackinglist": "Tracking",
   "caption_tab_sessions": "Events",
   "caption_tab_checkin": "Join Regatta",
   "caption_tab_account": "Account",
@@ -276,5 +278,7 @@
   "text_passwort_reset_title_info" : "Please enter your user name or e-mail address to get a passwort reset via e-mail",
   "session_create_new_event" : "Create a new event",
   "title_tracking" : "Tracking",
-  "text_place_QR_code": "Please place the QR code in front of your camera"
+  "text_place_QR_code": "Please place the QR code in front of your camera",
+  "text_welcome_logged_in": "Happy Welcome\n{{name}}!",
+  "text_welcome": "Happy Welcome!"
 }

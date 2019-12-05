@@ -42,10 +42,10 @@ export default {
     arrowDown: require('./img/new_icons/arrow-chevron-down.png'),
   },
   tabs: {
-    // tracking: require('./img/icons/icon-start.png'),
     tracking: require('./img/new_icons/tracking_icon.png'),
-    account: require('./img/icons/icon-account-outlined.png'),
-    sessions: require('./img/icons/icon-session.png'),
+    account: require('./img/new_icons/account_icon.png'),
+    sessions: require('./img/new_icons/sessions_icon.png'),
+    inventory: require('./img/new_icons/inventory_icon.png'),
     join: require('./img/icons/icon-scan.png'),
   },
   info: {

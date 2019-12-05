@@ -6,10 +6,11 @@ export default EStyleSheet.create({
   bottomTabItemText: {
     fontFamily: '$tabFontFamily',
     fontSize: '$regularFontSize',
+    marginTop: 4,
   },
   topTabItemText: {
     fontFamily: '$tabFontFamily',
-    fontSize: '$regularLargeFontSize',
+    fontSize: '$regularFontSize',
     fontWeight: '300',
   },
   tabItemIcon: {

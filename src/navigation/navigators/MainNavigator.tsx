@@ -23,6 +23,7 @@ import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
 import EventCreation from 'containers/session/EventCreation'
 import SessionDetail from 'containers/session/SessionDetail'
 import TeamDetails from 'containers/TeamDetails'
+import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 
 import { button } from 'styles/commons'
 
@@ -53,6 +54,12 @@ export default createStackNavigator(
   {
     [Screens.FirstContact]: {
       screen: FirstContact,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    [Screens.WelcomeTracking]: {
+      screen: WelcomeTracking,
       navigationOptions: {
         header: null,
       },
