@@ -9,7 +9,7 @@ import IconText from 'components/IconText'
 import MarkInventory from 'containers/Inventory/MarkInventory'
 import Sessions from 'containers/session/Sessions'
 
-import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
+import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 
 import TrackingList from 'containers/tracking/TrackingList'
@@ -37,7 +37,7 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
       break
   }
 
-  const iconTintColor = focused ? $primaryActiveColor : tintColor
+  const iconTintColor = focused ? 'white' : 'gray'
   const focusStyle = focused ? { fontWeight: 'bold' } : undefined
 
   return (

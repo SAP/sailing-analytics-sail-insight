@@ -92,7 +92,7 @@ class TeamDetails extends TextInputForm<Props> {
             onChange={this.onImageChange}
           />
         </View>
-        <View style={[styles.bottomContainer]}>
+        <View style={styles.bottomContainer}>
           <Field
             style={styles.topInput}
             containerStyle={styles.inputContainer}

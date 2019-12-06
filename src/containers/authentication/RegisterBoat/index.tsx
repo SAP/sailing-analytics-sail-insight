@@ -67,7 +67,7 @@ class RegisterBoat extends TextInputForm<Props> {
             <Text style={text.claimHighlighted}>{I18n.t('text_register_boat_claim_02')}</Text>
           </Text>
         </View>
-        <View style={registration.bottomContainer()}>
+        <View style={styles.bottomContainer}>
           <Field
             containerStyle={styles.inputContainer}
             inputStyle={styles.inputStyle}

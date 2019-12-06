@@ -66,7 +66,7 @@ class TrackingList extends React.Component<ViewProps & NavigationScreenProps & {
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
         <ScrollContentView style={styles.scrollContainer}>
-          <Text style={styles.headLine}>{'FOR WHICH EVENT\nDO YOU WANT TO TRACK?'}</Text>
+          <Text style={styles.headLine}>{I18n.t('text_tracking_headline')}</Text>
           <TouchableOpacity
             style={styles.createButton}
             onPress={this.props.authBasedNewSession}
@@ -88,15 +88,6 @@ class TrackingList extends React.Component<ViewProps & NavigationScreenProps & {
             renderItem={this.renderItem}
           />
         </ScrollContentView>
-        <View style={styles.bottomButton}>
-          <TextButton
-              style={[button.actionFullWidth, container.largeHorizontalMargin, styles.qrButton]}
-              textStyle={styles.qrButtonText}
-              onPress={this.onQRPress}
-          >
-            {I18n.t('caption_qr_scanner').toUpperCase()}
-          </TextButton>
-        </View>
       </View>
     )
   }

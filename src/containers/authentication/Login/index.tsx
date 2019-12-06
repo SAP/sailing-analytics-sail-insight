@@ -80,8 +80,8 @@ class Login extends TextInputForm<{
             <TextInput
                 value={this.state.username}
                 onChangeText={this.onUsernameChange}
-                style={styles.userName}
                 containerStyle={styles.inputContainer}
+                inputStyle={styles.inputStyle}
                 placeholder={I18n.t('text_placeholder_your_username')}
                 keyboardType={'default'}
                 returnKeyType="next"
@@ -94,6 +94,7 @@ class Login extends TextInputForm<{
                 onChangeText={this.onPasswordChange}
                 style={styles.password}
                 containerStyle={styles.inputContainer}
+                inputStyle={styles.inputStyle}
                 placeholder={I18n.t('text_placeholder_enter_password')}
                 keyboardType={'default'}
                 returnKeyType="go"
@@ -102,12 +103,11 @@ class Login extends TextInputForm<{
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}
             />
             <TouchableOpacity style={styles.forgotPassword} onPress={this.onPasswordResetPress}>
-              <Text style={{ color: '#FFFFFF' }}>
+              <Text style={styles.forgotPwText}>
                 {I18n.t('caption_forgot_password')}
               </Text>
             </TouchableOpacity>
             {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>}
-
           </View>
           <View style={styles.bottomButtonField}>
             <TextButton
