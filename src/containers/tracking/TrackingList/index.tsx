@@ -1,9 +1,9 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { TouchableOpacity, View, ViewProps } from 'react-native'
+import { Text, TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
-import { navigateToQRScanner, navigateToSessionDetail } from 'navigation'
+import { navigateToQRScanner } from 'navigation'
 
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
@@ -28,7 +28,7 @@ import styles from './styles'
 
 
 @connectActionSheet
-class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
+class TrackingList extends React.Component<ViewProps & NavigationScreenProps & {
   showActionSheetWithOptions: ShowActionSheetType,
   sessions: Session[],
   startTracking: StartTrackingAction,
@@ -44,10 +44,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
   }
 
-  public onSessionItemPress = (checkIn: CheckIn) => () => {
-    this.props.selectEvent(checkIn)
-    navigateToSessionDetail(checkIn.leaderboardName)
-  }
+  public onTrackingPress = (checkIn: CheckIn) => () => this.props.startTracking(checkIn)
 
   public renderHeader() {
     return <EmptySessionsHeader/>
@@ -56,7 +53,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   public renderItem = ({ item }: any) => (
       <SessionItem
         style={styles.cardsContainer}
-        onItemPress={this.onSessionItemPress(item)}
+        onItemPress={this.onTrackingPress(item)}
         session={item}
       />
   )
@@ -69,6 +66,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
         <ScrollContentView style={styles.scrollContainer}>
+          <Text style={styles.headLine}>{'FOR WHICH EVENT\nDO YOU WANT TO TRACK?'}</Text>
           <TouchableOpacity
             style={styles.createButton}
             onPress={this.props.authBasedNewSession}
@@ -112,4 +110,4 @@ const mapStateToProps = (state: any) => ({
   sessions: getFilteredSessionList(state),
 })
 
-export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)
+export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(TrackingList)

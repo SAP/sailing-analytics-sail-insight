@@ -1,5 +1,5 @@
-import EStyleSheets from 'react-native-extended-stylesheet'
 import { Dimensions } from 'react-native';
+import EStyleSheets from 'react-native-extended-stylesheet'
 import { $smallSpacing, $tinySpacing } from 'styles/dimensions';
 
 export default EStyleSheets.create({
@@ -10,6 +10,7 @@ export default EStyleSheets.create({
   detailContainer: {
     paddingVertical: '$tinySpacing',
     backgroundColor: 'white',
+    marginTop: 16,
   },
   innerContainer: {
     alignItems: 'center',
@@ -70,7 +71,10 @@ export default EStyleSheets.create({
     width: 44,
     resizeMode: 'cover',
     height: 44,
-    margin: '$smallSpacing',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
+    marginBottom: '$smallSpacing',
+    marginTop: 20,
     borderRadius: 11,
   },
   arrowContainer: {

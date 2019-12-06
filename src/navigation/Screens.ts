@@ -38,8 +38,10 @@ export const MainTabs = 'MainTabs'
 export const Account = 'Account'
 export const Sessions = 'Sessions'
 export const Inventory = 'Inventory'
+export const WelcomeTracking = 'WelcomeTracking'
 
 // tracking
+export const TrackingList = 'TrackingList'
 export const TrackingNavigator = 'TrackingNavigator'
 export const Tracking = 'Tracking'
 export const TrackingSetup = 'TrackingSetup'

@@ -50,7 +50,6 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
     const {
       style,
       session,
-      eventImageSize,
       onSettingsPress,
     } = this.props
 
@@ -70,24 +69,22 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
               <Text
-                style={[text.itemName, styles.itemText]}
-                numberOfLines={1}
-                allowFontScaling={false}
-                ellipsizeMode="tail"
+                style={styles.dateText}
               >
+                {dateFromToText(session.event && session.event.startDate, session.event && session.event.endDate)}
+              </Text>
+              <View style={[styles.line, styles.textMargins]}>
+                <Text
+                  style={[text.itemName, styles.itemText]}
+                  numberOfLines={1}
+                  allowFontScaling={false}
+                  ellipsizeMode="tail"
+                >
                 {
                   session.userStrippedDisplayName ||
                   (session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name))
                 }
-              </Text>
-              <View style={[styles.line, styles.textMargins]}>
-                <Text
-                  style={styles.dateText}
-                >
-                  {dateFromToText(session.event && session.event.startDate, session.event && session.event.endDate)}
                 </Text>
-                <Text style={[text.propertyName, styles.tracksText]}>{`${I18n.t('text_tracks').toUpperCase()}:`}</Text>
-                <Text style={styles.tracksCountText}>{size(session.regatta && session.regatta.races)}</Text>
               </View>
             </View>
             {
@@ -98,41 +95,6 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                 onPress={onSettingsPress}
               />
             }
-          </View>
-          <View style={[styles.innerContainer, styles.textMargins]}>
-            <View style={{ flex: 1 }}>
-              <View style={{ flexDirection: 'column' }}>
-                <IconText
-                  style={[styles.infoItem, session.trackingContext === 'BOAT' ? styles.infoItemFull : undefined]}
-                  source={Images.info.boat}
-                  iconTintColor={'#C5C5C5'} // $secondaryTextColor}
-                  alignment="horizontal"
-                >
-                  {boatInfoText}
-                </IconText>
-                <TrackingContext textStyle={{ color: '#000000' }} session={session} withoutBoat={true} />
-                {
-                  session.event &&
-                  session.event.venue &&
-                  session.event.venue.name &&
-                  session.event.venue.name !== 'default' &&
-                  <IconText
-                    source={Images.info.location}
-                    iconTintColor={'#C5C5C5'} // $secondaryTextColor}
-                    alignment="horizontal"
-                  >
-                    {session.event && session.event.venue && session.event.venue.name}
-                  </IconText>
-                }
-              </View>
-            </View>
-            <ImageButton
-              source={Images.actions.recordColored}
-              style={styles.trackingButton}
-              imageStyle={styles.trackingImage}
-              isLoading={this.state.isTrackingLoading}
-              onPress={this.onTrackingPress}
-            />
           </View>
         </View>
         <View style={styles.arrowContainer}>
