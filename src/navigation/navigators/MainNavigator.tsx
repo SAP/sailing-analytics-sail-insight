@@ -169,7 +169,7 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.FirstContact, // if user is logged in it redirect to Screens.MainTabs
+    initialRouteName: Screens.MainTabs, // if user is logged in it redirect to Screens.MainTabs
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },

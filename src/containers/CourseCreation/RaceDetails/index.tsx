@@ -24,7 +24,7 @@ import { forwardingPropsFlatList, text, view, touchableOpacity } from 'component
 import IconText from 'components/IconText'
 import { overlayPicker, FramedNumber } from '../../session/common'
 
-import { selectCourse } from 'actions/courses'
+import { selectCourseForRace } from 'actions/courses'
 import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getCourseById } from 'selectors/course'
@@ -77,13 +77,13 @@ const raceNumberSelector = Component((props: any) =>
 
 const onSeeCourse = (props: any) => {
   const { name } = props.item
-  props.selectCourse({ raceName: name, newCourse: false })
+  props.selectCourseForRace({ raceName: name, newCourse: false })
   navigateToRaceCourseConfig()
 }
 
 const onNewCourse = (props: any) => {
   const { name } = props.item
-  props.selectCourse({ raceName: name, newCourse: true })
+  props.selectCourseForRace({ raceName: name, newCourse: true })
   navigateToRaceCourseConfig()
 }
 
@@ -176,7 +176,7 @@ export default Component((props: Object) =>
   compose(
     fold(props),
     connect(mapStateToProps, {
-      selectCourse, selectRace, setRaceTime,
+      selectCourseForRace, selectRace, setRaceTime,
       updateEventSettings, openTrackDetails }),
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))

@@ -71,7 +71,7 @@ export default createBottomTabNavigator(
     [Screens.Account]: AccountNavigator,
   },
   {
-    initialRouteName: Screens.TrackingList,
+    initialRouteName: Screens.Sessions,
     backBehavior: 'none',
     swipeEnabled: false,
     tabBarOptions: {

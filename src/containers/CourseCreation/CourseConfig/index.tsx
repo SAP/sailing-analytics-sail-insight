@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, zipWith, move,
   prop, map, reduce, concat, merge, props as rProps, defaultTo, any, take,
-  objOf, isNil, not, equals, pick, tap, ifElse, insert, complement,
+  objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
   propEq, addIndex, mergeLeft, intersperse, gt, findIndex } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass,
@@ -25,7 +25,7 @@ import { ControlPointClass, GateSide, MarkPositionType, PassingInstruction } fro
 import { selectWaypoint, removeWaypoint, selectGateSide,
   addWaypoint, assignControlPointClass, assignControlPoint,
   saveWaypointFromForm, toggleSameStartFinish, saveCourse } from 'actions/courses'
-import { getSelectedWaypoint, getSelectedGateSide,
+import { getSelectedWaypoint, getSelectedGateSide, waypointLabel,
   getSameStartFinish, getSelectedCourse, getCourseLoading } from 'selectors/course'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
@@ -52,8 +52,8 @@ const mapStateToProps = (state: any, props: any) => ({
   course: getSelectedCourse(state),
   loading: getCourseLoading(state),
   selectedWaypoint: getSelectedWaypoint(state),
-  //selectedMark: getSelectedMark(state),
   selectedGateSide: getSelectedGateSide(state),
+  waypointLabel: uncurryN(2, waypointLabel)(__, state),
   sameStartFinish: getSameStartFinish(state),
   inventory: [],//getMarkInventory(state),
   // required for properly updating the redux form fields
@@ -453,10 +453,8 @@ const waypointItemToComponent = (waypoint: any, index: number, list: any[]) => C
       isWaypointSelected(waypoint, props) && styles.selectedWaypoint
     ]
   }),
-  text({ style: styles.waypointText }),
-  defaultTo('\u2022'),
-  path(['controlPoint', index === 0 || index === list.length - 1 ? 'longName' : 'shortName']))(
-  waypoint))
+  text({ style: styles.waypointText }))(
+  props.waypointLabel(waypoint)))
 
 const WaypointsList = Component(props => compose(
   fold(props),

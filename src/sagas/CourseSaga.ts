@@ -4,8 +4,8 @@ import { dataApi } from 'api'
 import {
   loadCourse,
   SAVE_COURSE,
-  SELECT_COURSE,
-  selectCourseForEditing,
+  SELECT_COURSE_FOR_RACE,
+  selectCourse,
   updateCourseLoading,
 } from 'actions/courses'
 import {
@@ -36,7 +36,7 @@ function* fetchCourse(raceName: string) {
   }))
 }
 
-function* selectCourseFlow({ payload }: any) {
+function* selectRaceCourseFlow({ payload }: any) {
   const { newCourse, raceName } = payload
   const { regattaName } = yield select(getSelectedEventInfo)
 
@@ -47,7 +47,7 @@ function* selectCourseFlow({ payload }: any) {
     yield call(fetchCourse, raceName)
   }
 
-  yield put(selectCourseForEditing(raceId))
+  yield put(selectCourse(raceId))
   yield put(updateCourseLoading(false))
 }
 
@@ -66,7 +66,7 @@ function* saveCourseFlow() {
 
 export default function* watchCourses() {
   yield all([
-    takeLatest(SELECT_COURSE, selectCourseFlow),
+    takeLatest(SELECT_COURSE_FOR_RACE, selectRaceCourseFlow),
     takeEvery(SAVE_COURSE, saveCourseFlow),
   ])
 }

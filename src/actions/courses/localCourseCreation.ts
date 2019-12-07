@@ -78,12 +78,12 @@ export const saveWaypointFromForm = () => (
 
   if (!formIsValid) return
 
-  const { leftMark, rightMark, passingInstruction, markPairLongName } = compose(
-    waypointFromFormValues,
-    getFormValues(COURSE_CONFIG_FORM_NAME))(
-    getState())
+  // const { leftMark, rightMark, passingInstruction, markPairLongName } = compose(
+  //   waypointFromFormValues,
+  //   getFormValues(COURSE_CONFIG_FORM_NAME))(
+  //   getState())
 
-  const marks: Mark[] = [leftMark, rightMark]
+  // const marks: Mark[] = [leftMark, rightMark]
 
-  dispatch(saveWaypoint({ marks, passingInstruction, markPairLongName }))
+  // dispatch(saveWaypoint({ marks, passingInstruction, markPairLongName }))
 }
