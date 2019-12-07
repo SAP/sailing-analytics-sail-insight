@@ -1,11 +1,10 @@
-import { prop, propEq, find, compose, path, defaultTo } from 'ramda'
+import { prop, propEq, find, compose, path, defaultTo, equals, identity } from 'ramda'
 import { createSelector } from 'reselect'
 import uuidv4 from 'uuid/v4'
 
 import {
   CourseState,
   CourseStateMap,
-  GateSide,
 } from 'models/Course'
 
 const newCourse = () => {
@@ -16,13 +15,13 @@ const newCourse = () => {
   return {
     markConfigurations: [
       {id: startBoatId, effectiveProperties: { markType: 'BUOY', name: 'Start/Finish Boat', shortName: 'SFB' }},
-      {id: startPinId, effectiveProperties: { markType: 'BUOY', name: 'Start/Finish Boat', shortName: 'SFB' }},
+      {id: startPinId, effectiveProperties: { markType: 'BUOY', name: 'Start/Finish Pin', shortName: 'SFP' }},
       {id: windwardMarkId, effectiveProperties: { markType: 'BUOY', name: 'Windward Mark', shortName: 'W' }}
     ],
     waypoints: [
-      { passingInstruction: 'Gate', markConfigurationIds: [startBoatId, startPinId], controlPointName: 'Start', controlPointShortName: 'S' },
-      { passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
-      { passingInstruction: 'Gate', markConfigurationIds: [startBoatId, startPinId], controlPointName: 'Finish', controlPointShortName: 'F' }]
+      { id: uuidv4(), passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Start', controlPointShortName: 'S' },
+      { id: uuidv4(), passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
+      { id: uuidv4(), passingInstruction: 'Gate', markConfigurationIds: [ startPinId, startBoatId], controlPointName: 'Finish', controlPointShortName: 'F' }]
   }
 }
 
@@ -38,7 +37,6 @@ export const getSelectedCourse = createSelector(
   (state: any) => state.courses.selectedCourse,
   (courses, id) => courses[id] || newCourse())
 
-export const getSelectedGateSide = (state: any): GateSide => state.courses.selectedGateSide
 export const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
 
 export const getSelectedWaypoint = createSelector(
@@ -50,12 +48,26 @@ export const getSelectedMarkConfiguration = createSelector(
   getSelectedWaypoint,
   state => state.courses.selectedMarkConfiguration,
   (selectedWaypoint, selectedMarkConfiguration) =>
-  selectedMarkConfiguration || selectedWaypoint && selectedWaypoint.markConfigurationIds[0])
+  selectedWaypoint && (find(equals(selectedMarkConfiguration), selectedWaypoint.markConfigurationIds) || selectedWaypoint.markConfigurationIds[0]))
+
+export const getMarkPropertiesByMarkConfiguration = markConfigurationId => createSelector(
+  getSelectedCourse,
+  course => compose(
+    prop('effectiveProperties'),
+    find(propEq('id', markConfigurationId)),
+    prop('markConfigurations'))(
+    course))
+
+export const getSelectedMarkProperties = createSelector(
+  getSelectedMarkConfiguration,
+  identity,
+  (markConfigurationId, state) => getMarkPropertiesByMarkConfiguration(markConfigurationId)(state))
 
 export const waypointLabel = (waypoint: any) => compose(
   course => waypoint.controlPointName || compose(
     defaultTo('\u2022'),
     path(['effectiveProperties', 'shortName']),
     find(propEq('id', waypoint.markConfigurationIds[0])),
-    prop('markConfigurations'))(course),
+    prop('markConfigurations'))(
+    course),
   getSelectedCourse)

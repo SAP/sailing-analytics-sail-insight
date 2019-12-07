@@ -1,6 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet' 
 
-import { $DarkBlue, $MediumBlue, $Orange  } from 'styles/colors'
+import { $DarkBlue, $LightDarkBlue, $Orange  } from 'styles/colors'
 import { white, withDefaultBoldFont, withDefaultFont } from 'styles/compositions/text'
 
 const roundElementContainer = {
@@ -86,7 +86,7 @@ export default EStyleSheets.create({
   gateEditContainer: {
     ...withPadding,
     paddingTop: 15,
-    backgroundColor: $MediumBlue,
+    backgroundColor: $LightDarkBlue,
   },
 
   passingInstruction: roundElementContainer,

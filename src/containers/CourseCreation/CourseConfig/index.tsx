@@ -12,12 +12,13 @@ import {
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
 import { Switch } from 'react-native'
 
-import { ControlPointClass, GateSide, MarkPositionType, PassingInstruction } from 'models/Course'
+import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/Course'
 
-import { selectWaypoint, removeWaypoint, selectGateSide,
-  addWaypoint, toggleSameStartFinish, saveCourse } from 'actions/courses'
-import { getSelectedWaypoint, getSelectedGateSide, waypointLabel,
-  getSameStartFinish, getSelectedCourse, getCourseLoading, getSelectedMarkConfiguration } from 'selectors/course'
+import { selectWaypoint, removeWaypoint, addWaypoint,
+  toggleSameStartFinish, selectMarkConfiguration, saveCourse } from 'actions/courses'
+import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
+  getSameStartFinish, getSelectedCourse, getCourseLoading,
+  getSelectedMarkConfiguration, getSelectedMarkProperties } from 'selectors/course'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
@@ -31,7 +32,7 @@ import Dash from 'react-native-dash'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import styles from './styles'
 
-import { $MediumBlue, $Orange, $DarkBlue } from 'styles/colors'
+import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 
 const mapIndexed = addIndex(map)
 
@@ -40,19 +41,19 @@ const mapStateToProps = (state: any, props: any) => ({
   loading: getCourseLoading(state),
   selectedWaypoint: getSelectedWaypoint(state),
   selectedMarkConfiguration: getSelectedMarkConfiguration(state),
-  selectedGateSide: getSelectedGateSide(state),
+  selectedMarkProperties: getSelectedMarkProperties(state),
   waypointLabel: uncurryN(2, waypointLabel)(__, state),
+  markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
   sameStartFinish: getSameStartFinish(state),
-  inventory: [],//getMarkInventory(state),
-  // required for properly updating the redux form fields
-  key: getSelectedGateSide(state) })
+  inventory: [],//getMarkInventory(state)
+})
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
 const nothingIfLoading = branch(isLoading, nothingAsClass)
 const nothingIfNotLoading = branch(isNotLoading, nothingAsClass)
 
-const isGateWaypoint = compose(equals(2), length, prop('markConfigurationIds'))
+const isGateWaypoint = compose(equals(2), length, path(['waypoint', 'markConfigurationIds']))
 const isEmptyWaypoint = compose(isNil, path(['waypoint', 'markConfigurationIds']))
 const isWaypointSelected = (waypoint: any, props: any) => props.selectedWaypoint && props.selectedWaypoint.id === waypoint.id
 const isStartOrFinishGate = both(isGateWaypoint,
@@ -98,7 +99,7 @@ const linePassingIcon = icon({ source: Images.courseConfig.linePassing, iconStyl
 const trackerIcon = icon({ source: Images.courseConfig.tracker, iconStyle: { width: 11, height: 11 } })
 const locationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 11, height: 11 } })
 const bigLocationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 25, height: 25 } })
-const arrowUp = ({ color = $MediumBlue }: any = {}) => icon({
+const arrowUp = ({ color = $LightDarkBlue }: any = {}) => icon({
   source: Images.courseConfig.arrowUp,
   style: { justifyContent: 'flex-end', height: 25 },
   iconStyle: { height: 12, tintColor: color } })
@@ -121,10 +122,12 @@ const GateMarkSelectorItem = Component((props: object) =>
     concat(__, nothingWhenNotSelected(arrowUp())),
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
-      onPress: (props: any) => props.selectGateSide(props.side) }),
+      onPress: (props: any) => props.selectMarkConfiguration(props.markConfigurationId) }),
     text({ style: styles.gateMarkSelectorText }),
-    defaultTo(props.side))(
-    props.mark && props.mark.shortName))
+    defaultTo(''),
+    prop('shortName'),
+    props.markPropertiesByMarkConfiguration)(
+    props.markConfigurationId))
 
 const GateMarkSelector = Component((props: object) =>
   compose(
@@ -133,12 +136,12 @@ const GateMarkSelector = Component((props: object) =>
     view({ style: styles.gateMarkSelectorContainer }),
     reduce(concat, nothing()),
     intersperse(dashLine),
-    map(compose(GateMarkSelectorItem.contramap, merge)),
-    map(when(compose(equals(props.selectedGateSide), prop('side')), merge({ selected: true }))),
-    zipWith(merge, [{ side: GateSide.LEFT }, { side: GateSide.RIGHT }]),
-    map(objOf('mark')),
-    rProps(['leftMark', 'rightMark']),
-    path(['selectedWaypoint', 'controlPoint']))(
+    map(compose(
+      GateMarkSelectorItem.contramap,
+      merge,
+      when(propEq('markConfigurationId', props.selectedMarkConfiguration), merge({ selected: true })),
+      objOf('markConfigurationId'))),
+    path(['selectedWaypoint', 'markConfigurationIds']))(
     props))
 
 const SameStartFinish = Component((props: object) =>
@@ -286,13 +289,13 @@ const TextInputWithLabel = Component((props: any) => compose(
   text({ style: styles.textInputLabel, numberOfLines: 1 }))(
   props.inputLabel))
 
-const gateNameInputData = [
-  { inputLabel: 'Name' },
-  { inputLabel: 'Short Name' } ]
+const gateNameInputData = props => [
+  { inputLabel: 'Name', value: props.selectedWaypoint.controlPointName },
+  { inputLabel: 'Short Name', value: props.selectedWaypoint.controlPointShortName } ]
 
-const markNamesInputData = [
-  { inputLabel: 'Name' },
-  { inputLabel: 'Short Name' }]
+const markNamesInputData = props => [
+  { inputLabel: 'Name', value: props.selectedMarkProperties.name },
+  { inputLabel: 'Short Name', value: props.selectedMarkProperties.shortName }]
 
 const ShortAndLongName = Component((props: object) =>
   compose(
@@ -316,7 +319,7 @@ const PassingInstructionItem = Component((props: object) =>
       onPress: (props: any) => props.input.onChange(props.type),
       style: [
         styles.passingInstruction,
-        props.value === props.type ? styles.selectedPassingInstruction : '' ]}))(
+        props.selected ? styles.selectedPassingInstruction : '' ]}))(
     props.icon))
 
 const singleMarkPassingInstructions = [
@@ -330,10 +333,15 @@ const gatePassingInstructions = [
 const PassingInstructions = Component((props: object) =>
   compose(
     fold(props),
-    concat(text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, isGateWaypoint(props) ? 'Passing Gate' : 'Rounding direction')),
+    concat(text(
+      { style: [styles.sectionTitle, styles.indentedSectionTitle] },
+      isGateWaypoint(props) ? 'Passing Gate' : 'Rounding direction')),
     view({ style: styles.passingInstructionContainer }),
     reduce(concat, nothing()),
-    map(compose(PassingInstructionItem.contramap, merge)),
+    map(compose(
+      PassingInstructionItem.contramap,
+      merge,
+      when(propEq('type', props.selectedWaypoint.passingInstruction), merge({ selected: true })))),
     ifElse(isGateWaypoint, always(gatePassingInstructions), always(singleMarkPassingInstructions)))(
     props))
 
@@ -354,13 +362,13 @@ const WaypointEditForm = Component((props: any) =>
       view({ style: isGateWaypoint(props) && styles.indentedContainer }),
       reduce(concat, nothing()))([
       nothingWhenNotStartOrFinishGate(SameStartFinish),
-      nothingWhenNotAGate(nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: gateNameInputData })))),
+      nothingWhenNotAGate(nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: gateNameInputData(props) })))),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(PassingInstructions))),
       nothingWhenNotAGate(GateMarkSelector)
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
-      nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: markNamesInputData }))),
+      nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) }))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
       nothingWhenEmptyWaypoint(Appearance),
@@ -411,7 +419,7 @@ export default Component((props: object) =>
     fold(props),
     withSelectedPositionType,
     connect(mapStateToProps, {
-      selectWaypoint, removeWaypoint, selectGateSide, addWaypoint, toggleSameStartFinish }),
+      selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint, toggleSameStartFinish }),
     scrollView({ style: styles.mainContainer, vertical: true }),
     reduce(concat, nothing()))(
     [nothingIfNotLoading(LoadingIndicator),
