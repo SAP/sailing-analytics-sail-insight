@@ -11,7 +11,7 @@ import {
 
 const all = handleActions({
   [loadCourse as any]: (state: any = {}, action: any) =>
-    merge(action.payload || {}, state)
+    merge(state, action.payload || {})
 }, {})
 
 const selectedCourse = handleActions({

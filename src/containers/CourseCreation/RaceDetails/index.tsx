@@ -77,13 +77,13 @@ const raceNumberSelector = Component((props: any) =>
 
 const onSeeCourse = (props: any) => {
   const { name } = props.item
-  props.selectCourseForRace({ raceName: name, newCourse: false })
+  props.selectCourseForRace({ race: name })
   navigateToRaceCourseConfig()
 }
 
 const onNewCourse = (props: any) => {
   const { name } = props.item
-  props.selectCourseForRace({ raceName: name, newCourse: true })
+  props.selectCourseForRace({ race: name })
   navigateToRaceCourseConfig()
 }
 

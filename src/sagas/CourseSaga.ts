@@ -12,6 +12,8 @@ import {
   selectRace
 } from 'actions/events'
 
+import { getCourseById } from 'selectors/course'
+
 import {
   getSelectedEventInfo,
   getSelectedRaceInfo
@@ -20,31 +22,31 @@ import {
 const getRaceId = (regattaName: string, raceName: string) =>
   `${regattaName} - ${raceName}`
 
-function* fetchCourse(raceName: string) {
+function* fetchCourse(race: string) {
   yield put(updateCourseLoading(true))
 
   const { regattaName, serverUrl, raceColumnName, fleet } = yield select(getSelectedRaceInfo)
 
   const api = dataApi(serverUrl)
-  const raceId = getRaceId(regattaName, raceName)
-  const apiCourse = yield call(api.requestCourse, regattaName, raceColumnName, fleet)
-
-  console.log('loaded course from server', apiCourse)
+  const raceId = getRaceId(regattaName, race)
+  const course = yield call(api.requestCourse, regattaName, raceColumnName, fleet)
 
   yield put(loadCourse({
-    [raceId]: apiCourse,
+    [raceId]: course,
   }))
 }
 
 function* selectRaceCourseFlow({ payload }: any) {
-  const { newCourse, raceName } = payload
+  const { race } = payload
   const { regattaName } = yield select(getSelectedEventInfo)
 
-  yield put(selectRace(raceName))
+  yield put(selectRace(race))
 
-  const raceId = getRaceId(regattaName, raceName)
-  if (!newCourse) {
-    yield call(fetchCourse, raceName)
+  const raceId = getRaceId(regattaName, race)
+  const course = yield select(getCourseById(raceId))
+
+  if (course) {
+    yield call(fetchCourse, race)
   }
 
   yield put(selectCourse(raceId))

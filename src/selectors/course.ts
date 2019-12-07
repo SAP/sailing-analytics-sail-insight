@@ -1,5 +1,6 @@
 import { prop, propEq, find, compose, path, defaultTo } from 'ramda'
 import { createSelector } from 'reselect'
+import uuidv4 from 'uuid/v4'
 
 import {
   CourseState,
@@ -20,10 +21,28 @@ export const getCourseById = (courseId: string) => createSelector(
 export const getSelectedCourseId = (state: any): SelectedCourseState | undefined =>
   state.courses.selectedCourse
 
+const newCourse = () => {
+  const startBoatId = uuidv4()
+  const startPinId = uuidv4()
+  const windwardMarkId = uuidv4()
+
+  return {
+    markConfigurations: [
+      {id: startBoatId, effectiveProperties: { markType: 'BUOY', name: 'Start/Finish Boat', shortName: 'SFB' }},
+      {id: startPinId, effectiveProperties: { markType: 'BUOY', name: 'Start/Finish Boat', shortName: 'SFB' }},
+      {id: windwardMarkId, effectiveProperties: { markType: 'BUOY', name: 'Windward Mark', shortName: 'W' }}
+    ],
+    waypoints: [
+      { passingInstruction: 'Gate', markConfigurationIds: [startBoatId, startPinId], controlPointName: 'Start', controlPointShortName: 'S' },
+      { passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
+      { passingInstruction: 'Gate', markConfigurationIds: [startBoatId, startPinId], controlPointName: 'Finish', controlPointShortName: 'F' }]
+  }
+}
+
 export const getSelectedCourse = createSelector(
   getCourses,
   getSelectedCourseId,
-  (courses, id) => courses[id])
+  (courses, id) => courses[id] || newCourse())
 
 export const getSelectedGateSide = (state: any): GateSide =>
   state.courses.selectedGateSide
