@@ -38,7 +38,8 @@ function* fetchCourse(race: string) {
   }, course)
 
   yield put(loadCourse({
-    [raceId]: courseWithWaypointIds,
+    raceId,
+    course: courseWithWaypointIds
   }))
 }
 
