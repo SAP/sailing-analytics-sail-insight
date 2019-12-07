@@ -123,7 +123,6 @@ export default createStackNavigator(
       screen: Geolocation
         .contramap((props: object) => ({
           ...props,
-          formSectionName: props.navigation.state.params.data.formSectionName,
           currentPosition: props.navigation.state.params.data.currentPosition }))
         .fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
@@ -135,9 +134,7 @@ export default createStackNavigator(
       }),
     },
     [Screens.CourseTrackerBinding]: {
-      screen: TrackerBinding
-        .contramap((props: object) => ({ ...props, formSectionName: props.navigation.state.params.data.formSectionName }))
-        .fold,
+      screen: TrackerBinding.fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle

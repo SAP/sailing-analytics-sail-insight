@@ -6,20 +6,7 @@ import {
   CourseState,
   CourseStateMap,
   GateSide,
-  SelectedCourseState,
 } from 'models/Course'
-
-export const getCourseLoading = (state: any): boolean =>
-  state.courses.courseLoading
-
-const getCourses = (state: any): CourseStateMap => state.courses.all
-
-export const getCourseById = (courseId: string) => createSelector(
-  getCourses,
-  courses => courses[courseId] as CourseState | undefined)
-
-export const getSelectedCourseId = (state: any): SelectedCourseState | undefined =>
-  state.courses.selectedCourse
 
 const newCourse = () => {
   const startBoatId = uuidv4()
@@ -39,27 +26,33 @@ const newCourse = () => {
   }
 }
 
+export const getCourseLoading = (state: any): boolean => state.courses.courseLoading
+export const getCourses = (state: any): CourseStateMap => state.courses.all
+
+export const getCourseById = (courseId: string) => createSelector(
+  getCourses,
+  courses => courses[courseId] as CourseState | undefined)
+
 export const getSelectedCourse = createSelector(
   getCourses,
-  getSelectedCourseId,
+  (state: any) => state.courses.selectedCourse,
   (courses, id) => courses[id] || newCourse())
 
-export const getSelectedGateSide = (state: any): GateSide =>
-  state.courses.selectedGateSide
-
+export const getSelectedGateSide = (state: any): GateSide => state.courses.selectedGateSide
 export const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
 
-const getSelectedCourseWaypoints = createSelector(
-  getSelectedCourse,
-  prop('waypoints'))
-
 export const getSelectedWaypoint = createSelector(
-  getSelectedCourseWaypoints,
+  getSelectedCourse,
   (state: any): string | undefined => state.courses.selectedWaypoint,
-  (courseWaypoints, selectedWaypoint) =>
-    selectedWaypoint && find(propEq('id', selectedWaypoint), courseWaypoints))
+  (selectedCourse, waypointId) => find(propEq('id', waypointId), selectedCourse.waypoints))
 
-export const waypointLabel = waypoint => compose(
+export const getSelectedMarkConfiguration = createSelector(
+  getSelectedWaypoint,
+  state => state.courses.selectedMarkConfiguration,
+  (selectedWaypoint, selectedMarkConfiguration) =>
+  selectedMarkConfiguration || selectedWaypoint && selectedWaypoint.markConfigurationIds[0])
+
+export const waypointLabel = (waypoint: any) => compose(
   course => waypoint.controlPointName || compose(
     defaultTo('\u2022'),
     path(['effectiveProperties', 'shortName']),

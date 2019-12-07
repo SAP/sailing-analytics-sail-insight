@@ -1,5 +1,7 @@
+import { map, evolve, merge } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
+import uuidv4 from 'uuid/v4'
 
 import {
   loadCourse,
@@ -31,8 +33,12 @@ function* fetchCourse(race: string) {
   const raceId = getRaceId(regattaName, race)
   const course = yield call(api.requestCourse, regattaName, raceColumnName, fleet)
 
+  const courseWithWaypointIds = evolve({
+    waypoints: map(w => merge(w, { id: uuidv4() }))
+  }, course)
+
   yield put(loadCourse({
-    [raceId]: course,
+    [raceId]: courseWithWaypointIds,
   }))
 }
 

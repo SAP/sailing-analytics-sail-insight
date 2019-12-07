@@ -12,12 +12,9 @@ import {
   recomposeWithState as withState
 } from 'components/fp/component'
 import { view } from 'components/fp/react-native'
-import { field as reduxFormField, reduxForm, formSection } from 'components/fp/redux-form'
 import TextInput from 'components/TextInput'
 
 import { MarkPositionType } from 'models/Course'
-
-import { courseConfigCommonFormSettings, FORM_LOCATION } from 'forms/courseConfig'
 
 import styles from './styles'
 
@@ -53,11 +50,6 @@ const mapView = (settings: any = {}) => Component((props: any) => compose(
     fold(props))(
     isEmpty(props.input.value) ? nothing() : marker))
 
-const mapField = (settings: any = {}) => reduxFormField({
-  name: FORM_LOCATION,
-  component: mapView(settings).fold,
-})
-
 const coordinatesInput = ({ propName }: any) => Component((props: any) => compose(
     fold(props),
     contramap(merge({
@@ -71,22 +63,15 @@ const coordinatesInput = ({ propName }: any) => Component((props: any) => compos
     })))(
     fromClass(TextInput)))
 
-const coordinatesInputField = (...args: any[]) => reduxFormField({
-  name: FORM_LOCATION,
-  component: coordinatesInput(...args).fold
-})
-
-const latitudeInput = coordinatesInputField({ propName: 'latitude' })
-const longitudeInput = coordinatesInputField({ propName: 'longitude' })
+const latitudeInput = coordinatesInput({ propName: 'latitude' })
+const longitudeInput = coordinatesInput({ propName: 'longitude' })
 
 export default Component((props: object) =>
   compose(
     fold(props),
-    reduxForm(courseConfigCommonFormSettings),
-    formSection({ name: props.formSectionName }),
     withRegion,
     reduce(concat, nothing()))([
-    mapField({
+    mapView({
       currentPosition: props.currentPosition,
       style: styles.map,
     }),
