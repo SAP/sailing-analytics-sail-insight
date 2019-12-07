@@ -24,6 +24,7 @@ export default EStyleSheets.create({
   $itemHeight: 80,
 
   mainContainer: {
+    flex: 1,
     flexDirection: 'column',
     backgroundColor: '#476987',
   },

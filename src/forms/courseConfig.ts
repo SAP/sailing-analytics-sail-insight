@@ -36,6 +36,7 @@ export const markFromFormSection = (values: any): Mark | undefined =>
   values && ({
     class: ControlPointClass.Mark,
     id: values[FORM_MARK_ID] || uuidv4(),
+    isTemporaryMark: !values[FORM_MARK_ID],
     longName: values[FORM_MARK_LONG_NAME],
     shortName: values[FORM_MARK_SHORT_NAME],
     type: MarkType.Buoy,
@@ -102,7 +103,7 @@ export const getFormIsValid = (state: any) =>
   )
 
 const validateMarkSection = (values: any = {}) => ({
-  [FORM_MARK_LONG_NAME]: validateRequired(values[FORM_MARK_LONG_NAME]),
+  [FORM_MARK_LONG_NAME]: undefined//validateRequired(values[FORM_MARK_LONG_NAME]),
 })
 
 const validate = (values: any = {}) => ({

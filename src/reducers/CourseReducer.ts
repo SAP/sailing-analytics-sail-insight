@@ -1,5 +1,5 @@
-import { get, head, keyBy, keys, last, mapKeys, mapValues, take } from 'lodash'
-import { findIndex, propEq, compose, not, isNil, prop } from 'ramda'
+import { get, keyBy, keys, last, mapKeys, mapValues, take } from 'lodash'
+import { findIndex, propEq, compose, not, isNil, prop, head, tail } from 'ramda'
 import { handleActions } from 'redux-actions'
 import uuidv4 from 'uuid/v4'
 
@@ -160,6 +160,7 @@ const constructDefaultMarks = () => {
     mark => ({
       ...mark,
       id: uuidv4(),
+      isTemporaryMark: true,
       class: ControlPointClass.Mark,
       type: MarkType.Buoy,
       passingInstruction: PassingInstruction.Port
@@ -326,13 +327,16 @@ const reducer = handleActions(
         (controlPoint.class === ControlPointClass.MarkPair && marks.length < 2)
       ) return state
 
+      const leftMarkId = compose(prop('id'), head)
+      const rightMarkId = compose(prop('id'), tail)
+
       const changedControlPoint = {
         ...controlPoint,
         ...(controlPoint.class === ControlPointClass.Mark
-          ? { id: marks[0].id }
+          ? { id: leftMarkId(marks) }
           : {
-            leftMark: marks[0].id,
-            rightMark: marks[1].id,
+            leftMark: leftMarkId(marks),
+            rightMark: rightMarkId(marks),
             longName: markPairLongName || controlPoint.longName,
           }
         )

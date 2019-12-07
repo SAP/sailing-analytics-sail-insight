@@ -16,7 +16,7 @@ import ImageButton from 'components/ImageButton'
 import WebView from 'components/WebView'
 
 import Geolocation from 'containers/CourseCreation/Geolocation'
-import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
+import CourseConfig from 'containers/CourseCreation/CourseConfig'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import RaceSetup from 'containers/CourseCreation/RaceSetUp'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
@@ -109,8 +109,8 @@ export default createStackNavigator(
         ),
       }),
     },
-    [Screens.RaceCourseLayout]: {
-      screen: RaceCourseLayout.fold,
+    [Screens.RaceCourseConfig]: {
+      screen: CourseConfig.fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle

@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, zipWith, move,
   prop, map, reduce, concat, merge, props as rProps, defaultTo, any, take,
-  objOf, isNil, not, equals, pick, tap, ifElse, insert, reverse,
+  objOf, isNil, not, equals, pick, tap, ifElse, insert, complement,
   propEq, addIndex, mergeLeft, intersperse, gt, findIndex } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass,
@@ -25,8 +25,8 @@ import { ControlPointClass, GateSide, MarkPositionType, PassingInstruction } fro
 import { selectWaypoint, removeWaypoint, selectGateSide,
   addWaypoint, assignControlPointClass, assignControlPoint,
   saveWaypointFromForm, toggleSameStartFinish, saveCourse } from 'actions/courses'
-import { getSelectedWaypoint, getSelectedMark, getSelectedGateSide,
-  getMarkInventory, getSameStartFinish } from 'selectors/course'
+import { getSelectedWaypoint, getSelectedGateSide,
+  getSameStartFinish, getSelectedCourse, getCourseLoading } from 'selectors/course'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
@@ -49,13 +49,20 @@ const mapInitialValuesToProps = (state: any, props: any) => ({
   })
 
 const mapStateToProps = (state: any, props: any) => ({
-      selectedWaypoint: getSelectedWaypoint(state),
-      selectedMark: getSelectedMark(state),
-      selectedGateSide: getSelectedGateSide(state),
-      sameStartFinish: getSameStartFinish(state),
-      inventory: getMarkInventory(state),
-      // required for properly updating the redux form fields
-      key: getSelectedGateSide(state) })
+  course: getSelectedCourse(state),
+  loading: getCourseLoading(state),
+  selectedWaypoint: getSelectedWaypoint(state),
+  //selectedMark: getSelectedMark(state),
+  selectedGateSide: getSelectedGateSide(state),
+  sameStartFinish: getSameStartFinish(state),
+  inventory: [],//getMarkInventory(state),
+  // required for properly updating the redux form fields
+  key: getSelectedGateSide(state) })
+
+const isLoading = propEq('loading', true)
+const isNotLoading = complement(isLoading)
+const nothingIfLoading = branch(isLoading, nothingAsClass)
+const nothingIfNotLoading = branch(isNotLoading, nothingAsClass)
 
 const waypointClass = path(['waypoint', 'controlPoint', 'class'])
 const isGateWaypoint = compose(equals(ControlPointClass.MarkPair), waypointClass)
@@ -90,7 +97,7 @@ const selectedWaypointAsWaypoint = mapProps(props => ({ ...props, waypoint: prop
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 
-const commitForm = (props: any) => !props.pristine && props.dispatch(props.saveWaypointFromForm)
+const commitForm = (props: any) => props.dispatch(props.saveWaypointFromForm)
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -451,6 +458,18 @@ const waypointItemToComponent = (waypoint: any, index: number, list: any[]) => C
   path(['controlPoint', index === 0 || index === list.length - 1 ? 'longName' : 'shortName']))(
   waypoint))
 
+const WaypointsList = Component(props => compose(
+  fold(props),
+  scrollView({ style: styles.waypointsContainer, horizontal: true }),
+  reduce(concat, nothing()),
+  insert(props.course.waypoints.length - 1,
+    nothingWhenSelectedWaypoint(AddButton.contramap(merge({ index: props.course.waypoints.length - 1 })))),
+  mapIndexed(waypointItemToComponent),
+  path(['course', 'waypoints']))(
+  props))
+
+const LoadingIndicator = text({}, 'Loading ...')
+
 export default Component((props: object) =>
   compose(
     fold(props),
@@ -461,11 +480,7 @@ export default Component((props: object) =>
       selectWaypoint, removeWaypoint, selectGateSide, saveWaypointFromForm,
       addWaypoint, assignControlPointClass, assignControlPoint, toggleSameStartFinish }),
     view({ style: styles.mainContainer }),
-    concat(__, nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))),
-    scrollView({ style: styles.waypointsContainer, horizontal: true }),
-    reduce(concat, nothing()),
-    insert(props.course.waypoints.length - 1,
-      nothingWhenSelectedWaypoint(AddButton.contramap(merge({ index: props.course.waypoints.length - 1 })))),
-    mapIndexed(waypointItemToComponent),
-    path(['course', 'waypoints']))(
-    props))
+    reduce(concat, nothing()))(
+    [nothingIfNotLoading(LoadingIndicator),
+     nothingIfLoading(WaypointsList),
+     nothingIfLoading(nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))) ]))

@@ -1,5 +1,4 @@
-import { when, isEmpty, always, prop, compose } from 'ramda'
-import { takeLatest, all, select, call, put, takeEvery } from 'redux-saga/effects'
+import { takeLatest, call, put, takeEvery } from 'redux-saga/effects'
 import { LOAD_MARK_INVENTORY } from 'actions/inventory'
 
 import { receiveEntities } from 'actions/entities'
