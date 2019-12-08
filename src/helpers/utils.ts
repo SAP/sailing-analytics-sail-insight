@@ -139,9 +139,9 @@ const coordinateToString = (coords: number, longitude: boolean) => {
   return `${cardinalDirection} ${degrees}° ${minutes}' ${seconds}''`
 }
 
-export const coordinatesToString = ({ latitude, longitude }: any) => {
-  const lonString = coordinateToString(longitude, true)
-  const latString = coordinateToString(latitude, false)
+export const coordinatesToString = ({ latitude_deg, longitude_deg }: any) => {
+  const lonString = coordinateToString(longitude_deg, true)
+  const latString = coordinateToString(latitude_deg, false)
 
   return `${latString}/ ${lonString}`
 }

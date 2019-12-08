@@ -20,6 +20,7 @@ import {
   updateMarkConfigurationName,
   updateWaypointPassingInstruction,
   updateMarkConfigurationShortName,
+  updateMarkConfigurationLocation,
   changeWaypointToNewMark,
   changeWaypointToNewLine
 } from 'actions/courses'
@@ -68,6 +69,12 @@ const markConfigurations = handleActions({
     state),
   [updateMarkConfigurationShortName as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { shortName: action.payload.value } })),
+    state),
+  [updateMarkConfigurationLocation as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id),
+      mergeDeepLeft({ positioning: { position: {
+        latitude_deg: action.payload.value.latitude,
+        longitude_deg: action.payload.value.longitude }}})),
     state),
   [changeWaypointToNewMark as any]: (state: any, action: any) => append({
     id: action.payload.markConfigurationIds[0],

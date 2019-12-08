@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, move, length,
   prop, map, reduce, concat, merge, defaultTo, any, take,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
-  propEq, addIndex, intersperse, gt, findIndex } from 'ramda'
+  propEq, addIndex, intersperse, gt, findIndex, unless } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass,
   reduxConnect as connect,
@@ -17,10 +17,12 @@ import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName,
-  updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine } from 'actions/courses'
+  updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
+  updateMarkConfigurationLocation } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getSameStartFinish, getEditedCourse, getCourseLoading,
-  getSelectedMarkConfiguration, getSelectedMarkProperties } from 'selectors/course'
+  getSelectedMarkConfiguration, getSelectedMarkProperties,
+  getSelectedMarkPosition } from 'selectors/course'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
@@ -44,6 +46,7 @@ const mapStateToProps = (state: any, props: any) => ({
   selectedWaypoint: getSelectedWaypoint(state),
   selectedMarkConfiguration: getSelectedMarkConfiguration(state),
   selectedMarkProperties: getSelectedMarkProperties(state),
+  selectedMarkLocation: getSelectedMarkPosition(state),
   waypointLabel: uncurryN(2, waypointLabel)(__, state),
   markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
   sameStartFinish: getSameStartFinish(state),
@@ -64,12 +67,6 @@ const isStartOrFinishGate = both(isGateWaypoint,
     move(-1, 0))(
     props.course.waypoints))
 
-const formHasPositionType = (type: string) => compose(propEq('positionType', type), defaultTo({}), path(['input', 'value']))
-const formHasGeolocation = formHasPositionType(MarkPositionType.Geolocation)
-const formHasTracking = formHasPositionType(MarkPositionType.TrackingDevice)
-
-const geolocationAsString = compose(coordinatesToString, path(['input', 'value']))
-
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenSelectedWaypoint = branch(compose(not, isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
@@ -81,6 +78,7 @@ const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothin
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
+const nothingWhenNoMarkLocation = branch(compose(isNil, prop('selectedMarkLocation')), nothingAsClass)
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 
@@ -162,7 +160,7 @@ const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.locationContainer }),
-    concat(text({ style: styles.trackingText }, formHasTracking(props) ? 'tracking device info' : 'No device tracked')),
+    concat(text({ style: styles.trackingText }, 'No device tracked')),
     touchableOpacity({
       onPress: navigateToCourseTrackerBinding
     }))(
@@ -173,8 +171,10 @@ const MarkPositionPing = Component((props: object) => compose(
   touchableOpacity({
     style: styles.pingPositionButton,
     onPress: (props: object) => navigator.geolocation.getCurrentPosition(compose(
-      props.input.onChange,
-      merge({ positionType: MarkPositionType.Geolocation }),
+      position => props.updateMarkConfigurationLocation({
+        id: props.selectedMarkConfiguration,
+        value: position
+      }),
       pick(['latitude', 'longitude']),
       prop('coords')))
   }))(
@@ -185,19 +185,23 @@ const MarkPositionCoordinates = Component(props => compose(
   view({ style: styles.coordinatesContainer }),
   concat(bigLocationIcon),
   text({ style: styles.coordinatesText }),
-  ifElse(formHasGeolocation, geolocationAsString, always('')))(
-  props))
+  defaultTo(''),
+  unless(isNil, coordinatesToString))(
+  props.selectedMarkLocation))
 
 const MarkPositionGeolocation = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.locationContainer }),
-    concat(MarkPositionCoordinates),
+    concat(nothingWhenNoMarkLocation(MarkPositionCoordinates)),
     concat(MarkPositionPing),
     touchableOpacity({
       style: styles.editPositionButton,
       onPress: () => navigator.geolocation.getCurrentPosition(({ coords }) =>
-        navigateToCourseGeolocation({ currentPosition: coords })) }))(
+        navigateToCourseGeolocation({
+          selectedMarkConfiguration: props.selectedMarkConfiguration,
+          currentPosition: coords,
+          markPosition: props.selectedMarkLocation })) }))(
     text({ style: styles.locationText }, 'Edit Position')))
 
 const locationTypes = [
@@ -391,7 +395,7 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) }))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
-      nothingWhenEmptyWaypoint(Appearance),
+      //nothingWhenEmptyWaypoint(Appearance),
       nothingWhenNotEmptyWaypoint(CreateNewSelector),
       nothingWhenStartOrFinishGate(DeleteButton)
   ]))
@@ -442,7 +446,7 @@ export default Component((props: object) =>
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
-      changeWaypointToNewMark, changeWaypointToNewLine }),
+      changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation }),
     scrollView({ style: styles.mainContainer, vertical: true }),
     reduce(concat, nothing()))(
     [nothingIfNotLoading(LoadingIndicator),

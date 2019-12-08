@@ -123,7 +123,9 @@ export default createStackNavigator(
       screen: Geolocation
         .contramap((props: object) => ({
           ...props,
-          currentPosition: props.navigation.state.params.data.currentPosition }))
+          selectedMarkConfiguration: props.navigation.state.params.data.selectedMarkConfiguration,
+          currentPosition: props.navigation.state.params.data.currentPosition,
+          markPosition: props.navigation.state.params.data.markPosition }))
         .fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (

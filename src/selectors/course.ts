@@ -47,10 +47,23 @@ export const getMarkPropertiesByMarkConfiguration = markConfigurationId => creat
     prop('markConfigurations'))(
     course))
 
+export const getMarkPositionByMarkConfiguration = markConfigurationId => createSelector(
+  getEditedCourse,
+  course => compose(
+    path(['positioning', 'position']),
+    find(propEq('id', markConfigurationId)),
+    prop('markConfigurations'))(
+    course))
+
 export const getSelectedMarkProperties = createSelector(
   getSelectedMarkConfiguration,
   identity,
   (markConfigurationId, state) => getMarkPropertiesByMarkConfiguration(markConfigurationId)(state))
+
+export const getSelectedMarkPosition = createSelector(
+  getSelectedMarkConfiguration,
+  identity,
+  (markConfigurationId, state) => getMarkPositionByMarkConfiguration(markConfigurationId)(state))
 
 export const waypointLabel = (waypoint: any) => compose(
   course => waypoint.controlPointName || compose(
