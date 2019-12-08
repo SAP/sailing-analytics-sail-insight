@@ -16,7 +16,8 @@ import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/
 
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateControlPointName, updateControlPointShortName,
-  updateMarkConfigurationName, updateMarkConfigurationShortName } from 'actions/courses'
+  updateMarkConfigurationName, updateMarkConfigurationShortName,
+  updateControlPointPassingInstruction } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties } from 'selectors/course'
@@ -338,7 +339,7 @@ const PassingInstructionItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({
-      onPress: (props: any) => props.input.onChange(props.type),
+      onPress: (props: any) => props.updateControlPointPassingInstruction({ id: props.selectedWaypoint.id, value: props.type }),
       style: [
         styles.passingInstruction,
         props.selected ? styles.selectedPassingInstruction : '' ]}))(
@@ -434,7 +435,7 @@ export default Component((props: object) =>
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
       toggleSameStartFinish, updateControlPointName, updateControlPointShortName,
-      updateMarkConfigurationName, updateMarkConfigurationShortName }),
+      updateMarkConfigurationName, updateMarkConfigurationShortName, updateControlPointPassingInstruction }),
     scrollView({ style: styles.mainContainer, vertical: true }),
     reduce(concat, nothing()))(
     [nothingIfNotLoading(LoadingIndicator),

@@ -16,6 +16,7 @@ import {
   updateControlPointName,
   updateControlPointShortName,
   updateMarkConfigurationName,
+  updateControlPointPassingInstruction,
   updateMarkConfigurationShortName
 } from 'actions/courses'
 
@@ -31,6 +32,9 @@ const waypoints = handleActions({
     state),
   [updateControlPointShortName as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), mergeLeft({ controlPointShortName: action.payload.value })))(
+    state),
+  [updateControlPointPassingInstruction as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeLeft({ passingInstruction: action.payload.value })))(
     state)
 }, [])
 

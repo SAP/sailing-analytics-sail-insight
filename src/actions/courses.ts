@@ -15,6 +15,7 @@ export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
 export const updateControlPointName = createAction('UPDATE_CONTROL_POINT_NAME')
 export const updateControlPointShortName = createAction('UPDATE_CONTROL_POINT_SHORT_NAME')
+export const updateControlPointPassingInstruction = createAction('UPDATE_CONTROL_POINT_PASSING_INSTRUCTION')
 export const updateMarkConfigurationName = createAction('UPDATE_MARK_CONFIGURATION_NAME')
 export const updateMarkConfigurationShortName = createAction('UPDATE_MARK_CONFIGURATION_SHORT_NAME')
 
