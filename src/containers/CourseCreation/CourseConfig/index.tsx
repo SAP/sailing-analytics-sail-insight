@@ -15,9 +15,9 @@ import uuidv4 from 'uuid/v4'
 import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/Course'
 
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
-  selectMarkConfiguration, updateControlPointName, updateControlPointShortName,
+  selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName,
-  updateControlPointPassingInstruction } from 'actions/courses'
+  updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties } from 'selectors/course'
@@ -251,7 +251,7 @@ const DeleteButton = Component((props: object) =>
 const ControlPointClassSelectorItem = Component((props: object) =>
   compose(
     fold(props),
-    touchableOpacity({ onPress: (props: any) => props.assignControlPointClass(props.class) }))(
+    touchableOpacity({}))(
     props.icon))
 
 const InventoryItem = Component((props: object) =>
@@ -280,8 +280,14 @@ const CreateNewSelector = Component((props: object) =>
     view({ style: styles.createNewClassContainer }),
     reduce(concat, nothing()),
     map(compose(ControlPointClassSelectorItem.contramap, merge)))([
-    { ['class']: ControlPointClass.MarkPair, icon: gateIcon },
-    { ['class']: ControlPointClass.Mark, icon: markIcon }]))
+    { ['class']: ControlPointClass.MarkPair, icon: gateIcon, onPress: () => props.changeWaypointToNewLine({
+      id: props.selectedWaypoint.id,
+      markConfigurationIds: [uuidv4(), uuidv4()]
+    }) },
+    { ['class']: ControlPointClass.Mark, icon: markIcon, onPress: () => props.changeWaypointToNewMark({
+      id: props.selectedWaypoint.id,
+      markConfigurationIds: [uuidv4()]
+    }) }]))
 
 const TextInputWithLabel = Component((props: any) => compose(
   fold(props),
@@ -293,14 +299,14 @@ const TextInputWithLabel = Component((props: any) => compose(
 const gateNameInputData = props => [
   { inputLabel: 'Name',
     value: props.selectedWaypoint.controlPointName,
-    onChangeText: (value: string) => props.updateControlPointName({
+    onChangeText: (value: string) => props.updateWaypointName({
       id: props.selectedWaypoint.id,
       value
     })
   },
   { inputLabel: 'Short Name',
     value: props.selectedWaypoint.controlPointShortName,
-    onChangeText: (value: string) => props.updateControlPointShortName({
+    onChangeText: (value: string) => props.updateWaypointShortName({
       id: props.selectedWaypoint.id,
       value
     }) } ]
@@ -339,7 +345,7 @@ const PassingInstructionItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({
-      onPress: (props: any) => props.updateControlPointPassingInstruction({ id: props.selectedWaypoint.id, value: props.type }),
+      onPress: (props: any) => props.updateWaypointPassingInstruction({ id: props.selectedWaypoint.id, value: props.type }),
       style: [
         styles.passingInstruction,
         props.selected ? styles.selectedPassingInstruction : '' ]}))(
@@ -434,8 +440,9 @@ export default Component((props: object) =>
     withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
-      toggleSameStartFinish, updateControlPointName, updateControlPointShortName,
-      updateMarkConfigurationName, updateMarkConfigurationShortName, updateControlPointPassingInstruction }),
+      toggleSameStartFinish, updateWaypointName, updateWaypointShortName,
+      updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
+      changeWaypointToNewMark, changeWaypointToNewLine }),
     scrollView({ style: styles.mainContainer, vertical: true }),
     reduce(concat, nothing()))(
     [nothingIfNotLoading(LoadingIndicator),

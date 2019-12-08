@@ -1,9 +1,11 @@
 import { merge, defaultTo, prop, compose, insert, reject, propEq, head,
-  map, when, mergeLeft, mergeDeepLeft } from 'ramda'
+  map, when, mergeLeft, mergeDeepLeft, always, append, concat } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
+import { PassingInstruction } from 'models/Course'
 
 import { removeUserData } from 'actions/auth'
+
 import {
   loadCourse,
   editCourse,
@@ -13,11 +15,13 @@ import {
   addWaypoint,
   removeWaypoint,
   selectMarkConfiguration,
-  updateControlPointName,
-  updateControlPointShortName,
+  updateWaypointName,
+  updateWaypointShortName,
   updateMarkConfigurationName,
-  updateControlPointPassingInstruction,
-  updateMarkConfigurationShortName
+  updateWaypointPassingInstruction,
+  updateMarkConfigurationShortName,
+  changeWaypointToNewMark,
+  changeWaypointToNewLine
 } from 'actions/courses'
 
 const waypoints = handleActions({
@@ -27,14 +31,30 @@ const waypoints = handleActions({
     action.payload),
   [addWaypoint as any]: (state: any, action: any) => insert(action.payload.index, { id: action.payload.id }, state),
   [removeWaypoint as any]: (state: any, action: any) => reject(propEq('id', action.payload.id), state),
-  [updateControlPointName as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeLeft({ controlPointName: action.payload.value })))(
+  [updateWaypointName as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeLeft({ controlPointName: action.payload.value })),
     state),
-  [updateControlPointShortName as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeLeft({ controlPointShortName: action.payload.value })))(
+  [updateWaypointShortName as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeLeft({ controlPointShortName: action.payload.value })),
     state),
-  [updateControlPointPassingInstruction as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeLeft({ passingInstruction: action.payload.value })))(
+  [updateWaypointPassingInstruction as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeLeft({ passingInstruction: action.payload.value })),
+    state),
+  [changeWaypointToNewMark as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id),
+      always({
+        id: action.payload.id,
+        passingInstruction: PassingInstruction.Port,
+        markConfigurationIds: action.payload.markConfigurationIds
+      })))(
+    state),
+  [changeWaypointToNewLine as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id),
+      always({
+        id: action.payload.id,
+        passingInstruction: PassingInstruction.Line,
+        markConfigurationIds: action.payload.markConfigurationIds
+      })))(
     state)
 }, [])
 
@@ -44,11 +64,23 @@ const markConfigurations = handleActions({
     prop('markConfigurations'))(
     action.payload),
   [updateMarkConfigurationName as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { name: action.payload.value } })))(
+    when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { name: action.payload.value } })),
     state),
   [updateMarkConfigurationShortName as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { shortName: action.payload.value } })))(
-    state)
+    when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { shortName: action.payload.value } })),
+    state),
+  [changeWaypointToNewMark as any]: (state: any, action: any) => append({
+    id: action.payload.markConfigurationIds[0],
+    effectiveProperties: { markType: 'BUOY' }
+  }, state),
+  [changeWaypointToNewLine as any]: (state: any, action: any) => concat([
+    {
+      id: action.payload.markConfigurationIds[0],
+      effectiveProperties: { markType: 'BUOY' }
+    }, {
+      id: action.payload.markConfigurationIds[1],
+      effectiveProperties: { markType: 'BUOY' }
+  }], state),
 }, [])
 
 const editedCourse = combineReducers({
