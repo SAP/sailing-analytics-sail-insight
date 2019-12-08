@@ -1,23 +1,23 @@
-import { __, compose, always, both, path, when, zipWith, move, length,
-  prop, map, reduce, concat, merge, props as rProps, defaultTo, any, take,
+import { __, compose, always, both, path, when, move, length,
+  prop, map, reduce, concat, merge, defaultTo, any, take,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
-  propEq, addIndex, mergeLeft, intersperse, gt, findIndex } from 'ramda'
+  propEq, addIndex, intersperse, gt, findIndex } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass,
   reduxConnect as connect,
   recomposeBranch as branch,
-  recomposeWithState as withState,
-  recomposeMapProps as mapProps
+  recomposeWithState as withState
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
 import { Switch } from 'react-native'
+import uuidv4 from 'uuid/v4'
 
 import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/Course'
 
 import { selectWaypoint, removeWaypoint, addWaypoint,
   toggleSameStartFinish, selectMarkConfiguration, saveCourse } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
-  getSameStartFinish, getSelectedCourse, getCourseLoading,
+  getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties } from 'selectors/course'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
@@ -37,7 +37,7 @@ import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 const mapIndexed = addIndex(map)
 
 const mapStateToProps = (state: any, props: any) => ({
-  course: getSelectedCourse(state),
+  course: getEditedCourse(state),
   loading: getCourseLoading(state),
   selectedWaypoint: getSelectedWaypoint(state),
   selectedMarkConfiguration: getSelectedMarkConfiguration(state),
@@ -52,13 +52,12 @@ const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
 const nothingIfLoading = branch(isLoading, nothingAsClass)
 const nothingIfNotLoading = branch(isNotLoading, nothingAsClass)
-
-const isGateWaypoint = compose(equals(2), length, path(['waypoint', 'markConfigurationIds']))
-const isEmptyWaypoint = compose(isNil, path(['waypoint', 'markConfigurationIds']))
+const isGateWaypoint = compose(equals(2), length, defaultTo([]), path(['selectedWaypoint', 'markConfigurationIds']))
+const isEmptyWaypoint = compose(isNil, path(['selectedWaypoint', 'markConfigurationIds']))
 const isWaypointSelected = (waypoint: any, props: any) => props.selectedWaypoint && props.selectedWaypoint.id === waypoint.id
 const isStartOrFinishGate = both(isGateWaypoint,
   props => compose(
-    any(compose(equals(props.waypoint.id), prop('id'))),
+    any(compose(equals(props.selectedWaypoint.id), prop('id'))),
     take(2),
     move(-1, 0))(
     props.course.waypoints))
@@ -80,8 +79,6 @@ const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothin
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
-
-const selectedWaypointAsWaypoint = mapProps(props => ({ ...props, waypoint: props.selectedWaypoint }))
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 
@@ -141,6 +138,7 @@ const GateMarkSelector = Component((props: object) =>
       merge,
       when(propEq('markConfigurationId', props.selectedMarkConfiguration), merge({ selected: true })),
       objOf('markConfigurationId'))),
+    defaultTo([]),
     path(['selectedWaypoint', 'markConfigurationIds']))(
     props))
 
@@ -242,7 +240,8 @@ const DeleteButton = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.deleteWaypointContainer }),
-    touchableOpacity({ onPress: (props: any) => props.removeWaypoint() }),
+    touchableOpacity({ onPress: (props: any) =>
+      props.removeWaypoint({ id: props.selectedWaypoint.id }) }),
     view({ style: styles.deleteWaypointButton }),
     concat(deleteIcon))(
     text({ style: styles.deleteButtonText }, 'Delete this mark from course')))
@@ -361,10 +360,10 @@ const WaypointEditForm = Component((props: any) =>
     concat(compose(
       view({ style: isGateWaypoint(props) && styles.indentedContainer }),
       reduce(concat, nothing()))([
-      nothingWhenNotStartOrFinishGate(SameStartFinish),
+      nothingWhenEmptyWaypoint(nothingWhenNotStartOrFinishGate(SameStartFinish)),
       nothingWhenNotAGate(nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: gateNameInputData(props) })))),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(PassingInstructions))),
-      nothingWhenNotAGate(GateMarkSelector)
+      nothingWhenEmptyWaypoint(nothingWhenNotAGate(GateMarkSelector))
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
@@ -382,7 +381,8 @@ const AddButton = Component((props: any) =>
     fold(props),
     touchableOpacity({
       style: styles.addButton,
-      onPress: (props: any) => props.addWaypoint(props.index)
+      onPress: (props: any) =>
+        props.addWaypoint({ index: props.index, id: uuidv4() })
      }))(
     plusIcon))
 
@@ -424,4 +424,4 @@ export default Component((props: object) =>
     reduce(concat, nothing()))(
     [nothingIfNotLoading(LoadingIndicator),
      nothingIfLoading(WaypointsList),
-     nothingIfLoading(nothingWhenNoSelectedWaypoint(selectedWaypointAsWaypoint(WaypointEditForm))) ]))
+     nothingIfLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm)) ]))

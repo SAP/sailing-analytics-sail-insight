@@ -6,8 +6,9 @@ import uuidv4 from 'uuid/v4'
 import {
   loadCourse,
   SAVE_COURSE,
-  SELECT_COURSE_FOR_RACE,
+  SELECT_COURSE,
   selectCourse,
+  editCourse,
   updateCourseLoading,
 } from 'actions/courses'
 import {
@@ -23,6 +24,24 @@ import {
 
 const getRaceId = (regattaName: string, raceName: string) =>
   `${regattaName} - ${raceName}`
+
+const newCourse = () => {
+  const startBoatId = uuidv4()
+  const startPinId = uuidv4()
+  const windwardMarkId = uuidv4()
+
+  return {
+    markConfigurations: [
+      {id: startBoatId, effectiveProperties: { markType: 'BUOY', name: 'Start/Finish Boat', shortName: 'SFB' }},
+      {id: startPinId, effectiveProperties: { markType: 'BUOY', name: 'Start/Finish Pin', shortName: 'SFP' }},
+      {id: windwardMarkId, effectiveProperties: { markType: 'BUOY', name: 'Windward Mark', shortName: 'W' }}
+    ],
+    waypoints: [
+      { id: uuidv4(), passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Start', controlPointShortName: 'S' },
+      { id: uuidv4(), passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
+      { id: uuidv4(), passingInstruction: 'Gate', markConfigurationIds: [ startPinId, startBoatId], controlPointName: 'Finish', controlPointShortName: 'F' }]
+  }
+}
 
 function* fetchCourse(race: string) {
   yield put(updateCourseLoading(true))
@@ -43,7 +62,7 @@ function* fetchCourse(race: string) {
   }))
 }
 
-function* selectRaceCourseFlow({ payload }: any) {
+function* selectCourseFlow({ payload }: any) {
   const { race } = payload
   const { regattaName } = yield select(getSelectedEventInfo)
 
@@ -52,11 +71,16 @@ function* selectRaceCourseFlow({ payload }: any) {
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
 
+  let editedCourse
+
   if (course) {
     yield call(fetchCourse, race)
+    editedCourse = yield select(getCourseById(raceId))
+  } else {
+    editedCourse = newCourse()
   }
 
-  yield put(selectCourse(raceId))
+  yield put(editCourse(editedCourse))
   yield put(updateCourseLoading(false))
 }
 
@@ -75,7 +99,7 @@ function* saveCourseFlow() {
 
 export default function* watchCourses() {
   yield all([
-    takeLatest(SELECT_COURSE_FOR_RACE, selectRaceCourseFlow),
+    takeLatest(SELECT_COURSE, selectCourseFlow),
     takeEvery(SAVE_COURSE, saveCourseFlow),
   ])
 }

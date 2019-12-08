@@ -8,7 +8,7 @@ export const SELECT_MARK_CONFIGURATION = 'SELECT_MARK_CONFIGURATION'
 
 export const loadCourse = createAction('LOAD_COURSE')
 export const selectCourse = createAction(SELECT_COURSE)
-export const selectCourseForRace = createAction(SELECT_COURSE_FOR_RACE)
+export const editCourse = createAction('EDIT_COURSE')
 export const selectMarkConfiguration = createAction(SELECT_MARK_CONFIGURATION)
 export const saveCourse = createAction(SAVE_COURSE)
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
