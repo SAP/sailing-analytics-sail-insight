@@ -1,4 +1,4 @@
-import { merge, defaultTo, prop, compose, insert, reject, propEq } from 'ramda'
+import { merge, defaultTo, prop, compose, insert, reject, propEq, head } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 
@@ -50,7 +50,12 @@ const courseLoading = handleActions({
 
 const selectedWaypoint = handleActions({
   [selectWaypoint as any]: (state: any = {}, action: any) => action.payload,
-  [addWaypoint as any]: (state: any, action: any) => action.payload.id
+  [addWaypoint as any]: (state: any, action: any) => action.payload.id,
+  [editCourse as any]: (state: any = [], action: any) => compose(
+    prop('id'),
+    head,
+    prop('waypoints'))(
+    action.payload),
 }, null)
 
 const selectedMarkConfiguration = handleActions({
