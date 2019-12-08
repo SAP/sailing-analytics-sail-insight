@@ -47,16 +47,14 @@ const waypoints = handleActions({
         id: action.payload.id,
         passingInstruction: PassingInstruction.Port,
         markConfigurationIds: action.payload.markConfigurationIds
-      })))(
-    state),
+      })), state), 
   [changeWaypointToNewLine as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id),
       always({
         id: action.payload.id,
         passingInstruction: PassingInstruction.Line,
         markConfigurationIds: action.payload.markConfigurationIds
-      })))(
-    state)
+      })), state)
 }, [])
 
 const markConfigurations = handleActions({

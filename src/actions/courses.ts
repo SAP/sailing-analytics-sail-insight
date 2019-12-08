@@ -21,7 +21,7 @@ export const updateMarkConfigurationShortName = createAction('UPDATE_MARK_SHORT_
 export const updateMarkConfigurationLocation = createAction('UPDATE_MARK_LOCATION')
 
 export const changeWaypointToNewMark = createAction('CHANGE_WAYPOINT_TO_NEW_MARK')
-export const changeWaypointToNewLine = createAction('CHANGE_WAYPOINT_TO_NEW_MARK')
+export const changeWaypointToNewLine = createAction('CHANGE_WAYPOINT_TO_NEW_LINE')
 
 export const addWaypoint = createAction('ADD_WAYPOINT')
 export const selectWaypoint = createAction(SELECT_WAYPOINT)
