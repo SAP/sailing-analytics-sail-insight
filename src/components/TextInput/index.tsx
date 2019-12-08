@@ -106,7 +106,6 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
                 onContentSizeChange={this.contentSizeChanged}
                 onChangeText={this.onChangeText}
                 ref={this.handleInputRef}
-                value={stateText}
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && isEntrySecured}
@@ -114,6 +113,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
                 placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}
+                value={stateText}
                 onFocus={this.handleInputFocus}
                 onBlur={this.handleInputBlur}
               />
@@ -169,7 +169,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
   }
 
   protected handleInputBlur = () => {
-    if (this.props.onBlur) { this.props.onBlur() }
+    if (this.props.onBlur) { this.props.onBlur(this.state.text) }
     this.setState({ isFocused: false })
   }
 }

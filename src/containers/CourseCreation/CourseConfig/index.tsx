@@ -303,14 +303,14 @@ const TextInputWithLabel = Component((props: any) => compose(
 const gateNameInputData = props => [
   { inputLabel: 'Name',
     value: props.selectedWaypoint.controlPointName,
-    onChangeText: (value: string) => props.updateWaypointName({
+    onBlur: (value: string) => props.updateWaypointName({
       id: props.selectedWaypoint.id,
       value
     })
   },
   { inputLabel: 'Short Name',
     value: props.selectedWaypoint.controlPointShortName,
-    onChangeText: (value: string) => props.updateWaypointShortName({
+    onBlur: (value: string) => props.updateWaypointShortName({
       id: props.selectedWaypoint.id,
       value
     }) } ]
@@ -318,14 +318,14 @@ const gateNameInputData = props => [
 const markNamesInputData = props => [
   { inputLabel: 'Name',
     value: props.selectedMarkProperties.name,
-    onChangeText: (value: string) => props.updateMarkConfigurationName({
+    onBlur: (value: string) => props.updateMarkConfigurationName({
       id: props.selectedMarkConfiguration,
       value
     })
   },
   { inputLabel: 'Short Name',
     value: props.selectedMarkProperties.shortName,
-    onChangeText: (value: string) => props.updateMarkConfigurationShortName({
+    onBlur: (value: string) => props.updateMarkConfigurationShortName({
       id: props.selectedMarkConfiguration,
       value
     }) }]
