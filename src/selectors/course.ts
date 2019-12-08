@@ -1,5 +1,5 @@
 import { prop, propEq, find, compose, path, defaultTo,
-  equals, identity, head, when, isNil, always } from 'ramda'
+  equals, identity, head, when, isNil, always, last } from 'ramda'
 import { createSelector } from 'reselect'
 
 import {
@@ -66,10 +66,14 @@ export const getSelectedMarkPosition = createSelector(
   (markConfigurationId, state) => getMarkPositionByMarkConfiguration(markConfigurationId)(state))
 
 export const waypointLabel = (waypoint: any) => compose(
-  course => waypoint.controlPointName || compose(
-    defaultTo('\u2022'),
-    path(['effectiveProperties', 'shortName']),
-    find(propEq('id', compose(head, defaultTo([]), prop('markConfigurationIds'))(waypoint))),
-    prop('markConfigurations'))(
-    course),
+  course => {
+    const isStartOrFinish = head(course.waypoints).id === waypoint.id || last(course.waypoints).id === waypoint.id
+
+    return isStartOrFinish ? waypoint.controlPointName : waypoint.controlPointShortName || compose(
+      defaultTo('\u2022'),
+      path(['effectiveProperties', 'shortName']),
+      find(propEq('id', compose(head, defaultTo([]), prop('markConfigurationIds'))(waypoint))),
+      prop('markConfigurations'))(
+      course)
+  },
   getEditedCourse)
