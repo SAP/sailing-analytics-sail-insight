@@ -286,15 +286,5 @@ export default EStyleSheets.create({
 
   inventoryList: {
     marginTop: 15
-  },
-
-  saveCourseButtonContainer: {
-    backgroundColor: '#FF6C52'
-  },
-
-  saveCourseButtonLabel: {
-    ...withDefaultBoldFont,
-    ...white,
-    fontSize: 16
   }
 })

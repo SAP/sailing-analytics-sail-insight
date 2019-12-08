@@ -13,6 +13,11 @@ export const selectMarkConfiguration = createAction(SELECT_MARK_CONFIGURATION)
 export const saveCourse = createAction(SAVE_COURSE)
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 
+export const updateControlPointName = createAction('UPDATE_CONTROL_POINT_NAME')
+export const updateControlPointShortName = createAction('UPDATE_CONTROL_POINT_SHORT_NAME')
+export const updateMarkConfigurationName = createAction('UPDATE_MARK_CONFIGURATION_NAME')
+export const updateMarkConfigurationShortName = createAction('UPDATE_MARK_CONFIGURATION_SHORT_NAME')
+
 export const addWaypoint = createAction('ADD_WAYPOINT')
 export const selectWaypoint = createAction(SELECT_WAYPOINT)
 export const saveWaypoint = createAction('SAVE_WAYPOINT')

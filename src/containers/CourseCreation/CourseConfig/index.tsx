@@ -14,8 +14,9 @@ import uuidv4 from 'uuid/v4'
 
 import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/Course'
 
-import { selectWaypoint, removeWaypoint, addWaypoint,
-  toggleSameStartFinish, selectMarkConfiguration, saveCourse } from 'actions/courses'
+import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
+  selectMarkConfiguration, updateControlPointName, updateControlPointShortName,
+  updateMarkConfigurationName, updateMarkConfigurationShortName } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties } from 'selectors/course'
@@ -289,17 +290,39 @@ const TextInputWithLabel = Component((props: any) => compose(
   props.inputLabel))
 
 const gateNameInputData = props => [
-  { inputLabel: 'Name', value: props.selectedWaypoint.controlPointName },
-  { inputLabel: 'Short Name', value: props.selectedWaypoint.controlPointShortName } ]
+  { inputLabel: 'Name',
+    value: props.selectedWaypoint.controlPointName,
+    onChangeText: (value: string) => props.updateControlPointName({
+      id: props.selectedWaypoint.id,
+      value
+    })
+  },
+  { inputLabel: 'Short Name',
+    value: props.selectedWaypoint.controlPointShortName,
+    onChangeText: (value: string) => props.updateControlPointShortName({
+      id: props.selectedWaypoint.id,
+      value
+    }) } ]
 
 const markNamesInputData = props => [
-  { inputLabel: 'Name', value: props.selectedMarkProperties.name },
-  { inputLabel: 'Short Name', value: props.selectedMarkProperties.shortName }]
+  { inputLabel: 'Name',
+    value: props.selectedMarkProperties.name,
+    onChangeText: (value: string) => props.updateMarkConfigurationName({
+      id: props.selectedMarkConfiguration,
+      value
+    })
+  },
+  { inputLabel: 'Short Name',
+    value: props.selectedMarkProperties.shortName,
+    onChangeText: (value: string) => props.updateMarkConfigurationShortName({
+      id: props.selectedMarkConfiguration,
+      value
+    }) }]
 
 const ShortAndLongName = Component((props: object) =>
   compose(
     fold(props),
-    view({ style: { flexDirection: 'row' } }),
+    view({ style: { flexDirection: 'row' }, key: props.selectedWaypoint.id }),
     reduce(concat, nothing()),
     mapIndexed((data, index) => compose(
       view({ style: index === 1 ? { marginLeft: 30 } : { flex: 1, flexBasis: 1 }}),
@@ -344,15 +367,6 @@ const PassingInstructions = Component((props: object) =>
     ifElse(isGateWaypoint, always(gatePassingInstructions), always(singleMarkPassingInstructions)))(
     props))
 
-const saveCourseButton = Component((props: any) =>
-  compose(
-    fold(props),
-    view({ style: styles.saveCourseButtonContainer }),
-    touchableOpacity({
-      onPress: () => props.saveCourse()
-    }))(
-    text({ style: styles.saveCourseButtonLabel }, 'SAVE CHANGES')))
-
 const WaypointEditForm = Component((props: any) =>
   compose(
     fold(props),
@@ -372,8 +386,7 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenEmptyWaypoint(MarkPosition),
       nothingWhenEmptyWaypoint(Appearance),
       nothingWhenNotEmptyWaypoint(CreateNewSelector),
-      nothingWhenStartOrFinishGate(DeleteButton),
-      saveCourseButton
+      nothingWhenStartOrFinishGate(DeleteButton)
   ]))
 
 const AddButton = Component((props: any) =>
@@ -419,7 +432,9 @@ export default Component((props: object) =>
     fold(props),
     withSelectedPositionType,
     connect(mapStateToProps, {
-      selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint, toggleSameStartFinish }),
+      selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
+      toggleSameStartFinish, updateControlPointName, updateControlPointShortName,
+      updateMarkConfigurationName, updateMarkConfigurationShortName }),
     scrollView({ style: styles.mainContainer, vertical: true }),
     reduce(concat, nothing()))(
     [nothingIfNotLoading(LoadingIndicator),

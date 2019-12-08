@@ -1,4 +1,5 @@
-import { merge, defaultTo, prop, compose, insert, reject, propEq, head } from 'ramda'
+import { merge, defaultTo, prop, compose, insert, reject, propEq, head,
+  map, when, mergeLeft, mergeDeepLeft } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 
@@ -11,7 +12,11 @@ import {
   selectWaypoint,
   addWaypoint,
   removeWaypoint,
-  selectMarkConfiguration
+  selectMarkConfiguration,
+  updateControlPointName,
+  updateControlPointShortName,
+  updateMarkConfigurationName,
+  updateMarkConfigurationShortName
 } from 'actions/courses'
 
 const waypoints = handleActions({
@@ -20,14 +25,26 @@ const waypoints = handleActions({
     prop('waypoints'))(
     action.payload),
   [addWaypoint as any]: (state: any, action: any) => insert(action.payload.index, { id: action.payload.id }, state),
-  [removeWaypoint as any]: (state: any, action: any) => reject(propEq('id', action.payload.id), state)
+  [removeWaypoint as any]: (state: any, action: any) => reject(propEq('id', action.payload.id), state),
+  [updateControlPointName as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeLeft({ controlPointName: action.payload.value })))(
+    state),
+  [updateControlPointShortName as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeLeft({ controlPointShortName: action.payload.value })))(
+    state)
 }, [])
 
 const markConfigurations = handleActions({
   [editCourse as any]: (state: any = [], action: any) => compose(
     defaultTo([]),
     prop('markConfigurations'))(
-    action.payload)
+    action.payload),
+  [updateMarkConfigurationName as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { name: action.payload.value } })))(
+    state),
+  [updateMarkConfigurationShortName as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { shortName: action.payload.value } })))(
+    state)
 }, [])
 
 const editedCourse = combineReducers({
@@ -55,7 +72,7 @@ const selectedWaypoint = handleActions({
     prop('id'),
     head,
     prop('waypoints'))(
-    action.payload),
+    action.payload)
 }, null)
 
 const selectedMarkConfiguration = handleActions({
