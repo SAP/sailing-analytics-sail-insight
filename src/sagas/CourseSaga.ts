@@ -93,6 +93,7 @@ function* saveCourseFlow() {
   const editedCourse = yield select(getEditedCourse)
 
   const course = evolve({
+    waypoints: map(dissoc('id')),
     markConfigurations: map(compose(
       dissoc('markId'),
       mergeLeft({ storeToInventory: true }),
