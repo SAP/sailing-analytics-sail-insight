@@ -40,6 +40,7 @@ export default EStyleSheet.create({
     left: 0,
     alignSelf: 'center',
     paddingTop: 3,
+    fontWeight: 'bold',
   },
   securedToggleBtn: {
     alignSelf: 'stretch',

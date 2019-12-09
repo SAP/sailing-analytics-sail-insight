@@ -2,6 +2,12 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 
 export default EStyleSheets.create({
+  bottomContainer: {
+    paddingTop: '$smallSpacing',
+    paddingBottom: 37,
+    paddingLeft: '$smallSpacing',
+    paddingRight: '$smallSpacing',
+  },
   inputMargin: {
     marginTop: 16,
   },

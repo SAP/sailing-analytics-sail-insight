@@ -280,5 +280,6 @@
   "title_tracking" : "Tracking",
   "text_place_QR_code": "Please place the QR code in front of your camera",
   "text_welcome_logged_in": "Happy Welcome\n{{name}}!",
-  "text_welcome": "Happy Welcome!"
+  "text_welcome": "Happy Welcome!",
+  "text_tracking_headline": "FOR WHICH EVENT\nDO YOU WANT TO TRACK?"
 }

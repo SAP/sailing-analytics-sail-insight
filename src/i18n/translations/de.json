@@ -279,5 +279,6 @@
   "title_tracking": "Tracking",
   "text_place_QR_code": "Bitte platziere den QR Code vor deiner Kamera",
   "text_welcome_logged_in": "Herzlich Wilkommen\n{{name}}!",
-  "text_welcome": "Herzlich Wilkommen!"
+  "text_welcome": "Herzlich Wilkommen!",
+  "text_tracking_headline": "FÜR WELCHEN EVENT\nMÖCHTEST DU TRACKEN?"
 }
