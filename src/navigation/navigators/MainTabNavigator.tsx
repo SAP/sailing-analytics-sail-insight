@@ -12,15 +12,15 @@ import Sessions from 'containers/session/Sessions'
 import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 
-import TrackingList from 'containers/tracking/TrackingList'
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
+import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
 
 
 const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
   const { routeName = '' } = navigation.state
   let icon
   switch (routeName) {
-    case Screens.TrackingList:
+    case Screens.TrackingNavigator:
       icon = Images.tabs.tracking
       break
     case Screens.Sessions:
@@ -65,13 +65,13 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
 
 export default createBottomTabNavigator(
   {
-    [Screens.TrackingList]: TrackingList,
+    [Screens.TrackingNavigator]: TrackingNavigator,
     [Screens.Sessions]: Sessions,
     [Screens.Inventory]: MarkInventory.fold,
     [Screens.Account]: AccountNavigator,
   },
   {
-    initialRouteName: Screens.TrackingList,
+    initialRouteName: Screens.TrackingNavigator,
     backBehavior: 'none',
     swipeEnabled: false,
     tabBarOptions: {

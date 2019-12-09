@@ -41,6 +41,7 @@ export const Inventory = 'Inventory'
 export const WelcomeTracking = 'WelcomeTracking'
 
 // tracking
+export const TrackingStack = 'TrackingStack'
 export const TrackingList = 'TrackingList'
 export const TrackingNavigator = 'TrackingNavigator'
 export const Tracking = 'Tracking'

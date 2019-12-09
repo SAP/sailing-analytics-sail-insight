@@ -75,8 +75,10 @@ export default EStyleSheets.create({
     backgroundColor: '#FF6C52',
     marginTop: 20,
     alignSelf: 'stretch',
-    height: 56,
     borderRadius: '$baseBorderRadius',
+    alignContent: 'center',
+    paddingTop: '$smallSpacing',
+    paddingBottom: '$smallSpacing',
   },
   resetButtonText: {
     color: '#FFFFFF',

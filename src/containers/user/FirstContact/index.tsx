@@ -25,7 +25,7 @@ class FirstContact extends React.Component<ViewProps> {
     const isLoggedIn = isLoggedInSelector(getStore().getState())
 
     if (isLoggedIn) {
-      navigateToWelcomeTracking()
+      navigateToMainTabs() //navigateToWelcomeTracking()
     }
   }
 

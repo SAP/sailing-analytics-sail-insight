@@ -7,9 +7,24 @@ import * as Screens from 'navigation/Screens'
 import Leaderboard from 'containers/session/Leaderboard/Leaderboard'
 import SetWind from 'containers/tracking/SetWind'
 import Tracking from 'containers/tracking/Tracking'
+import TrackingList from 'containers/tracking/TrackingList'
+import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 
 export default createStackNavigator(
   {
+    [Screens.
+    WelcomeTracking]: {
+      screen: WelcomeTracking,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    [Screens.TrackingList]: {
+      screen: TrackingList,
+      navigationOptions: {
+        header: null,
+      },
+    },
     [Screens.Tracking]: {
       screen: Tracking,
       navigationOptions: {
@@ -31,7 +46,7 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.Tracking,
+    initialRouteName: Screens.WelcomeTracking,
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },
