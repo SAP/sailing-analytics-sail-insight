@@ -3,20 +3,20 @@ import { __, compose, always, both, path, when, move, length,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
   propEq, addIndex, intersperse, gt, findIndex, unless } from 'ramda'
 import {
-  Component, fold, fromClass, nothing, nothingAsClass,
+  Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
   recomposeBranch as branch,
-  recomposeWithState as withState
+  recomposeWithState as withState,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
-import { Switch } from 'react-native'
+import { Switch, Alert } from 'react-native'
 import uuidv4 from 'uuid/v4'
 
 import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/Course'
 
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
-  updateMarkConfigurationName, updateMarkConfigurationShortName,
+  updateMarkConfigurationName, updateMarkConfigurationShortName, saveCourse,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
   updateMarkConfigurationLocation } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
@@ -32,6 +32,8 @@ import SwitchSelector from 'react-native-switch-selector'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
+import { NavigationEvents } from 'react-navigation'
+import Snackbar from 'react-native-snackbar'
 
 import EStyleSheets from 'react-native-extended-stylesheet'
 import styles from './styles'
@@ -438,17 +440,39 @@ const WaypointsList = Component(props => compose(
 
 const LoadingIndicator = text({}, 'Loading ...')
 
+const NavigationBackHandler = Component(props => compose(
+  fold(props),
+  contramap(merge({
+    onWillBlur: payload => {
+      if (payload.state) return
+
+      Alert.alert('Would you like to save the course?', '',
+        [ { text: 'Don\'t save'},
+          { text: 'Save', onPress: async () => {
+            await props.saveCourse()
+
+            Snackbar.show({
+              title: 'Course successfully saved',
+              duration: Snackbar.LENGTH_LONG
+            })
+          }} ])
+    }
+  })),
+  fromClass)(
+  NavigationEvents))
+
 export default Component((props: object) =>
   compose(
     fold(props),
     withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
-      toggleSameStartFinish, updateWaypointName, updateWaypointShortName,
+      toggleSameStartFinish, updateWaypointName, updateWaypointShortName, saveCourse,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation }),
     scrollView({ style: styles.mainContainer, vertical: true }),
     reduce(concat, nothing()))(
-    [nothingIfNotLoading(LoadingIndicator),
-     nothingIfLoading(WaypointsList),
-     nothingIfLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm)) ]))
+    [ NavigationBackHandler,
+      nothingIfNotLoading(LoadingIndicator),
+      nothingIfLoading(WaypointsList),
+      nothingIfLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm)) ]))

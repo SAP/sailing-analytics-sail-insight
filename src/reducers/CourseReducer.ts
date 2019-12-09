@@ -70,7 +70,7 @@ const markConfigurations = handleActions({
     state),
   [updateMarkConfigurationLocation as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id),
-      mergeDeepLeft({ positioning: { position: {
+      mergeDeepLeft({ effectivePositioning: { position: {
         latitude_deg: action.payload.value.latitude,
         longitude_deg: action.payload.value.longitude }}})),
     state),

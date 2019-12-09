@@ -1,4 +1,5 @@
-import { map, evolve, merge } from 'ramda'
+import { map, evolve, merge, curry, dissoc,
+  prop, assoc, mergeLeft, compose, reduce, keys } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import uuidv4 from 'uuid/v4'
@@ -7,7 +8,6 @@ import {
   loadCourse,
   SAVE_COURSE,
   SELECT_COURSE,
-  selectCourse,
   editCourse,
   updateCourseLoading,
 } from 'actions/courses'
@@ -15,7 +15,10 @@ import {
   selectRace
 } from 'actions/events'
 
-import { getCourseById } from 'selectors/course'
+const renameKeys = curry((keysMap, obj) =>
+  reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
+
+import { getCourseById, getEditedCourse } from 'selectors/course'
 
 import {
   getSelectedEventInfo,
@@ -85,15 +88,24 @@ function* selectCourseFlow({ payload }: any) {
 }
 
 function* saveCourseFlow() {
-  // yield call(api.createCourse, regattaName, raceColumnName, fleet, {
-  //   markConfigurations: map(markIdOrFreestyleProps, markConfigurations),
-  //   waypoints
-  // })
+  const { serverUrl, regattaName, raceColumnName, fleet } = yield select(getSelectedRaceInfo)
+  const api = dataApi(serverUrl)
+  const editedCourse = yield select(getEditedCourse)
 
-  //const courseID = getRaceId(regattaName, raceColumnName)
-  // yield put(loadCourse({ [courseID]: selectedCourseState }))
+  const course = evolve({
+    markConfigurations: map(compose(
+      dissoc('markId'),
+      mergeLeft({ storeToInventory: true }),
+      renameKeys({
+        effectiveProperties: 'freestyleProperties',
+        effectivePositioning: 'positioning'
+      })))
+  }, editedCourse)
 
-  //navigateBack()
+  yield call(api.createCourse, regattaName, raceColumnName, fleet, course)
+
+  const courseID = getRaceId(regattaName, raceColumnName)
+  yield put(loadCourse({ [courseID]: editedCourse }))
 }
 
 

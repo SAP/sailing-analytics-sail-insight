@@ -50,7 +50,7 @@ export const getMarkPropertiesByMarkConfiguration = markConfigurationId => creat
 export const getMarkPositionByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
   course => compose(
-    path(['positioning', 'position']),
+    path(['effectivePositioning', 'position']),
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations'))(
     course))
