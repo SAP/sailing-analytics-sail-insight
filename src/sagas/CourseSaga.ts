@@ -104,10 +104,13 @@ function* saveCourseFlow() {
 
   yield call(api.createCourse, regattaName, raceColumnName, fleet, course)
 
-  const courseID = getRaceId(regattaName, raceColumnName)
-  yield put(loadCourse({ [courseID]: editedCourse }))
-}
+  const raceId = getRaceId(regattaName, raceColumnName)
 
+  yield put(loadCourse({
+    raceId,
+    course: editedCourse
+  }))
+}
 
 export default function* watchCourses() {
   yield all([
