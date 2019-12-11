@@ -19,7 +19,11 @@ function* removeEntity({ payload }: any) {
 
   const api = dataApi(getServerUrlSetting())
 
-  yield api.removeMarkProperty(payload.id)
+  try {
+    yield api.removeMarkProperty(payload.id)
+  } catch (e) {
+    console.log('error deleting mark properties')
+  }
 }
 
 export default function* watchEvents() {

@@ -1,5 +1,5 @@
 import { __, compose, always, objOf,
-  prop, map, reduce, concat, merge } from 'ramda'
+  prop, map, reduce, concat, merge, defaultTo } from 'ramda'
 
 import {
   Component,
@@ -81,8 +81,8 @@ const MarkItem = Component((props: object) =>
     view({ style: styles.markContainer }),
     reduce(concat, nothing()))([
     markIconSmall,
-    text({ style: styles.markShortName }, `(${props.item.shortName})`),
-    text({ style: styles.markName }, props.item.name),
+    text({ style: styles.markShortName }, `(${defaultTo('', props.item.shortName)})`),
+    text({ style: styles.markName }, defaultTo('', props.item.name)),
     text({ style: styles.markEllipses }, '...')]))
 
 const List = Component((props: object) => compose(

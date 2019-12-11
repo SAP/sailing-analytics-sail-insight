@@ -1,6 +1,7 @@
 import {
   getApiServerUrl,
   getDataApiGenerator,
+  getSharedDataApiGenerator,
   getDataApiV2Generator,
   getRaceApiGenerator,
   HttpMethods,
@@ -44,6 +45,7 @@ import { get } from 'lodash'
 
 const apiEndpoints = (serverUrl: string) => {
   const getUrlV1 = getDataApiGenerator(serverUrl)
+  const getSharedUrlV1 = getSharedDataApiGenerator(serverUrl)
   const getUrlV2 = getDataApiV2Generator(serverUrl)
   const getRaceUrl = getRaceApiGenerator(serverUrl)
   return {
@@ -63,7 +65,7 @@ const apiEndpoints = (serverUrl: string) => {
     leaderboard: getUrlV1('/leaderboards/{0}'),
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
-    markProperties: getUrlV1('/markproperties'),
+    markProperties: getSharedUrlV1('/markproperties'),
     markProperty: getUrlV1('/markproperties/{0}'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
