@@ -22,7 +22,6 @@ function* removeEntity({ payload }: any) {
   try {
     yield api.removeMarkProperty(payload.id)
   } catch (e) {
-    console.log('error deleting mark properties')
   }
 }
 
