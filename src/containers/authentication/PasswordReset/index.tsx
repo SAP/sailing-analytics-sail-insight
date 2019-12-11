@@ -65,7 +65,7 @@ class PasswordReset extends TextInputForm<{
   public render() {
     const { error, isLoading } = this.state
     return (
-      <ImageBackground source={Images.defaults.background} style={{ width: '100%', height: '100%' }}>
+      <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
         <ScrollContentView style={styles.scrollContainer}>
           <View style={styles.textContainer}>
             <View style={[registration.topContainer(), styles.textContainer]}>

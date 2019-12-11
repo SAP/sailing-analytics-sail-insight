@@ -1,17 +1,14 @@
 
 export default {
   defaults: {
-    background: require('./img/defaults/SignUp_Background.png'),
+    map: require('./img/defaults/Map.png'),
+    map2: require('./img/defaults/Map2.png'),
     background_map: require('./img/tracking/TrackingMap_Background.png'),
     background_empty: require('./img/session/LooksEmpty.png'),
     app_logo: require('./img/defaults/AppLogo.png'),
     ws_logo: require('./img/defaults/WorldSailingLogo.png'),
     sap_logo: require('./img/defaults/SAP.png'),
     attention: require('./img/new_icons/attention.png'),
-  },
-  corporateIdentity: {
-    sapSailingLogo: require('./img/app_icon_sap_us_sailing.png'),
-    sapTagLine: require('./img/ci/logo-sap-tagline.png'),
   },
   header: {
     sailors: require('./img/header_sailors.png'), // require('./img/header_small.png'),
@@ -52,7 +49,6 @@ export default {
     boat: require('./img/icons/icon-boat.png'),
     location: require('./img/icons/icon-place.png'),
     coloredBoat: require('./img/colored_boat.png'),
-    coloredUser: require('./img/colored_user.png'),
     arrowUp: require('./img/icons/icon-arrow-up.png'),
     arrowDown: require('./img/icons/icon-arrow-down.png'),
     distance: require('./img/icons/icon-distance.png'),

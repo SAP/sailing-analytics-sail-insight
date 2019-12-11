@@ -13,7 +13,7 @@ export default EStyleSheets.create({
     justifyContent: 'center',
     flexGrow: 2,
     display: 'flex',
-    marginTop: 80,
+    paddingBottom: 130,
     alignItems: 'center',
   },
   app_logo: {
