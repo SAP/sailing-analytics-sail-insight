@@ -12,8 +12,8 @@ import {
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { ControlPointClass } from 'models/Course'
 
-import { getMarks } from 'selectors/mark'
-import { loadMarkInventory, deleteMark } from 'actions/inventory'
+import { getMarkProperties } from 'selectors/inventory'
+import { loadMarkProperties, deleteMarkProperties } from 'actions/inventory'
 
 import { Alert } from 'react-native'
 import styles from './styles'
@@ -21,11 +21,11 @@ import IconText from 'components/IconText'
 import Images from '@assets/Images'
 
 const mapStateToProps = (state, props) => ({
-  marks: getMarks(state)
+  markProperties: getMarkProperties(state)
 })
 
 const withLoadingMarks = lifeCycle({
-  componentDidMount() { this.props.loadMarkInventory() }
+  componentDidMount() { this.props.loadMarkProperties() }
 })
 
 const icon = compose(
@@ -57,7 +57,7 @@ const CreateNewSelector = Component((props: object) =>
     { ['class']: ControlPointClass.MarkPair, icon: gateIcon, label: 'Line/Gate' },
     { ['class']: ControlPointClass.Mark, icon: markIcon, label: 'Mark' }]))
 
-const MarkItem = Component((props: object) =>
+const MarkPropertiesItem = Component((props: object) =>
   compose(
     fold(props),
     touchableOpacity({
@@ -70,7 +70,7 @@ const MarkItem = Component((props: object) =>
             { text: 'Share mark'},
             { text: 'Delete mark', onPress: () => {
               Alert.alert('Deleting Mark', `Do you really want to irretrievably delete ${props.item.name}?`, [
-                { text: 'Yes', onPress: () => props.deleteMark(props.item) },
+                { text: 'Yes', onPress: () => props.deleteMarkProperties(props.item) },
                 { text: 'No' }
               ])
             }},
@@ -90,14 +90,14 @@ const List = Component((props: object) => compose(
   view({ style: styles.markListContainer }))(
   forwardingPropsFlatList.contramap((props: any) =>
     merge({
-      data: props.marks,
-      renderItem: MarkItem.fold
+      data: props.markProperties,
+      renderItem: MarkPropertiesItem.fold
     }, props))))
 
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { loadMarkInventory, deleteMark }),
+    connect(mapStateToProps, { loadMarkProperties, deleteMarkProperties }),
     withLoadingMarks,
     scrollView({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),

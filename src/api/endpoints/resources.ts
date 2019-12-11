@@ -36,7 +36,7 @@ import {
   competitorSchema,
   eventSchema,
   leaderboardSchema,
-  markSchema,
+  markPropertiesSchema,
   raceSchema,
   regattaSchema,
 } from 'api/schemas'
@@ -66,7 +66,7 @@ const apiEndpoints = (serverUrl: string) => {
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
     markProperties: getSharedUrlV1('/markproperties'),
-    markProperty: getUrlV1('/markproperties/{0}'),
+    markProperty: getSharedUrlV1('/markproperties/{0}'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
@@ -222,7 +222,7 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         endpoints.competitors({ pathParams: [competitorId], urlParams: { leaderboardName, secret } }),
         { dataSchema: competitorSchema },
     ),
-    requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markSchema] }),
+    requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markPropertiesSchema] }),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }), { dataSchema: markSchema }
     ),

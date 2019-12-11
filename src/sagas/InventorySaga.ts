@@ -1,20 +1,20 @@
 import { takeLatest, call, put, takeEvery } from 'redux-saga/effects'
-import { LOAD_MARK_INVENTORY } from 'actions/inventory'
+import { LOAD_MARK_PROPERTIES } from 'actions/inventory'
 
 import { receiveEntities } from 'actions/entities'
 import { getServerUrlSetting } from 'selectors/settings'
 
 import { dataApi } from 'api'
 
-function* loadInventory() {
+function* loadMarkProperties() {
   const api = dataApi(getServerUrlSetting())
-  const marks = yield call(api.requestMarkProperties)
+  const markProperties = yield call(api.requestMarkProperties)
 
-  yield put(receiveEntities(marks))
+  yield put(receiveEntities(markProperties))
 }
 
 function* removeEntity({ payload }: any) {
-  if (payload.entityType !== 'mark')
+  if (payload.entityType !== 'markProperties')
     return
 
   const api = dataApi(getServerUrlSetting())
@@ -27,6 +27,6 @@ function* removeEntity({ payload }: any) {
 }
 
 export default function* watchEvents() {
-  yield takeLatest(LOAD_MARK_INVENTORY, loadInventory)
+  yield takeLatest(LOAD_MARK_PROPERTIES, loadMarkProperties)
   yield takeEvery('REMOVE_ENTITY', removeEntity)
 }

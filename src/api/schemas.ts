@@ -6,6 +6,7 @@ export const LEADERBOARD_ENTITY_NAME = 'leaderboard'
 export const COMPETITOR_ENTITY_NAME = 'competitor'
 export const BOAT_ENTITY_NAME = 'boat'
 export const MARK_ENTITY_NAME = 'mark'
+export const MARK_PROPERTIES_ENTITY_NAME = 'markProperties'
 export const EVENT_ENTITY_NAME = 'event'
 export const RACE_ENTITY_NAME = 'race'
 export const REGATTA_ENTITY_NAME = 'regatta'
@@ -48,6 +49,11 @@ export const competitorSchema = new schema.Entity(
 
 export const markSchema = new schema.Entity(
   MARK_ENTITY_NAME,
+  {},
+  { idAttribute: DEFAULT_ENTITY_ID_KEY })
+
+export const markPropertiesSchema = new schema.Entity(
+  MARK_PROPERTIES_ENTITY_NAME,
   {},
   { idAttribute: DEFAULT_ENTITY_ID_KEY },
 )
