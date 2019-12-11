@@ -30,7 +30,7 @@ export default EStyleSheets.create({
     fontSize: 20,
   },
   loginButton: {
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$primaryButtonColor',
     marginTop: 20,
     alignSelf: 'stretch',
     height: 56,

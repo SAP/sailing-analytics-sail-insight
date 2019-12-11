@@ -82,7 +82,7 @@ const formDatePicker = Component((props: any) => compose(
         borderWidth: 0,
       },
       btnTextConfirm: {
-        color: '#FF6C52',
+        color: '$primaryButtonColor',
       },
     },
     confirmBtnText: I18n.t('caption_ok'),

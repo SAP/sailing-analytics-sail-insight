@@ -1,5 +1,6 @@
-import { map, evolve, merge, curry, dissoc,
-  prop, assoc, mergeLeft, compose, reduce, keys } from 'ramda'
+import { map, evolve, merge, curry, dissoc, not,
+  prop, assoc, mergeLeft, compose, reduce, keys,
+  find, eqProps, propEq, when, tap, defaultTo } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import uuidv4 from 'uuid/v4'
@@ -87,25 +88,41 @@ function* selectCourseFlow({ payload }: any) {
   yield put(updateCourseLoading(false))
 }
 
+const hasMarkConfigurationChangedAcrossCourses = curry((fromCourse, toCourse, configuration) => {
+  const getById = id => compose(
+    defaultTo({}),
+    find(propEq('id', id)),
+    defaultTo([]),
+    prop('markConfigurations'))
+  const getByConfigurationId = getById(configuration.id)
+
+  const from = getByConfigurationId(fromCourse)
+  const to = getByConfigurationId(toCourse)
+
+  return !eqProps('effectiveProperties', from, to)
+})
+
 function* saveCourseFlow() {
   const { serverUrl, regattaName, raceColumnName, fleet } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
+  const raceId = getRaceId(regattaName, raceColumnName)
+
   const editedCourse = yield select(getEditedCourse)
+  const existingCourse = yield select(getCourseById(raceId))
+  const hasMarkConfigurationChange = hasMarkConfigurationChangedAcrossCourses(existingCourse, editedCourse)
 
   const course = evolve({
     waypoints: map(dissoc('id')),
     markConfigurations: map(compose(
-      dissoc('markId'),
       mergeLeft({ storeToInventory: true }),
-      renameKeys({
-        effectiveProperties: 'freestyleProperties',
-        effectivePositioning: 'positioning'
-      })))
+      renameKeys({ effectivePositioning: 'positioning' }),
+      when(hasMarkConfigurationChange, compose(
+        dissoc('markId'),
+        renameKeys({ effectiveProperties: 'freestyleProperties' })
+      ))))
   }, editedCourse)
 
   yield call(api.createCourse, regattaName, raceColumnName, fleet, course)
-
-  const raceId = getRaceId(regattaName, raceColumnName)
 
   yield put(loadCourse({
     raceId,

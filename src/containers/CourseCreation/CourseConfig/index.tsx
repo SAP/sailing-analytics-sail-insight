@@ -81,8 +81,10 @@ const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPosit
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
 const nothingWhenNoMarkLocation = branch(compose(isNil, prop('selectedMarkLocation')), nothingAsClass)
+const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editingMarkName')), nothingAsClass)
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
+const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -96,6 +98,7 @@ const roundingRightIcon = icon({ source: Images.courseConfig.roundingDirectionRi
 const gatePassingIcon = icon({ source: Images.courseConfig.gatePassing, iconStyle: { width: 35, height: 35 } })
 const linePassingIcon = icon({ source: Images.courseConfig.linePassing, iconStyle: { width: 30, height: 30 } })
 const trackerIcon = icon({ source: Images.courseConfig.tracker, iconStyle: { width: 11, height: 11 } })
+const nameEditIcon = icon({ source: Images.actions.penEdit, iconStyle: { width: 14, height: 14 } })
 const locationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 11, height: 11 } })
 const bigLocationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 25, height: 25 } })
 const arrowUp = ({ color = $LightDarkBlue }: any = {}) => icon({
@@ -332,10 +335,24 @@ const markNamesInputData = props => [
       value
     }) }]
 
+const MarkNameEditButton = Component(props => compose(
+  fold(props),
+  touchableOpacity({
+    onPress: () => props.setEditingMarkName(!props.editingMarkName),
+    style: styles.markNameEditButton}))(
+  nameEditIcon))
+
+const MarkPropertiesLink = Component(props => compose(
+  fold(props),
+  view({ style: styles.markNameEditContainer }),
+  concat(__, MarkNameEditButton),
+  text({ style: styles.markPropertiesLinkText, flex: 1, alignSelf: 'stretch' }))(
+  `${props.selectedMarkProperties.shortName} ${props.selectedMarkProperties.name}`))
+
 const ShortAndLongName = Component((props: object) =>
   compose(
     fold(props),
-    view({ style: { flexDirection: 'row' }, key: props.selectedWaypoint.id }),
+    view({ style: { flexDirection: 'row' } }),
     reduce(concat, nothing()),
     mapIndexed((data, index) => compose(
       view({ style: index === 1 ? { marginLeft: 30 } : { flex: 1, flexBasis: 1 }}),
@@ -394,7 +411,8 @@ const WaypointEditForm = Component((props: any) =>
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
-      nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) }))),
+      nothingWhenEmptyWaypoint(MarkPropertiesLink),
+      nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
       //nothingWhenEmptyWaypoint(Appearance),
@@ -464,6 +482,7 @@ const NavigationBackHandler = Component(props => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
+    withEditingMarkName,
     withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,

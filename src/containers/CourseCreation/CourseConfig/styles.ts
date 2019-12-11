@@ -63,7 +63,7 @@ export default EStyleSheets.create({
   addButton: {
     width: 45,
     height: '$itemHeight',
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$primaryButtonColor',
     justifyContent: 'center',
   },
 
@@ -268,6 +268,33 @@ export default EStyleSheets.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 10,
+  },
+
+  markNameEditContainer: {
+    flexDirection: 'row',
+    flex: 1
+  },
+
+  markPropertiesLinkText: {
+    backgroundColor: 'white',
+    color: 'black',
+    fontSize: 14,
+    paddingLeft: 10,
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingRight: 10,
+    borderRadius: 4,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    flex: 1,
+    flexBasis: 1
+  },
+
+  markNameEditButton: {
+    backgroundColor: $DarkBlue,
+    padding: 15,
+    borderTopRightRadius: 4,
+    borderBottomRightRadius: 4
   },
 
   inventoryItem: {

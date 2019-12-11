@@ -113,9 +113,7 @@ export default createStackNavigator(
       screen: CourseConfig.fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
-          <HeaderTitle
-            firstLine='Race course'
-          />
+          <HeaderTitle firstLine='Race course'/>
         ),
       }),
     },

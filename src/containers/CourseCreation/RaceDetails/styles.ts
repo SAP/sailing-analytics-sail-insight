@@ -54,7 +54,7 @@ export default EStyleSheets.create({
   },
 
   raceTimeContainerWithTime: {
-    backgroundColor: '#FF6C52'
+    backgroundColor: '$primaryButtonColor'
   },
 
   raceTimeText: {

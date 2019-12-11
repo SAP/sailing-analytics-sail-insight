@@ -48,8 +48,7 @@ class FirstContact extends React.Component<ViewProps> {
             <TextButton
               style={[container.largeHorizontalMargin, styles.bigButtonTransparent]}
               textStyle={styles.bigButtonText}
-              onPress={navigateToQRScanner}
-            >
+              onPress={navigateToQRScanner}>
               {I18n.t('caption_qr_scanner').toUpperCase()}
             </TextButton>
             <Text onPress={navigateToUserRegistration} style={styles.loginText}>

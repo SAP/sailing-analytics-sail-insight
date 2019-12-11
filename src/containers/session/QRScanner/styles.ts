@@ -10,7 +10,7 @@ export default {
     height: Dimensions.get('window').width * 0.8,
     width: Dimensions.get('window').width * 0.8,
     borderWidth: 4,
-    borderColor: '#FF6C52',
+    borderColor: '$primaryButtonColor',
     backgroundColor: 'transparent',
   },
   bottomInfoField: {
@@ -27,7 +27,7 @@ export default {
     paddingRight: 4,
     paddingTop: 8,
     paddingBottom: 8,
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$primaryButtonColor',
     borderRadius: 3,
     marginLeft: 'auto',
     marginRight: 'auto',
