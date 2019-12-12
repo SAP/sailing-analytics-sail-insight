@@ -1,6 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet' 
 
-import { $DarkBlue, $MediumBlue, $Orange  } from 'styles/colors'
+import { $DarkBlue, $LightDarkBlue, $Orange } from 'styles/colors'
 import { white, withDefaultBoldFont, withDefaultFont } from 'styles/compositions/text'
 
 const roundElementContainer = {
@@ -24,6 +24,7 @@ export default EStyleSheets.create({
   $itemHeight: 80,
 
   mainContainer: {
+    flex: 1,
     flexDirection: 'column',
     backgroundColor: '#476987',
   },
@@ -62,7 +63,7 @@ export default EStyleSheets.create({
   addButton: {
     width: 45,
     height: '$itemHeight',
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$primaryButtonColor',
     justifyContent: 'center',
   },
 
@@ -77,7 +78,7 @@ export default EStyleSheets.create({
   },
 
   editContainer: {
-    // paddingTop: 15,
+    paddingTop: 15,
   },
 
   indentedContainer: { ...withPadding },
@@ -85,7 +86,7 @@ export default EStyleSheets.create({
   gateEditContainer: {
     ...withPadding,
     paddingTop: 15,
-    backgroundColor: $MediumBlue,
+    backgroundColor: $LightDarkBlue,
   },
 
   passingInstruction: roundElementContainer,
@@ -237,7 +238,6 @@ export default EStyleSheets.create({
   },
 
   sameStartFinishContainer: {
-    paddingTop: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
@@ -249,7 +249,6 @@ export default EStyleSheets.create({
   },
 
   createNewContainer: {
-    marginTop: 20,
     paddingTop: 10,
     backgroundColor: $DarkBlue,
   },
@@ -269,31 +268,53 @@ export default EStyleSheets.create({
     marginBottom: 10,
   },
 
-  inventoryItem: {
+  markNameEditContainer: {
+    flexDirection: 'row',
+    flex: 1
+  },
+
+  markPropertiesLinkTextContainer: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    paddingRight: 10,
+    paddingLeft: 10,
+    paddingTop: 15,
+    paddingBottom: 15,
+    borderRadius: 4,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0
+  },
+
+  markPropertiesListItem: {
+    height: 48,
     ...withDefaultFont,
     backgroundColor: 'white',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderBottomColor: '#C5C5C5',
-    height: 50,
     paddingLeft: 15,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
 
-  inventoryText: {
+  markPropertiesListContainer: {
+    maxHeight: 240
+  },
+
+  markPropertiesListItemText: {
+    color: 'black'
+  },
+
+  markPropertiesLinkText: {
     color: 'black',
+    fontSize: 14,
+    flex: 1,
+    flexBasis: 1
   },
 
-  inventoryList: {
-    marginTop: 15
-  },
-
-  saveCourseButtonContainer: {
-    backgroundColor: '#FF6C52'
-  },
-
-  saveCourseButtonLabel: {
-    ...withDefaultBoldFont,
-    ...white,
-    fontSize: 16
+  markNameEditButton: {
+    backgroundColor: $DarkBlue,
+    padding: 15,
+    borderTopRightRadius: 4,
+    borderBottomRightRadius: 4
   }
 })

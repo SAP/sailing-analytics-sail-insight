@@ -27,7 +27,7 @@ import { overlayPicker, FramedNumber } from '../../session/common'
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
-import { getCourseStateById } from 'selectors/course'
+import { getCourseById } from 'selectors/course'
 import { getRaceTime } from 'selectors/event'
 import { navigateToRaceCourseLayout } from 'navigation'
 
@@ -50,7 +50,7 @@ const mapStateToProps = (state: any, props: any) => {
     map((name: string) => ({
       name,
       regattaName,
-      courseDefined: !!getCourseStateById(`${session.regattaName} - ${name}`)(state),
+      courseDefined: !!getCourseById(`${session.regattaName} - ${name}`)(state),
       raceTime: getRaceTime(leaderboardName, name)(state)
     })),
     getRegattaPlannedRacesN(__, state),
@@ -77,13 +77,13 @@ const raceNumberSelector = Component((props: any) =>
 
 const onSeeCourse = (props: any) => {
   const { name } = props.item
-  props.selectCourse({ raceName: name, newCourse: false })
+  props.selectCourse({ race: name })
   navigateToRaceCourseLayout()
 }
 
 const onNewCourse = (props: any) => {
   const { name } = props.item
-  props.selectCourse({ raceName: name, newCourse: true })
+  props.selectCourse({ race: name })
   navigateToRaceCourseLayout()
 }
 

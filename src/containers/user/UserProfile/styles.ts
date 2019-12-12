@@ -43,7 +43,7 @@ export default EStyleSheets.create({
     paddingRight: '$largeSpacing',
   },
   saveButton: {
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$primaryButtonColor',
     marginTop: 20,
     alignSelf: 'stretch',
     height: 56,
@@ -58,7 +58,7 @@ export default EStyleSheets.create({
     marginTop: '$smallSpacing',
     marginLeft: 'auto',
     marginRight: 'auto',
-    color: '#FF6C52',
+    color: '$primaryButtonColor',
     fontSize: 14,
     fontFamily: 'SFProDisplay-Medium',
   },

@@ -1,29 +1,41 @@
-import { when, isEmpty, always, prop, compose } from 'ramda'
-import { takeLatest, all, select, call, put, takeEvery } from 'redux-saga/effects'
-import { LOAD_MARK_INVENTORY } from 'actions/inventory'
+import { takeLatest, call, put, takeEvery, select, all } from 'redux-saga/effects'
+import { LOAD_MARK_PROPERTIES } from 'actions/inventory'
 
-import { receiveEntities } from 'actions/entities'
+import { receiveEntities, removeEntity as removeEntityAction, removeEntities } from 'actions/entities'
 import { getServerUrlSetting } from 'selectors/settings'
+import { getMarkProperties } from 'selectors/inventory'
 
 import { dataApi } from 'api'
 
-function* loadInventory() {
+function* loadMarkProperties() {
   const api = dataApi(getServerUrlSetting())
-  const marks = yield call(api.requestMarkProperties)
+  const markProperties = yield call(api.requestMarkProperties)
 
-  yield put(receiveEntities(marks))
+  yield put(removeEntities({ type: 'markProperties' }))
+  yield put(receiveEntities(markProperties))
+}
+
+function* removeAllMarkProperties() {
+  const markProperties = yield select(getMarkProperties)
+
+  yield all(markProperties.map(markProperties =>
+    put(removeEntityAction({ entityType: 'markProperties', id: markProperties.id }))))
 }
 
 function* removeEntity({ payload }: any) {
-  if (payload.entityType !== 'mark')
+  if (payload.entityType !== 'markProperties')
     return
 
   const api = dataApi(getServerUrlSetting())
 
-  yield api.removeMarkProperty(payload.id)
+  try {
+    yield api.removeMarkProperty(payload.id)
+  } catch (e) {
+  }
 }
 
 export default function* watchEvents() {
-  yield takeLatest(LOAD_MARK_INVENTORY, loadInventory)
+  yield takeLatest(LOAD_MARK_PROPERTIES, loadMarkProperties)
   yield takeEvery('REMOVE_ENTITY', removeEntity)
+  yield takeLatest('REMOVE_ALL_MARK_PROPERTIES', removeAllMarkProperties)
 }

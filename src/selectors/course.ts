@@ -1,202 +1,79 @@
-import { concat, find, mapValues, values } from 'lodash'
-import { append, compose, contains, flip, gt, length, map, pick, prepend, prop, reject, slice, unless } from 'ramda'
+import { prop, propEq, find, compose, path, defaultTo,
+  equals, identity, head, when, isNil, always, last } from 'ramda'
 import { createSelector } from 'reselect'
 
 import {
-  ControlPoint,
-  ControlPointClass,
-  ControlPointState,
   CourseState,
   CourseStateMap,
-  DefaultMark,
-  DefaultMarkIdMap,
-  GateSide,
-  MarkMap,
-  MarkPairMap,
-  SelectedCourseState,
-  WaypointState,
 } from 'models/Course'
 
-export const getCourseLoading = (state: any): boolean =>
-  state.courses.courseLoading
+export const getCourseLoading = (state: any): boolean => state.courses.courseLoading
+export const getCourses = (state: any): CourseStateMap => state.courses.all
 
-const getCourses = (state: any): CourseStateMap => state.courses.allCourses
-
-export const getCourseStateById = (courseId: string) => createSelector(
+export const getCourseById = (courseId: string) => createSelector(
   getCourses,
-  courses => courses[courseId] as CourseState | undefined
-)
+  courses => courses[courseId] as CourseState | undefined)
 
-const getCourseById = (courseId: string) => createSelector(
-  getCourseStateById(courseId),
-  getMarks,
-  populateCourseWithMarks,
-)
+export const getSelectedCourse = createSelector(
+  getCourses,
+  (state: any) => state.courses.selectedCourse,
+  (courses, id) => courses[id])
 
-// Gets currently the "local ids" of marks
-// TODO: Should be made to get all of the server ids of marks
-const getMarkIds = (state: any): string[] => Object.keys(state.courses.marks)
-
-export const getMarks = (state: any): MarkMap => state.courses.marks
-
-const getMarkPairState = (state: any): MarkPairMap => state.courses.markPairs
-const getMarkPairs = createSelector(
-  getMarks,
-  getMarkPairState,
-  (marks, markPairState) => mapValues(markPairState, populateControlPointWithMarkData(marks))
-)
-
-export const getSelectedCourseState = (state: any): SelectedCourseState | undefined =>
-  state.courses.selectedCourse
-
-export const getSelectedGateSide = (state: any): GateSide =>
-  state.courses.selectedGateSide
-
+export const getEditedCourse = (state: any) => state.courses.editedCourse
 export const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
-const getDefaultMarkIds = (state: any): DefaultMarkIdMap => state.courses.defaultMarkIds
-
-const getSelectedCourseWaypointState = createSelector(
-  getSelectedCourseState,
-  selectedCourseState => selectedCourseState && selectedCourseState.waypoints,
-)
-
-// The first and last array elements should be ['S', 'F']
-export const getCourseShortNameLabel = (courseId: string) => createSelector(
-  getCourseById(courseId),
-  course => course && compose(
-    unless(
-      compose(gt(2), length),
-      compose(
-        prepend('S'),
-        append('F'),
-        slice(1, -1),
-      ),
-    ),
-    map((waypoint: any) => waypoint.controlPoint.shortName || '?')
-  )(course.waypoints)
-)
-
-export const markByIdPresent = (markId: string) =>
-  createSelector(
-    getMarkIds,
-    (markIds: string[]) => markIds.includes(markId),
-  )
-
-const getCompleteMarkInventory = createSelector(
-  getMarks,
-  getMarkPairs,
-  (marks, markPairs) => concat(values(marks), values(markPairs)) as ControlPoint[]
-)
-
-const sameStartFinishOnFilteredDefaultMarks = [
-  DefaultMark.StartPin,
-  DefaultMark.StartBoat,
-  DefaultMark.FinishPin,
-  DefaultMark.FinishBoat,
-]
-
-const sameStartFinishOffFilteredDefaultMarks = [
-  DefaultMark.StartFinishPin,
-  DefaultMark.StartFinishBoat,
-]
-
-export const getMarkInventory = createSelector(
-  getCompleteMarkInventory,
-  getSameStartFinish,
-  getDefaultMarkIds,
-  (markInventory, sameStartFinish, defaultMarkIds) => {
-    return reject(compose(
-      flip(contains)(compose(
-        values,
-        pick(sameStartFinish
-          ? sameStartFinishOnFilteredDefaultMarks
-          : sameStartFinishOffFilteredDefaultMarks
-        )
-      )(defaultMarkIds)),
-      prop('id'),
-    ))(markInventory)
-  },
-)
-
-const populateControlPointWithMarkData = (marks: MarkMap) => (
-  controlPoint: ControlPointState,
-) => ({
-  ...controlPoint,
-  ...(controlPoint.class === ControlPointClass.Mark
-    ? marks[controlPoint.id] || {}
-    : {
-        leftMark: controlPoint.leftMark
-          ? marks[controlPoint.leftMark]
-          : undefined,
-        rightMark: controlPoint.rightMark
-          ? marks[controlPoint.rightMark]
-          : undefined,
-      }),
-})
-
-const populateWaypointWithMarkData = (marks: MarkMap) => (
-  waypointState: Partial<WaypointState>,
-) => ({
-  ...waypointState,
-  controlPoint:
-    waypointState.controlPoint &&
-    populateControlPointWithMarkData(marks)(waypointState.controlPoint),
-})
-
-const populateCourseWithMarks = (
-  courseState: SelectedCourseState | undefined,
-  marks: MarkMap,
-) =>
-  courseState && {
-    ...courseState,
-    waypoints: courseState.waypoints.map(populateWaypointWithMarkData(marks))
-  }
-
-export const getSelectedCourseWithMarks = createSelector(
-  getSelectedCourseState,
-  getMarks,
-  populateCourseWithMarks,
-)
-
-export const getSelectedWaypointState = createSelector(
-  getSelectedCourseWaypointState,
-  (state: any): string | undefined => state.courses.selectedWaypoint,
-  (selectedCourseWaypointState, selectedWaypoint) =>
-    selectedWaypoint &&
-    find(selectedCourseWaypointState || [], { id: selectedWaypoint }),
-)
 
 export const getSelectedWaypoint = createSelector(
-  getSelectedWaypointState,
-  getMarks,
-  (selectedWaypointState, marks) =>
-    selectedWaypointState &&
-    populateWaypointWithMarkData(marks)(selectedWaypointState),
-)
+  getEditedCourse,
+  (state: any): string | undefined => state.courses.selectedWaypoint,
+  (selectedCourse, waypointId) => find(propEq('id', waypointId), selectedCourse.waypoints))
 
-const getSelectedGateSideMarkFromWaypoint = (selectedGateSide: GateSide) => (
-  // To add a type for this it should be compatible with both Partial<Waypoint>
-  // and the return type of populateWaypointWithMarkData which returns
-  // something similar to Partial<Waypoint> except with possible undefined values
-  // for the mark[s] in the control point
-  waypoint: any,
-) => {
-  const controlPoint = waypoint.controlPoint
-  if (!controlPoint) return undefined
-
-  if (controlPoint.class === ControlPointClass.Mark) {
-    return controlPoint
-  }
-
-  return selectedGateSide === GateSide.LEFT
-    ? controlPoint.leftMark
-    : controlPoint.rightMark
-}
-
-export const getSelectedMark = createSelector(
+export const getSelectedMarkConfiguration = createSelector(
   getSelectedWaypoint,
-  getSelectedGateSide,
-  (selectedWaypoint, selectedGateSide) =>
-    selectedWaypoint &&
-    getSelectedGateSideMarkFromWaypoint(selectedGateSide)(selectedWaypoint),
-)
+  state => state.courses.selectedMarkConfiguration,
+  (selectedWaypoint, selectedMarkConfiguration) =>
+  selectedWaypoint && compose(
+    when(isNil, always(head(selectedWaypoint.markConfigurationIds || []))),
+    find(equals(selectedMarkConfiguration)),
+    defaultTo([]),
+    prop('markConfigurationIds'))(
+    selectedWaypoint))
+
+export const getMarkPropertiesByMarkConfiguration = markConfigurationId => createSelector(
+  getEditedCourse,
+  course => compose(
+    defaultTo({}),
+    prop('effectiveProperties'),
+    find(propEq('id', markConfigurationId)),
+    prop('markConfigurations'))(
+    course))
+
+export const getMarkPositionByMarkConfiguration = markConfigurationId => createSelector(
+  getEditedCourse,
+  course => compose(
+    path(['effectivePositioning', 'position']),
+    find(propEq('id', markConfigurationId)),
+    prop('markConfigurations'))(
+    course))
+
+export const getSelectedMarkProperties = createSelector(
+  getSelectedMarkConfiguration,
+  identity,
+  (markConfigurationId, state) => getMarkPropertiesByMarkConfiguration(markConfigurationId)(state))
+
+export const getSelectedMarkPosition = createSelector(
+  getSelectedMarkConfiguration,
+  identity,
+  (markConfigurationId, state) => getMarkPositionByMarkConfiguration(markConfigurationId)(state))
+
+export const waypointLabel = (waypoint: any) => compose(
+  course => {
+    const isStartOrFinish = head(course.waypoints).id === waypoint.id || last(course.waypoints).id === waypoint.id
+
+    return isStartOrFinish ? waypoint.controlPointName : waypoint.controlPointShortName || compose(
+      defaultTo('\u2022'),
+      path(['effectiveProperties', 'shortName']),
+      find(propEq('id', compose(head, defaultTo([]), prop('markConfigurationIds'))(waypoint))),
+      prop('markConfigurations'))(
+      course)
+  },
+  getEditedCourse)

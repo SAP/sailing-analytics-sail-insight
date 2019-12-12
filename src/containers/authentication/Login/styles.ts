@@ -31,7 +31,7 @@ export default EStyleSheets.create({
     marginRight: '$smallSpacing',
   },
   loginButton: {
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$primaryButtonColor',
     marginTop: 20,
     alignSelf: 'stretch',
     height: 56,

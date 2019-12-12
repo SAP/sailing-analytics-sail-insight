@@ -23,6 +23,7 @@ export default {
     settings: require('./img/icons/icon-settings.png'),
     recordColored: require('./img/icons/icon-start.png'), // TODO: replace
     pen: require('./img/icons/icon-edit.png'),
+    penEdit: require('./img/icons/icon-pen-edit.png'),
     visibility: require('./img/icons/icon-visibility.png'),
     visibilityOff: require('./img/icons/icon-visibility-off.png'),
     help: require('./img/icons/icon-help.png'),

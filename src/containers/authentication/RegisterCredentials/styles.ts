@@ -55,7 +55,7 @@ export default EStyleSheets.create({
     paddingRight: '$largeSpacing',
   },
   registrationButton: {
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$primaryButtonColor',
     marginTop: 20,
     alignSelf: 'stretch',
     height: 56,

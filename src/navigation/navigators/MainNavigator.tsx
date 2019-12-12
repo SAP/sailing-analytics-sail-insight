@@ -114,8 +114,9 @@ export default createStackNavigator(
       screen: Geolocation
         .contramap((props: object) => ({
           ...props,
-          formSectionName: props.navigation.state.params.data.formSectionName,
-          currentPosition: props.navigation.state.params.data.currentPosition }))
+          selectedMarkConfiguration: props.navigation.state.params.data.selectedMarkConfiguration,
+          currentPosition: props.navigation.state.params.data.currentPosition,
+          markPosition: props.navigation.state.params.data.markPosition }))
         .fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
@@ -126,9 +127,7 @@ export default createStackNavigator(
       }),
     },
     [Screens.CourseTrackerBinding]: {
-      screen: TrackerBinding
-        .contramap((props: object) => ({ ...props, formSectionName: props.navigation.state.params.data.formSectionName }))
-        .fold,
+      screen: TrackerBinding.fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
@@ -160,7 +159,7 @@ export default createStackNavigator(
     },
   },
   {
-    initialRouteName: Screens.FirstContact, // if user is logged in it redirect to Screens.MainTabs
+    initialRouteName: Screens.MainTabs, // if user is logged in it redirect to Screens.MainTabs
     ...commons.stackNavigatorConfig,
     navigationOptions: () => commons.headerNavigationOptions,
   },

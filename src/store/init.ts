@@ -25,10 +25,10 @@ const persistConfig = {
   version: 1,
   debounce: 1000,
   timeout: 10000,
-  blacklist: ['network', 'form', 'courses', 'markInventory'],
+  blacklist: ['network', 'form', 'courses'],
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
-  migrate: createMigrate(migrations, { debug: true })
+  migrate: createMigrate(migrations)
 }
 
 const sagaMiddleware = createSagaMiddleware()

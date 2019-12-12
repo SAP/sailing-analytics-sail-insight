@@ -10,11 +10,6 @@ export enum DefaultMark {
   LeewardMark = 'LEEWARD_MARK',
 }
 
-export enum GateSide {
-  LEFT = 'LEFT',
-  RIGHT = 'RIGHT',
-}
-
 export type MarkID = string
 
 export enum ControlPointClass {

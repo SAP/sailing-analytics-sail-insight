@@ -1,6 +1,7 @@
 import {
   getApiServerUrl,
   getDataApiGenerator,
+  getSharedDataApiGenerator,
   getDataApiV2Generator,
   getRaceApiGenerator,
   HttpMethods,
@@ -35,7 +36,7 @@ import {
   competitorSchema,
   eventSchema,
   leaderboardSchema,
-  markSchema,
+  markPropertiesSchema,
   raceSchema,
   regattaSchema,
 } from 'api/schemas'
@@ -44,6 +45,7 @@ import { get } from 'lodash'
 
 const apiEndpoints = (serverUrl: string) => {
   const getUrlV1 = getDataApiGenerator(serverUrl)
+  const getSharedUrlV1 = getSharedDataApiGenerator(serverUrl)
   const getUrlV2 = getDataApiV2Generator(serverUrl)
   const getRaceUrl = getRaceApiGenerator(serverUrl)
   return {
@@ -63,8 +65,8 @@ const apiEndpoints = (serverUrl: string) => {
     leaderboard: getUrlV1('/leaderboards/{0}'),
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
-    markProperties: getUrlV1('/markproperties'),
-    markProperty: getUrlV1('/markproperties/{0}'),
+    markProperties: getSharedUrlV1('/markproperties'),
+    markProperty: getSharedUrlV1('/markproperties/{0}'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
@@ -220,7 +222,7 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         endpoints.competitors({ pathParams: [competitorId], urlParams: { leaderboardName, secret } }),
         { dataSchema: competitorSchema },
     ),
-    requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markSchema] }),
+    requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markPropertiesSchema] }),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }), { dataSchema: markSchema }
     ),

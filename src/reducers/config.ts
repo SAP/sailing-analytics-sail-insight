@@ -1,10 +1,6 @@
 import { AutoCourseUpdateState } from 'helpers/types'
 import {
   CourseStateMap,
-  DefaultMarkIdMap,
-  GateSide,
-  MarkMap,
-  MarkPairMap,
   SelectedCourseState,
 } from 'models/Course'
 
@@ -91,14 +87,10 @@ export interface CheckInState {
 }
 
 export interface CourseReducerState {
-  allCourses: CourseStateMap // Should be Map<RaceID, Course>
-  marks: MarkMap
-  markPairs: MarkPairMap
+  courses: CourseStateMap // Should be Map<RaceID, Course>
   courseLoading: boolean
   selectedCourse?: SelectedCourseState
   // ID of the waypoint that is selected for editing
   selectedWaypoint?: string
   sameStartFinish: boolean
-  selectedGateSide?: GateSide
-  defaultMarkIds: DefaultMarkIdMap
 }
