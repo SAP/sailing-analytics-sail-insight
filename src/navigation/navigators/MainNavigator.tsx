@@ -16,7 +16,7 @@ import ImageButton from 'components/ImageButton'
 import WebView from 'components/WebView'
 
 import Geolocation from 'containers/CourseCreation/Geolocation'
-import CourseConfig from 'containers/CourseCreation/CourseConfig'
+import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import RaceSetup from 'containers/CourseCreation/RaceSetUp'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
@@ -33,8 +33,11 @@ import MainTabNavigator from './MainTabNavigator'
 import FirstContact from 'containers/user/FirstContact'
 
 
-const teamDetailsHeader = connect((state: any) =>
-  ({ text: getFormTeamName(state) }))((props: any) => <HeaderTitle firstLine={props.text}/>)
+const teamDetailsHeader = connect(
+  (state: any) => ({ text: getFormTeamName(state) })
+)(
+  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')}/>
+)
 
 const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.paramTeamName') && (
   <ImageButton
@@ -72,31 +75,23 @@ export default createStackNavigator(
     },
     [Screens.EventCreation]: {
       screen: EventCreation.fold,
-      navigationOptions: () => ({
-        header: null,
-      }),
+      navigationOptions: {
+        title: I18n.t('title_event_creation'),
+      },
     },
     [Screens.SessionDetail]: {
       screen: SessionDetail.fold,
-      navigationOptions: ({ navigation: navigationProps }: any) => ({
-        headerTitle: (
-          <HeaderTitle
-            firstLine={navigationProps.state.params.heading}
-            secondLine={navigationProps.state.params.subHeading}
-          />
-        ),
-      }),
+      navigationOptions: {
+        title: I18n.t('title_event_details'),
+        headerBackTitle: ' ', // have to be with white space, otherwise fallback to title 'Back'
+      },
     },
     [Screens.RaceDetails]: {
       screen: RaceDetails.fold,
-      navigationOptions: ({ navigation: navigationProps }: any) => ({
-        headerTitle: (
-          <HeaderTitle
-            firstLine={navigationProps.state.params.heading}
-            secondLine={navigationProps.state.params.subHeading}
-          />
-        ),
-      }),
+      navigationOptions: {
+        title: I18n.t('title_race_details'),
+        headerBackTitle: ' ', // have to be with white space, otherwise fallback to title 'Back'
+      },
     },
     [Screens.RaceSetup]: {
       screen: RaceSetup.fold,
@@ -109,13 +104,11 @@ export default createStackNavigator(
         ),
       }),
     },
-    [Screens.RaceCourseConfig]: {
-      screen: CourseConfig.fold,
-      navigationOptions: ({ navigation: navigationProps }: any) => ({
-        headerTitle: (
-          <HeaderTitle firstLine='Race course'/>
-        ),
-      }),
+    [Screens.RaceCourseLayout]: {
+      screen: RaceCourseLayout.fold,
+      navigationOptions: {
+        title: I18n.t('title_race_course'),
+      },
     },
     [Screens.CourseGeolocation]: {
       screen: Geolocation

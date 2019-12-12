@@ -6,7 +6,7 @@ export default EStyleSheets.create({
   },
   leftAction: {
     width: 200,
-    backgroundColor: '$primaryButtonColor',
+    backgroundColor: '#FF6C52',
     justifyContent: 'center',
     marginTop: 10,
     marginBottom: 10,

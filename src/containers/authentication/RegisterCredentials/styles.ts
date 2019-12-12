@@ -10,31 +10,29 @@ export default EStyleSheets.create({
   textContainer: {
     flex: 1,
     marginTop: 90,
-    marginLeft: '$smallSpacing',
-    marginRight: '$smallSpacing',
   },
   claim: {
     color: '#FFFFFF',
     fontSize: 20,
     fontFamily: 'SFProDisplay-Heavy',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   inputContainer: {
     backgroundColor: 'transparent',
   },
-  inputField: {
-    flex: 1,
-    paddingLeft: '$mediumSpacing',
-    paddingRight: '$mediumSpacing',
-    paddingBottom: 37,
-  },
-  textInput: {
+  inputStyle: {
     borderBottomColor: '#FFFFFF',
     borderBottomWidth: 1,
+  },
+  inputField: {
+    flex: 1,
+    paddingBottom: 37,
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   lowerTextInput: {
     marginTop: '$smallSpacing',
-    borderBottomColor: '#FFFFFF',
-    borderBottomWidth: 1,
   },
   taskTextSize: {
     fontSize: '$regularLargeFontSize',
@@ -43,6 +41,10 @@ export default EStyleSheets.create({
     fontWeight: '300',
     marginTop: '$smallSpacing',
     marginBottom: '$smallSpacing',
+  },
+  eulaField: {
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   bottomButtonField: {
     width: '100%',
@@ -80,6 +82,8 @@ export default EStyleSheets.create({
     backgroundColor: '#FD3737',
     borderRadius: '$baseBorderRadius',
     position: 'relative',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   redBalloonText: {
     color: '#FFFFFF',

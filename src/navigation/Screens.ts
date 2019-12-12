@@ -22,7 +22,7 @@ export const EventCreation = 'EventCreation'
 
 export const RaceDetails = 'RaceDetails'
 export const RaceSetup = 'RaceSetup'
-export const RaceCourseConfig = 'RaceCourseConfig'
+export const RaceCourseLayout = 'RaceCourseLayout'
 export const CourseGeolocation = 'CourseGeolocation'
 export const CourseTrackerBinding = 'CourseTrackerBinding'
 
@@ -41,6 +41,7 @@ export const Inventory = 'Inventory'
 export const WelcomeTracking = 'WelcomeTracking'
 
 // tracking
+export const TrackingStack = 'TrackingStack'
 export const TrackingList = 'TrackingList'
 export const TrackingNavigator = 'TrackingNavigator'
 export const Tracking = 'Tracking'

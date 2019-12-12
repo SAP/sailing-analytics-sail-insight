@@ -13,7 +13,7 @@ export default EStyleSheets.create({
     justifyContent: 'center',
     flexGrow: 2,
     display: 'flex',
-    marginTop: 80,
+    paddingBottom: 130,
     alignItems: 'center',
   },
   app_logo: {
@@ -23,8 +23,8 @@ export default EStyleSheets.create({
   },
   subtitle: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontFamily: 'Signika-Regular',
+    fontSize: 20,
+    fontFamily: 'SFProDisplay-HeavyItalic',
   },
   logoContainer: {
     flexGrow: 0,

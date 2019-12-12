@@ -3,11 +3,11 @@ import { compose, concat, merge, reduce } from 'ramda'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { navigateToRaceDetails } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
-import { getSession } from 'selectors/session'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
+import { getSession } from 'selectors/session'
 
 import { Component, fold, nothing, reduxConnect as connect } from 'components/fp/component'
-import { view, scrollView } from 'components/fp/react-native'
+import { scrollView, view } from 'components/fp/react-native'
 
 import { shareSessionRegatta } from 'actions/sessions'
 
@@ -16,7 +16,7 @@ import styles from './styles'
 
 import {
   competitorsCard,
-  overallStatusCard,
+  // overallStatusCard,
   racesAndScoringCard,
   sessionDetailsCard,
   typeAndBoatClassCard,
@@ -30,7 +30,7 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     session,
     name: session.regattaName,
-    races: regattaRaces.length
+    races: regattaRaces.length,
   }
 }
 
@@ -49,19 +49,21 @@ const sessionData = {
   invitations: 4,
   acceptations: 2,
   racesAndScoringOnPress: (props: any) => navigateToRaceDetails(props.session),
-  inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName)
+  inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
 
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
     connect(mapStateToProps, { checkOut, collectCheckInData, shareSessionRegatta }),
-    scrollView({}),
+    scrollView({ style: styles.container }),
     view({ style: [container.list, styles.cardsContainer] }),
-    reduce(concat, nothing()))([
+    reduce(concat, nothing()),
+  )([
       // overallStatusCard,
       sessionDetailsCard,
       typeAndBoatClassCard,
       racesAndScoringCard,
       competitorsCard,
-    ]))
+    ])
+)

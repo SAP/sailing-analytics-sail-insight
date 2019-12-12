@@ -30,6 +30,7 @@ import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 import { button, container } from 'styles/commons'
 import styles from './styles'
 
+import Toast from 'react-native-root-toast'
 
 const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
@@ -196,6 +197,16 @@ class Tracking extends React.Component<{
       Alert.alert(I18n.t('error_tracking_resend_info_title'), I18n.t('error_tracking_resend_info_text'))
     } finally {
       this.setState({ isLoading: false })
+      Toast.show(I18n.t('text_info_event_finished'), {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.CENTER,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+        backgroundColor: '#E09D00',
+        textColor: 'black',
+      })
     }
   }
 

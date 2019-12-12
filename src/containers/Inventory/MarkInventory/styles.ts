@@ -6,13 +6,13 @@ const markTextFontSize = 17;
 export default EStyleSheets.create({
   mainContainer: {
     backgroundColor: '$primaryBackgroundColor',
-    flex: 1
+    flex: 1,
   },
 
   createNewContainer: {
     backgroundColor: '#476987',
     padding: 20,
-    paddingTop: 10,
+    paddingTop: 30,
     paddingBottom: 5,
     margin: 15,
     marginTop: 0,
@@ -23,20 +23,20 @@ export default EStyleSheets.create({
   },
 
   createNewClassSelectorItem: {
-      flex: 1,
-      justifyContent: 'center'
+    flex: 1,
+    justifyContent: 'center',
   },
 
   createNewClassSelectorItemText: {
-      ...withDefaultFont,
-      ...white,
-      textAlign: 'center'
+    ...withDefaultFont,
+    ...white,
+    textAlign: 'center',
   },
 
   createNewTitle: {
     ...withDefaultFont,
     ...white,
-    textAlign: 'center'
+    textAlign: 'center',
   },
 
   title: {
@@ -44,12 +44,12 @@ export default EStyleSheets.create({
     ...white,
     fontSize: 20,
     margin: 15,
-    marginBottom: 0
+    marginBottom: 0,
   },
 
   markListContainer: {
     marginLeft: 15,
-    marginRight: 15
+    marginRight: 15,
   },
 
   markContainer: {
@@ -58,22 +58,22 @@ export default EStyleSheets.create({
     height: 90,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 15
+    paddingRight: 15,
   },
 
   markName: {
     ...withDefaultBoldFont,
     fontSize: markTextFontSize,
-    flex: 1
+    flex: 1,
   },
 
   markShortName: {
     ...withDefaultFont,
-    fontSize: markTextFontSize
+    fontSize: markTextFontSize,
   },
 
   markEllipses: {
     ...withDefaultFont,
-    fontSize: markTextFontSize
+    fontSize: markTextFontSize,
   }
 })

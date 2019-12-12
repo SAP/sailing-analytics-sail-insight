@@ -29,7 +29,7 @@ import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getCourseById } from 'selectors/course'
 import { getRaceTime } from 'selectors/event'
-import { navigateToRaceCourseConfig } from 'navigation'
+import { navigateToRaceCourseLayout } from 'navigation'
 
 import DatePicker from 'react-native-datepicker'
 
@@ -78,13 +78,13 @@ const raceNumberSelector = Component((props: any) =>
 const onSeeCourse = (props: any) => {
   const { name } = props.item
   props.selectCourse({ race: name })
-  navigateToRaceCourseConfig()
+  navigateToRaceCourseLayout()
 }
 
 const onNewCourse = (props: any) => {
   const { name } = props.item
   props.selectCourse({ race: name })
-  navigateToRaceCourseConfig()
+  navigateToRaceCourseLayout()
 }
 
 const defineLayoutButton = Component((props: any) =>

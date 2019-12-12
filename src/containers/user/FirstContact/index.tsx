@@ -8,7 +8,6 @@ import {
   navigateToMainTabs,
   navigateToQRScanner,
   navigateToUserRegistration,
-  navigateToWelcomeTracking,
 } from 'navigation'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
@@ -25,7 +24,7 @@ class FirstContact extends React.Component<ViewProps> {
     const isLoggedIn = isLoggedInSelector(getStore().getState())
 
     if (isLoggedIn) {
-      navigateToWelcomeTracking()
+      navigateToMainTabs()
     }
   }
 
@@ -33,7 +32,7 @@ class FirstContact extends React.Component<ViewProps> {
 
 
     return (
-        <ImageBackground source={Images.defaults.background} style={{ width: '100%', height: '100%' }}>
+        <ImageBackground source={Images.defaults.map} style={{ width: '100%', height: '100%' }}>
         <View style={[container.main, styles.container]}>
           <View style={styles.textContainer}>
             <Image source={Images.defaults.app_logo} style={styles.app_logo}/>

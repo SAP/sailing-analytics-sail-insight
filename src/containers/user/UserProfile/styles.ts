@@ -5,35 +5,34 @@ export default EStyleSheets.create({
   topInput: {
     marginTop: '$smallSpacing',
     marginBottom: '$tinySpacing',
-    borderBottomColor: '#FFFFFF',
-    borderBottomWidth: 1,
   },
   inputContainer: {
     backgroundColor: 'transparent',
   },
   inputStyle: {
-    fontSize: 20,
-    fontFamily: 'SFProDisplay-Heavy',
+    fontSize: 16,
+    fontFamily: 'SFProDisplay-Light',
+    borderBottomColor: '#FFFFFF',
+    borderBottomWidth: 1,
   },
   inputField: {
     paddingLeft: '$smallSpacing',
     paddingRight: '$smallSpacing',
   },
   buttonContainer: {
-    backgroundColor: '#0E2A37',
     height: 70,
     marginBottom: '$tinySpacing',
     padding: '$smallSpacing',
   },
   title: {
     color: 'white',
-    fontSize: 16,
-    fontFamily: 'SFProDisplay-Light',
+    fontSize: 12,
+    fontFamily: 'SFProDisplay-Heavy',
   },
   text: {
     color: 'white',
-    fontSize: 20,
-    fontFamily: 'SFProDisplay-Heavy',
+    fontSize: 16,
+    fontFamily: 'SFProDisplay-Light',
   },
   bottomButtonField: {
     width: '100%',

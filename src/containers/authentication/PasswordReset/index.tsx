@@ -65,7 +65,7 @@ class PasswordReset extends TextInputForm<{
   public render() {
     const { error, isLoading } = this.state
     return (
-      <ImageBackground source={Images.defaults.background} style={{ width: '100%', height: '100%' }}>
+      <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
         <ScrollContentView style={styles.scrollContainer}>
           <View style={styles.textContainer}>
             <View style={[registration.topContainer(), styles.textContainer]}>
@@ -76,8 +76,8 @@ class PasswordReset extends TextInputForm<{
           </View>
           <View style={styles.inputField}>
             <TextInput
-              style={styles.textInput}
               containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
               value={this.state.username}
               onChangeText={this.onUsernameChange}
               placeholder={I18n.t('text_placeholder_your_username')}
@@ -90,6 +90,7 @@ class PasswordReset extends TextInputForm<{
             <Text style={styles.message}>{I18n.t('text_passwort_reset_or').toUpperCase()}</Text>
             <TextInput
               containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
               value={this.state.email}
               onChangeText={this.onEmailChange}
               style={styles.email}
@@ -100,7 +101,7 @@ class PasswordReset extends TextInputForm<{
               onSubmitEditing={this.onSubmit}
               inputRef={this.handleInputRef(FORM_KEY_EMAIL)}
             />
-            {error && <Text style={registration.errorText()}>{error}</Text>}
+            {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>}
           </View>
           <View style={styles.bottomButtonField}>
             <TextButton

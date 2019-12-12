@@ -9,25 +9,26 @@ export default EStyleSheets.create({
   textContainer: {
     flex: 1,
     marginTop: 90,
-    marginLeft: '$smallSpacing',
-    marginRight: '$smallSpacing',
   },
   inputContainer: {
     backgroundColor: 'transparent',
   },
-  userName: {
+  inputStyle: {
     borderBottomColor: '#FFFFFF',
     borderBottomWidth: 1,
   },
   password: {
-    borderBottomColor: '#FFFFFF',
-    borderBottomWidth: 1,
     marginTop: 16,
   },
   forgotPassword: {
-    marginTop: 16,
+    marginTop: '$tinySpacing',
     color: '#FFFFFF',
     fontSize: 20,
+  },
+  forgotPwText: {
+    color: 'white',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   loginButton: {
     backgroundColor: '$primaryButtonColor',
@@ -45,12 +46,14 @@ export default EStyleSheets.create({
     color: '#FFFFFF',
     fontSize: 20,
     fontFamily: 'SFProDisplay-Heavy',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   inputField: {
     flex: 1,
-    paddingLeft: '$mediumSpacing',
-    paddingRight: '$mediumSpacing',
     paddingBottom: 37,
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   bottomButtonField: {
     width: '100%',
@@ -68,6 +71,8 @@ export default EStyleSheets.create({
     backgroundColor: '#FD3737',
     borderRadius: '$baseBorderRadius',
     position: 'relative',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   redBalloonText: {
     color: '#FFFFFF',

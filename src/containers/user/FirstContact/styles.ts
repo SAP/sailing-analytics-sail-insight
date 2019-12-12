@@ -22,8 +22,8 @@ export default EStyleSheets.create({
   },
   subtitle: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontFamily: 'Signika-Regular',
+    fontSize: 20,
+    fontFamily: 'SFProDisplay-HeavyItalic',
     marginBottom: '$largeSpacing',
   },
   logoContainer: {

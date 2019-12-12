@@ -10,8 +10,8 @@ export default EStyleSheets.create({
   textContainer: {
     flex: 1,
     marginTop: 46,
-    marginLeft: '$smallSpacing',
-    marginRight: '$smallSpacing',
+    marginLeft: '$tinySpacing',
+    marginRight: '$tinySpacing',
   },
   claim: {
     color: '#FFFFFF',
@@ -23,24 +23,45 @@ export default EStyleSheets.create({
   },
   inputField: {
     flex: 1,
-    paddingLeft: '$mediumSpacing',
-    paddingRight: '$mediumSpacing',
+    paddingLeft: '$smallSpacing',
+    paddingRight: '$smallSpacing',
     paddingBottom: 37,
   },
-  textInput: {
+  inputStyle: {
     borderBottomColor: '#FFFFFF',
     borderBottomWidth: 1,
   },
   email: {
     marginTop: 16,
-    borderBottomColor: '#FFFFFF',
-    borderBottomWidth: 1,
   },
   message: {
     marginTop: 16,
     color: '#FFFFFF',
     fontSize: 20,
     fontFamily: 'SFProDisplay-Heavy',
+  },
+  redBalloon: {
+    marginTop: '$smallSpacing',
+    paddingLeft: '$largeSpacing',
+    paddingRight: '$largeSpacing',
+    marginBottom: 'auto',
+    backgroundColor: '#FD3737',
+    borderRadius: '$baseBorderRadius',
+    position: 'relative',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
+  },
+  redBalloonText: {
+    color: '#FFFFFF',
+    alignSelf: 'center',
+    marginTop: '$tinySpacing',
+    marginBottom: '$tinySpacing',
+  },
+  attention: {
+    position: 'absolute',
+    left: 20,
+    height: '100%',
+    width: 16,
   },
   bottomButtonField: {
     width: '100%',
@@ -54,8 +75,10 @@ export default EStyleSheets.create({
     backgroundColor: '$primaryButtonColor',
     marginTop: 20,
     alignSelf: 'stretch',
-    height: 56,
     borderRadius: '$baseBorderRadius',
+    alignContent: 'center',
+    paddingTop: '$smallSpacing',
+    paddingBottom: '$smallSpacing',
   },
   resetButtonText: {
     color: '#FFFFFF',

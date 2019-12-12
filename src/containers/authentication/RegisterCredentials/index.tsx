@@ -51,15 +51,15 @@ class RegisterCredentials extends TextInputForm<Props> {
   public render() {
     const { error, isLoading } = this.state
     return (
-      <ImageBackground source={Images.defaults.background} style={{ width: '100%', height: '100%' }}>
+      <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
         <ScrollContentView style={styles.scrollContainer}>
           <View style={styles.textContainer}>
             <Text style={styles.claim}>{I18n.t('text_registration').toUpperCase()}</Text>
           </View>
           <View style={styles.inputField}>
             <Field
-              style={styles.textInput}
               containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
               label={I18n.t('text_name')}
               name={registrationForm.FORM_KEY_NAME}
               component={FormTextInput}
@@ -69,8 +69,8 @@ class RegisterCredentials extends TextInputForm<Props> {
               inputRef={this.handleInputRef(registrationForm.FORM_KEY_NAME)}
             />
             <Field
-              style={styles.textInput}
               containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
               label={I18n.t('text_placeholder_your_username')}
               name={registrationForm.FORM_KEY_USERNAME}
               component={FormTextInput}
@@ -83,6 +83,7 @@ class RegisterCredentials extends TextInputForm<Props> {
             <Field
               style={styles.lowerTextInput}
               containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
               label={I18n.t('text_placeholder_email')}
               name={registrationForm.FORM_KEY_EMAIL}
               component={FormTextInput}
@@ -95,6 +96,7 @@ class RegisterCredentials extends TextInputForm<Props> {
             <Field
               style={styles.lowerTextInput}
               containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
               label={I18n.t('text_placeholder_enter_password')}
               name={registrationForm.FORM_KEY_PASSWORD}
               component={FormTextInput}
@@ -104,7 +106,9 @@ class RegisterCredentials extends TextInputForm<Props> {
               secureTextEntry={true}
               inputRef={this.handleInputRef(registrationForm.FORM_KEY_PASSWORD)}
             />
-            <EulaLink/>
+            <View style={styles.eulaField}>
+              <EulaLink/>
+            </View>
             {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>}
           </View>
           <View style={styles.bottomButtonField}>

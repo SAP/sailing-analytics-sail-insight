@@ -7,6 +7,7 @@ import I18n from 'i18n'
 import {
   navigateToMainTabs,
   navigateToQRScanner,
+  navigateToTrackingList,
 } from 'navigation'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
@@ -39,7 +40,7 @@ class WelcomeTracking extends React.Component<ViewProps & {
             <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, styles.bigButton]}
               textStyle={styles.bigButtonText}
-              onPress={navigateToMainTabs}
+              onPress={navigateToTrackingList}
             >
               {I18n.t('caption_start_tracking').toUpperCase()}
             </TextButton>
