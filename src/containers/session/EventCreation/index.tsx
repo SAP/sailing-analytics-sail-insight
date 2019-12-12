@@ -90,7 +90,7 @@ export default Component(
     withBoatClasses,
     connect(mapStateToProps, { createEventActionQueue }),
     reduxForm(formSettings),
-    scrollView({ style: styles.container }),
+    scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always' }),
     reduce(concat, nothing())
   )([
     BasicsSetup,
