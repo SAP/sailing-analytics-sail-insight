@@ -7,8 +7,8 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <array key="Signika-Regular.ttf">
-            <string>Signika-Regular</string>
+        <array key="SF-Pro-Display-HeavyItalic.otf">
+            <string>SFProDisplay-HeavyItalic</string>
         </array>
     </customFonts>
     <objects>
@@ -35,26 +35,27 @@
                         <constraint firstAttribute="width" constant="89" id="YV5-Ig-ibT"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sail-Track-Analyze" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XQn-no-BA7">
-                    <rect key="frame" x="74.333333333333343" y="526" width="265.33333333333326" height="17"/>
-                    <constraints>
-                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="265" id="RHI-gI-8gR"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" name="Signika-Regular" family="Signika" pointSize="14"/>
-                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="App_Logo" translatesAutoresizingMaskIntoConstraints="NO" id="RWm-OU-oWe">
-                    <rect key="frame" x="100.66666666666669" y="363" width="213" height="155"/>
+                    <rect key="frame" x="100.66666666666669" y="241.66666666666663" width="213" height="155"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="213" id="0Yz-O7-6Rb"/>
                         <constraint firstAttribute="height" constant="155" id="AzB-MK-w5S"/>
                     </constraints>
                 </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Track-Analyze-Perform" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XQn-no-BA7">
+                    <rect key="frame" x="74.666666666666686" y="417.66666666666669" width="265" height="24"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="265" id="RHI-gI-8gR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="SFProDisplay-HeavyItalic" family="SF Pro Display" pointSize="20"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="AMo-1L-ui3" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" constant="-61" id="4CT-Tv-mVp"/>
+                <constraint firstItem="RWm-OU-oWe" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-128.83333333333337" id="9sG-bF-Ad9"/>
                 <constraint firstItem="KGp-6x-GIn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="EVZ-yW-R1t"/>
                 <constraint firstAttribute="bottom" secondItem="SLQ-Qv-dRy" secondAttribute="bottom" constant="20" id="MEK-ZC-AjX"/>
                 <constraint firstItem="KGp-6x-GIn" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Ne3-TD-Rht"/>
@@ -62,11 +63,9 @@
                 <constraint firstItem="RWm-OU-oWe" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="QWg-Fz-WVL"/>
                 <constraint firstAttribute="bottom" secondItem="AMo-1L-ui3" secondAttribute="bottom" constant="20" id="U6N-O0-aFK"/>
                 <constraint firstItem="XQn-no-BA7" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="W0D-H9-Qwe"/>
-                <constraint firstItem="XQn-no-BA7" firstAttribute="top" secondItem="RWm-OU-oWe" secondAttribute="bottom" constant="8" id="bGt-27-wPR"/>
                 <constraint firstItem="SLQ-Qv-dRy" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" constant="61" id="jEu-IR-Km8"/>
-                <constraint firstAttribute="bottom" secondItem="XQn-no-BA7" secondAttribute="bottom" constant="353" id="rfM-1q-07I"/>
                 <constraint firstAttribute="bottom" secondItem="KGp-6x-GIn" secondAttribute="bottom" id="tb1-sW-HNX"/>
-                <constraint firstAttribute="trailing" secondItem="XQn-no-BA7" secondAttribute="trailing" constant="74.333333333333314" id="tzI-lH-KzA"/>
+                <constraint firstItem="XQn-no-BA7" firstAttribute="top" secondItem="RWm-OU-oWe" secondAttribute="bottom" constant="21.000000000000057" id="wJl-uO-pLe"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <point key="canvasLocation" x="546.37681159420299" y="453.34821428571428"/>

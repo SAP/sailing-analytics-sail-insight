@@ -20,7 +20,7 @@ import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
-import SessionItem from 'components/session/SessionItem'
+import SessionItemDark from 'components/session/SessionItemDark'
 import TextButton from 'components/TextButton'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
@@ -51,7 +51,7 @@ class TrackingList extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public renderItem = ({ item }: any) => (
-      <SessionItem
+      <SessionItemDark
         style={styles.cardsContainer}
         onItemPress={this.onTrackingPress(item)}
         session={item}
@@ -88,6 +88,15 @@ class TrackingList extends React.Component<ViewProps & NavigationScreenProps & {
             renderItem={this.renderItem}
           />
         </ScrollContentView>
+        <View style={styles.bottomButton}>
+          <TextButton
+              style={[button.actionFullWidth, container.largeHorizontalMargin, styles.qrButton]}
+              textStyle={styles.qrButtonText}
+              onPress={this.onQRPress}
+          >
+            {I18n.t('caption_qr_scanner').toUpperCase()}
+          </TextButton>
+        </View>
       </View>
     )
   }

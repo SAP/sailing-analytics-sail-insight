@@ -19,6 +19,7 @@ import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
 import ExpertSettings from '../../containers/ExpertSettings'
 import { navigateToTracking } from '../index'
 
+import TrackingList from 'containers/tracking/TrackingList'
 import MainNavigator from './MainNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 import TrackingNavigator from './TrackingNavigator'
@@ -35,6 +36,15 @@ export default createStackNavigator(
       navigationOptions: {
         header: null,
       },
+    },
+    [Screens.TrackingList]: {
+      screen: TrackingList,
+      navigationOptions: () => ({
+        ...commons.navHeaderTransparentProps,
+        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
+        headerLeft: null,
+      }),
     },
     [Screens.TrackingNavigator]: {
       screen: TrackingNavigator,

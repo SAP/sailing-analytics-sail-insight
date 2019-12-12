@@ -1,11 +1,12 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { $DarkBlue } from 'styles/colors'
 
 export default EStyleSheets.create({
   scrollContainer: {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '$primaryBackgroundColor',
-    paddingTop: 40,
+    paddingTop: 80,
   },
   headLine: {
     color: 'white',
@@ -24,7 +25,9 @@ export default EStyleSheets.create({
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 0,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#F0AB00',
   },
   createButton: {
     backgroundColor: '$primaryBackgroundColor',
@@ -54,9 +57,10 @@ export default EStyleSheets.create({
   },
   qrButton: {
     marginBottom: 30,
+    backgroundColor: 'white',
   },
   qrButtonText: {
-    color: 'white',
+    color: $DarkBlue,
     fontSize: 24,
     fontFamily: 'SFProDisplay-Heavy',
   },

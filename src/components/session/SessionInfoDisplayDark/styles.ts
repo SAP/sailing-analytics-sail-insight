@@ -1,13 +1,13 @@
 import { Dimensions } from 'react-native';
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { $smallSpacing, $tinySpacing } from 'styles/dimensions';
+import { $smallSpacing } from 'styles/dimensions'
 
 export default EStyleSheets.create({
   imageContainer: {
-    marginBottom: '$tinySpacing',
+    marginBottom: 0,
   },
   detailContainer: {
-    paddingVertical: '$tinySpacing',
+    paddingVertical: '$microSpacing',
     marginTop: 16,
   },
   innerContainer: {
@@ -36,18 +36,13 @@ export default EStyleSheets.create({
   tracksCountText: {
     fontSize: '$regularFontSize',
   },
-  trackingButton: {
-    width: 49,
-    height: 49,
-    marginRight: $tinySpacing,
-  },
   settingsButton: {
     width: 49,
     height: 49,
     padding: 12.5,
   },
   trackingImage: {
-    tintColor: '$Orange', // '$importantHighlightColor',
+    tintColor: '$Orange',
   },
   coverImage: {
     height: 176,
@@ -57,14 +52,6 @@ export default EStyleSheets.create({
   basicInfoContainer: {
     flexGrow: 1,
   },
-  infoItem: {
-    maxWidth: '50%',
-    marginRight: '$tinySpacing',
-    marginBottom: '$microSpacing',
-  },
-  fullInfoItem: {
-    maxWidth: '100%',
-  },
   image: {
     width: 44,
     resizeMode: 'cover',
@@ -72,7 +59,7 @@ export default EStyleSheets.create({
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
     marginBottom: '$smallSpacing',
-    marginTop: 20,
+    marginTop: 16,
     borderRadius: 11,
   },
   arrowContainer: {

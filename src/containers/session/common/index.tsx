@@ -1,10 +1,11 @@
-import { __, always, compose, concat, curry, equals, length, map, tap, head, has,
-  merge, mergeLeft, objOf, prepend, range, reduce, split, toString, when } from 'ramda'
+import { __, always, compose, concat, curry, equals, has, head, length, map,
+  merge, objOf, prepend, range, reduce, split, toString, when } from 'ramda'
 
 import { Component, fold, fromClass, nothing } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import ModalSelector from 'react-native-modal-selector'
 
+import I18n from 'i18n'
 import styles from './styles'
 
 const styledButton = curry(({ onPress }, content: any) =>
@@ -49,9 +50,19 @@ export const overlayPicker = curry(({ selectedValue, onValueChange, style, min =
     fromClass(ModalSelector).contramap,
     always,
     merge({
-      style: merge(style, { backgroundColor: 'transparent' }),
+      style: merge({ backgroundColor: 'transparent' }, style),
+      optionContainerStyle: {
+        marginTop: 30,
+        backgroundColor: '#123748',
+      },
+      optionTextStyle: {
+        color: '#FFFFFF',
+        fontSize: 40,
+        fontFamily: 'SFCompactText-Regular',
+      },
       selectedKey: selectedValue,
       onChange: (v: any) => onValueChange(v.key),
+      cancelText: (I18n.t('caption_cancel')),
       data: compose(
         map(v => ({ key: v, label: v.toString() })))(
         range(min, max))

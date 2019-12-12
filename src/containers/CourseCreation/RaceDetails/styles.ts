@@ -9,10 +9,11 @@ export const darkerGray = '#C5C5C5'
 export default EStyleSheets.create({
   mainContainer: {
     backgroundColor: '#1D3F4E',
-    flex: 1
+    flex: 1,
   },
   detailsContainer: {
-    paddingLeft: 10
+    marginTop: '$smallSpacing',
+    paddingLeft: 10,
   },
   sectionHeaderStyle,
   textHeader: {
@@ -40,7 +41,7 @@ export default EStyleSheets.create({
     flex: 1,
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
 
   raceTimeContainer: {
@@ -50,11 +51,11 @@ export default EStyleSheets.create({
     height: 60,
     width: 100,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   raceTimeContainerWithTime: {
-    backgroundColor: '#FF6C52'
+    backgroundColor: '#FF6C52',
   },
 
   raceTimeText: {
@@ -63,7 +64,7 @@ export default EStyleSheets.create({
   },
 
   raceTimeTextSet: {
-    fontSize: 20
+    fontSize: 20,
   },
 
   raceNameText: {
@@ -71,6 +72,6 @@ export default EStyleSheets.create({
     marginLeft: 5,
     marginRight: 5,
     color: 'black',
-    fontSize: 20
+    fontSize: 20,
   }
 })

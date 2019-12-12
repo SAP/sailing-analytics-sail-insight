@@ -3,8 +3,10 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '$primaryBackgroundColor',
+    paddingTop: '$tinySpacing',
+    width: '100%',
+    height: '100%',
   },
   cardsContainer: {
     flexDirection: 'column',
@@ -50,22 +52,5 @@ export default EStyleSheets.create({
   },
   sidePadding: {
     paddingHorizontal: '$smallSpacing',
-  },
-  betaButton: {
-    // styles are a bit hacky, but this button will be removed soon
-    backgroundColor: '$primaryButtonColor',
-    alignSelf: 'flex-end',
-    width: 60,
-    height: 24,
-    borderRadius: '$baseBorderRadius',
-    marginRight: 90,
-    marginTop: -43,
-    marginBottom: 8,
-  },
-  betaButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: '$titleFontSize-2',
-    letterSpacing: -0.5,
   },
 })

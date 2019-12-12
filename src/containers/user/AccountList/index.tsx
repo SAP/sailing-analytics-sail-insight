@@ -72,14 +72,13 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
           <Text style={styles.headline}>{I18n.t('title_your_account').toUpperCase()}</Text>
         </View>
         <View style={{ width: '100%' , marginTop: 'auto' }}>
-          <FlatList data={data} renderItem={this.renderItem} />
+          <FlatList data={data} renderItem={this.renderItem} scrollEnabled={false} />
         </View>
       </View>
     )
   }
 
   private renderItem = ({ item }: any) => {
-
     return (
       <AccountListItem
         title={item.title}
