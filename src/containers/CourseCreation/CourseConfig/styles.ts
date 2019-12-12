@@ -1,6 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet' 
 
-import { $DarkBlue, $LightDarkBlue, $Orange  } from 'styles/colors'
+import { $DarkBlue, $LightDarkBlue, $Orange } from 'styles/colors'
 import { white, withDefaultBoldFont, withDefaultFont } from 'styles/compositions/text'
 
 const roundElementContainer = {
@@ -78,7 +78,7 @@ export default EStyleSheets.create({
   },
 
   editContainer: {
-    // paddingTop: 15,
+    paddingTop: 15,
   },
 
   indentedContainer: { ...withPadding },
@@ -238,7 +238,6 @@ export default EStyleSheets.create({
   },
 
   sameStartFinishContainer: {
-    paddingTop: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
@@ -250,7 +249,6 @@ export default EStyleSheets.create({
   },
 
   createNewContainer: {
-    marginTop: 20,
     paddingTop: 10,
     backgroundColor: $DarkBlue,
   },
@@ -275,17 +273,40 @@ export default EStyleSheets.create({
     flex: 1
   },
 
-  markPropertiesLinkText: {
+  markPropertiesLinkTextContainer: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
     backgroundColor: 'white',
-    color: 'black',
-    fontSize: 14,
+    paddingRight: 10,
     paddingLeft: 10,
     paddingTop: 15,
     paddingBottom: 15,
-    paddingRight: 10,
     borderRadius: 4,
     borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
+    borderBottomRightRadius: 0
+  },
+
+  markPropertiesListItem: {
+    height: 48,
+    ...withDefaultFont,
+    backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#C5C5C5',
+    paddingLeft: 15,
+    justifyContent: 'center'
+  },
+
+  markPropertiesListContainer: {
+    height: 240
+  },
+
+  markPropertiesListItemText: {
+    color: 'black'
+  },
+
+  markPropertiesLinkText: {
+    color: 'black',
+    fontSize: 14,
     flex: 1,
     flexBasis: 1
   },
@@ -295,23 +316,5 @@ export default EStyleSheets.create({
     padding: 15,
     borderTopRightRadius: 4,
     borderBottomRightRadius: 4
-  },
-
-  inventoryItem: {
-    ...withDefaultFont,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#C5C5C5',
-    height: 50,
-    paddingLeft: 15,
-    justifyContent: 'center',
-  },
-
-  inventoryText: {
-    color: 'black',
-  },
-
-  inventoryList: {
-    marginTop: 15
   }
 })

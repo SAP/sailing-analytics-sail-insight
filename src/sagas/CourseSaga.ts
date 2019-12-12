@@ -12,9 +12,8 @@ import {
   editCourse,
   updateCourseLoading,
 } from 'actions/courses'
-import {
-  selectRace
-} from 'actions/events'
+import { selectRace } from 'actions/events'
+import { loadMarkProperties } from 'actions/inventory'
 
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
@@ -47,30 +46,12 @@ const newCourse = () => {
   }
 }
 
-function* fetchCourse(race: string) {
-  yield put(updateCourseLoading(true))
-
-  const { regattaName, serverUrl, raceColumnName, fleet } = yield select(getSelectedRaceInfo)
-
-  const api = dataApi(serverUrl)
-  const raceId = getRaceId(regattaName, race)
-  const course = yield call(api.requestCourse, regattaName, raceColumnName, fleet)
-
-  const courseWithWaypointIds = evolve({
-    waypoints: map(w => merge(w, { id: uuidv4() }))
-  }, course)
-
-  yield put(loadCourse({
-    raceId,
-    course: courseWithWaypointIds
-  }))
-}
-
 function* selectCourseFlow({ payload }: any) {
   const { race } = payload
   const { regattaName } = yield select(getSelectedEventInfo)
 
   yield put(selectRace(race))
+  yield put(loadMarkProperties())
 
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
@@ -78,7 +59,6 @@ function* selectCourseFlow({ payload }: any) {
   let editedCourse
 
   if (course) {
-    yield call(fetchCourse, race)
     editedCourse = yield select(getCourseById(raceId))
   } else {
     editedCourse = newCourse()

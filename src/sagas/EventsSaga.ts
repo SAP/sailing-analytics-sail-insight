@@ -1,6 +1,6 @@
 import { when, isEmpty, always, prop, compose,
   isNil, map, range, inc, concat, toString, __,
-  apply } from 'ramda'
+  apply, merge, evolve } from 'ramda'
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
 import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
   ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS } from 'actions/events'
@@ -8,6 +8,8 @@ import { receiveEntities } from 'actions/entities'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getUserInfo } from 'selectors/auth'
+
+import uuidv4 from 'uuid/v4'
 
 import { loadCourse } from 'actions/courses'
 import { updateRaceTime } from 'actions/events'
@@ -32,10 +34,16 @@ function* selectEventFlow({ payload }: any) {
     [`${payload.leaderboardName}-${races[index]}`]: raceTime
   }))))
 
-  yield all(raceCourses.map((course: object, index: number) => put(loadCourse({
-    raceId: `${regattaName} - ${races[index]}`,
-    course: when(compose(isEmpty, prop('waypoints')), always(null), course)
-  }))))
+  yield all(raceCourses.map((course: object, index: number) => {
+    const courseWithWaypointIds = evolve({
+      waypoints: map(w => merge(w, { id: uuidv4() }))
+    }, course)
+
+    return put(loadCourse({
+      raceId: `${regattaName} - ${races[index]}`,
+      course: when(compose(isEmpty, prop('waypoints')), always(null), courseWithWaypointIds)
+    }))
+  }))
 }
 
 function* setRaceTime({ payload }: any) {

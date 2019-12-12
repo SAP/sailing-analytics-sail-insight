@@ -8,7 +8,7 @@ import {
   recomposeBranch as branch,
   recomposeWithState as withState,
 } from 'components/fp/component'
-import { text, view, scrollView, touchableOpacity } from 'components/fp/react-native'
+import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { Switch, Alert } from 'react-native'
 import uuidv4 from 'uuid/v4'
 
@@ -23,6 +23,8 @@ import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguratio
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition } from 'selectors/course'
+
+import { getMarkProperties } from 'selectors/inventory'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
@@ -52,7 +54,7 @@ const mapStateToProps = (state: any, props: any) => ({
   waypointLabel: uncurryN(2, waypointLabel)(__, state),
   markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
   sameStartFinish: getSameStartFinish(state),
-  inventory: [],//getMarkInventory(state)
+  markPropertiesInventory: getMarkProperties(state)
 })
 
 const isLoading = propEq('loading', true)
@@ -82,9 +84,12 @@ const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPo
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
 const nothingWhenNoMarkLocation = branch(compose(isNil, prop('selectedMarkLocation')), nothingAsClass)
 const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editingMarkName')), nothingAsClass)
+const nothingWhenNoShowMarkProperties = branch(compose(equals(false), prop('showMarkProperties')), nothingAsClass)
+const nothingWhenShowMarkProperties = branch(compose(equals(true), prop('showMarkProperties')), nothingAsClass)
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
+const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -101,6 +106,8 @@ const trackerIcon = icon({ source: Images.courseConfig.tracker, iconStyle: { wid
 const nameEditIcon = icon({ source: Images.actions.penEdit, iconStyle: { width: 14, height: 14 } })
 const locationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 11, height: 11 } })
 const bigLocationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 25, height: 25 } })
+const chevronArrowDown = icon({ source: Images.actions.arrowDown, iconStyle: { width: 14, height: 14 } })
+const chevronArrowUp = icon({ source: Images.actions.arrowUp, iconStyle: { width: 14, height: 14 } })
 const arrowUp = ({ color = $LightDarkBlue }: any = {}) => icon({
   source: Images.courseConfig.arrowUp,
   style: { justifyContent: 'flex-end', height: 25 },
@@ -263,29 +270,11 @@ const ControlPointClassSelectorItem = Component((props: object) =>
     touchableOpacity({}))(
     props.icon))
 
-const InventoryItem = Component((props: object) =>
-  compose(
-    fold(props),
-    touchableOpacity({
-      style: styles.inventoryItem,
-      onPress: (props: any) => props.assignControlPoint(props.item) }),
-    text({ style: styles.inventoryItemText }))(
-    props.item.longName))
-
-const InventoryList = Component((props: object) =>
-  compose(
-    fold(props),
-    view({ style: styles.inventoryList }),
-    reduce(concat, nothing()),
-    map(compose(InventoryItem.contramap, merge, objOf('item'))))(
-    props.inventory))
-
 const CreateNewSelector = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.createNewContainer }),
     concat(text({ style: styles.createNewTitle }, 'Create new')),
-    concat(__, InventoryList),
     view({ style: styles.createNewClassContainer }),
     reduce(concat, nothing()),
     map(compose(ControlPointClassSelectorItem.contramap, merge)))([
@@ -346,8 +335,38 @@ const MarkPropertiesLink = Component(props => compose(
   fold(props),
   view({ style: styles.markNameEditContainer }),
   concat(__, MarkNameEditButton),
-  text({ style: styles.markPropertiesLinkText, flex: 1, alignSelf: 'stretch' }))(
-  `${props.selectedMarkProperties.shortName} ${props.selectedMarkProperties.name}`))
+  touchableOpacity({
+    onPress: () => props.setShowMarkProperties(!props.showMarkProperties),
+    style: { flex: 1 }
+  }),
+  view({ style: styles.markPropertiesLinkTextContainer }),
+  reduce(concat, nothing()))([
+  text({ style: styles.markPropertiesLinkText },
+    `(${props.selectedMarkProperties.shortName}) ${props.selectedMarkProperties.name}`),
+  nothingWhenShowMarkProperties(chevronArrowDown),
+  nothingWhenNoShowMarkProperties(chevronArrowUp) ])) 
+
+const MarkPropertiesItem = Component((props: object) =>
+compose(
+  fold(props),
+  touchableOpacity({
+    onPress: () => {
+      console.log('picked mark properties', props.item)
+    }
+  }),
+  view({ style: styles.markPropertiesListItem }),
+  reduce(concat, nothing()))([
+  text({ style: styles.markPropertiesListItemText },
+    `(${defaultTo('', props.item.shortName)}) ${defaultTo('', props.item.name)}`) ]))
+
+const MarkPropertiesList = Component((props: object) => compose(
+    fold(props),
+    scrollView({ style: styles.markPropertiesListContainer, nestedScrollEnabled: true }))(
+    forwardingPropsFlatList.contramap((props: any) =>
+      merge({
+        data: props.markPropertiesInventory,
+        renderItem: MarkPropertiesItem.fold
+      }, props))))
 
 const ShortAndLongName = Component((props: object) =>
   compose(
@@ -400,6 +419,7 @@ const PassingInstructions = Component((props: object) =>
 const WaypointEditForm = Component((props: any) =>
   compose(
     fold(props),
+    withShowMarkProperties,
     view({ style: [styles.editContainer, !isGateWaypoint(props) && styles.indentedContainer ] }),
     concat(compose(
       view({ style: isGateWaypoint(props) && styles.indentedContainer }),
@@ -412,6 +432,8 @@ const WaypointEditForm = Component((props: any) =>
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(MarkPropertiesLink),
+      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarkPropertiesList)),
+      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector)),
       nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
@@ -489,7 +511,7 @@ export default Component((props: object) =>
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName, saveCourse,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation }),
-    scrollView({ style: styles.mainContainer, vertical: true }),
+    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
       nothingIfNotLoading(LoadingIndicator),
