@@ -1,5 +1,5 @@
 import { merge, defaultTo, prop, compose, insert, reject, propEq, head,
-  map, when, mergeLeft, mergeDeepLeft, always, append, concat } from 'ramda'
+  map, when, mergeLeft, mergeDeepLeft, always, append, concat, pick, dissoc } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
@@ -22,7 +22,8 @@ import {
   updateMarkConfigurationShortName,
   updateMarkConfigurationLocation,
   changeWaypointToNewMark,
-  changeWaypointToNewLine
+  changeWaypointToNewLine,
+  assignMarkPropertiesToMarkConfiguration
 } from 'actions/courses'
 
 const waypoints = handleActions({
@@ -74,6 +75,19 @@ const markConfigurations = handleActions({
         latitude_deg: action.payload.value.latitude,
         longitude_deg: action.payload.value.longitude }}})),
     state),
+  [assignMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), compose(
+      mergeDeepLeft({
+        markPropertiesId: action.payload.markProperties.id,
+        effectiveProperties: pick(['name', 'shortName', 'color', 'shape', 'pattern', 'markType'], action.payload.markProperties),
+        effectivePositioning: action.payload.markProperties.latDeg &&
+          ({ position: { latitude_deg: action.payload.markProperties.latDeg,
+                         longitude_deg: action.payload.markProperties.lonDeg }})
+      }),
+      dissoc('effectiveProperties'),
+      dissoc('effectivePositioning'),
+      dissoc('markId'))),
+    state),
   [changeWaypointToNewMark as any]: (state: any, action: any) => append({
     id: action.payload.markConfigurationIds[0],
     effectiveProperties: { markType: 'BUOY' }
@@ -117,7 +131,9 @@ const selectedWaypoint = handleActions({
 }, null)
 
 const selectedMarkConfiguration = handleActions({
-  [selectMarkConfiguration as any]: (state: any, action: any) => action.payload
+  [selectMarkConfiguration as any]: (state: any, action: any) => action.payload,
+  [changeWaypointToNewMark as any]: (state: any, action: any) => action.payload.markConfigurationIds[0],
+  [changeWaypointToNewLine as any]: (state: any, action: any) => action.payload.markConfigurationIds[0]
 }, null)
 
 export default combineReducers({

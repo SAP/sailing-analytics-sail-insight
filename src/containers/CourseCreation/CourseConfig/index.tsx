@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, move, length,
   prop, map, reduce, concat, merge, defaultTo, any, take,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
-  propEq, addIndex, intersperse, gt, findIndex, unless } from 'ramda'
+  propEq, addIndex, intersperse, gt, findIndex, unless, tail } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
@@ -18,7 +18,7 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName, saveCourse,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
-  updateMarkConfigurationLocation } from 'actions/courses'
+  updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties,
@@ -264,28 +264,29 @@ const DeleteButton = Component((props: object) =>
     concat(deleteIcon))(
     text({ style: styles.deleteButtonText }, 'Delete this mark from course')))
 
-const ControlPointClassSelectorItem = Component((props: object) =>
-  compose(
-    fold(props),
-    touchableOpacity({}))(
-    props.icon))
-
 const CreateNewSelector = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.createNewContainer }),
     concat(text({ style: styles.createNewTitle }, 'Create new')),
-    view({ style: styles.createNewClassContainer }),
+    view({ style: { ...styles.createNewClassContainer, justifyContent: props.insideGate ? 'center' : 'space-between' }}),
     reduce(concat, nothing()),
-    map(compose(ControlPointClassSelectorItem.contramap, merge)))([
-    { ['class']: ControlPointClass.MarkPair, icon: gateIcon, onPress: () => props.changeWaypointToNewLine({
-      id: props.selectedWaypoint.id,
-      markConfigurationIds: [uuidv4(), uuidv4()]
-    }) },
-    { ['class']: ControlPointClass.Mark, icon: markIcon, onPress: () => props.changeWaypointToNewMark({
-      id: props.selectedWaypoint.id,
-      markConfigurationIds: [uuidv4()]
-    }) }]))
+    when(always(equals(true, props.insideGate)), tail))([
+    touchableOpacity({
+      onPress: () => props.changeWaypointToNewLine({
+        id: props.selectedWaypoint.id,
+        markConfigurationIds: [uuidv4(), uuidv4()]
+      })
+    }, gateIcon),
+    touchableOpacity({
+      onPress: () => props.insideGate ? props.assignMarkPropertiesToMarkConfiguration({
+        id: props.selectedMarkConfiguration,
+        markProperties: { markType: 'BUOY' }
+      }) : props.changeWaypointToNewMark({
+        id: props.selectedWaypoint.id,
+        markConfigurationIds: [uuidv4()]
+      }),
+    }, markIcon)]))
 
 const TextInputWithLabel = Component((props: any) => compose(
   fold(props),
@@ -351,7 +352,22 @@ compose(
   fold(props),
   touchableOpacity({
     onPress: () => {
-      console.log('picked mark properties', props.item)
+      let markConfigurationId = props.selectedMarkConfiguration
+
+      // This code needs to be moved in upper layers.
+      if (isEmptyWaypoint(props)) {
+        markConfigurationId = uuidv4()
+
+        props.changeWaypointToNewMark({
+          id: props.selectedWaypoint.id,
+          markConfigurationIds: [markConfigurationId]
+        })
+      }
+
+      props.assignMarkPropertiesToMarkConfiguration({
+        id: markConfigurationId,
+        markProperties: props.item
+      })
     }
   }),
   view({ style: styles.markPropertiesListItem }),
@@ -361,7 +377,7 @@ compose(
 
 const MarkPropertiesList = Component((props: object) => compose(
     fold(props),
-    scrollView({ style: styles.markPropertiesListContainer, nestedScrollEnabled: true }))(
+    scrollView({ style: styles.markPropertiesListContainer, nestedScrollEnabled: true, flexGrow: 0 }))(
     forwardingPropsFlatList.contramap((props: any) =>
       merge({
         data: props.markPropertiesInventory,
@@ -433,12 +449,13 @@ const WaypointEditForm = Component((props: any) =>
     reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(MarkPropertiesLink),
       nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarkPropertiesList)),
-      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector)),
+      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector.contramap(merge({ insideGate: isGateWaypoint(props) })))),
       nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
       //nothingWhenEmptyWaypoint(Appearance),
       nothingWhenNotEmptyWaypoint(CreateNewSelector),
+      nothingWhenNotEmptyWaypoint(MarkPropertiesList),
       nothingWhenStartOrFinishGate(DeleteButton)
   ]))
 
@@ -510,7 +527,8 @@ export default Component((props: object) =>
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName, saveCourse,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
-      changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation }),
+      changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
+      assignMarkPropertiesToMarkConfiguration }),
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,

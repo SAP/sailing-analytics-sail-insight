@@ -40,11 +40,15 @@ const newCourse = () => {
       {id: windwardMarkId, effectiveProperties: { markType: 'BUOY', name: 'Windward Mark', shortName: 'W' }}
     ],
     waypoints: [
-      { id: uuidv4(), passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Start', controlPointShortName: 'S' },
-      { id: uuidv4(), passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
-      { id: uuidv4(), passingInstruction: 'Gate', markConfigurationIds: [ startPinId, startBoatId], controlPointName: 'Finish', controlPointShortName: 'F' }]
+      { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Start', controlPointShortName: 'S' },
+      { passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
+      { passingInstruction: 'Gate', markConfigurationIds: [ startPinId, startBoatId], controlPointName: 'Finish', controlPointShortName: 'F' }]
   }
 }
+
+const courseWithWaypointIds = evolve({
+  waypoints: map(w => merge(w, { id: uuidv4() }))
+})
 
 function* selectCourseFlow({ payload }: any) {
   const { race } = payload
@@ -64,7 +68,7 @@ function* selectCourseFlow({ payload }: any) {
     editedCourse = newCourse()
   }
 
-  yield put(editCourse(editedCourse))
+  yield put(editCourse(courseWithWaypointIds(editedCourse)))
   yield put(updateCourseLoading(false))
 }
 
@@ -79,7 +83,7 @@ const hasMarkConfigurationChangedAcrossCourses = curry((fromCourse, toCourse, co
   const from = getByConfigurationId(fromCourse)
   const to = getByConfigurationId(toCourse)
 
-  return !eqProps('effectiveProperties', from, to)
+  return !eqProps('effectiveProperties', from, to) && from.markPropertiesId === to.markPropertiesId
 })
 
 function* saveCourseFlow() {
@@ -102,11 +106,11 @@ function* saveCourseFlow() {
       ))))
   }, editedCourse)
 
-  yield call(api.createCourse, regattaName, raceColumnName, fleet, course)
+  const updatedCourse = yield call(api.createCourse, regattaName, raceColumnName, fleet, course)
 
   yield put(loadCourse({
     raceId,
-    course: editedCourse
+    course: courseWithWaypointIds(updatedCourse)
   }))
 }
 

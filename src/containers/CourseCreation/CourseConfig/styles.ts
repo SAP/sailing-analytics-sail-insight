@@ -297,7 +297,7 @@ export default EStyleSheets.create({
   },
 
   markPropertiesListContainer: {
-    height: 240
+    maxHeight: 240
   },
 
   markPropertiesListItemText: {

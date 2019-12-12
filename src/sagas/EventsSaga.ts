@@ -34,16 +34,11 @@ function* selectEventFlow({ payload }: any) {
     [`${payload.leaderboardName}-${races[index]}`]: raceTime
   }))))
 
-  yield all(raceCourses.map((course: object, index: number) => {
-    const courseWithWaypointIds = evolve({
-      waypoints: map(w => merge(w, { id: uuidv4() }))
-    }, course)
-
-    return put(loadCourse({
+  yield all(raceCourses.map((course: object, index: number) =>
+    put(loadCourse({
       raceId: `${regattaName} - ${races[index]}`,
-      course: when(compose(isEmpty, prop('waypoints')), always(null), courseWithWaypointIds)
-    }))
-  }))
+      course: when(compose(isEmpty, prop('waypoints')), always(null), course)
+    })) ))
 }
 
 function* setRaceTime({ payload }: any) {
