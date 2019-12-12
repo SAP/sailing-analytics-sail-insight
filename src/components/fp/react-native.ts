@@ -1,6 +1,6 @@
-import { Text, View, Image, TouchableHighlight, TouchableOpacity, FlatList, ScrollView } from 'react-native';
-import { compose, objOf, merge, always, curry, when, __, has, head, mergeLeft } from 'ramda';
-import { fromClass, fold, Component, contramap } from './component';
+import { __, always, compose, curry, has, head, merge, mergeLeft, objOf, when } from 'ramda';
+import { FlatList, Image, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { Component, contramap, fold, fromClass } from './component';
 
 import Svg from 'react-native-svg'
 

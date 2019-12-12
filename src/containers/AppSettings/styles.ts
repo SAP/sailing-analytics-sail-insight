@@ -7,6 +7,7 @@ export default EStyleSheets.create({
     flexGrow: 1,
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
+    marginTop: '$smallSpacing',
   },
   item: {
     backgroundColor: 'white',
@@ -34,7 +35,7 @@ export default EStyleSheets.create({
   },
   button: {
     padding: 12,
-    backgroundColor: 'transparent', // '#FAFAFA',
+    backgroundColor: 'transparent',
     margin: 10,
     marginTop: 0,
     borderWidth: 1,

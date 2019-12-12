@@ -31,6 +31,7 @@ import { BoatClassesBody } from '../../../api/endpoints/types'
 import Images from '@assets/Images'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import styles from './styles'
+import { $LightBlue } from 'styles/colors'
 
 const mapStateToProps = (state: any) => ({
   initialValues,
@@ -60,39 +61,41 @@ const withBoatClasses = compose(
         Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
       })
     },
-  }))
+  })
+)
 
-const createButton = Component((props: any) => compose(
-  fold(props),
-  touchableOpacity({
-    onPress: props.handleSubmit(createEvent(props)),
-    style: styles.createButton,
-  }))(
-    text({ style: styles.createButtonText }, I18n.t('caption_create'))))
+const createButton = Component(
+  (props: any) => compose(
+    fold(props),
+    view({ style: { backgroundColor: $LightBlue } }),
+    touchableOpacity({
+      onPress: props.handleSubmit(createEvent(props)),
+      style: styles.createButton,
+    })
+  )(
+    text({ style: styles.createButtonText }, I18n.t('caption_create'))
+  )
+)
 
-const arrowLeft = fromClass(Image).contramap(always({
-  source: Images.actions.arrowLeft,
-  style: { tintColor: 'white' },
-}))
+const arrowLeft = fromClass(Image).contramap(
+  always({
+    source: Images.actions.arrowLeft,
+    style: { tintColor: 'white' },
+  })
+)
 
-const backNavigation = Component((props: any) => compose(
-  fold(props),
-  view({ style: styles.backNavigationContainer }),
-  touchableOpacity({ onPress: navigateBack }),
-  view({ style: styles.backNavigationButtonContainer }),
-  concat(arrowLeft))(
-  text({ style: styles.backNavigationText }, I18n.t('title_event_creation'))))
-
-export default Component((props: Object) => compose(
-  fold(props),
-  withBoatClasses,
-  connect(mapStateToProps, { createEventActionQueue }),
-  reduxForm(formSettings),
-  scrollView({ style: styles.container }),
-  reduce(concat, nothing()))([
-    backNavigation,
+export default Component(
+  (props: Object) => compose(
+    fold(props),
+    withBoatClasses,
+    connect(mapStateToProps, { createEventActionQueue }),
+    reduxForm(formSettings),
+    scrollView({ style: styles.container }),
+    reduce(concat, nothing())
+  )([
     BasicsSetup,
     TypeAndBoatClass,
     RacesAndScoring,
     createButton,
-  ]))
+  ])
+)

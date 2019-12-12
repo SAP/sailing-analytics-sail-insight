@@ -4,7 +4,7 @@
   "title_check_in": "Sail Insight powered by SAP",
   "title_app_settings": "Settings",
   "title_your_account": "Your account",
-  "title_your_boat": "Your Team",
+  "title_your_team": "Your Team",
   "title_maneuver_monitor": "Maneuver Monitor",
   "title_edit_session": "Edit",
   "title_set_wind": "Set wind",
@@ -12,7 +12,10 @@
   "title_eula": "Terms and Conditions",
   "title_privacy_policy": "Privacy Policy",
   "title_expert_settings": "Expert settings",
-  "title_event_creation": "Event Overview",
+  "title_event_creation": "Event Creation",
+  "title_event_details": "Event Details",
+  "title_race_details": "Race Details",
+  "title_race_course": "Race Course",
 
   "text_more_information_at": "More information at",
   "text_device_id": "Device id",
@@ -269,7 +272,7 @@
   "PENALTY_CIRCLE": "Penalty Circle",
 
 
-  "subtitle":"Sail-Track-Analyze",
+  "subtitle": "Track-Analyze-Perform",
   "text_login": "Login",
   "text_registration": "Your first Track is just one step Away.",
   "text_name": "Name",
@@ -281,5 +284,6 @@
   "text_place_QR_code": "Please place the QR code in front of your camera",
   "text_welcome_logged_in": "Happy Welcome\n{{name}}!",
   "text_welcome": "Happy Welcome!",
-  "text_tracking_headline": "FOR WHICH EVENT\nDO YOU WANT TO TRACK?"
+  "text_tracking_headline": "FOR WHICH EVENT\nDO YOU WANT TO TRACK?",
+  "text_info_event_finished": "You can find now the event in your event list."
 }

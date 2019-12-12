@@ -7,7 +7,6 @@ import * as Screens from 'navigation/Screens'
 import Leaderboard from 'containers/session/Leaderboard/Leaderboard'
 import SetWind from 'containers/tracking/SetWind'
 import Tracking from 'containers/tracking/Tracking'
-import TrackingList from 'containers/tracking/TrackingList'
 import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 
 export default createStackNavigator(
@@ -19,17 +18,12 @@ export default createStackNavigator(
         header: null,
       },
     },
-    [Screens.TrackingList]: {
-      screen: TrackingList,
-      navigationOptions: {
-        header: null,
-      },
-    },
     [Screens.Tracking]: {
       screen: Tracking,
       navigationOptions: {
         gesturesEnabled: false,
         title: I18n.t('title_tracking'),
+        headerLeft: null,
       },
     },
     [Screens.SetWind]: {
