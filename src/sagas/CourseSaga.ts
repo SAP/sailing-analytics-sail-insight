@@ -113,6 +113,8 @@ function* saveCourseFlow() {
     raceId,
     course: courseWithWaypointIds(updatedCourse)
   }))
+
+  yield put(loadMarkProperties())
 }
 
 export default function* watchCourses() {
