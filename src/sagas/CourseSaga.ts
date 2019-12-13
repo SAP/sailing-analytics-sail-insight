@@ -98,10 +98,11 @@ function* saveCourseFlow() {
   const course = evolve({
     waypoints: map(dissoc('id')),
     markConfigurations: map(compose(
-      mergeLeft({ storeToInventory: true }),
       renameKeys({ effectivePositioning: 'positioning' }),
+      dissoc('effectiveProperties'),
       when(hasMarkConfigurationChange, compose(
         dissoc('markId'),
+        mergeLeft({ storeToInventory: true }),
         renameKeys({ effectiveProperties: 'freestyleProperties' })
       ))))
   }, editedCourse)

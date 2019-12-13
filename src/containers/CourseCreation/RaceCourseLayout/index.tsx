@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, move, length,
-  prop, map, reduce, concat, merge, defaultTo, any, take,
+  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
-  propEq, addIndex, intersperse, gt, findIndex, unless, tail } from 'ramda'
+  propEq, addIndex, intersperse, gt, findIndex, unless, tail, has } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
@@ -12,19 +12,20 @@ import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } fro
 import { Switch, Alert } from 'react-native'
 import uuidv4 from 'uuid/v4'
 
-import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/Course'
+import { MarkPositionType, PassingInstruction } from 'models/Course'
 
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName, saveCourse,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
-  updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration } from 'actions/courses'
+  updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration,
+  replaceWaypointMarkConfiguration } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition } from 'selectors/course'
 
-import { getMarkProperties } from 'selectors/inventory'
+import { getMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
@@ -54,7 +55,7 @@ const mapStateToProps = (state: any, props: any) => ({
   waypointLabel: uncurryN(2, waypointLabel)(__, state),
   markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
   sameStartFinish: getSameStartFinish(state),
-  markPropertiesInventory: getMarkProperties(state)
+  marksAndMarkPropertiesOptions: getMarkPropertiesAndMarksOptionsForCourse(state)
 })
 
 const isLoading = propEq('loading', true)
@@ -347,7 +348,7 @@ const MarkPropertiesLink = Component(props => compose(
   nothingWhenShowMarkProperties(chevronArrowDown),
   nothingWhenNoShowMarkProperties(chevronArrowUp) ])) 
 
-const MarkPropertiesItem = Component((props: object) =>
+const MarksOrMarkPropertiesOptionsListItem = Component((props: object) =>
 compose(
   fold(props),
   touchableOpacity({
@@ -360,10 +361,17 @@ compose(
 
         props.changeWaypointToNewMark({
           id: props.selectedWaypoint.id,
-          markConfigurationIds: [markConfigurationId]
+          markConfigurationIds: [props.item.markId ? props.item.id : markConfigurationId]
         })
       }
 
+      // If 
+      props.item.markId ?
+      props.replaceWaypointMarkConfiguration({
+        id: props.selectedWaypoint.id,
+        oldId: markConfigurationId,
+        newId: props.item.id
+      }) :
       props.assignMarkPropertiesToMarkConfiguration({
         id: markConfigurationId,
         markProperties: props.item
@@ -371,17 +379,23 @@ compose(
     }
   }),
   view({ style: styles.markPropertiesListItem }),
-  reduce(concat, nothing()))([
-  text({ style: styles.markPropertiesListItemText },
-    `(${defaultTo('', props.item.shortName)}) ${defaultTo('', props.item.name)}`) ]))
+  text({ style: styles.markPropertiesListItemText }),
+  reduce(concat, ''),
+  intersperse(' '),
+  mapIndexed((v, i) => i === 0 ? `(${v})` : v),
+  map(defaultTo('')),
+  rProps(['shortName', 'name']),
+  when(has('effectiveProperties'), prop('effectiveProperties')),
+  prop('item'))(
+  props))
 
-const MarkPropertiesList = Component((props: object) => compose(
+const MarksOrMarkPropertiesOptionsList = Component((props: object) => compose(
     fold(props),
     scrollView({ style: styles.markPropertiesListContainer, nestedScrollEnabled: true, flexGrow: 0 }))(
     forwardingPropsFlatList.contramap((props: any) =>
       merge({
-        data: props.markPropertiesInventory,
-        renderItem: MarkPropertiesItem.fold
+        data: props.marksAndMarkPropertiesOptions,
+        renderItem: MarksOrMarkPropertiesOptionsListItem.fold
       }, props))))
 
 const ShortAndLongName = Component((props: object) =>
@@ -448,14 +462,14 @@ const WaypointEditForm = Component((props: any) =>
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(MarkPropertiesLink),
-      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarkPropertiesList)),
+      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarksOrMarkPropertiesOptionsList)),
       nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector.contramap(merge({ insideGate: isGateWaypoint(props) })))),
       nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
       //nothingWhenEmptyWaypoint(Appearance),
       nothingWhenNotEmptyWaypoint(CreateNewSelector),
-      nothingWhenNotEmptyWaypoint(MarkPropertiesList),
+      nothingWhenNotEmptyWaypoint(MarksOrMarkPropertiesOptionsList),
       nothingWhenStartOrFinishGate(DeleteButton)
   ]))
 
@@ -528,7 +542,7 @@ export default Component((props: object) =>
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName, saveCourse,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
-      assignMarkPropertiesToMarkConfiguration }),
+      assignMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration }),
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
