@@ -24,6 +24,7 @@ import {
   updateMarkConfigurationLocation,
   changeWaypointToNewMark,
   changeWaypointToNewLine,
+  changeWaypointMarkConfigurationToNew,
   assignMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration
 } from 'actions/courses'
@@ -62,7 +63,12 @@ const waypoints = handleActions({
     when(
       propEq('id', action.payload.id),
       evolve({ markConfigurationIds: map(when(equals(action.payload.oldId), always(action.payload.newId))) })),
-      state)
+      state),
+  [changeWaypointMarkConfigurationToNew as any]: (state: any, action: any) => map(
+    when(
+      propEq('id', action.payload.id),
+      evolve({ markConfigurationIds: map(when(equals(action.payload.oldId), always(action.payload.newId))) })),
+      state),
 }, [])
 
 const markConfigurations = handleActions({
@@ -100,16 +106,20 @@ const markConfigurations = handleActions({
       compose(isNil, find(propEq('id', action.payload.markConfigurationIds[0]))),
       append({
       id: action.payload.markConfigurationIds[0],
-      effectiveProperties: { markType: 'BUOY' }
+      effectiveProperties: { markType: 'BUOY', shortName: 'NM', name: 'New Mark' }
       }), state),
   [changeWaypointToNewLine as any]: (state: any, action: any) => concat([
     {
       id: action.payload.markConfigurationIds[0],
-      effectiveProperties: { markType: 'BUOY' }
+      effectiveProperties: { markType: 'BUOY', shortName: 'NM', name: 'New Mark' }
     }, {
       id: action.payload.markConfigurationIds[1],
-      effectiveProperties: { markType: 'BUOY' }
+      effectiveProperties: { markType: 'BUOY', shortName: 'NM', name: 'New Mark' }
   }], state),
+  [changeWaypointMarkConfigurationToNew as any]: (state: any, action: any) => append({
+    id: action.payload.newId,
+    effectiveProperties: { markType: 'BUOY', shortName: 'NM', name: 'New Mark' }
+  }, state)
 }, [])
 
 const editedCourse = combineReducers({

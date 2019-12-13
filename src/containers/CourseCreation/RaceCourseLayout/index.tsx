@@ -19,7 +19,7 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   updateMarkConfigurationName, updateMarkConfigurationShortName, saveCourse,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
   updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration,
-  replaceWaypointMarkConfiguration } from 'actions/courses'
+  replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties,
@@ -280,9 +280,10 @@ const CreateNewSelector = Component((props: object) =>
       })
     }, gateIcon),
     touchableOpacity({
-      onPress: () => props.insideGate ? props.assignMarkPropertiesToMarkConfiguration({
-        id: props.selectedMarkConfiguration,
-        markProperties: { markType: 'BUOY' }
+      onPress: () => props.insideGate ? props.changeWaypointMarkConfigurationToNew({
+        id: props.selectedWaypoint.id,
+        oldId: props.selectedMarkConfiguration,
+        newId: uuidv4()
       }) : props.changeWaypointToNewMark({
         id: props.selectedWaypoint.id,
         markConfigurationIds: [uuidv4()]
@@ -344,7 +345,7 @@ const MarkPropertiesLink = Component(props => compose(
   view({ style: styles.markPropertiesLinkTextContainer }),
   reduce(concat, nothing()))([
   text({ style: styles.markPropertiesLinkText },
-    `(${props.selectedMarkProperties.shortName}) ${props.selectedMarkProperties.name}`),
+    `(${defaultTo('', props.selectedMarkProperties.shortName)}) ${defaultTo('', props.selectedMarkProperties.name)}`),
   nothingWhenShowMarkProperties(chevronArrowDown),
   nothingWhenNoShowMarkProperties(chevronArrowUp) ])) 
 
@@ -365,7 +366,6 @@ compose(
         })
       }
 
-      // If 
       props.item.markId ?
       props.replaceWaypointMarkConfiguration({
         id: props.selectedWaypoint.id,
@@ -542,7 +542,8 @@ export default Component((props: object) =>
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName, saveCourse,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
-      assignMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration }),
+      assignMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
+      changeWaypointMarkConfigurationToNew }),
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
