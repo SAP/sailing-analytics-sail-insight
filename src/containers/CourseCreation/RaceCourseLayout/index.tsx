@@ -84,12 +84,14 @@ const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPosit
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
 const nothingWhenNoMarkLocation = branch(compose(isNil, prop('selectedMarkLocation')), nothingAsClass)
+const nothingWhenNotEditingGateName = branch(compose(equals(false), prop('editingGateName')), nothingAsClass)
 const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editingMarkName')), nothingAsClass)
 const nothingWhenNoShowMarkProperties = branch(compose(equals(false), prop('showMarkProperties')), nothingAsClass)
 const nothingWhenShowMarkProperties = branch(compose(equals(true), prop('showMarkProperties')), nothingAsClass)
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
+const withEditingGateName = withState('editingGateName', 'setEditingGateName', false)
 const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
 
 const icon = compose(
@@ -327,27 +329,39 @@ const markNamesInputData = props => [
       value
     }) }]
 
-const MarkNameEditButton = Component(props => compose(
+const EditButton = Component(props => compose(
   fold(props),
   touchableOpacity({
-    onPress: () => props.setEditingMarkName(!props.editingMarkName),
+    onPress: props.onPress || (() => {}),
     style: styles.markNameEditButton}))(
   nameEditIcon))
 
-const MarkPropertiesLink = Component(props => compose(
+const MarkPropertiesDropdown = Component(props => compose(
   fold(props),
   view({ style: styles.markNameEditContainer }),
-  concat(__, MarkNameEditButton),
+  concat(__, EditButton.contramap(merge({
+    onPress: () => props.setEditingMarkName(!props.editingMarkName)
+  }))),
   touchableOpacity({
     onPress: () => props.setShowMarkProperties(!props.showMarkProperties),
     style: { flex: 1 }
   }),
-  view({ style: styles.markPropertiesLinkTextContainer }),
+  view({ style: styles.markPropertiesDropdownTextContainer }),
   reduce(concat, nothing()))([
-  text({ style: styles.markPropertiesLinkText },
+  text({ style: styles.markPropertiesDropdownText },
     `(${defaultTo('', props.selectedMarkProperties.shortName)}) ${defaultTo('', props.selectedMarkProperties.name)}`),
   nothingWhenShowMarkProperties(chevronArrowDown),
-  nothingWhenNoShowMarkProperties(chevronArrowUp) ])) 
+  nothingWhenNoShowMarkProperties(chevronArrowUp) ]))
+
+const GateNameDropdown = Component(props => compose(
+  fold(props),
+  touchableOpacity({ style: styles.markNameEditContainer,
+    onPress: () => props.setEditingGateName(!props.editingGateName) }),
+  view({ style: { flex: 1, flexDirection: 'row' }}),
+  concat(__, EditButton.contramap(merge({ onPress: () => props.setEditingGateName(!props.editingGateName) }))),
+  view({ style: { ...styles.markPropertiesDropdownTextContainer, flex: 1 } }),
+  text({ style: styles.markPropertiesDropdownText }))(
+  `(${defaultTo('', props.selectedWaypoint.controlPointShortName)}) ${defaultTo('', props.selectedWaypoint.controlPointName)}`))
 
 const MarksOrMarkPropertiesOptionsListItem = Component((props: object) =>
 compose(
@@ -401,7 +415,9 @@ const MarksOrMarkPropertiesOptionsList = Component((props: object) => compose(
 const ShortAndLongName = Component((props: object) =>
   compose(
     fold(props),
-    view({ style: { flexDirection: 'row' } }),
+    view({ style: {
+      ...styles.editNameContainer,
+      backgroundColor: isGateWaypoint(props) && !props.isGateEdit ? $DarkBlue : $LightDarkBlue }}),
     reduce(concat, nothing()),
     mapIndexed((data, index) => compose(
       view({ style: index === 1 ? { marginLeft: 30 } : { flex: 1, flexBasis: 1 }}),
@@ -455,13 +471,14 @@ const WaypointEditForm = Component((props: any) =>
       view({ style: isGateWaypoint(props) && styles.indentedContainer }),
       reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(nothingWhenNotStartOrFinishGate(SameStartFinish)),
-      nothingWhenNotAGate(nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: gateNameInputData(props) })))),
+      nothingWhenNotAGate(nothingWhenEmptyWaypoint(GateNameDropdown)),
+      nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true }))))),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(PassingInstructions))),
       nothingWhenEmptyWaypoint(nothingWhenNotAGate(GateMarkSelector))
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
-      nothingWhenEmptyWaypoint(MarkPropertiesLink),
+      nothingWhenEmptyWaypoint(MarkPropertiesDropdown),
       nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarksOrMarkPropertiesOptionsList)),
       nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector.contramap(merge({ insideGate: isGateWaypoint(props) })))),
       nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
@@ -536,6 +553,7 @@ export default Component((props: object) =>
   compose(
     fold(props),
     withEditingMarkName,
+    withEditingGateName,
     withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,

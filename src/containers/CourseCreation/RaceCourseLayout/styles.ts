@@ -238,6 +238,7 @@ export default EStyleSheets.create({
   },
 
   sameStartFinishContainer: {
+    marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
@@ -273,7 +274,7 @@ export default EStyleSheets.create({
     flex: 1
   },
 
-  markPropertiesLinkTextContainer: {
+  markPropertiesDropdownTextContainer: {
     alignSelf: 'stretch',
     flexDirection: 'row',
     backgroundColor: 'white',
@@ -304,7 +305,7 @@ export default EStyleSheets.create({
     color: 'black'
   },
 
-  markPropertiesLinkText: {
+  markPropertiesDropdownText: {
     color: 'black',
     fontSize: 14,
     flex: 1,
@@ -316,5 +317,14 @@ export default EStyleSheets.create({
     padding: 15,
     borderTopRightRadius: 4,
     borderBottomRightRadius: 4
+  },
+
+  editNameContainer: {
+    flexDirection: 'row',
+    padding: 7,
+    paddingBottom: 15,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 4
   }
 })

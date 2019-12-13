@@ -56,6 +56,8 @@ const waypoints = handleActions({
     when(propEq('id', action.payload.id),
       always({
         id: action.payload.id,
+        controlPointName: 'New Line',
+        controlPointShortName: 'NL',
         passingInstruction: PassingInstruction.Line,
         markConfigurationIds: action.payload.markConfigurationIds
       })), state),
