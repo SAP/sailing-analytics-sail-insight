@@ -259,7 +259,11 @@ const DeleteButton = Component((props: object) =>
     fold(props),
     view({ style: styles.deleteWaypointContainer }),
     touchableOpacity({ onPress: (props: any) =>
-      props.removeWaypoint({ id: props.selectedWaypoint.id }) }),
+      props.removeWaypoint({
+        id: props.selectedWaypoint.id,
+        newSelectedId: props.course.waypoints[findIndex(propEq('id', props.selectedWaypoint.id), props.course.waypoints) - 1].id
+      })
+    }),
     view({ style: styles.deleteWaypointButton }),
     concat(deleteIcon))(
     text({ style: styles.deleteButtonText }, 'Delete this mark from course')))

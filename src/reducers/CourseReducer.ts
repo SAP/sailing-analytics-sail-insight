@@ -123,6 +123,7 @@ const courseLoading = handleActions({
 const selectedWaypoint = handleActions({
   [selectWaypoint as any]: (state: any = {}, action: any) => action.payload,
   [addWaypoint as any]: (state: any, action: any) => action.payload.id,
+  [removeWaypoint as any]: (state: any, action: any) => action.payload.newSelectedId,
   [editCourse as any]: (state: any = [], action: any) => compose(
     prop('id'),
     head,
