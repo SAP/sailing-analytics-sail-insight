@@ -1,15 +1,3 @@
-export enum DefaultMark {
-  StartFinishPin = 'START_FINISH_PIN',
-  StartFinishBoat = 'START_FINISH_BOAT',
-  StartPin = 'START_PIN',
-  StartBoat = 'START_BOAT',
-  FinishPin = 'FINISH_PIN',
-  FinishBoat = 'FINISH_BOAT',
-  WindwardMark = 'WINDWARD_MARK',
-  ReachingMark = 'REACHING_MARK',
-  LeewardMark = 'LEEWARD_MARK',
-}
-
 export type MarkID = string
 
 export enum ControlPointClass {

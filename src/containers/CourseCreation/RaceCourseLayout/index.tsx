@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, move, length,
-  prop, map, reduce, concat, merge, defaultTo, any, take,
+  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
-  propEq, addIndex, intersperse, gt, findIndex, unless, tail } from 'ramda'
+  propEq, addIndex, intersperse, gt, findIndex, unless, tail, has } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
@@ -11,24 +11,20 @@ import {
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { Switch, Alert } from 'react-native'
 import uuidv4 from 'uuid/v4'
-
-import { ControlPointClass, MarkPositionType, PassingInstruction } from 'models/Course'
-
+import { MarkPositionType, PassingInstruction } from 'models/Course'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName, saveCourse,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
-  updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration } from 'actions/courses'
+  updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration,
+  replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition } from 'selectors/course'
-
-import { getMarkProperties } from 'selectors/inventory'
-
+import { getMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
-
 import TextInput from 'components/TextInput'
 import SwitchSelector from 'react-native-switch-selector'
 import Images from '@assets/Images'
@@ -36,31 +32,29 @@ import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from 'react-navigation'
 import Snackbar from 'react-native-snackbar'
-
 import EStyleSheets from 'react-native-extended-stylesheet'
 import styles from './styles'
-
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 
 const mapIndexed = addIndex(map)
 
-const mapStateToProps = (state: any, props: any) => ({
-  course: getEditedCourse(state),
-  loading: getCourseLoading(state),
-  selectedWaypoint: getSelectedWaypoint(state),
-  selectedMarkConfiguration: getSelectedMarkConfiguration(state),
-  selectedMarkProperties: getSelectedMarkProperties(state),
-  selectedMarkLocation: getSelectedMarkPosition(state),
-  waypointLabel: uncurryN(2, waypointLabel)(__, state),
-  markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
-  sameStartFinish: getSameStartFinish(state),
-  markPropertiesInventory: getMarkProperties(state)
-})
+const mapStateToProps = (state: any) => ifElse(
+  getCourseLoading,
+  always({ loading: true }),
+  state => ({
+    course: getEditedCourse(state),
+    selectedWaypoint: getSelectedWaypoint(state),
+    selectedMarkConfiguration: getSelectedMarkConfiguration(state),
+    selectedMarkProperties: getSelectedMarkProperties(state),
+    selectedMarkLocation: getSelectedMarkPosition(state),
+    waypointLabel: uncurryN(2, waypointLabel)(__, state),
+    markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
+    sameStartFinish: getSameStartFinish(state),
+    marksAndMarkPropertiesOptions: getMarkPropertiesAndMarksOptionsForCourse(state)
+  }))
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
-const nothingIfLoading = branch(isLoading, nothingAsClass)
-const nothingIfNotLoading = branch(isNotLoading, nothingAsClass)
 const isGateWaypoint = compose(equals(2), length, defaultTo([]), path(['selectedWaypoint', 'markConfigurationIds']))
 const isEmptyWaypoint = compose(isNil, path(['selectedWaypoint', 'markConfigurationIds']))
 const isWaypointSelected = (waypoint: any, props: any) => props.selectedWaypoint && props.selectedWaypoint.id === waypoint.id
@@ -71,6 +65,8 @@ const isStartOrFinishGate = both(isGateWaypoint,
     move(-1, 0))(
     props.course.waypoints))
 
+const nothingWhenLoading = branch(isLoading, nothingAsClass)
+const nothingWhenNotLoading = branch(isNotLoading, nothingAsClass)
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenSelectedWaypoint = branch(compose(not, isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
@@ -83,12 +79,14 @@ const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPosit
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
 const nothingWhenNoMarkLocation = branch(compose(isNil, prop('selectedMarkLocation')), nothingAsClass)
+const nothingWhenNotEditingGateName = branch(compose(equals(false), prop('editingGateName')), nothingAsClass)
 const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editingMarkName')), nothingAsClass)
 const nothingWhenNoShowMarkProperties = branch(compose(equals(false), prop('showMarkProperties')), nothingAsClass)
 const nothingWhenShowMarkProperties = branch(compose(equals(true), prop('showMarkProperties')), nothingAsClass)
 
 const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
+const withEditingGateName = withState('editingGateName', 'setEditingGateName', false)
 const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
 
 const icon = compose(
@@ -249,17 +247,16 @@ const MarkPosition = Component((props: object) =>
       nothingWhenNotGeolocationSelected(MarkPositionGeolocation)
     ]))
 
-const Appearance = Component((props: object) =>
-  compose(
-    fold(props))(
-    text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, 'Appearance')))
-
 const DeleteButton = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.deleteWaypointContainer }),
     touchableOpacity({ onPress: (props: any) =>
-      props.removeWaypoint({ id: props.selectedWaypoint.id }) }),
+      props.removeWaypoint({
+        id: props.selectedWaypoint.id,
+        newSelectedId: props.course.waypoints[findIndex(propEq('id', props.selectedWaypoint.id), props.course.waypoints) - 1].id
+      })
+    }),
     view({ style: styles.deleteWaypointButton }),
     concat(deleteIcon))(
     text({ style: styles.deleteButtonText }, 'Delete this mark from course')))
@@ -279,9 +276,10 @@ const CreateNewSelector = Component((props: object) =>
       })
     }, gateIcon),
     touchableOpacity({
-      onPress: () => props.insideGate ? props.assignMarkPropertiesToMarkConfiguration({
-        id: props.selectedMarkConfiguration,
-        markProperties: { markType: 'BUOY' }
+      onPress: () => props.insideGate ? props.changeWaypointMarkConfigurationToNew({
+        id: props.selectedWaypoint.id,
+        oldId: props.selectedMarkConfiguration,
+        newId: uuidv4()
       }) : props.changeWaypointToNewMark({
         id: props.selectedWaypoint.id,
         markConfigurationIds: [uuidv4()]
@@ -325,29 +323,41 @@ const markNamesInputData = props => [
       value
     }) }]
 
-const MarkNameEditButton = Component(props => compose(
+const EditButton = Component(props => compose(
   fold(props),
   touchableOpacity({
-    onPress: () => props.setEditingMarkName(!props.editingMarkName),
+    onPress: props.onPress || (() => {}),
     style: styles.markNameEditButton}))(
   nameEditIcon))
 
-const MarkPropertiesLink = Component(props => compose(
+const MarkPropertiesDropdown = Component(props => compose(
   fold(props),
   view({ style: styles.markNameEditContainer }),
-  concat(__, MarkNameEditButton),
+  concat(__, EditButton.contramap(merge({
+    onPress: () => props.setEditingMarkName(!props.editingMarkName)
+  }))),
   touchableOpacity({
     onPress: () => props.setShowMarkProperties(!props.showMarkProperties),
     style: { flex: 1 }
   }),
-  view({ style: styles.markPropertiesLinkTextContainer }),
+  view({ style: styles.markPropertiesDropdownTextContainer }),
   reduce(concat, nothing()))([
-  text({ style: styles.markPropertiesLinkText },
-    `(${props.selectedMarkProperties.shortName}) ${props.selectedMarkProperties.name}`),
+  text({ style: styles.markPropertiesDropdownText },
+    `(${defaultTo('', props.selectedMarkProperties.shortName)}) ${defaultTo('', props.selectedMarkProperties.name)}`),
   nothingWhenShowMarkProperties(chevronArrowDown),
-  nothingWhenNoShowMarkProperties(chevronArrowUp) ])) 
+  nothingWhenNoShowMarkProperties(chevronArrowUp) ]))
 
-const MarkPropertiesItem = Component((props: object) =>
+const GateNameDropdown = Component(props => compose(
+  fold(props),
+  touchableOpacity({ style: styles.markNameEditContainer,
+    onPress: () => props.setEditingGateName(!props.editingGateName) }),
+  view({ style: { flex: 1, flexDirection: 'row' }}),
+  concat(__, EditButton.contramap(merge({ onPress: () => props.setEditingGateName(!props.editingGateName) }))),
+  view({ style: { ...styles.markPropertiesDropdownTextContainer, flex: 1 } }),
+  text({ style: styles.markPropertiesDropdownText }))(
+  `(${defaultTo('', props.selectedWaypoint.controlPointShortName)}) ${defaultTo('', props.selectedWaypoint.controlPointName)}`))
+
+const MarksOrMarkPropertiesOptionsListItem = Component((props: object) =>
 compose(
   fold(props),
   touchableOpacity({
@@ -360,10 +370,16 @@ compose(
 
         props.changeWaypointToNewMark({
           id: props.selectedWaypoint.id,
-          markConfigurationIds: [markConfigurationId]
+          markConfigurationIds: [props.item.markId ? props.item.id : markConfigurationId]
         })
       }
 
+      props.item.markId ?
+      props.replaceWaypointMarkConfiguration({
+        id: props.selectedWaypoint.id,
+        oldId: markConfigurationId,
+        newId: props.item.id
+      }) :
       props.assignMarkPropertiesToMarkConfiguration({
         id: markConfigurationId,
         markProperties: props.item
@@ -371,23 +387,31 @@ compose(
     }
   }),
   view({ style: styles.markPropertiesListItem }),
-  reduce(concat, nothing()))([
-  text({ style: styles.markPropertiesListItemText },
-    `(${defaultTo('', props.item.shortName)}) ${defaultTo('', props.item.name)}`) ]))
+  text({ style: styles.markPropertiesListItemText }),
+  reduce(concat, ''),
+  intersperse(' '),
+  mapIndexed((v, i) => i === 0 ? `(${v})` : v),
+  map(defaultTo('')),
+  rProps(['shortName', 'name']),
+  when(has('effectiveProperties'), prop('effectiveProperties')),
+  prop('item'))(
+  props))
 
-const MarkPropertiesList = Component((props: object) => compose(
+const MarksOrMarkPropertiesOptionsList = Component((props: object) => compose(
     fold(props),
     scrollView({ style: styles.markPropertiesListContainer, nestedScrollEnabled: true, flexGrow: 0 }))(
     forwardingPropsFlatList.contramap((props: any) =>
       merge({
-        data: props.markPropertiesInventory,
-        renderItem: MarkPropertiesItem.fold
+        data: props.marksAndMarkPropertiesOptions,
+        renderItem: MarksOrMarkPropertiesOptionsListItem.fold
       }, props))))
 
 const ShortAndLongName = Component((props: object) =>
   compose(
     fold(props),
-    view({ style: { flexDirection: 'row' } }),
+    view({ style: {
+      ...styles.editNameContainer,
+      backgroundColor: isGateWaypoint(props) && !props.isGateEdit ? $DarkBlue : $LightDarkBlue }}),
     reduce(concat, nothing()),
     mapIndexed((data, index) => compose(
       view({ style: index === 1 ? { marginLeft: 30 } : { flex: 1, flexBasis: 1 }}),
@@ -441,21 +465,21 @@ const WaypointEditForm = Component((props: any) =>
       view({ style: isGateWaypoint(props) && styles.indentedContainer }),
       reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(nothingWhenNotStartOrFinishGate(SameStartFinish)),
-      nothingWhenNotAGate(nothingWhenEmptyWaypoint(ShortAndLongName.contramap(merge({ items: gateNameInputData(props) })))),
+      nothingWhenNotAGate(nothingWhenEmptyWaypoint(GateNameDropdown)),
+      nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true }))))),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(PassingInstructions))),
       nothingWhenEmptyWaypoint(nothingWhenNotAGate(GateMarkSelector))
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
-      nothingWhenEmptyWaypoint(MarkPropertiesLink),
-      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarkPropertiesList)),
+      nothingWhenEmptyWaypoint(MarkPropertiesDropdown),
+      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarksOrMarkPropertiesOptionsList)),
       nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector.contramap(merge({ insideGate: isGateWaypoint(props) })))),
       nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
-      //nothingWhenEmptyWaypoint(Appearance),
       nothingWhenNotEmptyWaypoint(CreateNewSelector),
-      nothingWhenNotEmptyWaypoint(MarkPropertiesList),
+      nothingWhenNotEmptyWaypoint(MarksOrMarkPropertiesOptionsList),
       nothingWhenStartOrFinishGate(DeleteButton)
   ]))
 
@@ -495,7 +519,10 @@ const WaypointsList = Component(props => compose(
   path(['course', 'waypoints']))(
   props))
 
-const LoadingIndicator = text({}, 'Loading ...')
+const LoadingIndicator = Component(props => compose(
+  fold(props),
+  view({ style: styles.loadingContainer }))(
+  text({ style: styles.loadingText }, 'Loading course...')))
 
 const NavigationBackHandler = Component(props => compose(
   fold(props),
@@ -522,16 +549,18 @@ export default Component((props: object) =>
   compose(
     fold(props),
     withEditingMarkName,
+    withEditingGateName,
     withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName, saveCourse,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
-      assignMarkPropertiesToMarkConfiguration }),
+      assignMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
+      changeWaypointMarkConfigurationToNew }),
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
-      nothingIfNotLoading(LoadingIndicator),
-      nothingIfLoading(WaypointsList),
-      nothingIfLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm)) ]))
+      nothingWhenNotLoading(LoadingIndicator),
+      nothingWhenLoading(WaypointsList),
+      nothingWhenLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm)) ]))
