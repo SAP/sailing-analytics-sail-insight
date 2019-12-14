@@ -59,6 +59,8 @@ function* selectCourseFlow({ payload }: any) {
   const { race } = payload
   const { regattaName } = yield select(getSelectedEventInfo)
 
+  yield put(updateCourseLoading(true))
+
   yield put(selectRace(race))
   yield call(loadMarkPropertiesSaga)
 

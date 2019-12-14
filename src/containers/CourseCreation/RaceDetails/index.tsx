@@ -94,7 +94,7 @@ const defineLayoutButton = Component((props: any) =>
       style: { flexGrow: 1 },
       onPress: () => props.item.courseDefined ? onSeeCourse(props) : onNewCourse(props)
     }))(
-    text({}, props.item.courseDefined ? 'See Layout' : 'Define Layout')))
+    text({}, props.item.courseDefined ? 'See Course' : 'Define Course')))
 
 const raceAnalyticsButton = Component((props: any) =>
   compose(

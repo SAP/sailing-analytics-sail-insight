@@ -1,3 +1,4 @@
+import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet' 
 
 import { $DarkBlue, $LightDarkBlue, $Orange } from 'styles/colors'
@@ -316,5 +317,18 @@ export default EStyleSheets.create({
     padding: 15,
     borderTopRightRadius: 4,
     borderBottomRightRadius: 4
+  },
+
+  loadingContainer: {
+    height: Dimensions.get('window').height,
+    justifyContent: 'center'
+  },
+
+  loadingText: {
+    ...white,
+    ...withDefaultFont,
+    textAlign: 'center',
+    justifyContent: 'center',
+    fontSize: 20
   }
 })

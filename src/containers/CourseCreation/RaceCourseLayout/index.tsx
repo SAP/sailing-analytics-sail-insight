@@ -59,8 +59,6 @@ const mapStateToProps = (state: any, props: any) => ({
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
-const nothingIfLoading = branch(isLoading, nothingAsClass)
-const nothingIfNotLoading = branch(isNotLoading, nothingAsClass)
 const isGateWaypoint = compose(equals(2), length, defaultTo([]), path(['selectedWaypoint', 'markConfigurationIds']))
 const isEmptyWaypoint = compose(isNil, path(['selectedWaypoint', 'markConfigurationIds']))
 const isWaypointSelected = (waypoint: any, props: any) => props.selectedWaypoint && props.selectedWaypoint.id === waypoint.id
@@ -71,6 +69,8 @@ const isStartOrFinishGate = both(isGateWaypoint,
     move(-1, 0))(
     props.course.waypoints))
 
+const nothingWhenLoading = branch(isLoading, nothingAsClass)
+const nothingWhenNotLoading = branch(isNotLoading, nothingAsClass)
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenSelectedWaypoint = branch(compose(not, isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
@@ -495,7 +495,10 @@ const WaypointsList = Component(props => compose(
   path(['course', 'waypoints']))(
   props))
 
-const LoadingIndicator = text({}, 'Loading ...')
+const LoadingIndicator = Component(props => compose(
+  fold(props),
+  view({ style: styles.loadingContainer }))(
+  text({ style: styles.loadingText }, 'Loading course...')))
 
 const NavigationBackHandler = Component(props => compose(
   fold(props),
@@ -529,9 +532,9 @@ export default Component((props: object) =>
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
       assignMarkPropertiesToMarkConfiguration }),
-    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
+    scrollView({ vertical: true, nestedScrollEnabled: true, style: styles.mainContainer }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
-      nothingIfNotLoading(LoadingIndicator),
-      nothingIfLoading(WaypointsList),
-      nothingIfLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm)) ]))
+      nothingWhenNotLoading(LoadingIndicator),
+      nothingWhenLoading(WaypointsList),
+      nothingWhenLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm)) ]))
