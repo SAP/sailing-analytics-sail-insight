@@ -11,9 +11,7 @@ import {
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { Switch, Alert } from 'react-native'
 import uuidv4 from 'uuid/v4'
-
 import { MarkPositionType, PassingInstruction } from 'models/Course'
-
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName, saveCourse,
@@ -24,12 +22,9 @@ import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguratio
   getSameStartFinish, getEditedCourse, getCourseLoading,
   getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition } from 'selectors/course'
-
 import { getMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
-
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
-
 import TextInput from 'components/TextInput'
 import SwitchSelector from 'react-native-switch-selector'
 import Images from '@assets/Images'
@@ -37,10 +32,8 @@ import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from 'react-navigation'
 import Snackbar from 'react-native-snackbar'
-
 import EStyleSheets from 'react-native-extended-stylesheet'
 import styles from './styles'
-
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 
 const mapIndexed = addIndex(map)
@@ -253,11 +246,6 @@ const MarkPosition = Component((props: object) =>
       nothingWhenNotTrackingSelected(MarkPositionTracking),
       nothingWhenNotGeolocationSelected(MarkPositionGeolocation)
     ]))
-
-const Appearance = Component((props: object) =>
-  compose(
-    fold(props))(
-    text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, 'Appearance')))
 
 const DeleteButton = Component((props: object) =>
   compose(
@@ -490,7 +478,6 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
-      //nothingWhenEmptyWaypoint(Appearance),
       nothingWhenNotEmptyWaypoint(CreateNewSelector),
       nothingWhenNotEmptyWaypoint(MarksOrMarkPropertiesOptionsList),
       nothingWhenStartOrFinishGate(DeleteButton)

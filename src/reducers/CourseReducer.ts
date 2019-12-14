@@ -5,8 +5,6 @@ import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
 
-import { removeUserData } from 'actions/auth'
-
 import {
   loadCourse,
   editCourse,
