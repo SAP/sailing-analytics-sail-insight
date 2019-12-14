@@ -179,7 +179,8 @@ export interface DataApi {
   addMarkToRegatta: (regattaName: string, markName: string, markShortName: string) => any,
   addMarkFix: (body: AddMarkFixBody) => any,
   addCourseDefinitionToRaceLog: (body: AddCourseDefinitionToRaceLogBody) => any,
-  createCourse: (regattaName: string, race: string, fleet: string, body: CreateCourseBody) => any
+  createCourse: (regattaName: string, race: string, fleet: string, body: CreateCourseBody) => any,
+  createMarkProperties: (properties: object) => any
 }
 
 const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
@@ -393,6 +394,14 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
       {
         body,
         method: HttpMethods.POST
+      }
+    ),
+    createMarkProperties: (body: any) => dataRequest(
+      endpoints.markProperties(),
+      {
+        body,
+        method: HttpMethods.POST,
+        bodyType: 'x-www-form-urlencoded'
       }
     )
   }
