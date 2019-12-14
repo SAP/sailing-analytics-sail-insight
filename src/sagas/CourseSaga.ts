@@ -14,7 +14,7 @@ import {
   updateCourseLoading,
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
-import { loadMarkProperties as loadMarkPropertiesSaga } from 'sagas/InventorySaga'
+import { loadMarkProperties } from 'sagas/InventorySaga'
 
 const mapIndexed = addIndex(map)
 
@@ -40,14 +40,14 @@ const newCourse = () => {
 
   return {
     markConfigurations: [
-      {id: startPinId},
-      {id: startBoatId},
-      {id: windwardMarkId}
+      { id: startPinId },
+      { id: startBoatId },
+      { id: windwardMarkId }
     ],
     waypoints: [
       { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Start', controlPointShortName: 'S' },
       { passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
-      { passingInstruction: 'Gate', markConfigurationIds: [ startPinId, startBoatId], controlPointName: 'Finish', controlPointShortName: 'F' }]
+      { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Finish', controlPointShortName: 'F' }]
   }
 }
 
@@ -62,7 +62,7 @@ function* selectCourseFlow({ payload }: any) {
   yield put(updateCourseLoading(true))
 
   yield put(selectRace(race))
-  yield call(loadMarkPropertiesSaga)
+  yield call(loadMarkProperties)
 
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
@@ -121,10 +121,11 @@ function* saveCourseFlow() {
   const course = evolve({
     waypoints: map(dissoc('id')),
     markConfigurations: map(compose(
-      mergeLeft({ storeToInventory: true }),
       renameKeys({ effectivePositioning: 'positioning' }),
+      dissoc('effectiveProperties'),
       when(hasMarkConfigurationChange, compose(
         dissoc('markId'),
+        mergeLeft({ storeToInventory: true }),
         renameKeys({ effectiveProperties: 'freestyleProperties' })
       ))))
   }, editedCourse)
@@ -135,6 +136,8 @@ function* saveCourseFlow() {
     raceId,
     course: courseWithWaypointIds(updatedCourse)
   }))
+
+  yield call(loadMarkProperties)
 }
 
 export default function* watchCourses() {
