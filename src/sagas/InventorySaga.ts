@@ -23,7 +23,7 @@ const defaultMarkProperties = [
   { name: 'Reaching Mark', shortName: 'R', markType: 'BUOY' },
 ]
 
-function* loadMarkProperties() {
+export function* loadMarkProperties() {
   const api = dataApi(getServerUrlSetting())
   const markProperties = yield call(api.requestMarkProperties)
 

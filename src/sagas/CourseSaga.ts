@@ -14,7 +14,7 @@ import {
   updateCourseLoading,
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
-import { loadMarkProperties } from 'actions/inventory'
+import { loadMarkProperties as loadMarkPropertiesSaga } from 'sagas/InventorySaga'
 
 const mapIndexed = addIndex(map)
 
@@ -60,7 +60,7 @@ function* selectCourseFlow({ payload }: any) {
   const { regattaName } = yield select(getSelectedEventInfo)
 
   yield put(selectRace(race))
-  yield put(loadMarkProperties())
+  yield call(loadMarkPropertiesSaga)
 
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
