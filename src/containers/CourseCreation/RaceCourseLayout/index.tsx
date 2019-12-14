@@ -45,27 +45,20 @@ import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 
 const mapIndexed = addIndex(map)
 
-const mapStateToProps = (state: any) => {
-    let props = {
-      loading: getCourseLoading(state)
-    }
-
-    if (!props.loading) {
-      props = {
-        course: getEditedCourse(state),
-        selectedWaypoint: getSelectedWaypoint(state),
-        selectedMarkConfiguration: getSelectedMarkConfiguration(state),
-        selectedMarkProperties: getSelectedMarkProperties(state),
-        selectedMarkLocation: getSelectedMarkPosition(state),
-        waypointLabel: uncurryN(2, waypointLabel)(__, state),
-        markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
-        sameStartFinish: getSameStartFinish(state),
-        marksAndMarkPropertiesOptions: getMarkPropertiesAndMarksOptionsForCourse(state)
-    }
-  }
-
-  return props
-}
+const mapStateToProps = (state: any) => ifElse(
+  getCourseLoading,
+  always({ loading: true }),
+  state => ({
+    course: getEditedCourse(state),
+    selectedWaypoint: getSelectedWaypoint(state),
+    selectedMarkConfiguration: getSelectedMarkConfiguration(state),
+    selectedMarkProperties: getSelectedMarkProperties(state),
+    selectedMarkLocation: getSelectedMarkPosition(state),
+    waypointLabel: uncurryN(2, waypointLabel)(__, state),
+    markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
+    sameStartFinish: getSameStartFinish(state),
+    marksAndMarkPropertiesOptions: getMarkPropertiesAndMarksOptionsForCourse(state)
+  }))
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
