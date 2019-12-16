@@ -54,8 +54,8 @@ const waypoints = handleActions({
     when(propEq('id', action.payload.id),
       always({
         id: action.payload.id,
-        controlPointName: 'New Line',
-        controlPointShortName: 'NL',
+        controlPointName: defaultTo('New Line', action.payload.controlPointName),
+        controlPointShortName: defaultTo('NL', action.payload.controlPointShortName),
         passingInstruction: PassingInstruction.Line,
         markConfigurationIds: action.payload.markConfigurationIds
       })), state),
@@ -122,7 +122,17 @@ const markConfigurations = handleActions({
   }, state)
 }, [])
 
+const name = handleActions({
+  [editCourse as any]: (state: any = [], action: any) => defaultTo(null, action.payload.name)
+}, null)
+
+const numberOfLaps = handleActions({
+  [editCourse as any]: (state: any = [], action: any) => defaultTo(null, action.payload.numberOfLaps)
+}, null)
+
 const editedCourse = combineReducers({
+  name,
+  numberOfLaps,
   waypoints,
   markConfigurations
 })
@@ -152,10 +162,7 @@ const selectedWaypoint = handleActions({
 }, null)
 
 const selectedMarkConfiguration = handleActions({
-  [selectMarkConfiguration as any]: (state: any, action: any) => action.payload,
-  [changeWaypointToNewMark as any]: (state: any, action: any) => action.payload.markConfigurationIds[0],
-  [changeWaypointToNewLine as any]: (state: any, action: any) => action.payload.markConfigurationIds[0],
-  [replaceWaypointMarkConfiguration as any]: (state: any, action: any) => action.payload.newId
+  [selectMarkConfiguration as any]: (state: any, action: any) => action.payload
 }, null)
 
 export default combineReducers({
