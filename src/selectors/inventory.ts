@@ -1,8 +1,9 @@
 import { compose, find, reduce, concat, props, equals,
-  prop, __, defaultTo, curry, when, has, propEq } from 'ramda'
+  prop, __, defaultTo, curry, when, has, propEq, map,
+  always, not, includes, reject } from 'ramda'
 import { getEntityArrayByType} from './entity'
 import { createSelector } from 'reselect'
-import { getEditedCourse } from './course'
+import { getEditedCourse, hasSameStartFinish } from './course'
 
 import { MARK_PROPERTIES_ENTITY_NAME } from 'api/schemas'
 
@@ -31,7 +32,19 @@ export const getMarkPropertiesAndMarksOptionsForCourse = createSelector(
   getEditedCourse,
   getMarkProperties,
   (course, markProperties) =>
-    markProperties.map(findMarkConfigurationByMarkPropertiesCombinedName(course.markConfigurations)))
+    map(findMarkConfigurationByMarkPropertiesCombinedName(course.markConfigurations),
+    markProperties))
+
+export const getFilteredMarkPropertiesAndMarksOptionsForCourse = createSelector(
+  getMarkPropertiesAndMarksOptionsForCourse,
+  hasSameStartFinish,
+  (marksOrMarkProperties, hasSameStartFinish) =>
+    reject(compose(
+      when(always(not(hasSameStartFinish)), includes(__, ['Start/Finish Pin', 'Start/Finish Boat'])),
+      when(always(hasSameStartFinish), includes(__, ['Start Pin', 'Start Boat', 'Finish Pin', 'Finish Boat'])),
+      prop('name'),
+      when(has('effectiveProperties'), prop('effectiveProperties'))),
+    marksOrMarkProperties))
 
 export const getMarkPropertiesOrMarkForCourseByName = name => createSelector(
   getMarkPropertiesAndMarksOptionsForCourse,

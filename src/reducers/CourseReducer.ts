@@ -152,10 +152,7 @@ const selectedWaypoint = handleActions({
 }, null)
 
 const selectedMarkConfiguration = handleActions({
-  [selectMarkConfiguration as any]: (state: any, action: any) => action.payload,
-  [changeWaypointToNewMark as any]: (state: any, action: any) => action.payload.markConfigurationIds[0],
-  [changeWaypointToNewLine as any]: (state: any, action: any) => action.payload.markConfigurationIds[0],
-  [replaceWaypointMarkConfiguration as any]: (state: any, action: any) => action.payload.newId
+  [selectMarkConfiguration as any]: (state: any, action: any) => action.payload
 }, null)
 
 export default combineReducers({

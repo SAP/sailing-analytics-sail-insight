@@ -165,6 +165,7 @@ function* toggleSameStartFinish() {
   const editedCourse = yield select(getEditedCourse)
   const isSameStartFinish = yield select(hasSameStartFinish)
   const startMarkConfigurations = head(editedCourse.waypoints).markConfigurationIds
+  const finishMarkConfigurations = last(editedCourse.waypoints).markConfigurationIds
   const startWaypointId = head(editedCourse.waypoints).id
   const finishWaypointId = last(editedCourse.waypoints).id
 
@@ -191,11 +192,15 @@ function* toggleSameStartFinish() {
     const startFinishPin = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Pin'))
     const startFinishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Boat'))
 
-    yield put(changeWaypointToNewLine({
+    yield put(replaceWaypointMarkConfiguration({
       id: finishWaypointId,
-      markConfigurationIds: startMarkConfigurations,
-      controlPointName: 'Finish',
-      controlPointShortName: 'F'
+      oldId: finishMarkConfigurations[0],
+      newId: startMarkConfigurations[0]
+    }))
+    yield put(replaceWaypointMarkConfiguration({
+      id: finishWaypointId,
+      oldId: finishMarkConfigurations[1],
+      newId: startMarkConfigurations[1]
     }))
 
     yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[0], startFinishPin)

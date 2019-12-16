@@ -8,6 +8,7 @@ import { receiveEntities, removeEntity as removeEntityAction, removeEntities,
   normalizeAndReceiveEntities } from 'actions/entities'
 import { getServerUrlSetting } from 'selectors/settings'
 import { getMarkProperties } from 'selectors/inventory'
+import { isLoggedIn } from 'selectors/auth'
 
 import { dataApi } from 'api'
 
@@ -24,6 +25,10 @@ const defaultMarkProperties = [
 ]
 
 export function* loadMarkProperties() {
+  const hasUser = yield select(isLoggedIn)
+
+  if (!hasUser) return
+
   const api = dataApi(getServerUrlSetting())
   const markProperties = yield call(api.requestMarkProperties)
 

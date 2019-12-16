@@ -21,7 +21,7 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish } from 'selectors/course'
-import { getMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
+import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
 import TextInput from 'components/TextInput'
@@ -48,7 +48,7 @@ const mapStateToProps = (state: any) => ifElse(
     selectedMarkLocation: getSelectedMarkPosition(state),
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
-    marksAndMarkPropertiesOptions: getMarkPropertiesAndMarksOptionsForCourse(state),
+    marksAndMarkPropertiesOptions: getFilteredMarkPropertiesAndMarksOptionsForCourse(state),
     sameStartFinish: hasSameStartFinish(state)
   }))
 
