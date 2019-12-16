@@ -1,7 +1,8 @@
 import { prop, propEq, find, compose, path, defaultTo,
   equals, identity, head, when, isNil, always, last,
-  apply, map, take, move } from 'ramda'
+  apply, map, take, move, evolve, dissoc, not } from 'ramda'
 import { createSelector } from 'reselect'
+import { getSelectedEventInfo } from 'selectors/event'
 
 import {
   CourseState,
@@ -16,16 +17,17 @@ export const getCourseById = (courseId: string) => createSelector(
   courses => courses[courseId] as CourseState | undefined)
 
 export const getSelectedCourse = createSelector(
-  getCourses,
+  getSelectedEventInfo,
   (state: any) => state.courses.selectedCourse,
-  (courses, id) => courses[id])
+  getCourses,
+  (selectedEventInfo, selectedCourseInfo, courses) => courses[`${selectedEventInfo.regattaName} - ${selectedCourseInfo.race}`])
 
 export const getEditedCourse = (state: any) => state.courses.editedCourse
 
 export const getSelectedWaypoint = createSelector(
   getEditedCourse,
   (state: any): string | undefined => state.courses.selectedWaypoint,
-  (selectedCourse, waypointId) => find(propEq('id', waypointId), selectedCourse.waypoints))
+  (editedCourse, waypointId) => find(propEq('id', waypointId), editedCourse.waypoints))
 
 export const getSelectedMarkConfiguration = createSelector(
   getSelectedWaypoint,
@@ -71,6 +73,15 @@ export const hasSameStartFinish = createSelector(
     take(2),
     move(-1, 0),
     prop('waypoints')))
+
+export const hasEditedCourseChanged = createSelector(
+  getSelectedCourse,
+  getEditedCourse,
+  (selectedCourse, editedCourse) => compose(
+    not,
+    equals(selectedCourse),
+    evolve({ waypoints: map(dissoc('id')) }))(
+    editedCourse))
 
 export const waypointLabel = (waypoint: any) => compose(
   course => {

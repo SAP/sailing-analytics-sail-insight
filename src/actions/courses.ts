@@ -6,6 +6,7 @@ export const SAVE_COURSE = 'SAVE_COURSE'
 export const SELECT_WAYPOINT = 'SELECT_WAYPOINT'
 export const SELECT_MARK_CONFIGURATION = 'SELECT_MARK_CONFIGURATION'
 export const TOGGLE_SAME_START_FINISH = 'TOGGLE_SAME_START_FINISH'
+export const NAVIGATE_BACK_FROM_COURSE_CREATION = 'NAVIGATE_BACK_FROM_COURSE_CREATION'
 
 export const loadCourse = createAction('LOAD_COURSE')
 export const selectCourse = createAction(SELECT_COURSE)
@@ -32,3 +33,5 @@ export const selectWaypoint = createAction(SELECT_WAYPOINT)
 export const saveWaypoint = createAction('SAVE_WAYPOINT')
 export const removeWaypoint = createAction('REMOVE_WAYPOINT')
 export const toggleSameStartFinish = createAction(TOGGLE_SAME_START_FINISH)
+
+export const navigateBackFromCourseCreation = createAction(NAVIGATE_BACK_FROM_COURSE_CREATION)

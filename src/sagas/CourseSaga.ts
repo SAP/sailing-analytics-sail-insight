@@ -10,20 +10,24 @@ import {
   SAVE_COURSE,
   SELECT_COURSE,
   TOGGLE_SAME_START_FINISH,
+  NAVIGATE_BACK_FROM_COURSE_CREATION,
   editCourse,
   updateCourseLoading,
   replaceWaypointMarkConfiguration,
   assignMarkPropertiesToMarkConfiguration,
-  changeWaypointToNewLine
+  changeWaypointToNewLine,
+  saveCourse
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
 import { loadMarkProperties } from 'sagas/InventorySaga'
 import { getMarkProperties, getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
-import { getCourseById, getEditedCourse, hasSameStartFinish } from 'selectors/course'
+import { getCourseById, getEditedCourse, hasSameStartFinish, hasEditedCourseChanged } from 'selectors/course'
 import {
   getSelectedEventInfo,
   getSelectedRaceInfo
 } from 'selectors/event'
+import { Alert } from 'react-native'
+import Snackbar from 'react-native-snackbar'
 
 const mapIndexed = addIndex(map)
 
@@ -210,10 +214,32 @@ function* toggleSameStartFinish() {
   }
 }
 
+const showAlert = () => new Promise((resolve, reject) =>
+  Alert.alert('Would you like to save the course?', '',
+    [ { text: 'Don\'t save', onPress: () => reject('doNotSave') },
+      { text: 'Save', onPress: () => resolve('save') }]))
+
+function* navigateBackFromCourseCreation() {
+  const hasChanged = yield select(hasEditedCourseChanged)
+
+  if (!hasChanged) return
+
+  try {
+    yield call(showAlert)
+    yield call(saveCourseFlow)
+
+    Snackbar.show({
+      title: 'Course successfully saved',
+      duration: Snackbar.LENGTH_LONG
+    })
+  } catch(e) {}
+}
+
 export default function* watchCourses() {
   yield all([
     takeLatest(SELECT_COURSE, selectCourseFlow),
     takeEvery(SAVE_COURSE, saveCourseFlow),
-    takeLatest(TOGGLE_SAME_START_FINISH, toggleSameStartFinish)
+    takeLatest(TOGGLE_SAME_START_FINISH, toggleSameStartFinish),
+    takeLatest(NAVIGATE_BACK_FROM_COURSE_CREATION, navigateBackFromCourseCreation)
   ])
 }

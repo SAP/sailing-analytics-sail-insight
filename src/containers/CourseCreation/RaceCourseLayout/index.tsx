@@ -9,15 +9,16 @@ import {
   recomposeWithState as withState,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
-import { Switch, Alert } from 'react-native'
+import { Switch } from 'react-native'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
-  updateMarkConfigurationName, updateMarkConfigurationShortName, saveCourse,
+  updateMarkConfigurationName, updateMarkConfigurationShortName,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
   updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration,
-  replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew } from 'actions/courses'
+  replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew,
+  navigateBackFromCourseCreation } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish } from 'selectors/course'
@@ -30,7 +31,6 @@ import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from 'react-navigation'
-import Snackbar from 'react-native-snackbar'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import styles from './styles'
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
@@ -526,20 +526,7 @@ const LoadingIndicator = Component(props => compose(
 const NavigationBackHandler = Component(props => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: payload => {
-      if (payload.state) return
-
-      Alert.alert('Would you like to save the course?', '',
-        [ { text: 'Don\'t save'},
-          { text: 'Save', onPress: async () => {
-            await props.saveCourse()
-
-            Snackbar.show({
-              title: 'Course successfully saved',
-              duration: Snackbar.LENGTH_LONG
-            })
-          }} ])
-    }
+    onWillBlur: payload => !payload.state && props.navigateBackFromCourseCreation()
   })),
   fromClass)(
   NavigationEvents))
@@ -552,11 +539,11 @@ export default Component((props: object) =>
     withSelectedPositionType,
     connect(mapStateToProps, {
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
-      toggleSameStartFinish, updateWaypointName, updateWaypointShortName, saveCourse,
+      toggleSameStartFinish, updateWaypointName, updateWaypointShortName,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
       assignMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
-      changeWaypointMarkConfigurationToNew }),
+      changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation }),
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,

@@ -122,7 +122,17 @@ const markConfigurations = handleActions({
   }, state)
 }, [])
 
+const name = handleActions({
+  [editCourse as any]: (state: any = [], action: any) => defaultTo(null, action.payload.name)
+}, null)
+
+const numberOfLaps = handleActions({
+  [editCourse as any]: (state: any = [], action: any) => defaultTo(null, action.payload.numberOfLaps)
+}, null)
+
 const editedCourse = combineReducers({
+  name,
+  numberOfLaps,
   waypoints,
   markConfigurations
 })
