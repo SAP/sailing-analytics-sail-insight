@@ -1,7 +1,7 @@
 import { map, evolve, merge, curry, dissoc, not,
   prop, assoc, mergeLeft, compose, reduce, keys,
   find, eqProps, propEq, when, tap, defaultTo,
-  addIndex, __, head, last } from 'ramda'
+  addIndex, __, head, last, includes, flatten, reject } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import uuidv4 from 'uuid/v4'
@@ -109,6 +109,12 @@ const hasMarkConfigurationChangedAcrossCourses = curry((fromCourse, toCourse, co
   return !eqProps('effectiveProperties', from, to) && from.markPropertiesId === to.markPropertiesId
 })
 
+const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) => compose(
+  includes(markConfigurationId),
+  flatten,
+  map(prop('markConfigurationIds')))(
+  course.waypoints))
+
 function* saveCourseFlow() {
   const { serverUrl, regattaName, raceColumnName, fleet } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
@@ -117,17 +123,19 @@ function* saveCourseFlow() {
   const editedCourse = yield select(getEditedCourse)
   const existingCourse = yield select(getCourseById(raceId))
   const hasMarkConfigurationChange = hasMarkConfigurationChangedAcrossCourses(existingCourse, editedCourse)
+  const markConfigurationUsedInEditedCourse = courseWaypointsUseMarkConfiguration(__, editedCourse)
 
   const course = evolve({
     waypoints: map(dissoc('id')),
-    markConfigurations: map(compose(
-      renameKeys({ effectivePositioning: 'positioning' }),
-      dissoc('effectiveProperties'),
-      when(hasMarkConfigurationChange, compose(
-        dissoc('markId'),
-        mergeLeft({ storeToInventory: true }),
-        renameKeys({ effectiveProperties: 'freestyleProperties' })
-      ))))
+    markConfigurations: compose(
+      map(compose(
+        renameKeys({ effectivePositioning: 'positioning' }),
+        dissoc('effectiveProperties'),
+        when(hasMarkConfigurationChange, compose(
+          dissoc('markId'),
+          mergeLeft({ storeToInventory: true }),
+          renameKeys({ effectiveProperties: 'freestyleProperties' }))))),
+      reject(compose(not, markConfigurationUsedInEditedCourse, prop('id'))))
   }, editedCourse)
 
   const updatedCourse = yield call(api.createCourse, regattaName, raceColumnName, fleet, course)
