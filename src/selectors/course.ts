@@ -1,5 +1,6 @@
 import { prop, propEq, find, compose, path, defaultTo,
-  equals, identity, head, when, isNil, always, last } from 'ramda'
+  equals, identity, head, when, isNil, always, last,
+  apply, map, take, move } from 'ramda'
 import { createSelector } from 'reselect'
 
 import {
@@ -20,7 +21,6 @@ export const getSelectedCourse = createSelector(
   (courses, id) => courses[id])
 
 export const getEditedCourse = (state: any) => state.courses.editedCourse
-export const getSameStartFinish = (state: any): boolean => state.courses.sameStartFinish
 
 export const getSelectedWaypoint = createSelector(
   getEditedCourse,
@@ -40,20 +40,18 @@ export const getSelectedMarkConfiguration = createSelector(
 
 export const getMarkPropertiesByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
-  course => compose(
+  compose(
     defaultTo({}),
     prop('effectiveProperties'),
     find(propEq('id', markConfigurationId)),
-    prop('markConfigurations'))(
-    course))
+    prop('markConfigurations')))
 
 export const getMarkPositionByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
-  course => compose(
+  compose(
     path(['effectivePositioning', 'position']),
     find(propEq('id', markConfigurationId)),
-    prop('markConfigurations'))(
-    course))
+    prop('markConfigurations')))
 
 export const getSelectedMarkProperties = createSelector(
   getSelectedMarkConfiguration,
@@ -64,6 +62,15 @@ export const getSelectedMarkPosition = createSelector(
   getSelectedMarkConfiguration,
   identity,
   (markConfigurationId, state) => getMarkPositionByMarkConfiguration(markConfigurationId)(state))
+
+export const hasSameStartFinish = createSelector(
+  getEditedCourse,
+  compose(
+    apply(equals),
+    map(prop('markConfigurationIds')),
+    take(2),
+    move(-1, 0),
+    prop('waypoints')))
 
 export const waypointLabel = (waypoint: any) => compose(
   course => {

@@ -19,9 +19,8 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
-  getSameStartFinish, getEditedCourse, getCourseLoading,
-  getSelectedMarkConfiguration, getSelectedMarkProperties,
-  getSelectedMarkPosition } from 'selectors/course'
+  getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
+  getSelectedMarkPosition, hasSameStartFinish } from 'selectors/course'
 import { getMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
@@ -49,8 +48,8 @@ const mapStateToProps = (state: any) => ifElse(
     selectedMarkLocation: getSelectedMarkPosition(state),
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
-    sameStartFinish: getSameStartFinish(state),
-    marksAndMarkPropertiesOptions: getMarkPropertiesAndMarksOptionsForCourse(state)
+    marksAndMarkPropertiesOptions: getMarkPropertiesAndMarksOptionsForCourse(state),
+    sameStartFinish: hasSameStartFinish(state)
   }))
 
 const isLoading = propEq('loading', true)

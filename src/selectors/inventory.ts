@@ -1,5 +1,5 @@
 import { compose, find, reduce, concat, props, equals,
-  prop, __, defaultTo, curry } from 'ramda'
+  prop, __, defaultTo, curry, when, has, propEq } from 'ramda'
 import { getEntityArrayByType} from './entity'
 import { createSelector } from 'reselect'
 import { getEditedCourse } from './course'
@@ -32,3 +32,9 @@ export const getMarkPropertiesAndMarksOptionsForCourse = createSelector(
   getMarkProperties,
   (course, markProperties) =>
     markProperties.map(findMarkConfigurationByMarkPropertiesCombinedName(course.markConfigurations)))
+
+export const getMarkPropertiesOrMarkForCourseByName = name => createSelector(
+  getMarkPropertiesAndMarksOptionsForCourse,
+  find(compose(
+    propEq('name', name),
+    when(has('effectiveProperties'), prop('effectiveProperties')))))
