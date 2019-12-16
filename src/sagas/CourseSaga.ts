@@ -214,7 +214,7 @@ function* toggleSameStartFinish() {
   }
 }
 
-const showAlert = () => new Promise((resolve, reject) =>
+const showSaveCourseAlert = () => new Promise((resolve, reject) =>
   Alert.alert('Would you like to save the course?', '',
     [ { text: 'Don\'t save', onPress: () => reject('doNotSave') },
       { text: 'Save', onPress: () => resolve('save') }]))
@@ -225,7 +225,7 @@ function* navigateBackFromCourseCreation() {
   if (!hasChanged) return
 
   try {
-    yield call(showAlert)
+    yield call(showSaveCourseAlert)
     yield call(saveCourseFlow)
 
     Snackbar.show({
