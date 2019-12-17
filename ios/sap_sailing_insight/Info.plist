@@ -75,19 +75,18 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>bentonsans_bold.otf</string>
-		<string>bentonsans_regular.otf</string>
 		<string>bentonsans_extralight.otf</string>
 		<string>bentonsans_light.otf</string>
 		<string>bentonsans_medium.otf</string>
+		<string>bentonsans_regular.otf</string>
 		<string>bentonsans_thin.otf</string>
-		<string>SF-Pro-Display-Bold.otf</string>
-		<string>SF-Pro-Display-Heavy.otf</string>
-		<string>SF-Pro-Display-Light.otf</string>
-		<string>SF-Pro-Display-Medium.otf</string>
-		<string>sfcompact_bold.otf</string>
-		<string>sfcompact_regular.otf</string>
-		<string>Signika-Regular.ttf</string>
-		<string>SF-Pro-Display-HeavyItalic.otf</string>
+		<string>sf_compact_text_bold.otf</string>
+		<string>sf_compact_text_regular.otf</string>
+		<string>sf_pro_display_bold.otf</string>
+		<string>sf_pro_display_heavy.otf</string>
+		<string>sf_pro_display_heavyitalic.otf</string>
+		<string>sf_pro_display_light.otf</string>
+		<string>sf_pro_display_medium.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

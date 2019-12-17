@@ -34,29 +34,33 @@ class SessionItem extends React.Component<ViewProps & {
       const trans = dragX.interpolate({
         inputRange: [0, 50, 100, 101],
         outputRange: [-20, 0, 0, 1],
-      });
+      })
       return (
-        <RectButton style={styles.leftAction}
-          onPress={() => archived ? this.setArchiveValue(false) : this.setArchiveValue(true)}>
-          <Animated.Image style={[styles.actionImage, {
-                transform: [{ translateX: trans }],
-              }]}
-            source={Images.events.archive}>
+        <RectButton
+          style={styles.leftAction}
+          onPress={() => archived ? this.setArchiveValue(false) : this.setArchiveValue(true)}
+        >
+          <Animated.Image
+            style={[styles.actionImage, {transform: [{translateX: trans}]}]}
+            source={Images.events.archive}
+          >
           </Animated.Image>
         </RectButton>
-      );
-    };
+      )
+    }
 
     return (
       <Swipeable
         friction={1}
         overshootLeft={false}
         leftThreshold={50}
-        renderLeftActions={renderLeftActions}>
+        renderLeftActions={renderLeftActions}
+      >
       <View style={styles.container}>
           <TouchableOpacity
             activeOpacity={1}
-            onPress={this.props.onItemPress}>
+            onPress={this.props.onItemPress}
+          >
             <SessionInfoDisplay
               style={style}
               session={session}

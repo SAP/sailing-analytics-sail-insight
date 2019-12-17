@@ -88,52 +88,63 @@ export const FramedNumber = Component(props => compose(
   toString)(
   props.value))
 
+/*
+* SessionDetails
+*/
 export const sessionDetailsCard = Component((props: any) =>
   compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder1 }, nothing())),
     view({ style: styles.container1 }),
-    reduce(concat, nothing()))([
-      text({ style: styles.headlineHeavy }, props.name),
-      text({ style: styles.text }, props.startDate),
-      text({ style: styles.text }, props.handicapType),
-      text({ style: styles.textLast }, props.ratingSystem),
-    ]))
+    reduce(concat, nothing()),
+  )([
+    text({ style: styles.headlineHeavy }, props.name),
+    text({ style: styles.text }, props.startDate),
+    text({ style: styles.text }, props.handicapType),
+    text({ style: styles.textLast }, props.ratingSystem),
+  ]),
+)
 
 export const typeAndBoatClassCard = Component((props: any) =>
   compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
     view({ style: styles.container2 }),
-    reduce(concat, nothing()))([
-      text({ style: styles.headline }, 'Regatta Details'.toUpperCase()),
-      text({ style: styles.textLast }, props.rankingType),
-    ]))
+    reduce(concat, nothing()),
+  )([
+    text({ style: styles.headline }, 'Regatta Details'.toUpperCase()),
+    text({ style: styles.textLast }, props.rankingType),
+  ]),
+)
 
 export const racesAndScoringCard = Component((props: any) =>
   compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
     view({ style: styles.container3 }),
-    reduce(concat, nothing()))([
-      text({ style: styles.headline }, 'Races and Scoring'.toUpperCase()),
-      text({ style: styles.text }, `${props.races} Races Planned`),
-      text({ style: styles.text }, props.scoring),
-      text({ style: styles.textLast }, `Discard starting from ${props.discardRace}. race`),
-      styledButton({
-        onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
-      }, text({ style: styles.buttonContent }, 'DEFINE RACES'))
-    ]))
+    reduce(concat, nothing()),
+  )([
+    text({ style: styles.headline }, 'Races and Scoring'.toUpperCase()),
+    text({ style: styles.text }, `${props.races} Races Planned`),
+    text({ style: styles.text }, props.scoring),
+    text({ style: styles.textLast }, `Discard starting from ${props.discardRace}. race`),
+    styledButton({
+      onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
+    }, text({ style: styles.buttonContent }, 'DEFINE RACES'))
+  ]),
+)
 
 export const competitorsCard = Component((props: any) =>
   compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder4 }, nothing())),
     view({ style: styles.container4 }),
-    reduce(concat, nothing()))([
-      text({ style: styles.headline }, 'Competitors'),
-      text({ style: styles.text }, `${props.registrationType} – ${props.entries} Entries`),
-      styledButton({
-        onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
-      }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS'))
-    ]))
+    reduce(concat, nothing())
+  )([
+    text({ style: styles.headline }, 'Competitors'),
+    text({ style: styles.text }, `${props.registrationType} – ${props.entries} Entries`),
+    styledButton({
+      onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
+    }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS'))
+  ]),
+)

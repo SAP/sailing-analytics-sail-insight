@@ -12,7 +12,7 @@ export default EStyleSheet.create({
   },
   image: {
     marginTop: 20,
-    marginLeft: '$largeRelativeSpacing',
-    marginRight: '$largeRelativeSpacing',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 })

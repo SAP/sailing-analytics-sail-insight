@@ -6331,6 +6331,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
 			productRefGroup = 0F429951ACC253CCC3A6068EB428C6C7 /* Products */;
@@ -7196,6 +7197,23 @@
 			};
 			name = Release;
 		};
+		148B5D42B48D1225AF8A56CA2B1AA1FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E848C1F9CC679C8E0A012255B0B41651 /* QBImagePickerController.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/QBImagePickerController";
+				IBSC_MODULE = QBImagePickerController;
+				INFOPLIST_FILE = "Target Support Files/QBImagePickerController/ResourceBundle-QBImagePicker-QBImagePickerController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = QBImagePicker;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
 		1596D7F449260E01ECA6A66798F32BF1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E7C2771C298A5D04F52B165FB435A391 /* Pods-sap_sailing_insight-tvOSTests.debug.xcconfig */;
@@ -7533,6 +7551,23 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
+		};
+		4A938401948AF7A9D26942A8AD2D316F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E848C1F9CC679C8E0A012255B0B41651 /* QBImagePickerController.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/QBImagePickerController";
+				IBSC_MODULE = QBImagePickerController;
+				INFOPLIST_FILE = "Target Support Files/QBImagePickerController/ResourceBundle-QBImagePicker-QBImagePickerController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = QBImagePicker;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
 		};
 		4F95B37F655CAC9E265F8FED21C80479 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -8544,38 +8579,6 @@
 			};
 			name = Release;
 		};
-		E8FB3B959949A6ABBB44B02BD9847E28 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E848C1F9CC679C8E0A012255B0B41651 /* QBImagePickerController.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/QBImagePickerController";
-				INFOPLIST_FILE = "Target Support Files/QBImagePickerController/ResourceBundle-QBImagePicker-QBImagePickerController-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				PRODUCT_NAME = QBImagePicker;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Debug;
-		};
-		EA0891D98F7C90D921A102FA08E98221 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E848C1F9CC679C8E0A012255B0B41651 /* QBImagePickerController.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/QBImagePickerController";
-				INFOPLIST_FILE = "Target Support Files/QBImagePickerController/ResourceBundle-QBImagePicker-QBImagePickerController-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				PRODUCT_NAME = QBImagePicker;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
-		};
 		EAF5FB4E4E8A70A1F6CBC4EEDB78D1E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5CEEFFF4259EFDAE16C7615A378AA405 /* boost-for-react-native.xcconfig */;
@@ -8890,8 +8893,8 @@
 		A545BC36E873716D73F95CCCE4753B2F /* Build configuration list for PBXNativeTarget "QBImagePickerController-QBImagePicker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E8FB3B959949A6ABBB44B02BD9847E28 /* Debug */,
-				EA0891D98F7C90D921A102FA08E98221 /* Release */,
+				148B5D42B48D1225AF8A56CA2B1AA1FB /* Debug */,
+				4A938401948AF7A9D26942A8AD2D316F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

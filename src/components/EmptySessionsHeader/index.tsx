@@ -48,39 +48,10 @@ class EmptySessionsHeader extends React.Component<{
     } = this.props
     return showHints ? (
       <View style={styles.container}>
-        <Image source={Images.defaults.background_empty} style={styles.image}/>
-        {
-          /*
-          showJoinRegatta &&
-          <HintCard
-            imageSource={Images.info.coloredBoat}
-            title={I18n.t('text_empty_sessions_join_title')}
-            text={I18n.t('text_empty_sessions_join_text')}
-            actionText={I18n.t('caption_join_regatta')}
-            onCancelPress={this.onCancelJoinPress}
-            onPress={this.onJoinPress}
-          />
-          */
-        }
-        {
-          /*
-          showCreateAccount &&
-          <HintCard
-            style={showJoinRegatta && styles.separator}
-            imageSource={Images.info.coloredUser}
-            title={I18n.t('text_empty_sessions_account_title')}
-            text={I18n.t('text_empty_sessions_account_text')}
-            actionText={I18n.t('caption_create_free_account')}
-            onCancelPress={this.onCancelAccountPress}
-            onPress={this.onAccountPress}
-          >
-            <LoginButton
-              style={styles.loginButton}
-              isModal={true}
-            />
-          </HintCard>
-          */
-        }
+        <Image
+          source={I18n.locale.substring(0,3) === 'de-' ? Images.defaults.background_empty_de: Images.defaults.background_empty}
+          style={styles.image}
+        />
       </View>
     ) :
     <View/>

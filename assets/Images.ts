@@ -5,20 +5,18 @@ export default {
     map2: require('./img/defaults/Map2.png'),
     background_map: require('./img/tracking/TrackingMap_Background.png'),
     background_empty: require('./img/session/LooksEmpty.png'),
+    background_empty_de: require('./img/session/LooksEmpty_de.png'),
     app_logo: require('./img/defaults/AppLogo.png'),
     ws_logo: require('./img/defaults/WorldSailingLogo.png'),
     sap_logo: require('./img/defaults/SAP.png'),
     attention: require('./img/new_icons/attention.png'),
   },
   header: {
-    sailors: require('./img/header_sailors.png'), // require('./img/header_small.png'),
-    boat: require('./img/boat_placeholder.png'),
-    team: require('./img/competitor_placeholder.png'), // require('./img/team_placeholder.png'),
+    sailors: require('./img/header_sailors.png'),
+    team: require('./img/team_headerimage.png'),
   },
   actions: {
-    // add: require('./img/icons/icon-plus.png'),
     add: require('./img/new_icons/add_icon_circle.png'),
-    // decrease: require('./img/icons/icon-minus.png'),
     decrease: require('./img/new_icons/minus_icon_circle.png'),
     settings: require('./img/icons/icon-settings.png'),
     recordColored: require('./img/icons/icon-start.png'), // TODO: replace
@@ -32,7 +30,7 @@ export default {
     close: require('./img/icons/icon-cross.png'),
     expandLess: require('./img/icons/icon-arrow-expand-less.png'),
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
-    pickImage: require('./img/new_icons/camera.png'), // require('./img/icons/icon-camera.png'),
+    pickImage: require('./img/new_icons/camera.png'),
     delete: require('./img/icons/icon-delete.png'),
     share: require('./img/icons/icon-open-in-new.png'),
     plus: require('./img/icons/plus.png'),
@@ -49,7 +47,6 @@ export default {
   info: {
     boat: require('./img/icons/icon-boat.png'),
     location: require('./img/icons/icon-place.png'),
-    coloredBoat: require('./img/colored_boat.png'),
     arrowUp: require('./img/icons/icon-arrow-up.png'),
     arrowDown: require('./img/icons/icon-arrow-down.png'),
     distance: require('./img/icons/icon-distance.png'),
@@ -59,7 +56,6 @@ export default {
     error: require('./img/icons/icon-error.png'),
     mark: require('./img/icons/icon-mark.png'),
     competitor: require('./img/icons/icon-account-filled.png'),
-    team: require('./img/icons/icon-team.png'),
   },
   animations: {
     waveLoadingIndicator: require('./img/animations/wave_loading.json'),
