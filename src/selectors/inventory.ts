@@ -1,14 +1,27 @@
 import { compose, find, reduce, concat, props, equals,
   prop, __, defaultTo, curry, when, has, propEq, map,
-  always, not, includes, reject } from 'ramda'
+  always, not, includes, reject, flatten, partition, reverse,
+  addIndex, sortBy, indexOf } from 'ramda'
 import { getEntityArrayByType} from './entity'
 import { createSelector } from 'reselect'
 import { getEditedCourse, hasSameStartFinish } from './course'
 
 import { MARK_PROPERTIES_ENTITY_NAME } from 'api/schemas'
 
-export const getMarkProperties = (state: any) =>
-  getEntityArrayByType(state, MARK_PROPERTIES_ENTITY_NAME)
+const mapIndexed = addIndex(map)
+
+const startFinishMarks = ['Start/Finish Pin', 'Start/Finish Boat', 'Start Pin', 'Start Boat', 'Finish Pin', 'Finish Boat']
+
+export const getMarkProperties = (state: any) => compose(
+  flatten,
+  reverse,
+  mapIndexed((set, index) =>
+    when(
+      always(equals(0, index)),
+      sortBy(compose(indexOf(__, startFinishMarks), prop('name'))),
+      set)),
+  partition(compose(includes(__, startFinishMarks), prop('name'))))(
+  getEntityArrayByType(state, MARK_PROPERTIES_ENTITY_NAME))
 
 const combinedNames = compose(
   reduce(concat, ''),

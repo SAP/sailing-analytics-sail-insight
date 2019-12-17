@@ -1,7 +1,6 @@
 import { __, compose, always, objOf,
-  prop, map, reduce, concat, merge, defaultTo,
-  partition, flatten, reverse, includes, sortBy,
-  when, equals, indexOf, addIndex } from 'ramda'
+  prop, map, reduce, concat, merge, defaultTo } from 'ramda'
+
 import {
   Component,
   fold,
@@ -12,29 +11,17 @@ import {
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { ControlPointClass } from 'models/Course'
+
 import { getMarkProperties } from 'selectors/inventory'
 import { loadMarkProperties, deleteMarkProperties } from 'actions/inventory'
+
 import { Alert } from 'react-native'
 import styles from './styles'
 import IconText from 'components/IconText'
 import Images from '@assets/Images'
 
-const mapIndexed = addIndex(map)
-
-const startFinishMarks = ['Start/Finish Pin', 'Start/Finish Boat', 'Start Pin', 'Start Boat', 'Finish Pin', 'Finish Boat']
-
-const mapStateToProps = state => ({
-  markProperties: compose(
-    flatten,
-    reverse,
-    mapIndexed((set, index) =>
-      when(
-        always(equals(0, index)),
-        sortBy(compose(indexOf(__, startFinishMarks), prop('name'))),
-        set)),
-    partition(compose(includes(__, startFinishMarks), prop('name'))),
-    getMarkProperties)(
-    state)
+const mapStateToProps = (state, props) => ({
+  markProperties: getMarkProperties(state)
 })
 
 const withLoadingMarks = lifeCycle({
