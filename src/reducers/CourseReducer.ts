@@ -1,6 +1,6 @@
 import { merge, defaultTo, prop, compose, insert, reject,
-  propEq, head, map, when, mergeLeft, mergeDeepLeft, always,
-  append, concat, pick, dissoc, evolve, equals, isNil, find } from 'ramda'
+  propEq, head, map, when, mergeLeft, mergeDeepLeft, always, ifElse,
+  append, concat, pick, dissoc, evolve, equals, isNil, find, has } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
@@ -23,7 +23,7 @@ import {
   changeWaypointToNewMark,
   changeWaypointToNewLine,
   changeWaypointMarkConfigurationToNew,
-  assignMarkPropertiesToMarkConfiguration,
+  assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration
 } from 'actions/courses'
 
@@ -88,14 +88,20 @@ const markConfigurations = handleActions({
         latitude_deg: action.payload.value.latitude,
         longitude_deg: action.payload.value.longitude }}})),
     state),
-  [assignMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
+  [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
       mergeDeepLeft({
-        markPropertiesId: action.payload.markProperties.id,
-        effectiveProperties: pick(['name', 'shortName', 'color', 'shape', 'pattern', 'markType'], action.payload.markProperties),
-        effectivePositioning: action.payload.markProperties.latDeg &&
-          ({ position: { latitude_deg: action.payload.markProperties.latDeg,
-                         longitude_deg: action.payload.markProperties.lonDeg }})
+        markId: action.payload.markOrMarkProperties.markId,
+        markPropertiesId: compose(
+          ifElse(has('markPropertiesId'), prop('markPropertiesId'), prop('id')))(
+          action.payload.markOrMarkProperties),
+        effectiveProperties: compose(
+          pick(['name', 'shortName', 'color', 'shape', 'pattern', 'markType']),
+          when(has('effectiveProperties'), prop('effectiveProperties')))(
+          action.payload.markOrMarkProperties),
+        effectivePositioning: action.payload.markOrMarkProperties.latDeg &&
+          ({ position: { latitude_deg: action.payload.markOrMarkProperties.latDeg,
+                         longitude_deg: action.payload.markOrMarkProperties.lonDeg }})
       }),
       dissoc('effectiveProperties'),
       dissoc('effectivePositioning'),

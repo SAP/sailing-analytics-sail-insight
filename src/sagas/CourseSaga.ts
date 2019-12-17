@@ -14,7 +14,7 @@ import {
   editCourse,
   updateCourseLoading,
   replaceWaypointMarkConfiguration,
-  assignMarkPropertiesToMarkConfiguration,
+  assignMarkOrMarkPropertiesToMarkConfiguration,
   changeWaypointToNewLine,
   saveCourse
 } from 'actions/courses'
@@ -86,9 +86,9 @@ function* selectCourseFlow({ payload }: any) {
     const markProperties = yield select(getMarkProperties)
 
     yield all(compose(
-      mapIndexed((mp, index) => put(assignMarkPropertiesToMarkConfiguration({
+      mapIndexed((mp, index) => put(assignMarkOrMarkPropertiesToMarkConfiguration({
         id: editedCourse.markConfigurations[index].id,
-        markProperties: mp
+        markOrMarkProperties: mp
       }))),
       map(find(__, markProperties)),
       map(propEq('name')))([
@@ -152,16 +152,16 @@ function* saveCourseFlow() {
   yield call(loadMarkProperties)
 }
 
-function* assignMarkPropertiesOrMarkToWaypointMarkConfiguration(waypointId, markConfigurationId, markPropertiesOrMark) {
-  markPropertiesOrMark.markId ?
+function* assignMarkOrMarkPropertiesToWaypointMarkConfiguration(waypointId, markConfigurationId, markOrMarkProperties) {
+  markOrMarkProperties.markId ?
     yield put(replaceWaypointMarkConfiguration({
       id: waypointId,
       oldId: markConfigurationId,
-      newId: markPropertiesOrMark.id
+      newId: markOrMarkProperties.id
     })) :
-    yield put(assignMarkPropertiesToMarkConfiguration({
+    yield put(assignMarkOrMarkPropertiesToMarkConfiguration({
       id: markConfigurationId,
-      markProperties: markPropertiesOrMark
+      markOrMarkProperties: markOrMarkProperties
     }))
 }
 
@@ -188,10 +188,10 @@ function* toggleSameStartFinish() {
       controlPointShortName: 'F'
     }))
 
-    yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[0], startPin)
-    yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[1], startBoat)
-    yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, finishWaypointId, newFinishMarkConfigurations[0], finishPin)
-    yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, finishWaypointId, newFinishMarkConfigurations[1], finishBoat)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[0], startPin)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[1], startBoat)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration, finishWaypointId, newFinishMarkConfigurations[0], finishPin)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration, finishWaypointId, newFinishMarkConfigurations[1], finishBoat)
   } else {
     const startFinishPin = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Pin'))
     const startFinishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Boat'))
@@ -207,10 +207,10 @@ function* toggleSameStartFinish() {
       newId: startMarkConfigurations[1]
     }))
 
-    yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[0], startFinishPin)
-    yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[1], startFinishBoat)
-    yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, finishWaypointId, startMarkConfigurations[0], startFinishPin)
-    yield call(assignMarkPropertiesOrMarkToWaypointMarkConfiguration, finishWaypointId, startMarkConfigurations[1], startFinishBoat)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[0], startFinishPin)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration, startWaypointId, startMarkConfigurations[1], startFinishBoat)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration, finishWaypointId, startMarkConfigurations[0], startFinishPin)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration, finishWaypointId, startMarkConfigurations[1], startFinishBoat)
   }
 }
 

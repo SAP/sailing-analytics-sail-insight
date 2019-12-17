@@ -16,7 +16,7 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
-  updateMarkConfigurationLocation, assignMarkPropertiesToMarkConfiguration,
+  updateMarkConfigurationLocation, assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew,
   navigateBackFromCourseCreation } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
@@ -379,9 +379,9 @@ compose(
         oldId: markConfigurationId,
         newId: props.item.id
       }) :
-      props.assignMarkPropertiesToMarkConfiguration({
+      props.assignMarkOrMarkPropertiesToMarkConfiguration({
         id: markConfigurationId,
-        markProperties: props.item
+        markOrMarkProperties: props.item
       })
     }
   }),
@@ -542,7 +542,7 @@ export default Component((props: object) =>
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
-      assignMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
+      assignMarkOrMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
       changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation }),
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
     reduce(concat, nothing()))(
