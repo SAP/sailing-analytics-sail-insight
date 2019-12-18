@@ -5,9 +5,7 @@
   "description": "Material Design \"Snackbar\" component for Android and iOS.",
   "homepage": "https://github.com/cooperka/react-native-snackbar",
   "license": "MIT",
-  "authors": {
-    "name": "Azendoo"
-  },
+  "authors": "Azendoo",
   "source": {
     "git": "https://github.com/cooperka/react-native-snackbar.git"
   },
