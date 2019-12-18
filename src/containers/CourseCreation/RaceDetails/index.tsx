@@ -1,6 +1,6 @@
 import { __, compose, concat, map, merge, defaultTo,
   reduce, when, uncurryN, tap, always, isNil, unless,
-  prop, isEmpty } from 'ramda'
+  prop, isEmpty, not } from 'ramda'
 
 import { openTrackDetails } from 'actions/navigation'
 
@@ -50,7 +50,13 @@ const mapStateToProps = (state: any, props: any) => {
     map((name: string) => ({
       name,
       regattaName,
-      courseDefined: !!getCourseById(`${session.regattaName} - ${name}`)(state),
+      courseDefined: compose(
+        not,
+        isEmpty,
+        defaultTo({}),
+        prop('waypoints'),
+        getCourseById(`${session.regattaName} - ${name}`))(
+        state),
       raceTime: getRaceTime(leaderboardName, name)(state)
     })),
     getRegattaPlannedRacesN(__, state),

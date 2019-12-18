@@ -26,7 +26,7 @@ export const changeWaypointToNewMark = createAction('CHANGE_WAYPOINT_TO_NEW_MARK
 export const changeWaypointToNewLine = createAction('CHANGE_WAYPOINT_TO_NEW_LINE')
 export const changeWaypointMarkConfigurationToNew = createAction('CHANGE_WAYPOINT_MARK_CONFIGURATION_TO_NEW')
 export const assignMarkOrMarkPropertiesToMarkConfiguration = createAction('ASSIGN_MARK_OR_MARK_PROPERTIES_TO_MARK_CONFIGURATION')
-export const replaceWaypointMarkConfiguration = createAction('REPLACE_MARK_CONFIGURATION')
+export const replaceWaypointMarkConfiguration = createAction('REPLACE_WAYPOINT_MARK_CONFIGURATION')
 
 export const addWaypoint = createAction('ADD_WAYPOINT')
 export const selectWaypoint = createAction(SELECT_WAYPOINT)

@@ -1,6 +1,7 @@
 import { merge, defaultTo, prop, compose, insert, reject,
   propEq, head, map, when, mergeLeft, mergeDeepLeft, always, ifElse,
-  append, concat, pick, dissoc, evolve, equals, isNil, find, has } from 'ramda'
+  append, concat, pick, dissoc, evolve, equals, isNil, find, has,
+  apply, take, move, last, includes, __ } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
@@ -26,6 +27,27 @@ import {
   assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration
 } from 'actions/courses'
+
+const updateWaypointMarkConfiguration = (state: any, action: any) => {
+  const sameStartFinish = compose(
+    apply(equals),
+    map(prop('markConfigurationIds')),
+    take(2),
+    move(-1, 0))(
+    state)
+  
+  const startFinishIds = [head(state).id, last(state).id]
+  const isStartOrFinish = includes(action.payload.id, startFinishIds)
+  const idsToUpdate = isStartOrFinish && sameStartFinish ? startFinishIds : [action.payload.id]
+
+  return map(
+    when(
+      compose(
+        includes(__, idsToUpdate),
+        prop('id')),
+      evolve({ markConfigurationIds: map(when(equals(action.payload.oldId), always(action.payload.newId))) })),
+    state)
+}
 
 const waypoints = handleActions({
   [editCourse as any]: (state: any = [], action: any) => compose(
@@ -59,16 +81,8 @@ const waypoints = handleActions({
         passingInstruction: PassingInstruction.Line,
         markConfigurationIds: action.payload.markConfigurationIds
       })), state),
-  [replaceWaypointMarkConfiguration as any]: (state: any, action: any) => map(
-    when(
-      propEq('id', action.payload.id),
-      evolve({ markConfigurationIds: map(when(equals(action.payload.oldId), always(action.payload.newId))) })),
-      state),
-  [changeWaypointMarkConfigurationToNew as any]: (state: any, action: any) => map(
-    when(
-      propEq('id', action.payload.id),
-      evolve({ markConfigurationIds: map(when(equals(action.payload.oldId), always(action.payload.newId))) })),
-      state),
+  [replaceWaypointMarkConfiguration as any]: updateWaypointMarkConfiguration,
+  [changeWaypointMarkConfigurationToNew as any]: updateWaypointMarkConfiguration,
 }, [])
 
 const markConfigurations = handleActions({
