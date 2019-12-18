@@ -1,7 +1,7 @@
 import { compose, find, reduce, concat, props, equals,
   prop, __, defaultTo, curry, when, has, propEq, map,
   always, not, includes, reject, flatten, partition, reverse,
-  addIndex, sortBy, indexOf } from 'ramda'
+  addIndex, sortBy, indexOf, unless, isNil, merge } from 'ramda'
 import { getEntityArrayByType} from './entity'
 import { createSelector } from 'reselect'
 import { getEditedCourse, hasSameStartFinish } from './course'
@@ -25,17 +25,19 @@ export const getMarkProperties = (state: any) => compose(
 
 const combinedNames = compose(
   reduce(concat, ''),
-  props(['name', 'shortName']))
+  props(['name', 'shortName']),
+  when(has('effectiveProperties'), prop('effectiveProperties')))
 
 const markConfigurationHasCombinedName = name => compose(
   equals(name),
   combinedNames,
-  prop('effectiveProperties'))
+  when(has('effectiveProperties'), prop('effectiveProperties')))
 
 const findMarkConfigurationByMarkPropertiesCombinedName =
   curry((markConfigurations, markProperties) =>
     compose(
       defaultTo(markProperties),
+      unless(isNil, merge({ isMarkConfiguration: true })),
       find(__, markConfigurations),
       markConfigurationHasCombinedName,
       combinedNames)(

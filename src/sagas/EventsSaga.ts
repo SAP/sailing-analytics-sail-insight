@@ -37,7 +37,7 @@ function* selectEventFlow({ payload }: any) {
   yield all(raceCourses.map((course: object, index: number) =>
     put(loadCourse({
       raceId: `${regattaName} - ${races[index]}`,
-      course: when(compose(isEmpty, prop('waypoints')), always(null), course)
+      course
     })) ))
 }
 

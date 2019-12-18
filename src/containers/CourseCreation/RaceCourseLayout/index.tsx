@@ -369,20 +369,30 @@ compose(
 
         props.changeWaypointToNewMark({
           id: props.selectedWaypoint.id,
-          markConfigurationIds: [props.item.markId ? props.item.id : markConfigurationId]
+          markConfigurationIds: [props.item.isMarkConfiguration ? props.item.id : markConfigurationId]
         })
       }
 
-      props.item.markId ?
-      props.replaceWaypointMarkConfiguration({
-        id: props.selectedWaypoint.id,
-        oldId: markConfigurationId,
-        newId: props.item.id
-      }) :
-      props.assignMarkOrMarkPropertiesToMarkConfiguration({
-        id: markConfigurationId,
-        markOrMarkProperties: props.item
-      })
+      if (props.item.isMarkConfiguration) {
+        props.replaceWaypointMarkConfiguration({
+          id: props.selectedWaypoint.id,
+          oldId: markConfigurationId,
+          newId: props.item.id
+        })
+      } else {
+        const newId = uuidv4()
+
+        props.changeWaypointMarkConfigurationToNew({
+          id: props.selectedWaypoint.id,
+          oldId: markConfigurationId,
+          newId
+        })
+
+        props.assignMarkOrMarkPropertiesToMarkConfiguration({
+          id: newId,
+          markOrMarkProperties: props.item
+        })
+      }
     }
   }),
   view({ style: styles.markPropertiesListItem }),

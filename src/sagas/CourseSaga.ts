@@ -1,6 +1,6 @@
 import { map, evolve, merge, curry, dissoc, not,
   prop, assoc, mergeLeft, compose, reduce, keys,
-  find, eqProps, propEq, when, tap, defaultTo,
+  find, eqProps, propEq, when, tap, defaultTo, isEmpty,
   addIndex, __, head, last, includes, flatten, reject } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
@@ -15,12 +15,12 @@ import {
   updateCourseLoading,
   replaceWaypointMarkConfiguration,
   assignMarkOrMarkPropertiesToMarkConfiguration,
-  changeWaypointToNewLine,
-  saveCourse
+  changeWaypointMarkConfigurationToNew,
+  changeWaypointToNewLine
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
 import { loadMarkProperties } from 'sagas/InventorySaga'
-import { getMarkProperties, getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
+import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
 import { getCourseById, getEditedCourse, hasSameStartFinish, hasEditedCourseChanged } from 'selectors/course'
 import {
   getSelectedEventInfo,
@@ -61,39 +61,49 @@ const courseWithWaypointIds = evolve({
 
 function* selectCourseFlow({ payload }: any) {
   const { race } = payload
-  const { regattaName } = yield select(getSelectedEventInfo)
+  const { regattaName, serverUrl } = yield select(getSelectedEventInfo)
+  const api = dataApi(serverUrl)
 
   yield put(updateCourseLoading(true))
-
   yield put(selectRace(race))
+
+  const latestCourseState = yield call(api.requestCourse, regattaName, race, 'Default')
+
+  yield  put(loadCourse({
+    raceId: `${regattaName} - ${race}`,
+    course: latestCourseState
+  }))
+
   yield call(loadMarkProperties)
 
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
-
-  const isNewCourse = !course
+  const isNewCourse = compose(isEmpty, prop('waypoints'))(course)
+  
   let editedCourse
 
   if (!isNewCourse) {
-    editedCourse = yield select(getCourseById(raceId))
+    editedCourse = course
   } else {
     editedCourse = newCourse()
+    editedCourse.markConfigurations = latestCourseState.markConfigurations
   }
 
-  yield put(editCourse(courseWithWaypointIds(editedCourse)))
+  editedCourse = courseWithWaypointIds(editedCourse)
+
+  yield put(editCourse(editedCourse))
 
   if (isNewCourse) {
-    const markProperties = yield select(getMarkProperties)
+    const startFinishPin = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Pin'))
+    const startFinishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Boat'))
+    const windwardMark = yield select(getMarkPropertiesOrMarkForCourseByName('Windward Mark'))
 
-    yield all(compose(
-      mapIndexed((mp, index) => put(assignMarkOrMarkPropertiesToMarkConfiguration({
-        id: editedCourse.markConfigurations[index].id,
-        markOrMarkProperties: mp
-      }))),
-      map(find(__, markProperties)),
-      map(propEq('name')))([
-      'Start/Finish Pin', 'Start/Finish Boat', 'Windward Mark'
-    ]))
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
+      editedCourse.waypoints[0].id, editedCourse.waypoints[0].markConfigurationIds[0], startFinishPin)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
+      editedCourse.waypoints[0].id, editedCourse.waypoints[0].markConfigurationIds[1], startFinishBoat)
+    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
+      editedCourse.waypoints[1].id, editedCourse.waypoints[1].markConfigurationIds[0], windwardMark)
   }
 
   yield put(updateCourseLoading(false))
@@ -153,16 +163,26 @@ function* saveCourseFlow() {
 }
 
 function* assignMarkOrMarkPropertiesToWaypointMarkConfiguration(waypointId, markConfigurationId, markOrMarkProperties) {
-  markOrMarkProperties.markId ?
+  if (markOrMarkProperties.isMarkConfiguration) {
     yield put(replaceWaypointMarkConfiguration({
       id: waypointId,
       oldId: markConfigurationId,
       newId: markOrMarkProperties.id
-    })) :
+    }))
+  } else {
+    const newId = uuidv4()
+
+    yield put(changeWaypointMarkConfigurationToNew({
+      id: waypointId,
+      oldId: markConfigurationId,
+      newId
+    }))
+
     yield put(assignMarkOrMarkPropertiesToMarkConfiguration({
-      id: markConfigurationId,
+      id: newId,
       markOrMarkProperties: markOrMarkProperties
     }))
+  }
 }
 
 function* toggleSameStartFinish() {
