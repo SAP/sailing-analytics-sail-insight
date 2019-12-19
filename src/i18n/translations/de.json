@@ -273,7 +273,8 @@
 
   "subtitle": "Track-Analyze-Perform",
   "text_login": "Login",
-  "text_registration": "Dein erster Track ist nur einen Schritt entfernt.",
+  "text_registration_part1": "Melde Dich an, ",
+  "text_registration_part2": "damit wir dich beim Managen und Tracken deiner Events optimal unterstützen können",
   "text_name": "Name",
   "text_placeholder_email": "Email Adresse",
   "text_login_already_account": "Login. Ich habe bereits einen Account.",

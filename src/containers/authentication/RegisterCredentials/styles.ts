@@ -11,9 +11,16 @@ export default EStyleSheets.create({
     flex: 1,
     marginTop: 90,
   },
-  claim: {
+  claim1: {
+    color: '#F0AB00',
+    fontSize: 17,
+    fontFamily: 'SFProDisplay-Heavy',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
+  },
+  claim2: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 17,
     fontFamily: 'SFProDisplay-Heavy',
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',

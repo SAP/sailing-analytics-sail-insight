@@ -54,7 +54,9 @@ class RegisterCredentials extends TextInputForm<Props> {
       <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
         <ScrollContentView style={styles.scrollContainer}>
           <View style={styles.textContainer}>
-            <Text style={styles.claim}>{I18n.t('text_registration').toUpperCase()}</Text>
+            <Text style={styles.claim1}>{I18n.t('text_registration_part1').toUpperCase()}
+              <Text style={styles.claim2}>{I18n.t('text_registration_part2').toUpperCase()}</Text>
+            </Text>
           </View>
           <View style={styles.inputField}>
             <Field

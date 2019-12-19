@@ -1,9 +1,9 @@
+import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
-import I18n from 'i18n'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
-import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
+import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions, navigateToTrackingList } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
 
@@ -16,9 +16,9 @@ import { spreadableList } from 'helpers/utils'
 
 import { fetchEvent } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
-import { getCheckInByLeaderboardName, getActiveCheckInEntity } from 'selectors/checkIn'
-import { LocationTrackingStatus } from 'services/LocationService'
+import { getActiveCheckInEntity, getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
+import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
 import { mapResToRegatta } from '../models/Regatta'
 import { getCompetitor } from '../selectors/competitor'
@@ -95,7 +95,7 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
     Alert.alert(
       I18n.t('text_event_already_joined_title'),
       I18n.t('text_event_already_joined_message'),
-      [{ text: 'OK', onPress: navigateToSessions }],
+      [{ text: 'OK', onPress: navigateToTrackingList }],
       { cancelable: false }
     )
 

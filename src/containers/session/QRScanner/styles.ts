@@ -1,4 +1,5 @@
 import { Dimensions } from 'react-native'
+import { $primaryButtonColor } from 'styles/colors'
 
 export default {
   container: { flex: 1 },
@@ -10,7 +11,7 @@ export default {
     height: Dimensions.get('window').width * 0.8,
     width: Dimensions.get('window').width * 0.8,
     borderWidth: 4,
-    borderColor: '$primaryButtonColor',
+    borderColor: $primaryButtonColor,
     backgroundColor: 'transparent',
   },
   bottomInfoField: {
@@ -27,7 +28,7 @@ export default {
     paddingRight: 4,
     paddingTop: 8,
     paddingBottom: 8,
-    backgroundColor: '$primaryButtonColor',
+    backgroundColor: $primaryButtonColor,
     borderRadius: 3,
     marginLeft: 'auto',
     marginRight: 'auto',
