@@ -170,8 +170,6 @@ const SameStartFinish = Component((props: object) =>
     text({ style: styles.sameStartFinishText }, 'Start & finish are the same')
   ]))
 
-
-
 const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
