@@ -127,7 +127,12 @@ export default createStackNavigator(
       }),
     },
     [Screens.CourseTrackerBinding]: {
-      screen: TrackerBinding.fold,
+      screen: TrackerBinding
+        .contramap(props => ({
+          ...props,
+          selectedMarkConfiguration: props.navigation.state.params.data.selectedMarkConfiguration,
+        }))
+        .fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle

@@ -55,10 +55,22 @@ export const getMarkPositionByMarkConfiguration = markConfigurationId => createS
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
+export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => createSelector(
+  getEditedCourse,
+  compose(
+    path(['effectivePositioning', 'deviceUUID']),
+    find(propEq('id', markConfigurationId)),
+    prop('markConfigurations')))
+
 export const getSelectedMarkProperties = createSelector(
   getSelectedMarkConfiguration,
   identity,
   (markConfigurationId, state) => getMarkPropertiesByMarkConfiguration(markConfigurationId)(state))
+
+export const getSelectedMarkDeviceTracking = createSelector(
+  getSelectedMarkConfiguration,
+  identity,
+  (markConfigurationId, state) => getMarkDeviceTrackingByMarkConfiguration(markConfigurationId)(state))
 
 export const getSelectedMarkPosition = createSelector(
   getSelectedMarkConfiguration,

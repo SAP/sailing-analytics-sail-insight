@@ -1,6 +1,8 @@
-import { __,  compose, concat,  reduce } from 'ramda'
+import { __,  compose, concat, reduce, toUpper } from 'ramda'
 import QRCode from 'react-native-qrcode-svg'
-
+import DeviceInfo from 'react-native-device-info'
+import { getDeviceUuid } from 'helpers/uuid'
+import { navigateBack } from 'navigation'
 import {
   Component,
   fold,
@@ -8,7 +10,14 @@ import {
   nothing,
   reduxConnect as connect
 } from 'components/fp/component'
-import { text } from 'components/fp/react-native'
+import { text, touchableOpacity, view } from 'components/fp/react-native'
+import styles from './styles'
+import { Dimensions } from 'react-native'
+import { updateMarkConfigurationDeviceTracking } from 'actions/courses'
+
+const { width: viewportWidth } = Dimensions.get('window')
+const wp = (percentage: number) => Math.round((percentage * viewportWidth) / 100)
+const qrCodeWidth = wp(80)
 
 const mapStateToProps = (state: any, props: any) => ({
   // Should be selected from the redux store once we know the API
@@ -20,12 +29,31 @@ const mapStateToProps = (state: any, props: any) => ({
 
 const trackingQRCode = fromClass(QRCode).contramap((props: any) => ({
   value: JSON.stringify(props.registrationData),
+  size: qrCodeWidth
 }))
+
+const useThisDeviceButton = Component(props => compose(
+  fold(props),
+  touchableOpacity({
+    onPress: () => {
+      props.updateMarkConfigurationDeviceTracking({
+        id: props.selectedMarkConfiguration,
+        deviceId: getDeviceUuid(DeviceInfo.getUniqueID())
+      })
+      navigateBack()
+    },
+    style: styles.useThisDeviceButton,
+  }),
+  text({ style: styles.useThisDeviceButtonText }),
+  toUpper)(
+  'Use this device'))
 
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps),
+    connect(mapStateToProps, { updateMarkConfigurationDeviceTracking }),
+    view({ style: styles.container }),
     reduce(concat, nothing()))([
     trackingQRCode,
-    text({}, 'Scan this QR code with another device') ]))
+    text({ style: styles.scanText }, 'Scan this QR code with another device or use this device as a tracker'),
+    useThisDeviceButton ]))

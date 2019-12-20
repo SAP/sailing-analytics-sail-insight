@@ -21,6 +21,7 @@ import {
   updateWaypointPassingInstruction,
   updateMarkConfigurationShortName,
   updateMarkConfigurationLocation,
+  updateMarkConfigurationDeviceTracking,
   changeWaypointToNewMark,
   changeWaypointToNewLine,
   changeWaypointMarkConfigurationToNew,
@@ -98,9 +99,14 @@ const markConfigurations = handleActions({
     state),
   [updateMarkConfigurationLocation as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id),
-      mergeDeepLeft({ effectivePositioning: { position: {
-        latitude_deg: action.payload.value.latitude,
-        longitude_deg: action.payload.value.longitude }}})),
+      evolve({
+        effectivePositioning: always({ position: {
+          latitude_deg: action.payload.value.latitude,
+          longitude_deg: action.payload.value.longitude }}) })),
+    state),
+  [updateMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id),
+      evolve({ effectivePositioning: always({ deviceUUID: action.payload.deviceId })})),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(

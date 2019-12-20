@@ -74,6 +74,8 @@ function* selectCourseFlow({ payload }: any) {
     course: latestCourseState
   }))
 
+  console.log('latest course state', latestCourseState)
+
   yield call(loadMarkProperties)
 
   const raceId = getRaceId(regattaName, race)

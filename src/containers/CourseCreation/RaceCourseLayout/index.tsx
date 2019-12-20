@@ -21,7 +21,7 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   navigateBackFromCourseCreation } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
-  getSelectedMarkPosition, hasSameStartFinish } from 'selectors/course'
+  getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking } from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
@@ -46,6 +46,7 @@ const mapStateToProps = (state: any) => ifElse(
     selectedMarkConfiguration: getSelectedMarkConfiguration(state),
     selectedMarkProperties: getSelectedMarkProperties(state),
     selectedMarkLocation: getSelectedMarkPosition(state),
+    selectedMarkDeviceTracking: getSelectedMarkDeviceTracking(state),
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
     marksAndMarkPropertiesOptions: getFilteredMarkPropertiesAndMarksOptionsForCourse(state),
@@ -169,9 +170,12 @@ const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.locationContainer }),
-    concat(text({ style: styles.trackingText }, 'No device tracked')),
+    concat(text({ style: styles.trackingText },
+      ifElse(isNil, always('No device tracked'), always('Bound to a device'))(props.selectedMarkDeviceTracking))),
     touchableOpacity({
-      onPress: navigateToCourseTrackerBinding
+      onPress: () => navigateToCourseTrackerBinding({
+        selectedMarkConfiguration: props.selectedMarkConfiguration
+      })
     }))(
     text({ style: styles.trackingText }, 'Change Tracking Device')))
 
