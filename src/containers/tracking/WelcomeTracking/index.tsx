@@ -5,7 +5,6 @@ import { ImageBackground, Text, View, ViewProps } from 'react-native'
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
 import {
-  navigateToMainTabs,
   navigateToQRScanner,
   navigateToTrackingList,
 } from 'navigation'
@@ -20,10 +19,28 @@ import {
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
 
+import { getStore } from 'store'
+
 class WelcomeTracking extends React.Component<ViewProps & {
   isLoggedIn: boolean
   user: User,
 }> {
+
+  constructor(props: Readonly<ViewProps & {
+    isLoggedIn: boolean
+    user: User,
+  }>) {
+    super(props)
+
+    const isLoggedIn = isLoggedInSelector(getStore().getState())
+
+    if (!isLoggedIn) {
+      setTimeout(() => {
+        navigateToTrackingList()
+      }, 1000)
+    }
+  }
+
 
   public render() {
     const { isLoggedIn, user } = this.props

@@ -24,13 +24,11 @@ import EventCreation from 'containers/session/EventCreation'
 import SessionDetail from 'containers/session/SessionDetail'
 import TeamDetails from 'containers/TeamDetails'
 import WelcomeTracking from 'containers/tracking/WelcomeTracking'
+import FirstContact from 'containers/user/FirstContact'
 
 import { button } from 'styles/commons'
 
-
 import MainTabNavigator from './MainTabNavigator'
-
-import FirstContact from 'containers/user/FirstContact'
 
 
 const teamDetailsHeader = connect(
