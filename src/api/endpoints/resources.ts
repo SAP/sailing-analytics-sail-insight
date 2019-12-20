@@ -39,6 +39,7 @@ import {
   markPropertiesSchema,
   raceSchema,
   regattaSchema,
+  markSchema,
 } from 'api/schemas'
 import { Buffer } from 'buffer'
 import { get } from 'lodash'

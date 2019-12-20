@@ -1,4 +1,4 @@
-import { __,  compose, concat, reduce, toUpper } from 'ramda'
+import { __,  compose, concat, reduce, toUpper, merge } from 'ramda'
 import querystring from 'query-string'
 import QRCode from 'react-native-qrcode-svg'
 import { navigateBack } from 'navigation'
@@ -7,16 +7,18 @@ import {
   fold,
   fromClass,
   nothing,
+  contramap,
   reduxConnect as connect
 } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import styles from './styles'
 import { Dimensions } from 'react-native'
-import { updateMarkConfigurationDeviceTracking } from 'actions/courses'
+import { updateMarkConfigurationDeviceTracking, fetchAndUpdateMarkConfigurationDeviceTracking } from 'actions/courses'
 import { getDeviceId } from 'selectors/user'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getMarkConfigurationById } from 'selectors/course'
 import { BRANCH_APP_DOMAIN } from 'environment'
+import { NavigationEvents } from 'react-navigation'
 
 const { width: viewportWidth } = Dimensions.get('window')
 const wp = (percentage: number) => Math.round((percentage * viewportWidth) / 100)
@@ -62,12 +64,23 @@ const useThisDeviceButton = Component(props => compose(
   toUpper)(
   'Use this device'))
 
+const NavigationBackHandler = Component(props => compose(
+  fold(props),
+  contramap(merge({
+    onWillBlur: payload => !payload.state && props.fetchAndUpdateMarkConfigurationDeviceTracking()
+  })),
+  fromClass)(
+  NavigationEvents))
+
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { updateMarkConfigurationDeviceTracking }),
+    connect(mapStateToProps, {
+      updateMarkConfigurationDeviceTracking,
+      fetchAndUpdateMarkConfigurationDeviceTracking }),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
+    NavigationBackHandler,
     trackingQRCode,
     text({ style: styles.scanText }, 'Scan this QR code with another device or use this device as a tracker'),
     useThisDeviceButton ]))
