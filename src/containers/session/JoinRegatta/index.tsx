@@ -12,7 +12,7 @@ import { dateTimeText } from 'helpers/date'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { openEmailToContact } from 'helpers/user'
 import { CheckIn } from 'models'
-import { navigateToSessions } from 'navigation'
+import { navigateToSessions, navigateToTrackingList } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getBoat } from 'selectors/boat'
 import { getCompetitor } from 'selectors/competitor'
@@ -56,6 +56,7 @@ class JoinRegatta extends React.Component<{
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
       this.setState({ isLoading: false })
+      navigateToTrackingList()
     }
   }
 

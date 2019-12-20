@@ -274,7 +274,8 @@
 
   "subtitle": "Track-Analyze-Perform",
   "text_login": "Login",
-  "text_registration": "Your first Track is just one step Away.",
+  "text_registration_part1": "Register ",
+  "text_registration_part2": "so that we can optimally support you in managing and tracking your events",
   "text_name": "Name",
   "text_placeholder_email": "E-mail address",
   "text_login_already_account": "Login. I already have an account.",
