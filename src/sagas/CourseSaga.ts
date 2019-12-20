@@ -74,14 +74,12 @@ function* selectCourseFlow({ payload }: any) {
     course: latestCourseState
   }))
 
-  console.log('latest course state', latestCourseState)
-
   yield call(loadMarkProperties)
 
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
   const isNewCourse = compose(isEmpty, prop('waypoints'))(course)
-  
+
   let editedCourse
 
   if (!isNewCourse) {

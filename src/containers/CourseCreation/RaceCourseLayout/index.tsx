@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, move, length,
   prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
-  propEq, addIndex, intersperse, gt, findIndex, unless, tail, has } from 'ramda'
+  propEq, addIndex, intersperse, gt, findIndex, unless, tail, has, toUpper } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
@@ -23,6 +23,7 @@ import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguratio
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking } from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
+import { getDeviceId } from 'selectors/user'
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
 import TextInput from 'components/TextInput'
@@ -46,7 +47,10 @@ const mapStateToProps = (state: any) => ifElse(
     selectedMarkConfiguration: getSelectedMarkConfiguration(state),
     selectedMarkProperties: getSelectedMarkProperties(state),
     selectedMarkLocation: getSelectedMarkPosition(state),
-    selectedMarkDeviceTracking: getSelectedMarkDeviceTracking(state),
+    selectedMarkDeviceTracking: compose(
+      defaultTo('No device assigned'),
+      unless(isNil, ifElse(equals(getDeviceId()), always('This device is used as a tracker'), always('A device is used as a tracker'))))(
+      getSelectedMarkDeviceTracking(state)),
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
     marksAndMarkPropertiesOptions: getFilteredMarkPropertiesAndMarksOptionsForCourse(state),
@@ -166,18 +170,20 @@ const SameStartFinish = Component((props: object) =>
     text({ style: styles.sameStartFinishText }, 'Start & finish are the same')
   ]))
 
+
+
 const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.locationContainer }),
-    concat(text({ style: styles.trackingText },
-      ifElse(isNil, always('No device tracked'), always('Bound to a device'))(props.selectedMarkDeviceTracking))),
+    concat(text({ style: styles.trackingText }, props.selectedMarkDeviceTracking)),
     touchableOpacity({
+      style: styles.changeTrackingButton,
       onPress: () => navigateToCourseTrackerBinding({
         selectedMarkConfiguration: props.selectedMarkConfiguration
       })
     }))(
-    text({ style: styles.trackingText }, 'Change Tracking Device')))
+    text({ style: styles.changeTrackingText }, toUpper('Change Tracking Device'))))
 
 const MarkPositionPing = Component((props: object) => compose(
   fold(props),

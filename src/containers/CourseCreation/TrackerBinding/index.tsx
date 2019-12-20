@@ -1,7 +1,5 @@
 import { __,  compose, concat, reduce, toUpper } from 'ramda'
 import QRCode from 'react-native-qrcode-svg'
-import DeviceInfo from 'react-native-device-info'
-import { getDeviceUuid } from 'helpers/uuid'
 import { navigateBack } from 'navigation'
 import {
   Component,
@@ -14,6 +12,7 @@ import { text, touchableOpacity, view } from 'components/fp/react-native'
 import styles from './styles'
 import { Dimensions } from 'react-native'
 import { updateMarkConfigurationDeviceTracking } from 'actions/courses'
+import { getDeviceId } from 'selectors/user'
 
 const { width: viewportWidth } = Dimensions.get('window')
 const wp = (percentage: number) => Math.round((percentage * viewportWidth) / 100)
@@ -38,7 +37,7 @@ const useThisDeviceButton = Component(props => compose(
     onPress: () => {
       props.updateMarkConfigurationDeviceTracking({
         id: props.selectedMarkConfiguration,
-        deviceId: getDeviceUuid(DeviceInfo.getUniqueID())
+        deviceId: getDeviceId()
       })
       navigateBack()
     },
