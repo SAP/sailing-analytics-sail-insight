@@ -29,6 +29,10 @@ export const getSelectedWaypoint = createSelector(
   (state: any): string | undefined => state.courses.selectedWaypoint,
   (editedCourse, waypointId) => find(propEq('id', waypointId), editedCourse.waypoints))
 
+export const getMarkConfigurationById = id => createSelector(
+  getEditedCourse,
+  compose(find(propEq('id', id)), prop('markConfigurations')))
+
 export const getSelectedMarkConfiguration = createSelector(
   getSelectedWaypoint,
   state => state.courses.selectedMarkConfiguration,
