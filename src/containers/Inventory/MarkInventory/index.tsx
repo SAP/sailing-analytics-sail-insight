@@ -1,13 +1,12 @@
-import { __, compose, always, objOf,
-  prop, map, reduce, concat, merge, defaultTo } from 'ramda'
+import { __, always, compose, concat, defaultTo, map, merge, objOf, prop, reduce } from 'ramda'
 
 import {
   Component,
   fold,
   fromClass,
   nothing,
+  recomposeLifecycle as lifeCycle,
   reduxConnect as connect,
-  recomposeLifecycle as lifeCycle
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { ControlPointClass } from 'models/Course'
@@ -15,10 +14,10 @@ import { ControlPointClass } from 'models/Course'
 import { getMarkProperties } from 'selectors/inventory'
 import { loadMarkProperties, deleteMarkProperties } from 'actions/inventory'
 
+import Images from '@assets/Images'
+import IconText from 'components/IconText'
 import { Alert } from 'react-native'
 import styles from './styles'
-import IconText from 'components/IconText'
-import Images from '@assets/Images'
 
 const mapStateToProps = (state, props) => ({
   markProperties: getMarkProperties(state)
@@ -66,15 +65,15 @@ const MarkPropertiesItem = Component((props: object) =>
           '',
           'Decide for an action',
           [
-            { text: 'Edit mark'},
-            { text: 'Share mark'},
+            { text: 'Edit mark' },
+            { text: 'Share mark' },
             { text: 'Delete mark', onPress: () => {
               Alert.alert('Deleting Mark', `Do you really want to irretrievably delete ${props.item.name}?`, [
                 { text: 'Yes', onPress: () => props.deleteMarkProperties(props.item) },
-                { text: 'No' }
+                { text: 'No' },
               ])
             }},
-            { text: 'Cancel' }
+            { text: 'Cancel' },
           ])
       }
     }),
@@ -91,7 +90,7 @@ const List = Component((props: object) => compose(
   forwardingPropsFlatList.contramap((props: any) =>
     merge({
       data: props.markProperties,
-      renderItem: MarkPropertiesItem.fold
+      renderItem: MarkPropertiesItem.fold,
     }, props))))
 
 export default Component((props: object) =>

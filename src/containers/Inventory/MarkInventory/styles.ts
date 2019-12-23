@@ -7,6 +7,9 @@ export default EStyleSheets.create({
   mainContainer: {
     backgroundColor: '$primaryBackgroundColor',
     flex: 1,
+    paddingTop: 30,
+    width: '100%',
+    height: '100%',
   },
 
   createNewContainer: {
@@ -50,6 +53,7 @@ export default EStyleSheets.create({
   markListContainer: {
     marginLeft: 15,
     marginRight: 15,
+    marginBottom: 30,
   },
 
   markContainer: {
@@ -75,5 +79,5 @@ export default EStyleSheets.create({
   markEllipses: {
     ...withDefaultFont,
     fontSize: markTextFontSize,
-  }
+  },
 })

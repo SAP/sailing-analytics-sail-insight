@@ -15,36 +15,6 @@ const styledButton = curry(({ onPress }, content: any) =>
       touchableOpacity({ onPress }))(
       view({ style: styles.button }, content))))
 
-/*
-export const ArrowRight = fromClass(IconText).contramap(merge({
-  source: Images.actions.arrowRight,
-  style: { justifyContent: 'center' } }))
-
-const toTouchableCard = curry(({ onPress, icon }, content: any) =>
-  Component((props: any) =>
-    compose(
-      fold(props),
-      touchableOpacity({ onPress }),
-      view({ style: styles.card }),
-      reduce(concat, nothing()))([
-        fromClass(IconText).contramap(merge({ source: icon })),
-        view({ style: styles.cardContent }, content),
-        ArrowRight,
-      ])))
-
-export const overallStatusCard = Component((props: any) =>
-  compose(
-    fold(props),
-    concat(__, view({ style: styles.containerAngledBorder1 }, nothing())),
-    view({ style: styles.container1 }),
-    // toTouchableCard({ icon: Images.info.boat, onPress: () => console.log('press on competitors')}),
-    reduce(concat, nothing()))([
-      text({ style: styles.text }, props.overallStatus),
-      text({ style: styles.text }, props.raceStatus),
-      text({ style: styles.text }, props.trackingStatus),
-    ]))
-*/
-
 export const overlayPicker = curry(({ selectedValue, onValueChange, style, min = 1, max = 51 }, c) => Component(props => compose(
     fold(props),
     fromClass(ModalSelector).contramap,
