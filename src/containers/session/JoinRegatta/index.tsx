@@ -169,7 +169,7 @@ const mapStateToProps = (state: any, props: any) => {
     leaderboard: getLeaderboard(checkInData.leaderboardName)(state),
     competitor: getCompetitor(checkInData.competitorId)(state),
     boat: getBoat(checkInData.boatId)(state),
-    mark: getMark(checkInData.markId)(state),
+    mark: getMark(checkInData.markId)(state)
   }
 }
 

@@ -161,6 +161,18 @@ export default EStyleSheets.create({
     paddingBottom: 12,
   },
 
+  changeTrackingButton: {
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: $Orange,
+    borderRadius: 4,
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 10,
+    paddingTop: 12,
+    paddingBottom: 12
+  },
+
   locationText: {
     ...withDefaultFont,
     ...white,
@@ -189,7 +201,16 @@ export default EStyleSheets.create({
 
   trackingText: {
     ...white,
-    textAlign: 'center',
+    ...withDefaultBoldFont,
+    fontSize: 18,
+    textAlign: 'center'
+  },
+
+  changeTrackingText: {
+    ...withDefaultBoldFont,
+    color: $Orange,
+    fontSize: 15,
+    textAlign: 'center'
   },
 
   deleteWaypointContainer: {

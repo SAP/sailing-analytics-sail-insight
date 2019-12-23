@@ -29,6 +29,10 @@ export const getSelectedWaypoint = createSelector(
   (state: any): string | undefined => state.courses.selectedWaypoint,
   (editedCourse, waypointId) => find(propEq('id', waypointId), editedCourse.waypoints))
 
+export const getMarkConfigurationById = id => createSelector(
+  getEditedCourse,
+  compose(find(propEq('id', id)), prop('markConfigurations')))
+
 export const getSelectedMarkConfiguration = createSelector(
   getSelectedWaypoint,
   state => state.courses.selectedMarkConfiguration,
@@ -55,10 +59,22 @@ export const getMarkPositionByMarkConfiguration = markConfigurationId => createS
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
+export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => createSelector(
+  getEditedCourse,
+  compose(
+    path(['effectivePositioning', 'deviceUUID']),
+    find(propEq('id', markConfigurationId)),
+    prop('markConfigurations')))
+
 export const getSelectedMarkProperties = createSelector(
   getSelectedMarkConfiguration,
   identity,
   (markConfigurationId, state) => getMarkPropertiesByMarkConfiguration(markConfigurationId)(state))
+
+export const getSelectedMarkDeviceTracking = createSelector(
+  getSelectedMarkConfiguration,
+  identity,
+  (markConfigurationId, state) => getMarkDeviceTrackingByMarkConfiguration(markConfigurationId)(state))
 
 export const getSelectedMarkPosition = createSelector(
   getSelectedMarkConfiguration,
