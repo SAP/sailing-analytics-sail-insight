@@ -30,19 +30,6 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		165C2BDF3A2349ACA9CDB23C /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2354102185664676B9B5030E /* libRNSVG-tvOS.a */; };
-		234D051D23A3AB5200321CC6 /* sf_pro_display_heavyitalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D04DE23A3AB4100321CC6 /* sf_pro_display_heavyitalic.otf */; };
-		234D051E23A3AB5200321CC6 /* sf_pro_display_heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D050F23A3AB4200321CC6 /* sf_pro_display_heavy.otf */; };
-		234D051F23A3AB5200321CC6 /* bentonsans_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051023A3AB4300321CC6 /* bentonsans_bold.otf */; };
-		234D052123A3AB5200321CC6 /* bentonsans_medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051223A3AB4500321CC6 /* bentonsans_medium.otf */; };
-		234D052223A3AB5200321CC6 /* bentonsans_regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051323A3AB4700321CC6 /* bentonsans_regular.otf */; };
-		234D052323A3AB5200321CC6 /* bentonsans_extralight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051423A3AB4800321CC6 /* bentonsans_extralight.otf */; };
-		234D052423A3AB5200321CC6 /* sf_compact_text_regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051523A3AB4900321CC6 /* sf_compact_text_regular.otf */; };
-		234D052523A3AB5200321CC6 /* bentonsans_thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051623A3AB4A00321CC6 /* bentonsans_thin.otf */; };
-		234D052623A3AB5200321CC6 /* sf_pro_display_medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051723A3AB4B00321CC6 /* sf_pro_display_medium.otf */; };
-		234D052723A3AB5200321CC6 /* sf_compact_text_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051823A3AB4C00321CC6 /* sf_compact_text_bold.otf */; };
-		234D052823A3AB5200321CC6 /* bentonsans_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051923A3AB4D00321CC6 /* bentonsans_light.otf */; };
-		234D052A23A3AB5200321CC6 /* sf_pro_display_light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051B23A3AB4F00321CC6 /* sf_pro_display_light.otf */; };
-		234D052B23A3AB5200321CC6 /* sf_pro_display_bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 234D051C23A3AB5100321CC6 /* sf_pro_display_bold.otf */; };
 		24835D55349A49238F5E79A6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 48801B0D5D4B4D46A81DDB39 /* libz.tbd */; };
 		2CDCC9F153954F8ABA53D8DE /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F81971C8EFD34E708D20A666 /* libRNDeviceInfo.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -58,9 +45,12 @@
 		2DCD954D1E0B4F2C00145EB5 /* sap_sailing_insightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2EDB25DADACD4FDAB3B4B25B /* libCocoaLumberjack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DE2493F5B194B6A89502462 /* libCocoaLumberjack.a */; };
+		3CFD8936773B468E8AF69EB3 /* BentonSans-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C4F615FCC56D45608BB77A34 /* BentonSans-Bold.otf */; };
 		44240950FA4CEE323610BF38 /* libPods-sap_sailing_insight-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BDE9E0193E8C6E5DD7A7DAC /* libPods-sap_sailing_insight-tvOSTests.a */; };
 		4439F9950E0D4FEFAEBAA1EF /* libRNBackgroundTimer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48D19F3865F54560A363145B /* libRNBackgroundTimer.a */; };
+		475044098F5D49F48DF8B704 /* SFProDisplay-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6697E9E8466C41A1A1E26D10 /* SFProDisplay-Bold.otf */; };
 		4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B2B06EC2267239A0009FAEC /* InfoPlist.strings */; };
+		4EC14D9E183943FFB0DC1609 /* SFCompactText-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = F86F0DBAAFEC487A8C513B94 /* SFCompactText-Regular.otf */; };
 		5536C5CA256B48ED8D5F9AC2 /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FC6180A3A444A9DB5927ECA /* libRNI18n.a */; };
 		57BC4A89C8DD4BD596D64D6E /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E652804557F46EBA1BACA13 /* libBVLinearGradient.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -74,19 +64,29 @@
 		6B9E40E9232FC42C0007CD99 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BAED7CF22BB717A00657AFA /* libRNFS.a */; };
 		6BA3934523316586003B53FB /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BA043E5233101B3000C5071 /* libRNFirebase.a */; };
 		6BA39346233167F9003B53FB /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BA043E5233101B3000C5071 /* libRNFirebase.a */; };
+		6D9ADD1B298D4DFB9CA60FE2 /* BentonSans-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 187464D2C7134C40AE6BFA41 /* BentonSans-Thin.otf */; };
+		75E12998B1F7482F875C58B8 /* SFProDisplay-HeavyItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 22B060AAFBC445FDAA1D0A59 /* SFProDisplay-HeavyItalic.otf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		86C11B2BFB794E3E81D660D3 /* BentonSans-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = C4FBACC177EB4AD18CE21268 /* BentonSans-ExtraLight.otf */; };
 		8779224066C447DC852480EC /* libFastImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8EA2AD5896349C5B7F7218F /* libFastImage.a */; };
 		9732283BC1BC432DB3BF3C81 /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37AD602985A944BCA6980DC1 /* libRNDeviceInfo-tvOS.a */; };
 		98F71BE62153B220008D1AC5 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 98F71BA92153B20D008D1AC5 /* libART.a */; };
 		9A7201380A18488D9A50DDD3 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCE39D05504C4265BDE0AD26 /* libReactNativePermissions.a */; };
+		9ACC46B62BA74A1AAE3CB968 /* BentonSans-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9A52AF3B35714CD9910AB7B1 /* BentonSans-Regular.otf */; };
 		9DE4753D30F94CD1B0097EEC /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CB8C2C4D5654BC98F217424 /* libRNSVG.a */; };
+		AFBA82F3028D478795B5C06B /* SFProDisplay-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F668B25BE0E74E509D8219BB /* SFProDisplay-Medium.otf */; };
 		BD12F39B20744181AB1AA4D2 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 038E7A07C1B14DC7BE95AF83 /* libc++.tbd */; };
 		C13111AA193A479E97412C3B /* libRNVersionNumber-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 747092EADA724D54BC53AC23 /* libRNVersionNumber-tvOS.a */; };
 		C49B5CD687BE4D9F938A2479 /* libRNBackgroundFetch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18CE72F7CE67495E8D18BC6A /* libRNBackgroundFetch.a */; };
+		C7E535DE4E2D4ACD93494FAE /* BentonSans-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0F570E76DC0744C7A9FDCEC2 /* BentonSans-Medium.otf */; };
 		CAE64AE6B14D00CF86A17CE2 /* libPods-sap_sailing_insight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27CAC2232A82811A86AEFCD9 /* libPods-sap_sailing_insight.a */; };
 		D2E25F9B15274471A0A84122 /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7730FFB4055048FEB9559C38 /* libKCKeepAwake.a */; };
+		D4CC3FC19B104979B3DC0F4F /* BentonSans-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76A85796BBA4701A924EC79 /* BentonSans-Light.otf */; };
 		D56AC8654736471D9EEA2144 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7704A56BFAED466EB8F8F240 /* RNBackgroundFetch+AppDelegate.m */; };
+		D77472E005664B2AAC6AD997 /* SFCompactText-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 193171EC2B3B41F1A119F34F /* SFCompactText-Bold.otf */; };
 		DCADCDE2F89442A4AE2450D7 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 664FD40D1A794E639258B3B7 /* libsqlite3.tbd */; };
+		E4D4090681F3452DB67042DC /* SFProDisplay-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = E12B304FAD7147CB92676106 /* SFProDisplay-Light.otf */; };
+		F9E8BFABFCBC41728C88DEA6 /* SFProDisplay-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9AC5B0B0594245C580F9D8DC /* SFProDisplay-Heavy.otf */; };
 		FE9D32BC651645C2875D5BAC /* libRNI18n-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBE9F00F02FC407EA88B89C3 /* libRNI18n-tvOS.a */; };
 /* End PBXBuildFile section */
 
@@ -659,6 +659,7 @@
 		00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sap_sailing_insightTests.m; sourceTree = "<group>"; };
 		038E7A07C1B14DC7BE95AF83 /* libc++.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		08143EC286E14C4EAAE7443D /* libRealmReact.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRealmReact.a; sourceTree = "<group>"; };
+		0F570E76DC0744C7A9FDCEC2 /* BentonSans-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Medium.otf"; path = "../assets/fonts/BentonSans-Medium.otf"; sourceTree = "<group>"; };
 		106D9ADF2222FAFE00E2D930 /* FIRAnalyticsConnector.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FIRAnalyticsConnector.framework; path = Pods/FirebaseAnalytics/Frameworks/FIRAnalyticsConnector.framework; sourceTree = "<group>"; };
 		106D9AE32222FB1100E2D930 /* GoogleAppMeasurement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleAppMeasurement.framework; path = Pods/GoogleAppMeasurement/Frameworks/GoogleAppMeasurement.framework; sourceTree = "<group>"; };
 		106D9AE52223141300E2D930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sap_sailing_insight/GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -675,23 +676,13 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = sap_sailing_insight/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sap_sailing_insight/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		187464D2C7134C40AE6BFA41 /* BentonSans-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Thin.otf"; path = "../assets/fonts/BentonSans-Thin.otf"; sourceTree = "<group>"; };
 		18CE72F7CE67495E8D18BC6A /* libRNBackgroundFetch.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundFetch.a; sourceTree = "<group>"; };
+		193171EC2B3B41F1A119F34F /* SFCompactText-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFCompactText-Bold.otf"; path = "../assets/fonts/SFCompactText-Bold.otf"; sourceTree = "<group>"; };
 		1E1CBA8743F3450CB8A04D91 /* libRNVersionNumber.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVersionNumber.a; sourceTree = "<group>"; };
 		1EB01ED479C641E0B1A5CB20 /* FastImage.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = FastImage.xcodeproj; path = "../node_modules/react-native-fast-image/ios/FastImage.xcodeproj"; sourceTree = "<group>"; };
 		216ABF84BF4E45C39286AA40 /* Lumberjack.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Lumberjack.xcodeproj; path = "../node_modules/cocoa-lumberjack/CocoaLumberjack/Lumberjack.xcodeproj"; sourceTree = "<group>"; };
-		234D04DE23A3AB4100321CC6 /* sf_pro_display_heavyitalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sf_pro_display_heavyitalic.otf; path = ../assets/fonts/sf_pro_display_heavyitalic.otf; sourceTree = "<group>"; };
-		234D050F23A3AB4200321CC6 /* sf_pro_display_heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sf_pro_display_heavy.otf; path = ../assets/fonts/sf_pro_display_heavy.otf; sourceTree = "<group>"; };
-		234D051023A3AB4300321CC6 /* bentonsans_bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = bentonsans_bold.otf; path = ../assets/fonts/bentonsans_bold.otf; sourceTree = "<group>"; };
-		234D051223A3AB4500321CC6 /* bentonsans_medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = bentonsans_medium.otf; path = ../assets/fonts/bentonsans_medium.otf; sourceTree = "<group>"; };
-		234D051323A3AB4700321CC6 /* bentonsans_regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = bentonsans_regular.otf; path = ../assets/fonts/bentonsans_regular.otf; sourceTree = "<group>"; };
-		234D051423A3AB4800321CC6 /* bentonsans_extralight.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = bentonsans_extralight.otf; path = ../assets/fonts/bentonsans_extralight.otf; sourceTree = "<group>"; };
-		234D051523A3AB4900321CC6 /* sf_compact_text_regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sf_compact_text_regular.otf; path = ../assets/fonts/sf_compact_text_regular.otf; sourceTree = "<group>"; };
-		234D051623A3AB4A00321CC6 /* bentonsans_thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = bentonsans_thin.otf; path = ../assets/fonts/bentonsans_thin.otf; sourceTree = "<group>"; };
-		234D051723A3AB4B00321CC6 /* sf_pro_display_medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sf_pro_display_medium.otf; path = ../assets/fonts/sf_pro_display_medium.otf; sourceTree = "<group>"; };
-		234D051823A3AB4C00321CC6 /* sf_compact_text_bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sf_compact_text_bold.otf; path = ../assets/fonts/sf_compact_text_bold.otf; sourceTree = "<group>"; };
-		234D051923A3AB4D00321CC6 /* bentonsans_light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = bentonsans_light.otf; path = ../assets/fonts/bentonsans_light.otf; sourceTree = "<group>"; };
-		234D051B23A3AB4F00321CC6 /* sf_pro_display_light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sf_pro_display_light.otf; path = ../assets/fonts/sf_pro_display_light.otf; sourceTree = "<group>"; };
-		234D051C23A3AB5100321CC6 /* sf_pro_display_bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = sf_pro_display_bold.otf; path = ../assets/fonts/sf_pro_display_bold.otf; sourceTree = "<group>"; };
+		22B060AAFBC445FDAA1D0A59 /* SFProDisplay-HeavyItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-HeavyItalic.otf"; path = "../assets/fonts/SFProDisplay-HeavyItalic.otf"; sourceTree = "<group>"; };
 		2354102185664676B9B5030E /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		27CAC2232A82811A86AEFCD9 /* libPods-sap_sailing_insight.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insight.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BDE9E0193E8C6E5DD7A7DAC /* libPods-sap_sailing_insight-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insight-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -714,6 +705,7 @@
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		6048B79C9C874E60B9C94B37 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 		664FD40D1A794E639258B3B7 /* libsqlite3.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		6697E9E8466C41A1A1E26D10 /* SFProDisplay-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Bold.otf"; path = "../assets/fonts/SFProDisplay-Bold.otf"; sourceTree = "<group>"; };
 		6974404E6278156ECAE56533 /* Pods-sap_sailing_insight-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight-tvOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-sap_sailing_insight-tvOSTests/Pods-sap_sailing_insight-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6BA043DF233101B3000C5071 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		6BA043E823310331000C5071 /* RNBranch.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNBranch.xcodeproj; path = "../node_modules/react-native-branch/ios/RNBranch.xcodeproj"; sourceTree = "<group>"; };
@@ -736,6 +728,8 @@
 		98400D3621C03499002D36DE /* sap_sailing_insight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sap_sailing_insight.entitlements; path = sap_sailing_insight/sap_sailing_insight.entitlements; sourceTree = "<group>"; };
 		98F71BA32153B20D008D1AC5 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		9A2B306FC04948978EBEAD1A /* libRNCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNCamera.a; sourceTree = "<group>"; };
+		9A52AF3B35714CD9910AB7B1 /* BentonSans-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Regular.otf"; path = "../assets/fonts/BentonSans-Regular.otf"; sourceTree = "<group>"; };
+		9AC5B0B0594245C580F9D8DC /* SFProDisplay-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Heavy.otf"; path = "../assets/fonts/SFProDisplay-Heavy.otf"; sourceTree = "<group>"; };
 		9E652804557F46EBA1BACA13 /* libBVLinearGradient.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libBVLinearGradient.a; sourceTree = "<group>"; };
 		9EF2E204C78D45129E45F602 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBackgroundTimer.xcodeproj; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; };
 		AAE2517500FE482CA8E80668 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
@@ -743,11 +737,17 @@
 		B9016D095AEC4269A6888384 /* libRNBackgroundGeolocation.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNBackgroundGeolocation.a; sourceTree = "<group>"; };
 		BEE83EE5FD6A42B09C5A2BC8 /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		C251A455D34F4BD8804A6CBF /* KCKeepAwake.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = KCKeepAwake.xcodeproj; path = "../node_modules/react-native-keep-awake/ios/KCKeepAwake.xcodeproj"; sourceTree = "<group>"; };
+		C4F615FCC56D45608BB77A34 /* BentonSans-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Bold.otf"; path = "../assets/fonts/BentonSans-Bold.otf"; sourceTree = "<group>"; };
+		C4FBACC177EB4AD18CE21268 /* BentonSans-ExtraLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-ExtraLight.otf"; path = "../assets/fonts/BentonSans-ExtraLight.otf"; sourceTree = "<group>"; };
+		C76A85796BBA4701A924EC79 /* BentonSans-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Light.otf"; path = "../assets/fonts/BentonSans-Light.otf"; sourceTree = "<group>"; };
 		C8EA2AD5896349C5B7F7218F /* libFastImage.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libFastImage.a; sourceTree = "<group>"; };
+		E12B304FAD7147CB92676106 /* SFProDisplay-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Light.otf"; path = "../assets/fonts/SFProDisplay-Light.otf"; sourceTree = "<group>"; };
 		EBE9F00F02FC407EA88B89C3 /* libRNI18n-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNI18n-tvOS.a"; sourceTree = "<group>"; };
 		F4F7B5C39F95F1A18ABBCB44 /* Pods-sap_sailing_insightTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insightTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-sap_sailing_insightTests/Pods-sap_sailing_insightTests.release.xcconfig"; sourceTree = "<group>"; };
+		F668B25BE0E74E509D8219BB /* SFProDisplay-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Medium.otf"; path = "../assets/fonts/SFProDisplay-Medium.otf"; sourceTree = "<group>"; };
 		F72175598D7CBB3C030658FD /* libPods-sap_sailing_insightTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insightTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F81971C8EFD34E708D20A666 /* libRNDeviceInfo.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNDeviceInfo.a; sourceTree = "<group>"; };
+		F86F0DBAAFEC487A8C513B94 /* SFCompactText-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFCompactText-Regular.otf"; path = "../assets/fonts/SFCompactText-Regular.otf"; sourceTree = "<group>"; };
 		FCE39D05504C4265BDE0AD26 /* libReactNativePermissions.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativePermissions.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -963,19 +963,19 @@
 		2753BF697C684F71AE74EF73 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				234D051023A3AB4300321CC6 /* bentonsans_bold.otf */,
-				234D051423A3AB4800321CC6 /* bentonsans_extralight.otf */,
-				234D051923A3AB4D00321CC6 /* bentonsans_light.otf */,
-				234D051223A3AB4500321CC6 /* bentonsans_medium.otf */,
-				234D051323A3AB4700321CC6 /* bentonsans_regular.otf */,
-				234D051623A3AB4A00321CC6 /* bentonsans_thin.otf */,
-				234D051823A3AB4C00321CC6 /* sf_compact_text_bold.otf */,
-				234D051523A3AB4900321CC6 /* sf_compact_text_regular.otf */,
-				234D051C23A3AB5100321CC6 /* sf_pro_display_bold.otf */,
-				234D050F23A3AB4200321CC6 /* sf_pro_display_heavy.otf */,
-				234D04DE23A3AB4100321CC6 /* sf_pro_display_heavyitalic.otf */,
-				234D051B23A3AB4F00321CC6 /* sf_pro_display_light.otf */,
-				234D051723A3AB4B00321CC6 /* sf_pro_display_medium.otf */,
+				C4F615FCC56D45608BB77A34 /* BentonSans-Bold.otf */,
+				C4FBACC177EB4AD18CE21268 /* BentonSans-ExtraLight.otf */,
+				C76A85796BBA4701A924EC79 /* BentonSans-Light.otf */,
+				0F570E76DC0744C7A9FDCEC2 /* BentonSans-Medium.otf */,
+				9A52AF3B35714CD9910AB7B1 /* BentonSans-Regular.otf */,
+				187464D2C7134C40AE6BFA41 /* BentonSans-Thin.otf */,
+				193171EC2B3B41F1A119F34F /* SFCompactText-Bold.otf */,
+				F86F0DBAAFEC487A8C513B94 /* SFCompactText-Regular.otf */,
+				6697E9E8466C41A1A1E26D10 /* SFProDisplay-Bold.otf */,
+				9AC5B0B0594245C580F9D8DC /* SFProDisplay-Heavy.otf */,
+				22B060AAFBC445FDAA1D0A59 /* SFProDisplay-HeavyItalic.otf */,
+				E12B304FAD7147CB92676106 /* SFProDisplay-Light.otf */,
+				F668B25BE0E74E509D8219BB /* SFProDisplay-Medium.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -2033,22 +2033,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				234D051E23A3AB5200321CC6 /* sf_pro_display_heavy.otf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				234D052823A3AB5200321CC6 /* bentonsans_light.otf in Resources */,
-				234D052A23A3AB5200321CC6 /* sf_pro_display_light.otf in Resources */,
 				106D9AE62223141300E2D930 /* GoogleService-Info.plist in Resources */,
-				234D052423A3AB5200321CC6 /* sf_compact_text_regular.otf in Resources */,
-				234D052623A3AB5200321CC6 /* sf_pro_display_medium.otf in Resources */,
-				234D052723A3AB5200321CC6 /* sf_compact_text_bold.otf in Resources */,
-				234D052523A3AB5200321CC6 /* bentonsans_thin.otf in Resources */,
-				234D052123A3AB5200321CC6 /* bentonsans_medium.otf in Resources */,
-				234D052B23A3AB5200321CC6 /* sf_pro_display_bold.otf in Resources */,
 				4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */,
-				234D052323A3AB5200321CC6 /* bentonsans_extralight.otf in Resources */,
-				234D052223A3AB5200321CC6 /* bentonsans_regular.otf in Resources */,
-				234D051D23A3AB5200321CC6 /* sf_pro_display_heavyitalic.otf in Resources */,
-				234D051F23A3AB5200321CC6 /* bentonsans_bold.otf in Resources */,
+				3CFD8936773B468E8AF69EB3 /* BentonSans-Bold.otf in Resources */,
+				86C11B2BFB794E3E81D660D3 /* BentonSans-ExtraLight.otf in Resources */,
+				D4CC3FC19B104979B3DC0F4F /* BentonSans-Light.otf in Resources */,
+				C7E535DE4E2D4ACD93494FAE /* BentonSans-Medium.otf in Resources */,
+				9ACC46B62BA74A1AAE3CB968 /* BentonSans-Regular.otf in Resources */,
+				6D9ADD1B298D4DFB9CA60FE2 /* BentonSans-Thin.otf in Resources */,
+				D77472E005664B2AAC6AD997 /* SFCompactText-Bold.otf in Resources */,
+				4EC14D9E183943FFB0DC1609 /* SFCompactText-Regular.otf in Resources */,
+				475044098F5D49F48DF8B704 /* SFProDisplay-Bold.otf in Resources */,
+				F9E8BFABFCBC41728C88DEA6 /* SFProDisplay-Heavy.otf in Resources */,
+				75E12998B1F7482F875C58B8 /* SFProDisplay-HeavyItalic.otf in Resources */,
+				E4D4090681F3452DB67042DC /* SFProDisplay-Light.otf in Resources */,
+				AFBA82F3028D478795B5C06B /* SFProDisplay-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
