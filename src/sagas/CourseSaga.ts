@@ -11,17 +11,21 @@ import {
   SELECT_COURSE,
   TOGGLE_SAME_START_FINISH,
   NAVIGATE_BACK_FROM_COURSE_CREATION,
+  FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING,
   editCourse,
   updateCourseLoading,
   replaceWaypointMarkConfiguration,
   assignMarkOrMarkPropertiesToMarkConfiguration,
   changeWaypointMarkConfigurationToNew,
-  changeWaypointToNewLine
+  changeWaypointToNewLine,
+  updateMarkConfigurationDeviceTracking
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
 import { loadMarkProperties } from 'sagas/InventorySaga'
 import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
-import { getCourseById, getEditedCourse, hasSameStartFinish, hasEditedCourseChanged } from 'selectors/course'
+import { getCourseById, getEditedCourse, hasSameStartFinish,
+  hasEditedCourseChanged, getSelectedMarkConfiguration,
+  getMarkConfigurationById } from 'selectors/course'
 import {
   getSelectedEventInfo,
   getSelectedRaceInfo
@@ -79,7 +83,7 @@ function* selectCourseFlow({ payload }: any) {
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
   const isNewCourse = compose(isEmpty, prop('waypoints'))(course)
-  
+
   let editedCourse
 
   if (!isNewCourse) {
@@ -255,11 +259,26 @@ function* navigateBackFromCourseCreation() {
   } catch(e) {}
 }
 
+function* fetchAndUpdateMarkConfigurationDeviceTracking() {
+  const selectedMarkConfiguration = yield select(getSelectedMarkConfiguration)
+  const markConfiguration = yield select(getMarkConfigurationById(selectedMarkConfiguration))
+  const { serverUrl, leaderboardName, secret } = yield select(getSelectedEventInfo)
+  const api = dataApi(serverUrl)
+
+  const markState = yield call(api.requestMark, leaderboardName, markConfiguration.markId, secret)
+
+  yield call(updateMarkConfigurationDeviceTracking, {
+    id: selectedMarkConfiguration,
+    deviceId: markState.location && markState.location.deviceUUID
+  })
+}
+
 export default function* watchCourses() {
   yield all([
     takeLatest(SELECT_COURSE, selectCourseFlow),
     takeEvery(SAVE_COURSE, saveCourseFlow),
     takeLatest(TOGGLE_SAME_START_FINISH, toggleSameStartFinish),
-    takeLatest(NAVIGATE_BACK_FROM_COURSE_CREATION, navigateBackFromCourseCreation)
+    takeLatest(NAVIGATE_BACK_FROM_COURSE_CREATION, navigateBackFromCourseCreation),
+    takeLatest(FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING, fetchAndUpdateMarkConfigurationDeviceTracking)
   ])
 }
