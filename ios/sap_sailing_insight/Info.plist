@@ -87,6 +87,19 @@
 		<string>sf_pro_display_heavyitalic.otf</string>
 		<string>sf_pro_display_light.otf</string>
 		<string>sf_pro_display_medium.otf</string>
+		<string>BentonSans-Bold.otf</string>
+		<string>BentonSans-ExtraLight.otf</string>
+		<string>BentonSans-Light.otf</string>
+		<string>BentonSans-Medium.otf</string>
+		<string>BentonSans-Regular.otf</string>
+		<string>BentonSans-Thin.otf</string>
+		<string>SFCompactText-Bold.otf</string>
+		<string>SFCompactText-Regular.otf</string>
+		<string>SFProDisplay-Bold.otf</string>
+		<string>SFProDisplay-Heavy.otf</string>
+		<string>SFProDisplay-HeavyItalic.otf</string>
+		<string>SFProDisplay-Light.otf</string>
+		<string>SFProDisplay-Medium.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
