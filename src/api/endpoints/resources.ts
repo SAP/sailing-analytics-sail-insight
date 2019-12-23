@@ -129,6 +129,7 @@ export interface DataApi {
   requestEventRacestates: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
   requestMarkProperties: ApiFunction,
+  requestMarkProperty: (id: string) => any,
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
   requestCourse: (regattaName: string, raceName: string, fleet: String) => any
@@ -225,6 +226,8 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         { dataSchema: competitorSchema },
     ),
     requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markPropertiesSchema] }),
+    requestMarkProperty: (id: string) => dataRequest(endpoints.markProperty({ pathParams: [id]}),
+      { dataSchema: markPropertiesSchema }),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }), { dataSchema: markSchema }
     ),
