@@ -18,7 +18,8 @@ export interface RootState {
   user?: any | UserState
   events?: any | EventState
   courses?: any | CourseReducerState
-  markInventory?: any
+  markInventory?: any,
+  permissions?: any
 }
 
 

@@ -14,6 +14,7 @@ export interface SecurityApi {
   accessToken: (email: string, password: string) => any,
   updateUser: (data: any) => any,
   requestPasswordReset: (username: string, email: string) => any,
+  hasPermissions: (permissions: string) => any
 }
 
 const securityEndpoints = (serverUrl: string) => {
@@ -23,6 +24,7 @@ const securityEndpoints = (serverUrl: string) => {
     user: getSecurityUrl('/user'),
     accessToken: getSecurityUrl('/access_token'),
     forgotPassword: getSecurityUrl('/forgot_password'),
+    hasPermissions: getSecurityUrl('/has_permission')
   }
 }
 
@@ -59,6 +61,10 @@ const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
         endpoints.forgotPassword({ urlParams: { email } }),
       { method: HttpMethods.POST },
     ),
+
+    hasPermissions: (permissions: string) => dataRequest(
+      endpoints.hasPermissions({ urlParams: { permission: permissions } })
+    )
   }
 }
 
