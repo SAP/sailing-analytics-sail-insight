@@ -11,9 +11,26 @@ export default EStyleSheets.create({
     backgroundColor: '#1D3F4E',
     flex: 1,
   },
-  detailsContainer: {
+  organizerContainer: {
     marginTop: '$smallSpacing',
     paddingLeft: 10,
+  },
+  competitorContainer: {
+    backgroundColor: '#4B7B90',
+    paddingTop: 10,
+  },
+  eventStatsContainer: {
+    backgroundColor: 'white',
+    paddingLeft: 10,
+    paddingTop: 15,
+    paddingBottom: 15,
+    marginRight: 15,
+    marginBottom: 5,
+    marginLeft: 15
+  },
+  eventTitle: {
+    ...withDefaultBoldFont,
+    fontSize: 20
   },
   sectionHeaderStyle,
   textHeader: {

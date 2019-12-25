@@ -1,17 +1,11 @@
 import { __, compose, concat, map, merge, defaultTo,
   reduce, when, uncurryN, tap, always, isNil, unless,
   prop, isEmpty, not } from 'ramda'
-
 import { openTrackDetails } from 'actions/navigation'
-
-import { getCustomScreenParamData } from 'navigation/utils'
 import { getSession } from 'selectors/session'
 import moment from 'moment/min/moment-with-locales'
-
 import Images from '@assets/Images'
-
 import I18n from 'i18n'
-
 import {
   Component,
   fold,
@@ -20,20 +14,17 @@ import {
   reduxConnect as connect
 } from 'components/fp/component'
 import { forwardingPropsFlatList, text, view, touchableOpacity } from 'components/fp/react-native'
-
 import IconText from 'components/IconText'
 import { overlayPicker, FramedNumber } from '../../session/common'
-
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getCourseById } from 'selectors/course'
-import { getRaceTime } from 'selectors/event'
+import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
+import { getUserRaces } from 'selectors/race'
 import { navigateToRaceCourseLayout } from 'navigation'
 import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } from 'components/helpers'
-
 import DatePicker from 'react-native-datepicker'
-
 import { dateTimeShortHourText, dateShortText } from 'helpers/date'
 import styles from './styles'
 
@@ -44,8 +35,10 @@ export const arrowRight = fromClass(IconText).contramap(merge({
 const getRegattaPlannedRacesN = uncurryN(2, getRegattaPlannedRaces)
 
 const mapStateToProps = (state: any, props: any) => {
-  const { leaderboardName, regattaName } = getCustomScreenParamData(props)
+  const { leaderboardName, regattaName } = getSelectedEventInfo(state)
   const session = getSession(leaderboardName)(state)
+
+  console.log('@@@', session)
 
   const races = compose(
     map((name: string) => ({
@@ -179,15 +172,25 @@ const raceList = Component((props: object) => compose(
       renderItem: raceItem.fold
     }, props))))
 
-const detailsContainer = Component((props: Object) =>
+const organizerContainer = Component((props: Object) =>
   compose(
     fold(props),
-    view({ style: styles.detailsContainer }),
+    view({ style: styles.organizerContainer }),
     reduce(concat, nothing()))
   ([
     text({ style: styles.sectionHeaderStyle }, 'LIST OF RACES'),
     raceNumberSelector,
     text({}, 'Discards starting from ... races')]))
+
+const competitorContainer = Component((props: any) =>
+  compose(
+    fold(props),
+    view({ style: styles.competitorContainer }),
+    view({ style: styles.eventStatsContainer }),
+    reduce(concat, nothing()))([
+      text({}, `${dateShortText(props.session.event.startDate)} | ${dateTimeShortHourText(props.session.event.startDate)} | NUMBER OF TRACKS ${props.numberOfRaces}`),
+      text({ style: styles.eventTitle }, props.session.regattaName)
+    ]))
 
 export default Component((props: Object) =>
   compose(
@@ -197,5 +200,6 @@ export default Component((props: Object) =>
       updateEventSettings, openTrackDetails }),
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
-  ([nothingIfCannotUpdateCurrentEvent(detailsContainer),
+  ([nothingIfCannotUpdateCurrentEvent(organizerContainer),
+    nothingIfCanUpdateCurrentEvent(competitorContainer),
     raceList ]))
