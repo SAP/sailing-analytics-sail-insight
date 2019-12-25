@@ -5,6 +5,7 @@ import { navigateToRaceDetails } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
+import { canUpdateCurrentEvent } from 'selectors/permissions'
 
 import { Component, fold, nothing, reduxConnect as connect } from 'components/fp/component'
 import { scrollView, view } from 'components/fp/react-native'
@@ -31,6 +32,7 @@ const mapStateToProps = (state: any, props: any) => {
     session,
     name: session.regattaName,
     races: regattaRaces.length,
+    racesButtonLabel: canUpdateCurrentEvent(state) ? 'Define Races' : 'See Races & Scoring'
   }
 }
 

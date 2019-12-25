@@ -1,5 +1,6 @@
-import { __, always, compose, concat, curry, equals, has, head, length, map,
-  merge, objOf, prepend, range, reduce, split, toString, when } from 'ramda'
+import { __, always, compose, concat, curry, equals,
+  has, head, length, map, merge, objOf, prepend,
+  range, reduce, split, toString, when, toUpper } from 'ramda'
 
 import { Component, fold, fromClass, nothing } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
@@ -100,7 +101,7 @@ export const racesAndScoringCard = Component((props: any) =>
     text({ style: styles.textLast }, `Discard starting from ${props.discardRace}. race`),
     styledButton({
       onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
-    }, text({ style: styles.buttonContent }, 'DEFINE RACES'))
+    }, text({ style: styles.buttonContent }, toUpper(props.racesButtonLabel)))
   ]),
 )
 

@@ -6,8 +6,6 @@ export function* fetchPermissionsForEvent({ payload }: any) {
   const permissions = [`EVENT:UPDATE:${payload.eventId}`]
   const result = yield call(authApi(payload.serverUrl).hasPermissions, permissions)
 
-  console.log('check permission result', result)
-
   yield put(updatePermissions(result))
 }
 

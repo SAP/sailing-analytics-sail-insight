@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-    compose, curry, reject, isNil, always, prop, __, addIndex, map
+    compose, curry, reject, isNil, always, prop,
+    __, addIndex, map, reduce, concat, is
 } from 'ramda';
 import {
     branch,
@@ -42,7 +43,10 @@ const Component = compose(
         g,
         map:       (f: Function) => Component((x: any) => f(g(x), x)),
         contramap: (f: Function) => Component((x: any) => g(f(x))),
-        concat:    (other: any) => Component((x: any) => g(x).concat(other.g(x))),
+        concat:    (other: any) => Component((x: any) =>
+            g(x).concat(is(Array, other) ?
+                reduce(concat, nothing(), other).g(x) :
+                other.g(x))),
         // fold :: props -> JSX
         fold:      compose(
             mapIndexed((element, i) => React.cloneElement(element, { key: i })),

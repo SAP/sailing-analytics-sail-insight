@@ -30,10 +30,11 @@ import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getCourseById } from 'selectors/course'
 import { getRaceTime } from 'selectors/event'
 import { navigateToRaceCourseLayout } from 'navigation'
+import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } from 'components/helpers'
 
 import DatePicker from 'react-native-datepicker'
 
-import { dateTimeShortHourText } from 'helpers/date'
+import { dateTimeShortHourText, dateShortText } from 'helpers/date'
 import styles from './styles'
 
 export const arrowRight = fromClass(IconText).contramap(merge({
@@ -115,7 +116,7 @@ const getRaceStartTime = compose(
   defaultTo({}),
   prop('raceTime'))
 
-const raceTime = Component((props: object) => compose(
+const raceTimePicker = Component((props: any) => compose(
   fold(props),
   view({ style: [styles.raceTimeContainer, getRaceStartTime(props.item) && styles.raceTimeContainerWithTime] }),
   concat(__, fromClass(DatePicker).contramap(always({
@@ -147,17 +148,27 @@ const raceTime = Component((props: object) => compose(
   getRaceStartTime)(
   props.item))
 
+const raceDateAndTime = Component((props: any) => compose(
+  fold(props),
+  text({}),
+  when(isNil, always('--')),
+  unless(isNil, time => `${dateShortText(time)} | ${dateTimeShortHourText(time)}`),
+  getRaceStartTime)(
+  props.item))
+
 const raceItem = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.raceItemContainer }),
-    reduce(concat, nothing()))
-  ([
-    raceTime,
-    text({ style: styles.raceNameText }, defaultTo('', props.item.name)),
-    defineLayoutButton,
-    raceAnalyticsButton,
-    arrowRight ]))
+    concat(nothingIfCannotUpdateCurrentEvent(raceTimePicker)),
+    concat(__, [
+      nothingIfCannotUpdateCurrentEvent(defineLayoutButton),
+      raceAnalyticsButton,
+      arrowRight]),
+    view({ style: styles.raceDateAndTimeContainer }),
+    reduce(concat, nothing()))([
+    nothingIfCanUpdateCurrentEvent(raceDateAndTime),
+    text({ style: styles.raceNameText }, defaultTo('', props.item.name)) ]))
 
 const raceList = Component((props: object) => compose(
   fold(props),
@@ -186,5 +197,5 @@ export default Component((props: Object) =>
       updateEventSettings, openTrackDetails }),
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
-  ([detailsContainer,
+  ([nothingIfCannotUpdateCurrentEvent(detailsContainer),
     raceList ]))

@@ -16,10 +16,13 @@ import moment from 'moment/min/moment-with-locales'
 
 function* selectEventFlow({ payload }: any) {
   const { serverUrl, regattaName } = yield select(getSelectedEventInfo)
+
   const api = dataApi(serverUrl)
 
-  yield call(fetchPermissionsForEvent, { payload })
-  
+  try {
+    yield call(fetchPermissionsForEvent, { payload })
+  } catch (e) {}
+
   const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
   const races = yield select(getRegattaPlannedRaces(regattaName))
 
