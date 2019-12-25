@@ -1,6 +1,5 @@
-import { when, isEmpty, always, prop, compose,
-  isNil, map, range, inc, concat, toString, __,
-  apply, merge, evolve } from 'ramda'
+import { when, always, compose, isNil, map, range,
+  inc, concat, toString, __, apply } from 'ramda'
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
 import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
   ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS } from 'actions/events'
@@ -8,24 +7,24 @@ import { receiveEntities } from 'actions/entities'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getUserInfo } from 'selectors/auth'
-
-import uuidv4 from 'uuid/v4'
-
+import { canUpdateEvent } from 'selectors/permissions'
 import { loadCourse } from 'actions/courses'
 import { updateRaceTime } from 'actions/events'
-
+import { fetchPermissionsForEvent } from 'sagas/permissionsSaga'
 import { dataApi } from 'api'
 import moment from 'moment/min/moment-with-locales'
 
 function* selectEventFlow({ payload }: any) {
   const { serverUrl, regattaName } = yield select(getSelectedEventInfo)
+
   const api = dataApi(serverUrl)
 
+  try {
+    yield call(fetchPermissionsForEvent, { payload })
+  } catch (e) {}
+
+  const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
   const races = yield select(getRegattaPlannedRaces(regattaName))
-  
-  const raceCourses = yield all(races.map((raceName: string) =>
-    call(api.requestCourse, regattaName, raceName, 'Default')
-  ))
 
   const raceTimes = yield all(races.map((raceName: string) =>
     call(api.requestRaceTime, payload.leaderboardName, raceName, 'Default')))
@@ -34,11 +33,17 @@ function* selectEventFlow({ payload }: any) {
     [`${payload.leaderboardName}-${races[index]}`]: raceTime
   }))))
 
-  yield all(raceCourses.map((course: object, index: number) =>
-    put(loadCourse({
-      raceId: `${regattaName} - ${races[index]}`,
-      course
-    })) ))
+  if (currentUserCanUpdateEvent) {
+    const raceCourses = yield all(races.map((raceName: string) =>
+      call(api.requestCourse, regattaName, raceName, 'Default')
+    ))
+
+    yield all(raceCourses.map((course: object, index: number) =>
+      put(loadCourse({
+        raceId: `${regattaName} - ${races[index]}`,
+        course
+      })) ))
+  }
 }
 
 function* setRaceTime({ payload }: any) {

@@ -28,6 +28,7 @@ import {
   assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration
 } from 'actions/courses'
+import { removeUserData } from 'actions/auth'
 
 const updateWaypointMarkConfiguration = (state: any, action: any) => {
   const sameStartFinish = compose(
@@ -84,6 +85,7 @@ const waypoints = handleActions({
       })), state),
   [replaceWaypointMarkConfiguration as any]: updateWaypointMarkConfiguration,
   [changeWaypointMarkConfigurationToNew as any]: updateWaypointMarkConfiguration,
+  [removeUserData as any]: always([])
 }, [])
 
 const markConfigurations = handleActions({
@@ -145,7 +147,8 @@ const markConfigurations = handleActions({
   [changeWaypointMarkConfigurationToNew as any]: (state: any, action: any) => append({
     id: action.payload.newId,
     effectiveProperties: { markType: 'BUOY', shortName: 'NM', name: 'New Mark' }
-  }, state)
+  }, state),
+  [removeUserData as any]: always([])
 }, [])
 
 const name = handleActions({
@@ -165,11 +168,13 @@ const editedCourse = combineReducers({
 
 const all = handleActions({
   [loadCourse as any]: (state: any = {}, action: any) =>
-    merge(state, { [action.payload.raceId]: action.payload.course })
+    merge(state, { [action.payload.raceId]: action.payload.course }),
+  [removeUserData as any]: always({})
 }, {})
 
 const selectedCourse = handleActions({
-  [selectCourse as any]: (state: any, action: any) => action.payload
+  [selectCourse as any]: (state: any, action: any) => action.payload,
+  [removeUserData as any]: always(null)
 }, null)
 
 const courseLoading = handleActions({
@@ -184,11 +189,13 @@ const selectedWaypoint = handleActions({
     prop('id'),
     head,
     prop('waypoints'))(
-    action.payload)
+    action.payload),
+  [removeUserData as any]: always(null)
 }, null)
 
 const selectedMarkConfiguration = handleActions({
-  [selectMarkConfiguration as any]: (state: any, action: any) => action.payload
+  [selectMarkConfiguration as any]: (state: any, action: any) => action.payload,
+  [removeUserData as any]: always(null)
 }, null)
 
 export default combineReducers({
