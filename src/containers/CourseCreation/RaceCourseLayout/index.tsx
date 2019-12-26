@@ -519,7 +519,8 @@ const WaypointsList = Component(props => {
 
   return compose(
     fold(props),
-    scrollView({ style: styles.waypointsContainer, horizontal: true }),
+    scrollView({ style: styles.waypointsContainer,
+      horizontal: true, showsHorizontalScrollIndicator: false }),
     svg({
       width: svgWidth,
       height: 80,
