@@ -517,7 +517,8 @@ const WaypointsList = Component(props => {
     scrollView({ style: styles.waypointsContainer, horizontal: true }),
     svg({
       width: svgWidth,
-      height: 80
+      height: 80,
+      viewBox: `0 0 ${svgWidth} 80`
     }),
     reduce(concat, nothing()),
     mapIndexed((waypoint, index) => {
@@ -530,14 +531,14 @@ const WaypointsList = Component(props => {
         isFinish ? `M${finishWidth}.372.5H.755l16.936 39.926L.755 80h${finishWidth}.617z` :
         'M60.367 40.158L43.555.5H.755l16.826 39.658-16.826 39.8h42.8z'
       const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 27}, 47)`
-      const onPress = () => waypoint.isAdd ?
+      const onPressOut = () => waypoint.isAdd ?
         props.addWaypoint({ index, id: uuidv4() }) :
         props.selectWaypoint(waypoint.id)
 
       return compose(
         svgGroup({
           transform: groupTransform,
-          onPress
+          onPressOut
         }),
         concat(svgPath.contramap(always({
           d: pathData,

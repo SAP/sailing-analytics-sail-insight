@@ -31,8 +31,7 @@ export default EStyleSheets.create({
   },
 
   waypointsContainer: {
-    flexShrink: 0,
-    backgroundColor: '#1d3f4e'
+    backgroundColor: 'red'
   },
 
   sectionTitle: {
