@@ -1,4 +1,4 @@
-import { __, compose, always, both, path, when, move, length,
+import { __, compose, always, both, path, when, move, length, subtract,
   prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
   propEq, addIndex, intersperse, gt, findIndex, unless, tail, has, toUpper } from 'ramda'
@@ -8,7 +8,7 @@ import {
   recomposeBranch as branch,
   recomposeWithState as withState,
 } from 'components/fp/component'
-import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
+import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
 import { Switch } from 'react-native'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
@@ -21,7 +21,8 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   navigateBackFromCourseCreation } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
-  getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking } from 'selectors/course'
+  getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
+  isDefaultWaypointSelection } from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { getDeviceId } from 'selectors/user'
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
@@ -32,9 +33,9 @@ import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from 'react-navigation'
-import EStyleSheets from 'react-native-extended-stylesheet'
 import styles from './styles'
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
+import { Dimensions } from 'react-native'
 
 const mapIndexed = addIndex(map)
 
@@ -45,6 +46,7 @@ const mapStateToProps = (state: any) => ifElse(
     course: getEditedCourse(state),
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMarkConfiguration: getSelectedMarkConfiguration(state),
+    isDefaultWaypointSelection: isDefaultWaypointSelection(state),
     selectedMarkProperties: getSelectedMarkProperties(state),
     selectedMarkLocation: getSelectedMarkPosition(state),
     selectedMarkDeviceTracking: compose(
@@ -72,7 +74,6 @@ const isStartOrFinishGate = both(isGateWaypoint,
 const nothingWhenLoading = branch(isLoading, nothingAsClass)
 const nothingWhenNotLoading = branch(isNotLoading, nothingAsClass)
 const nothingWhenNoSelectedWaypoint = branch(compose(isNil, prop('selectedWaypoint')), nothingAsClass)
-const nothingWhenSelectedWaypoint = branch(compose(not, isNil, prop('selectedWaypoint')), nothingAsClass)
 const nothingWhenGate = branch(isGateWaypoint, nothingAsClass)
 const nothingWhenNotAGate = branch(compose(not, isGateWaypoint), nothingAsClass)
 const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate), nothingAsClass)
@@ -114,12 +115,6 @@ const arrowUp = ({ color = $LightDarkBlue }: any = {}) => icon({
   source: Images.courseConfig.arrowUp,
   style: { justifyContent: 'flex-end', height: 25 },
   iconStyle: { height: 12, tintColor: color } })
-
-const plusIcon = icon({
-  source: Images.actions.add,
-  iconTintColor: 'white',
-  style: { justifyContent: 'center', alignItems: 'center' }
-})
 
 const dashLine = fromClass(Dash).contramap(always({
   style: { height: 50, width: 90, alignItems: 'center' },
@@ -500,41 +495,82 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenStartOrFinishGate(DeleteButton)
   ]))
 
-const AddButton = Component((props: any) =>
-  compose(
+const WaypointsList = Component(props => {
+  const startWidth = 115
+  const waypointWidth = 43
+  const windowWidth = Dimensions.get('window').width
+  let finishWidth = 175
+  let svgWidth = startWidth + (props.course.waypoints.length - 1) * waypointWidth + finishWidth
+
+  if (windowWidth > svgWidth) {
+    finishWidth += (windowWidth - svgWidth)
+    svgWidth += (windowWidth - svgWidth)
+  }
+
+  finishWidth = Math.round(finishWidth)
+
+  const indexToAdd = compose(
+    when(
+      always(equals(true, props.isDefaultWaypointSelection)),
+      always(props.course.waypoints.length - 2)),
+    when(equals(props.course.waypoints.length - 1), subtract(__, 1)),
+    findIndex(propEq('id', props.selectedWaypoint.id)))(
+    props.course.waypoints)
+
+  return compose(
     fold(props),
-    touchableOpacity({
-      style: styles.addButton,
-      onPress: (props: any) =>
-        props.addWaypoint({ index: props.index, id: uuidv4() })
-     }))(
-    plusIcon))
+    scrollView({ style: styles.waypointsContainer,
+      horizontal: true, showsHorizontalScrollIndicator: false }),
+    svg({
+      width: svgWidth,
+      height: 80,
+      viewBox: `0 0 ${svgWidth} 80`
+    }),
+    reduce(concat, nothing()),
+    mapIndexed((waypoint, index) => {
+      const isStart = index === 0
+      const isFinish = index === props.course.waypoints.length
+      const groupTransform = isStart ? null : `translate(${startWidth + (index - 1) * waypointWidth},0)`
 
-const waypointItemToComponent = (waypoint: any, index: number, list: any[]) => Component((props: any) => compose(
-  fold(props),
-  when(always(isWaypointSelected(waypoint, props)),
-    index === list.length - 1 ?
-      concat(AddButton.contramap(merge({ index }))) :
-      concat(__, AddButton.contramap(merge({ index: index + 1 })))),
-  touchableOpacity({
-    onPress: (props: any) => props.selectWaypoint(waypoint.id),
-    style: [
-      EStyleSheets.child(styles, 'waypointContainer', index, list.length),
-      isWaypointSelected(waypoint, props) && styles.selectedWaypoint
-    ]
-  }),
-  text({ style: styles.waypointText }))(
-  props.waypointLabel(waypoint)))
+      const pathData =
+        isStart ? 'M132.736 40.158L115.924.5H.5v79.462h115.424z' :
+        isFinish ? `M${finishWidth}.372.5H.755l16.936 39.926L.755 80h${finishWidth}.617z` :
+        'M60.367 40.158L43.555.5H.755l16.826 39.658-16.826 39.8h42.8z'
+      const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 37}, 47)`
+      const textAnchor = isStart || isFinish ? 'start' : 'middle'
+      const onPressOut = () => waypoint.isAdd ?
+        props.addWaypoint({ index, id: uuidv4() }) :
+        props.selectWaypoint(waypoint.id)
 
-const WaypointsList = Component(props => compose(
-  fold(props),
-  scrollView({ style: styles.waypointsContainer, horizontal: true }),
-  reduce(concat, nothing()),
-  insert(props.course.waypoints.length - 1,
-    nothingWhenSelectedWaypoint(AddButton.contramap(merge({ index: props.course.waypoints.length - 1 })))),
-  mapIndexed(waypointItemToComponent),
-  path(['course', 'waypoints']))(
-  props))
+      return compose(
+        svgGroup({
+          transform: groupTransform,
+          onPressOut
+        }),
+        concat(svgPath.contramap(always({
+          d: pathData,
+          fill: waypoint.isAdd ? '#f0ab00' : isWaypointSelected(waypoint, props) ? '#476987' : '#1d3f4e',
+          stroke: '#476987'
+        }))),
+        ifElse(
+          always(waypoint.isAdd),
+          always(svgPath.contramap(always({
+            d: 'M34.026 52.098v-10.5h-10.5v-3h10.5v-10.5h3v10.5h10.5v3h-10.5v10.5z',
+            fill: '#fff'
+          }))),
+          svgText({
+            transform: textTransform,
+            fill: '#fff',
+            fontSize: 18,
+            textAnchor,
+            fontFamily: 'SFProDisplay-Bold',
+            letterSpacing: '.016em'
+          })))(
+        props.waypointLabel(waypoint))
+      }),
+      insert(indexToAdd + 1, { isAdd: true }))(
+      props.course.waypoints)
+})
 
 const LoadingIndicator = Component(props => compose(
   fold(props),

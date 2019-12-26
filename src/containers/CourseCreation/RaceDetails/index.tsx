@@ -38,8 +38,6 @@ const mapStateToProps = (state: any, props: any) => {
   const { leaderboardName, regattaName } = getSelectedEventInfo(state)
   const session = getSession(leaderboardName)(state)
 
-  console.log('@@@', session)
-
   const races = compose(
     map((name: string) => ({
       name,

@@ -2,7 +2,7 @@ import { __, always, compose, curry, has, head, merge, mergeLeft, objOf, when } 
 import { FlatList, Image, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
 import { Component, contramap, fold, fromClass } from './component';
 
-import Svg from 'react-native-svg'
+import { Svg, Path, G, Text as rnSvgText } from 'react-native-svg'
 
 const buildComponentWithChildren = curry((Comp, settings, c) =>
   Component((props: Object) =>
@@ -19,6 +19,9 @@ export const view = buildComponentWithChildren(View)
 export const scrollView = buildComponentWithChildren(ScrollView)
 export const text = buildComponentWithChildren(Text)
 export const svg = buildComponentWithChildren(Svg)
+export const svgPath = fromClass(Path)
+export const svgGroup = buildComponentWithChildren(G)
+export const svgText = buildComponentWithChildren(rnSvgText)
 
 export const image = (settings: Object) => Component((props: Object) => compose(
   fold(props),

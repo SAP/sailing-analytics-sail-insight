@@ -33,8 +33,6 @@ import {
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
 
-const mapIndexed = addIndex(map)
-
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
 
