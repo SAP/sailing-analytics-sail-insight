@@ -535,7 +535,8 @@ const WaypointsList = Component(props => {
         isStart ? 'M132.736 40.158L115.924.5H.5v79.462h115.424z' :
         isFinish ? `M${finishWidth}.372.5H.755l16.936 39.926L.755 80h${finishWidth}.617z` :
         'M60.367 40.158L43.555.5H.755l16.826 39.658-16.826 39.8h42.8z'
-      const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 27}, 47)`
+      const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 37}, 47)`
+      const textAnchor = isStart || isFinish ? 'start' : 'middle'
       const onPressOut = () => waypoint.isAdd ?
         props.addWaypoint({ index, id: uuidv4() }) :
         props.selectWaypoint(waypoint.id)
@@ -560,6 +561,7 @@ const WaypointsList = Component(props => {
             transform: textTransform,
             fill: '#fff',
             fontSize: 18,
+            textAnchor,
             fontFamily: 'SFProDisplay-Bold',
             letterSpacing: '.016em'
           })))(
