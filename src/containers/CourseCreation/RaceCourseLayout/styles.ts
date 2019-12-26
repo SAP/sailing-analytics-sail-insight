@@ -32,40 +32,7 @@ export default EStyleSheets.create({
 
   waypointsContainer: {
     flexShrink: 0,
-  },
-
-  waypointContainer: {
-    width: 45,
-    height: '$itemHeight',
-    backgroundColor: '#1D3F4E',
-    justifyContent: 'center',
-    borderRightColor: '#476987',
-    borderRightWidth: 1,
-  },
-
-  selectedWaypoint: {
-    backgroundColor: '#476987',
-  },
-
-  'waypointContainer:first-child': {
-    width: 130,
-  },
-
-  'waypointContainer:last-child': {
-    width: 130,
-  },
-
-  waypointText: {
-    ...white,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-
-  addButton: {
-    width: 45,
-    height: '$itemHeight',
-    backgroundColor: '$primaryButtonColor',
-    justifyContent: 'center',
+    backgroundColor: '#1d3f4e'
   },
 
   sectionTitle: {
