@@ -193,6 +193,13 @@ const selectedWaypoint = handleActions({
   [removeUserData as any]: always(null)
 }, null)
 
+const isDefaultWaypointSelection = handleActions({
+  [editCourse as any]: always(true),
+  [selectWaypoint as any]: always(false),
+  [addWaypoint as any]: always(false),
+  [removeWaypoint as any]: always(false)
+}, false)
+
 const selectedMarkConfiguration = handleActions({
   [selectMarkConfiguration as any]: (state: any, action: any) => action.payload,
   [removeUserData as any]: always(null)
@@ -204,5 +211,6 @@ export default combineReducers({
   selectedCourse,
   editedCourse,
   selectedWaypoint,
+  isDefaultWaypointSelection,
   selectedMarkConfiguration
 })

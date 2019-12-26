@@ -21,7 +21,8 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   navigateBackFromCourseCreation } from 'actions/courses'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
-  getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking } from 'selectors/course'
+  getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
+  isDefaultWaypointSelection } from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { getDeviceId } from 'selectors/user'
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
@@ -45,6 +46,7 @@ const mapStateToProps = (state: any) => ifElse(
     course: getEditedCourse(state),
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMarkConfiguration: getSelectedMarkConfiguration(state),
+    isDefaultWaypointSelection: isDefaultWaypointSelection(state),
     selectedMarkProperties: getSelectedMarkProperties(state),
     selectedMarkLocation: getSelectedMarkPosition(state),
     selectedMarkDeviceTracking: compose(
@@ -507,7 +509,10 @@ const WaypointsList = Component(props => {
 
   finishWidth = Math.round(finishWidth)
 
-  const selectedIndex = compose(
+  const indexToAdd = compose(
+    when(
+      always(equals(true, props.isDefaultWaypointSelection)),
+      always(props.course.waypoints.length - 2)),
     when(equals(props.course.waypoints.length - 1), subtract(__, 1)),
     findIndex(propEq('id', props.selectedWaypoint.id)))(
     props.course.waypoints)
@@ -560,7 +565,7 @@ const WaypointsList = Component(props => {
           })))(
         props.waypointLabel(waypoint))
       }),
-      insert(selectedIndex + 1, { isAdd: true }))(
+      insert(indexToAdd + 1, { isAdd: true }))(
       props.course.waypoints)
 })
 
