@@ -1,4 +1,3 @@
-import React from 'react'
 import { __, compose, always, both, path, when, move, length, subtract,
   prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
@@ -9,9 +8,8 @@ import {
   recomposeBranch as branch,
   recomposeWithState as withState,
 } from 'components/fp/component'
-import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
+import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
 import { Switch } from 'react-native'
-import { Svg, Path, G, Text } from 'react-native-svg'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
@@ -514,7 +512,14 @@ const WaypointsList = Component(props => {
     findIndex(propEq('id', props.selectedWaypoint.id)))(
     props.course.waypoints)
 
-  const waypointsElements = compose(
+  return compose(
+    fold(props),
+    scrollView({ style: styles.waypointsContainer, horizontal: true }),
+    svg({
+      width: svgWidth,
+      height: 80
+    }),
+    reduce(concat, nothing()),
     mapIndexed((waypoint, index) => {
       const isStart = index === 0
       const isFinish = index === props.course.waypoints.length
@@ -524,46 +529,38 @@ const WaypointsList = Component(props => {
         isStart ? 'M132.736 40.158L115.924.5H.5v79.462h115.424z' :
         isFinish ? `M${finishWidth}.372.5H.755l16.936 39.926L.755 80h${finishWidth}.617z` :
         'M60.367 40.158L43.555.5H.755l16.826 39.658-16.826 39.8h42.8z'
-      const textTransform =
-        isStart ? 'translate(43, 47)' :
-        isFinish ? 'translate(65, 47)' : 'translate(27, 47)'
+      const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 27}, 47)`
       const onPress = () => waypoint.isAdd ?
         props.addWaypoint({ index, id: uuidv4() }) :
         props.selectWaypoint(waypoint.id)
 
-      return <G transform={groupTransform}
-          onPress={onPress}>
-        <Path
-          d={pathData}
-          fill={waypoint.isAdd ? '#f0ab00' : isWaypointSelected(waypoint, props) ? '#476987' : '#1d3f4e'}
-          stroke="#476987"/>
-        {waypoint.isAdd ?
-           <Path
-             d="M34.026 52.098v-10.5h-10.5v-3h10.5v-10.5h3v10.5h10.5v3h-10.5v10.5z"
-             fill="#fff"/> :
-           <Text
-             transform={textTransform}
-             fill="#fff"
-             fontSize="18"
-             textLength="5"
-             fontFamily="SFProDisplay-Bold"
-             letterSpacing=".016em">
-               {props.waypointLabel(waypoint)}
-            </Text>
-        }
-      </G>
-    }),
-    insert(selectedIndex + 1, { isAdd: true }))(
-    props.course.waypoints)
-  
-  return compose(
-    fold(props),
-    scrollView({ style: styles.waypointsContainer, horizontal: true }))(
-    fromClass(Svg).contramap(always({
-      children: waypointsElements,
-      width: svgWidth,
-      height: 80
-    })))
+      return compose(
+        svgGroup({
+          transform: groupTransform,
+          onPress
+        }),
+        concat(svgPath.contramap(always({
+          d: pathData,
+          fill: waypoint.isAdd ? '#f0ab00' : isWaypointSelected(waypoint, props) ? '#476987' : '#1d3f4e',
+          stroke: '#476987'
+        }))),
+        ifElse(
+          always(waypoint.isAdd),
+          always(svgPath.contramap(always({
+            d: 'M34.026 52.098v-10.5h-10.5v-3h10.5v-10.5h3v10.5h10.5v3h-10.5v10.5z',
+            fill: '#fff'
+          }))),
+          svgText({
+            transform: textTransform,
+            fill: '#fff',
+            fontSize: 18,
+            fontFamily: 'SFProDisplay-Bold',
+            letterSpacing: '.016em'
+          })))(
+        props.waypointLabel(waypoint))
+      }),
+      insert(selectedIndex + 1, { isAdd: true }))(
+      props.course.waypoints)
 })
 
 const LoadingIndicator = Component(props => compose(
