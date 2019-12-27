@@ -137,24 +137,19 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       ...additionalProps
     } = this.props
 
-    const errorText = showError ? <Text key={2} style={{ color: 'red', marginLeft: 5, marginTop: 3 }}>{ error }</Text> : null
     const { query }: Readonly<any> = this.state
 
-    return [
-        <TextInput
-            key={1}
-            style={style}
-            inputStyle={styles.input}
-            placeholder={label}
-            defaultValue={query}
-            error={showError ? error : undefined}
-            onChangeText={this.handleChangeText}
-            {...restInput}
-            {...additionalProps}
-            onBlur={this.onTextInputFocusChange(false)}
-            onFocus={this.onTextInputFocusChange(true)}
-        />,
-        errorText]
+    return <TextInput
+      style={style}
+      inputStyle={styles.input}
+      placeholder={label}
+      defaultValue={query}
+      error={showError ? error : undefined}
+      onChangeText={this.handleChangeText}
+      {...restInput}
+      {...additionalProps}
+      onBlur={this.onTextInputFocusChange(false)}
+      onFocus={this.onTextInputFocusChange(true)}/>
   }
 
   protected onTextInputFocusChange = (focused: boolean) =>
