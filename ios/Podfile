@@ -62,6 +62,8 @@ target 'sap_sailing_insight' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing
