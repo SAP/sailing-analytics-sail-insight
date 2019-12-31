@@ -79,18 +79,12 @@ const onSeeCourse = (props: any) => {
   navigateToRaceCourseLayout()
 }
 
-const onNewCourse = (props: any) => {
-  const { name } = props.item
-  props.selectCourse({ race: name })
-  navigateToRaceCourseLayout()
-}
-
 const defineLayoutButton = Component((props: any) =>
   compose(
     fold(props),
     touchableOpacity({
       style: { flexGrow: 1 },
-      onPress: () => props.item.courseDefined ? onSeeCourse(props) : onNewCourse(props)
+      onPress: () => onSeeCourse(props)
     }))(
     text({}, props.item.courseDefined ? 'See Course' : 'Define Course')))
 
