@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { NetworkProvider } from 'react-native-offline'
+import { ReduxNetworkProvider } from 'react-native-offline'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
@@ -34,13 +34,13 @@ if (module.hot) {
 class App extends Component {
   public render() {
     return (
-      <NetworkProvider pingInBackground={true} pingInterval={3000} pingServerUrl="https://www.google233244.com/">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
+          <ReduxNetworkProvider>
             <AppRoot/>
+          </ReduxNetworkProvider>
         </PersistGate>
       </Provider>
-      </NetworkProvider>
     )
   }
 }
