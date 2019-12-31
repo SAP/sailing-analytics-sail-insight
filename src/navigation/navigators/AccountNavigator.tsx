@@ -47,6 +47,6 @@ export default createStackNavigator(
   {
     initialRouteName: Screens.AccountList,
     ...commons.stackNavigatorConfig,
-    navigationOptions: () => commons.headerNavigationOptions,
+    defaultNavigationOptions: () => commons.headerNavigationOptions,
   },
 )

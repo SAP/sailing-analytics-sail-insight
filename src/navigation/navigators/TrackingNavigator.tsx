@@ -42,6 +42,6 @@ export default createStackNavigator(
   {
     initialRouteName: Screens.WelcomeTracking,
     ...commons.stackNavigatorConfig,
-    navigationOptions: () => commons.headerNavigationOptions,
+    defaultNavigationOptions: () => commons.headerNavigationOptions,
   },
 )
