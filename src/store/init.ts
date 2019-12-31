@@ -33,7 +33,9 @@ const persistConfig = {
 
 const sagaMiddleware = createSagaMiddleware()
 const enhancers = composeWithDevTools(applyMiddleware(
-  createNetworkMiddleware(),
+  createNetworkMiddleware({
+    actionTypes: ['SET_RACE_TIME']
+  }),
   ReduxThunk,
   sagaMiddleware,
 ))

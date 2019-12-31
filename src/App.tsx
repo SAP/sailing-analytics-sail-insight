@@ -34,13 +34,13 @@ if (module.hot) {
 class App extends Component {
   public render() {
     return (
+      <NetworkProvider pingInBackground={true} pingInterval={3000} pingServerUrl="https://www.google233244.com/">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <NetworkProvider pingInBackground={true} pingInterval={3000}>
             <AppRoot/>
-          </NetworkProvider>
         </PersistGate>
       </Provider>
+      </NetworkProvider>
     )
   }
 }
