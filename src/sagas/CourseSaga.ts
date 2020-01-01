@@ -7,6 +7,7 @@ import { dataApi } from 'api'
 import uuidv4 from 'uuid/v4'
 import {
   loadCourse,
+  saveCourse,
   SAVE_COURSE,
   SELECT_COURSE,
   TOGGLE_SAME_START_FINISH,
@@ -249,15 +250,13 @@ function* navigateBackFromCourseCreation() {
 
   if (!hasChanged) return
 
-  try {
-    yield call(showSaveCourseAlert)
-    yield call(saveCourseFlow)
+  yield call(showSaveCourseAlert)
+  yield put(saveCourse())
 
-    Snackbar.show({
-      title: 'Course successfully saved',
-      duration: Snackbar.LENGTH_LONG
-    })
-  } catch(e) {}
+  Snackbar.show({
+    title: 'Course successfully saved',
+    duration: Snackbar.LENGTH_LONG
+  })
 }
 
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {
