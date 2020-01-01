@@ -1,6 +1,6 @@
 import { __, compose, concat, map, merge, defaultTo,
   reduce, when, uncurryN, tap, always, isNil, unless,
-  prop, isEmpty, not } from 'ramda'
+  prop, isEmpty, not, append, objOf } from 'ramda'
 import { openTrackDetails } from 'actions/navigation'
 import { getSession } from 'selectors/session'
 import moment from 'moment/min/moment-with-locales'
@@ -11,11 +11,12 @@ import {
   fold,
   fromClass,
   nothing,
-  reduxConnect as connect
+  reduxConnect as connect,
+  recomposeMapProps as mapProps
 } from 'components/fp/component'
 import { forwardingPropsFlatList, text, view, touchableOpacity } from 'components/fp/react-native'
 import IconText from 'components/IconText'
-import { overlayPicker, FramedNumber } from '../../session/common'
+import { overlayPicker, FramedNumber, DiscardSelector, withAddDiscard, withUpdatingDiscardItem } from '../../session/common'
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
@@ -161,6 +162,17 @@ const raceList = Component((props: object) => compose(
       renderItem: raceItem.fold
     }, props))))
 
+const withDiscardDataFromEvent = mapProps(props => compose(
+  merge(props),
+  objOf('data'),
+  append({ type: 'add' }))([]))
+
+const discardSelector = compose(
+  withDiscardDataFromEvent,
+  withUpdatingDiscardItem(() => {}),
+  withAddDiscard(() => {}))(
+  DiscardSelector)
+
 const organizerContainer = Component((props: Object) =>
   compose(
     fold(props),
@@ -169,7 +181,7 @@ const organizerContainer = Component((props: Object) =>
   ([
     text({ style: styles.sectionHeaderStyle }, 'LIST OF RACES'),
     raceNumberSelector,
-    text({}, 'Discards starting from ... races')]))
+    discardSelector]))
 
 const competitorContainer = Component((props: any) =>
   compose(
