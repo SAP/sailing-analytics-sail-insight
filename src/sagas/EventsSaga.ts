@@ -8,23 +8,27 @@ import { getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getUserInfo } from 'selectors/auth'
 import { canUpdateEvent } from 'selectors/permissions'
-import { loadCourse } from 'actions/courses'
-import { updateRaceTime } from 'actions/events'
-import { fetchPermissionsForEvent } from 'sagas/permissionsSaga'
+import { loadCourse, fetchCoursesForEvent, FETCH_COURSES_FOR_EVENT } from 'actions/courses'
+import { updateRaceTime, fetchRacesTimesForEvent, FETCH_RACES_TIMES_FOR_EVENT } from 'actions/events'
+import { fetchPermissionsForEvent } from 'actions/permissions'
 import { dataApi } from 'api'
 import moment from 'moment/min/moment-with-locales'
 
 function* selectEventFlow({ payload }: any) {
-  const { serverUrl, regattaName } = yield select(getSelectedEventInfo)
-
-  const api = dataApi(serverUrl)
-
-  try {
-    yield call(fetchPermissionsForEvent, { payload })
-  } catch (e) {}
+  yield put(fetchPermissionsForEvent(payload))
 
   const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
-  const races = yield select(getRegattaPlannedRaces(regattaName))
+
+  yield put(fetchRacesTimesForEvent(payload))
+
+  if (currentUserCanUpdateEvent) {
+    yield put(fetchCoursesForEvent(payload))
+  }
+}
+
+function* fetchRacesTimesForCurrentEvent({ payload }: any) {
+  const api = dataApi(payload.serverUrl)
+  const races = yield select(getRegattaPlannedRaces(payload.regattaName))
 
   const raceTimes = yield all(races.map((raceName: string) =>
     call(api.requestRaceTime, payload.leaderboardName, raceName, 'Default')))
@@ -32,18 +36,22 @@ function* selectEventFlow({ payload }: any) {
   yield all(raceTimes.map((raceTime: object, index: number) => put(updateRaceTime({
     [`${payload.leaderboardName}-${races[index]}`]: raceTime
   }))))
+}
 
-  if (currentUserCanUpdateEvent) {
-    const raceCourses = yield all(races.map((raceName: string) =>
-      call(api.requestCourse, regattaName, raceName, 'Default')
-    ))
+function* fetchCoursesForCurrrentEvent({ payload }: any) {
+  const api = dataApi(payload.serverUrl)
+  const races = yield select(getRegattaPlannedRaces(payload.regattaName))
 
-    yield all(raceCourses.map((course: object, index: number) =>
-      put(loadCourse({
-        raceId: `${regattaName} - ${races[index]}`,
-        course
-      })) ))
-  }
+  const raceCourses = yield all(races.map((raceName: string) =>
+    call(api.requestCourse, payload.regattaName, raceName, 'Default')
+  ))
+
+  yield all(raceCourses.map((course: object, index: number) =>
+    put(loadCourse({
+      raceId: `${payload.regattaName} - ${races[index]}`,
+      course
+    }))
+  ))
 }
 
 function* setRaceTime({ payload }: any) {
@@ -145,6 +153,8 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
 
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventFlow)
+    yield takeLatest(FETCH_RACES_TIMES_FOR_EVENT, fetchRacesTimesForCurrentEvent)
+    yield takeLatest(FETCH_COURSES_FOR_EVENT, fetchCoursesForCurrrentEvent)
     yield takeEvery(SET_RACE_TIME, setRaceTime)
     yield takeEvery(CREATE_EVENT, createEvent)
     yield takeEvery(ADD_RACE_COLUMNS, addRaceColumns)

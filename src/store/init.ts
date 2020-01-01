@@ -34,7 +34,8 @@ const persistConfig = {
 const sagaMiddleware = createSagaMiddleware()
 const enhancers = composeWithDevTools(applyMiddleware(
   createNetworkMiddleware({
-    actionTypes: ['SET_RACE_TIME']
+    actionTypes: ['SET_RACE_TIME', 'SELECT_COURSE', 'FETCH_PERMISSIONS_FOR_EVENT',
+      'FETCH_RACES_TIMES_FOR_EVENT', 'FETCH_COURSES_FOR_EVENT', 'ADD_RACE_COLUMNS', 'REMOVE_RACE_COLUMNS']
   }),
   ReduxThunk,
   sagaMiddleware,
