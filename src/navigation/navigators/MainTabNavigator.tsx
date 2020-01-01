@@ -84,7 +84,7 @@ export default createBottomTabNavigator(
       showLabel: false,
       showIcon: true,
     },
-    navigationOptions: ({ navigation }) => ({
+    defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: getTabBarIcon(navigation),
       tabBarOnPress:  onTabBarPress(navigation),
     }),
