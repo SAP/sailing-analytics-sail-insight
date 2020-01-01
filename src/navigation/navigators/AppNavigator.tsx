@@ -112,6 +112,6 @@ export default createStackNavigator(
     initialRouteName: Screens.Main,
     ...commons.stackNavigatorConfig,
     mode: 'modal',
-    navigationOptions: () => commons.headerNavigationOptions,
+    defaultNavigationOptions: () => commons.headerNavigationOptions,
   },
 )

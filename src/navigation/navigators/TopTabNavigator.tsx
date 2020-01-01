@@ -25,7 +25,7 @@ export default (screenConfig: any, navigatorConfig?: any) => createMaterialTopTa
   {
     ...(navigatorConfig || {}),
     backBehavior: 'none',
-    navigationOptions: ({ navigation }) => ({
+    defaultNavigationOptions: ({ navigation }) => ({
       tabBarLabel: ({ tintColor }) => (
         <Text
           style={[tab.topTabItemText, { color: tintColor }]}

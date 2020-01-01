@@ -21,8 +21,6 @@ import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getCourseById } from 'selectors/course'
 import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
-import { getUserRaces } from 'selectors/race'
-import { navigateToRaceCourseLayout } from 'navigation'
 import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } from 'components/helpers'
 import DatePicker from 'react-native-datepicker'
 import { dateTimeShortHourText, dateShortText } from 'helpers/date'
@@ -76,13 +74,6 @@ const raceNumberSelector = Component((props: any) =>
 const onSeeCourse = (props: any) => {
   const { name } = props.item
   props.selectCourse({ race: name })
-  navigateToRaceCourseLayout()
-}
-
-const onNewCourse = (props: any) => {
-  const { name } = props.item
-  props.selectCourse({ race: name })
-  navigateToRaceCourseLayout()
 }
 
 const defineLayoutButton = Component((props: any) =>
@@ -90,7 +81,7 @@ const defineLayoutButton = Component((props: any) =>
     fold(props),
     touchableOpacity({
       style: { flexGrow: 1 },
-      onPress: () => props.item.courseDefined ? onSeeCourse(props) : onNewCourse(props)
+      onPress: () => onSeeCourse(props)
     }))(
     text({}, props.item.courseDefined ? 'See Course' : 'Define Course')))
 

@@ -19,6 +19,7 @@ export const CREATE_EVENT = 'CREATE_EVENT'
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
 export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
+export const FETCH_RACES_TIMES_FOR_EVENT = 'FETCH_RACES_TIMES_FOR_EVENT'
 export const SET_RACE_TIME = 'SET_RACE_TIME'
 export const ADD_RACE_COLUMNS = 'ADD_RACE_COLUMNS'
 export const REMOVE_RACE_COLUMNS = 'REMOVE_RACE_COLUMNS'
@@ -127,4 +128,5 @@ export const updateEventSettings = (session: object, data: object) => (dispatch:
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)
 export const setRaceTime = createAction(SET_RACE_TIME)
+export const fetchRacesTimesForEvent = createAction(FETCH_RACES_TIMES_FOR_EVENT)
 export const updateRaceTime = createAction(UPDATE_RACE_TIME)

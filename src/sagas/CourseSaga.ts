@@ -1,12 +1,13 @@
 import { map, evolve, merge, curry, dissoc, not,
   prop, assoc, mergeLeft, compose, reduce, keys,
   find, eqProps, propEq, when, tap, defaultTo, isEmpty,
-  addIndex, __, head, last, includes, flatten, reject } from 'ramda'
+  __, head, last, includes, flatten, reject } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import uuidv4 from 'uuid/v4'
 import {
   loadCourse,
+  saveCourse,
   SAVE_COURSE,
   SELECT_COURSE,
   TOGGLE_SAME_START_FINISH,
@@ -32,6 +33,7 @@ import {
 } from 'selectors/event'
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
+import { navigateToRaceCourseLayout } from 'navigation'
 
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
@@ -65,6 +67,8 @@ function* selectCourseFlow({ payload }: any) {
   const { race } = payload
   const { regattaName, serverUrl } = yield select(getSelectedEventInfo)
   const api = dataApi(serverUrl)
+
+  navigateToRaceCourseLayout()
 
   yield put(updateCourseLoading(true))
   yield put(selectRace(race))
@@ -246,15 +250,13 @@ function* navigateBackFromCourseCreation() {
 
   if (!hasChanged) return
 
-  try {
-    yield call(showSaveCourseAlert)
-    yield call(saveCourseFlow)
+  yield call(showSaveCourseAlert)
+  yield put(saveCourse())
 
-    Snackbar.show({
-      title: 'Course successfully saved',
-      duration: Snackbar.LENGTH_LONG
-    })
-  } catch(e) {}
+  Snackbar.show({
+    title: 'Course successfully saved',
+    duration: Snackbar.LENGTH_LONG
+  })
 }
 
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {

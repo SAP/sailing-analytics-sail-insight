@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withNetworkConnectivity } from 'react-native-offline'
+import { ReduxNetworkProvider } from 'react-native-offline'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
@@ -30,20 +30,15 @@ if (module.hot) {
   module.hot.acceptCallback = acceptCallback
 }
 
-const AppWithNetworkConnectivity = withNetworkConnectivity({
-  withRedux: true, // no isConnected as a prop in this case
-  checkConnectionInterval: 3000,
-  checkInBackground: true,
-  pingServerUrl: 'https://www.google.com/',
-})(AppRoot)
-
 // must be a component to support hot reloading
 class App extends Component {
   public render() {
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <AppWithNetworkConnectivity/>
+          <ReduxNetworkProvider pingInBackground={true} pingInterval={3000}>
+            <AppRoot/>
+          </ReduxNetworkProvider>
         </PersistGate>
       </Provider>
     )
