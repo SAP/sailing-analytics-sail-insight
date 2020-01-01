@@ -1,5 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
+import { $primaryActiveColor } from 'styles/colors'
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
 import { white, withDefaultFont, withDefaultBoldFont } from 'styles/compositions/text'
 
@@ -72,7 +73,7 @@ export default EStyleSheets.create({
   },
 
   raceTimeContainerWithTime: {
-    backgroundColor: '#FF6C52',
+    backgroundColor: $primaryActiveColor,
   },
 
   raceTimeText: {

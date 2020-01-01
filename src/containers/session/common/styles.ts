@@ -2,6 +2,28 @@ import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { withDefaultBoldFont } from 'styles/compositions/text'
 
+const discardSelectorCircleDiameter = 50
+
+
+const discardSelectorItemContainer = {
+  height: discardSelectorCircleDiameter,
+  width: discardSelectorCircleDiameter,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'white',
+  margin: 5,
+  borderRadius: discardSelectorCircleDiameter / 2,
+}
+
+const discardSelectorPlusContainer = {
+  ...discardSelectorItemContainer,
+  backgroundColor: undefined,
+  borderWidth: 1,
+  borderColor: 'white',
+  justifyContent: 'center',
+  alignItems: 'center',
+}
+
 export default EStyleSheets.create({
   button: {
     padding: 12,
@@ -95,6 +117,11 @@ export default EStyleSheets.create({
     marginTop: 10,
     marginBottom: 10,
   },
+  textHeader: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: '$regularLargeFontSize',
+  },
   framedNumber: {
     flexDirection: 'row',
   },
@@ -113,5 +140,26 @@ export default EStyleSheets.create({
     fontSize: 44,
     textAlign: 'center',
     marginTop: 13,
+  },
+  discardContainer: {
+    marginBottom: 20,
+    flexDirection: 'row',
+    overflow: 'scroll',
+  },
+  discardSelectorItemContainer,
+  discardSelectorPlusContainer,
+  discardSelectorItemText: {
+    fontSize: '$titleFontSize',
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  discardSelectorPlusText: {
+    color: 'white',
+    fontSize: 50,
+    fontWeight: 'normal',
+    lineHeight: 51,
+    width: 50,
+    height: 50,
+    textAlign: 'center',
   },
 })

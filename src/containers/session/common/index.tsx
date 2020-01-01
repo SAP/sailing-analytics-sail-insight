@@ -1,13 +1,24 @@
 import { __, always, compose, concat, curry, equals,
   has, head, length, map, merge, objOf, prepend,
-  range, reduce, split, toString, when, toUpper } from 'ramda'
+  range, reduce, split, toString, when, toUpper,
+  reject, propEq, append, prop, update } from 'ramda'
 
-import { Component, fold, fromClass, nothing } from 'components/fp/component'
-import { text, touchableOpacity, view } from 'components/fp/react-native'
+import { Component, fold, fromClass, nothing, contramap,
+  recomposeWithHandlers as withHandlers } from 'components/fp/component'
+import { text, touchableOpacity, view, forwardingPropsFlatList } from 'components/fp/react-native'
 import ModalSelector from 'react-native-modal-selector'
 
 import I18n from 'i18n'
 import styles from './styles'
+import Images from '@assets/Images'
+import IconText from 'components/IconText'
+
+const plusIcon = fromClass(IconText).contramap(always({
+  source: Images.actions.plus,
+  iconTintColor: 'white',
+  style: { justifyContent: 'center', alignItems: 'center' },
+  iconStyle: { width: 25, height: 25 }
+}))
 
 const styledButton = curry(({ onPress }, content: any) =>
   Component((props: any) =>
@@ -58,6 +69,57 @@ export const FramedNumber = Component(props => compose(
   split(''),
   toString)(
   props.value))
+
+const DiscardSelectorItem = Component((props: any) => compose(
+  fold(props),
+  overlayPicker({
+    onValueChange: (value: number) => props.updateDiscardItem(props.item.index, value)
+  }),
+  view({ style: styles.discardSelectorItemContainer }),
+  text({ style: styles.discardSelectorItemText }))(
+  props.item.value))
+
+const AddDiscardButton = Component((props: any) => compose(
+  fold(props),
+  overlayPicker({
+    onValueChange: (value: number) => props.addDiscard(value)
+  }),
+  view({ style: styles.discardSelectorPlusContainer }))(
+  plusIcon))
+
+export const DiscardSelector = Component((props: any) => compose(
+  fold(props),
+  concat(text({ style: styles.textHeader }, 'Discard after race numbers')),
+  view({ style: styles.discardContainer }),
+  contramap(merge({
+    style: { flexGrow: 0 },
+    renderItem: (props: any) =>
+      props.item.type === 'add' ?
+        AddDiscardButton.fold(props) :
+        DiscardSelectorItem.fold(props),
+    showsHorizontalScrollIndicator: false,
+    horizontal: true,
+  })))(forwardingPropsFlatList))
+
+export const withUpdatingDiscardItem = handler => withHandlers({
+  updateDiscardItem: (props: any) => (index: number, value: object) => compose(
+    handler,
+    map(prop('value')),
+    reject(propEq('type', 'add')),
+    update(index, { index, value }),
+    prop('data'))(
+    props)
+})
+
+export const withAddDiscard = handler => withHandlers({
+  addDiscard: (props: any) => (value: number) => compose(
+    handler,
+    append(value),
+    map(prop('value')),
+    reject(propEq('type', 'add')),
+    prop('data'))(
+    props)
+})
 
 /*
 * SessionDetails
