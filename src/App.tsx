@@ -36,7 +36,7 @@ class App extends Component {
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <ReduxNetworkProvider>
+          <ReduxNetworkProvider pingInBackground={true} pingInterval={3000}>
             <AppRoot/>
           </ReduxNetworkProvider>
         </PersistGate>
