@@ -88,12 +88,13 @@ export default EStyleSheets.create({
   raceNameText: {
     ...withDefaultBoldFont,
     color: 'black',
-    fontSize: 20,
+    fontSize: 20
   },
 
   raceDateAndTimeContainer: {
     marginLeft: 5,
     marginRight: 5,
-    flex: 1
+    flexShrink: 0,
+    flexGrow: 1
   }
 })

@@ -283,8 +283,8 @@
   "session_create_new_event" : "Create a new event",
   "title_tracking" : "Tracking",
   "text_place_QR_code": "Please place the QR code in front of your camera",
-  "text_welcome_logged_in": "Happy Welcome\n{{name}}!",
-  "text_welcome": "Happy Welcome!",
+  "text_welcome_logged_in": "Welcome\n{{name}}!",
+  "text_welcome": "Welcome!",
   "text_tracking_headline": "FOR WHICH EVENT\nDO YOU WANT TO TRACK?",
   "text_info_event_finished": "You can find now the event in your event list."
 }

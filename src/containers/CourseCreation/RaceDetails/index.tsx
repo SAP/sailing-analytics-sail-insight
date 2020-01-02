@@ -109,8 +109,8 @@ const raceTimePicker = Component((props: any) => compose(
       value
     }),
     date: moment(getRaceStartTime(props.item) || new Date()),
-    androidMode: 'spinner', 
-    mode: 'time',
+    androidMode: 'spinner',
+    mode: 'datetime',
     confirmBtnText: I18n.t('caption_confirm'),
     cancelBtnText: I18n.t('caption_cancel'),
     hideText: true,

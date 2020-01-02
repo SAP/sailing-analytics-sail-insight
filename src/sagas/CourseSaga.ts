@@ -250,13 +250,15 @@ function* navigateBackFromCourseCreation() {
 
   if (!hasChanged) return
 
-  yield call(showSaveCourseAlert)
-  yield put(saveCourse())
+  try {
+    yield call(showSaveCourseAlert)
+    yield put(saveCourse())
 
-  Snackbar.show({
-    title: 'Course successfully saved',
-    duration: Snackbar.LENGTH_LONG
-  })
+    Snackbar.show({
+      title: 'Course successfully saved',
+      duration: Snackbar.LENGTH_LONG
+    })
+  } catch (error) {}
 }
 
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {

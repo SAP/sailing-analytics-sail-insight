@@ -72,7 +72,8 @@ export default {
     linePassing: require('./img/icons/line-passing.png'),
     deleteIcon: require('./img/icons/delete-icon.png'),
     gateIcon: require('./img/icons/gate-icon.png'),
-    markIcon: require('./img/icons/mark-icon.png'),
+    markPortIcon: require('./img/icons/mark-port-icon.png'),
+    markStarboardIcon: require('./img/icons/mark-starboard-icon.png')
   },
   events: {
     placeholder_event_pic: require('./img/events/placeholder_eventlist.png'),
