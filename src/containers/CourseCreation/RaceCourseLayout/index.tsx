@@ -1,4 +1,4 @@
-import { __, compose, always, both, path, when, move, length, subtract,
+import { __, compose, always, both, path, when, move, length, subtract, curry,
   prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
   propEq, addIndex, intersperse, gt, findIndex, unless, tail, has, toUpper } from 'ramda'
@@ -99,7 +99,8 @@ const icon = compose(
   always)
 
 const gateIcon = icon({ source: Images.courseConfig.gateIcon, iconStyle: { width: 80, height: 80 } })
-const markIcon = icon({ source: Images.courseConfig.markIcon, iconStyle: { width: 80, height: 80 } })
+const markPortIcon = icon({ source: Images.courseConfig.markPortIcon, iconStyle: { width: 80, height: 80 } })
+const markStarboardIcon = icon({ source: Images.courseConfig.markStarboardIcon, iconStyle: { width: 80, height: 80 } })
 const deleteIcon = icon({ source: Images.courseConfig.deleteIcon, iconStyle: { width: 13, height: 13 } })
 const roundingLeftIcon = icon({ source: Images.courseConfig.roundingDirectionLeft })
 const roundingRightIcon = icon({ source: Images.courseConfig.roundingDirectionRight })
@@ -138,7 +139,7 @@ const GateMarkSelectorItem = Component((props: object) =>
 const GateMarkSelector = Component((props: object) =>
   compose(
     fold(props),
-    concat(text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, 'Defining gate marks')),
+    concat(nothingWhenStartOrFinishGate(text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, 'Defining marks'))),
     view({ style: styles.gateMarkSelectorContainer }),
     reduce(concat, nothing()),
     intersperse(dashLine),
@@ -263,6 +264,17 @@ const DeleteButton = Component((props: object) =>
     concat(deleteIcon))(
     text({ style: styles.deleteButtonText }, 'Delete this mark from course')))
 
+const createNewMark = curry((passingInstruction, props) =>
+  props.insideGate ? props.changeWaypointMarkConfigurationToNew({
+    id: props.selectedWaypoint.id,
+    oldId: props.selectedMarkConfiguration,
+    newId: uuidv4()
+  }) : props.changeWaypointToNewMark({
+    id: props.selectedWaypoint.id,
+    passingInstruction,
+    markConfigurationIds: [uuidv4()]
+  }))
+
 const CreateNewSelector = Component((props: object) =>
   compose(
     fold(props),
@@ -271,22 +283,16 @@ const CreateNewSelector = Component((props: object) =>
     view({ style: { ...styles.createNewClassContainer, justifyContent: props.insideGate ? 'center' : 'space-between' }}),
     reduce(concat, nothing()),
     when(always(equals(true, props.insideGate)), tail))([
-    touchableOpacity({
-      onPress: () => props.changeWaypointToNewLine({
-        id: props.selectedWaypoint.id,
-        markConfigurationIds: [uuidv4(), uuidv4()]
-      })
-    }, gateIcon),
-    touchableOpacity({
-      onPress: () => props.insideGate ? props.changeWaypointMarkConfigurationToNew({
-        id: props.selectedWaypoint.id,
-        oldId: props.selectedMarkConfiguration,
-        newId: uuidv4()
-      }) : props.changeWaypointToNewMark({
-        id: props.selectedWaypoint.id,
-        markConfigurationIds: [uuidv4()]
-      }),
-    }, markIcon)]))
+    // touchableOpacity({
+    //   onPress: () => props.changeWaypointToNewLine({
+    //     id: props.selectedWaypoint.id,
+    //     markConfigurationIds: [uuidv4(), uuidv4()]
+    //   })
+    // }, gateIcon),
+    touchableOpacity({ onPress: () => createNewMark(PassingInstruction.Port, props) },
+      markPortIcon),
+    touchableOpacity({ onPress: () => createNewMark(PassingInstruction.Starboard, props) },
+      markStarboardIcon)]))
 
 const TextInputWithLabel = Component((props: any) => compose(
   fold(props),
@@ -458,7 +464,7 @@ const PassingInstructions = Component((props: object) =>
     fold(props),
     concat(text(
       { style: [styles.sectionTitle, styles.indentedSectionTitle] },
-      isGateWaypoint(props) ? 'Passing Gate' : 'Rounding direction')),
+      isGateWaypoint(props) ? 'Passing line' : 'Rounding direction')),
     view({ style: styles.passingInstructionContainer }),
     reduce(concat, nothing()),
     map(compose(
@@ -477,7 +483,7 @@ const WaypointEditForm = Component((props: any) =>
       view({ style: isGateWaypoint(props) && styles.indentedContainer }),
       reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(nothingWhenNotStartOrFinishGate(SameStartFinish)),
-      nothingWhenNotAGate(nothingWhenEmptyWaypoint(GateNameDropdown)),
+      nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(GateNameDropdown))),
       nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true }))))),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(PassingInstructions))),
       nothingWhenEmptyWaypoint(nothingWhenNotAGate(GateMarkSelector))
@@ -486,7 +492,7 @@ const WaypointEditForm = Component((props: any) =>
     reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(MarkPropertiesDropdown),
       nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarksOrMarkPropertiesOptionsList)),
-      nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector.contramap(merge({ insideGate: isGateWaypoint(props) })))),
+      nothingWhenStartOrFinishGate(nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector.contramap(merge({ insideGate: isGateWaypoint(props) }))))),
       nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
