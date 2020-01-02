@@ -35,14 +35,6 @@ import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
 import { navigateToRaceCourseLayout } from 'navigation'
 
-function* safe(effect) {
-  try {
-    return { result: yield effect, error: null }
-  } catch (error) {
-    return { result: null, error }
-  }
-}
-
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
 
