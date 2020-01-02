@@ -56,17 +56,10 @@ function* fetchCoursesForCurrrentEvent({ payload }: any) {
 
 function* setRaceTime({ payload }: any) {
   const { race, raceTime, value } = payload
-  const [hours, minutes] = value.split(':')
-
-  const date = compose(
-    d => d.startOf('day').set({ hours, minutes }).valueOf(),
-    moment,
-    when(isNil, always(new Date())))(
-    payload.raceTime.startTimeAsMillis)
-
+  const date = moment(value).valueOf()
   const { leaderboardName, serverUrl, regattaName } = yield select(getSelectedEventInfo)
   const api = dataApi(serverUrl)
-  
+
   yield put(updateRaceTime({
     [`${leaderboardName}-${race}`]: { ...raceTime, startTimeAsMillis: date }
   }))
