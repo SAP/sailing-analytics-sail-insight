@@ -1,5 +1,5 @@
-import { when, always, compose, isNil, map, range,
-  inc, concat, toString, __, apply } from 'ramda'
+import { compose, curry, map, range, inc, concat,
+  toString, __, apply, indexOf, dec, pick, values, head } from 'ramda'
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
 import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
   ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS } from 'actions/events'
@@ -13,6 +13,12 @@ import { updateRaceTime, fetchRacesTimesForEvent, FETCH_RACES_TIMES_FOR_EVENT } 
 import { fetchPermissionsForEvent } from 'actions/permissions'
 import { dataApi } from 'api'
 import moment from 'moment/min/moment-with-locales'
+
+const valueAtIndex = curry((index, array) => compose(
+  head,
+  values,
+  pick(__, array))(
+  [index]))
 
 function* selectEventFlow({ payload }: any) {
   yield put(fetchPermissionsForEvent(payload))
@@ -75,6 +81,21 @@ function* setRaceTime({ payload }: any) {
   })
 
   const races = yield select(getRegattaPlannedRaces(regattaName))
+
+  const previousRace = compose(
+    valueAtIndex(__, races),
+    dec,
+    indexOf(race))(
+    races)
+
+  if (previousRace) {
+    yield call(api.setTrackingTimes, regattaName,
+      {
+        fleet: 'Default',
+        race_column: previousRace,
+        endoftrackingasmillis: moment(date).subtract(1, 'minutes').valueOf()
+      })
+  }
 
   try {
     yield all(races.map((race: string) =>
