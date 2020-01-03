@@ -88,7 +88,6 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                     label: I18n.t('text_placeholder_nationality'),
                     value: null,
                   }}
-                  textInputProps={{ color: 'white' }}
                   items={this.state.countryList}
                   value={stateText}
                   Icon={() => {
@@ -96,11 +95,11 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                   }}
                   onValueChange={this.onValueChange}
                   placeholderTextColor={isHighlighted ? $importantHighlightColor : 'white'}
+                  useNativeAndroidPickerStyle={false}
                   style={{
                     inputIOS: styles.inputIOS,
                     inputAndroid: styles.inputAndroid,
                     underline: styles.underline,
-                    icon: styles.icon,
                   }}
                   {...additionalProps}
               />

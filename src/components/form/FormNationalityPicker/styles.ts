@@ -32,9 +32,6 @@ export default EStyleSheet.create({
     alignSelf: 'center',
     paddingTop: 3,
   },
-  icon: {
-    top: 0,
-  },
   inputIOS: {
     fontSize: '$largeFontSize',
     paddingHorizontal: 0,
@@ -42,11 +39,11 @@ export default EStyleSheet.create({
     color: '$primaryTextColor',
   },
   inputAndroid: {
-    alignSelf: 'stretch',
-    paddingBottom: 1,
+    fontSize: '$largeFontSize',
+    paddingHorizontal: 0,
     paddingVertical: 0, // remove Android default padding
-    height: 29,
     backgroundColor: 'transparent',
+    color: '$primaryTextColor',
   },
   underline: {
     borderTopWidth: 0,
