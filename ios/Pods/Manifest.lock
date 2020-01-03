@@ -75,6 +75,8 @@ PODS:
     - React
   - react-native-maps (0.25.0):
     - React
+  - react-native-netinfo (4.7.0):
+    - React
   - react-native-slider (1.1.4):
     - React
   - React/Core (0.59.8):
@@ -156,6 +158,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - react-native-branch (from `../node_modules/react-native-branch`)
   - react-native-maps (from `../node_modules/react-native-maps`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - React/Core (from `../node_modules/react-native`)
   - React/CxxBridge (from `../node_modules/react-native`)
@@ -178,7 +181,7 @@ DEPENDENCIES:
   - yoga (from `../node_modules/react-native/ReactCommon/yoga/yoga.podspec`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - boost-for-react-native
     - Branch
     - CocoaLumberjack
@@ -209,6 +212,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-branch"
   react-native-maps:
     :path: "../node_modules/react-native-maps"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
   RNCAsyncStorage:
@@ -245,6 +250,7 @@ SPEC CHECKSUMS:
   React: 76e6aa2b87d05eb6cccb6926d72685c9a07df152
   react-native-branch: b95430177fc90d4a5d414b33c6bc7b1e8e3a2ea5
   react-native-maps: 190c02ca533fddac5bb49cf17bdece3644612107
+  react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
   react-native-slider: 754abcdae695545c5875c2150cb2a502d24b7bed
   RNCAsyncStorage: 3c304d1adfaea02ec732ac218801cb13897aa8c0
   RNFS: 54da03c2b7d862c42ea3ca8c7f86f892760a535a
@@ -254,6 +260,6 @@ SPEC CHECKSUMS:
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   yoga: 92b2102c3d373d1a790db4ab761d2b0ffc634f64
 
-PODFILE CHECKSUM: adf46f7ed2928288b39fdfa222ae8cde1987a26f
+PODFILE CHECKSUM: 30a644b30a82a20d3086bee5ffbd7cebb1766797
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.7.5
