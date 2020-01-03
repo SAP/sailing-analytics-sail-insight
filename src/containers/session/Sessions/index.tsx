@@ -44,26 +44,15 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
   }
 
-  public onSessionItemPress = (checkIn: CheckIn) => () => {
-    this.props.selectEvent(checkIn)
-    navigateToSessionDetail(checkIn.leaderboardName)
-  }
-
   public renderHeader() {
     return <EmptySessionsHeader/>
   }
 
-  public renderItem = ({ item }: any) => (
-      <SessionItem
-        style={styles.cardsContainer}
-        onItemPress={this.onSessionItemPress(item)}
-        session={item}
-      />
-  )
-
-  public onQRPress = () => {
-    navigateToQRScanner()
-  }
+  public renderItem = ({ item }: any) =>
+    <SessionItem
+      style={styles.cardsContainer}
+      onItemPress={() => this.props.selectEvent(item)}
+      session={item}/>
 
   public render() {
     return (
@@ -71,15 +60,13 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
         <ScrollContentView style={styles.scrollContainer}>
           <TouchableOpacity
             style={styles.createButton}
-            onPress={this.props.authBasedNewSession}
-          >
+            onPress={this.props.authBasedNewSession}>
             <IconText
               source={Images.actions.add}
               iconStyle={styles.createButtonIcon}
               textStyle={styles.createButtonText}
               iconTintColor="white"
-              alignment="horizontal"
-            >
+              alignment="horizontal">
               {I18n.t('session_create_new_event').toUpperCase()}
             </IconText>
           </TouchableOpacity>
@@ -94,8 +81,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, styles.qrButton]}
               textStyle={styles.qrButtonText}
-              onPress={this.onQRPress}
-          >
+              onPress={() => navigateToQRScanner()}>
             {I18n.t('caption_qr_scanner').toUpperCase()}
           </TextButton>
         </View>

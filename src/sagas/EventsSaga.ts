@@ -1,6 +1,8 @@
 import { compose, curry, map, range, inc, concat,
   toString, __, apply, indexOf, dec, pick, values, head } from 'ramda'
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
+import moment from 'moment/min/moment-with-locales'
+import { dataApi } from 'api'
 import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
   ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS } from 'actions/events'
 import { receiveEntities } from 'actions/entities'
@@ -11,8 +13,7 @@ import { canUpdateEvent } from 'selectors/permissions'
 import { loadCourse, fetchCoursesForEvent, FETCH_COURSES_FOR_EVENT } from 'actions/courses'
 import { updateRaceTime, fetchRacesTimesForEvent, FETCH_RACES_TIMES_FOR_EVENT } from 'actions/events'
 import { fetchPermissionsForEvent } from 'actions/permissions'
-import { dataApi } from 'api'
-import moment from 'moment/min/moment-with-locales'
+import { navigateToSessionDetail } from 'navigation'
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -30,6 +31,8 @@ function* selectEventFlow({ payload }: any) {
   if (currentUserCanUpdateEvent) {
     yield put(fetchCoursesForEvent(payload))
   }
+
+  navigateToSessionDetail(payload.leaderboardName)
 }
 
 function* fetchRacesTimesForCurrentEvent({ payload }: any) {

@@ -1,7 +1,5 @@
 import React from 'react'
-
 import { Image, ImageBackground, Text, View, ViewProps } from 'react-native'
-
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
 import {
@@ -12,25 +10,18 @@ import {
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
 import styles from './styles'
-
-import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { getStore } from 'store'
+import { isLoggedIn } from 'selectors/auth'
+import { connect } from 'react-redux'
 
 class FirstContact extends React.Component<ViewProps> {
 
   constructor(props: Readonly<ViewProps>) {
     super(props)
 
-    const isLoggedIn = isLoggedInSelector(getStore().getState())
-
-    if (isLoggedIn) {
-      navigateToMainTabs()
-    }
+    props.isLoggedIn && navigateToMainTabs()
   }
 
   public render() {
-
-
     return (
         <ImageBackground source={Images.defaults.map} style={{ width: '100%', height: '100%' }}>
         <View style={[container.main, styles.container]}>
@@ -40,8 +31,7 @@ class FirstContact extends React.Component<ViewProps> {
             <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, styles.bigButton]}
               textStyle={styles.bigButtonText}
-              onPress={navigateToMainTabs}
-            >
+              onPress={navigateToMainTabs}>
               {I18n.t('caption_start_tracking').toUpperCase()}
             </TextButton>
             <TextButton
@@ -50,10 +40,11 @@ class FirstContact extends React.Component<ViewProps> {
               onPress={navigateToQRScanner}>
               {I18n.t('caption_qr_scanner').toUpperCase()}
             </TextButton>
-            <Text onPress={navigateToUserRegistration} style={styles.loginText}>
+            { !this.props.isLoggedIn && <Text onPress={navigateToUserRegistration} style={styles.loginText}>
               {I18n.t('caption_create_free_account')}
-            </Text>
+            </Text> }
           </View>
+
           <View style={styles.logoContainer}>
             <Image source={Images.defaults.ws_logo} style={styles.ws_logo} resizeMode="stretch"/>
             <Image source={Images.defaults.sap_logo} style={styles.sap_logo}/>
@@ -64,4 +55,8 @@ class FirstContact extends React.Component<ViewProps> {
   }
 }
 
-export default FirstContact
+const mapStateToProps = (state: any) => ({
+  isLoggedIn: isLoggedIn(state)
+})
+
+export default connect(mapStateToProps)(FirstContact)
