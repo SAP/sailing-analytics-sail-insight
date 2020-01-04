@@ -1,7 +1,7 @@
 import { always, compose, concat, objOf, reduce } from 'ramda'
-import { Alert, Image } from 'react-native'
+import { Alert } from 'react-native'
 
-import { Component,  fold, fromClass, nothing,
+import { Component,  fold, nothing,
   recomposeLifecycle as lifecycle,
   recomposeWithStateHandlers as withStateHandlers,
   reduxConnect as connect } from 'components/fp/component'
@@ -28,10 +28,9 @@ import I18n from 'i18n'
 import { selfTrackingApi } from 'api'
 import { BoatClassesBody } from '../../../api/endpoints/types'
 
-import Images from '@assets/Images'
 import { getErrorDisplayMessage } from 'helpers/texts'
-import styles from './styles'
 import { $LightBlue } from 'styles/colors'
+import styles from './styles'
 
 const mapStateToProps = (state: any) => ({
   initialValues,
@@ -75,13 +74,6 @@ const createButton = Component(
   )(
     text({ style: styles.createButtonText }, I18n.t('caption_create'))
   )
-)
-
-const arrowLeft = fromClass(Image).contramap(
-  always({
-    source: Images.actions.arrowLeft,
-    style: { tintColor: 'white' },
-  })
 )
 
 export default Component(
