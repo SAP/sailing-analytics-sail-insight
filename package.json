@@ -9,7 +9,7 @@
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx,js,jsx}'"
   },
   "dependencies": {
-    "@expo/react-native-action-sheet": "1.1.2",
+    "@expo/react-native-action-sheet": "3.4.1",
     "@react-native-community/async-storage": "^1.6.2",
     "@react-native-community/slider": "^1.1.4",
     "@types/ramda": "^0.26.6",
@@ -152,5 +152,8 @@
     "assets": [
       "./assets/fonts"
     ]
+  },
+  "resolutions": {
+    "react": "16.12.0"
   }
 }

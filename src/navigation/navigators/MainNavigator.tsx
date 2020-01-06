@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 import React from 'react'
-import { Share } from 'react-native'
+import { Share, Button } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
 import { connect } from 'react-redux'
 
@@ -21,15 +21,12 @@ import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import RaceSetup from 'containers/CourseCreation/RaceSetUp'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
 import EventCreation from 'containers/session/EventCreation'
-import SessionDetail from 'containers/session/SessionDetail'
+import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
 import TeamDetails from 'containers/TeamDetails'
 import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 import FirstContact from 'containers/user/FirstContact'
-
 import { button } from 'styles/commons'
-
 import MainTabNavigator from './MainTabNavigator'
-
 
 const teamDetailsHeader = connect(
   (state: any) => ({ text: getFormTeamName(state) })
@@ -82,6 +79,7 @@ export default createStackNavigator(
       navigationOptions: {
         title: I18n.t('title_event_details'),
         headerBackTitle: ' ', // have to be with white space, otherwise fallback to title 'Back'
+        headerRight: ShareButton.fold({}),
       },
     },
     [Screens.RaceDetails]: {
