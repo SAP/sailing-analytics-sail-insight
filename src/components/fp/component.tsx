@@ -14,6 +14,7 @@ import {
     lifecycle
 } from 'recompose';
 import { connect } from 'react-redux';
+import { connectActionSheet as rnConnectActionSheet } from '@expo/react-native-action-sheet'
 
 const mapIndexed = addIndex(map)
 
@@ -21,22 +22,6 @@ const fold    = curry((props, v) => v.fold(props));
 const asArray = (x: any) => Array.isArray(x) ? x : [x];
 
 const classToFn = (C: any) => (props: any) => <C {...props}/>;
-
-const enhance = (fn: any) => (...args: any[]) => compose(
-    Component,
-    classToFn,
-    fn(...args),
-    prop('fold'));
-
-const reduxConnect               = enhance(connect);
-const recomposeBranch            = enhance(branch);
-const recomposeWithHandlers      = enhance(withHandlers);
-const recomposeWithState         = enhance(withState);
-const recomposeWithStateHandlers = enhance(withStateHandlers);
-const recomposeMapProps          = enhance(mapProps);
-const recomposeDefaultProps      = enhance(defaultProps);
-const recomposeWithProps         = enhance(withProps);
-const recomposeLifecycle         = enhance(lifecycle);
 
 const Component = compose(
     (g: Function) => ({
@@ -55,6 +40,29 @@ const Component = compose(
     }),
     (x: any) => compose(asArray, x)
 );
+
+const enhance = (fn: any) => (...args: any[]) => compose(
+    Component,
+    classToFn,
+    fn(...args),
+    prop('fold'));
+
+const enhanceSimple = (fn: any) => compose(
+    Component,
+    classToFn,
+    fn,
+    prop('fold'));
+
+const reduxConnect               = enhance(connect);
+const recomposeBranch            = enhance(branch);
+const recomposeWithHandlers      = enhance(withHandlers);
+const recomposeWithState         = enhance(withState);
+const recomposeWithStateHandlers = enhance(withStateHandlers);
+const recomposeMapProps          = enhance(mapProps);
+const recomposeDefaultProps      = enhance(defaultProps);
+const recomposeWithProps         = enhance(withProps);
+const recomposeLifecycle         = enhance(lifecycle);
+const connectActionSheet         = enhanceSimple(rnConnectActionSheet);
 
 const contramap = curry((f: Function, c: any) => c.contramap(f))
 
@@ -76,6 +84,7 @@ export {
     classToFn,
     enhance,
     reduxConnect,
+    connectActionSheet,
     recomposeBranch,
     recomposeWithHandlers,
     recomposeWithState,

@@ -1,7 +1,8 @@
-import { __, always, compose, curry, has, head, merge, mergeLeft, objOf, when } from 'ramda';
-import { FlatList, Image, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
-import { Component, contramap, fold, fromClass } from './component';
-
+import { useState as reactUseState } from 'react'
+import { __, always, compose, curry, has, head, merge, mergeLeft, objOf, when } from 'ramda'
+import { FlatList, Image, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native'
+import { Component, contramap, fold, fromClass } from './component'
+import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
 import { Svg, Path, G, Text as rnSvgText } from 'react-native-svg'
 
 const buildComponentWithChildren = curry((Comp, settings, c) =>
@@ -27,7 +28,7 @@ export const image = (settings: Object) => Component((props: Object) => compose(
   fold(props),
   fromClass(Image).contramap,
   always)(
-  settings));
+  settings))
 
 export const touchableHighlight = curry((settings, c) => Component((props: Object) => compose(
   fold(props),
@@ -38,7 +39,7 @@ export const touchableHighlight = curry((settings, c) => Component((props: Objec
   objOf('children'),
   head,
   when(has('fold'), fold(props)))(
-  c)));
+  c)))
 
 export const touchableOpacity = curry((settings, c) => Component((props: Object) => compose(
   fold(props),
@@ -49,7 +50,7 @@ export const touchableOpacity = curry((settings, c) => Component((props: Object)
   objOf('children'),
   head,
   when(has('fold'), fold(props)))(
-  c)));
+  c)))
 
 export const forwardingPropsFlatList = Component((props: any) =>
   compose(
@@ -58,3 +59,20 @@ export const forwardingPropsFlatList = Component((props: any) =>
       renderItem: item => props.renderItem({...props, ...item })
     })))(
   fromClass(FlatList)))
+
+export const useActionSheet = () => c => {
+    const { showActionSheetWithOptions } = rnUseActionSheet();
+
+    return c.contramap(merge({
+      showActionSheetWithOptions
+    }))
+}
+
+export const useState = (name, updateFn, initialValue) => c => {
+  const [value, updater] = reactUseState(initialValue);
+
+  return c.contramap(merge(__, {
+      [name]:     value,
+      [updateFn]: updater
+  }));
+};

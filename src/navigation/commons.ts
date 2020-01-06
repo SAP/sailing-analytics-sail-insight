@@ -1,4 +1,5 @@
-import { NavigationParams, StackNavigatorConfig } from 'react-navigation'
+import { Platform, StatusBar } from 'react-native'
+import { NavigationParams, StackNavigatorConfig, Header } from 'react-navigation'
 
 import { $headerTintColor, $primaryBackgroundColor } from 'styles/colors'
 import { navigation as navigationStyles } from 'styles/commons'
@@ -9,6 +10,8 @@ export const headerNavigationOptions: NavigationParams = {
   headerTintColor: $headerTintColor,
   headerStyle: {
     backgroundColor: $primaryBackgroundColor,
+    height: Header.HEIGHT + (Platform.OS === 'ios' ? 0 : StatusBar.currentHeight),
+    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
   },
 }
 

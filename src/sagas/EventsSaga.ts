@@ -3,8 +3,10 @@ import { compose, curry, map, range, inc, concat,
 import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
 import moment from 'moment/min/moment-with-locales'
 import { dataApi } from 'api'
+import { Share } from 'react-native'
 import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
-  ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS } from 'actions/events'
+  ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS, OPEN_EVENT_LEADERBOARD,
+  OPEN_SAP_ANALYTICS_EVENT } from 'actions/events'
 import { receiveEntities } from 'actions/entities'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
@@ -14,6 +16,7 @@ import { loadCourse, fetchCoursesForEvent, FETCH_COURSES_FOR_EVENT } from 'actio
 import { updateRaceTime, fetchRacesTimesForEvent, FETCH_RACES_TIMES_FOR_EVENT } from 'actions/events'
 import { fetchPermissionsForEvent } from 'actions/permissions'
 import { navigateToSessionDetail } from 'navigation'
+import { openUrl } from 'helpers/utils'
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -168,6 +171,20 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
   yield put(receiveEntities(entities))
 }
 
+function* openEventLeaderboard() {
+  const { serverUrl, eventId, regattaName } = yield select(getSelectedEventInfo)
+
+  openUrl(`${serverUrl}/gwt/Home.html#/regatta/minileaderboard/:eventId=${eventId}&regattaId=${regattaName}`)
+}
+
+function* openSAPAnalyticsEvent() {
+  const { serverUrl, eventId } = yield select(getSelectedEventInfo)
+
+  Share.share({
+    message: `${serverUrl}/gwt/Home.html#/event/:eventId=${eventId}`
+  })
+}
+
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventFlow)
     yield takeLatest(FETCH_RACES_TIMES_FOR_EVENT, fetchRacesTimesForCurrentEvent)
@@ -176,4 +193,6 @@ export default function* watchEvents() {
     yield takeEvery(CREATE_EVENT, createEvent)
     yield takeEvery(ADD_RACE_COLUMNS, addRaceColumns)
     yield takeEvery(REMOVE_RACE_COLUMNS, removeRaceColumns)
+    yield takeLatest(OPEN_EVENT_LEADERBOARD, openEventLeaderboard)
+    yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
 }
