@@ -143,7 +143,8 @@ function* addRaceColumns({ payload }: any) {
     yield all(races.map((race: string) =>
       call(api.startTracking, payload.leaderboardName, {
         race_column: race,
-        fleet: 'Default'
+        fleet: 'Default',
+        trackedRaceName: race
     })))
 
     yield call(reloadRegattaAfterRaceColumnsChange, payload)
