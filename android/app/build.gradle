@@ -97,8 +97,8 @@ def enableProguardInReleaseBuilds = false
 
 def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.sailtracks.android.sailinginsight'
 def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
-def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "53") as Integer
-def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.33"
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "54") as Integer
+def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.34"
 
 android {
 	purgeBackgroundGeolocationDebugResources(applicationVariants)
