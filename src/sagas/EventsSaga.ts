@@ -9,7 +9,7 @@ import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
   OPEN_SAP_ANALYTICS_EVENT } from 'actions/events'
 import { receiveEntities } from 'actions/entities'
 import { getSelectedEventInfo } from 'selectors/event'
-import { getRegattaPlannedRaces } from 'selectors/regatta'
+import { getRegattaPlannedRaces, getRegatta } from 'selectors/regatta'
 import { getUserInfo } from 'selectors/auth'
 import { canUpdateEvent } from 'selectors/permissions'
 import { loadCourse, fetchCoursesForEvent, FETCH_COURSES_FOR_EVENT } from 'actions/courses'
@@ -121,9 +121,12 @@ function* createEvent({ payload: { payload: data} }: any) {
     inc)(
     data.numberOfRaces)
 
+  const regatta = yield select(getRegatta(data.regattaName))
+
   yield call(api.updateRegatta, data.regattaName,
     { controlTrackingFromStartAndFinishTimes: true,
-      useStartTimeInference: false })
+      useStartTimeInference: false,
+      defaultCourseAreaUuid: regatta.courseAreaId })
 
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
