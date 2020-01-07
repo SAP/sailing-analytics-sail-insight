@@ -12,7 +12,7 @@ import { dateTimeText } from 'helpers/date'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { openEmailToContact } from 'helpers/user'
 import { CheckIn } from 'models'
-import { navigateToSessions, navigateToTrackingList } from 'navigation'
+import { navigateToTrackingNavigator } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getBoat } from 'selectors/boat'
 import { getCompetitor } from 'selectors/competitor'
@@ -56,7 +56,6 @@ class JoinRegatta extends React.Component<{
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
       this.setState({ isLoading: false })
-      navigateToTrackingList()
     }
   }
 
@@ -147,7 +146,7 @@ class JoinRegatta extends React.Component<{
             style={button.closeButton}
             imageStyle={{ tintColor: '#FFFFFF' }}
             source={Images.actions.close}
-            onPress={navigateToSessions}
+            onPress={navigateToTrackingNavigator}
         />
       </ScrollContentView>
     )

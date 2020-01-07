@@ -5,6 +5,7 @@ import * as Screens from './Screens'
 
 
 export const navigateBack = NavigationService.navigateBack
+export const navigatePop = NavigationService.pop
 export const initialNavigation = () => NavigationService.navigate(Screens.App)
 export const navigateToMain = () => NavigationService.navigate(Screens.Main)
 export const navigateToMainTabs = () => NavigationService.navigate(Screens.MainTabs)
@@ -14,10 +15,11 @@ export const navigateToAppSettings = () => NavigationService.navigate(Screens.Ap
 export const navigateToUserRegistration = () => NavigationService.navigate(Screens.Register)
 export const navigateToExpertSettings = () => NavigationService.navigate(Screens.ExpertSettings)
 export const navigateToUserRegistrationCredentials = () => NavigationService.navigate(Screens.RegisterCredentials)
-export const navigateToUserRegistrationBoat = () => NavigationService.navigateWithReset(Screens.RegisterBoat)
+export const navigateToUserRegistrationBoat = () => NavigationService.navigate(Screens.RegisterBoat)
 export const navigateToLogin = () => NavigationService.navigate(Screens.Login)
 export const navigateToPasswordReset = () => NavigationService.navigate(Screens.PasswordReset)
 export const navigateToSessions = () => NavigationService.navigate(Screens.Sessions)
+export const navigateToTrackingNavigator = () => NavigationService.navigate(Screens.TrackingNavigator)
 export const navigateToTracking = () => NavigationService.navigate(Screens.Tracking)
 export const navigateToUserProfile = () => NavigationService.navigate(Screens.UserProfile)
 export const navigateToTeamList = () => NavigationService.navigate(Screens.TeamList)

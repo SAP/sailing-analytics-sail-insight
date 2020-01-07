@@ -29,6 +29,7 @@ export default createStackNavigator(
       screen: RegisterBoat,
       navigationOptions: () => ({
         title: I18n.t('title_your_team'),
+        headerLeft: null,
       }),
     },
     [Screens.Login]: {

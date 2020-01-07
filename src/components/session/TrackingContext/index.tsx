@@ -1,13 +1,11 @@
 import React from 'react'
-import {
-  StyleProp, ViewProps, ViewStyle,
-} from 'react-native'
+import { ViewProps } from 'react-native'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import { Session } from 'models'
 
-import { $secondaryTextColor } from 'styles/colors'
+import { text } from 'styles/commons'
 import styles from './styles'
 
 
@@ -51,9 +49,9 @@ class TrackingContext extends React.Component<ViewProps & {
       <IconText
         style={styles.infoItem}
         source={this.state.infoImage}
-        iconTintColor="#C5C5C5"
+        iconTintColor="#FFFFFF"
         alignment="horizontal"
-        textStyle={{ flex: 1, color: 'white' }}
+        textStyle={[text.propertyValue, { color: '#FFFFFF' }]}
       >
         {this.state.infoText}
       </IconText>

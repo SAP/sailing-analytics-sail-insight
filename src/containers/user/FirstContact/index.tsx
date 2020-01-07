@@ -1,5 +1,3 @@
-import React from 'react'
-import { Image, ImageBackground, Text, View, ViewProps } from 'react-native'
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
 import {
@@ -7,11 +5,13 @@ import {
   navigateToQRScanner,
   navigateToUserRegistration,
 } from 'navigation'
+import React from 'react'
+import { Image, ImageBackground, Text, View, ViewProps } from 'react-native'
+import { connect } from 'react-redux'
+import { isLoggedIn } from 'selectors/auth'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
 import styles from './styles'
-import { isLoggedIn } from 'selectors/auth'
-import { connect } from 'react-redux'
 
 class FirstContact extends React.Component<ViewProps> {
 
