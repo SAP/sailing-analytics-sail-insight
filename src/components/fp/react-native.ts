@@ -1,9 +1,9 @@
-import { useState as reactUseState } from 'react'
-import { __, always, compose, curry, has, head, merge, mergeLeft, objOf, when } from 'ramda'
-import { FlatList, Image, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native'
-import { Component, contramap, fold, fromClass } from './component'
 import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
-import { Svg, Path, G, Text as rnSvgText } from 'react-native-svg'
+import { __, always, compose, curry, has, head, merge, mergeLeft, objOf, when } from 'ramda'
+import { useState as reactUseState } from 'react'
+import { FlatList, Image, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native'
+import { G, Path, Svg, Text as rnSvgText } from 'react-native-svg'
+import { Component, contramap, fold, fromClass } from './component'
 
 const buildComponentWithChildren = curry((Comp, settings, c) =>
   Component((props: Object) =>

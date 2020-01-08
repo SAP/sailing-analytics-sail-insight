@@ -19,7 +19,7 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
-import { navigateBack } from 'navigation'
+import { navigatePop } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
@@ -169,7 +169,7 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 
   protected onSkip() {
-    navigateBack()
+    navigatePop()
   }
 
   protected onSubmit = async (values: any) => {
@@ -184,7 +184,7 @@ class RegisterBoat extends TextInputForm<Props> {
         imageData: values[FORM_KEY_IMAGE],
         handicap: values[FORM_KEY_HANDICAP],
       } as TeamTemplate)
-      navigateBack()
+      navigatePop()
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
     } finally {

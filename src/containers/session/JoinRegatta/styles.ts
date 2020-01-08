@@ -22,6 +22,8 @@ export default EStyleSheets.create({
   },
   location: {
     marginTop: 16,
+    maxWidth: '50%',
+    marginRight: '$tinySpacing',
   },
   locationIcon: {
     tintColor: 'white',

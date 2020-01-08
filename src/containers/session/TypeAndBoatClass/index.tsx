@@ -6,14 +6,14 @@ import { Component, fold, fromClass, nothing, nothingAsClass,
 import { text, view } from 'components/fp/react-native'
 import { field as reduxFormField } from 'components/fp/redux-form'
 
+import FormBoatClassInput from 'components/form/FormBoatClassInput'
 import {
   FORM_KEY_BOAT_CLASS,
   FORM_KEY_REGATTA_TYPE,
 } from 'forms/eventCreation'
 import { RegattaType } from 'models/EventCreationData'
-import SwitchSelector from 'react-native-switch-selector'
 import ModalDropdown from 'react-native-modal-dropdown'
-import FormBoatClassInput from 'components/form/FormBoatClassInput'
+import SwitchSelector from 'react-native-switch-selector'
 
 import { $MediumBlue, $primaryActiveColor } from 'styles/colors'
 import styles from './styles'

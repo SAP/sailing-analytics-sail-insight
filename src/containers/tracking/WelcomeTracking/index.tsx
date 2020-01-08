@@ -19,27 +19,10 @@ import {
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
 
-import { getStore } from 'store'
-
 class WelcomeTracking extends React.Component<ViewProps & {
   isLoggedIn: boolean
   user: User,
 }> {
-
-  constructor(props: Readonly<ViewProps & {
-    isLoggedIn: boolean
-    user: User,
-  }>) {
-    super(props)
-
-    const isLoggedIn = isLoggedInSelector(getStore().getState())
-
-    if (!isLoggedIn) {
-      setTimeout(() => {
-        navigateToTrackingList()
-      }, 1000)
-    }
-  }
 
 
   public render() {

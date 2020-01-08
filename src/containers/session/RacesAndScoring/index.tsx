@@ -14,7 +14,7 @@ import {
   FORM_KEY_DISCARDS,
   FORM_KEY_NUMBER_OF_RACES } from 'forms/eventCreation'
 
-import { FramedNumber, overlayPicker, DiscardSelector, withAddDiscard, withUpdatingDiscardItem } from '../common'
+import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard, withUpdatingDiscardItem } from '../common'
 
 import styles from './styles'
 
