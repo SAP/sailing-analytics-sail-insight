@@ -51,8 +51,7 @@ class EditCompetitor extends TextInputForm<Props> {
 
   private commonProps = {
     keyboardType: 'default' as KeyboardType,
-    returnKeyType: 'next' as ReturnKeyType,
-    validate: [validateRequired],
+    returnKeyType: 'next' as ReturnKeyType
   }
 
   public render() {
