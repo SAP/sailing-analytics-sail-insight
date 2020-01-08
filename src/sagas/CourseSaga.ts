@@ -269,10 +269,12 @@ function* fetchAndUpdateMarkConfigurationDeviceTracking() {
 
   const markState = yield call(api.requestMark, leaderboardName, markConfiguration.markId, secret)
 
-  yield call(updateMarkConfigurationDeviceTracking, {
-    id: selectedMarkConfiguration,
-    deviceId: markState.location && markState.location.deviceUUID
-  })
+  try {
+    yield call(updateMarkConfigurationDeviceTracking, {
+      id: selectedMarkConfiguration,
+      deviceId: markState.location && markState.location.deviceUUID
+    })
+  } catch(error) {}
 }
 
 export default function* watchCourses() {
