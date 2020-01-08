@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, move, length, subtract, curry,
-  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps,
-  objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN,
+  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc,
+  objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN, apply,
   propEq, addIndex, intersperse, gt, findIndex, unless, tail, has, toUpper } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
@@ -603,7 +603,11 @@ export default Component((props: object) =>
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
       assignMarkOrMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
-      changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation }),
+      changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation }, null,
+      { areStatePropsEqual: (next, prev) => compose(
+          apply(equals),
+          map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(
+          [next, prev]) }),
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
