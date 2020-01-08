@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 import React from 'react'
-import { Share, Button } from 'react-native'
+import { Share } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
 import { connect } from 'react-redux'
 

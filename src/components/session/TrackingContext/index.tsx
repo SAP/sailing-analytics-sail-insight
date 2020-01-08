@@ -40,7 +40,6 @@ class TrackingContext extends React.Component<ViewProps & {
   }
 
   public render = () => {
-    const style = this.props
     this.getTrackingContext()
 
     if (!this.state.infoImage) return null

@@ -30,6 +30,7 @@ import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
 import { button, container } from 'styles/commons'
 import styles from './styles'
 
+import ScrollContentView from 'components/ScrollContentView';
 import Toast from 'react-native-root-toast'
 
 const EMPTY_VALUE = '-'
@@ -75,7 +76,7 @@ class Tracking extends React.Component<{
     const distance = trackingStats.distance ? trackingStats.distance.toFixed(0) : '0'
 
     return (
-      <View style={[container.main]}>
+      <ScrollContentView style={[container.main]}>
         <ConnectivityIndicator style={styles.connectivity}/>
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={styles.container}>
@@ -172,7 +173,7 @@ class Tracking extends React.Component<{
         >
           {this.state.buttonText}
         </TextButton>
-      </View>
+      </ScrollContentView>
     )
   }
 

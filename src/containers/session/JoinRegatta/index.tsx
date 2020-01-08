@@ -44,7 +44,7 @@ class JoinRegatta extends React.Component<{
 
   public state = {
     isLoading: false,
-    trackingContext: '',
+    trackingContext: undefined,
     buttonText: I18n.t('caption_join_race'),
   }
 

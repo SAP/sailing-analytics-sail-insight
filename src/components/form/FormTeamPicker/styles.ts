@@ -7,7 +7,7 @@ export default EStyleSheet.create({
     paddingHorizontal: '$smallSpacing',
     borderTopRightRadius: '$baseBorderRadius',
     borderBottomRightRadius: '$baseBorderRadius',
-    backgroundColor: '$secondaryBackgroundColor',
+    backgroundColor: 'transparent',
     color: '$primaryTextColor',
     width: 30,
   },
@@ -19,7 +19,7 @@ export default EStyleSheet.create({
     borderTopColor: 'transparent',
   },
   container: {
-    backgroundColor: '$secondaryBackgroundColor',
+    backgroundColor: 'transparent',
     borderRadius: '$baseBorderRadius',
     flexDirection: 'row',
     alignItems: 'center',
