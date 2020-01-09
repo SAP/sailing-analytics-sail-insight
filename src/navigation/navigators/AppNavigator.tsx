@@ -18,6 +18,7 @@ import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
 import ExpertSettings from '../../containers/ExpertSettings'
 import { navigateToTracking } from '../index'
+import Login from 'containers/authentication/Login'
 
 import TrackingList from 'containers/tracking/TrackingList'
 import MainNavigator from './MainNavigator'
@@ -106,6 +107,14 @@ export default createStackNavigator(
       navigationOptions: {
         header: null,
       },
+    },
+    [Screens.LoginFromSplash]: {
+      screen: Login,
+      navigationOptions: () => ({
+        ...commons.navHeaderTransparentProps,
+        headerLeft: null,
+        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
+      }),
     },
   },
   {

@@ -4,6 +4,7 @@ import {
   navigateToMainTabs,
   navigateToQRScanner,
   navigateToUserRegistration,
+  navigateToLoginFromSplash
 } from 'navigation'
 import React from 'react'
 import { Image, ImageBackground, Text, View, ViewProps } from 'react-native'
@@ -22,6 +23,8 @@ class FirstContact extends React.Component<ViewProps> {
   }
 
   public render() {
+    this.props.isLoggedIn && navigateToMainTabs()
+
     return (
         <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
         <View style={[container.main, styles.container]}>
@@ -31,8 +34,8 @@ class FirstContact extends React.Component<ViewProps> {
             <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, styles.bigButton]}
               textStyle={styles.bigButtonText}
-              onPress={navigateToMainTabs}>
-              {I18n.t('caption_start_tracking').toUpperCase()}
+              onPress={navigateToUserRegistration}>
+              {I18n.t('caption_register').toUpperCase()}
             </TextButton>
             <TextButton
               style={[container.largeHorizontalMargin, styles.bigButtonTransparent]}
@@ -40,8 +43,8 @@ class FirstContact extends React.Component<ViewProps> {
               onPress={navigateToQRScanner}>
               {I18n.t('caption_qr_scanner').toUpperCase()}
             </TextButton>
-            { !this.props.isLoggedIn && <Text onPress={navigateToUserRegistration} style={styles.loginText}>
-              {I18n.t('caption_create_free_account')}
+            { !this.props.isLoggedIn && <Text onPress={navigateToLoginFromSplash} style={styles.loginText}>
+              {I18n.t('text_login_already_account')}
             </Text> }
           </View>
 
