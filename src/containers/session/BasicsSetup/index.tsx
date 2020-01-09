@@ -24,12 +24,6 @@ const icon = compose(
   fromClass(IconText).contramap,
   always)
 
-const locationIcon = icon({
-  source: Images.courseConfig.location,
-  iconStyle: { width: 14, height: 18, tintColor: 'black' },
-  style: { position: 'absolute', bottom: 15, right: 5 }
-})
-
 const fieldBox = (child: any) => Component((props: any) => compose(
   fold(props),
   view({ style: styles.fieldBoxContainer }),
@@ -60,7 +54,7 @@ const nameInput = reduxFormField({
 const locationInput = reduxFormField({
   label: I18n.t('text_location'),
   name: FORM_KEY_LOCATION,
-  component: boxedTextInput.contramap(merge({ icon: locationIcon })).fold,
+  component: boxedTextInput.fold,
 })
 
 const formDatePicker = Component((props: any) => compose(
