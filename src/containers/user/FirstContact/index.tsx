@@ -23,7 +23,7 @@ class FirstContact extends React.Component<ViewProps> {
 
   public render() {
     return (
-        <ImageBackground source={Images.defaults.map} style={{ width: '100%', height: '100%' }}>
+        <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
         <View style={[container.main, styles.container]}>
           <View style={styles.textContainer}>
             <Image source={Images.defaults.app_logo} style={styles.app_logo}/>
