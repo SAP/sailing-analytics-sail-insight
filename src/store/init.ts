@@ -1,4 +1,5 @@
 import { AsyncStorage } from 'react-native'
+import firebase from 'react-native-firebase'
 import { createNetworkMiddleware } from 'react-native-offline'
 import { applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
@@ -31,7 +32,13 @@ const persistConfig = {
   migrate: createMigrate(migrations)
 }
 
-const sagaMiddleware = createSagaMiddleware()
+const sagaMiddleware = createSagaMiddleware({
+  onError: (error: Error, { sagaStack }) => {
+    firebase.crashlytics().setStringValue('sagaStack', sagaStack)
+    firebase.crashlytics().recordError(0, `Error in saga: ${error.message}`)
+  }
+})
+
 const enhancers = composeWithDevTools(applyMiddleware(
   createNetworkMiddleware({
     actionTypes: ['SET_RACE_TIME', 'SELECT_COURSE', 'FETCH_PERMISSIONS_FOR_EVENT',

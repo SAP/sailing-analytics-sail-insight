@@ -4,6 +4,7 @@ import { map, evolve, merge, curry, dissoc, not,
   __, head, last, includes, flatten, reject } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
+import { safe } from './index'
 import uuidv4 from 'uuid/v4'
 import {
   loadCourse,
@@ -267,14 +268,14 @@ function* fetchAndUpdateMarkConfigurationDeviceTracking() {
   const { serverUrl, leaderboardName, secret } = yield select(getSelectedEventInfo)
   const api = dataApi(serverUrl)
 
-  const markState = yield call(api.requestMark, leaderboardName, markConfiguration.markId, secret)
+  const { result: markState } = yield safe(call(api.requestMark, leaderboardName, markConfiguration.markId, secret))
 
-  try {
+  if (markState) {
     yield call(updateMarkConfigurationDeviceTracking, {
       id: selectedMarkConfiguration,
       deviceId: markState.location && markState.location.deviceUUID
     })
-  } catch(error) {}
+  }
 }
 
 export default function* watchCourses() {
