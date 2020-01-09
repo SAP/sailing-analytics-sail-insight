@@ -100,21 +100,13 @@ export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
   )
 
 const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
-  const { handicapType = getDefaultHandicapType(), handicapValue } =
-    competitorInfo.handicap || {}
-  if (
-    !handicapType || !handicapValue
-  ) {
-    return undefined
-  }
+  const { handicapType = getDefaultHandicapType(), handicapValue = null } = competitorInfo.handicap || {}
 
-  const handicapValueFloat = parseFloat(handicapValue.replace(',', '.'))
+  if (!handicapType || !handicapValue) return undefined
 
-  if (handicapType === HandicapTypes.TimeOnTime) {
-    return handicapValueFloat
-  }
+  if (handicapType === HandicapTypes.TimeOnTime) return handicapValue
 
-  const timeOnTimeFactor = 100 / handicapValueFloat
+  const timeOnTimeFactor = 100 / handicapValue
 
   return timeOnTimeFactor
 }
@@ -135,7 +127,7 @@ export const createUserAttachmentToSession = (
       !competitorInfo.sailNumber ||
       !competitorInfo.nationality
     ) {
-      throw new SessionException('user/boat data missing.')
+      throw new SessionException('user/nationality/boat data missing.')
     }
     const baseValues = {
       competitorName: competitorInfo.teamName || competitorInfo.name,
@@ -165,7 +157,7 @@ export const createUserAttachmentToSession = (
     }
 
     // Creates new competitorWithBoat if there isn't one on the current server
-    // or if the regeistration of the existing one to the regatta failed
+    // or if the registration of the existing one to the regatta failed
     let newCompetitorWithBoat
     if (!registrationSuccess) {
       newCompetitorWithBoat = await dataApi.createAndAddCompetitor(regattaName, {
