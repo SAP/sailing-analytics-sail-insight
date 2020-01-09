@@ -1,6 +1,6 @@
 import { __, compose, concat, map, merge, defaultTo,
   reduce, when, uncurryN, tap, always, isNil, unless,
-  prop, isEmpty, not, append, objOf } from 'ramda'
+  prop, isEmpty, not, append, objOf, equals } from 'ramda'
 import { openTrackDetails } from 'actions/navigation'
 import { getSession } from 'selectors/session'
 import moment from 'moment/min/moment-with-locales'
@@ -198,7 +198,7 @@ export default Component((props: Object) =>
     fold(props),
     connect(mapStateToProps, {
       selectCourse, selectRace, setRaceTime,
-      updateEventSettings, openTrackDetails }),
+      updateEventSettings, openTrackDetails }, null, { areStatePropsEqual: equals }),
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
   ([nothingIfCannotUpdateCurrentEvent(organizerContainer),
