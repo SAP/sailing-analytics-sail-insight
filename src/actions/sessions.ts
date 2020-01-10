@@ -58,8 +58,8 @@ export const shareSession = (checkIn: CheckIn) => async () => {
     },
   }
   const shareOptions = {
-    messageHeader: I18n.t('text_share_session_message_header'),
-    messageBody: I18n.t('text_share_session_message_body'),
+    messageHeader: I18n.t('text_share_session_message_header', { regattaName: checkIn.regattaName }),
+    messageBody: I18n.t('text_share_session_message_body', { regattaName: checkIn.regattaName }),
   }
   return showShareSheet(await createSharingData(sharingData, shareOptions))
 }
