@@ -39,13 +39,6 @@ export default createStackNavigator(
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
       }),
     },
-    [Screens.PasswordReset]: {
-      screen: PasswordReset,
-      navigationOptions: () => ({
-        ...commons.navHeaderTransparentProps,
-        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-      }),
-    },
   },
   {
     initialRouteName: Screens.RegisterCredentials,
