@@ -51,7 +51,8 @@ const mapStateToProps = (state: any) => ifElse(
     selectedMarkLocation: getSelectedMarkPosition(state),
     selectedMarkDeviceTracking: compose(
       defaultTo('No device assigned'),
-      unless(isNil, ifElse(equals(getDeviceId()), always('This device is used as a tracker'), always('A device is used as a tracker'))))(
+      unless(isNil, ifElse(propEq('id', getDeviceId()), always('This device is used as a tracker'), always('A device is used as a tracker'))),
+      unless(isNil, when(propEq('type', 'PING'), always(null))))(
       getSelectedMarkDeviceTracking(state)),
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),

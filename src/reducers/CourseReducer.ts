@@ -1,7 +1,7 @@
-import { merge, defaultTo, prop, compose, insert, reject,
+import { merge, defaultTo, prop, compose, insert, reject, tap,
   propEq, head, map, when, mergeLeft, mergeDeepLeft, always, ifElse,
   append, concat, pick, dissoc, evolve, equals, isNil, find, has,
-  apply, take, move, last, includes, __ } from 'ramda'
+  apply, take, move, last, includes, __, path } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
@@ -100,15 +100,20 @@ const markConfigurations = handleActions({
     when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { shortName: action.payload.value } })),
     state),
   [updateMarkConfigurationLocation as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id),
+    when(propEq('id', action.payload.id), compose(
+      dissoc('currentTrackingDeviceId'),
       mergeLeft({
-        effectivePositioning: { position: {
+        lastKnownPosition: {
           latitude_deg: action.payload.value.latitude,
-          longitude_deg: action.payload.value.longitude }} })),
+          longitude_deg: action.payload.value.longitude } }))),
     state),
   [updateMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id),
-      mergeLeft({ effectivePositioning: { deviceUUID: action.payload.deviceId }})),
+    when(propEq('id', action.payload.id), compose(
+      dissoc('lastKnownPosition'),
+      mergeLeft({ currentTrackingDeviceId: {
+        id: action.payload.deviceId,
+        type: 'smartphoneUUID',
+        stringRepresentation: action.payload.deviceId }}))),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
@@ -121,12 +126,12 @@ const markConfigurations = handleActions({
           pick(['name', 'shortName', 'color', 'shape', 'pattern', 'markType']),
           when(has('effectiveProperties'), prop('effectiveProperties')))(
           action.payload.markOrMarkProperties),
-        effectivePositioning: action.payload.markOrMarkProperties.latDeg &&
-          ({ position: { latitude_deg: action.payload.markOrMarkProperties.latDeg,
-                         longitude_deg: action.payload.markOrMarkProperties.lonDeg }})
+        currentTrackingDeviceId: path(['positioning', 'device_identifier'], action.payload.markOrMarkProperties),
+        lastKnownPosition: path(['positioning', 'position'], action.payload.markOrMarkProperties)
       }),
       dissoc('effectiveProperties'),
-      dissoc('effectivePositioning'),
+      dissoc('currentTrackingDeviceId'),
+      dissoc('lastKnownPosition'),
       dissoc('markId'))),
     state),
   [changeWaypointToNewMark as any]: (state: any, action: any) =>

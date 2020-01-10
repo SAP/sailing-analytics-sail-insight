@@ -57,14 +57,14 @@ export const getMarkPropertiesByMarkConfiguration = markConfigurationId => creat
 export const getMarkPositionByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
   compose(
-    path(['effectivePositioning', 'position']),
+    prop('lastKnownPosition'),
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
 export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
   compose(
-    path(['effectivePositioning', 'deviceUUID']),
+    prop('currentTrackingDeviceId'),
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
