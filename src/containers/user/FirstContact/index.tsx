@@ -23,8 +23,6 @@ class FirstContact extends React.Component<ViewProps> {
   }
 
   public render() {
-    this.props.isLoggedIn && navigateToMainTabs()
-
     return (
         <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
         <View style={[container.main, styles.container]}>
