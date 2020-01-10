@@ -12,7 +12,7 @@ import { validateEmail, validatePassword, validateUsername } from 'forms/validat
 import { helpActionSheetOptions } from 'helpers/actionSheets'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateBack, navigateToLogin, navigateToUserRegistrationBoat } from 'navigation'
+import { navigatePop, navigateToLogin, navigateToUserRegistrationBoat } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import EulaLink from 'components/EulaLink'
@@ -38,6 +38,8 @@ class RegisterCredentials extends TextInputForm<Props> {
     isLoading: false,
   }
 
+  private listener: any
+
   private loggedIn: boolean = false
 
   public componentDidMount() {
@@ -45,11 +47,11 @@ class RegisterCredentials extends TextInputForm<Props> {
       onOptionsPressed: this.onOptionsPressed,
     })
     this.loggedInCheck()
-    this.props.navigation.addListener('willFocus', this.loggedInCheck)
+    this.listener = this.props.navigation.addListener('willFocus', this.loggedInCheck)
   }
 
-  private loggedInCheck = () => {
-    this.loggedIn && navigateBack()
+  public componentWillUnmount() {
+    this.listener.remove()
   }
 
   public onOptionsPressed = () => {
@@ -201,6 +203,11 @@ class RegisterCredentials extends TextInputForm<Props> {
     }
     return concatMsg
   }
+
+  private loggedInCheck = () => {
+    this.loggedIn && navigatePop()
+  }
+
 }
 
 export default connect(
