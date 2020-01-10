@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import React from 'react'
 import { Share } from 'react-native'
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from 'react-navigation'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
@@ -25,6 +25,7 @@ import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
 import TeamDetails from 'containers/TeamDetails'
 import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 import FirstContact from 'containers/user/FirstContact'
+import { navigateBack } from 'navigation/NavigationService'
 import { button } from 'styles/commons'
 import MainTabNavigator from './MainTabNavigator'
 
@@ -72,13 +73,26 @@ export default createStackNavigator(
       screen: EventCreation.fold,
       navigationOptions: {
         title: I18n.t('title_event_creation'),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       },
     },
     [Screens.SessionDetail]: {
       screen: SessionDetail.fold,
       navigationOptions: {
         title: I18n.t('title_event_details'),
-        headerBackTitle: ' ', // have to be with white space, otherwise fallback to title 'Back'
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
         headerRight: ShareButton.fold({}),
       },
     },
@@ -86,7 +100,13 @@ export default createStackNavigator(
       screen: RaceDetails.fold,
       navigationOptions: {
         title: I18n.t('title_race_details'),
-        headerBackTitle: ' ', // have to be with white space, otherwise fallback to title 'Back'
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       },
     },
     [Screens.RaceSetup]: {
@@ -104,6 +124,13 @@ export default createStackNavigator(
       screen: RaceCourseLayout.fold,
       navigationOptions: {
         title: I18n.t('title_race_course'),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       },
     },
     [Screens.CourseGeolocation]: {
@@ -133,6 +160,13 @@ export default createStackNavigator(
         headerTitle: (
           <HeaderTitle
             firstLine='Bind with tracker'
+          />
+        ),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
           />
         ),
       }),
