@@ -1,5 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { white, withDefaultBoldFont, withDefaultFont, withTitleSize } from 'styles/compositions/text'
+import { Platform } from 'react-native'
 
 export const sectionHeaderStyle = {
   ...withDefaultBoldFont,
@@ -14,6 +15,7 @@ export const textInput = {
   flex: 1,
   fontSize: '$largeFontSize',
   marginTop: 5,
+  ...(Platform.OS === 'ios' && { paddingTop: 10, paddingBottom: 10 })
 }
 
 export default EStyleSheets.create({
