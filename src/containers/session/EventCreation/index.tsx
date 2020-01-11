@@ -1,11 +1,12 @@
 import { always, compose, concat, objOf, reduce } from 'ramda'
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
+import { Header } from 'react-navigation'
 
 import { Component,  fold, nothing,
   recomposeLifecycle as lifecycle,
   recomposeWithStateHandlers as withStateHandlers,
   reduxConnect as connect } from 'components/fp/component'
-import { scrollView, text, touchableOpacity, view } from 'components/fp/react-native'
+import { scrollView, text, touchableOpacity, view, keyboardAvoidingView } from 'components/fp/react-native'
 import { reduxForm } from 'components/fp/redux-form'
 
 import BasicsSetup from 'containers/session/BasicsSetup'
@@ -82,6 +83,7 @@ export default Component(
     withBoatClasses,
     connect(mapStateToProps, { createEventActionQueue }),
     reduxForm(formSettings),
+    keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: Header.HEIGHT }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always' }),
     reduce(concat, nothing())
   )([
