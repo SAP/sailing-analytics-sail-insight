@@ -18,23 +18,22 @@ import {
   EVENT_CREATION_FORM_NAME,
   eventCreationDataFromFormValues,
   FORM_KEY_REGATTA_TYPE,
+  FORM_KEY_NUMBER_OF_RACES,
   initialValues,
   validate,
 } from 'forms/eventCreation'
 import { navigateBack } from 'navigation'
 import { getFormFieldValue } from 'selectors/form'
-
 import I18n from 'i18n'
-
 import { selfTrackingApi } from 'api'
 import { BoatClassesBody } from '../../../api/endpoints/types'
-
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { $LightBlue } from 'styles/colors'
 import styles from './styles'
 
 const mapStateToProps = (state: any) => ({
   initialValues,
+  maxNumberOfDiscards: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_NUMBER_OF_RACES)(state),
   regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state),
 })
 

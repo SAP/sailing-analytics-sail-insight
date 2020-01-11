@@ -52,14 +52,17 @@ const withDiscardDataFromForm = mapProps(props => compose(
   mapIndexed((value, index) => ({ value, index })),
   path(['input', 'value']))(props))
 
-const discardInputFormField = reduxFormField({
-  name: FORM_KEY_DISCARDS,
-  component: props => compose(
-    withDiscardDataFromForm,
-    withUpdatingDiscardItem(props.input.onChange),
-    withAddDiscard(props.input.onChange))(
-    DiscardSelector).fold(props)
-})
+const discardInputFormField = Component(props => compose(
+  fold(props))(
+  reduxFormField({
+    name: FORM_KEY_DISCARDS,
+    props,
+    component: props => compose(
+      withDiscardDataFromForm,
+      withUpdatingDiscardItem(props.input.onChange),
+      withAddDiscard(props.input.onChange))(
+      DiscardSelector).fold(props)
+  })))
 
 export default Component((props: Object) =>
   compose(
