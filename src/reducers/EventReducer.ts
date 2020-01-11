@@ -10,6 +10,7 @@ import { EventState } from 'reducers/config'
 const initialState: EventState = {
   all: {} as Map<string, any>,
   activeFilters: [EventFilter.All],
+  raceTimes: {}
 } as EventState
 
 const reducer = handleActions(
