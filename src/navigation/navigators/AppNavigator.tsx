@@ -1,5 +1,5 @@
 import React from 'react'
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from 'react-navigation'
 
 import I18n from 'i18n'
 
@@ -25,6 +25,7 @@ import MainNavigator from './MainNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 import TrackingNavigator from './TrackingNavigator'
 
+import { navigateBack } from 'navigation/NavigationService';
 
 export default createStackNavigator(
   {
@@ -90,8 +91,13 @@ export default createStackNavigator(
       navigationOptions: () => ({
         ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
-        headerLeft: null,
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       }),
     },
     [Screens.ExpertSettings]: {
