@@ -99,6 +99,7 @@ export const DiscardSelector = Component((props: any) => compose(
         DiscardSelectorItem.fold(props),
     showsHorizontalScrollIndicator: false,
     horizontal: true,
+    keyboardShouldPersistTaps: 'always'
   })))(forwardingPropsFlatList))
 
 export const withUpdatingDiscardItem = handler => withHandlers({
