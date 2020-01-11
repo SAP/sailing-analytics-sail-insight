@@ -1,5 +1,5 @@
 import React from 'react'
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from 'react-navigation'
 
 import I18n from 'i18n'
 import * as commons from 'navigation/commons'
@@ -12,6 +12,7 @@ import PasswordReset from 'containers/authentication/PasswordReset'
 import RegisterBoat from 'containers/authentication/RegisterBoat'
 import RegisterCredentials from 'containers/authentication/RegisterCredentials'
 
+import { navigateBack } from 'navigation/NavigationService';
 import { $headerTintColor } from 'styles/colors'
 
 
@@ -37,6 +38,13 @@ export default createStackNavigator(
       navigationOptions: () => ({
         ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       }),
     },
   },

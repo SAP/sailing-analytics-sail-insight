@@ -8,18 +8,27 @@ import {
 } from 'navigation'
 import React from 'react'
 import { Image, ImageBackground, Text, View, ViewProps } from 'react-native'
+import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux'
 import { isLoggedIn } from 'selectors/auth'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
 import styles from './styles'
 
-class FirstContact extends React.Component<ViewProps> {
+interface Props {
+  isLoggedIn: boolean,
+}
+class FirstContact extends React.Component<ViewProps & NavigationScreenProps & Props> {
 
-  constructor(props: Readonly<ViewProps>) {
-    super(props)
+  private listener: any
 
-    props.isLoggedIn && navigateToMainTabs()
+  public componentDidMount() {
+    this.loggedInCheck()
+    this.listener = this.props.navigation.addListener('willFocus', this.loggedInCheck)
+  }
+
+  public componentWillUnmount() {
+    this.listener.remove()
   }
 
   public render() {
@@ -54,6 +63,11 @@ class FirstContact extends React.Component<ViewProps> {
       </ImageBackground>
     )
   }
+
+  private loggedInCheck = () => {
+    this.props.isLoggedIn && navigateToMainTabs()
+  }
+
 }
 
 const mapStateToProps = (state: any) => ({

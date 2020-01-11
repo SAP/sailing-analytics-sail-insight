@@ -6,7 +6,6 @@ import { Field, Fields, reduxForm } from 'redux-form'
 import { registerCompetitorAndDevice } from 'actions/sessions'
 import * as competitorForm from 'forms/competitor'
 import * as sessionForm from 'forms/session'
-import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
@@ -25,6 +24,7 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
 
+import { validateRequired } from 'forms/validators'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
@@ -121,6 +121,7 @@ class EditCompetitor extends TextInputForm<Props> {
             component={FormNationalityPicker}
             onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
+            validate={[validateRequired]}
             {...this.commonProps}
           />
           <Field

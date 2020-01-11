@@ -17,6 +17,7 @@ import { updateRaceTime, fetchRacesTimesForEvent, FETCH_RACES_TIMES_FOR_EVENT } 
 import { fetchPermissionsForEvent } from 'actions/permissions'
 import { navigateToSessionDetail } from 'navigation'
 import { openUrl } from 'helpers/utils'
+import I18n from 'i18n'
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -182,10 +183,13 @@ function* openEventLeaderboard() {
 }
 
 function* openSAPAnalyticsEvent() {
-  const { serverUrl, eventId } = yield select(getSelectedEventInfo)
+  const { serverUrl, eventId, regattaName } = yield select(getSelectedEventInfo)
 
   Share.share({
-    message: `${serverUrl}/gwt/Home.html#/event/:eventId=${eventId}`
+    title: I18n.t('text_share_session_sap_event_header', { regattaName }),
+    message: I18n.t('text_share_session_sap_event_message', {
+        regattaName,
+        link: `${serverUrl}/gwt/Home.html#/event/:eventId=${eventId}` }),
   })
 }
 

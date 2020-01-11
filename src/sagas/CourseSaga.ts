@@ -1,5 +1,5 @@
-import { map, evolve, merge, curry, dissoc, not,
-  prop, assoc, mergeLeft, compose, reduce, keys,
+import { map, evolve, merge, curry, dissoc, not, has,
+  prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, eqProps, propEq, when, tap, defaultTo, isEmpty,
   __, head, last, includes, flatten, reject } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
@@ -150,11 +150,19 @@ function* saveCourseFlow() {
     waypoints: map(dissoc('id')),
     markConfigurations: compose(
       map(compose(
-        renameKeys({ effectivePositioning: 'positioning' }),
+        mergeLeft({ storeToInventory: true }),
+        when(has('lastKnownPosition'), compose(
+          evolve({ positioning: objOf('position') }),
+          renameKeys({ lastKnownPosition: 'positioning' }),
+        )),
+        when(has('currentTrackingDeviceId'), compose(
+          evolve({ positioning: objOf('device_identifier') }),
+          renameKeys({ currentTrackingDeviceId: 'positioning' }),
+          dissoc('lastKnownPosition'),
+        )),
         dissoc('effectiveProperties'),
         when(hasMarkConfigurationChange, compose(
           dissoc('markId'),
-          mergeLeft({ storeToInventory: true }),
           renameKeys({ effectiveProperties: 'freestyleProperties' }))))),
       reject(compose(not, markConfigurationUsedInEditedCourse, prop('id'))))
   }, editedCourse)

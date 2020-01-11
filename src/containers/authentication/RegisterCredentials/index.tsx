@@ -38,6 +38,8 @@ class RegisterCredentials extends TextInputForm<Props> {
     isLoading: false,
   }
 
+  private listener: any
+
   private loggedIn: boolean = false
 
   public componentDidMount() {
@@ -45,11 +47,11 @@ class RegisterCredentials extends TextInputForm<Props> {
       onOptionsPressed: this.onOptionsPressed,
     })
     this.loggedInCheck()
-    this.props.navigation.addListener('willFocus', this.loggedInCheck)
+    this.listener = this.props.navigation.addListener('willFocus', this.loggedInCheck)
   }
 
-  private loggedInCheck = () => {
-    this.loggedIn && navigateToMainTabs()
+  public componentWillUnmount() {
+    this.listener.remove()
   }
 
   public onOptionsPressed = () => {
@@ -201,6 +203,11 @@ class RegisterCredentials extends TextInputForm<Props> {
     }
     return concatMsg
   }
+
+  private loggedInCheck = () => {
+    this.loggedIn && navigateToMainTabs()
+  }
+
 }
 
 export default connect(

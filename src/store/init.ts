@@ -36,6 +36,8 @@ const sagaMiddleware = createSagaMiddleware({
   onError: (error: Error, { sagaStack }) => {
     firebase.crashlytics().setStringValue('sagaStack', sagaStack)
     firebase.crashlytics().recordError(0, `Error in saga: ${error.message}`)
+
+    throw error
   }
 })
 
