@@ -1,7 +1,6 @@
 
 export default {
   defaults: {
-    map: require('./img/defaults/Map.png'),
     map2: require('./img/defaults/Map2.png'),
     background_map: require('./img/tracking/TrackingMap_Background.png'),
     background_empty: require('./img/session/LooksEmpty.png'),

@@ -1,5 +1,5 @@
 import React from 'react'
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from 'react-navigation'
 
 import I18n from 'i18n'
 
@@ -18,12 +18,14 @@ import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
 import ExpertSettings from '../../containers/ExpertSettings'
 import { navigateToTracking } from '../index'
+import Login from 'containers/authentication/Login'
 
 import TrackingList from 'containers/tracking/TrackingList'
 import MainNavigator from './MainNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 import TrackingNavigator from './TrackingNavigator'
 
+import { navigateBack } from 'navigation/NavigationService';
 
 export default createStackNavigator(
   {
@@ -89,8 +91,13 @@ export default createStackNavigator(
       navigationOptions: () => ({
         ...commons.navHeaderTransparentProps,
         header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
-        headerLeft: null,
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       }),
     },
     [Screens.ExpertSettings]: {
@@ -106,6 +113,14 @@ export default createStackNavigator(
       navigationOptions: {
         header: null,
       },
+    },
+    [Screens.LoginFromSplash]: {
+      screen: Login,
+      navigationOptions: () => ({
+        ...commons.navHeaderTransparentProps,
+        headerLeft: null,
+        headerRight: <ModalBackButton type="icon" iconColor={$headerTintColor} />,
+      }),
     },
   },
   {

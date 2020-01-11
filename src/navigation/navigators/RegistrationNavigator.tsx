@@ -47,20 +47,6 @@ export default createStackNavigator(
         ),
       }),
     },
-    [Screens.PasswordReset]: {
-      screen: PasswordReset,
-      navigationOptions: () => ({
-        ...commons.navHeaderTransparentProps,
-        header: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-        headerLeft: () => (
-          <HeaderBackButton
-            tintColor="white"
-            title=""
-            onPress={navigateBack}
-          />
-        ),
-      }),
-    },
   },
   {
     initialRouteName: Screens.RegisterCredentials,

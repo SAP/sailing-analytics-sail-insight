@@ -2,42 +2,41 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
   container: {
-    flex: 1,
-    alignSelf: 'stretch',
-    flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: 'transparent',
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
     marginTop: '$smallSpacing',
   },
   item: {
-    backgroundColor: 'white',
     padding: '$tinySpacing',
     marginBottom: 8,
+    color: 'white',
+    fontSize: 16,
+    fontFamily: 'SFProDisplay-Light',
   },
   item2: {
-    backgroundColor: 'white',
     padding: '$tinySpacing',
     marginBottom: 0,
+    color: 'white',
   },
-  firstButton: {
-    marginTop: '$mediumSpacing',
-  },
-  lastButton: {
-    marginBottom: '$smallSpacing',
-  },
-  boldText: {
-    fontSize: 20,
+  title: {
+    color: 'white',
+    fontSize: 12,
     fontFamily: 'SFProDisplay-Heavy',
   },
   text: {
-    marginTop: '$microSpacing',
-    fontSize: '$regularLargeFontSize',
+    color: 'white',
+    fontSize: 16,
+    fontFamily: 'SFProDisplay-Light',
   },
   button: {
     padding: 12,
     backgroundColor: 'transparent',
     margin: 10,
-    marginTop: 0,
+    marginLeft: 30,
+    marginRight: 30,
     borderWidth: 1,
     borderColor: '#FFFFFF',
     borderRadius: 5,
@@ -47,5 +46,11 @@ export default EStyleSheets.create({
     color: 'white',
     fontSize: 18,
     fontFamily: 'SFCompactText-Bold',
+  },
+  textContainer: {
+    flexDirection: 'column',
+    flexGrow: 2,
+    display: 'flex',
+    alignItems: 'stretch',
   },
 })
