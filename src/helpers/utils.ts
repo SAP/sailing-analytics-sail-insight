@@ -1,3 +1,4 @@
+import { compose, join, map, move } from 'ramda'
 import { isArray, isMatch, isNumber, isObject, orderBy } from 'lodash'
 import { Alert, Linking, ListView } from 'react-native'
 
@@ -118,30 +119,33 @@ export const openEmailTo = (email: string, subject?: string, body?: string) =>
     },
   ))
 
-const convertDMS = (coords: number, longitude: boolean) => {
-  const cardinalDirection = longitude ? (coords > 0 ? 'E' : 'W') : (coords > 0 ? 'N' : 'S')
-  const absolute = Math.abs(coords)
-  const degrees = Math.floor(absolute)
-  const minutesNotTruncated = (absolute - degrees) * 60
-  const minutes = Math.floor(minutesNotTruncated)
-  const seconds = Math.floor((minutesNotTruncated - minutes) * 60)
+const dd2ddm = (xy: array) => {
+  const coords = [];
 
-  return {
-    cardinalDirection,
-    degrees,
-    minutes,
-    seconds,
+  for (let i = 0; i < xy.length; i++) {
+    const arr = [1, 0, 1];
+    const spl = xy[i].toString().split('.');
+    const dm = Math.abs(parseFloat('.' + xy[i].toString().split('.')[1]) * 60.0)
+    const fdm = parseFloat(dm).toFixed(6)
+    const parts = fdm.toString().split('.')
+    const final = parts[0] + '.' + parts[1].substr(0,3)
+
+    arr[0] = Math.abs(xy[i].toString().split('.')[0]) + '°';
+    arr[1] = spl.length == 2 ? final + "'" : 0;
+    arr[2] = i === 0 ? (xy[i] >= 0 ? 'N' : 'S') : (xy[i] >= 0 ? 'E' : 'W')
+
+    coords[i] = arr;
   }
+
+  return coords;
 }
 
-const coordinateToString = (coords: number, longitude: boolean) => {
-  const { cardinalDirection, degrees, minutes, seconds } = convertDMS(coords, longitude)
-  return `${cardinalDirection} ${degrees}° ${minutes}' ${seconds}''`
-}
-
-export const coordinatesToString = ({ latitude_deg, longitude_deg }: any) => {
-  const lonString = coordinateToString(longitude_deg, true)
-  const latString = coordinateToString(latitude_deg, false)
-
-  return `${latString}/ ${lonString}`
-}
+export const coordinatesToString = ({ latitude_deg, longitude_deg }: any) =>
+  compose(
+    join(' / '),
+    map(compose(
+      join(' '),
+      move(-1, 0)
+    )),
+    dd2ddm)(
+    [latitude_deg, longitude_deg])

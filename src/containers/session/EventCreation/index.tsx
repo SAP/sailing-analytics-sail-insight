@@ -1,11 +1,12 @@
 import { always, compose, concat, objOf, reduce } from 'ramda'
-import { Alert } from 'react-native'
+import { Alert, Platform } from 'react-native'
+import { Header } from 'react-navigation'
 
 import { Component,  fold, nothing,
   recomposeLifecycle as lifecycle,
   recomposeWithStateHandlers as withStateHandlers,
   reduxConnect as connect } from 'components/fp/component'
-import { scrollView, text, touchableOpacity, view } from 'components/fp/react-native'
+import { scrollView, text, touchableOpacity, view, keyboardAvoidingView } from 'components/fp/react-native'
 import { reduxForm } from 'components/fp/redux-form'
 
 import BasicsSetup from 'containers/session/BasicsSetup'
@@ -17,23 +18,22 @@ import {
   EVENT_CREATION_FORM_NAME,
   eventCreationDataFromFormValues,
   FORM_KEY_REGATTA_TYPE,
+  FORM_KEY_NUMBER_OF_RACES,
   initialValues,
   validate,
 } from 'forms/eventCreation'
 import { navigateBack } from 'navigation'
 import { getFormFieldValue } from 'selectors/form'
-
 import I18n from 'i18n'
-
 import { selfTrackingApi } from 'api'
 import { BoatClassesBody } from '../../../api/endpoints/types'
-
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { $LightBlue } from 'styles/colors'
 import styles from './styles'
 
 const mapStateToProps = (state: any) => ({
   initialValues,
+  maxNumberOfDiscards: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_NUMBER_OF_RACES)(state),
   regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state),
 })
 
@@ -82,6 +82,7 @@ export default Component(
     withBoatClasses,
     connect(mapStateToProps, { createEventActionQueue }),
     reduxForm(formSettings),
+    keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: Header.HEIGHT }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always' }),
     reduce(concat, nothing())
   )([

@@ -1,7 +1,7 @@
 import { __, always, compose, concat, curry, equals,
   has, head, length, map, merge, objOf, prepend,
   range, reduce, split, toString, when, toUpper,
-  reject, propEq, append, prop, update } from 'ramda'
+  reject, propEq, append, prop, update, remove } from 'ramda'
 
 import { Component, fold, fromClass, nothing, contramap,
   recomposeWithHandlers as withHandlers } from 'components/fp/component'
@@ -12,6 +12,8 @@ import I18n from 'i18n'
 import styles from './styles'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
+
+const maxNumberOfRaces = 50
 
 const plusIcon = fromClass(IconText).contramap(always({
   source: Images.actions.plus,
@@ -27,32 +29,36 @@ const styledButton = curry(({ onPress }, content: any) =>
       touchableOpacity({ onPress }))(
       view({ style: styles.button }, content))))
 
-export const overlayPicker = curry(({ selectedValue, onValueChange, style, min = 1, max = 51 }, c) => Component(props => compose(
-    fold(props),
-    fromClass(ModalSelector).contramap,
-    always,
-    merge({
-      style: merge({ backgroundColor: 'transparent' }, style),
-      optionContainerStyle: {
-        marginTop: 30,
-        backgroundColor: '#123748',
-      },
-      optionTextStyle: {
-        color: '#FFFFFF',
-        fontSize: 40,
-        fontFamily: 'SFCompactText-Regular',
-      },
-      selectedKey: selectedValue,
-      onChange: (v: any) => onValueChange(v.key),
-      cancelText: (I18n.t('caption_cancel')),
-      data: compose(
-        map(v => ({ key: v, label: v.toString() })))(
-        range(min, max))
-    }),
-    objOf('children'),
-    head,
-    when(has('fold'), fold(props)))(
-    c)))
+export const overlayPicker = curry((
+  { selectedValue, onValueChange, style, min = 1, max = maxNumberOfRaces + 1,
+    withRemoveOption = false }, c) =>
+    Component(props => compose(
+      fold(props),
+      fromClass(ModalSelector).contramap,
+      always,
+      merge({
+        style: merge({ backgroundColor: 'transparent' }, style),
+        optionContainerStyle: {
+          marginTop: 30,
+          backgroundColor: '#123748',
+        },
+        optionTextStyle: {
+          color: '#FFFFFF',
+          fontSize: 40,
+          fontFamily: 'SFCompactText-Regular',
+        },
+        selectedKey: selectedValue,
+        onChange: (v: any) => onValueChange(v.key),
+        cancelText: (I18n.t('caption_cancel')),
+        data: compose(
+          when(always(equals(withRemoveOption, true)), prepend({ key: 0, label: 'Remove' })),
+          map(v => ({ key: v, label: v.toString() })))(
+          range(min, max))
+      }),
+      objOf('children'),
+      head,
+      when(has('fold'), fold(props)))(
+      c)))
 
 export const FramedNumberItem = Component(props => compose(
   fold(props),
@@ -73,7 +79,11 @@ export const FramedNumber = Component(props => compose(
 const DiscardSelectorItem = Component((props: any) => compose(
   fold(props),
   overlayPicker({
-    onValueChange: (value: number) => props.updateDiscardItem(props.item.index, value)
+    onValueChange: (value: number) => value === 0 ?
+      props.removeDiscardItem(props.item.index) :
+      props.updateDiscardItem(props.item.index, value),
+    max: props.maxNumberOfDiscards || maxNumberOfRaces + 1,
+    withRemoveOption: true
   }),
   view({ style: styles.discardSelectorItemContainer }),
   text({ style: styles.discardSelectorItemText }))(
@@ -82,7 +92,8 @@ const DiscardSelectorItem = Component((props: any) => compose(
 const AddDiscardButton = Component((props: any) => compose(
   fold(props),
   overlayPicker({
-    onValueChange: (value: number) => props.addDiscard(value)
+    onValueChange: (value: number) => props.addDiscard(value),
+    max: props.maxNumberOfDiscards || maxNumberOfRaces + 1
   }),
   view({ style: styles.discardSelectorPlusContainer }))(
   plusIcon))
@@ -99,9 +110,17 @@ export const DiscardSelector = Component((props: any) => compose(
         DiscardSelectorItem.fold(props),
     showsHorizontalScrollIndicator: false,
     horizontal: true,
+    keyboardShouldPersistTaps: 'always'
   })))(forwardingPropsFlatList))
 
 export const withUpdatingDiscardItem = handler => withHandlers({
+  removeDiscardItem: (props: any) => (index: number) => compose(
+    handler,
+    map(prop('value')),
+    reject(propEq('type', 'add')),
+    remove(index, 1),
+    prop('data'))(
+    props),
   updateDiscardItem: (props: any) => (index: number, value: object) => compose(
     handler,
     map(prop('value')),

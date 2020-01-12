@@ -1,7 +1,8 @@
 import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
 import { __, always, compose, curry, has, head, merge, mergeLeft, objOf, when } from 'ramda'
 import { useState as reactUseState } from 'react'
-import { FlatList, Image, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, ScrollView, Text, TouchableHighlight,
+  TouchableOpacity, View, KeyboardAvoidingView } from 'react-native'
 import { G, Path, Svg, Text as rnSvgText } from 'react-native-svg'
 import { Component, contramap, fold, fromClass } from './component'
 
@@ -18,6 +19,7 @@ const buildComponentWithChildren = curry((Comp, settings, c) =>
 
 export const view = buildComponentWithChildren(View)
 export const scrollView = buildComponentWithChildren(ScrollView)
+export const keyboardAvoidingView = buildComponentWithChildren(KeyboardAvoidingView)
 export const text = buildComponentWithChildren(Text)
 export const svg = buildComponentWithChildren(Svg)
 export const svgPath = fromClass(Path)

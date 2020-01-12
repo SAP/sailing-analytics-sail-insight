@@ -179,9 +179,8 @@ const organizerContainer = Component((props: Object) =>
     view({ style: styles.organizerContainer }),
     reduce(concat, nothing()))
   ([
-    text({ style: styles.sectionHeaderStyle }, 'LIST OF RACES'),
     raceNumberSelector,
-    discardSelector]))
+    /*discardSelector*/]))
 
 const competitorContainer = Component((props: any) =>
   compose(
