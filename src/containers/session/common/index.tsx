@@ -1,16 +1,14 @@
+import Images from '@assets/Images'
+import { Component, contramap, fold, fromClass, nothing,
+  recomposeWithHandlers as withHandlers } from 'components/fp/component'
+import { forwardingPropsFlatList, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
+import IconText from 'components/IconText'
+import I18n from 'i18n'
 import { __, always, append, compose, concat, curry,
   equals, has, head, length, map, merge, objOf,
   prepend, prop, propEq, range, reduce, reject,
   remove, split, toString, toUpper, update, when } from 'ramda'
-
-import { Component, contramap, fold, fromClass, nothing,
-  recomposeWithHandlers as withHandlers } from 'components/fp/component'
-import { forwardingPropsFlatList, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
 import ModalSelector from 'react-native-modal-selector'
-
-import Images from '@assets/Images'
-import IconText from 'components/IconText'
-import I18n from 'i18n'
 import styles from './styles'
 
 const maxNumberOfRaces = 50
@@ -188,7 +186,6 @@ export const racesAndScoringCard = Component((props: any) =>
       text({ style: styles.textLight }, `${I18n.t('text_number_of_races')} `),
       text({ style: styles.textValue }, props.races)
     ]),
-
     inlineText( { style: styles.textLast }, [
       text({ style: styles.textLight }, 'Discard after Races '),
       text({ style: styles.textValue }, props.discardRaces),

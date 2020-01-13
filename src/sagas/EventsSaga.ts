@@ -1,23 +1,22 @@
-import { compose, curry, map, range, inc, concat,
-  toString, __, apply, indexOf, dec, pick, values, head } from 'ramda'
-import { takeLatest, takeEvery, all, select, call, put } from 'redux-saga/effects'
-import moment from 'moment/min/moment-with-locales'
-import { dataApi } from 'api'
-import { Share } from 'react-native'
-import { CREATE_EVENT, SELECT_EVENT, SET_RACE_TIME,
-  ADD_RACE_COLUMNS, REMOVE_RACE_COLUMNS, OPEN_EVENT_LEADERBOARD,
-  OPEN_SAP_ANALYTICS_EVENT } from 'actions/events'
+import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
-import { getSelectedEventInfo } from 'selectors/event'
-import { getRegattaPlannedRaces, getRegatta } from 'selectors/regatta'
-import { getUserInfo } from 'selectors/auth'
-import { canUpdateEvent } from 'selectors/permissions'
-import { loadCourse, fetchCoursesForEvent, FETCH_COURSES_FOR_EVENT } from 'actions/courses'
-import { updateRaceTime, fetchRacesTimesForEvent, FETCH_RACES_TIMES_FOR_EVENT } from 'actions/events'
+import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
+         fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD, OPEN_SAP_ANALYTICS_EVENT,
+         REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME, updateRaceTime } from 'actions/events'
 import { fetchPermissionsForEvent } from 'actions/permissions'
-import { navigateToSessionDetail } from 'navigation'
+import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
+import moment from 'moment/min/moment-with-locales'
+import { navigateToSessionDetail, navigateToSessionDetail4Organizer } from 'navigation'
+import { __, apply, compose, concat, curry, dec,
+         head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
+import { Share } from 'react-native'
+import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { getUserInfo } from 'selectors/auth'
+import { getSelectedEventInfo } from 'selectors/event'
+import { canUpdateEvent } from 'selectors/permissions'
+import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -34,9 +33,10 @@ function* selectEventFlow({ payload }: any) {
 
   if (currentUserCanUpdateEvent) {
     yield put(fetchCoursesForEvent(payload))
+    navigateToSessionDetail4Organizer(payload.leaderboardName)
+  } else {
+    navigateToSessionDetail(payload.leaderboardName)
   }
-
-  navigateToSessionDetail(payload.leaderboardName)
 }
 
 function* fetchRacesTimesForCurrentEvent({ payload }: any) {

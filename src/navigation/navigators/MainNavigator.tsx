@@ -22,6 +22,7 @@ import RaceSetup from 'containers/CourseCreation/RaceSetUp'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
 import EventCreation from 'containers/session/EventCreation'
 import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
+import SessionDetail4Organizer, { ShareButton4Organizer } from 'containers/session/SessionDetail4Organizer'
 import TeamDetails from 'containers/TeamDetails'
 import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 import FirstContact from 'containers/user/FirstContact'
@@ -94,6 +95,20 @@ export default createStackNavigator(
           />
         ),
         headerRight: ShareButton.fold({}),
+      },
+    },
+    [Screens.SessionDetail4Organizer]: {
+      screen: SessionDetail4Organizer.fold,
+      navigationOptions: {
+        title: I18n.t('title_event_details'),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
+        headerRight: ShareButton4Organizer.fold({}),
       },
     },
     [Screens.RaceDetails]: {

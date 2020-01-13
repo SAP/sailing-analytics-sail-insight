@@ -33,6 +33,7 @@ export const navigateToManeuver = (data?: Maneuver) => NavigationService.navigat
 export const navigateToSetWind = (data?: WindFix) => NavigationService.navigate(Screens.SetWind, { data })
 export const navigateToLeaderboard = () => NavigationService.navigate(Screens.Leaderboard)
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
+export const navigateToSessionDetail4Organizer = (data: string) => NavigationService.navigate(Screens.SessionDetail4Organizer, { data })
 export const navigateToRaceDetails = (data: string) => NavigationService.navigate(Screens.RaceDetails, { data })
 export const navigateToRaceSetup = (data: string) => NavigationService.navigate(Screens.RaceSetup, { data })
 export const navigateToRaceCourseLayout = () => NavigationService.navigate(Screens.RaceCourseLayout)

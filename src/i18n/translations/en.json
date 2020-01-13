@@ -274,7 +274,8 @@
   "PENALTY_CIRCLE": "Penalty Circle",
 
 
-  "subtitle": "Track-Analyze-Perform",
+  "subtitle_splash": "Track-Analyze-Perform",
+  "subtitle_manage_races": "Manage Races",
   "text_login": "Login",
   "text_registration_part1": "Register ",
   "text_registration_part2": "so that we can optimally support you in managing and tracking your events",
@@ -292,5 +293,9 @@
   "text_define_races": "Define Races",
   "text_see_racing_scoring": "See Races & Scoring",
   "text_number_of_races": "Number of Races",
-  "text_info_for_invite": "Anyone with the link or QR code can join."
+  "text_info_for_invite": "Anyone with the link or QR code can join.",
+  "text_define_races_long_text": "Set starting times and define courses for the races of this event.",
+  "text_invite_competitors_long_text": "Notify all competitors about your event and let them join the race!",
+  "text_close_entry_long_text": "Please close entry to your event before the first start, so that your competitors can successfully track themselves. Only close when all competitors have joined, closing cannot be undone.",
+  "text_end_event_long_text": "You must end your event after the last race, so that all statistics can be successfully calculated for you."
 }

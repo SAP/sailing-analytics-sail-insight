@@ -1,18 +1,16 @@
 import { createAction } from 'redux-actions'
 
-import { Session } from 'models'
+import { CheckIn, Session } from 'models'
 
-import { fetchAction } from 'helpers/actions'
+import { ActionQueue, fetchAction } from 'helpers/actions'
 
 import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
-import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { selfTrackingApi } from 'api'
 import { CreateEventBody } from 'api/endpoints/types'
-import { ActionQueue } from 'helpers/actions'
 import { DispatchType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
-import { CheckIn } from 'models'
 import EventCreationData, { RegattaType } from 'models/EventCreationData'
+import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
@@ -47,7 +45,7 @@ export const archiveEvent = (session: Session, archived: boolean) => (
   const payload = {
     id: eventId,
     data: {
-      archived
+      archived,
     },
   }
 
@@ -83,7 +81,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     secret,
     trackPrefix: 'R',
     leaderboardName: eventData.name,
-    numberOfRaces: eventData.numberOfRaces
+    numberOfRaces: eventData.numberOfRaces,
   })
 }
 
@@ -100,7 +98,7 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
       createAction(CREATE_EVENT)(data),
-    )
+    ),
   ])
 
 export const updateEventSettings = (session: object, data: object) => (dispatch: DispatchType, getState) => {
