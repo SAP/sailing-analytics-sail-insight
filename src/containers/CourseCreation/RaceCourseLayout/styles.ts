@@ -253,8 +253,8 @@ export default EStyleSheets.create({
   createNewClassContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 55,
-    marginRight: 55,
+    marginLeft: 10,
+    marginRight: 10,
   },
 
   createNewTitle: {
