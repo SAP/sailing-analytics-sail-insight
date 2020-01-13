@@ -78,9 +78,11 @@ const waypoints = handleActions({
     when(propEq('id', action.payload.id),
       always({
         id: action.payload.id,
-        controlPointName: defaultTo('New Line', action.payload.controlPointName),
-        controlPointShortName: defaultTo('NL', action.payload.controlPointShortName),
-        passingInstruction: PassingInstruction.Line,
+        controlPointName: defaultTo(action.payload.passingInstruction === PassingInstruction.Line ?
+          'New Line' : 'New Gate', action.payload.controlPointName),
+        controlPointShortName: defaultTo(action.payload.passingInstruction === PassingInstruction.Line ?
+          'NL' : 'NG', action.payload.controlPointShortName),
+        passingInstruction: action.payload.passingInstruction,
         markConfigurationIds: action.payload.markConfigurationIds
       })), state),
   [replaceWaypointMarkConfiguration as any]: updateWaypointMarkConfiguration,
@@ -144,10 +146,18 @@ const markConfigurations = handleActions({
   [changeWaypointToNewLine as any]: (state: any, action: any) => concat([
     {
       id: action.payload.markConfigurationIds[0],
-      effectiveProperties: { markType: 'BUOY', shortName: 'NM', name: 'New Mark' }
+      effectiveProperties: {
+        markType: 'BUOY',
+        shortName: action.payload.passingInstruction === PassingInstruction.Line ? 'LM1' : 'GM1',
+        name: action.payload.passingInstruction === PassingInstruction.Line ? 'Line Mark 1' : 'Gate Mark 1'
+      }
     }, {
       id: action.payload.markConfigurationIds[1],
-      effectiveProperties: { markType: 'BUOY', shortName: 'NM', name: 'New Mark' }
+      effectiveProperties: {
+        markType: 'BUOY',
+        shortName: action.payload.passingInstruction === PassingInstruction.Line ? 'LM2' : 'GM2',
+        name: action.payload.passingInstruction === PassingInstruction.Line ? 'Line Mark 2' : 'Gate Mark 2'
+      }
   }], state),
   [changeWaypointMarkConfigurationToNew as any]: (state: any, action: any) => append({
     id: action.payload.newId,
