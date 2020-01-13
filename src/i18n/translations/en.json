@@ -233,6 +233,8 @@
   "text_beta_self_tracking": "The start and finish lines are set by the backend automatically. We are currently working on a user friendly editor, so that you can adjust the lines. The statistics are calculated based on these lines and can only be shown if a valid start and end line was recognized by our system.",
   "caption_race_not_started_yet": "Race not started yet",
   "caption_create": "CREATE",
+  "caption_invalid_qr_code_missing_mark": "In order to generate a QR code, you need to save the course once so a regatta mark is defined.",
+  "caption_scan_qr_code_for_mark_binding": "Scan this QR code with another device or use this device as a tracker",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",

@@ -224,9 +224,9 @@ export const competitorsCard = Component((props: any) =>
       text({ style: styles.textValue }, props.raceStatus)
     ]),
     text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
-    qrCode,
     styledButton({
       onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
-    }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS'))
+    }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS')),
+    qrCode
   ]),
 )
