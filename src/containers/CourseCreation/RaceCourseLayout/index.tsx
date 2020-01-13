@@ -497,8 +497,8 @@ const WaypointEditForm = Component((props: any) =>
       nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
-      nothingWhenNotEmptyWaypoint(CreateNewSelector),
       nothingWhenNotEmptyWaypoint(MarksOrMarkPropertiesOptionsList),
+      nothingWhenNotEmptyWaypoint(CreateNewSelector),
       nothingWhenStartOrFinishGate(DeleteButton)
   ]))
 

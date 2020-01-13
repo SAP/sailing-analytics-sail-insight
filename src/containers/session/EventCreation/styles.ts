@@ -25,9 +25,22 @@ export default EStyleSheets.create({
     width: '100%',
     height: '100%',
   },
+  content: {
+    paddingBottom: 50,
+    backgroundColor: '$LightBlue',
+  },
+  errorsContainer: {
+    marginLeft: 30,
+    marginRight: 30,
+    padding: 10,
+    backgroundColor: '$declineColor',
+    borderRadius: '$smallBorderRadius'
+  },
+  errorText: {
+    color: 'white'
+  },
   createButton: {
     marginTop: 42,
-    marginBottom: 50,
     backgroundColor: '$Orange',
     marginHorizontal: '$largeSpacing',
     borderRadius: '$smallBorderRadius',
