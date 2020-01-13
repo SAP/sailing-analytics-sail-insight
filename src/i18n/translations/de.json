@@ -287,5 +287,9 @@
   "text_welcome_logged_in": "Herzlich Wilkommen\n{{name}}!",
   "text_welcome": "Herzlich Wilkommen!",
   "text_tracking_headline": "FÜR WELCHEN EVENT\nMÖCHTEST DU TRACKEN?",
-  "text_info_event_finished": "Du kannst jetzt das Event in der Eventliste finden."
+  "text_info_event_finished": "Du kannst jetzt das Event in der Eventliste finden.",
+  "text_define_races": "Rennen managen",
+  "text_see_racing_scoring": "Rennen & Ergebnisse anzeigen",
+  "text_number_of_races": "Anzahl der Rennen",
+  "text_info_for_invite": "Jeder kann über einen Link oder QR-Code teilnehmen."
 }

@@ -112,6 +112,16 @@ export default EStyleSheets.create({
     color: 'white',
     marginTop: 10,
   },
+  textLight: {
+    color: 'white',
+    fontSize: 14,
+    fontFamily: 'SFProDisplay-Light',
+  },
+  textValue: {
+    color: 'white',
+    fontSize: 14,
+    fontFamily: 'SFProDisplay-Bold',
+  },
   textLast: {
     color: 'white',
     marginTop: 10,

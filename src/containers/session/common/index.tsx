@@ -1,17 +1,17 @@
-import { __, always, compose, concat, curry, equals,
-  has, head, length, map, merge, objOf, prepend,
-  range, reduce, split, toString, when, toUpper,
-  reject, propEq, append, prop, update, remove } from 'ramda'
+import { __, always, append, compose, concat, curry,
+  equals, has, head, length, map, merge, objOf,
+  prepend, prop, propEq, range, reduce, reject,
+  remove, split, toString, toUpper, update, when } from 'ramda'
 
-import { Component, fold, fromClass, nothing, contramap,
+import { Component, contramap, fold, fromClass, nothing,
   recomposeWithHandlers as withHandlers } from 'components/fp/component'
-import { text, touchableOpacity, view, forwardingPropsFlatList } from 'components/fp/react-native'
+import { forwardingPropsFlatList, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
 import ModalSelector from 'react-native-modal-selector'
 
-import I18n from 'i18n'
-import styles from './styles'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
+import I18n from 'i18n'
+import styles from './styles'
 
 const maxNumberOfRaces = 50
 
@@ -150,10 +150,9 @@ export const sessionDetailsCard = Component((props: any) =>
     view({ style: styles.container1 }),
     reduce(concat, nothing()),
   )([
+    text({ style: styles.textLight }, props.startDate),
     text({ style: styles.headlineHeavy }, props.name),
-    text({ style: styles.text }, props.startDate),
-    text({ style: styles.text }, props.handicapType),
-    text({ style: styles.textLast }, props.ratingSystem),
+    text({ style: [styles.textLast, styles.textLight] }, props.location),
   ]),
 )
 
@@ -165,7 +164,15 @@ export const typeAndBoatClassCard = Component((props: any) =>
     reduce(concat, nothing()),
   )([
     text({ style: styles.headline }, 'Regatta Details'.toUpperCase()),
-    text({ style: styles.textLast }, props.rankingType),
+    inlineText( props.boatClass !== '' ? { style: styles.text } : { style: styles.textLast }, [
+      text({ style: styles.textLight }, 'Style '),
+      props.boatClass !== '' ? text({ style: styles.textValue }, 'ONE DESIGN') : text({ style: styles.textValue }, 'HANDICAP')
+    ]),
+    props.boatClass !== '' ?
+    inlineText( { style: styles.textLast }, [
+      text({ style: styles.textLight }, 'Boat Class '),
+      text({ style: styles.textValue }, props.boatClass),
+    ]) : nothing()
   ]),
 )
 
@@ -177,9 +184,15 @@ export const racesAndScoringCard = Component((props: any) =>
     reduce(concat, nothing()),
   )([
     text({ style: styles.headline }, 'Races and Scoring'.toUpperCase()),
-    text({ style: styles.text }, `${props.races} Races Planned`),
-    text({ style: styles.text }, props.scoring),
-    text({ style: styles.textLast }, `Discard starting from ${props.discardRace}. race`),
+    inlineText( { style: styles.text }, [
+      text({ style: styles.textLight }, `${I18n.t('text_number_of_races')} `),
+      text({ style: styles.textValue }, props.races)
+    ]),
+
+    inlineText( { style: styles.textLast }, [
+      text({ style: styles.textLight }, 'Discard after Races '),
+      text({ style: styles.textValue }, props.discardRaces),
+    ]),
     styledButton({
       onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
     }, text({ style: styles.buttonContent }, toUpper(props.racesButtonLabel)))
@@ -193,8 +206,12 @@ export const competitorsCard = Component((props: any) =>
     view({ style: styles.container4 }),
     reduce(concat, nothing())
   )([
-    text({ style: styles.headline }, 'Competitors'),
-    text({ style: styles.text }, `${props.registrationType} – ${props.entries} Entries`),
+    text({ style: styles.headline }, 'Competitors'.toUpperCase()),
+    inlineText( { style: styles.text }, [
+      text({ style: styles.textLight }, `Event Status `),
+      text({ style: styles.textValue }, props.raceStatus)
+    ]),
+    text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
     styledButton({
       onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
     }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS'))

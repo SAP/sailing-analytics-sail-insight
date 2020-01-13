@@ -288,5 +288,9 @@
   "text_welcome_logged_in": "Welcome\n{{name}}!",
   "text_welcome": "Welcome!",
   "text_tracking_headline": "FOR WHICH EVENT\nDO YOU WANT TO TRACK?",
-  "text_info_event_finished": "You can find now the event in your event list."
+  "text_info_event_finished": "You can find now the event in your event list.",
+  "text_define_races": "Define Races",
+  "text_see_racing_scoring": "See Races & Scoring",
+  "text_number_of_races": "Number of Races",
+  "text_info_for_invite": "Anyone with the link or QR code can join."
 }

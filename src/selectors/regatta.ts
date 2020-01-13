@@ -1,4 +1,4 @@
-import { prop, map, flatten, compose } from 'ramda'
+import { compose, flatten, map, prop } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { REGATTA_ENTITY_NAME } from 'api/schemas'
@@ -27,5 +27,5 @@ export const getTrackedRegatta = (state: any) => {
 
 export const getTrackedRegattaRankingMetric = createSelector(
   getTrackedRegatta,
-  (regatta: any) => regatta && regatta.rankingMetric
+  (regatta: any) => regatta && regatta.rankingMetric,
 )
