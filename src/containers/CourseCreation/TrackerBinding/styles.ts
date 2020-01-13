@@ -50,6 +50,6 @@ export default EStyleSheets.create({
   invalidMarkText: {
     ...withDefaultFont,
     textAlign: 'center',
-    fontSize: 25
+    fontSize: 20
   }
 })
