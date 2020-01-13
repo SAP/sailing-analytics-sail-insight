@@ -1,7 +1,7 @@
-import { values, propEq, find, identity } from 'ramda'
 import { EVENT_ENTITY_NAME } from 'api/schemas'
-import { getEntities, getEntityArrayByType, getEntityById } from './entity'
+import { find, identity, propEq, values } from 'ramda'
 import { createSelector } from 'reselect'
+import { getEntities, getEntityArrayByType, getEntityById } from './entity'
 
 import {
   SelectedEventInfo,
@@ -19,7 +19,7 @@ export const getSelectedEventInfo = createSelector(
     (state: any): string | undefined => state.events.selectedEvent,
     (state: any): any[] => values(state.checkIn.active),
     (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
-      selectedEvent && find(propEq('eventId', selectedEvent), activeCheckIns),)
+      selectedEvent && find(propEq('eventId', selectedEvent), activeCheckIns))
 
 export const getSelectedRaceInfo = createSelector(
   getSelectedEventInfo,

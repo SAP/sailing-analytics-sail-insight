@@ -1,10 +1,10 @@
 import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
-import { __, always, compose, curry, has, head, merge, mergeLeft, objOf, when } from 'ramda'
+import { __, always, compose, concat, curry, has, head, merge, mergeLeft, objOf, reduce, when } from 'ramda'
 import { useState as reactUseState } from 'react'
-import { FlatList, Image, ScrollView, Text, TouchableHighlight,
-  TouchableOpacity, View, KeyboardAvoidingView } from 'react-native'
+import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
+  TouchableHighlight, TouchableOpacity, View } from 'react-native'
 import { G, Path, Svg, Text as rnSvgText } from 'react-native-svg'
-import { Component, contramap, fold, fromClass } from './component'
+import { Component, contramap, fold, fromClass, nothing } from './component'
 
 const buildComponentWithChildren = curry((Comp, settings, c) =>
   Component((props: Object) =>
@@ -63,18 +63,24 @@ export const forwardingPropsFlatList = Component((props: any) =>
   fromClass(FlatList)))
 
 export const useActionSheet = () => c => {
-    const { showActionSheetWithOptions } = rnUseActionSheet();
+  const { showActionSheetWithOptions } = rnUseActionSheet();
 
-    return c.contramap(merge({
-      showActionSheetWithOptions
-    }))
+  return c.contramap(merge({
+    showActionSheetWithOptions
+  }))
 }
 
 export const useState = (name, updateFn, initialValue) => c => {
-  const [value, updater] = reactUseState(initialValue);
+  const [value, updater] = reactUseState(initialValue)
 
   return c.contramap(merge(__, {
-      [name]:     value,
-      [updateFn]: updater
-  }));
-};
+    [name]:     value,
+    [updateFn]: updater
+  }))
+}
+
+export const inlineText = curry((settings, c) => Component((props: Object) => compose(
+  fold(props),
+  text(merge({ style: { flexDirection: 'row' } }, settings)),
+  reduce(concat, nothing()),
+  )(c)))
