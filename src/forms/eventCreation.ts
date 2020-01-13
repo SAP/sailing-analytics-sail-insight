@@ -1,10 +1,12 @@
 import { isNil } from 'ramda'
+import moment from 'moment'
 
 import EventCreationData, {
   RegattaType,
 } from 'models/EventCreationData'
 import { generateNewSessionName } from 'services/SessionService'
 import { validateRequired } from './validators'
+import I18n from 'i18n'
 
 export const EVENT_CREATION_FORM_NAME = 'eventCreation'
 export const EVENT_EDIT_FORM_NAME = 'eventEdit'
@@ -20,13 +22,10 @@ export const FORM_KEY_BOAT_CLASS = 'boatClass'
 export const FORM_KEY_NUMBER_OF_RACES = 'numberOfRaces'
 export const FORM_KEY_DISCARDS = 'discards'
 
-const datePickerDateFormat = (date: Date) =>
-  `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
-
 export const initialValues = {
   [FORM_KEY_NAME]: generateNewSessionName(),
-  [FORM_KEY_DATE_FROM]: datePickerDateFormat(new Date()),
-  [FORM_KEY_DATE_TO]: datePickerDateFormat(new Date()),
+  [FORM_KEY_DATE_FROM]: moment(new Date()).startOf('day'),
+  [FORM_KEY_DATE_TO]: moment(new Date()).endOf('day'),
   [FORM_KEY_NUMBER_OF_RACES]: 3,
   [FORM_KEY_DISCARDS]: [],
   [FORM_KEY_REGATTA_TYPE]: RegattaType.OneDesign,
@@ -53,9 +52,15 @@ const validateAscendingOrder = (arr: number[]) =>
     : 'Discard values must be in ascending order'
 
 export const validate = (values: any = {}) => ({
-  [FORM_KEY_NAME]: validateRequired(values[FORM_KEY_NAME]),
-  [FORM_KEY_LOCATION]: validateRequired(values[FORM_KEY_LOCATION]),
-  [FORM_KEY_BOAT_CLASS]: values[FORM_KEY_REGATTA_TYPE] === RegattaType.OneDesign ? validateRequired(values[FORM_KEY_BOAT_CLASS]) : undefined,
+  [FORM_KEY_NAME]: validateRequired(values[FORM_KEY_NAME], 'error_no_name'),
+  [FORM_KEY_LOCATION]: validateRequired(values[FORM_KEY_LOCATION], 'error_no_venue'),
+  [FORM_KEY_BOAT_CLASS]: values[FORM_KEY_REGATTA_TYPE] === RegattaType.OneDesign ?
+    validateRequired(values[FORM_KEY_BOAT_CLASS], 'error_no_boat_class') :
+    undefined,
+  [FORM_KEY_DATE_FROM]: values[FORM_KEY_DATE_FROM] && values[FORM_KEY_DATE_TO] &&
+    values[FORM_KEY_DATE_FROM].isAfter(values[FORM_KEY_DATE_TO]) ?
+    I18n.t('error_start_date_after_end_date') :
+    undefined
   // [FORM_KEY_DISCARDS]:
   //   validateNoUndefined(values[FORM_KEY_DISCARDS]) ||
   //   validateAscendingOrder(values[FORM_KEY_DISCARDS]),

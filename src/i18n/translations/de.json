@@ -252,6 +252,8 @@
   "error_tracking_resend_info_text" : "Dein Tracking wurde gestoppt, jedoch konnten nicht alle Daten übertragen werden.\nBitte versuche es erneut.",
   "error_load_nationalities": "Nationalitäten konnten nicht geladen werden",
   "error_load_boat_classes": "Bootsklassen konnten nicht geladen werden",
+  "error_start_date_after_end_date": "Das Startdatum muss vor dem Enddatum liegen.",
+  "error_no_name": "Kein Name gewählt. Bitte wählen Sie einen Namen aus.",
   "error_no_venue": "Es ist kein Austragungsort gewählt. Bitte gib einen Austragungsort an.",
   "error_no_boat_class": "Es ist keine Bootsklasse ausgewählt. Bitte gib eine Bootsklasse an um fortzufahren.",
   "error_leaderboard_group_already_exists": "Ein Event mit dem gleichen Namen ist bereits vorhanden. Bitte wähle einen anderen Namen.",

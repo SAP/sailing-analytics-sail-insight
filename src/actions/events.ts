@@ -76,8 +76,8 @@ const createEvent = (eventData: EventCreationData) => async () => {
       eventData.regattaType === RegattaType.OneDesign
         ? eventData.boatClass
         : 'Handicap', // Proxy boat class
-    ...(eventData.dateFrom ? { startdate: new Date(eventData.dateFrom).toISOString() } : {}),
-    ...(eventData.dateTo   ? { enddate: new Date(eventData.dateTo).toISOString() } : {}),
+    ...(eventData.dateFrom ? { startdate: eventData.dateFrom.toISOString() } : {}),
+    ...(eventData.dateTo   ? { enddate: eventData.dateTo.toISOString() } : {}),
   } as CreateEventBody)
   return eventCreationResponseToCheckIn(response, {
     secret,
