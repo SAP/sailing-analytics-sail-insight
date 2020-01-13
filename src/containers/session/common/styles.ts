@@ -172,4 +172,10 @@ export default EStyleSheets.create({
     height: 50,
     textAlign: 'center',
   },
+  qrCodeContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    marginTop: 10
+  }
 })

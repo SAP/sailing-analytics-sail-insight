@@ -1,4 +1,5 @@
 import Images from '@assets/Images'
+import querystring from 'query-string'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { shareSessionRegatta } from 'actions/sessions'
@@ -14,6 +15,7 @@ import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
 import { container } from 'styles/commons'
+import { BRANCH_APP_DOMAIN } from 'environment'
 import {
   competitorsCard,
   racesAndScoringCard,
@@ -34,8 +36,18 @@ const mapStateToProps = (state: any, props: any) => {
   const session = getSession(leaderboardName)(state)
   const regattaRaces = getRegattaPlannedRaces(session.regattaName)(state)
 
+  const { serverUrl, eventId, secret } = session
+
+  const path = querystring.stringify({
+    event_id: eventId,
+    leaderboard_name: leaderboardName,
+    secret
+  })
+  const checkinUrl = `${serverUrl}/tracking/checkin?${path}`
+
   return {
     session,
+    qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
     name: session.regattaName,
     startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate) || '? ? ?',
     location: session && session.event && session.event.venue && session.event.venue.name || '',

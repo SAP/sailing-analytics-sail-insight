@@ -7,11 +7,12 @@ import { Component, contramap, fold, fromClass, nothing,
   recomposeWithHandlers as withHandlers } from 'components/fp/component'
 import { forwardingPropsFlatList, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
 import ModalSelector from 'react-native-modal-selector'
-
+import QRCode from 'react-native-qrcode-svg'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import I18n from 'i18n'
 import styles from './styles'
+import { Dimensions } from 'react-native'
 
 const maxNumberOfRaces = 50
 
@@ -199,6 +200,17 @@ export const racesAndScoringCard = Component((props: any) =>
   ]),
 )
 
+const qrCode = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.qrCodeContainer }))(
+  fromClass(QRCode).contramap((props: any) => ({
+    value: props.qrCodeLink,
+    size: Dimensions.get('window').width - 85,
+    backgroundColor: 'white',
+    quietZone: 10
+  }))
+))
+
 export const competitorsCard = Component((props: any) =>
   compose(
     fold(props),
@@ -214,6 +226,7 @@ export const competitorsCard = Component((props: any) =>
     text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
     styledButton({
       onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
-    }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS'))
+    }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS')),
+    qrCode
   ]),
 )
