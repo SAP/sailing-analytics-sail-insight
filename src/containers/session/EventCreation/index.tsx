@@ -6,7 +6,6 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 import { Component,  fold, nothing, fromClass, nothingAsClass,
   recomposeLifecycle as lifecycle,
   recomposeWithStateHandlers as withStateHandlers,
-  recomposeWithHandlers as withHandlers,
   recomposeWithState as withState,
   recomposeBranch as branch,
   reduxConnect as connect } from 'components/fp/component'
