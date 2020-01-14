@@ -159,7 +159,7 @@ export default createStackNavigator(
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
-            firstLine='Bind with tracker'
+            firstLine={I18n.t('caption_course_creator_bind_with_tracker')}
           />
         ),
         headerLeft: () => (
@@ -175,7 +175,7 @@ export default createStackNavigator(
       screen: WebView,
       navigationOptions: ({ navigation: navigationProps }: any) => {
         return {
-          headerTitle: 'Track Details',
+          headerTitle: I18n.t('caption_sap_analytics_header'),
           headerRight: (
             <HeaderIconButton
               icon={Images.actions.share}

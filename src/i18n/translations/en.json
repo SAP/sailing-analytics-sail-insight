@@ -315,4 +315,38 @@
 
   "caption_basics": "Basics",
   "caption_event_creation_date": "Date",
+
+  "caption_course_creator_loading": "Loading Course...",
+  "caption_course_creator_create_new": "Create New",
+  "caption_course_creator_name": "Name",
+  "caption_course_creator_short_name": "Short Name",
+  "text_course_creator_start_and_finish_same": "Start and finish are the same",
+  "caption_course_creator_rounding_direction": "Rounding Direction",
+  "caption_course_creator_locate": "Locate Mark",
+  "caption_course_creation_tracker": "Tracker",
+  "caption_course_creation_location": "Location",
+  "text_course_creation_no_device_assigned": "No Device Assigned",
+  "text_course_creation_this_device_is_used": "This Device is Tracking",
+  "text_course_creation_a_device_is_tracking": "A Device is Tracking",
+  "caption_course_creation_change_device": "Change Tracking Device",
+  "caption_course_creation_delete_this_mark": "Delete this Mark from Course",
+  "caption_course_creator_ping_position": "Ping Current Position",
+  "caption_course_creation_edit_position": "Choose Position on Map",
+
+  "caption_course_creator_bind_with_tracker": "Bind with Tracker",
+  "text_course_creator_explain_qr": "Scannen Sie diesen ...",
+  "caption_course_creator_use_this_device": "Use this Device",
+
+  "caption_course_creator_passing_line": "Passing line",
+  "caption_course_creator_rounding_direction": "Rounding direction",
+
+  "caption_course_creation_define_gate_marks": "Defining Gate Marks",
+  "caption_course_creation_define_line_marks": "Defining Line Marks",
+
+  "placeholder_course_creation_new_line": "New Line",
+  "placeholder_course_creation_new_gate": "New Gate",
+  "placeholder_course_creation_new_line_short": "NL",
+  "placeholder_course_creation_new_gate_short": "NG",
+
+  "caption_sap_analytics_header": "SAP Analytics",
 }

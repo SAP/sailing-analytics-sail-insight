@@ -36,6 +36,7 @@ import { NavigationEvents } from 'react-navigation'
 import styles from './styles'
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 import { Dimensions } from 'react-native'
+import I18n from 'i18n'
 
 const mapIndexed = addIndex(map)
 
@@ -50,8 +51,8 @@ const mapStateToProps = (state: any) => ifElse(
     selectedMarkProperties: getSelectedMarkProperties(state),
     selectedMarkLocation: getSelectedMarkPosition(state),
     selectedMarkDeviceTracking: compose(
-      defaultTo('No device assigned'),
-      unless(isNil, ifElse(propEq('id', getDeviceId()), always('This device is used as a tracker'), always('A device is used as a tracker'))),
+      defaultTo(I18n.t('text_course_creation_no_device_assigned')),
+      unless(isNil, ifElse(propEq('id', getDeviceId()), always(I18n.t('text_course_creation_this_device_is_used')), always(I18n.t('text_course_creation_a_device_is_tracking')))),
       unless(isNil, when(propEq('type', 'PING'), always(null))))(
       getSelectedMarkDeviceTracking(state)),
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
@@ -141,8 +142,14 @@ const GateMarkSelectorItem = Component((props: object) =>
 const GateMarkSelector = Component((props: object) =>
   compose(
     fold(props),
-    concat(nothingWhenStartOrFinishGate(text({ style: [styles.sectionTitle, styles.indentedSectionTitle] },
-      `Defining ${props.selectedWaypoint.passingInstruction === PassingInstruction.Line ? 'line' : 'gate' } marks`))),
+    concat(nothingWhenStartOrFinishGate(
+      text(
+        {style: [styles.sectionTitle, styles.indentedSectionTitle] },
+        props.selectedWaypoint.passingInstruction === PassingInstruction.Line ? 
+          I18n.t('caption_course_creation_define_line_marks') : 
+          I18n.t('caption_course_creation_define_gate_marks')
+      )
+    )),
     view({ style: styles.gateMarkSelectorContainer }),
     reduce(concat, nothing()),
     intersperse(dashLine),
@@ -166,7 +173,7 @@ const SameStartFinish = Component((props: object) =>
       trackColor: { false: 'gray', true: 'white' },
       thumbColor: 'white'
     })),
-    text({ style: styles.sameStartFinishText }, 'Start & finish are the same')
+    text({ style: styles.sameStartFinishText }, I18n.t('text_course_creator_start_and_finish_same'))
   ]))
 
 const MarkPositionTracking = Component((props: object) =>
@@ -180,7 +187,11 @@ const MarkPositionTracking = Component((props: object) =>
         selectedMarkConfiguration: props.selectedMarkConfiguration
       })
     }))(
-    text({ style: styles.changeTrackingText }, toUpper('Change Tracking Device'))))
+    text(
+      { style: styles.changeTrackingText },
+      toUpper(I18n.t('caption_course_creation_change_device'))
+    )
+  ))
 
 const MarkPositionPing = Component((props: object) => compose(
   fold(props),
@@ -194,7 +205,7 @@ const MarkPositionPing = Component((props: object) => compose(
       pick(['latitude', 'longitude']),
       prop('coords')))
   }))(
-  text({ style: [styles.locationText, styles.pingText] }, 'PING POSITION')))
+  text({ style: [styles.locationText, styles.pingText] }, I18n.t('caption_course_creator_ping_position').toUpperCase())))
 
 const MarkPositionCoordinates = Component(props => compose(
   fold(props),
@@ -218,11 +229,11 @@ const MarkPositionGeolocation = Component((props: object) =>
           selectedMarkConfiguration: props.selectedMarkConfiguration,
           currentPosition: coords,
           markPosition: props.selectedMarkLocation })) }))(
-    text({ style: styles.locationText }, 'Edit Position')))
+    text({ style: styles.locationText }, I18n.t('caption_course_creation_edit_position'))))
 
 const locationTypes = [
-  { value: MarkPositionType.TrackingDevice, label: 'TRACKER', customIcon: trackerIcon.fold },
-  { value: MarkPositionType.Geolocation, label: 'LOCATION', customIcon: locationIcon.fold }]
+  { value: MarkPositionType.TrackingDevice, label: I18n.t('caption_course_creation_tracker'), customIcon: trackerIcon.fold },
+  { value: MarkPositionType.Geolocation, label: I18n.t('caption_course_creation_location'), customIcon: locationIcon.fold }]
 
 const PositionSelector = fromClass(SwitchSelector).contramap((props: any) => ({
   options: locationTypes,
@@ -246,7 +257,7 @@ const MarkPosition = Component((props: object) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-      text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, 'Locate or track'),
+      text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, I18n.t('caption_course_creator_locate')),
       PositionSelector,
       arrowUp({color: $DarkBlue }),
       nothingWhenNotTrackingSelected(MarkPositionTracking),
@@ -265,7 +276,7 @@ const DeleteButton = Component((props: object) =>
     }),
     view({ style: styles.deleteWaypointButton }),
     concat(deleteIcon))(
-    text({ style: styles.deleteButtonText }, 'Delete this mark from course')))
+    text({ style: styles.deleteButtonText }, I18n.t('caption_course_creation_delete_this_mark'))))
 
 const createNewMark = curry((passingInstruction, props) =>
   props.insideGate ? props.changeWaypointMarkConfigurationToNew({
@@ -282,7 +293,7 @@ const CreateNewSelector = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.createNewContainer }),
-    concat(text({ style: styles.createNewTitle }, 'Create new')),
+    concat(text({ style: styles.createNewTitle }, I18n.t('caption_course_creator_create_new'))),
     view({ style: { ...styles.createNewClassContainer, justifyContent: props.insideGate ? 'center' : 'space-between' }}),
     reduce(concat, nothing()),
     when(always(equals(true, props.insideGate)), compose(Rof, head)))([
@@ -313,14 +324,14 @@ const TextInputWithLabel = Component((props: any) => compose(
   props.inputLabel))
 
 const gateNameInputData = props => [
-  { inputLabel: 'Name',
+  { inputLabel: I18n.t('caption_course_creator_name'),
     value: props.selectedWaypoint.controlPointName,
     onBlur: (value: string) => props.updateWaypointName({
       id: props.selectedWaypoint.id,
       value
     })
   },
-  { inputLabel: 'Short Name',
+  { inputLabel: I18n.t('caption_course_creator_short_name'),
     value: props.selectedWaypoint.controlPointShortName,
     onBlur: (value: string) => props.updateWaypointShortName({
       id: props.selectedWaypoint.id,
@@ -328,14 +339,14 @@ const gateNameInputData = props => [
     }) } ]
 
 const markNamesInputData = props => [
-  { inputLabel: 'Name',
+  { inputLabel: I18n.t('caption_course_creator_name'),
     value: props.selectedMarkProperties.name,
     onBlur: (value: string) => props.updateMarkConfigurationName({
       id: props.selectedMarkConfiguration,
       value
     })
   },
-  { inputLabel: 'Short Name',
+  { inputLabel: I18n.t('caption_course_creator_short_name'),
     value: props.selectedMarkProperties.shortName,
     onBlur: (value: string) => props.updateMarkConfigurationShortName({
       id: props.selectedMarkConfiguration,
@@ -475,7 +486,7 @@ const PassingInstructions = Component((props: object) =>
     fold(props),
     concat(text(
       { style: [styles.sectionTitle, styles.indentedSectionTitle] },
-      isGateWaypoint(props) ? 'Passing line' : 'Rounding direction')),
+      isGateWaypoint(props) ? I18n.t('caption_course_creator_passing_line') : I18n.t('caption_course_creator_rounding_direction'))),
     view({ style: styles.passingInstructionContainer }),
     reduce(concat, nothing()),
     map(compose(
@@ -591,7 +602,7 @@ const WaypointsList = Component(props => {
 const LoadingIndicator = Component(props => compose(
   fold(props),
   view({ style: styles.loadingContainer }))(
-  text({ style: styles.loadingText }, 'Loading course...')))
+  text({ style: styles.loadingText }, I18n.t('caption_course_creator_loading'))))
 
 const NavigationBackHandler = Component(props => compose(
   fold(props),

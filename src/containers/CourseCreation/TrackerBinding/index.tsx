@@ -79,7 +79,7 @@ const useThisDeviceButton = Component(props => compose(
   }),
   text({ style: styles.useThisDeviceButtonText }),
   toUpper)(
-  'Use this device'))
+  I18n.t('caption_course_creator_use_this_device')))
 
 const NavigationBackHandler = Component(props => compose(
   fold(props),

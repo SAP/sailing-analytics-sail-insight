@@ -316,4 +316,36 @@
   "caption_event_creation_date": "Datum",
   "text_location": "Austragungsort",
 
+  "caption_course_creator_loading": "Kurs wird geladen...",
+  "caption_course_creator_create_new": "Neu",
+  "caption_course_creator_name": "Name",
+  "caption_course_creator_short_name": "Kürzel",
+  "text_course_creator_start_and_finish_same": "Start und Ziel sind gleich",
+  "caption_course_creator_rounding_direction": "Umrundungsrichtung",
+  "caption_course_creator_locate": "Mark orten",
+  "caption_course_creation_tracker": "Tracker",
+  "caption_course_creation_location": "Standort",
+  "text_course_creation_no_device_assigned": "Kein Gerät zugeordnet",
+  "text_course_creation_this_device_is_used": "Dieses Gerät trackt",
+  "text_course_creation_a_device_is_tracking": "Ein Gerät trackt",
+  "caption_course_creation_change_device": "Trackinggerät ändern",
+  "caption_course_creation_delete_this_mark": "Diese Mark vom Kurs entfernen",
+  "caption_course_creator_ping_position": "Aktuelle Position pingen",
+  "caption_course_creation_edit_position": "Position auf Karte wählen",
+
+  "caption_course_creator_bind_with_tracker": "Mit Tracker verknüpfen",
+  "caption_course_creator_use_this_device": "Mein Gerät nutzen",
+
+  "caption_course_creator_passing_line": "Passing line[DE]",
+  "caption_course_creator_rounding_direction": "Rounding direction[DE]",
+
+  "caption_course_creation_define_gate_marks": "Gate Marks definieren",
+  "caption_course_creation_define_line_marks": "Line Marks definieren",
+
+  "placeholder_course_creation_new_line": "Neue Line",
+  "placeholder_course_creation_new_gate": "Neues Gate",
+  "placeholder_course_creation_new_line_short": "NL",
+  "placeholder_course_creation_new_gate_short": "NG",
+
+  "caption_sap_analytics_header": "SAP Analytics",
 }
