@@ -190,6 +190,13 @@ export default createStackNavigator(
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: teamDetailsHeader,
         headerRight: teamDeleteHeader(navigationProps),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       }),
     },
   },
