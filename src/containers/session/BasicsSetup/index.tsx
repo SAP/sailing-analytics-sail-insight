@@ -1,6 +1,7 @@
 import { __, always, compose, concat, defaultTo, merge, mergeLeft, reduce } from 'ramda'
 
 import I18n from 'i18n'
+import moment from 'moment'
 
 import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
 import { text, view } from 'components/fp/react-native'
@@ -63,7 +64,7 @@ const formDatePicker = Component((props: any) => compose(
   concat(icon({ source: props.icon, style: { tintColor: lighterGray }})),
   contramap((props: any) => ({
     style: { width: Dimensions.get('window').width / 2 - 24 - 2 * $smallSpacing - 8 },
-    onDateChange: props.input.onChange,
+    onDateChange: value => props.input.onChange(moment(value)),
     date: props.input.value,
     androidMode: 'spinner',
     mode: 'date',

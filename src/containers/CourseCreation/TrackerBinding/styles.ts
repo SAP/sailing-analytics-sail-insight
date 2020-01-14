@@ -1,5 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { white, withTitleSize, withDefaultFont } from 'styles/compositions/text'
+import { Dimensions } from 'react-native'
 
 export default EStyleSheets.create({
   container: {
@@ -36,4 +37,19 @@ export default EStyleSheets.create({
     fontFamily: 'SFProDisplay-Heavy',
     letterSpacing: 1.5,
   },
+  qrCodeContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  invalidMarkOverlay: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    width: Dimensions.get('window').width * 70 / 100,
+    padding: 20
+  },
+  invalidMarkText: {
+    ...withDefaultFont,
+    textAlign: 'center',
+    fontSize: 20
+  }
 })

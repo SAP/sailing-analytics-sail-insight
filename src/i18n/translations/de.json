@@ -232,6 +232,8 @@
   "text_beta_self_tracking": "Das setzen von Start- und Ziellinie geschieht bisher automatisch im Backend. Wir arbeiten gerade an einem nutzerfreundlichen Editor dafür, so dass du diese Linien entsprechend anpassen kannst. Die Statistiken berechnen sich nur, wenn eine Start- und Ziellinie von unserem System auch richtig erkannt wurde.",
   "caption_race_not_started_yet": "Rennen noch nicht gestartet",
   "caption_create": "ERSTELLEN",
+  "caption_invalid_qr_code_missing_mark": "Um den QR code zu generieren muss der Kurs gespeichert werden.\n(Tip: Pfeil oben links zwei mal drücken).",
+  "caption_scan_qr_code_for_mark_binding": "Scannen Sie diesen QR-Code mit einem anderen Gerät oder verwenden Sie dieses Gerät als Tracker",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",
@@ -252,6 +254,8 @@
   "error_tracking_resend_info_text" : "Dein Tracking wurde gestoppt, jedoch konnten nicht alle Daten übertragen werden.\nBitte versuche es erneut.",
   "error_load_nationalities": "Nationalitäten konnten nicht geladen werden",
   "error_load_boat_classes": "Bootsklassen konnten nicht geladen werden",
+  "error_start_date_after_end_date": "Das Startdatum muss vor dem Enddatum liegen.",
+  "error_no_name": "Kein Name gewählt. Bitte wählen Sie einen Namen aus.",
   "error_no_venue": "Es ist kein Austragungsort gewählt. Bitte gib einen Austragungsort an.",
   "error_no_boat_class": "Es ist keine Bootsklasse ausgewählt. Bitte gib eine Bootsklasse an um fortzufahren.",
   "error_leaderboard_group_already_exists": "Ein Event mit dem gleichen Namen ist bereits vorhanden. Bitte wähle einen anderen Namen.",

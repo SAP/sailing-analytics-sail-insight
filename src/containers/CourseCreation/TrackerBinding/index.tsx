@@ -1,4 +1,4 @@
-import { __,  compose, concat, reduce, toUpper, merge } from 'ramda'
+import { __,  compose, concat, reduce, toUpper, merge, isNil, propEq } from 'ramda'
 import querystring from 'query-string'
 import QRCode from 'react-native-qrcode-svg'
 import { navigateBack } from 'navigation'
@@ -8,7 +8,9 @@ import {
   fromClass,
   nothing,
   contramap,
-  reduxConnect as connect
+  reduxConnect as connect,
+  recomposeBranch as branch,
+  nothingAsClass
 } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import styles from './styles'
@@ -19,6 +21,7 @@ import { getSelectedEventInfo } from 'selectors/event'
 import { getMarkConfigurationById } from 'selectors/course'
 import { BRANCH_APP_DOMAIN } from 'environment'
 import { NavigationEvents } from 'react-navigation'
+import I18n from 'i18n'
 
 const { width: viewportWidth } = Dimensions.get('window')
 const wp = (percentage: number) => Math.round((percentage * viewportWidth) / 100)
@@ -37,16 +40,30 @@ const mapStateToProps = (state: any, props: any) => {
   const checkinUrl = `${serverUrl}/tracking/checkin?${path}`
 
   return {
-    qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`
+    qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
+    invalidMark: isNil(markId)
   }
 }
 
-const trackingQRCode = fromClass(QRCode).contramap((props: any) => ({
-  value: props.qrCodeLink,
-  size: qrCodeWidth,
-  backgroundColor: 'white',
-  quietZone: 10
-}))
+const nothingWhenInvalidMark = branch(propEq('invalidMark', true), nothingAsClass)
+const nothingWhenValidMark = branch(propEq('invalidMark', false), nothingAsClass)
+
+const InvalidMarkOverlay = Component(props => compose(
+  fold(props),
+  view({ style: styles.invalidMarkOverlay }),
+  text({ style: styles.invalidMarkText }))(
+  I18n.t('caption_invalid_qr_code_missing_mark')))
+
+const trackingQRCode = Component(props => compose(
+  fold(props),
+  view({ style: styles.qrCodeContainer }),
+  concat(__, nothingWhenValidMark(InvalidMarkOverlay)))(
+  fromClass(QRCode).contramap((props: any) => ({
+    value: props.qrCodeLink,
+    size: qrCodeWidth,
+    backgroundColor: 'white',
+    quietZone: 10
+  }))))
 
 const useThisDeviceButton = Component(props => compose(
   fold(props),
@@ -82,5 +99,5 @@ export default Component((props: object) =>
     reduce(concat, nothing()))([
     NavigationBackHandler,
     trackingQRCode,
-    text({ style: styles.scanText }, 'Scan this QR code with another device or use this device as a tracker'),
+    nothingWhenInvalidMark(text({ style: styles.scanText }, I18n.t('caption_scan_qr_code_for_mark_binding'))),
     useThisDeviceButton ]))
