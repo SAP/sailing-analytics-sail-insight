@@ -18,6 +18,7 @@ import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import { Alert } from 'react-native'
 import styles from './styles'
+import I18n from 'i18n'
 
 const mapStateToProps = (state, props) => ({
   markProperties: getMarkProperties(state)
@@ -49,7 +50,8 @@ const CreateNewSelector = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.createNewContainer }),
-    concat(text({ style: styles.createNewTitle }, 'Create new')),
+    concat(text({ style: styles.createNewTitle }, I18n.t('text_temporary_mark_inventory'))),
+    always(nothing()),
     view({ style: styles.createNewClassContainer }),
     reduce(concat, nothing()),
     map(compose(ControlPointClassSelectorItem.contramap, merge)))([
@@ -100,6 +102,6 @@ export default Component((props: object) =>
     withLoadingMarks,
     scrollView({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),
-    //concat(CreateNewSelector),
+    concat(CreateNewSelector),
     concat(List))(
     nothing()))

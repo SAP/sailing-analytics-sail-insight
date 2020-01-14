@@ -296,5 +296,6 @@
   "text_define_races": "Define Races",
   "text_see_racing_scoring": "See Races & Scoring",
   "text_number_of_races": "Number of Races",
-  "text_info_for_invite": "Anyone with the link or QR code can join."
+  "text_info_for_invite": "Anyone with the link or QR code can join.",
+  "text_temporary_mark_inventory": "Currently, you can only delete marks from your inventory. Adding and Editing Marks (Name, Location, etc.) is only possible via the course-creator inside an event. We will soon add these features here."
 }
