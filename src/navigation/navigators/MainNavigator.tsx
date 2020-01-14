@@ -144,7 +144,14 @@ export default createStackNavigator(
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
-            firstLine='Geolocation'
+            firstLine={I18n.t('caption_course_creator_ping_position')}
+          />
+        ),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
           />
         ),
       }),
@@ -180,6 +187,13 @@ export default createStackNavigator(
             <HeaderIconButton
               icon={Images.actions.share}
               onPress={shareOnPress(get(navigationProps, 'state.params.data'))}
+            />
+          ),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              title=""
+              onPress={navigateBack}
             />
           ),
         }
