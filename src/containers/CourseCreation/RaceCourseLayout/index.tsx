@@ -9,7 +9,7 @@ import {
   recomposeWithState as withState,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { Switch } from 'react-native'
+import { Switch, Platform } from 'react-native'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
@@ -34,7 +34,8 @@ import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from 'react-navigation'
 import styles from './styles'
-import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
+import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue,
+  $secondaryBackgroundColor, $primaryBackgroundColor } from 'styles/colors'
 import { Dimensions } from 'react-native'
 
 const mapIndexed = addIndex(map)
@@ -163,8 +164,14 @@ const SameStartFinish = Component((props: object) =>
     fromClass(Switch).contramap(merge({
       value: props.sameStartFinish,
       onValueChange: props.toggleSameStartFinish,
-      trackColor: { false: 'gray', true: 'white' },
-      thumbColor: 'white'
+      ...(
+        Platform.OS === 'android' ? {
+          trackColor: { false: 'gray', true: 'white' },
+          thumbColor: 'white',
+        } : {
+          trackColor: { true: $primaryBackgroundColor, false: $secondaryBackgroundColor },
+          tintColor: $primaryBackgroundColor,
+        })
     })),
     text({ style: styles.sameStartFinishText }, 'Start & finish are the same')
   ]))

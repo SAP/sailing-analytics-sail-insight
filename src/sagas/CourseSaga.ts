@@ -35,6 +35,7 @@ import {
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
 import { navigateToRaceCourseLayout } from 'navigation'
+import { PassingInstruction } from 'models/Course'
 
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
@@ -219,6 +220,7 @@ function* toggleSameStartFinish() {
     yield put(changeWaypointToNewLine({
       id: finishWaypointId,
       markConfigurationIds: newFinishMarkConfigurations,
+      passingInstruction: PassingInstruction.Gate,
       controlPointName: 'Finish',
       controlPointShortName: 'F'
     }))
