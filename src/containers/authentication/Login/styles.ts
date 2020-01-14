@@ -4,11 +4,11 @@ export default EStyleSheets.create({
   scrollContainer: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#12374866',
+    backgroundColor: '$DarkBlue',
   },
   textContainer: {
     flex: 1,
-    marginTop: 90,
+    marginTop: 85,
   },
   inputContainer: {
     backgroundColor: 'transparent',

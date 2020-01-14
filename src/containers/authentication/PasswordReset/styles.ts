@@ -5,18 +5,18 @@ export default EStyleSheets.create({
   scrollContainer: {
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#12374866',
+    backgroundColor: '$DarkBlue',
   },
   textContainer: {
     flex: 1,
-    marginTop: 46,
-    marginLeft: '$tinySpacing',
-    marginRight: '$tinySpacing',
+    marginTop: 85,
   },
   claim: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: 17,
     fontFamily: 'SFProDisplay-Heavy',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   inputContainer: {
     backgroundColor: 'transparent',
@@ -82,7 +82,7 @@ export default EStyleSheets.create({
   },
   resetButtonText: {
     color: '#FFFFFF',
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'SFProDisplay-Heavy',
   },
 })

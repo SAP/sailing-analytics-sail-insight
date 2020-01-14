@@ -65,14 +65,12 @@ class PasswordReset extends TextInputForm<{
   public render() {
     const { error, isLoading } = this.state
     return (
-      <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
+      <View style={{ width: '100%', height: '100%' }}>
         <ScrollContentView style={styles.scrollContainer}>
           <View style={styles.textContainer}>
-            <View style={[registration.topContainer(), styles.textContainer]}>
-              <Text style={styles.claim}>
-                <Text>{I18n.t('text_passwort_reset_title_info').toUpperCase()}</Text>
-              </Text>
-            </View>
+            <Text style={styles.claim}>
+              <Text>{I18n.t('text_passwort_reset_title_info').toUpperCase()}</Text>
+            </Text>
           </View>
           <View style={styles.inputField}>
             <TextInput
@@ -113,8 +111,8 @@ class PasswordReset extends TextInputForm<{
               {I18n.t('text_passwort_reset_submit').toUpperCase()}
             </TextButton>
           </View>
-        </ScrollContentView >
-      </ImageBackground>
+        </ScrollContentView>
+      </View>
     )
   }
 }
