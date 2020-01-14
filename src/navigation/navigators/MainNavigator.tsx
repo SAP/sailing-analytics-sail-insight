@@ -44,8 +44,8 @@ const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.para
   />
 )
 
-const shareOnPress = (url = '') => () => {
-  const message = `${I18n.t('text_track_share')}${url}`
+const shareOnPress = (data = {}) => () => {
+  const message = `${I18n.t('text_track_share')}${data.url}`
   Share.share({ message })
 }
 
