@@ -45,8 +45,8 @@ const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.para
   />
 )
 
-const shareOnPress = (url = '') => () => {
-  const message = `${I18n.t('text_track_share')}${url}`
+const shareOnPress = (data = {}) => () => {
+  const message = `${I18n.t('text_track_share')}${data.url}`
   Share.share({ message })
 }
 
@@ -159,7 +159,14 @@ export default createStackNavigator(
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
-            firstLine='Geolocation'
+            firstLine={I18n.t('caption_course_creator_ping_position')}
+          />
+        ),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
           />
         ),
       }),
@@ -174,7 +181,7 @@ export default createStackNavigator(
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
-            firstLine='Bind with tracker'
+            firstLine={I18n.t('caption_course_creator_bind_with_tracker')}
           />
         ),
         headerLeft: () => (
@@ -190,11 +197,18 @@ export default createStackNavigator(
       screen: WebView,
       navigationOptions: ({ navigation: navigationProps }: any) => {
         return {
-          headerTitle: 'Track Details',
+          headerTitle: I18n.t('caption_sap_analytics_header'),
           headerRight: (
             <HeaderIconButton
               icon={Images.actions.share}
               onPress={shareOnPress(get(navigationProps, 'state.params.data'))}
+            />
+          ),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              title=""
+              onPress={navigateBack}
             />
           ),
         }

@@ -99,7 +99,7 @@ const endDateInput = reduxFormField({
 
 const dateInput = Component((props: any) => compose(
   fold(props),
-  contramap(mergeLeft({ label: 'Date' })),
+  contramap(mergeLeft({ label: I18n.t('caption_event_creation_date') })),
   fieldBox,
   view({ style: styles.dateInputContainer }),
   reduce(concat, nothing()))(

@@ -13,6 +13,7 @@ import { field as reduxFormField } from 'components/fp/redux-form'
 import {
   FORM_KEY_DISCARDS,
   FORM_KEY_NUMBER_OF_RACES } from 'forms/eventCreation'
+import I18n from 'i18n'
 
 import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard, withUpdatingDiscardItem } from '../common'
 
@@ -23,7 +24,7 @@ const mapIndexed = addIndex(map)
 const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
-    concat(text({ style: styles.textHeader }, 'Planned Number of Races')),
+    concat(text({ style: styles.textHeader }, I18n.t('text_planned_number_of_races'))),
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       style: { },
@@ -41,8 +42,8 @@ const scoringSystemLabel = Component((props: object) =>
   compose(
     fold(props),
     reduce(concat, nothing()))([
-      text({ style: styles.textHeader }, 'Low Point scoring applies.'),
-      text({ style: styles.textDescription }, 'Please contact us if you require any other scoring system.'),
+      text({ style: styles.textHeader }, I18n.t('text_low_point_scoring')),
+      text({ style: styles.textDescription }, I18n.t('text_contact_for_other_scoring')),
     ]))
 
 const withDiscardDataFromForm = mapProps(props => compose(
@@ -69,7 +70,7 @@ export default Component((props: Object) =>
     fold(props),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
-      text({ style: styles.sectionHeaderStyle }, 'RACES & SCORING'),
+      text({ style: styles.sectionHeaderStyle }, I18n.t('caption_races_and_scoring')),
       raceNumberFormField,
       discardInputFormField,
       scoringSystemLabel,
