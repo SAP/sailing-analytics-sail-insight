@@ -57,7 +57,7 @@ class TeamList extends React.Component<ViewProps & {
   protected renderAddItem = () => {
     return(
       <TouchableOpacity
-        style={button.actionRectangular}
+        style={[button.actionRectangular, styles.addButton]}
         onPress={this.onNewBoatPress}
       >
         <Text style={styles.textStyle}>
