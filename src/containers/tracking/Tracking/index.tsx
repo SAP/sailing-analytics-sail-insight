@@ -100,15 +100,6 @@ class Tracking extends React.Component<{
             }
           </View>
           <View style={styles.property}>
-            <TrackingPropertyAutoFit
-              style={[styles.measurementContainer]}
-              titleStyle={styles.measurementTitle}
-              valueStyle={styles.measurementValueBig}
-              title={I18n.t('text_tracking_cog')}
-              value={courseOverGround}
-            />
-          </View>
-          <View style={styles.property}>
             <View>
               <TrackingPropertyAutoFit
                 style={styles.measurementContainer}
