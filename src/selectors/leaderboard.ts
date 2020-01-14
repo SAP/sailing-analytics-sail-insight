@@ -88,8 +88,7 @@ export const getTrackedLeaderboard = createSelector(
         .map(extractCompetitorData(gaps))
         .filter(
           (datum: LeaderboardCompetitorCurrentTrack) =>
-            datum.trackedColumn && datum.trackedColumn.fleet === currentFleet,
-        )
+            datum.trackedColumn && datum.trackedColumn.fleet === currentFleet)
 
     return stuff
   },

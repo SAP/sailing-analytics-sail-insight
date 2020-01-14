@@ -103,12 +103,12 @@ export const startTracking: StartTrackingAction = data =>  async (
             updateCheckIn({
               leaderboardName: checkInData.leaderboardName,
               currentTrackName: latestTrackName,
+              currentFleet: checkInData.currentFleet
             } as CheckInUpdate),
           )
           checkInData.currentTrackName = latestTrackName
         }
       }
-
     }
     const trackName = (newTrack && newTrack.racename) || checkInData.currentTrackName
     if (checkInData.isSelfTracking && trackName && checkInData.currentFleet) {
