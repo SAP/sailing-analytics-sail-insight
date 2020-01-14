@@ -147,4 +147,11 @@ export default EStyleSheets.create({
     fontFamily: 'FloodStd',
     fontSize: 14,
   },
+  location: {
+    maxWidth: '50%',
+    marginRight: '$tinySpacing',
+  },
+  locationIcon: {
+    tintColor: 'white',
+  },
 })

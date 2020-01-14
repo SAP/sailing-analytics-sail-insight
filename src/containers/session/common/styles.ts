@@ -176,6 +176,13 @@ export default EStyleSheets.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 10,
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
+  location: {
+    maxWidth: '50%',
+    marginRight: '$tinySpacing',
+  },
+  locationIcon: {
+    tintColor: 'white',
+  },
 })

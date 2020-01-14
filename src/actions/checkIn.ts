@@ -3,7 +3,7 @@ import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
-import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions, navigateToTrackingList, navigateToTrackingNavigator } from 'navigation'
+import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessionDetail, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
 
@@ -95,7 +95,12 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
     Alert.alert(
       I18n.t('text_event_already_joined_title'),
       I18n.t('text_event_already_joined_message'),
-      [{ text: 'OK', onPress: () => { navigateToTrackingNavigator(), navigateToTrackingList() } }],
+      [{ text: 'OK',
+        onPress: () => {
+          navigateToSessions(),
+          data.leaderboardName && navigateToSessionDetail(data.leaderboardName)
+        }
+      }],
       { cancelable: false }
     )
 

@@ -3,13 +3,14 @@ import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { shareSessionRegatta } from 'actions/sessions'
 import { Component, connectActionSheet, fold, fromClass, nothing, reduxConnect as connect } from 'components/fp/component'
-import { scrollView, text, touchableOpacity, view } from 'components/fp/react-native'
+import { iconText, scrollView, text, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
 import { dateFromToText } from 'helpers/date'
 import I18n from 'i18n'
 import { navigateToRaceDetails } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { __, always, call, compose, concat, curry, identity, inc, last, merge, reduce, take, toUpper } from 'ramda'
+import { Alert } from 'react-native';
 import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
@@ -53,8 +54,21 @@ const sessionData = {
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
 
-export const sessionDetailsCard = Component((props: any) =>
-  compose(
+const closeEntry = (props: any) => {
+  Alert.alert('Start Tracking', 'You really want to start tracking?\nEvent entry will be closed.', [
+    { text: 'Yes', onPress: () => props.closeEntry && props.closeEntry(props) }, // todo: set event state to entry closed
+    { text: 'No' },
+  ])
+}
+
+const endEvent = (props: any) => {
+  Alert.alert('End Event', 'You really want to stop tracking?', [
+    { text: 'Yes', onPress: () => props.endEvent && props.endEvent(props) }, // todo: set event state to stop tracking
+    { text: 'No' },
+  ])
+}
+
+export const sessionDetailsCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder1 }, nothing())),
     view({ style: styles.container1 }),
@@ -62,7 +76,12 @@ export const sessionDetailsCard = Component((props: any) =>
   )([
     text({ style: styles.textLight }, props.startDate),
     text({ style: styles.headlineHeavy }, props.name),
-    text({ style: [props.boatClass !== '' ? styles.text : styles.textLast, styles.textLight] }, props.location),
+    iconText({
+      style: styles.location,
+      iconStyle: styles.locationIcon,
+      textStyle: [props.boatClass !== '' ? styles.textValue : styles.textLast, styles.textValue],
+      source: Images.info.location,
+      alignment: 'horizontal'}, props.location),
     props.boatClass !== '' ?
     inlineText( { style: styles.textLast }, [
       text({ style: styles.textLight }, 'Boat Class '),
@@ -71,8 +90,7 @@ export const sessionDetailsCard = Component((props: any) =>
   ]),
 )
 
-export const defineRacesCard = Component((props: any) =>
-  compose(
+export const defineRacesCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
     view({ style: styles.container2 }),
@@ -87,8 +105,7 @@ export const defineRacesCard = Component((props: any) =>
   ]),
 )
 
-export const inviteCompetitorsCard = Component((props: any) =>
-  compose(
+export const inviteCompetitorsCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
     view({ style: styles.container3 }),
@@ -103,8 +120,7 @@ export const inviteCompetitorsCard = Component((props: any) =>
   ]),
 )
 
-export const closeEntryCard = Component((props: any) =>
-  compose(
+export const closeEntryCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder4 }, nothing())),
     view({ style: styles.container4 }),
@@ -114,13 +130,12 @@ export const closeEntryCard = Component((props: any) =>
     text({ style: styles.headline }, 'Close'.toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_close_entry_long_text')),
     styledButton({
-      onPress: (props: any) => props.closeEntry && props.closeEntry(props),
+      onPress: (props: any) => closeEntry,
     }, text({ style: styles.buttonContent }, 'CLOSE ENTRY'))
   ]),
 )
 
-export const endEventCard = Component((props: any) =>
-  compose(
+export const endEventCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder4 }, nothing())),
     view({ style: styles.container4 }),
@@ -130,7 +145,7 @@ export const endEventCard = Component((props: any) =>
     text({ style: styles.headline }, 'End'.toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_end_event_long_text')),
     styledButton({
-      onPress: (props: any) => props.endEvent && props.endEvent(props),
+      onPress: (props: any) => endEvent(props),
     }, text({ style: styles.buttonContent }, 'END EVENT'))
   ]),
 )
@@ -152,8 +167,7 @@ export const ShareButton4Organizer = Component(props => compose(
   }))(
   shareIcon))
 
-export default Component((props: any) =>
-  compose(
+export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
     connect(mapStateToProps, { checkOut, collectCheckInData, shareSessionRegatta }),
     scrollView({ style: styles.container }),

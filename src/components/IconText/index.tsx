@@ -1,6 +1,6 @@
-import { compose, intersperse, when, always,
-  equals, not, isNil, append, reverse,
-  addIndex, map } from 'ramda'
+import { addIndex, always, append, compose,
+  equals, intersperse, isNil, map, not,
+  reverse, when } from 'ramda'
 import React from 'react'
 import {
   Image,
@@ -19,7 +19,7 @@ const mapIndexed = addIndex(map)
 
 class IconText extends React.Component<ViewProps & {
   iconStyle?: ImageStyle | ImageStyle[],
-  iconOnly: Boolean,
+  iconOnly: boolean,
   iconTintColor?: string | null,
   textStyle?: TextStyle | TextStyle[],
   source: ImageSourcePropType,
@@ -41,10 +41,7 @@ class IconText extends React.Component<ViewProps & {
     const tintStyle = iconTintColor ? { tintColor: iconTintColor } : null
     const alignmentStyle = { flexDirection: alignment === 'vertical' ? 'column' : 'row' }
 
-    const icon = <Image
-        style={[styles.baseIcon, iconStyle, tintStyle]}
-        source={source}
-      />
+    const icon = <Image style={[styles.baseIcon, iconStyle, tintStyle]} source={source} />
     const text = <Text style={[styles.baseText, textStyle]}>{children}</Text>
     const separator = <View style={styles.separator} />
 
@@ -55,9 +52,7 @@ class IconText extends React.Component<ViewProps & {
       when(always(compose(not, isNil)(children)), append(text)))(
       [icon])
 
-    return <View style={[styles.baseItem, alignmentStyle, style]}>
-        {content}
-      </View>
+    return <View style={[styles.baseItem, alignmentStyle, style]}>{content}</View>
   }
 }
 
