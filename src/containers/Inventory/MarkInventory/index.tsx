@@ -65,8 +65,8 @@ const MarkPropertiesItem = Component((props: object) =>
           '',
           'Decide for an action',
           [
-            { text: 'Edit mark' },
-            { text: 'Share mark' },
+            //{ text: 'Edit mark' },
+            //{ text: 'Share mark' },
             { text: 'Delete mark', onPress: () => {
               Alert.alert('Deleting Mark', `Do you really want to irretrievably delete ${props.item.name}?`, [
                 { text: 'Yes', onPress: () => props.deleteMarkProperties(props.item) },
@@ -100,6 +100,6 @@ export default Component((props: object) =>
     withLoadingMarks,
     scrollView({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),
-    concat(CreateNewSelector),
+    //concat(CreateNewSelector),
     concat(List))(
     nothing()))

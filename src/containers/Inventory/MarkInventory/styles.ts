@@ -47,7 +47,6 @@ export default EStyleSheets.create({
     ...white,
     fontSize: 20,
     margin: 15,
-    marginBottom: 0,
   },
 
   markListContainer: {
