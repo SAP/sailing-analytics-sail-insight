@@ -295,5 +295,6 @@
   "text_define_races": "Rennen managen",
   "text_see_racing_scoring": "Rennen & Ergebnisse anzeigen",
   "text_number_of_races": "Anzahl der Rennen",
-  "text_info_for_invite": "Jeder kann über einen Link oder QR-Code teilnehmen."
+  "text_info_for_invite": "Jeder kann über einen Link oder QR-Code teilnehmen.",
+  "text_temporary_mark_inventory": "Zur Zeit können Kurs-Marken hier lediglich gelöscht werden. Neue und bestehende Marken können nur innerhalb einer Regatta erzeugt oder editiert werden. Dies wird sich bald ändern."
 }

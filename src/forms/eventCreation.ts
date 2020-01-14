@@ -5,7 +5,7 @@ import EventCreationData, {
   RegattaType,
 } from 'models/EventCreationData'
 import { generateNewSessionName } from 'services/SessionService'
-import { validateRequired } from './validators'
+import { validateRequiredWithErrorCode } from './validators'
 import I18n from 'i18n'
 
 export const EVENT_CREATION_FORM_NAME = 'eventCreation'
@@ -52,10 +52,10 @@ const validateAscendingOrder = (arr: number[]) =>
     : 'Discard values must be in ascending order'
 
 export const validate = (values: any = {}) => ({
-  [FORM_KEY_NAME]: validateRequired(values[FORM_KEY_NAME], 'error_no_name'),
-  [FORM_KEY_LOCATION]: validateRequired(values[FORM_KEY_LOCATION], 'error_no_venue'),
+  [FORM_KEY_NAME]: validateRequiredWithErrorCode('error_no_name')(values[FORM_KEY_NAME]),
+  [FORM_KEY_LOCATION]: validateRequiredWithErrorCode('error_no_venue')(values[FORM_KEY_LOCATION]),
   [FORM_KEY_BOAT_CLASS]: values[FORM_KEY_REGATTA_TYPE] === RegattaType.OneDesign ?
-    validateRequired(values[FORM_KEY_BOAT_CLASS], 'error_no_boat_class') :
+    validateRequiredWithErrorCode('error_no_boat_class')(values[FORM_KEY_BOAT_CLASS]) :
     undefined,
   [FORM_KEY_DATE_FROM]: values[FORM_KEY_DATE_FROM] && values[FORM_KEY_DATE_TO] &&
     values[FORM_KEY_DATE_FROM].isAfter(values[FORM_KEY_DATE_TO]) ?
