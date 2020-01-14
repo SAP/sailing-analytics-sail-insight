@@ -64,7 +64,7 @@ const mapStateToProps = (state: any, props: any) => {
 const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
-    concat(text({ style: styles.textHeader }, 'Planned number of races')),
+    concat(text({ style: styles.textHeader }, I18n.t('text_planned_number_of_races'))),
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       selectedValue: props.numberOfRaces,
@@ -84,7 +84,12 @@ const defineLayoutButton = Component((props: any) =>
       style: { flexGrow: 1 },
       onPress: () => onSeeCourse(props)
     }))(
-    text({}, props.item.courseDefined ? 'See Course' : 'Define Course')))
+      text(
+        {}, 
+        props.item.courseDefined ? I18n.t('caption_see_course') : I18n.t('caption_define_course')
+      )
+    )
+  )
 
 const raceAnalyticsButton = Component((props: any) =>
   compose(
@@ -126,7 +131,7 @@ const raceTimePicker = Component((props: any) => compose(
   }))),
   concat(fromClass(IconText).contramap(merge({ source: Images.info.time, iconStyle: { tintColor: 'white' }}))),
   text({ style: [styles.raceTimeText, getRaceStartTime(props.item) && styles.raceTimeTextSet] }),
-  when(isNil, always('Set time')),
+  when(isNil, always(I18n.t('caption_set_time'))),
   unless(isNil, dateTimeShortHourText),
   getRaceStartTime)(
   props.item))

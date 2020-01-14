@@ -72,7 +72,7 @@ export const ShareButton = Component(props => compose(
   connectActionSheet,
   touchableOpacity({
     onPress: props => props.showActionSheetWithOptions({
-      options: ['Share SAP Analytics link', 'Visit overall leaderboard', 'Cancel'],
+      options: ['Share SAP Analytics Link', 'Visit Overall Leaderboard', 'Cancel'],
       cancelButtonIndex: 2,
     },
     compose(
