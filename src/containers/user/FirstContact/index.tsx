@@ -1,10 +1,10 @@
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
 import {
-  navigateToMainTabs,
+  navigateToLoginFromSplash,
+  navigateToMainTabsWithReset,
   navigateToQRScanner,
   navigateToUserRegistration,
-  navigateToLoginFromSplash
 } from 'navigation'
 import React from 'react'
 import { Image, ImageBackground, Text, View, ViewProps } from 'react-native'
@@ -37,7 +37,7 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
         <View style={[container.main, styles.container]}>
           <View style={styles.textContainer}>
             <Image source={Images.defaults.app_logo} style={styles.app_logo}/>
-            <Text style={styles.subtitle}>{I18n.t('subtitle')}</Text>
+            <Text style={styles.subtitle}>{I18n.t('subtitle_splash')}</Text>
             <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, styles.bigButton]}
               textStyle={styles.bigButtonText}
@@ -65,13 +65,13 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
   }
 
   private loggedInCheck = () => {
-    this.props.isLoggedIn && navigateToMainTabs()
+    this.props.isLoggedIn && navigateToMainTabsWithReset()
   }
 
 }
 
 const mapStateToProps = (state: any) => ({
-  isLoggedIn: isLoggedIn(state)
+  isLoggedIn: isLoggedIn(state),
 })
 
 export default connect(mapStateToProps)(FirstContact)

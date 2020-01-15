@@ -24,7 +24,6 @@ import EventCreation from 'containers/session/EventCreation'
 import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
 import SessionDetail4Organizer, { ShareButton4Organizer } from 'containers/session/SessionDetail4Organizer'
 import TeamDetails from 'containers/TeamDetails'
-import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 import FirstContact from 'containers/user/FirstContact'
 import { navigateBack } from 'navigation/NavigationService'
 import { button } from 'styles/commons'
@@ -54,12 +53,6 @@ export default createStackNavigator(
   {
     [Screens.FirstContact]: {
       screen: FirstContact,
-      navigationOptions: {
-        header: null,
-      },
-    },
-    [Screens.WelcomeTracking]: {
-      screen: WelcomeTracking,
       navigationOptions: {
         header: null,
       },
