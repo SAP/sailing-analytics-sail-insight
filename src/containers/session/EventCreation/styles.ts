@@ -26,7 +26,7 @@ export default EStyleSheets.create({
     height: '100%',
   },
   content: {
-    paddingBottom: 50,
+    paddingBottom: 110,
     backgroundColor: '$LightBlue',
   },
   errorsContainer: {
