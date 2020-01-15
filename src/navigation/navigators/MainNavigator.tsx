@@ -61,6 +61,8 @@ export default createStackNavigator(
       screen: MainTabNavigator,
       navigationOptions: {
         header: null,
+        backBehavior: 'none',
+        gesturesEnabled: false,
       },
     },
     [Screens.EventCreation]: {

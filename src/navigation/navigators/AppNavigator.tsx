@@ -19,18 +19,12 @@ import { $headerTintColor, $primaryButtonColor } from 'styles/colors'
 import ExpertSettings from '../../containers/ExpertSettings'
 import { navigateToTracking } from '../index'
 import MainNavigator from './MainNavigator'
-import MainTabNavigator from './MainTabNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 import TrackingNavigator from './TrackingNavigator'
-
 export default createStackNavigator(
   {
     [Screens.Main]: {
       screen: MainNavigator,
-      navigationOptions: { header: null },
-    },
-    [Screens.MainTabs]: {
-      screen: MainTabNavigator,
       navigationOptions: {
         header: null,
       },
