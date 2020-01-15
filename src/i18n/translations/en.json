@@ -46,7 +46,7 @@
   "text_your_name": "Your name",
   "text_your_nationality": "Your nationality",
   "text_user_name": "User name",
-  "text_email": "E-Mail",
+  "text_email": "E-mail",
   "text_base_server": "Server",
   "text_verbose_logging": "Enable verbose background GPS logging",
   "text_placeholder_your_username": "User name",
@@ -145,7 +145,7 @@
   "text_register_grant_eula_02": "Terms and Conditions",
   "text_register_grant_eula_03": "Privacy Policy",
   "text_passwort_reset_title" : "Reset password",
-  "text_passwort_reset_message" : "Please enter your user name or e-mail address. We'll send you an email with further instructions on how to reset your password.",
+  "text_passwort_reset_message" : "Please enter your user name or e-mail address. We will send you an e-mail with further instructions on how to reset your password.",
   "text_passwort_reset_or" : "or",
   "text_passwort_reset_submit" : "Reset password",
   "text_passwort_reset_confirm_title" : "Please check your inbox",
@@ -195,7 +195,7 @@
   "caption_tab_teamlist": "Teamlist",
   "caption_tab_appsettings": "Settings",
   "caption_new_session": "New event",
-  "caption_new_team": "+ New team",
+  "caption_new_team": "New team",
   "caption_start": "Start",
   "caption_share_session": "Invite friends",
   "caption_beta_session": "BETA",
@@ -220,7 +220,7 @@
   "caption_join_regatta": "Join a regatta",
   "caption_create_free_account": "Create an account now",
   "caption_setting_bulk_gps": "Battery saving mode",
-  "caption_send_log_to_email": "Send log to email",
+  "caption_send_log_to_email": "Send log to e-mail",
   "caption_success": "Success!",
   "caption_setting_analytics": "Help us to improve Sail Insight by providing your usage feedback",
   "caption_open_photos" : "Open photos",
@@ -325,7 +325,6 @@
   "caption_course_creator_name": "Name",
   "caption_course_creator_short_name": "Short Name",
   "text_course_creator_start_and_finish_same": "Start and finish are the same",
-  "caption_course_creator_rounding_direction": "Rounding Direction",
   "caption_course_creator_locate": "Locate Mark",
   "caption_course_creation_tracker": "Tracker",
   "caption_course_creation_location": "Location",
@@ -353,4 +352,6 @@
   "placeholder_course_creation_new_gate_short": "NG",
 
   "caption_sap_analytics_header": "SAP Analytics",
+
+  "text_temporary_mark_inventory": "Currently, you can only delete marks from your inventory. Adding and Editing Marks (Name, Location, etc.) is only possible via the course-creator inside an event. We will soon add these features here."
 }

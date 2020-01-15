@@ -17,7 +17,6 @@ import { getTrackedCheckInCompetitorId } from 'selectors/checkIn'
 import { getTrackedLeaderboard } from 'selectors/leaderboard'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
-import LineSeparator from 'components/LineSeparator'
 import Text from 'components/Text'
 import TrackingPropertyReverse from 'components/TrackingPropertyReverse'
 import ColumnValue from './ColumnValue'
@@ -40,14 +39,6 @@ export enum ColumnValueType {
   AverageSpeed = 'text_leaderboard_column_averageSpeed',
   DistanceTravelled = 'text_leaderboard_column_distanceTravelled',
   NumberOfManeuvers = 'text_leaderboard_column_maneuvers',
-}
-
-const Seperator = () => {
-  return (
-    <View style={[container.largeHorizontalMargin]}>
-      <LineSeparator style={[styles.separator]} />
-    </View>
-  )
 }
 
 const TRIANGLE_UP = () => {
@@ -106,19 +97,16 @@ class Leaderboard extends React.Component<{
                 competitorData={myCompetitorData}
                 comparedCompetitorData={comparedCompetitorData}
                 fontSize={56}
-                rankingMetric={rankingMetric}
-              />
+                rankingMetric={rankingMetric}/>
               <ModalDropdown
                 options={difference(Object.values(ColumnValueType), [ColumnValueType.GapToCompetitor])}
                 onSelect={this.onDropdownSelect}
                 adjustFrame={this.renderAdjustFrame}
-                renderRow={this.renderDropdownRow}
-              >
+                renderRow={this.renderDropdownRow}>
                 <Text
                   style={[styles.title]}
                   numberOfLines={1}
-                  ellipsizeMode="tail"
-                >
+                  ellipsizeMode="tail">
                   {`${columnText} `}<TRIANGLE_UP />
                 </Text>
               </ModalDropdown>
@@ -150,7 +138,8 @@ class Leaderboard extends React.Component<{
   private renderAdjustFrame = (propertyStyle: any) => {
     propertyStyle.left = $smallSpacing
     propertyStyle.width = Dimensions.get('window').width - 2 *  $smallSpacing
-    propertyStyle.height = 222
+    propertyStyle.height = 235
+    propertyStyle.marginTop = -10
     return propertyStyle
   }
 
@@ -172,33 +161,26 @@ class Leaderboard extends React.Component<{
     const { selectedColumn } = this.state
     const { rankingMetric } = this.props
 
-    return (
-      <>
-        <TouchableHighlight onPress={this.onLeaderboardItemPress(id)}>
-          <View style={[styles.listRowContainer]}>
-            <View
-              style={[
-                container.smallHorizontalMargin,
-                styles.listItemContainer,
-              ]}
-            >
-              <View style={[styles.textContainer]}>
-                <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
-                <Flag style={[styles.flag]} code={countryCode} size={24} />
-                <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
-              </View>
-              <ColumnValue
-                selectedColumn={selectedColumn}
-                competitorData={item}
-                rankingMetric={rankingMetric}
-                fontSize={24}
-              />
-            </View>
+    return <TouchableHighlight onPress={this.onLeaderboardItemPress(id)}>
+      <View style={[styles.listRowContainer]}>
+        <View
+          style={[
+            container.smallHorizontalMargin,
+            styles.listItemContainer,
+          ]}>
+          <View style={[styles.textContainer]}>
+            <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
+            <Flag style={[styles.flag]} code={countryCode} size={24} />
+            <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
           </View>
-        </TouchableHighlight>
-        <Seperator />
-      </>
-    )
+          <ColumnValue
+            selectedColumn={selectedColumn}
+            competitorData={item}
+            rankingMetric={rankingMetric}
+            fontSize={24}/>
+        </View>
+      </View>
+    </TouchableHighlight>
   }
 }
 

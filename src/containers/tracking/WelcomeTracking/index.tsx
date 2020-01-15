@@ -1,7 +1,6 @@
 import React from 'react'
-
+import { when, isEmpty, always, either, isNil } from 'ramda'
 import { ImageBackground, Text, View, ViewProps } from 'react-native'
-
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
 import {
@@ -11,7 +10,6 @@ import {
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
 import styles from './styles'
-
 import User from 'models/User'
 import { connect } from 'react-redux'
 import {
@@ -24,7 +22,6 @@ class WelcomeTracking extends React.Component<ViewProps & {
   user: User,
 }> {
 
-
   public render() {
     const { isLoggedIn, user } = this.props
 
@@ -33,7 +30,7 @@ class WelcomeTracking extends React.Component<ViewProps & {
         <View style={[container.main, styles.container]}>
           <View style={styles.textContainer}>
             <Text style={styles.title}>
-            {isLoggedIn ? I18n.t('text_welcome_logged_in', { name: user.username }) : I18n.t('text_welcome')}
+            {isLoggedIn ? I18n.t('text_welcome_logged_in', { name: when(either(isEmpty, isNil), always(user.username))(user.fullName) }) : I18n.t('text_welcome')}
             </Text>
           </View>
           <View style={styles.bottomContainer}>

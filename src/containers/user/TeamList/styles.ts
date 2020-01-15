@@ -7,7 +7,18 @@ export default EStyleSheets.create({
   textStyle: {
     textAlign: 'center',
     color: 'white',
-    fontSize: 18,
-    fontFamily: 'SFCompactText-Bold',
+    fontSize: 24,
+    fontFamily: 'SFProDisplay-Heavy',
+  },
+  addButton: {
+    height: 56,
+    width: '100%',
+    alignSelf: 'center',
+    marginTop: 20,
+    marginBottom: 15,
+    paddingLeft: '$largeSpacing',
+    paddingRight: '$largeSpacing',
+    borderRadius: '$baseBorderRadius',
+    backgroundColor: '$primaryButtonColor',
   },
 })

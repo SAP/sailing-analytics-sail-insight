@@ -192,10 +192,10 @@ export const racesAndScoringCard = Component((props: any) => compose(
       text({ style: styles.textLight }, `${I18n.t('text_number_of_races')} `),
       text({ style: styles.textValue }, props.races)
     ]),
-    inlineText( { style: styles.textLast }, [
-      text({ style: styles.textLight }, `${I18n.t('text_discard_after')} `),
-      text({ style: styles.textValue }, props.discardRaces),
-    ]),
+    // inlineText( { style: styles.textLast }, [
+    //   text({ style: styles.textLight }, `${I18n.t('text_discard_after')} `),
+    //   text({ style: styles.textValue }, props.discardRaces),
+    // ]),
     styledButton({
       onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
     }, text({ style: styles.buttonContent }, toUpper(props.racesButtonLabel)))
@@ -221,10 +221,10 @@ export const competitorsCard = Component((props: any) =>
     reduce(concat, nothing())
   )([
     text({ style: styles.headline }, I18n.t('caption_competitor').toUpperCase()),
-    inlineText( { style: styles.text }, [
-      text({ style: styles.textLight }, `Event Status `),
-      text({ style: styles.textValue }, props.raceStatus)
-    ]),
+    // inlineText( { style: styles.text }, [
+    //   text({ style: styles.textLight }, `Event Status `),
+    //   text({ style: styles.textValue }, props.raceStatus)
+    // ]),
     text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
     styledButton({
       onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),

@@ -56,7 +56,7 @@ class ExpertSettings extends TextInputForm<Props> {
             <Text style={[styles.claim, text.claimHighlighted]}>{I18n.t('text_development_claim_02')}</Text>
           </View>
         </View>
-        <View style={container.largeHorizontalMargin}>
+        {/* <View style={container.largeHorizontalMargin}>
           <EditItemSwitch
             style={styles.item}
             titleStyle={{ color: 'white' }}
@@ -64,7 +64,7 @@ class ExpertSettings extends TextInputForm<Props> {
             switchValue={this.props.leaderboardEnabled}
             onSwitchValueChange={this.props.updateLeaderboardEnabledSetting}
           />
-        </View>
+        </View> */}
         <View style={container.largeHorizontalMargin}>
           <EditItemSwitch
             style={styles.item}

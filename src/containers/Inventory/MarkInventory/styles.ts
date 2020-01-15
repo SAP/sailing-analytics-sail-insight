@@ -15,8 +15,8 @@ export default EStyleSheets.create({
   createNewContainer: {
     backgroundColor: '#476987',
     padding: 20,
-    paddingTop: 30,
-    paddingBottom: 5,
+    //paddingTop: 30,
+    //paddingBottom: 5,
     margin: 15,
     marginTop: 0,
   },
@@ -47,7 +47,6 @@ export default EStyleSheets.create({
     ...white,
     fontSize: 20,
     margin: 15,
-    marginBottom: 0,
   },
 
   markListContainer: {

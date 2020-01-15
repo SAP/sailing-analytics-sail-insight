@@ -244,7 +244,8 @@ export default EStyleSheets.create({
 
   sameStartFinishText: {
     ...withDefaultFont,
-    ...white
+    ...white,
+    paddingLeft: 5
   },
 
   createNewContainer: {

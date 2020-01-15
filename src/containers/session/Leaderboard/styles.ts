@@ -33,7 +33,7 @@ export default EStyleSheets.create({
     width: 200,
   },
   nameText: {
-    color: '$secondaryTextColor',
+    color: 'black',
     fontSize: 16,
     letterSpacing: -0.8,
     marginLeft: 10,
@@ -79,9 +79,13 @@ export default EStyleSheets.create({
   },
   listRowContainer: {
     backgroundColor: 'white',
+    marginBottom: '$tinySpacing'
   },
   listContainer: {
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
     flex: 3.5,
+    marginTop: 55
   },
   dropdownRowText: {
     padding: 10,
