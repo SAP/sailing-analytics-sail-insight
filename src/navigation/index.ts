@@ -9,7 +9,6 @@ export const navigatePop = NavigationService.pop
 export const initialNavigation = () => NavigationService.navigate(Screens.App)
 export const navigateToMain = () => NavigationService.navigate(Screens.Main)
 export const navigateToMainTabs = () => NavigationService.navigate(Screens.MainTabs)
-export const navigateToMainTabsWithReset = () => NavigationService.navigateWithReset(Screens.MainTabs)
 export const navigateToQRScanner = () => NavigationService.navigate(Screens.QRScanner)
 export const navigateToCheckIn = () => NavigationService.navigate(Screens.CheckIn)
 export const navigateToAppSettings = () => NavigationService.navigate(Screens.AppSettings)

@@ -2,7 +2,7 @@ import TextButton from 'components/TextButton'
 import I18n from 'i18n'
 import {
   navigateToLoginFromSplash,
-  navigateToMainTabsWithReset,
+  navigateToMainTabs,
   navigateToQRScanner,
   navigateToUserRegistration,
 } from 'navigation'
@@ -65,7 +65,7 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
   }
 
   private loggedInCheck = () => {
-    this.props.isLoggedIn && navigateToMainTabsWithReset()
+    this.props.isLoggedIn && navigateToMainTabs()
   }
 
 }

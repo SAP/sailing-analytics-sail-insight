@@ -12,7 +12,7 @@ import { validateEmail, validatePassword, validateUsername } from 'forms/validat
 import { helpActionSheetOptions } from 'helpers/actionSheets'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToLogin, navigateToMainTabsWithReset, navigateToUserRegistrationBoat } from 'navigation'
+import { navigateToLogin, navigateToMainTabs, navigateToUserRegistrationBoat } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import EulaLink from 'components/EulaLink'
@@ -205,7 +205,7 @@ class RegisterCredentials extends TextInputForm<Props> {
   }
 
   private loggedInCheck = () => {
-    this.loggedIn && navigateToMainTabsWithReset()
+    this.loggedIn && navigateToMainTabs()
   }
 
 }
