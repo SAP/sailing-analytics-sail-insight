@@ -24,7 +24,6 @@ import {
   generateInitialValues,
   validate,
 } from 'forms/eventCreation'
-import { navigateBack } from 'navigation'
 import { getFormFieldValue } from 'selectors/form'
 import I18n from 'i18n'
 import { selfTrackingApi } from 'api'
