@@ -1,6 +1,6 @@
-import { __, compose, concat, head, mergeLeft, toString, not,
-  objOf, reduce, merge, isEmpty, path, unless, prop, when,
-  always, isNil, has, defaultTo, tap, equals } from 'ramda'
+import { __, compose, concat, toString, reduce, merge,
+  isEmpty, unless, prop, when, always, isNil, has,
+  defaultTo, pick } from 'ramda'
 
 import MapView from 'react-native-maps'
 
@@ -20,6 +20,7 @@ import TextInput from 'components/TextInput'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import styles from './styles'
+import { NavigationEvents } from 'react-navigation'
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -62,6 +63,17 @@ const Map = Component((props: any) => compose(
       }
     }))))
 
+const navigationBackHandler = Component(props => compose(
+  fold(props),
+  contramap(merge({
+    onWillBlur: payload => !payload.state && props.updateMarkConfigurationLocation({
+      id: props.selectedMarkConfiguration,
+      value: pick(['latitude', 'longitude'], props.region)
+    })
+  })),
+  fromClass)(
+  NavigationEvents))
+
 const coordinatesInput = ({ propName }: any) => Component((props: any) => compose(
     fold(props),
     contramap(merge({
@@ -81,6 +93,7 @@ export default Component((props: object) =>
     withRegion,
     withInitialRender,
     reduce(concat, nothing()))([
+    navigationBackHandler,
     Map,
     latitudeInput,
     longitudeInput]))
