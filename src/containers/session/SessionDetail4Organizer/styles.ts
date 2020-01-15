@@ -23,10 +23,26 @@ export default EStyleSheets.create({
     borderColor: '#FFFFFF',
     borderRadius: 5,
   },
+  buttonBig: {
+    padding: 12,
+    backgroundColor: '$Orange',
+    margin: 10,
+    marginLeft: 30,
+    marginRight: 30,
+    borderWidth: 1,
+    borderColor: '$Orange',
+    borderRadius: 5,
+  },
   buttonContent: {
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
+    fontFamily: 'SFCompactText-Bold',
+  },
+  buttonBigContent: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 24,
     fontFamily: 'SFCompactText-Bold',
   },
   container1: {

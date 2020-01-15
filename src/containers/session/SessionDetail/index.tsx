@@ -1,21 +1,21 @@
 import Images from '@assets/Images'
-import querystring from 'query-string'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { shareSessionRegatta } from 'actions/sessions'
 import { Component, connectActionSheet, fold, fromClass, nothing, reduxConnect as connect } from 'components/fp/component'
 import { scrollView, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
+import { BRANCH_APP_DOMAIN } from 'environment'
 import { dateFromToText } from 'helpers/date';
 import I18n from 'i18n';
 import { navigateToRaceDetails } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
+import querystring from 'query-string'
 import { __, always, call, compose, concat, identity, inc, last, merge, reduce, take } from 'ramda'
 import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
 import { container } from 'styles/commons'
-import { BRANCH_APP_DOMAIN } from 'environment'
 import {
   competitorsCard,
   racesAndScoringCard,

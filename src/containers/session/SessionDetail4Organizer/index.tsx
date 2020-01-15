@@ -24,10 +24,10 @@ const shareIcon = fromClass(IconText).contramap(always({
   iconStyle: { width: 25, height: 25 }
 }))
 
-const styledButton = curry(({ onPress }, content: any) => Component((props: any) => compose(
+const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
   fold(props),
   touchableOpacity({ onPress }))(
-  view({ style: styles.button }, content))))
+  view({ style: [ styles.button, style ] }, content))))
 
 const mapStateToProps = (state: any, props: any) => {
   const leaderboardName = getCustomScreenParamData(props)
@@ -45,7 +45,9 @@ const mapStateToProps = (state: any, props: any) => {
     races: regattaRaces.length,
     racesButtonLabel: canUpdateCurrentEvent(state) ?
       I18n.t('text_define_races').toUpperCase() :
-      I18n.t('text_see_racing_scoring').toUpperCase(),
+      I18n.t('text_see_races').toUpperCase(),
+    entryClosed: false, // todo: we need the state of the event
+    trackingStopped: false, // todo: we need the state of the event
   }
 }
 
@@ -55,16 +57,16 @@ const sessionData = {
 }
 
 const closeEntry = (props: any) => {
-  Alert.alert('Start Tracking', 'You really want to start tracking?\nEvent entry will be closed.', [
-    { text: 'Yes', onPress: () => props.closeEntry && props.closeEntry(props) }, // todo: set event state to entry closed
-    { text: 'No' },
+  Alert.alert(I18n.t('caption_start_tracking'), I18n.t('text_alert_for_start_tracking'), [
+    { text: I18n.t('button_yes'), onPress: () => 'todo: closeEntryAction' }, // todo: set event state to entry closed
+    { text: I18n.t('button_no') },
   ])
 }
 
 const endEvent = (props: any) => {
-  Alert.alert('End Event', 'You really want to stop tracking?', [
-    { text: 'Yes', onPress: () => props.endEvent && props.endEvent(props) }, // todo: set event state to stop tracking
-    { text: 'No' },
+  Alert.alert(I18n.t('caption_end_event'), I18n.t('text_tracking_alert_stop_confirmation_message'), [
+    { text: I18n.t('button_yes'), onPress: () => 'todo: stopTrackingAction' }, // todo: set event state to stop tracking
+    { text: I18n.t('button_no') },
   ])
 }
 
@@ -84,11 +86,10 @@ export const sessionDetailsCard = Component((props: any) => compose(
       alignment: 'horizontal'}, props.location),
     props.boatClass !== '' ?
     inlineText( { style: styles.textLast }, [
-      text({ style: styles.textLight }, 'Boat Class '),
+      text({ style: styles.textLight }, `${i18n.t('text_class')} `),
       text({ style: styles.textValue }, props.boatClass),
     ]) : nothing()
-  ]),
-)
+  ]))
 
 export const defineRacesCard = Component((props: any) => compose(
     fold(props),
@@ -97,13 +98,12 @@ export const defineRacesCard = Component((props: any) => compose(
     reduce(concat, nothing()),
   )([
     text({ style: styles.headlineTop }, '1'),
-    text({ style: styles.headline }, 'Define'.toUpperCase()),
-    text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_define_races_long_text')),
+    text({ style: styles.headline }, i18n.t('caption_define').toUpperCase()),
+    text({ style: [styles.textExplain, styles.textLast] }, props.entryClosed ? I18n.t('text_define_races_long_text_running') : I18n.t('text_define_races_long_text_planning')), // todo: should change to 'text_define_races_long_text__running' if entryClosed
     styledButton({
       onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
-    }, text({ style: styles.buttonContent }, toUpper(props.racesButtonLabel)))
-  ]),
-)
+    },text({ style: styles.buttonContent }, toUpper(props.racesButtonLabel)))
+  ]))
 
 export const inviteCompetitorsCard = Component((props: any) => compose(
     fold(props),
@@ -112,13 +112,16 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
     reduce(concat, nothing()),
   )([
     text({ style: styles.headlineTop }, '2'),
-    text({ style: styles.headline }, 'Invite'.toUpperCase()),
-    text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_invite_competitors_long_text')),
+    text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
+    text({ style: [styles.textExplain, styles.textLast] }, props.entryClosed ? I18n.t('text_invite_competitors_long_text_running') : I18n.t('text_invite_competitors_long_text_panning')), // todo: should change to 'text_invite_competitors_long_text_running' if entryClosed
+    // todo: should dissapear if entry is closed.
+    !props.entryClosed ?
     styledButton({
       onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
-    }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS'))
-  ]),
-)
+    },
+    text({ style: styles.buttonContent }, I18n.t('caption_invite_competitors').toUpperCase())) :
+    nothing()
+  ]))
 
 export const closeEntryCard = Component((props: any) => compose(
     fold(props),
@@ -127,13 +130,16 @@ export const closeEntryCard = Component((props: any) => compose(
     reduce(concat, nothing())
   )([
     text({ style: styles.headlineTop }, '3'),
-    text({ style: styles.headline }, 'Close'.toUpperCase()),
+    text({ style: styles.headline }, i18n.t('caption_close').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_close_entry_long_text')),
+    // todo: should dissapear if tracking was stopped (end of the event)
+    !props.trackinStopped ?
     styledButton({
-      onPress: (props: any) => closeEntry,
-    }, text({ style: styles.buttonContent }, 'CLOSE ENTRY'))
-  ]),
-)
+      onPress: (props: any) => closeEntry(props),
+      style: styles.buttonBig,
+    },text({ style: styles.buttonBigContent }, i18n.t('caption_close_entry').toUpperCase())) :
+    nothing()
+  ]))
 
 export const endEventCard = Component((props: any) => compose(
     fold(props),
@@ -142,39 +148,50 @@ export const endEventCard = Component((props: any) => compose(
     reduce(concat, nothing())
   )([
     text({ style: styles.headlineTop }, '3'),
-    text({ style: styles.headline }, 'End'.toUpperCase()),
-    text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_end_event_long_text')),
+    text({ style: styles.headline }, i18n.t('caption_end').toUpperCase()),
+    text({ style: [styles.textExplain, styles.textLast] }, !props.trackingStopped ? I18n.t('text_end_event_long_text_running') : I18n.t('text_end_event_long_text_finished')),
+    !props.trackingStopped ?
     styledButton({
       onPress: (props: any) => endEvent(props),
-    }, text({ style: styles.buttonContent }, 'END EVENT'))
-  ]),
-)
+      style: styles.buttonBig,
+    },text({ style: styles.buttonContent }, i18n.t('caption_end_event'))):
+    nothing()
+  ]))
 
 export const ShareButton4Organizer = Component(props => compose(
-  fold(props),
-  connect(null, { openSAPAnalyticsEvent, openEventLeaderboard }),
-  connectActionSheet,
-  touchableOpacity({
-    onPress: props => props.showActionSheetWithOptions({
-      options: ['Share SAP Analytics link', 'Visit overall leaderboard', 'Cancel'],
-      cancelButtonIndex: 2,
-    },
-    compose(
-      call,
-      last,
-      take(__, [props.openSAPAnalyticsEvent, props.openEventLeaderboard, identity]),
-      inc))
-  }))(
-  shareIcon))
+    fold(props),
+    connect(null, { openSAPAnalyticsEvent, openEventLeaderboard }),
+    connectActionSheet,
+    touchableOpacity({
+      onPress: props => props.showActionSheetWithOptions(
+        {
+          options: ['Share SAP Analytics link', 'Visit overall leaderboard', 'Cancel'],
+          cancelButtonIndex: 2,
+        },
+        compose(
+          call,
+          last,
+          take(__, [props.openSAPAnalyticsEvent, props.openEventLeaderboard, identity]),
+          inc
+        )
+      )
+    })
+  )(shareIcon)
+)
 
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToProps, { checkOut, collectCheckInData, shareSessionRegatta }),
+    connect(mapStateToProps, { 
+      checkOut,
+      collectCheckInData,
+      shareSessionRegatta
+    }),
     scrollView({ style: styles.container }),
     view({ style: [container.list, styles.cardsContainer] }),
-    reduce(concat, nothing()))([
-      sessionDetailsCard,
-      defineRacesCard,
-      inviteCompetitorsCard,
-      1 != 0 ? closeEntryCard : endEventCard, // ToDo: how and when is it closed
-    ]))
+    reduce(concat, nothing())
+  )([
+    sessionDetailsCard,
+    defineRacesCard,
+    inviteCompetitorsCard,
+    closeEntryCard, // !props.entryClosed ? closeEntryCard : endEventCard, // ToDo: how and when is it closed
+  ]))
