@@ -79,16 +79,11 @@ export const getTrackedLeaderboard = createSelector(
   (leaderboardData, checkInData, leaderboardGaps) => {
     const gaps = leaderboardGaps || ({} as CompetitorGapMap)
 
-    const currentFleet = checkInData && checkInData.currentFleet
-
-    const competitors = leaderboardData.competitors
+    const competitors = leaderboardData && leaderboardData.competitors
     const stuff =
       competitors &&
       competitors
         .map(extractCompetitorData(gaps))
-        .filter(
-          (datum: LeaderboardCompetitorCurrentTrack) =>
-            datum.trackedColumn && datum.trackedColumn.fleet === currentFleet)
 
     return stuff
   },
