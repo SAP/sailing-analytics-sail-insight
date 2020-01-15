@@ -21,7 +21,7 @@ import {
   eventCreationDataFromFormValues,
   FORM_KEY_REGATTA_TYPE,
   FORM_KEY_NUMBER_OF_RACES,
-  initialValues,
+  generateInitialValues,
   validate,
 } from 'forms/eventCreation'
 import { navigateBack } from 'navigation'
@@ -40,7 +40,7 @@ const icon = compose(
   always)
 
 const mapStateToProps = (state: any) => ({
-  initialValues,
+  initialValues: generateInitialValues(),
   maxNumberOfDiscards: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_NUMBER_OF_RACES)(state),
   regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state),
   formErrors: compose(
@@ -58,7 +58,6 @@ const createEvent = (props: any) => async (formValues: any) => {
 
   try {
     await props.createEventActionQueue(eventCreationData).execute()
-    navigateBack()
   } catch (e) {
     props.setApiErrors([getErrorDisplayMessage(e)])
   }
