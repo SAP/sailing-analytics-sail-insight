@@ -86,7 +86,7 @@ export const sessionDetailsCard = Component((props: any) => compose(
       alignment: 'horizontal'}, props.location),
     props.boatClass !== '' ?
     inlineText( { style: styles.textLast }, [
-      text({ style: styles.textLight }, `${i18n.t('text_class')} `),
+      text({ style: styles.textLight }, `${I18n.t('text_class')} `),
       text({ style: styles.textValue }, props.boatClass),
     ]) : nothing()
   ]))
@@ -98,7 +98,7 @@ export const defineRacesCard = Component((props: any) => compose(
     reduce(concat, nothing()),
   )([
     text({ style: styles.headlineTop }, '1'),
-    text({ style: styles.headline }, i18n.t('caption_define').toUpperCase()),
+    text({ style: styles.headline }, I18n.t('caption_define').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, props.entryClosed ? I18n.t('text_define_races_long_text_running') : I18n.t('text_define_races_long_text_planning')), // todo: should change to 'text_define_races_long_text__running' if entryClosed
     styledButton({
       onPress: (props: any) => props.racesAndScoringOnPress && props.racesAndScoringOnPress(props),
@@ -130,14 +130,14 @@ export const closeEntryCard = Component((props: any) => compose(
     reduce(concat, nothing())
   )([
     text({ style: styles.headlineTop }, '3'),
-    text({ style: styles.headline }, i18n.t('caption_close').toUpperCase()),
+    text({ style: styles.headline }, I18n.t('caption_close').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_close_entry_long_text')),
     // todo: should dissapear if tracking was stopped (end of the event)
     !props.trackinStopped ?
     styledButton({
       onPress: (props: any) => closeEntry(props),
       style: styles.buttonBig,
-    },text({ style: styles.buttonBigContent }, i18n.t('caption_close_entry').toUpperCase())) :
+    },text({ style: styles.buttonBigContent }, I18n.t('caption_close_entry').toUpperCase())) :
     nothing()
   ]))
 
@@ -148,13 +148,13 @@ export const endEventCard = Component((props: any) => compose(
     reduce(concat, nothing())
   )([
     text({ style: styles.headlineTop }, '3'),
-    text({ style: styles.headline }, i18n.t('caption_end').toUpperCase()),
+    text({ style: styles.headline }, I18n.t('caption_end').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, !props.trackingStopped ? I18n.t('text_end_event_long_text_running') : I18n.t('text_end_event_long_text_finished')),
     !props.trackingStopped ?
     styledButton({
       onPress: (props: any) => endEvent(props),
       style: styles.buttonBig,
-    },text({ style: styles.buttonContent }, i18n.t('caption_end_event'))):
+    },text({ style: styles.buttonContent }, I18n.t('caption_end_event'))):
     nothing()
   ]))
 
