@@ -14,4 +14,4 @@ export const canUpdateCurrentEvent = createSelector(
   getSelectedEventInfo,
   identity,
   (selectedEventInfo, state) =>
-    canUpdateEvent(selectedEventInfo && selectedEventInfo.eventId)(state))
+    selectedEventInfo && canUpdateEvent(selectedEventInfo.eventId)(state))
