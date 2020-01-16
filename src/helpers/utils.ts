@@ -1,4 +1,4 @@
-import { compose, join, map, move } from 'ramda'
+import { compose, join, map, move, reject, isNil } from 'ramda'
 import { isArray, isMatch, isNumber, isObject, orderBy } from 'lodash'
 import { Alert, Linking, ListView } from 'react-native'
 
@@ -166,5 +166,6 @@ export const coordinatesToString = ({ latitude_deg, longitude_deg }: any) =>
       join(' '),
       move(-1, 0)
     )),
-    dd2ddm)(
+    dd2ddm,
+    reject(isNil))(
     [latitude_deg, longitude_deg])
