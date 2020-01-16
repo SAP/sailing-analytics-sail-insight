@@ -132,7 +132,7 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
-  - RNCAsyncStorage (1.6.3):
+  - RNCAsyncStorage (1.7.1):
     - React
   - RNFS (2.15.2):
     - React
@@ -252,7 +252,7 @@ SPEC CHECKSUMS:
   react-native-maps: 190c02ca533fddac5bb49cf17bdece3644612107
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
   react-native-slider: 754abcdae695545c5875c2150cb2a502d24b7bed
-  RNCAsyncStorage: 3c304d1adfaea02ec732ac218801cb13897aa8c0
+  RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
   RNFS: 54da03c2b7d862c42ea3ca8c7f86f892760a535a
   RNGestureHandler: 2dcc63e196e801c3e4371b24d8c2975c88c2803d
   RNImageCropPicker: 287fc8b372e49855fd00470393005fca674628f3

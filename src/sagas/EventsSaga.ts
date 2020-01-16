@@ -133,7 +133,7 @@ function* createEvent({ payload: { payload: data} }: any) {
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
 
-  navigateToSessionDetail(data.regattaName)
+  yield call(selectEventFlow, { payload: data })
 }
 
 function* addRaceColumns({ payload }: any) {

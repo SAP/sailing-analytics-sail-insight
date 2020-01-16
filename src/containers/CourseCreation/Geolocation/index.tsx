@@ -25,7 +25,7 @@ import styles from './styles'
 import { Switch, Platform } from 'react-native'
 import { NavigationEvents } from 'react-navigation'
 import { dd2ddm, ddm2dd } from 'helpers/utils'
-import { $Orange } from 'styles/colors'
+import { $Orange, $primaryBackgroundColor, $secondaryBackgroundColor } from 'styles/colors'
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -103,7 +103,8 @@ const textInput = Component(props => compose(
     containerStyle: styles.inputContainer,
     inputContainerStyle: styles.inputContainer,
     value: props.value,
-    keyboardType: 'number-pad'
+    keyboardType: 'number-pad',
+    returnKeyType: 'done'
   })))(
   fromClass(TextInput)))
 
@@ -113,7 +114,7 @@ const switchSelector = Component(props => compose(
   reduce(concat, nothing()))([
   text({ style: styles.switchSelectorText }, props.switchLabels[0]),
   fromClass(Switch).contramap(merge({
-    value: props.switchLabels[1] === props.direction,
+    value: props.switchLabels[1] === props.coordinatesDirection,
     ...(Platform.OS === 'android' ? {
       trackColor: { false: 'gray', true: 'gray' },
       thumbColor: 'white',
@@ -134,7 +135,7 @@ const coordinatesInput = Component((props: any) => compose(
         value: defaultTo('', props.degrees),
         inputStyle: { width: 70 },
         onBlur: value => {
-          const direction = props.direction === 'N' || props.direction === 'E' ? 1 : -1
+          const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
 
           props.setInitialRender(true)
           props.setRegion(merge(props.region, { [props.unit]: ddm2dd([[value || 0, props.minutes, direction]])[0] }))
@@ -145,7 +146,7 @@ const coordinatesInput = Component((props: any) => compose(
         value: defaultTo('', props.minutes),
         inputStyle: { width: 100 },
         onBlur: value => {
-          const direction = props.direction === 'N' || props.direction === 'E' ? 1 : -1
+          const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
 
           props.setInitialRender(true)
           props.setRegion(merge(props.region, { [props.unit]: ddm2dd([[props.degrees, value || 0, direction]])[0] }))
@@ -173,7 +174,7 @@ const latitudeInput = coordinatesInput.contramap(props => merge({
   unit: 'latitude',
   degrees: compose(reduce(concat, ''), init, head, flatten, dd2ddm, of, prop('latitude'))(props.region),
   minutes: compose(reduce(concat, ''), init, nth(1), flatten, dd2ddm, of, prop('latitude'))(props.region),
-  direction: compose(
+  coordinatesDirection: compose(
     last,
     flatten,
     head,
@@ -186,7 +187,7 @@ const longitudeInput = coordinatesInput.contramap(props => merge({
   title: 'Longitude',
   degrees: compose(reduce(concat, ''), init, head, flatten, dd2ddm, of, prop('longitude'))(props.region),
   minutes: compose(reduce(concat, ''), init, nth(1), flatten, dd2ddm, of, prop('longitude'))(props.region),
-  direction: compose(
+  coordinatesDirection: compose(
     last,
     flatten,
     last,
