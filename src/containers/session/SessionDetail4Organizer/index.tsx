@@ -40,8 +40,6 @@ const mapStateToProps = (state: any, props: any) => {
     startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate) || '? ? ?',
     location: session && session.event && session.event.venue && session.event.venue.name || '',
     boatClass: session && session.boat && session.boat.boatClass || '',
-    raceStatus: '? ? ?', //'Race 1 is currently running', or 'Event is open' ....
-    discardRaces: '? ? ?', // like '2 | 4 | 6'
     races: regattaRaces.length,
     racesButtonLabel: canUpdateCurrentEvent(state) ?
       I18n.t('text_define_races').toUpperCase() :
@@ -165,7 +163,7 @@ export const ShareButton4Organizer = Component(props => compose(
     touchableOpacity({
       onPress: props => props.showActionSheetWithOptions(
         {
-          options: ['Share SAP Analytics link', 'Visit overall leaderboard', 'Cancel'],
+          options: ['Share SAP Analytics Link', 'Visit Overall Leaderboard', 'Cancel'],
           cancelButtonIndex: 2,
         },
         compose(
