@@ -102,8 +102,7 @@ export const startTracking: StartTrackingAction = data =>  async (
           dispatch(
             updateCheckIn({
               leaderboardName: checkInData.leaderboardName,
-              currentTrackName: latestTrackName,
-              currentFleet: checkInData.currentFleet
+              currentTrackName: latestTrackName
             } as CheckInUpdate),
           )
           checkInData.currentTrackName = latestTrackName
