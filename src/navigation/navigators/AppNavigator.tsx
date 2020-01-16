@@ -1,37 +1,33 @@
-import React from 'react'
-import { createStackNavigator, HeaderBackButton } from 'react-navigation'
-
-import I18n from 'i18n'
-
-import * as commons from 'navigation/commons'
-import * as Screens from 'navigation/Screens'
-import { $headerTintColor, $primaryButtonColor } from 'styles/colors'
-
 import GradientNavigationBar from 'components/GradientNavigationBar'
 import HeaderTitle from 'components/HeaderTitle'
 import ModalBackButton from 'components/ModalBackButton'
+import Login from 'containers/authentication/Login'
 import PasswordReset from 'containers/authentication/PasswordReset'
 import EditCompetitor from 'containers/session/EditCompetitor'
 import FilterSessions from 'containers/session/FilterSessions'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
+import TrackingList from 'containers/tracking/TrackingList'
+import I18n from 'i18n'
+import * as commons from 'navigation/commons'
+import { navigateBack } from 'navigation/NavigationService'
+import * as Screens from 'navigation/Screens'
+import React from 'react'
+import { createStackNavigator, HeaderBackButton } from 'react-navigation'
+import { $headerTintColor, $primaryButtonColor } from 'styles/colors'
 import ExpertSettings from '../../containers/ExpertSettings'
 import { navigateToTracking } from '../index'
-import Login from 'containers/authentication/Login'
-
-import TrackingList from 'containers/tracking/TrackingList'
 import MainNavigator from './MainNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 import TrackingNavigator from './TrackingNavigator'
-
-import { navigateBack } from 'navigation/NavigationService';
-
 export default createStackNavigator(
   {
     [Screens.Main]: {
       screen: MainNavigator,
-      navigationOptions: { header: null },
+      navigationOptions: {
+        header: null,
+      },
     },
     [Screens.Register]: {
       screen: RegistrationNavigator,

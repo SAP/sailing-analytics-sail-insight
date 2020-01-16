@@ -1,18 +1,17 @@
+import Images from '@assets/Images'
+import { Component, contramap, fold, fromClass, nothing,
+  recomposeWithHandlers as withHandlers } from 'components/fp/component'
+import { forwardingPropsFlatList, iconText, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
+import IconText from 'components/IconText'
+import I18n from 'i18n'
 import { __, always, append, compose, concat, curry,
   equals, has, head, length, map, merge, objOf,
   prepend, prop, propEq, range, reduce, reject,
   remove, split, toString, toUpper, update, when } from 'ramda'
-
-import { Component, contramap, fold, fromClass, nothing,
-  recomposeWithHandlers as withHandlers } from 'components/fp/component'
-import { forwardingPropsFlatList, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
+import { Dimensions } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
 import QRCode from 'react-native-qrcode-svg'
-import Images from '@assets/Images'
-import IconText from 'components/IconText'
-import I18n from 'i18n'
 import styles from './styles'
-import { Dimensions } from 'react-native'
 
 const maxNumberOfRaces = 50
 
@@ -52,7 +51,7 @@ export const overlayPicker = curry((
         onChange: (v: any) => onValueChange(v.key),
         cancelText: (I18n.t('caption_cancel')),
         data: compose(
-          when(always(equals(withRemoveOption, true)), prepend({ key: 0, label: 'Remove' })),
+          when(always(equals(withRemoveOption, true)), prepend({ key: 0, label: I18n.t('caption_remove_discard') })),
           map(v => ({ key: v, label: v.toString() })))(
           range(min, max))
       }),
@@ -101,7 +100,7 @@ const AddDiscardButton = Component((props: any) => compose(
 
 export const DiscardSelector = Component((props: any) => compose(
   fold(props),
-  concat(text({ style: styles.textHeader }, 'Discard after race numbers')),
+  concat(text({ style: styles.textHeader }, I18n.t('caption_discard_after_races'))),
   view({ style: styles.discardContainer }),
   contramap(merge({
     style: { flexGrow: 0 },
@@ -128,7 +127,7 @@ export const withUpdatingDiscardItem = handler => withHandlers({
     reject(propEq('type', 'add')),
     update(index, { index, value }),
     prop('data'))(
-    props)
+    props),
 })
 
 export const withAddDiscard = handler => withHandlers({
@@ -138,14 +137,13 @@ export const withAddDiscard = handler => withHandlers({
     map(prop('value')),
     reject(propEq('type', 'add')),
     prop('data'))(
-    props)
+    props),
 })
 
 /*
 * SessionDetails
 */
-export const sessionDetailsCard = Component((props: any) =>
-  compose(
+export const sessionDetailsCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder1 }, nothing())),
     view({ style: styles.container1 }),
@@ -153,44 +151,49 @@ export const sessionDetailsCard = Component((props: any) =>
   )([
     text({ style: styles.textLight }, props.startDate),
     text({ style: styles.headlineHeavy }, props.name),
-    text({ style: [styles.textLast, styles.textLight] }, props.location),
+    iconText({
+      style: styles.location,
+      iconStyle: styles.locationIcon,
+      textStyle: [styles.textLast, styles.textValue],
+      source: Images.info.location,
+      alignment: 'horizontal'}, props.location),
   ]),
 )
 
-export const typeAndBoatClassCard = Component((props: any) =>
-  compose(
+export const typeAndBoatClassCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
     view({ style: styles.container2 }),
     reduce(concat, nothing()),
   )([
-    text({ style: styles.headline }, 'Regatta Details'.toUpperCase()),
+    text({ style: styles.headline }, I18n.t('caption_regatta_details').toUpperCase()),
     inlineText( props.boatClass !== '' ? { style: styles.text } : { style: styles.textLast }, [
       text({ style: styles.textLight }, 'Style '),
-      props.boatClass !== '' ? text({ style: styles.textValue }, 'ONE DESIGN') : text({ style: styles.textValue }, 'HANDICAP')
+      props.boatClass !== '' ? 
+        text({ style: styles.textValue }, I18n.t('caption_one_design').toUpperCase()) 
+      : text({ style: styles.textValue }, I18n.t('text_handicap_label').toUpperCase())
     ]),
     props.boatClass !== '' ?
     inlineText( { style: styles.textLast }, [
-      text({ style: styles.textLight }, 'Boat Class '),
+      text({ style: styles.textLight }, `${I18n.t('text_placeholder_boat_class')} `),
       text({ style: styles.textValue }, props.boatClass),
     ]) : nothing()
   ]),
 )
 
-export const racesAndScoringCard = Component((props: any) =>
-  compose(
+export const racesAndScoringCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
     view({ style: styles.container3 }),
     reduce(concat, nothing()),
   )([
-    text({ style: styles.headline }, 'Races and Scoring'.toUpperCase()),
+    text({ style: styles.headline }, I18n.t('caption_races_and_scoring').toUpperCase()),
     inlineText( { style: styles.text }, [
       text({ style: styles.textLight }, `${I18n.t('text_number_of_races')} `),
       text({ style: styles.textValue }, props.races)
     ]),
     // inlineText( { style: styles.textLast }, [
-    //   text({ style: styles.textLight }, 'Discard after Races '),
+    //   text({ style: styles.textLight }, `${I18n.t('text_discard_after')} `),
     //   text({ style: styles.textValue }, props.discardRaces),
     // ]),
     styledButton({
@@ -217,7 +220,7 @@ export const competitorsCard = Component((props: any) =>
     view({ style: styles.container4 }),
     reduce(concat, nothing())
   )([
-    text({ style: styles.headline }, 'Competitors'.toUpperCase()),
+    text({ style: styles.headline }, I18n.t('caption_competitor').toUpperCase()),
     // inlineText( { style: styles.text }, [
     //   text({ style: styles.textLight }, `Event Status `),
     //   text({ style: styles.textValue }, props.raceStatus)
@@ -225,7 +228,7 @@ export const competitorsCard = Component((props: any) =>
     text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
     styledButton({
       onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
-    }, text({ style: styles.buttonContent }, 'INVITE COMPETITORS')),
+    }, text({ style: styles.buttonContent }, I18n.t('caption_invite_competitors').toUpperCase())),
     qrCode
   ]),
 )

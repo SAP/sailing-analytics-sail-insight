@@ -184,7 +184,9 @@ export default EStyleSheets.create({
     ...withDefaultBoldFont,
     color: $Orange,
     fontSize: 15,
-    textAlign: 'center'
+    textAlign: 'center',
+    paddingTop: 2,
+    paddingBottom: 2,
   },
 
   deleteWaypointContainer: {

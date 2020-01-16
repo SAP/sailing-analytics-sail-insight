@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash'
 import React from 'react'
-import { Image, ImageBackground, TouchableOpacity, View } from 'react-native'
+import { Image, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'

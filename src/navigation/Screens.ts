@@ -15,6 +15,7 @@ export const TeamDetails = 'TeamDetails'
 // sessions
 export const UserSessions = 'UserSessions'
 export const SessionDetail = 'SessionDetail'
+export const SessionDetail4Organizer = 'SessionDetail4Organizer'
 export const EditSession = 'EditSession'
 export const NewSession = 'NewSession'
 export const FilterSessions = 'FilterSessions'

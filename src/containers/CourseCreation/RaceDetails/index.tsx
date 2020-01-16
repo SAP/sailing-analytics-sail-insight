@@ -1,30 +1,30 @@
-import { __, compose, concat, map, merge, defaultTo,
-  reduce, when, uncurryN, tap, always, isNil, unless,
-  prop, isEmpty, not, append, objOf, equals } from 'ramda'
-import { openTrackDetails } from 'actions/navigation'
-import { getSession } from 'selectors/session'
-import moment from 'moment/min/moment-with-locales'
 import Images from '@assets/Images'
-import I18n from 'i18n'
+import { selectCourse } from 'actions/courses'
+import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
+import { openTrackDetails } from 'actions/navigation'
 import {
   Component,
   fold,
   fromClass,
   nothing,
+  recomposeMapProps as mapProps,
   reduxConnect as connect,
-  recomposeMapProps as mapProps
 } from 'components/fp/component'
-import { forwardingPropsFlatList, text, view, touchableOpacity } from 'components/fp/react-native'
+import { forwardingPropsFlatList, text, touchableOpacity, view } from 'components/fp/react-native'
+import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } from 'components/helpers'
 import IconText from 'components/IconText'
-import { overlayPicker, FramedNumber, DiscardSelector, withAddDiscard, withUpdatingDiscardItem } from '../../session/common'
-import { selectCourse } from 'actions/courses'
-import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
-import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
+import { dateShortText, dateTimeShortHourText } from 'helpers/date'
+import I18n from 'i18n'
+import moment from 'moment/min/moment-with-locales'
+import { __, always, append, compose, concat, defaultTo,
+  equals, isEmpty, isNil, map, merge, not,
+  objOf, prop, reduce, uncurryN, unless, when } from 'ramda'
+import DatePicker from 'react-native-datepicker'
 import { getCourseById } from 'selectors/course'
 import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
-import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } from 'components/helpers'
-import DatePicker from 'react-native-datepicker'
-import { dateTimeShortHourText, dateShortText } from 'helpers/date'
+import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
+import { getSession } from 'selectors/session'
+import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard, withUpdatingDiscardItem } from '../../session/common'
 import styles from './styles'
 
 export const arrowRight = fromClass(IconText).contramap(merge({
@@ -57,18 +57,18 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     session,
     numberOfRaces: races.length,
-    races
+    races,
   }
 }
 
 const raceNumberSelector = Component((props: any) =>
   compose(
     fold(props),
-    concat(text({ style: styles.textHeader }, 'Planned number of races')),
+    concat(text({ style: styles.textHeader }, I18n.t('text_planned_number_of_races'))),
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       selectedValue: props.numberOfRaces,
-      onValueChange: v => props.updateEventSettings(props.session, { numberOfRaces: v })
+      onValueChange: v => props.updateEventSettings(props.session, { numberOfRaces: v }),
     }))(
     FramedNumber.contramap(always({ value: props.numberOfRaces }))))
 
@@ -84,7 +84,12 @@ const defineLayoutButton = Component((props: any) =>
       style: { flexGrow: 1 },
       onPress: () => onSeeCourse(props)
     }))(
-    text({}, props.item.courseDefined ? 'See Course' : 'Define Course')))
+      text(
+        {}, 
+        props.item.courseDefined ? I18n.t('caption_see_course') : I18n.t('caption_define_course')
+      )
+    )
+  )
 
 const raceAnalyticsButton = Component((props: any) =>
   compose(
@@ -126,7 +131,7 @@ const raceTimePicker = Component((props: any) => compose(
   }))),
   concat(fromClass(IconText).contramap(merge({ source: Images.info.time, iconStyle: { tintColor: 'white' }}))),
   text({ style: [styles.raceTimeText, getRaceStartTime(props.item) && styles.raceTimeTextSet] }),
-  when(isNil, always('Set time')),
+  when(isNil, always(I18n.t('caption_set_time'))),
   unless(isNil, dateTimeShortHourText),
   getRaceStartTime)(
   props.item))
