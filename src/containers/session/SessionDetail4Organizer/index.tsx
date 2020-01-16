@@ -111,7 +111,7 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
   )([
     text({ style: styles.headlineTop }, '2'),
     text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
-    text({ style: [styles.textExplain, styles.textLast] }, props.entryClosed ? I18n.t('text_invite_competitors_long_text_running') : I18n.t('text_invite_competitors_long_text_panning')), // todo: should change to 'text_invite_competitors_long_text_running' if entryClosed
+    text({ style: [styles.textExplain, styles.textLast] }, props.entryClosed ? I18n.t('text_invite_competitors_long_text_running') : I18n.t('text_invite_competitors_long_text_planning')), // todo: should change to 'text_invite_competitors_long_text_running' if entryClosed
     // todo: should dissapear if entry is closed.
     !props.entryClosed ?
     styledButton({
