@@ -1,6 +1,6 @@
 import { prop, propEq, find, compose, path, defaultTo,
-  equals, identity, head, when, isNil, always, last,
-  apply, map, take, move, evolve, dissoc, not } from 'ramda'
+  equals, identity, head, when, isNil, always, last, either, isEmpty,
+  apply, map, take, move, evolve, dissoc, not, flatten, tap, reject, __ } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
 
@@ -113,3 +113,16 @@ export const waypointLabel = (waypoint: any) => compose(
       course)
   },
   getEditedCourse)
+
+export const getMarkPositionsExceptCurrent = createSelector(
+  getEditedCourse,
+  getSelectedMarkConfiguration,
+  (course, selectedMarkConfiguration) => compose(
+    reject(either(isNil, isEmpty)),
+    map(prop('lastKnownPosition')),
+    map(compose(find(__, course.markConfigurations), propEq('id'))),
+    reject(equals(selectedMarkConfiguration)),
+    flatten,
+    map(prop('markConfigurationIds')),
+    prop('waypoints'))(
+    course))

@@ -73,7 +73,9 @@ export default {
     gateIcon: require('./img/icons/gate-icon.png'),
     lineIcon: require('./img/icons/line-icon.png'),
     markPortIcon: require('./img/icons/mark-port-icon.png'),
-    markStarboardIcon: require('./img/icons/mark-starboard-icon.png')
+    markStarboardIcon: require('./img/icons/mark-starboard-icon.png'),
+    mapMarker: require('./img/icons/map-marker.png'),
+    mapMarkerSmall: require('./img/icons/map-marker-small.png')
   },
   events: {
     placeholder_event_pic: require('./img/events/placeholder_eventlist.png'),

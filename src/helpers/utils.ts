@@ -119,7 +119,7 @@ export const openEmailTo = (email: string, subject?: string, body?: string) =>
     },
   ))
 
-const dd2ddm = (xy: array) => {
+export const dd2ddm = (xy: array) => {
   const coords = [];
 
   for (let i = 0; i < xy.length; i++) {
@@ -128,13 +128,32 @@ const dd2ddm = (xy: array) => {
     const dm = Math.abs(parseFloat('.' + xy[i].toString().split('.')[1]) * 60.0)
     const fdm = parseFloat(dm).toFixed(6)
     const parts = fdm.toString().split('.')
-    const final = parts[0] + '.' + parts[1].substr(0,3)
+
+    let final = parts[0]
+
+    if (parts[1]) {
+      final += '.' + parts[1].substr(0,3)
+    }
 
     arr[0] = Math.abs(xy[i].toString().split('.')[0]) + '°';
     arr[1] = spl.length == 2 ? final + "'" : 0;
     arr[2] = i === 0 ? (xy[i] >= 0 ? 'N' : 'S') : (xy[i] >= 0 ? 'E' : 'W')
 
     coords[i] = arr;
+  }
+
+  return coords;
+}
+
+export const ddm2dd = (arr: array) => {
+  let coords = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    let deg = parseFloat(arr[i][0]),
+        min = parseFloat(arr[i][1]),
+        dir = parseFloat(arr[i][2])
+
+    coords[i] = dir*(deg+(min/60.0))
   }
 
   return coords;
