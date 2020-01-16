@@ -119,7 +119,7 @@ export const openEmailTo = (email: string, subject?: string, body?: string) =>
     },
   ))
 
-const dd2ddm = (xy: array) => {
+export const dd2ddm = (xy: array) => {
   const coords = [];
 
   for (let i = 0; i < xy.length; i++) {

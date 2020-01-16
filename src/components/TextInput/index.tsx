@@ -1,3 +1,4 @@
+import { flatten } from 'ramda'
 import { get, isEmpty } from 'lodash'
 import React from 'react'
 import {
@@ -106,7 +107,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
             >
               {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
               <ComponentType
-                style={[styles.input, heightStyle, additionalProps.inputStyle]}
+                style={flatten([styles.input, heightStyle, additionalProps.inputStyle])}
                 onContentSizeChange={this.contentSizeChanged}
                 onChangeText={this.onChangeText}
                 ref={this.handleInputRef}

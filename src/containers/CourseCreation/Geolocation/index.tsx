@@ -1,8 +1,8 @@
 import { __, compose, concat, toString, reduce, merge,
-  isEmpty, unless, prop, when, always, isNil, has,
-  defaultTo, pick } from 'ramda'
+  isEmpty, unless, prop, when, always, isNil, has, mergeLeft,
+  defaultTo, pick, head, tap, of, flatten, init, nth, map } from 'ramda'
 
-import MapView from 'react-native-maps'
+import MapView, { Marker } from 'react-native-maps'
 
 import {
   Component,
@@ -14,17 +14,24 @@ import {
   recomposeWithState as withState
 } from 'components/fp/component'
 
+import { getMarkPositionsExceptCurrent } from 'selectors/course'
 import { updateMarkConfigurationLocation } from 'actions/courses'
-import { view } from 'components/fp/react-native'
+import { view, text, keyboardAvoidingView } from 'components/fp/react-native'
 import TextInput from 'components/TextInput'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import styles from './styles'
+import { Switch } from 'react-native'
 import { NavigationEvents } from 'react-navigation'
+import { dd2ddm } from 'helpers/utils'
 
 const icon = compose(
   fromClass(IconText).contramap,
   always)
+
+const mapStateToProps = (state) => ({
+  otherMarksPositions: getMarkPositionsExceptCurrent(state)
+})
 
 const markerIcon = icon({ source: Images.courseConfig.mapMarker, iconStyle: { width: 38, height: 53, marginBottom: 53 } })
 
@@ -32,6 +39,14 @@ const markPositionToMapPosition = position => position && ({
   longitude: position.longitude_deg,
   latitude: position.latitude_deg
 })
+
+const marker = Component((props: any) => compose(
+  fold(props),
+  contramap(mergeLeft({
+    coordinate: markPositionToMapPosition(props),
+    image: Images.courseConfig.mapMarkerSmall
+  })))(
+  fromClass(Marker)))
 
 const defaultProps = (props) => ({
   ...props,
@@ -43,7 +58,6 @@ const defaultProps = (props) => ({
 })
 
 const withRegion = withState('region', 'setRegion', prop('region'))
-const withInitialRender = withState('initialRender', 'setInitialRender', true)
 
 const centeredMarker = Component(props => compose(
   fold(props),
@@ -55,12 +69,11 @@ const Map = Component((props: any) => compose(
     view({ style: styles.mapContainer }),
     concat(__, centeredMarker))(
     fromClass(MapView).contramap(always({
-      ...(props.initialRender && { region: props.region }),
+      initialRegion: props.region,
       style: styles.map,
-      onRegionChange: region => {
-        props.setInitialRender(false)
-        props.setRegion(region)
-      }
+      mapType: 'satellite',
+      children: map(marker.fold, props.otherMarksPositions),
+      onRegionChange: region => props.setRegion(region)
     }))))
 
 const navigationBackHandler = Component(props => compose(
@@ -74,26 +87,56 @@ const navigationBackHandler = Component(props => compose(
   fromClass)(
   NavigationEvents))
 
-const coordinatesInput = ({ propName }: any) => Component((props: any) => compose(
-    fold(props),
-    contramap(merge({
-      style: styles.coordinatesInput,
-      value: unless(isEmpty, compose(toString, prop(propName)))(props.region),
-      placeholder: propName,
-    })))(
-    fromClass(TextInput)))
+const textInput = Component(props => compose(
+  fold(props),
+  contramap(merge({
+    inputStyle: [styles.coordinatesInput, props.cinputStyle],
+    style: styles.inputMainContainer,
+    containerStyle: styles.inputContainer,
+    inputContainerStyle: styles.inputContainer,
+    value: props.value,
+    keyboardType: 'number-pad'
+  })))(
+  fromClass(TextInput)))
 
-const latitudeInput = coordinatesInput({ propName: 'latitude' })
-const longitudeInput = coordinatesInput({ propName: 'longitude' })
+const switchSelector = Component(props => compose(
+  fold(props),
+  view({ style: styles.switchSelectorContainer }),
+  reduce(concat, nothing()))([
+  text({ style: styles.switchSelectorText }, props.switchLabels[0]),
+  fromClass(Switch),
+  text({ style: styles.switchSelectorText }, props.switchLabels[1])]))
+
+const coordinatesInput = Component((props: any) => compose(
+    fold(props),
+    view({ style: styles.coordinatesContainer }),
+    concat(text({ style: styles.coordinatesTitle }, props.title)),
+    view({ style: styles.coordinatesControlContainer }),
+    reduce(concat, nothing()))([
+      textInput.contramap(merge({
+        value: compose(init, head, flatten, dd2ddm, of, prop(props.unit))(props.region),
+        cinputStyle: { width: 70 },
+        maxLength: 3 })),
+      text({ style: styles.symbolText }, '°'),
+      textInput.contramap(merge({
+        value: compose(init, nth(1), flatten, dd2ddm, of, prop(props.unit))(props.region),
+        cinputStyle: { width: 100 },
+        maxLength: 6 })),
+      text({ style: styles.symbolText }, "'"),
+      switchSelector
+    ]))
+
+const latitudeInput = coordinatesInput.contramap(merge({ unit: 'latitude', title: 'Latitude', switchLabels: ['N', 'S'] }))
+const longitudeInput = coordinatesInput.contramap(merge({ unit: 'longitude', title: 'Longitude', switchLabels: ['W', 'E'] }))
 
 export default Component((props: object) =>
   compose(
     fold(defaultProps(props)),
-    connect(null, { updateMarkConfigurationLocation }),
+    connect(mapStateToProps, { updateMarkConfigurationLocation }),
     withRegion,
-    withInitialRender,
+    concat(navigationBackHandler),
+    concat(Map),
+    keyboardAvoidingView({ style: styles.coordinatesModalContainer, behavior: undefined }),
     reduce(concat, nothing()))([
-    navigationBackHandler,
-    Map,
     latitudeInput,
     longitudeInput]))

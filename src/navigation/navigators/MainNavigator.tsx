@@ -9,12 +9,11 @@ import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 import { getFormTeamName } from 'selectors/boat'
-
+import { getSelectedMarkProperties } from 'selectors/course'
 import HeaderIconButton from 'components/HeaderIconButton'
 import HeaderTitle from 'components/HeaderTitle'
 import ImageButton from 'components/ImageButton'
 import WebView from 'components/WebView'
-
 import Geolocation from 'containers/CourseCreation/Geolocation'
 import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
@@ -30,10 +29,16 @@ import { button } from 'styles/commons'
 import MainTabNavigator from './MainTabNavigator'
 
 const teamDetailsHeader = connect(
-  (state: any) => ({ text: getFormTeamName(state) })
-)(
-  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')}/>
-)
+  (state: any) => ({ text: getFormTeamName(state) }))(
+  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')}/>)
+
+const markLocationHeader = connect(
+  (state: any) => {
+    const markProps = getSelectedMarkProperties(state)
+
+    return { markName: `(${markProps.shortName}) ${markProps.name}` }
+  })(
+  (props: any) => <HeaderTitle firstLine={props.markName}/>)
 
 const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.paramTeamName') && (
   <ImageButton
@@ -142,11 +147,7 @@ export default createStackNavigator(
           markPosition: props.navigation.state.params.data.markPosition }))
         .fold,
       navigationOptions: ({ navigation: navigationProps }: any) => ({
-        headerTitle: (
-          <HeaderTitle
-            firstLine='Geolocation'
-          />
-        ),
+        headerTitle: markLocationHeader
       }),
     },
     [Screens.CourseTrackerBinding]: {
