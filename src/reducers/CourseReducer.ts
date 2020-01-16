@@ -5,6 +5,7 @@ import { merge, defaultTo, prop, compose, insert, reject, tap,
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
+import I18n from 'i18n'
 
 import {
   loadCourse,
@@ -79,9 +80,9 @@ const waypoints = handleActions({
       always({
         id: action.payload.id,
         controlPointName: defaultTo(action.payload.passingInstruction === PassingInstruction.Line ?
-          'New Line' : 'New Gate', action.payload.controlPointName),
+          I18n.t('placeholder_course_creation_new_line') : I18n.t('placeholder_course_creation_new_gate'), action.payload.controlPointName),
         controlPointShortName: defaultTo(action.payload.passingInstruction === PassingInstruction.Line ?
-          'NL' : 'NG', action.payload.controlPointShortName),
+          I18n.t('placeholder_course_creation_new_line_short') : I18n.t('placeholder_course_creation_new_gate_short'), action.payload.controlPointShortName),
         passingInstruction: action.payload.passingInstruction,
         markConfigurationIds: action.payload.markConfigurationIds
       })), state),

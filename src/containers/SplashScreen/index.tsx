@@ -15,7 +15,7 @@ class SplashScreen extends React.Component<ViewProps> {
         <View style={[container.main, styles.container]}>
           <View style={styles.textContainer}>
             <Image source={Images.defaults.app_logo} style={styles.app_logo}/>
-            <Text style={styles.subtitle}>{I18n.t('subtitle')}</Text>
+            <Text style={styles.subtitle}>{I18n.t('subtitle_splash')}</Text>
           </View>
           <View style={styles.logoContainer}>
             <Image source={Images.defaults.ws_logo} style={styles.ws_logo} resizeMode="stretch"/>

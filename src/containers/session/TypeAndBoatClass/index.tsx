@@ -1,6 +1,8 @@
 import { findIndex } from 'lodash'
 import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __, merge, tap } from 'ramda'
 
+import I18n from 'i18n'
+
 import { Component, fold, fromClass, nothing, nothingAsClass,
   recomposeBranch as branch } from 'components/fp/component'
 import { text, view } from 'components/fp/react-native'
@@ -23,8 +25,8 @@ const isHandicapSelected = propEq('regattaType', RegattaType.Handicap)
 const nothingIfOneDesignSelected = branch(isOneDesignSelected, nothingAsClass)
 
 const regattaTypeOptions = [
-  { label: 'ONE DESIGN', value: RegattaType.OneDesign },
-  { label: 'HANDICAP', value: RegattaType.Handicap },
+  { label: I18n.t('caption_one_design').toUpperCase(), value: RegattaType.OneDesign },
+  { label: I18n.t('text_handicap_label').toUpperCase(), value: RegattaType.Handicap },
 ]
 
 const regattaTypeSelector = fromClass(SwitchSelector).contramap((props: any) => ({
@@ -56,7 +58,7 @@ const boatClassInput = Component(props => compose(
   reduxFormField({
     name: FORM_KEY_BOAT_CLASS,
     style: styles.boatClassInput,
-    label: 'Boat class',
+    label: I18n.t('text_placeholder_boat_class'),
     component: FormBoatClassInput
   })))
 
@@ -78,7 +80,7 @@ export default Component((props: Object) =>
     concat(__, view({ style: styles.containerAngledBorder }, nothing())),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
-      text({ style: styles.sectionHeaderStyle }, 'REGATTA DETAILS'),
+      text({ style: styles.sectionHeaderStyle }, I18n.t('caption_regatta_details').toUpperCase()),
       regattaTypeInput,
       // No recompose higher order function here as it interferes with the
       // already delicate interop between redux-form and functional component monad 

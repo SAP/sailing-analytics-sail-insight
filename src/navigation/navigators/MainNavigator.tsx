@@ -22,8 +22,8 @@ import RaceSetup from 'containers/CourseCreation/RaceSetUp'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
 import EventCreation from 'containers/session/EventCreation'
 import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
+import SessionDetail4Organizer, { ShareButton4Organizer } from 'containers/session/SessionDetail4Organizer'
 import TeamDetails from 'containers/TeamDetails'
-import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 import FirstContact from 'containers/user/FirstContact'
 import { navigateBack } from 'navigation/NavigationService'
 import { button } from 'styles/commons'
@@ -44,8 +44,8 @@ const teamDeleteHeader = (navigation: any) => get(navigation, 'state.params.para
   />
 )
 
-const shareOnPress = (url = '') => () => {
-  const message = `${I18n.t('text_track_share')}${url}`
+const shareOnPress = (data = {}) => () => {
+  const message = `${I18n.t('text_track_share')}${data.url}`
   Share.share({ message })
 }
 
@@ -57,16 +57,12 @@ export default createStackNavigator(
         header: null,
       },
     },
-    [Screens.WelcomeTracking]: {
-      screen: WelcomeTracking,
-      navigationOptions: {
-        header: null,
-      },
-    },
     [Screens.MainTabs]: {
       screen: MainTabNavigator,
       navigationOptions: {
         header: null,
+        backBehavior: 'none',
+        gesturesEnabled: false,
       },
     },
     [Screens.EventCreation]: {
@@ -94,6 +90,20 @@ export default createStackNavigator(
           />
         ),
         headerRight: ShareButton.fold({}),
+      },
+    },
+    [Screens.SessionDetail4Organizer]: {
+      screen: SessionDetail4Organizer.fold,
+      navigationOptions: {
+        title: I18n.t('title_event_details'),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
+        headerRight: ShareButton4Organizer.fold({}),
       },
     },
     [Screens.RaceDetails]: {
@@ -144,7 +154,14 @@ export default createStackNavigator(
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
-            firstLine='Geolocation'
+            firstLine={I18n.t('caption_course_creator_ping_position')}
+          />
+        ),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
           />
         ),
       }),
@@ -159,7 +176,7 @@ export default createStackNavigator(
       navigationOptions: ({ navigation: navigationProps }: any) => ({
         headerTitle: (
           <HeaderTitle
-            firstLine='Bind with tracker'
+            firstLine={I18n.t('caption_course_creator_bind_with_tracker')}
           />
         ),
         headerLeft: () => (
@@ -175,11 +192,18 @@ export default createStackNavigator(
       screen: WebView,
       navigationOptions: ({ navigation: navigationProps }: any) => {
         return {
-          headerTitle: 'Track Details',
+          headerTitle: I18n.t('caption_sap_analytics_header'),
           headerRight: (
             <HeaderIconButton
               icon={Images.actions.share}
               onPress={shareOnPress(get(navigationProps, 'state.params.data'))}
+            />
+          ),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              title=""
+              onPress={navigateBack}
             />
           ),
         }

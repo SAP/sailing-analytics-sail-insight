@@ -1,7 +1,7 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import { isEmpty } from 'lodash'
 import React from 'react'
-import { Image, ImageBackground, View } from 'react-native'
+import { Image, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
@@ -12,7 +12,7 @@ import { validateEmail, validatePassword, validateUsername } from 'forms/validat
 import { helpActionSheetOptions } from 'helpers/actionSheets'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToMainTabs, navigateToLogin, navigateToUserRegistrationBoat } from 'navigation'
+import { navigateToLogin, navigateToMainTabs, navigateToUserRegistrationBoat } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import EulaLink from 'components/EulaLink'

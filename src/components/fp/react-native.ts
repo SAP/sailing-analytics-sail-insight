@@ -1,4 +1,5 @@
 import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
+import IconText from 'components/IconText'
 import { __, always, compose, concat, curry, has, head, merge, mergeLeft, objOf, reduce, when } from 'ramda'
 import { useState as reactUseState } from 'react'
 import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
@@ -25,6 +26,7 @@ export const svg = buildComponentWithChildren(Svg)
 export const svgPath = fromClass(Path)
 export const svgGroup = buildComponentWithChildren(G)
 export const svgText = buildComponentWithChildren(rnSvgText)
+export const iconText = buildComponentWithChildren(IconText)
 
 export const image = (settings: Object) => Component((props: Object) => compose(
   fold(props),

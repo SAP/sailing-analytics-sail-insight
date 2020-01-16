@@ -3,7 +3,7 @@ import React from 'react'
 import { TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
-import { navigateToQRScanner, navigateToSessionDetail } from 'navigation'
+import { navigateToQRScanner } from 'navigation'
 
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
@@ -12,7 +12,7 @@ import I18n from 'i18n'
 
 import { authBasedNewSession } from 'actions/auth'
 import { selectEvent } from 'actions/events'
-import { CheckIn, Session } from 'models'
+import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
 

@@ -1,4 +1,4 @@
-import { compose, find, propEq, prop, identity } from 'ramda'
+import { compose, find, identity, prop, propEq } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from './event'
 

@@ -1,30 +1,18 @@
-import { Dimensions } from 'react-native'
+import { Dimensions } from 'react-native';
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { withDefaultBoldFont } from 'styles/compositions/text'
-
-const discardSelectorCircleDiameter = 50
-
-
-const discardSelectorItemContainer = {
-  height: discardSelectorCircleDiameter,
-  width: discardSelectorCircleDiameter,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'white',
-  margin: 5,
-  borderRadius: discardSelectorCircleDiameter / 2,
-}
-
-const discardSelectorPlusContainer = {
-  ...discardSelectorItemContainer,
-  backgroundColor: undefined,
-  borderWidth: 1,
-  borderColor: 'white',
-  justifyContent: 'center',
-  alignItems: 'center',
-}
 
 export default EStyleSheets.create({
+  container: {
+    backgroundColor: '$primaryBackgroundColor',
+    paddingTop: '$tinySpacing',
+    width: '100%',
+    height: '100%',
+  },
+  cardsContainer: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    backgroundColor: '$primaryBackgroundColor',
+  },
   button: {
     padding: 12,
     backgroundColor: 'transparent', // '#FAFAFA',
@@ -35,13 +23,30 @@ export default EStyleSheets.create({
     borderColor: '#FFFFFF',
     borderRadius: 5,
   },
+  buttonBig: {
+    padding: 12,
+    backgroundColor: '$Orange',
+    margin: 10,
+    marginLeft: 30,
+    marginRight: 30,
+    borderWidth: 1,
+    borderColor: '$Orange',
+    borderRadius: 5,
+  },
   buttonContent: {
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
     fontFamily: 'SFCompactText-Bold',
   },
+  buttonBigContent: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 24,
+    fontFamily: 'SFCompactText-Bold',
+  },
   container1: {
+    alignItems: 'center',
     backgroundColor: '$primaryBackgroundColor',
     paddingHorizontal: '$smallSpacing',
   },
@@ -56,6 +61,7 @@ export default EStyleSheets.create({
     borderStyle: 'solid',
   },
   container2: {
+    alignItems: 'center',
     backgroundColor: '#476987',
     paddingHorizontal: '$smallSpacing',
   },
@@ -70,6 +76,7 @@ export default EStyleSheets.create({
     borderStyle: 'solid',
   },
   container3: {
+    alignItems: 'center',
     backgroundColor: '$LightBlue',
     paddingHorizontal: '$smallSpacing',
   },
@@ -84,6 +91,7 @@ export default EStyleSheets.create({
     borderStyle: 'solid',
   },
   container4: {
+    alignItems: 'center',
     backgroundColor: '#789BAA',
     paddingHorizontal: '$smallSpacing',
   },
@@ -107,6 +115,23 @@ export default EStyleSheets.create({
     color: 'white',
     fontSize: 18,
     fontFamily: 'SFCompactText-Bold',
+  },
+  headlineTop: {
+    backgroundColor: '$primaryBackgroundColor',
+    color: 'white',
+    fontSize: 20,
+    fontFamily: 'SFCompactText-Bold',
+    margin: 5,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '$primaryBackgroundColor',
+    overflow: 'hidden',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    lineHeight: 40,
   },
   text: {
     color: 'white',
@@ -132,51 +157,11 @@ export default EStyleSheets.create({
     fontWeight: 'bold',
     fontSize: '$regularLargeFontSize',
   },
-  framedNumber: {
-    flexDirection: 'row',
-  },
-  framedNumberItem: {
-    width: 70,
-    height: 70,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 5,
-    borderRadius: 2,
-  },
-  framedNumberItemText: {
-    ...withDefaultBoldFont,
-    color: 'black',
-    fontSize: 44,
+  textExplain: {
     textAlign: 'center',
-    marginTop: 13,
-  },
-  discardContainer: {
-    marginBottom: 20,
-    flexDirection: 'row',
-    overflow: 'scroll',
-  },
-  discardSelectorItemContainer,
-  discardSelectorPlusContainer,
-  discardSelectorItemText: {
-    fontSize: '$titleFontSize',
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  discardSelectorPlusText: {
     color: 'white',
-    fontSize: 50,
-    fontWeight: 'normal',
-    lineHeight: 51,
-    width: 50,
-    height: 50,
-    textAlign: 'center',
-  },
-  qrCodeContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-    marginTop: 10,
+    fontFamily: 'FloodStd',
+    fontSize: 14,
   },
   location: {
     maxWidth: '50%',
