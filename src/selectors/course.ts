@@ -1,6 +1,7 @@
 import { prop, propEq, find, compose, path, defaultTo,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
-  apply, map, take, move, evolve, dissoc, not, flatten, tap, reject, __ } from 'ramda'
+  apply, map, take, move, evolve, dissoc, not, flatten, tap, reject, __,
+  curry,reduce, assoc, keys } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
 
@@ -8,6 +9,9 @@ import {
   CourseState,
   CourseStateMap,
 } from 'models/Course'
+
+const renameKeys = curry((keysMap, obj) =>
+  reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
 
 export const getCourseLoading = (state: any): boolean => state.courses.courseLoading
 export const getCourses = (state: any): CourseStateMap => state.courses.all
@@ -57,6 +61,10 @@ export const getMarkPropertiesByMarkConfiguration = markConfigurationId => creat
 export const getMarkPositionByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
   compose(
+    renameKeys({
+      'lat_deg': 'latitude_deg',
+      'lon_deg': 'longitude_deg'
+    }),
     prop('lastKnownPosition'),
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
@@ -119,6 +127,10 @@ export const getMarkPositionsExceptCurrent = createSelector(
   getSelectedMarkConfiguration,
   (course, selectedMarkConfiguration) => compose(
     reject(either(isNil, isEmpty)),
+    map(renameKeys({
+      'lat_deg': 'latitude_deg',
+      'lon_deg': 'longitude_deg'
+    })),
     map(prop('lastKnownPosition')),
     map(compose(find(__, course.markConfigurations), propEq('id'))),
     reject(equals(selectedMarkConfiguration)),

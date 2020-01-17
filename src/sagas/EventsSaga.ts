@@ -2,8 +2,8 @@ import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actio
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
          fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD, OPEN_SAP_ANALYTICS_EVENT,
-         REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME, updateRaceTime } from 'actions/events'
-import { fetchPermissionsForEvent } from 'actions/permissions'
+         REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME, updateRaceTime, selectEvent } from 'actions/events'
+import { fetchPermissionsForEvent } from 'sagas/permissionsSaga'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
@@ -24,8 +24,8 @@ const valueAtIndex = curry((index, array) => compose(
   pick(__, array))(
   [index]))
 
-function* selectEventFlow({ payload }: any) {
-  yield put(fetchPermissionsForEvent(payload))
+function* selectEventSaga({ payload }: any) {
+  yield call(fetchPermissionsForEvent, { payload })
 
   const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
 
@@ -133,7 +133,7 @@ function* createEvent({ payload: { payload: data} }: any) {
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
 
-  yield call(selectEventFlow, { payload: data })
+  yield put(selectEvent(data))
 }
 
 function* addRaceColumns({ payload }: any) {
@@ -197,7 +197,7 @@ function* openSAPAnalyticsEvent() {
 }
 
 export default function* watchEvents() {
-    yield takeLatest(SELECT_EVENT, selectEventFlow)
+    yield takeLatest(SELECT_EVENT, selectEventSaga)
     yield takeLatest(FETCH_RACES_TIMES_FOR_EVENT, fetchRacesTimesForCurrentEvent)
     yield takeLatest(FETCH_COURSES_FOR_EVENT, fetchCoursesForCurrrentEvent)
     yield takeEvery(SET_RACE_TIME, setRaceTime)

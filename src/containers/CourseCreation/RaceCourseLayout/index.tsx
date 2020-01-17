@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, move, length, subtract, curry, of as Rof,
   prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN, apply,
-  propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head } from 'ramda'
+  propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head, isEmpty, either } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
@@ -86,7 +86,7 @@ const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothin
 const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
 const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
-const nothingWhenNoMarkLocation = branch(compose(isNil, prop('selectedMarkLocation')), nothingAsClass)
+const nothingWhenNoMarkLocation = branch(compose(either(isNil, isEmpty), prop('selectedMarkLocation')), nothingAsClass)
 const nothingWhenNotEditingGateName = branch(compose(equals(false), prop('editingGateName')), nothingAsClass)
 const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editingMarkName')), nothingAsClass)
 const nothingWhenNoShowMarkProperties = branch(compose(equals(false), prop('showMarkProperties')), nothingAsClass)
