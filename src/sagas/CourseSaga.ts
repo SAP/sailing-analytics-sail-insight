@@ -153,7 +153,13 @@ function* saveCourseFlow() {
       map(compose(
         mergeLeft({ storeToInventory: true }),
         when(has('lastKnownPosition'), compose(
-          evolve({ positioning: objOf('position') }),
+          evolve({
+            positioning: compose(
+              objOf('position'),
+              renameKeys({
+                'lat_deg': 'latitude_deg',
+                'lon_deg': 'longitude_deg' }))
+          }),
           renameKeys({ lastKnownPosition: 'positioning' }),
         )),
         when(has('currentTrackingDeviceId'), compose(
@@ -253,21 +259,24 @@ function* toggleSameStartFinish() {
 
 const showSaveCourseAlert = () => new Promise((resolve, reject) =>
   Alert.alert('Would you like to save the course?', '',
-    [ { text: 'Don\'t save', onPress: () => reject('doNotSave') },
-      { text: 'Save', onPress: () => resolve('save') }]))
+    [ { text: 'Don\'t save', onPress: () => resolve(false) },
+      { text: 'Save', onPress: () => resolve(true) }]))
 
 function* navigateBackFromCourseCreation() {
   const hasChanged = yield select(hasEditedCourseChanged)
 
   if (!hasChanged) return
 
-  yield call(showSaveCourseAlert)
-  yield call(saveCourseFlow)
+  const save = yield call(showSaveCourseAlert)
 
-  Snackbar.show({
-    title: 'Course successfully saved',
-    duration: Snackbar.LENGTH_LONG
-  })
+  if (save) {
+    yield call(saveCourseFlow)
+
+    Snackbar.show({
+      title: 'Course successfully saved',
+      duration: Snackbar.LENGTH_LONG
+    })
+  }
 }
 
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {
