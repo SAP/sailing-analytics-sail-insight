@@ -1,7 +1,7 @@
 import { __, compose, concat, reduce, merge, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
   defaultTo, pick, head, tap, of, flatten, init, nth, map, last, negate,
-  equals } from 'ramda'
+  equals, reject, all } from 'ramda'
 
 import MapView, { Marker } from 'react-native-maps'
 
@@ -57,7 +57,10 @@ const defaultProps = (props) => ({
   region: compose(
     unless(has('latitudeDelta'), merge({ latitudeDelta: 0.005, longitudeDelta: 0.005 })),
     when(isEmpty, always(props.currentPosition)),
-    when(isNil, always(defaultTo({}, markPositionToMapPosition(props.markPosition)))))(
+    when(isNil, always(compose(
+      defaultTo({}),
+      when(compose(all(isNil), values), always(props.currentPosition)),
+      markPositionToMapPosition)(props.markPosition))))(
     props.region)
 })
 
@@ -144,7 +147,7 @@ const coordinatesInput = Component((props: any) => compose(
       text({ style: styles.symbolText }, '°'),
       textInput.contramap(merge({
         value: defaultTo('', props.minutes),
-        inputStyle: { width: 100 },
+        inputStyle: { width: 115 },
         onBlur: value => {
           const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
 
@@ -172,26 +175,30 @@ const coordinatesInput = Component((props: any) => compose(
 const latitudeInput = coordinatesInput.contramap(props => merge({
   title: 'Latitude',
   unit: 'latitude',
-  degrees: compose(reduce(concat, ''), init, head, flatten, dd2ddm, of, prop('latitude'))(props.region),
-  minutes: compose(reduce(concat, ''), init, nth(1), flatten, dd2ddm, of, prop('latitude'))(props.region),
+  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of, prop('latitude'))(props.region),
+  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, dd2ddm, reject(isNil), of, prop('latitude'))(props.region),
   coordinatesDirection: compose(
     last,
+    defaultTo(['N']),
     flatten,
     head,
     dd2ddm,
+    reject(isNil),
     values,
     pick(['latitude', 'longitude']))(props.region),
   switchLabels: ['N', 'S'] }, props))
 const longitudeInput = coordinatesInput.contramap(props => merge({
   unit: 'longitude',
   title: 'Longitude',
-  degrees: compose(reduce(concat, ''), init, head, flatten, dd2ddm, of, prop('longitude'))(props.region),
-  minutes: compose(reduce(concat, ''), init, nth(1), flatten, dd2ddm, of, prop('longitude'))(props.region),
+  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of, prop('longitude'))(props.region),
+  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, dd2ddm, reject(isNil), of, prop('longitude'))(props.region),
   coordinatesDirection: compose(
     last,
+    defaultTo(['E']),
     flatten,
     last,
     dd2ddm,
+    reject(isNil),
     values,
     pick(['latitude', 'longitude']))(props.region),
   switchLabels: ['W', 'E'] }, props))

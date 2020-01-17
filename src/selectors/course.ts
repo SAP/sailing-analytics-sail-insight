@@ -127,6 +127,10 @@ export const getMarkPositionsExceptCurrent = createSelector(
   getSelectedMarkConfiguration,
   (course, selectedMarkConfiguration) => compose(
     reject(either(isNil, isEmpty)),
+    map(renameKeys({
+      'lat_deg': 'latitude_deg',
+      'lon_deg': 'longitude_deg'
+    })),
     map(prop('lastKnownPosition')),
     map(compose(find(__, course.markConfigurations), propEq('id'))),
     reject(equals(selectedMarkConfiguration)),
