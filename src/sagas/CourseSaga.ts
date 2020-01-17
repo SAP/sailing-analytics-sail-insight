@@ -77,8 +77,6 @@ function* selectCourseFlow({ payload }: any) {
 
   const latestCourseState = yield call(api.requestCourse, regattaName, race, 'Default')
 
-  console.log('course', latestCourseState)
-
   yield  put(loadCourse({
     raceId: `${regattaName} - ${race}`,
     course: latestCourseState
