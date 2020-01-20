@@ -150,12 +150,15 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
   }
 }
 
-export const registerDevice = (leaderboardName: string) => withDataApi({ leaderboard: leaderboardName })(
+export const registerDevice = (leaderboardName: string, data?: Object) => withDataApi({ leaderboard: leaderboardName })(
   async (dataApi, dispatch, getState) => {
     const checkInData = getCheckInByLeaderboardName(leaderboardName)(getState())
+
     await dataApi.startDeviceMapping(
       leaderboardName,
-      CheckInService.checkInDeviceMappingData(checkInData),
+      { ...CheckInService.checkInDeviceMappingData(checkInData),
+        ...data
+      }
     )
   },
 )

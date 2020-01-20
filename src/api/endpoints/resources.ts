@@ -152,7 +152,7 @@ export interface DataApi {
     regattaName: string,
     data?: CompetitorWithBoatBody,
   ) => Promise<CompetitorResponseData>
-  registerCompetitorToRegatta: (regattaName: string, competitorId: string) => any
+  registerCompetitorToRegatta: (regattaName: string, competitorId: string, secret?: string) => any
   sendWindFix: (
     regattaName: string,
     raceName: string,
@@ -312,8 +312,8 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
       endpoints.createAndAddCompetitorWithBoat({ pathParams: [regattaName], urlParams: data }),
       { method: HttpMethods.POST },
     ),
-    registerCompetitorToRegatta: (regattaName, competitorId) => request(
-      endpoints.registerCompetitorToRegatta({ pathParams: [regattaName, competitorId] }),
+    registerCompetitorToRegatta: (regattaName, competitorId, secret) => request(
+      endpoints.registerCompetitorToRegatta({ pathParams: [regattaName, competitorId], urlParams: { secret } }),
       { method: HttpMethods.POST },
     ),
     sendWindFix: (regattaName, raceName, windFix, sourceId, sourceType = 'WEB') => request(

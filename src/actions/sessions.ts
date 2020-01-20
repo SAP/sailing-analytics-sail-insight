@@ -146,9 +146,14 @@ export const createUserAttachmentToSession = (
         const registrationResponse = await dataApi.registerCompetitorToRegatta(
           regattaName,
           competitorId,
+          secret
         )
 
         registrationSuccess = registrationResponse.status === 200
+
+        if (registrationSuccess) {
+          await dispatch(registerDevice(regattaName, { competitorId }))
+        }
       } catch (err) {
         if (!(err instanceof ApiException)) {
           throw err
