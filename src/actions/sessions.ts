@@ -29,6 +29,7 @@ import { getSharingUuid } from 'helpers/uuid'
 
 
 import { collectCheckInData, registerDevice, updateCheckIn } from 'actions/checkIn'
+import { startTracking } from 'actions/tracking'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { saveTeam } from 'actions/user'
@@ -228,15 +229,21 @@ export const createSessionCreationQueue: CreateSessionCreationQueueAction = (ses
     ],
   )
 
-export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo) =>
-  async (dispatch: DispatchType) => {
+export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any) =>
+  async (dispatch: DispatchType, getState) => {
     if (!data) {
       throw new CheckInException('data is missing')
     }
     await dispatch(updateCheckIn(data))
     try {
       await dispatch(createUserAttachmentToSession(data.leaderboardName, competitorValues, data.secret))
-      navigateToTrackingNavigator()
+
+      if (options && options.startTrackingAfter) {
+        const checkIn = getCheckInByLeaderboardName(data.leaderboardName)(getState())
+        dispatch(startTracking(checkIn))
+      } else {
+        navigateToTrackingNavigator()
+      }
     } catch (err) {
       Logger.debug(err)
       Alert.alert(getErrorDisplayMessage(err))
