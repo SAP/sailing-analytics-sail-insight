@@ -65,13 +65,13 @@ export const startTracking: StartTrackingAction = data =>  async (
     Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
     return
   }
-  const eventIsNotTracked = compose(
+  const eventIsNotBound = compose(
     all(isNil),
     values,
     pick(['competitorId', 'boatId', 'markId']))(
     checkInData)
 
-  if (eventIsNotTracked) {
+  if (eventIsNotBound) {
     navigateToEditCompetitor(checkInData, { startTrackingAfter: true });
     return
   }
