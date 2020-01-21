@@ -24,7 +24,7 @@ import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguratio
   getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
   isDefaultWaypointSelection } from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
-import { getDeviceId } from 'selectors/user'
+import { getHashedDeviceId } from 'selectors/user'
 import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
 import TextInput from 'components/TextInput'
@@ -53,8 +53,10 @@ const mapStateToProps = (state: any) => ifElse(
     selectedMarkLocation: getSelectedMarkPosition(state),
     selectedMarkDeviceTracking: compose(
       defaultTo(I18n.t('text_course_creation_no_device_assigned')),
-      unless(isNil, ifElse(propEq('id', getDeviceId()), always(I18n.t('text_course_creation_this_device_is_used')), always(I18n.t('text_course_creation_a_device_is_tracking')))),
-      unless(isNil, when(propEq('type', 'PING'), always(null))))(
+      unless(isNil, ifElse(
+        propEq('trackingDeviceHash', getHashedDeviceId()),
+        always(I18n.t('text_course_creation_this_device_is_used')),
+        always(I18n.t('text_course_creation_a_device_is_tracking')))))(
       getSelectedMarkDeviceTracking(state)),
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
