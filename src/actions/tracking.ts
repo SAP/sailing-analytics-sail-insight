@@ -1,10 +1,11 @@
 import { head, isString, maxBy } from 'lodash'
+import { compose, all, pick, isNil, values } from 'ramda'
 import { Alert } from 'react-native'
 
 import { AddRaceColumnResponseData } from 'api/endpoints/types'
 import I18n from 'i18n'
 import { CheckIn, CheckInUpdate } from 'models'
-import { navigateToTracking } from 'navigation'
+import { navigateToTracking, navigateToEditCompetitor } from 'navigation'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
 
@@ -64,6 +65,17 @@ export const startTracking: StartTrackingAction = data =>  async (
     Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
     return
   }
+  const eventIsNotBound = compose(
+    all(isNil),
+    values,
+    pick(['competitorId', 'boatId', 'markId']))(
+    checkInData)
+
+  if (eventIsNotBound) {
+    navigateToEditCompetitor(checkInData, { startTrackingAfter: true });
+    return
+  }
+
   dispatch(updateLoadingCheckInFlag(true))
   dispatch(resetTrackingStatistics())
 

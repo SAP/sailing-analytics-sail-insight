@@ -45,7 +45,7 @@ export const navigateToJoinRegatta = (checkInData: CheckIn, alreadyJoined: boole
 export const navigateToTrackDetails = (url?: string, eventName?: string) =>
   NavigationService.navigate(Screens.TrackDetails, { data: { url, eventName } })
 export const navigateToTeamDetails = (data?: TeamTemplate) => NavigationService.navigate(Screens.TeamDetails, { data })
-export const navigateToEditCompetitor = (data: CheckIn) => NavigationService.navigate(Screens.EditCompetitor, { data })
+export const navigateToEditCompetitor = (data: CheckIn, options?: object) => NavigationService.navigate(Screens.EditCompetitor, { data, options })
 
 export const navigateToEditSession = (data?: Session) => NavigationService.navigate(
   Screens.EditSession,

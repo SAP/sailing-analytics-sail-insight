@@ -11,7 +11,7 @@ import I18n from 'i18n'
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
 import { navigateToSessions } from 'navigation'
-import { getCustomScreenParamData } from 'navigation/utils'
+import { getCustomScreenParamData, getCustomScreenParamOptions } from 'navigation/utils'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getLastUsedTeam, getUserTeams } from 'selectors/user'
 
@@ -39,7 +39,7 @@ import styles from './styles'
 
 interface Props {
   teams: TeamTemplate[]
-  registerCompetitorAndDevice: (data: any, values: any) => any
+  registerCompetitorAndDevice: (data: any, values: any, options?: any) => any
   checkInData: CheckIn,
   isLoggedIn: boolean,
   formSailNumber?: string,
@@ -181,7 +181,7 @@ class EditCompetitor extends TextInputForm<Props> {
   private onSubmit = async (values: CompetitorInfo) => {
     try {
       this.setState({ isLoading: true })
-      await this.props.registerCompetitorAndDevice(this.props.checkInData, values)
+      await this.props.registerCompetitorAndDevice(this.props.checkInData, values, this.props.options)
       return true
     } catch (err) {
       Logger.debug(err)
@@ -209,11 +209,11 @@ const mapStateToProps = (state: any, props: any) => {
     } as CompetitorInfo,
     teams: getUserTeams(state),
     checkInData: getCustomScreenParamData(props),
+    options: getCustomScreenParamOptions(props),
     isLoggedIn: isLoggedIn(state),
     formSailNumber: getFormFieldValue(competitorForm.COMPETITOR_FORM_NAME, sessionForm.FORM_KEY_SAIL_NUMBER)(state),
   }
 }
-
 
 export default connect(mapStateToProps, { registerCompetitorAndDevice })(reduxForm<{}, Props>({
   form: competitorForm.COMPETITOR_FORM_NAME,
