@@ -19,6 +19,7 @@
     "@types/recompose": "^0.30.6",
     "buffer": "^4.9.1",
     "country-data": "^0.0.31",
+    "js-sha256": "^0.9.0",
     "lodash": "4.17.12",
     "moment": "2.22.2",
     "moment-duration-format": "2.2.2",

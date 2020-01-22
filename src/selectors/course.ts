@@ -1,7 +1,7 @@
 import { prop, propEq, find, compose, path, defaultTo,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
   apply, map, take, move, evolve, dissoc, not, flatten, tap, reject, __,
-  curry,reduce, assoc, keys } from 'ramda'
+  curry,reduce, assoc, keys, both } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
 
@@ -72,7 +72,11 @@ export const getMarkPositionByMarkConfiguration = markConfigurationId => createS
 export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
   compose(
-    prop('currentTrackingDeviceId'),
+    find(both(
+      propEq('trackingDeviceType', 'smartphoneUUID'),
+      compose(isNil, prop('trackingDeviceMappedToMillis')))),
+    defaultTo([]),
+    prop('trackingDevices'),
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
