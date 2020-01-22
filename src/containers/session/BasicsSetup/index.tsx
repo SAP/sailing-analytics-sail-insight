@@ -1,0 +1,117 @@
+import { __, always, compose, concat, defaultTo, merge, mergeLeft, reduce } from 'ramda'
+
+import I18n from 'i18n'
+import moment from 'moment'
+
+import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
+import { text, view } from 'components/fp/react-native'
+import { field as reduxFormField, textInputWithMeta } from 'components/fp/redux-form'
+import IconText from 'components/IconText'
+import {
+  FORM_KEY_DATE_FROM,
+  FORM_KEY_DATE_TO,
+  FORM_KEY_LOCATION,
+  FORM_KEY_NAME,
+} from 'forms/eventCreation'
+
+import DatePicker from 'react-native-datepicker'
+
+import Images from '@assets/Images'
+import { Dimensions } from 'react-native'
+import { $smallSpacing } from 'styles/dimensions'
+import styles, { darkerGray, lighterGray } from './styles'
+
+const icon = compose(
+  fromClass(IconText).contramap,
+  always)
+
+const fieldBox = (child: any) => Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.fieldBoxContainer }),
+  concat(text({ style: styles.fieldBoxLabel }, props.label)),
+  view({style: { flexDirection: 'row' }}),
+  reduce(concat, nothing()))([
+    child,
+    defaultTo(nothing(), props.icon)
+  ]))
+
+const boxedTextInput = fieldBox(
+  textInputWithMeta.contramap((props: any) => ({
+    ...props,
+    value: props.input.value,
+    onChangeText: props.input.onChange,
+    // underlineColorAndroid: darkerGray,
+    borderBottomWidth: 1,
+    borderBottomColor: darkerGray,
+    style: styles.textInput
+  })))
+
+const nameInput = reduxFormField({
+  label: I18n.t('text_placeholder_session_name'),
+  name: FORM_KEY_NAME,
+  component: boxedTextInput.fold,
+})
+
+const locationInput = reduxFormField({
+  label: I18n.t('text_location'),
+  name: FORM_KEY_LOCATION,
+  component: boxedTextInput.fold,
+})
+
+const formDatePicker = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.formDatePickerContainer }),
+  concat(icon({ source: props.icon, style: { tintColor: lighterGray }})),
+  contramap((props: any) => ({
+    style: { width: Dimensions.get('window').width / 2 - 24 - 2 * $smallSpacing - 8 },
+    onDateChange: value => props.input.onChange(moment(value)),
+    date: props.input.value,
+    androidMode: 'spinner',
+    mode: 'date',
+    showIcon: false,
+    format: 'MM/DD/YYYY',
+    customStyles: {
+      dateInput: {
+        height: 'auto',
+        alignItems: 'flex-start',
+        borderWidth: 0,
+      },
+      btnTextConfirm: {
+        color: '$primaryButtonColor',
+      },
+    },
+    confirmBtnText: I18n.t('caption_ok'),
+    cancelBtnText: I18n.t('caption_cancel'),
+  })))(
+  fromClass(DatePicker)))
+
+const startDateInput = reduxFormField({
+  name: FORM_KEY_DATE_FROM,
+  component: formDatePicker.fold,
+  icon: Images.actions.arrowRight,
+})
+
+const endDateInput = reduxFormField({
+  name: FORM_KEY_DATE_TO,
+  component: formDatePicker.fold,
+  icon: Images.actions.arrowLeft,
+})
+
+const dateInput = Component((props: any) => compose(
+  fold(props),
+  contramap(mergeLeft({ label: I18n.t('caption_event_creation_date') })),
+  fieldBox,
+  view({ style: styles.dateInputContainer }),
+  reduce(concat, nothing()))(
+  [startDateInput, endDateInput]))
+
+export default Component((props: Object) => compose(
+  fold(props),
+  concat(__, view({ style: styles.containerAngledBorder }, nothing())),
+  view({ style: styles.container }),
+  reduce(concat, nothing()))([
+    text({ style: styles.sectionHeaderStyle }, 'BASICS'),
+    nameInput,
+    dateInput,
+    locationInput,
+  ]))

@@ -1,4 +1,5 @@
 import { createSwitchNavigator } from 'react-navigation'
+import { createAppContainer } from 'react-navigation'
 
 import * as Screens from 'navigation/Screens'
 
@@ -6,7 +7,7 @@ import SplashScreen from 'containers/SplashScreen'
 import AppNavigator from './AppNavigator'
 
 
-export default createSwitchNavigator(
+export default createAppContainer(createSwitchNavigator(
   {
     [Screens.Splash]: {
       screen: SplashScreen,
@@ -19,4 +20,4 @@ export default createSwitchNavigator(
   {
     initialRouteName: Screens.Splash,
   },
-)
+))

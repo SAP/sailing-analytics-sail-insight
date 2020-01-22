@@ -39,6 +39,7 @@ class TrackingProperty extends React.Component<ViewProps & {
       titleStyle,
       valueStyle,
       unitStyle,
+      iconStyle,
       onPress,
       titlePosition = 'top',
       allowFontScaling = false
@@ -60,7 +61,7 @@ class TrackingProperty extends React.Component<ViewProps & {
             allowFontScaling={allowFontScaling}
             ellipsizeMode="tail"
           >
-            {title && title.toUpperCase()}
+            {title && title}
           </Text>
         }
         <View style={styles.valueContainer} onLayout={this.onValueContainerLayout}>
@@ -77,7 +78,7 @@ class TrackingProperty extends React.Component<ViewProps & {
                 </Text>
               }
             </Text>
-            {onPress && <Image source={Images.actions.arrowRight} style={styles.actionIcon}/>}
+            {onPress && <Image source={Images.actions.arrowRight} style={[styles.actionIcon, iconStyle]}/>}
           </View>
           {this.renderIcon()}
         </View>

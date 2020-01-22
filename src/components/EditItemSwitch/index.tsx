@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
-import { Platform, Switch, ViewProps  } from 'react-native'
+import { Platform, StyleProp, Switch, TextStyle, ViewProps  } from 'react-native'
 
 import EditItem from 'components/EditItem'
 
-import { $primaryButtonColor, $secondaryBackgroundColor } from 'styles/colors'
+import { $secondaryBackgroundColor } from 'styles/colors'
 
 
 class EditItemSwitch extends React.Component<ViewProps & {
   title: string,
+  titleStyle: StyleProp<TextStyle>
   switchValue: boolean,
   onEdit?: () => void,
   renderEditControl?: () => Component | Element | JSX.Element,
@@ -28,8 +29,8 @@ class EditItemSwitch extends React.Component<ViewProps & {
   public renderSwitch = () => {
     const { switchValue, isLoading } = this.props
     const switchProps = Platform.OS !== 'android' ? {
-      trackColor: { true: $primaryButtonColor, false: $secondaryBackgroundColor },
-      tintColor: $primaryButtonColor,
+      trackColor: { true: '#476987', false: $secondaryBackgroundColor },
+      tintColor: '#476987',
     } : {}
     return (
       <Switch
@@ -44,12 +45,14 @@ class EditItemSwitch extends React.Component<ViewProps & {
     const {
       children,
       style,
+      titleStyle,
       title,
       ...remainingProps
     } = this.props
     return (
       <EditItem
         style={style}
+        titleStyle={titleStyle}
         title={title}
         renderEditControl={this.renderSwitch}
         {...remainingProps}

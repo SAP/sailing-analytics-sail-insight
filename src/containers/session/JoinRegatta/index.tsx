@@ -12,12 +12,12 @@ import { dateTimeText } from 'helpers/date'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { openEmailToContact } from 'helpers/user'
 import { CheckIn } from 'models'
-import { navigateToSessions } from 'navigation'
+import { navigateToTrackingNavigator } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
+import { getBoat } from 'selectors/boat'
+import { getCompetitor } from 'selectors/competitor'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
-import { getCompetitor } from 'selectors/competitor'
-import { getBoat } from 'selectors/boat'
 import { getMark } from 'selectors/mark'
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
 import { registration } from 'styles/components'
@@ -27,10 +27,9 @@ import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
 import ScrollContentView from 'components/ScrollContentView'
+import TrackingContext from 'components/session/TrackingContext'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import TrackingContext from 'components/session/TrackingContext'
-
 
 class JoinRegatta extends React.Component<{
   checkInData: CheckIn,
@@ -45,7 +44,7 @@ class JoinRegatta extends React.Component<{
 
   public state = {
     isLoading: false,
-    trackingContext: '',
+    trackingContext: undefined,
     buttonText: I18n.t('caption_join_race'),
   }
 
@@ -81,7 +80,7 @@ class JoinRegatta extends React.Component<{
       leaderboard = {},
       competitor = {},
       boat = {},
-      mark = {}
+      mark = {},
     } = this.props
     const eventImageUrl = getEventPreviewImageUrl(event)
     const logoImageUrl = getEventLogoImageUrl(event)
@@ -91,16 +90,15 @@ class JoinRegatta extends React.Component<{
     this.getTrackingContext()
 
     return (
-      <ScrollContentView>
+      <ScrollContentView style={{ backgroundColor: '#1D3F4E' }}>
         <View style={container.stretchContent}>
           <Image style={image.headerLarge} source={eventImageUrl || Images.header.sailors}/>
           {logoImageUrl && <Image style={[image.logoAbsoluteLeft, styles.logo]} source={logoImageUrl}/>}
-          <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
-          <View style={[styles.textContainer, registration.topContainer()]}>
-            <Text style={registration.claim()}>
+          <View style={styles.textContainer}>
+            <Text style={[text.propertyValue, styles.timeText]}>{dateTimeText(event.startDate)}</Text>
+            <Text style={[registration.claim(), styles.textClaim]}>
               {title}
             </Text>
-            <Text style={[text.propertyValue, styles.timeText]}>{dateTimeText(event.startDate)}</Text>
             {
               event.venue &&
               event.venue.name &&
@@ -108,34 +106,37 @@ class JoinRegatta extends React.Component<{
               <IconText
                 style={styles.location}
                 iconStyle={styles.locationIcon}
-                textStyle={[text.propertyValue, styles.locationText]}
+                textStyle={[text.propertyValue, { color: '#FFFFFF' }]}
                 source={Images.info.location}
                 alignment="horizontal"
               >
                 {event.venue && event.venue.name}
               </IconText>
             }
-            <TrackingContext session={{
-              trackingContext: this.state.trackingContext,
-              competitor,
-              boat,
-              mark
-            }} />
+            <TrackingContext
+              textStyle={{ color: '#FFFFFF' }}
+              session={{
+                trackingContext: this.state.trackingContext,
+                competitor,
+                boat,
+                mark
+              }}
+            />
           </View>
         </View>
-        <View style={registration.bottomContainer()}>
+        <View style={styles.bottomButtonField}>
+          <EulaLink mode="JOIN"/>
           <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
+            style={styles.joinButton}
+            textStyle={styles.joinButtonText}
             onPress={this.onJoinPress}
             isLoading={this.state.isLoading}
           >
             {this.state.buttonText}
           </TextButton>
-          <EulaLink mode="JOIN"/>
           <TextButton
             style={registration.lowerButton()}
-            textStyle={button.textButtonSecondaryText}
+            textStyle={styles.textButtonTextWhite}
             onPress={openEmailToContact}
           >
             {I18n.t('caption_need_help')}
@@ -143,8 +144,10 @@ class JoinRegatta extends React.Component<{
         </View>
         <ImageButton
             style={button.closeButton}
+            imageStyle={{ tintColor: '#FFFFFF' }}
             source={Images.actions.close}
-            onPress={navigateToSessions}/>
+            onPress={navigateToTrackingNavigator}
+        />
       </ScrollContentView>
     )
   }
@@ -157,6 +160,7 @@ interface ScreenParamProps {
 
 const mapStateToProps = (state: any, props: any) => {
   const { checkInData, alreadyJoined }: ScreenParamProps = getCustomScreenParamData(props) || {}
+
   return {
     checkInData,
     alreadyJoined,
@@ -164,7 +168,7 @@ const mapStateToProps = (state: any, props: any) => {
     leaderboard: getLeaderboard(checkInData.leaderboardName)(state),
     competitor: getCompetitor(checkInData.competitorId)(state),
     boat: getBoat(checkInData.boatId)(state),
-    mark: getMark(checkInData.markId)(state),
+    mark: getMark(checkInData.markId)(state)
   }
 }
 

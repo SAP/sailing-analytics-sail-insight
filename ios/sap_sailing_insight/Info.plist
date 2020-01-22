@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.7</string>
+	<string>1.0.46</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -25,12 +25,12 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>comsailtrackssailinginsight</string>
+				<string>orgsailyachtresearchsailinsight</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>27</string>
+	<string>66</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -49,6 +49,8 @@
 	<key>NSAppleMusicUsageDescription</key>
 	<string>App requires media library</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>App requires bluetooth</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>App requires bluetooth</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>App requires calendar</string>
@@ -72,12 +74,20 @@
 	<string>App requires speech recognition</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>bentonsans_bold.otf</string>
-		<string>bentonsans_regular.otf</string>
-		<string>bentonsans_extralight.otf</string>
-		<string>bentonsans_light.otf</string>
-		<string>bentonsans_medium.otf</string>
-		<string>bentonsans_thin.otf</string>
+		<string>BentonSans-Bold.otf</string>
+		<string>BentonSans-ExtraLight.otf</string>
+		<string>BentonSans-Light.otf</string>
+		<string>BentonSans-Medium.otf</string>
+		<string>BentonSans-Regular.otf</string>
+		<string>BentonSans-Thin.otf</string>
+		<string>FloodStd.otf</string>
+		<string>SFCompactText-Bold.otf</string>
+		<string>SFCompactText-Regular.otf</string>
+		<string>SFProDisplay-Bold.otf</string>
+		<string>SFProDisplay-Heavy.otf</string>
+		<string>SFProDisplay-HeavyItalic.otf</string>
+		<string>SFProDisplay-Light.otf</string>
+		<string>SFProDisplay-Medium.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
@@ -98,11 +108,11 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>branch_app_domain</key>
-	<string>sailinsight20-app.sapsailing.com</string>
+	<string>sailinsight30-app.sapsailing.com</string>
 	<key>branch_key</key>
 	<dict>
 		<key>live</key>
-		<string>key_live_dfPlye3KB3UqKx6h9FhdAmbbytkpdUuA</string>
+		<string>key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0</string>
 	</dict>
 </dict>
 </plist>

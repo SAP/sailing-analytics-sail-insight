@@ -1,6 +1,6 @@
 import { isEmpty } from 'lodash'
 import React from 'react'
-import { Alert, Image, View } from 'react-native'
+import { Alert, ImageBackground, View } from 'react-native'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
@@ -13,9 +13,8 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
 
-import { button, container, image } from 'styles/commons'
+import { button, container } from 'styles/commons'
 import { registration } from 'styles/components'
-import { $extraSpacingScrollContent } from 'styles/dimensions'
 import { requestPasswordReset } from '../../../actions/auth'
 import { navigateBack } from '../../../navigation/NavigationService'
 import styles from './styles'
@@ -66,51 +65,54 @@ class PasswordReset extends TextInputForm<{
   public render() {
     const { error, isLoading } = this.state
     return (
-      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-        <View style={container.stretchContent}>
-          <Image style={image.headerMedium} source={Images.header.sailors}/>
-          <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
-          <View style={[registration.topContainer(), styles.textContainer]}>
-            <Text style={registration.claim()}>
-              <Text>{I18n.t('text_passwort_reset_title')}</Text>
+      <View style={{ width: '100%', height: '100%' }}>
+        <ScrollContentView style={styles.scrollContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.claim}>
+              <Text>{I18n.t('text_passwort_reset_title_info').toUpperCase()}</Text>
             </Text>
-            <Text style={styles.message}>{I18n.t('text_passwort_reset_message')}</Text>
           </View>
-        </View>
-        <View style={registration.bottomContainer()}>
-          <TextInput
-            value={this.state.username}
-            onChangeText={this.onUsernameChange}
-            placeholder={I18n.t('text_placeholder_your_username')}
-            keyboardType={'default'}
-            returnKeyType="go"
-            autoCapitalize="none"
-            onSubmitEditing={this.onSubmit}
-            inputRef={this.handleInputRef(FORM_KEY_USERNAME)}
-          />
-          <Text style={styles.message}>{I18n.t('text_passwort_reset_or')}</Text>
-          <TextInput
-            value={this.state.email}
-            onChangeText={this.onEmailChange}
-            style={styles.email}
-            placeholder={I18n.t('text_placeholder_your_email')}
-            keyboardType={'default'}
-            returnKeyType="go"
-            autoCapitalize="none"
-            onSubmitEditing={this.onSubmit}
-            inputRef={this.handleInputRef(FORM_KEY_EMAIL)}
-          />
-          {error && <Text style={registration.errorText()}>{error}</Text>}
-          <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
-            onPress={this.onSubmit}
-            isLoading={isLoading}
-          >
-            {I18n.t('text_passwort_reset_submit')}
-          </TextButton>
-        </View>
-      </ScrollContentView >
+          <View style={styles.inputField}>
+            <TextInput
+              containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
+              value={this.state.username}
+              onChangeText={this.onUsernameChange}
+              placeholder={I18n.t('text_placeholder_your_username')}
+              keyboardType={'default'}
+              returnKeyType="go"
+              autoCapitalize="none"
+              onSubmitEditing={this.onSubmit}
+              inputRef={this.handleInputRef(FORM_KEY_USERNAME)}
+            />
+            <Text style={styles.message}>{I18n.t('text_passwort_reset_or').toUpperCase()}</Text>
+            <TextInput
+              containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
+              value={this.state.email}
+              onChangeText={this.onEmailChange}
+              style={styles.email}
+              placeholder={I18n.t('text_placeholder_email')}
+              keyboardType={'default'}
+              returnKeyType="go"
+              autoCapitalize="none"
+              onSubmitEditing={this.onSubmit}
+              inputRef={this.handleInputRef(FORM_KEY_EMAIL)}
+            />
+            {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>}
+          </View>
+          <View style={styles.bottomButtonField}>
+            <TextButton
+              style={styles.resetButton}
+              textStyle={styles.resetButtonText}
+              onPress={this.onSubmit}
+              isLoading={isLoading}
+            >
+              {I18n.t('text_passwort_reset_submit').toUpperCase()}
+            </TextButton>
+          </View>
+        </ScrollContentView>
+      </View>
     )
   }
 }

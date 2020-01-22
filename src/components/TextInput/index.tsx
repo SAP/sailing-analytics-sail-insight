@@ -1,3 +1,4 @@
+import { flatten } from 'ramda'
 import { get, isEmpty } from 'lodash'
 import React from 'react'
 import {
@@ -46,6 +47,10 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
 
   private input?: any
 
+  public componentWillReceiveProps(props) {
+    this.setState({ text: props.value })
+  }
+
   public render() {
     const {
       placeholder,
@@ -86,7 +91,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
     const assistiveText = error || hint
     const isHighlighted = error || highlight
     const highlightStyle = isHighlighted ? text.error : undefined
-
+    
     return (
       <View style={style}>
         <TouchableWithoutFeedback
@@ -95,24 +100,25 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
           <View style={[styles.container, containerStyle]}>
             <View
               style={[
-                styles.inputContainer,
                 showTopPlaceholder ? styles.containerWithTitle : styles.containerNoTitle,
+                styles.inputContainer,
+                additionalProps.inputContainerStyle
               ]}
             >
               {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
               <ComponentType
-                style={[styles.input, heightStyle]}
+                style={flatten([styles.input, heightStyle, additionalProps.inputStyle])}
                 onContentSizeChange={this.contentSizeChanged}
                 onChangeText={this.onChangeText}
                 ref={this.handleInputRef}
-                value={stateText}
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && isEntrySecured}
-                placeholderTextColor={isHighlighted ? $importantHighlightColor : $secondaryTextColor}
+                placeholderTextColor={isHighlighted ? $importantHighlightColor : containerStyle && containerStyle.backgroundColor == 'transparent' ? $secondaryTextColor : '#000000'}
                 placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}
+                value={stateText}
                 onFocus={this.handleInputFocus}
                 onBlur={this.handleInputBlur}
               />
@@ -168,7 +174,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
   }
 
   protected handleInputBlur = () => {
-    if (this.props.onBlur) { this.props.onBlur() }
+    if (this.props.onBlur) { this.props.onBlur(this.state.text) }
     this.setState({ isFocused: false })
   }
 }

@@ -3,6 +3,7 @@ import { isEmpty, orderBy } from 'lodash'
 import React from 'react'
 import { Alert, TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
+import { Chevron } from 'react-native-shapes'
 import { WrappedFieldProps } from 'redux-form'
 import { selfTrackingApi } from '../../../api'
 import { CountryCodeBody } from '../../../api/endpoints/types'
@@ -12,7 +13,7 @@ import { TextInputProps } from 'components/TextInput'
 
 import { text } from 'styles/commons'
 import I18n from '../../../i18n'
-import { $importantHighlightColor, $secondaryTextColor } from '../../../styles/colors'
+import { $importantHighlightColor } from '../../../styles/colors'
 import styles from './styles'
 
 interface State {
@@ -61,6 +62,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
       highlight,
       meta: { touched: showError, error },
       style,
+      containerStyle,
       ...additionalProps
     } = this.props
 
@@ -73,7 +75,7 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
     const highlightStyle = isHighlighted ? text.error : undefined
     return (
       <View style={style}>
-        <View style={[styles.container]}>
+        <View style={[styles.container, containerStyle]}>
             <View
               style={[
                 styles.inputContainer,
@@ -88,13 +90,16 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
                   }}
                   items={this.state.countryList}
                   value={stateText}
+                  Icon={() => {
+                    return <Chevron size={1.5} color="white" />;
+                  }}
                   onValueChange={this.onValueChange}
-                  placeholderTextColor={isHighlighted ? $importantHighlightColor : $secondaryTextColor}
+                  placeholderTextColor={isHighlighted ? $importantHighlightColor : 'white'}
+                  useNativeAndroidPickerStyle={false}
                   style={{
                     inputIOS: styles.inputIOS,
                     inputAndroid: styles.inputAndroid,
                     underline: styles.underline,
-                    icon: styles.icon,
                   }}
                   {...additionalProps}
               />

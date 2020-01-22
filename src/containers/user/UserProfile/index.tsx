@@ -17,14 +17,13 @@ import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import TitleLabel from 'components/TitleLabel'
 
 import { getUserInfo } from 'selectors/auth'
 import { getFormFieldValue } from 'selectors/form'
-import { button, container, input, text } from 'styles/commons'
-import { registration } from 'styles/components'
+import { container } from 'styles/commons'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
+import { pop } from 'navigation/NavigationService'
 import Logger from '../../../helpers/Logger'
 import styles from './styles'
 
@@ -56,35 +55,32 @@ class UserProfile extends TextInputForm<Props> {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <View style={container.stretchContent}>
-          <View style={container.largeHorizontalMargin}>
+          <View style={styles.inputField}>
             <Field
-              style={input.topMargin}
-              label={I18n.t('text_your_name')}
+              style={styles.topInput}
+              containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
+              label={I18n.t('text_name').toUpperCase()}
               name={userForm.FORM_KEY_NAME}
               component={FormTextInput}
               validate={[validateRequired]}
               keyboardType="default"
               returnKeyType="next"
             />
-            <TitleLabel
-              style={input.topMargin}
-              title={I18n.t('text_username')}
-            >
-              <Text style={text.propertyValue}>{user.username}</Text>
-            </TitleLabel>
-            <TitleLabel
-              style={input.topMargin}
-              title={I18n.t('text_email')}
-            >
-              <Text style={text.propertyValue}>{user.email}</Text>
-            </TitleLabel>
-            {/* <Text style={[text.propertyValue, input.topMargin]}>{user.nationality}</Text> */}
+            <View style={styles.buttonContainer}>
+              <Text style={styles.title}>{I18n.t('text_user_name').toUpperCase()}</Text>
+              <Text style={styles.text}>{user.username}</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Text style={styles.title}>{I18n.t('text_email').toUpperCase()}</Text>
+              <Text style={styles.text}>{user.email}</Text>
+            </View>
           </View>
         </View>
-        <View style={[registration.bottomContainer(), styles.bottomContainer]}>
+        <View style={styles.bottomButtonField}>
           <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
+            style={styles.saveButton}
+            textStyle={styles.saveButtonText}
             isLoading={this.state.isLoading}
             onPress={this.props.handleSubmit(this.onSubmit)}
             disabled={isSaveDisabled}
@@ -92,7 +88,7 @@ class UserProfile extends TextInputForm<Props> {
             {I18n.t('caption_save')}
           </TextButton>
           <TextButton
-            style={styles.logoutButton}
+            textStyle={styles.logoutButton}
             onPress={this.deleteUserDataAlert}
           >
             Log out
@@ -105,7 +101,7 @@ class UserProfile extends TextInputForm<Props> {
   protected updateUserData = async (updatedProps: any) => {
     try {
       await this.setState({ isLoading: true })
-      await this.props.updateUser({...this.props.user, ...updatedProps} as User)
+      await this.props.updateUser({ ...this.props.user, ...updatedProps } as User)
     } catch (err) {
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
@@ -126,7 +122,12 @@ class UserProfile extends TextInputForm<Props> {
             onPress: () => Logger.debug('Cancel Pressed'),
             style: 'cancel',
           },
-          { text: I18n.t('caption_ok'), onPress: this.props.removeUserData },
+          { text: I18n.t('caption_ok'),
+            onPress: () => {
+              this.props.removeUserData(),
+              pop()
+            },
+          },
         ],
         { cancelable: false },
     )

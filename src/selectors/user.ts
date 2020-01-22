@@ -1,14 +1,17 @@
 import { filter, head } from 'lodash'
 import { createSelector } from 'reselect'
-
+import { toHashedString } from 'helpers/utils'
 import { RootState } from 'reducers/config'
-
 import * as teamForm from 'forms/team'
 import { TeamTemplate } from 'models'
-
 import { getEntities, getEntityArrayByType } from './entity'
 import { getFormFieldValue } from './form'
 
+import DeviceInfo from 'react-native-device-info'
+import { getDeviceUuid } from 'helpers/uuid'
+
+export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueID())
+export const getHashedDeviceId = () => toHashedString(getDeviceId())
 export const getUserImages = (state: RootState = {}) => getEntities(state, 'images', 'user')
 
 const orderTeamsLastUsedDesc = (boats: TeamTemplate[]) => boats.sort((b1, b2) => {

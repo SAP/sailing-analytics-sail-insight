@@ -1,16 +1,17 @@
-import React from 'react'
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from 'react-navigation'
 
 import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import * as Screens from 'navigation/Screens'
 
 import AppSettings from 'containers/AppSettings'
-import RegisterPrompt from 'containers/authentication/RegisterPrompt'
 import AccountList from 'containers/user/AccountList'
 import TeamList from 'containers/user/TeamList'
+
 import UserProfile from 'containers/user/UserProfile'
-import AuthComponentSelector from 'navigation/navigators/AuthComponentSelector'
+import { navigateBack } from 'navigation/NavigationService';
+import React from 'react';
+import RegistrationNavigator from './RegistrationNavigator'
 
 export default createStackNavigator(
   {
@@ -21,35 +22,54 @@ export default createStackNavigator(
       },
     },
     [Screens.UserProfile]: {
-      // This is so that after logging in it doesn't return to the RegisterPrompt
-      // Because the Login modal is global, you cannot force it to navigate away
-      // after the login
-      screen: () => (
-        <AuthComponentSelector
-          LoggedInComponent={UserProfile}
-          NotLoggedInComponent={RegisterPrompt}
-        />
-      ),
+      screen: UserProfile,
       navigationOptions: {
-        title: I18n.t('caption_tab_userprofile'),
+        title: I18n.t('title_your_account'),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       },
     },
     [Screens.TeamList]: {
       screen: TeamList,
       navigationOptions: {
         title: I18n.t('caption_tab_teamlist'),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
       },
     },
     [Screens.AppSettings]: {
       screen: AppSettings,
       navigationOptions: {
         title: I18n.t('caption_tab_appsettings'),
+        headerLeft: () => (
+          <HeaderBackButton
+            tintColor="white"
+            title=""
+            onPress={navigateBack}
+          />
+        ),
+      },
+    },
+    [Screens.Register2]: {
+      screen: RegistrationNavigator,
+      navigationOptions: {
+        header: null,
       },
     },
   },
   {
     initialRouteName: Screens.AccountList,
     ...commons.stackNavigatorConfig,
-    navigationOptions: () => commons.headerNavigationOptions,
+    defaultNavigationOptions: () => commons.headerNavigationOptions,
   },
 )

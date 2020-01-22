@@ -6,13 +6,12 @@ import { Field, Fields, reduxForm } from 'redux-form'
 import { registerCompetitorAndDevice } from 'actions/sessions'
 import * as competitorForm from 'forms/competitor'
 import * as sessionForm from 'forms/session'
-import { validateRequired } from 'forms/validators'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
 import { navigateToSessions } from 'navigation'
-import { getCustomScreenParamData } from 'navigation/utils'
+import { getCustomScreenParamData, getCustomScreenParamOptions } from 'navigation/utils'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getLastUsedTeam, getUserTeams } from 'selectors/user'
 
@@ -25,6 +24,7 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
 
+import { validateRequired } from 'forms/validators'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
@@ -35,11 +35,11 @@ import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import { getFormFieldValue } from '../../../selectors/form'
 import { getDeviceCountryIOC } from '../../../services/CheckInService'
-
+import styles from './styles'
 
 interface Props {
   teams: TeamTemplate[]
-  registerCompetitorAndDevice: (data: any, values: any) => any
+  registerCompetitorAndDevice: (data: any, values: any, options?: any) => any
   checkInData: CheckIn,
   isLoggedIn: boolean,
   formSailNumber?: string,
@@ -51,8 +51,7 @@ class EditCompetitor extends TextInputForm<Props> {
 
   private commonProps = {
     keyboardType: 'default' as KeyboardType,
-    returnKeyType: 'next' as ReturnKeyType,
-    validate: [validateRequired],
+    returnKeyType: 'next' as ReturnKeyType
   }
 
   public render() {
@@ -63,14 +62,16 @@ class EditCompetitor extends TextInputForm<Props> {
           component={FormImagePicker}
           placeholder={Images.header.team}
         />
-        <View style={[container.stretchContent, container.largeHorizontalMargin]}>
+        <View style={[container.stretchContent, container.mediumHorizontalMargin]}>
           <Text style={registration.claim()}>
             <Text>{I18n.t('text_edit_competitor_claim_01')}</Text>
             <Text style={text.claimHighlighted}>{I18n.t('text_edit_competitor_claim_02')}</Text>
           </Text>
         </View>
-        <View style={registration.bottomContainer()}>
+        <View style={styles.bottomContainer}>
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             style={input.topMargin}
             label={I18n.t('text_your_name')}
             name={sessionForm.FORM_KEY_NAME}
@@ -79,6 +80,8 @@ class EditCompetitor extends TextInputForm<Props> {
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
           />
           <Fields
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             style={input.topMargin}
             label={I18n.t('text_team')}
             names={[
@@ -99,6 +102,8 @@ class EditCompetitor extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             style={input.topMargin}
             label={I18n.t('text_placeholder_boat_class')}
             name={sessionForm.FORM_KEY_BOAT_CLASS}
@@ -108,15 +113,20 @@ class EditCompetitor extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
-              style={input.topMargin}
-              label={I18n.t('text_nationality')}
-              name={sessionForm.FORM_KEY_NATIONALITY}
-              component={FormNationalityPicker}
-              onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
-              inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
-              {...this.commonProps}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
+            style={input.topMargin}
+            label={I18n.t('text_nationality')}
+            name={sessionForm.FORM_KEY_NATIONALITY}
+            component={FormNationalityPicker}
+            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
+            inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
+            validate={[validateRequired]}
+            {...this.commonProps}
           />
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             style={input.topMargin}
             label={I18n.t('text_placeholder_sail_number')}
             name={sessionForm.FORM_KEY_SAIL_NUMBER}
@@ -126,6 +136,8 @@ class EditCompetitor extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             style={input.topMargin}
             label={I18n.t('text_placeholder_boat_name')}
             name={sessionForm.FORM_KEY_BOAT_NAME}
@@ -134,13 +146,15 @@ class EditCompetitor extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             style={input.topMargin}
             label={I18n.t('text_handicap_label')}
             name={sessionForm.FORM_KEY_HANDICAP}
             component={FormHandicapInput}
           />
           <TextButton
-            style={registration.nextButton()}
+            style={[registration.nextButton(), styles.bottomButton]}
             textStyle={button.actionText}
             onPress={this.props.handleSubmit(this.onSubmit)}
             isLoading={this.state.isLoading}
@@ -149,7 +163,7 @@ class EditCompetitor extends TextInputForm<Props> {
           </TextButton>
         </View>
         <ImageButton
-            style={button.closeButton}
+            style={[button.closeButton, styles.closeButton]}
             source={Images.actions.close}
             onPress={navigateToSessions}
         />
@@ -167,7 +181,7 @@ class EditCompetitor extends TextInputForm<Props> {
   private onSubmit = async (values: CompetitorInfo) => {
     try {
       this.setState({ isLoading: true })
-      await this.props.registerCompetitorAndDevice(this.props.checkInData, values)
+      await this.props.registerCompetitorAndDevice(this.props.checkInData, values, this.props.options)
       return true
     } catch (err) {
       Logger.debug(err)
@@ -195,11 +209,11 @@ const mapStateToProps = (state: any, props: any) => {
     } as CompetitorInfo,
     teams: getUserTeams(state),
     checkInData: getCustomScreenParamData(props),
+    options: getCustomScreenParamOptions(props),
     isLoggedIn: isLoggedIn(state),
     formSailNumber: getFormFieldValue(competitorForm.COMPETITOR_FORM_NAME, sessionForm.FORM_KEY_SAIL_NUMBER)(state),
   }
 }
-
 
 export default connect(mapStateToProps, { registerCompetitorAndDevice })(reduxForm<{}, Props>({
   form: competitorForm.COMPETITOR_FORM_NAME,

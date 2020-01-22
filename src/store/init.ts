@@ -1,31 +1,58 @@
 import { AsyncStorage } from 'react-native'
+import firebase from 'react-native-firebase'
 import { createNetworkMiddleware } from 'react-native-offline'
 import { applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
-import { persistReducer } from 'redux-persist'
+import { createMigrate, persistReducer } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
+import createSagaMiddleware from 'redux-saga'
 import ReduxThunk from 'redux-thunk'
 
 import Reducers from 'reducers'
+import rootSaga from 'sagas'
 import { initializePersistor, initializeStore } from 'store'
 
-
 const initialState = {}
-const persistConfig = {
-  key: 'root',
-  debounce: 1000,
-  timeout: 10000,
-  blacklist: ['network', 'form'],
-  storage: AsyncStorage,
-  stateReconciler: autoMergeLevel2,
+
+const migrations = {
+  0: (state: any) => ({
+    ...state,
+    events: {},
+  }),
 }
 
+const persistConfig = {
+  key: 'root',
+  version: 1,
+  debounce: 1000,
+  timeout: 10000,
+  blacklist: ['network', 'form', 'courses'],
+  storage: AsyncStorage,
+  stateReconciler: autoMergeLevel2,
+  migrate: createMigrate(migrations)
+}
+
+const sagaMiddleware = createSagaMiddleware({
+  onError: (error: Error, { sagaStack }) => {
+    firebase.crashlytics().setStringValue('sagaStack', sagaStack)
+    firebase.crashlytics().recordError(0, `Error in saga: ${error.message}`)
+
+    throw error
+  }
+})
+
 const enhancers = composeWithDevTools(applyMiddleware(
-  createNetworkMiddleware(),
+  createNetworkMiddleware({
+    actionTypes: ['SET_RACE_TIME', 'SELECT_COURSE', 'FETCH_EVENT_PERMISSION', 'CREATE_EVENT',
+      'FETCH_RACES_TIMES_FOR_EVENT', 'FETCH_COURSES_FOR_EVENT', 'ADD_RACE_COLUMNS',
+      'REMOVE_RACE_COLUMNS', 'SAVE_COURSE', 'LOAD_MARK_PROPERTIES'],
+  }),
   ReduxThunk,
+  sagaMiddleware,
 ))
 
 const persistedReducer = persistReducer(persistConfig, Reducers)
 
 initializeStore(persistedReducer, initialState, enhancers)
 initializePersistor()
+sagaMiddleware.run(rootSaga)

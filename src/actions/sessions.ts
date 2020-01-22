@@ -11,7 +11,7 @@ import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
 import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
-import { navigateToManeuver, navigateToSessions } from 'navigation'
+import { navigateToManeuver, navigateToTrackingNavigator } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -29,6 +29,7 @@ import { getSharingUuid } from 'helpers/uuid'
 
 
 import { collectCheckInData, registerDevice, updateCheckIn } from 'actions/checkIn'
+import { startTracking } from 'actions/tracking'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { saveTeam } from 'actions/user'
@@ -37,11 +38,11 @@ import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'se
 import { getLocationTrackingStatus } from 'selectors/location'
 import { getUserBoatByBoatName } from 'selectors/user'
 
-
 export const shareSession = (checkIn: CheckIn) => async () => {
   if (!checkIn || !checkIn.leaderboardName || !checkIn.eventId || !checkIn.secret) {
     throw new CheckInException('errror creating share link.')
   }
+
   const sharingData: SharingData = {
     title: checkIn.leaderboardName,
     // TODO: venue from generated event?
@@ -58,8 +59,8 @@ export const shareSession = (checkIn: CheckIn) => async () => {
     },
   }
   const shareOptions = {
-    messageHeader: I18n.t('text_share_session_message_header'),
-    messageBody: I18n.t('text_share_session_message_body'),
+    messageHeader: I18n.t('text_share_session_message_header', { regattaName: checkIn.regattaName }),
+    messageBody: I18n.t('text_share_session_message_body', { regattaName: checkIn.regattaName }),
   }
   return showShareSheet(await createSharingData(sharingData, shareOptions))
 }
@@ -100,21 +101,13 @@ export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
   )
 
 const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
-  const { handicapType = getDefaultHandicapType(), handicapValue } =
-    competitorInfo.handicap || {}
-  if (
-    !handicapType || !handicapValue
-  ) {
-    return undefined
-  }
+  const { handicapType = getDefaultHandicapType(), handicapValue = null } = competitorInfo.handicap || {}
 
-  const handicapValueFloat = parseFloat(handicapValue.replace(',', '.'))
+  if (!handicapType || !handicapValue) return undefined
 
-  if (handicapType === HandicapTypes.TimeOnTime) {
-    return handicapValueFloat
-  }
+  if (handicapType === HandicapTypes.TimeOnTime) return handicapValue
 
-  const timeOnTimeFactor = 100 / handicapValueFloat
+  const timeOnTimeFactor = 100 / handicapValue
 
   return timeOnTimeFactor
 }
@@ -135,7 +128,7 @@ export const createUserAttachmentToSession = (
       !competitorInfo.sailNumber ||
       !competitorInfo.nationality
     ) {
-      throw new SessionException('user/boat data missing.')
+      throw new SessionException('user/nationality/boat data missing.')
     }
     const baseValues = {
       competitorName: competitorInfo.teamName || competitorInfo.name,
@@ -154,9 +147,14 @@ export const createUserAttachmentToSession = (
         const registrationResponse = await dataApi.registerCompetitorToRegatta(
           regattaName,
           competitorId,
+          secret
         )
 
         registrationSuccess = registrationResponse.status === 200
+
+        if (registrationSuccess) {
+          await dispatch(registerDevice(regattaName, { competitorId }))
+        }
       } catch (err) {
         if (!(err instanceof ApiException)) {
           throw err
@@ -165,7 +163,7 @@ export const createUserAttachmentToSession = (
     }
 
     // Creates new competitorWithBoat if there isn't one on the current server
-    // or if the regeistration of the existing one to the regatta failed
+    // or if the registration of the existing one to the regatta failed
     let newCompetitorWithBoat
     if (!registrationSuccess) {
       newCompetitorWithBoat = await dataApi.createAndAddCompetitor(regattaName, {
@@ -231,15 +229,21 @@ export const createSessionCreationQueue: CreateSessionCreationQueueAction = (ses
     ],
   )
 
-export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo) =>
-  async (dispatch: DispatchType) => {
+export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any) =>
+  async (dispatch: DispatchType, getState) => {
     if (!data) {
       throw new CheckInException('data is missing')
     }
     await dispatch(updateCheckIn(data))
     try {
       await dispatch(createUserAttachmentToSession(data.leaderboardName, competitorValues, data.secret))
-      navigateToSessions()
+
+      if (options && options.startTrackingAfter) {
+        const checkIn = getCheckInByLeaderboardName(data.leaderboardName)(getState())
+        dispatch(startTracking(checkIn))
+      } else {
+        navigateToTrackingNavigator()
+      }
     } catch (err) {
       Logger.debug(err)
       Alert.alert(getErrorDisplayMessage(err))

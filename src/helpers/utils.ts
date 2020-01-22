@@ -1,3 +1,5 @@
+import { sha256 } from 'js-sha256'
+import { compose, join, map, move, reject, isNil, split, __, toUpper } from 'ramda'
 import { isArray, isMatch, isNumber, isObject, orderBy } from 'lodash'
 import { Alert, Linking, ListView } from 'react-native'
 
@@ -5,6 +7,14 @@ import { urlGenerator } from 'api/config'
 import I18n from 'i18n'
 import { Race, RaceStats } from 'models'
 
+export const toHashedString = compose(
+  toUpper,
+  join(' '),
+  map(b => b.length === 1 ? `0${b}` : b),
+  map(b => b.toString(16)),
+  sha256.digest,
+  map(c => c.charCodeAt(0)),
+  split(''))
 
 export const getListViewDataSource = (data: any, sectionIds?: any[]) => {
   const dataSource = new ListView.DataSource({
@@ -117,3 +127,54 @@ export const openEmailTo = (email: string, subject?: string, body?: string) =>
       ...(body ? { body } : {}),
     },
   ))
+
+export const dd2ddm = (xy: array) => {
+  const coords = [];
+
+  for (let i = 0; i < xy.length; i++) {
+    const arr = [1, 0, 1];
+    const spl = xy[i].toString().split('.');
+    const dm = Math.abs(parseFloat('.' + xy[i].toString().split('.')[1]) * 60.0)
+    const fdm = parseFloat(dm).toFixed(6)
+    const parts = fdm.toString().split('.')
+
+    let final = parts[0]
+
+    if (parts[1]) {
+      final += '.' + parts[1].substr(0,3)
+    }
+
+    arr[0] = Math.abs(xy[i].toString().split('.')[0]) + '°';
+    arr[1] = spl.length == 2 ? final + "'" : 0;
+    arr[2] = i === 0 ? (xy[i] >= 0 ? 'N' : 'S') : (xy[i] >= 0 ? 'E' : 'W')
+
+    coords[i] = arr;
+  }
+
+  return coords;
+}
+
+export const ddm2dd = (arr: array) => {
+  let coords = [];
+
+  for (let i = 0; i < arr.length; i++) {
+    let deg = parseFloat(arr[i][0]),
+        min = parseFloat(arr[i][1]),
+        dir = parseFloat(arr[i][2])
+
+    coords[i] = dir*(deg+(min/60.0))
+  }
+
+  return coords;
+}
+
+export const coordinatesToString = ({ latitude_deg, longitude_deg }: any) =>
+  compose(
+    join(' / '),
+    map(compose(
+      join(' '),
+      move(-1, 0)
+    )),
+    dd2ddm,
+    reject(isNil))(
+    [latitude_deg, longitude_deg])

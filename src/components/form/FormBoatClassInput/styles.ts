@@ -1,4 +1,6 @@
+import { darkerGray } from 'containers/session/BasicsSetup/styles';
 import EStyleSheet from 'react-native-extended-stylesheet'
+import { withDefaultFont } from 'styles/compositions/text'
 
 export default EStyleSheet.create({
   container: {
@@ -14,6 +16,11 @@ export default EStyleSheet.create({
   inputContainer: {
     borderWidth: 0,
     marginBottom: 0,
+  },
+  input: {
+    color: 'black',
+    borderBottomColor: darkerGray,
+    ...withDefaultFont
   },
   list: {
     backgroundColor: 'white',

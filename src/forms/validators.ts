@@ -1,14 +1,16 @@
 import { includes, isString } from 'lodash'
-
+import { defaultTo } from 'ramda'
 import I18n from 'i18n'
-
 
 // tslint:disable-next-line max-line-length
 const REGEX_EMAIL_VALID = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 const REGEX_SESSIONNAME_VALID = /^[^/\?\[\];"]{0,255}$/
 
 export const validateRequired = (value: any) =>
-  value ? undefined : I18n.t('error_field_required')
+value ? undefined : I18n.t('error_field_required')
+
+export const validateRequiredWithErrorCode = (errorCode: string) => (value: any) =>
+  value ? undefined : I18n.t(defaultTo('error_field_required', errorCode))
 
 export const validateUsername = (value: any) =>
     value.length >= 3 ? undefined : I18n.t('error_field_invalid_username')

@@ -15,7 +15,6 @@ import LineSeparator from 'components/LineSeparator'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import TitleLabel from 'components/TitleLabel'
 
 import { button, container } from 'styles/commons'
 import { registration } from 'styles/components'
@@ -40,18 +39,19 @@ class AppSettings extends React.Component<ViewProps & {
   public render() {
     return (
       <ScrollContentView>
-        <View style={container.stretchContent}>
+        <View style={[container.main, styles.container]}>
           {this.renderDeviceId()}
-          <LineSeparator/>
           <View>
             <EditItemSwitch
               style={styles.item}
+              titleStyle={styles.title}
               title={I18n.t('caption_setting_analytics')}
               switchValue={this.props.enableAnalytics}
               onSwitchValueChange={this.props.changeAnalyticsSetting}
             />
             <EditItemSwitch
-              style={styles.item}
+              style={styles.item2}
+              titleStyle={styles.title}
               title={I18n.t('caption_setting_bulk_gps')}
               switchValue={this.props.bulkGpsSetting}
               onSwitchValueChange={this.props.updateGpsBulkSetting}
@@ -60,29 +60,29 @@ class AppSettings extends React.Component<ViewProps & {
               {I18n.t('text_setting_gps_bulk', { timeInSeconds: BULK_UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
             </Text>
           </View>
-        </View>
-        <View style={container.smallHorizontalMargin}>
-          <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
-            onPress={openEmailToContact}
-          >
-            {I18n.t('caption_feedback_and_questions')}
-          </TextButton>
-          <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
-            onPress={openTerms}
-          >
-            {I18n.t('title_eula')}
-          </TextButton>
-          <TextButton
-            style={registration.nextButton()}
-            textStyle={button.actionText}
-            onPress={openPrivacyPolicy}
-          >
-            {I18n.t('title_privacy_policy')}
-          </TextButton>
+          <View style={styles.textContainer}>
+            <TextButton
+              style={[styles.button]}
+              textStyle={styles.buttonContent}
+              onPress={openEmailToContact}
+            >
+              {I18n.t('caption_feedback_and_questions').toUpperCase()}
+            </TextButton>
+            <TextButton
+              style={[styles.button]}
+              textStyle={styles.buttonContent}
+              onPress={openTerms}
+            >
+              {I18n.t('title_eula').toUpperCase()}
+            </TextButton>
+            <TextButton
+              style={[styles.button]}
+              textStyle={styles.buttonContent}
+              onPress={openPrivacyPolicy}
+            >
+              {I18n.t('title_privacy_policy').toUpperCase()}
+            </TextButton>
+          </View>
         </View>
         {this.renderVersionNumber()}
       </ScrollContentView>
@@ -149,9 +149,8 @@ class AppSettings extends React.Component<ViewProps & {
   protected renderDeviceId = () => {
     return (
       <View style={styles.item}>
-        <TitleLabel title={I18n.t('text_device_id')}>
-          {getDeviceId()}
-        </TitleLabel>
+        <Text style={styles.title}>{I18n.t('text_device_id').toUpperCase()}</Text>
+        <Text style={styles.text}>{getDeviceId()}</Text>
       </View>
     )
   }

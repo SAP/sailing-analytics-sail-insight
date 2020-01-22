@@ -49,9 +49,10 @@ const transferFixes = async (dispatch: DispatchType, backgroundTransfer: boolean
       // This is generally handled by syncInProgress state
       deleteGPSFixRequests(fixRequests)
     }
-    if (backgroundTransfer && !syncIsShuttingDown) {
-      dispatch(handleManeuverChange(maneuverInfo))
-    }
+
+    // if (backgroundTransfer && !syncIsShuttingDown) {
+    //   dispatch(handleManeuverChange(maneuverInfo))
+    // }
     dispatch(updateUnsentGpsFixCount(unsentGpsFixCount()))
   }))
 }

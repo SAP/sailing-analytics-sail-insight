@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import querystring from 'query-string'
 import format from 'string-format'
 
-import { AUTH_API_PREFIX, DATA_API_PREFIX, DATA_API_V2_PREFIX, RACE_API_PREFIX } from 'environment'
+import { AUTH_API_PREFIX, DATA_API_PREFIX, DATA_API_V2_PREFIX, RACE_API_PREFIX, SHARED_DATA_API_PREFIX } from 'environment'
 import { DEFAULT_SERVER_URL } from '../environment/init'
 import { getServerUrlSetting } from '../selectors/settings'
 import { getStore } from '../store'
@@ -37,6 +37,7 @@ export const urlGenerator = (apiRoot: string, apiSuffix: string) => (path: strin
   `${apiRoot}${apiSuffix}${getPathWithParams(path, options)}`
 
 export const getDataApiGenerator = (serverUrl: string) => urlGenerator(serverUrl , DATA_API_PREFIX)
+export const getSharedDataApiGenerator = (serverUrl: string) => urlGenerator(serverUrl , SHARED_DATA_API_PREFIX)
 export const getDataApiV2Generator = (serverUrl: string) => urlGenerator(serverUrl, DATA_API_V2_PREFIX)
 export const getRaceApiGenerator = (serverUrl: string) => urlGenerator(serverUrl, RACE_API_PREFIX)
 export const getAssetApiGenerator = (serverUrl: string) => urlGenerator(serverUrl, '')

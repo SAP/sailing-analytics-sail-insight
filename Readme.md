@@ -20,6 +20,10 @@ nvm use
 **Android**
 
 7. make sure the Android SDK and Android Studio is properly installed 
+- if you have problems with AndroidX import than run:
+```
+npx jetify -r
+```
 
 **iOS**
 

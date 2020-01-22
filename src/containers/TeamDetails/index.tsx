@@ -35,12 +35,14 @@ import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import TextButton from 'components/TextButton'
 
-import { button, container, input } from 'styles/commons'
+import { button, container } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import FormBoatClassInput from '../../components/form/FormBoatClassInput'
 import FormNationalityPicker from '../../components/form/FormNationalityPicker'
 import FormSailNumberInput from '../../components/form/FormSailNumberInput'
+
+import styles from './styles'
 
 interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
   team: TeamTemplate
@@ -90,8 +92,11 @@ class TeamDetails extends TextInputForm<Props> {
             onChange={this.onImageChange}
           />
         </View>
-        <View style={registration.bottomContainer()}>
+        <View style={styles.bottomContainer}>
           <Field
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_team_name')}
             name={teamForm.FORM_KEY_TEAM_NAME}
             component={FormTextInput}
@@ -101,7 +106,9 @@ class TeamDetails extends TextInputForm<Props> {
             validate={[validateRequired, validateNameExists]}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_boat_class')}
             name={teamForm.FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
@@ -111,18 +118,22 @@ class TeamDetails extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_nationality')}
             name={teamForm.FORM_KEY_NATIONALITY}
             component={FormNationalityPicker}
             inputRef={this.handleInputRef(teamForm.FORM_KEY_NATIONALITY)}
             onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_SAIL_NUMBER)}
             onChange={this.handleNationalityChanged}
-            {...this.commonProps}
             validate={[validateRequired]}
+            {...this.commonProps}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_sail_number')}
             name={teamForm.FORM_KEY_SAIL_NUMBER}
             component={FormSailNumberInput}
@@ -137,7 +148,9 @@ class TeamDetails extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_boat_name')}
             name={teamForm.FORM_KEY_BOAT_NAME}
             component={FormTextInput}
@@ -145,19 +158,21 @@ class TeamDetails extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
-            style={input.topMargin}
+            style={styles.topInput}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_handicap_label')}
             name={teamForm.FORM_KEY_HANDICAP}
             component={FormHandicapInput}
           />
           <TextButton
-            style={registration.nextButton()}
+            style={[registration.nextButton(), styles.bottomButton]}
             textStyle={button.actionText}
             onPress={this.props.handleSubmit(this.onSavePress)}
             isLoading={this.state.isLoading}
             disabled={isSaveDisabled}
           >
-            {I18n.t('caption_save')}
+            {I18n.t('caption_save').toUpperCase()}
           </TextButton>
         </View>
       </ScrollContentView>
@@ -296,7 +311,8 @@ export default connect(
 )(
   reduxForm<{}, Props>({
     form: teamForm.TEAM_FORM_NAME,
-    destroyOnUnmount: true,
+    destroyOnUnmount: false,
+    enableReinitialize: true,
     forceUnregisterOnUnmount: true,
   })(TeamDetails),
 )

@@ -15,12 +15,12 @@ import { getEventPreviewImageUrl } from 'services/SessionService'
 import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
-import Text from 'components/Text'
 import TrackingContext from 'components/session/TrackingContext'
+import Text from 'components/Text'
 
-import { $secondaryTextColor } from 'styles/colors'
-import { button, container, image, text } from 'styles/commons'
+import { button, text } from 'styles/commons'
 import styles from './styles'
+import { $smallSpacing } from 'styles/dimensions';
 
 
 class SessionInfoDisplay extends React.Component<ViewProps & {
@@ -50,7 +50,6 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
     const {
       style,
       session,
-      eventImageSize,
       onSettingsPress,
     } = this.props
 
@@ -60,30 +59,32 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
     const eventImage = getEventPreviewImageUrl(session.event)
     return (
       <View style={style}>
-        {
-          eventImage &&
+        <View style={styles.imageContainer}>
           <Image
-            style={eventImageSize === 'large' ? image.headerMediumLarge : image.headerMedium}
-            source={eventImage}
+            style={styles.image}
+            source={eventImage ? eventImage : Images.events.placeholder_event_pic}
           />
-        }
+        </View>
         <View style={styles.detailContainer}>
           <View style={styles.line}>
             <View style={styles.basicInfoContainer}>
-              <Text style={text.itemName}>
+              <Text
+                style={styles.dateText}
+              >
+                {dateFromToText(session.event && session.event.startDate, session.event && session.event.endDate)}
+              </Text>
+              <View style={[styles.line, styles.textMargins]}>
+                <Text
+                  style={[text.itemName, styles.itemText]}
+                  numberOfLines={1}
+                  allowFontScaling={false}
+                  ellipsizeMode="tail"
+                >
                 {
                   session.userStrippedDisplayName ||
                   (session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name))
                 }
-              </Text>
-              <View style={[styles.line, styles.textMargins]}>
-                <Text
-                  style={styles.dateText}
-                >
-                  {dateFromToText(session.event && session.event.startDate, session.event && session.event.endDate)}
                 </Text>
-                <Text style={[text.propertyName, styles.tracksText]}>{`${I18n.t('text_tracks').toUpperCase()}:`}</Text>
-                <Text style={styles.tracksCountText}>{size(session.regatta && session.regatta.races)}</Text>
               </View>
             </View>
             {
@@ -95,43 +96,11 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
               />
             }
           </View>
-          <View style={[styles.innerContainer, styles.textMargins]}>
-            <View style={{ flex: 1 }}>
-              <View style={[container.rowCentered]}>
-                <IconText
-                  style={[styles.infoItem, session.trackingContext === 'BOAT' ? styles.infoItemFull : undefined]}
-                  source={Images.info.boat}
-                  iconTintColor={$secondaryTextColor}
-                  textStyle={{ flex: 1 }}
-                  alignment="horizontal"
-                >
-                  {boatInfoText}
-                </IconText>
-                <TrackingContext session={session} withoutBoat={true} />
-              </View>
-              {
-                session.event &&
-                session.event.venue &&
-                session.event.venue.name &&
-                session.event.venue.name !== 'default' &&
-                <IconText
-                  style={styles.textMargins}
-                  source={Images.info.location}
-                  iconTintColor={$secondaryTextColor}
-                  alignment="horizontal"
-                >
-                  {session.event && session.event.venue && session.event.venue.name}
-                </IconText>
-              }
-            </View>
-            <ImageButton
-              source={Images.actions.recordColored}
-              style={styles.trackingButton}
-              imageStyle={styles.trackingImage}
-              isLoading={this.state.isTrackingLoading}
-              onPress={this.onTrackingPress}
-            />
-          </View>
+        </View>
+        <View style={styles.arrowContainer}>
+          <Image
+            source={Images.actions.arrowRight}
+          />
         </View>
       </View>
     )

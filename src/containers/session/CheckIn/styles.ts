@@ -1,23 +1,35 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { getStatusBarHeight } from 'react-native-status-bar-height'
-
 
 export default EStyleSheets.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  scrollContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#12374866',
   },
-  boat: {
-    height: 100,
-    width: 100,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginTop: 37 + getStatusBarHeight(true),
+  textContainer: {
+    flex: 1,
+    marginTop: 90,
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
+  },
+  claim: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontFamily: 'SFProDisplay-Heavy',
+    marginTop: 30,
+  },
+  subClaim: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'SFProDisplay-Medium',
+    marginTop: 16,
   },
   qrButton: {
     marginBottom: 30,
   },
-  claim: {
-    marginTop: 30,
+  qrButtonText: {
+    color: 'white',
+    fontSize: 24,
+    fontFamily: 'SFProDisplay-Heavy',
   },
 })

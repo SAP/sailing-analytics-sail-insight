@@ -5,8 +5,12 @@ export default EStyleSheets.create({
     color: '$primaryTextColor',
     fontSize: '$largeFontSize',
     fontWeight: 'bold',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
   switchSelector: {
     marginTop: '$tinySpacing',
+    marginLeft: '$smallSpacing',
+    marginRight: '$smallSpacing',
   },
 })

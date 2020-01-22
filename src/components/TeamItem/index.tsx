@@ -33,9 +33,9 @@ class TeamItem extends React.Component<ViewProps & {
           source={imageValue || Images.header.team}
         />
         <View style={styles.textContainer}>
-          <Text style={text.itemName}>{team.name}</Text>
+          <Text style={[{ color: '#fff' }, text.itemName]}>{team.name}</Text>
           <View style={styles.lowerTextContainer}>
-            <Text style={[text.propertyValue, styles.sailNumber]}>{team.sailNumber}</Text>
+            <Text style={[{ color: '#fff' }, text.propertyValue, styles.sailNumber]}>{team.sailNumber}</Text>
           </View>
         </View>
       </TouchableOpacity>

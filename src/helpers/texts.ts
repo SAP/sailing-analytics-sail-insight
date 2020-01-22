@@ -41,14 +41,21 @@ export const getUnknownErrorMessage = (errorCode?: string | number) => (errorCod
 )
 
 export const getErrorDisplayMessage = (exception: any) => {
-  const data = JSON.parse(exception.data)
+  // ToDo: could we do a better solution? quickfix for unhandled rejection
+  let dataErrorCodeName = null
+  try {
+    const data = JSON.parse(exception.data)
+    dataErrorCodeName = data.errorCodeName
+  } catch (e) {
+    // ignore
+  }
 
-  if (!exception || (!exception.name && !exception.baseTypeName && !data.errorCodeName)) {
+  if (!exception || (!exception.name && !exception.baseTypeName && dataErrorCodeName == null)) {
     return getUnknownErrorMessage()
   }
 
-  if (data.errorCodeName) {
-    return I18n.t(ErrorCodes[data.errorCodeName])
+  if (dataErrorCodeName != null) {
+    return I18n.t(ErrorCodes[dataErrorCodeName])
   }
 
   if (exception.name === ApiException.NAME || exception.baseTypeName === ApiException.NAME) {

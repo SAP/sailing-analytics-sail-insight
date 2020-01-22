@@ -6,13 +6,15 @@ import { RootState } from './config'
 
 import AuthReducer from './AuthReducer'
 import CheckInReducer from './CheckInReducer'
+import CourseReducer from './CourseReducer'
 import EntityReducer from './EntityReducer'
+import EventReducer from './EventReducer'
 import LeaderboardTrackingReducer from './LeaderboardTrackingReducer'
 import LocationTrackingReducer from './LocationTrackingReducer'
 import OnboardingReducer from './OnboardingReducer'
+import permissions from './permissionsReducer'
 import SettingsReducer from './SettingsReducer'
 import UserReducer from './UserReducer'
-
 
 const reducer: RootState = {
   auth: AuthReducer,
@@ -25,6 +27,9 @@ const reducer: RootState = {
   onboarding: OnboardingReducer,
   settings: SettingsReducer,
   network: networkReducer,
+  courses: CourseReducer,
+  events: EventReducer,
+  permissions,
 }
 
 const reducers = combineReducers(reducer)

@@ -1,6 +1,6 @@
-import { find, isEmpty, isEqual } from 'lodash'
+import { find, isEmpty } from 'lodash'
 import React from 'react'
-import { View, ViewProps } from 'react-native'
+import { TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
 
@@ -19,7 +19,7 @@ import { TeamTemplate } from 'models'
 import { getDefaultHandicap, hasHandicapChanged } from 'models/TeamTemplate'
 
 import Text from 'components/Text'
-import TextInput from 'components/TextInput'
+import TextInput, { TextInputProps } from 'components/TextInput'
 
 import { text } from 'styles/commons'
 import styles from './styles'
@@ -30,7 +30,7 @@ const teamsToPickerItems = (teams: TeamTemplate[] = []) => teams.map(item => ({
   value: item.name,
 }))
 
-class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
+class FormTeamPicker extends React.Component<ViewProps & RNTextInputProps & WrappedFieldProps & TextInputProps & {
   label: string,
   teams: TeamTemplate[],
   isLoggedIn: boolean,
@@ -41,11 +41,12 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
       label,
       teams,
       style,
+      containerStyle,
+      ...additionalProps
     } = this.props
     const {
       input: { name, onChange, ...restInput },
       meta: { touched: showError, error },
-      ...additionalProps
     } = (this.props as any)[FORM_KEY_TEAM_NAME]
 
     const shouldHighlight = error && showError
@@ -53,9 +54,10 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
 
     return (
       <View style={style}>
-        <View style={styles.container}>
+        <View style={[styles.container, containerStyle]}>
           <TextInput
-            style={styles.textInput}
+            containerStyle={containerStyle}
+            style={[styles.textInput, styles.inputContainer]}
             placeholder={label}
             onChangeText={onChange}
             highlight={shouldHighlight}
@@ -76,6 +78,7 @@ class FormTeamPicker extends React.Component<ViewProps & WrappedFieldProps & {
                 inputAndroid: styles.inputAndroid,
                 underline: styles.underline,
               }}
+              {...additionalProps}
             />
           }
         </View>

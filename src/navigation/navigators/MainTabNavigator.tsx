@@ -1,29 +1,26 @@
 import React from 'react'
-import { createBottomTabNavigator, createStackNavigator } from 'react-navigation'
+import { createBottomTabNavigator } from 'react-navigation'
 
 import Images from '@assets/Images'
 import { getTabItemTitleTranslation } from 'helpers/texts'
-import { navigateToNewSession, navigateToUserRegistration } from 'navigation'
 import * as Screens from 'navigation/Screens'
-import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { getStore } from 'store'
 
 import IconText from 'components/IconText'
-import CheckIn from 'containers/session/CheckIn'
+import MarkInventory from 'containers/Inventory/MarkInventory'
 import Sessions from 'containers/session/Sessions'
 
-import { $primaryActiveColor, $primaryTextColor, $secondaryTextColor } from 'styles/colors'
+import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
-import TopTabNavigator from './TopTabNavigator'
+import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
 
 
 const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
   const { routeName = '' } = navigation.state
   let icon
   switch (routeName) {
-    case Screens.TrackingSetupAction:
+    case Screens.TrackingNavigator:
       icon = Images.tabs.tracking
       break
     case Screens.Sessions:
@@ -35,9 +32,12 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
     case Screens.Account:
       icon = Images.tabs.account
       break
+    case Screens.Inventory:
+      icon = Images.tabs.inventory
+      break
   }
 
-  const iconTintColor = focused ? $primaryActiveColor : tintColor
+  const iconTintColor = focused ? 'white' : 'gray'
   const focusStyle = focused ? { fontWeight: 'bold' } : undefined
 
   return (
@@ -60,43 +60,18 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
   if (!props.navigation.state) {
     return props.defaultHandler(navigation)
   }
-  switch (navigation.state.routeName) {
-    case Screens.TrackingSetupAction:
-      const isLoggedIn = isLoggedInSelector(getStore().getState())
-      return isLoggedIn ? navigateToNewSession() : navigateToUserRegistration()
-    default:
-      return props.defaultHandler(props.navigation)
-  }
+  return props.defaultHandler(props.navigation)
 }
 
 export default createBottomTabNavigator(
   {
-    [Screens.Sessions]: TopTabNavigator(
-      {
-        [Screens.UserSessions]: Sessions,
-        // [Screens.Tracks]: Tracks,
-      },
-      {
-        initialRouteName: Screens.UserSessions,
-        tabBarOptions: {
-          activeTintColor: $primaryTextColor,
-          inactiveTintColor: $secondaryTextColor,
-          indicatorStyle: {
-            backgroundColor: 'white',
-            height: 3,
-          },
-          style: {
-            backgroundColor: 'white',
-          },
-        },
-      },
-    ),
-    // [Screens.TrackingSetupAction]: TrackingSetup,
-    [Screens.CheckIn]: CheckIn,
+    [Screens.TrackingNavigator]: TrackingNavigator,
+    [Screens.Sessions]: Sessions,
+    [Screens.Inventory]: MarkInventory.fold,
     [Screens.Account]: AccountNavigator,
   },
   {
-    initialRouteName: Screens.Sessions,
+    initialRouteName: Screens.TrackingNavigator,
     backBehavior: 'none',
     swipeEnabled: false,
     tabBarOptions: {
@@ -104,12 +79,12 @@ export default createBottomTabNavigator(
       inactiveTintColor: $secondaryTextColor,
       style: {
         height: 56,
-        backgroundColor: 'white',
+        backgroundColor: '#123748',
       },
       showLabel: false,
       showIcon: true,
     },
-    navigationOptions: ({ navigation }) => ({
+    defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: getTabBarIcon(navigation),
       tabBarOnPress:  onTabBarPress(navigation),
     }),

@@ -19,7 +19,7 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
-import { navigateBack } from 'navigation'
+import { navigatePop } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
@@ -67,8 +67,10 @@ class RegisterBoat extends TextInputForm<Props> {
             <Text style={text.claimHighlighted}>{I18n.t('text_register_boat_claim_02')}</Text>
           </Text>
         </View>
-        <View style={registration.bottomContainer()}>
+        <View style={styles.bottomContainer}>
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_team_name')}
             name={FORM_KEY_TEAM_NAME}
             component={FormTextInput}
@@ -80,6 +82,8 @@ class RegisterBoat extends TextInputForm<Props> {
           />
           <Field
             style={styles.inputMargin}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_boat_class')}
             name={FORM_KEY_BOAT_CLASS}
             component={FormBoatClassInput}
@@ -91,6 +95,8 @@ class RegisterBoat extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_nationality')}
             name={FORM_KEY_NATIONALITY}
             component={FormNationalityPicker}
@@ -103,6 +109,8 @@ class RegisterBoat extends TextInputForm<Props> {
           />
           <Field
             style={styles.inputMargin}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_sail_number')}
             name={FORM_KEY_SAIL_NUMBER}
             component={FormTextInput}
@@ -114,6 +122,8 @@ class RegisterBoat extends TextInputForm<Props> {
             {...this.commonProps}
           />
           <Field
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_placeholder_boat_name')}
             name={FORM_KEY_BOAT_NAME}
             component={FormTextInput}
@@ -124,13 +134,15 @@ class RegisterBoat extends TextInputForm<Props> {
           />
           <Field
             style={styles.inputMargin}
+            containerStyle={styles.inputContainer}
+            inputStyle={styles.inputStyle}
             label={I18n.t('text_handicap_label')}
             name={FORM_KEY_HANDICAP}
             component={FormHandicapInput}
           />
           {error && <Text style={registration.errorText()}>{error}</Text>}
           <TextButton
-            style={registration.nextButton()}
+            style={[registration.nextButton(), styles.bottomButton]}
             textStyle={button.actionText}
             onPress={this.props.handleSubmit(this.onSubmit)}
             isLoading={isLoading}
@@ -157,7 +169,7 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 
   protected onSkip() {
-    navigateBack()
+    navigatePop()
   }
 
   protected onSubmit = async (values: any) => {
@@ -172,7 +184,7 @@ class RegisterBoat extends TextInputForm<Props> {
         imageData: values[FORM_KEY_IMAGE],
         handicap: values[FORM_KEY_HANDICAP],
       } as TeamTemplate)
-      navigateBack()
+      navigatePop()
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
     } finally {

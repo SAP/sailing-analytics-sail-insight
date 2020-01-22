@@ -29,7 +29,8 @@ export default EStyleSheet.create({
   },
   actionText: {
     color: 'white',
-    fontSize: '$titleFontSize',
+    fontSize: 24,
+    fontFamily: 'SFProDisplay-Heavy',
   },
   trackingActionText: {
     color: 'white',
@@ -45,12 +46,18 @@ export default EStyleSheet.create({
   },
   textButtonText: {
     color: '$textButtonTextColor',
-    fontSize: '$textButtonTextFontSize',
+    // fontSize: '$textButtonTextFontSize',
+    fontSize: 14,
+    fontFamily: 'SFProDisplay-Medium',
   },
   textButtonSecondaryText: {
     color: '$textButtonTextColor',
     fontSize: '$textButtonTextFontSize',
     fontWeight: '300',
+  },
+  textButtonTextBig: {
+    color: '$textButtonTextColor',
+    fontSize: '$titleFontSize',
   },
   modalBack: {
     color: '$primaryButtonColor',
@@ -72,14 +79,14 @@ export default EStyleSheet.create({
     tintColor: '$secondaryButtonColor',
     width: '$defaultIconSize+$actionIconSizeAddition',
     height: '$defaultIconSize+$actionIconSizeAddition',
-    padding: '$microSpacing',
+    // padding: '$microSpacing',
   },
 
   closeButton: {
     width:       '$defaultIconSize',
     height:      '$defaultIconSize',
     position:    'absolute',
-    top:         0,
+    top:         8,
     right:       0,
     resizeMode:  'contain',
     tintColor:   '$secondaryButtonColor',

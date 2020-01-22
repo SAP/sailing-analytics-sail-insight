@@ -11,6 +11,7 @@ const headerTitleStyleProps = isPlatformAndroid ?
 
 export default {
   headerTitle: {
+    color: '#fff', // quickfix to set dyn. title in teamdetails to white
     textAlign: 'center',
     alignSelf: 'center',
     fontFamily: $defaultFontFamily,

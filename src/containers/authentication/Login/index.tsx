@@ -7,9 +7,8 @@ import Images from '@assets/Images'
 import { login } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
-import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToMain, navigateToPasswordReset } from 'navigation'
+import { navigateToMainTabs, navigateToPasswordReset } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import ScrollContentView from 'components/ScrollContentView'
@@ -17,11 +16,6 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
 
-import { button, container, image, text } from 'styles/commons'
-import { registration } from 'styles/components'
-import { $extraSpacingScrollContent } from 'styles/dimensions'
-import IconText from '../../../components/IconText'
-import { $primaryButtonColor } from '../../../styles/colors'
 import styles from './styles'
 
 
@@ -39,16 +33,33 @@ class Login extends TextInputForm<{
   public onSubmit = async () => {
     this.setState({ error: null })
     const { username, password } = this.state
-    if (isEmpty(username) || isEmpty(password)) {
+
+    // custom validation
+    let errorMsg = null
+    if (isEmpty(username)) {
+      errorMsg = I18n.t('error_need_username')
+    }
+    if (isEmpty(password)) {
+      const errMsg = I18n.t('error_need_password')
+      if (errorMsg != null) {
+        errorMsg = `${errorMsg}\n${errMsg}`
+      } else {
+        errorMsg = errMsg
+      }
+    }
+    if (errorMsg != null) {
+      this.setState({ error: errorMsg })
       return
     }
+
+    // try to login
     try {
       this.setState({ isLoading: true })
       await this.props.login(username, password)
       this.props.fetchUserInfo()
-      navigateToMain()
+      navigateToMainTabs()
     } catch (err) {
-      this.setState({ error: getErrorDisplayMessage(err) })
+      this.setState({ error: I18n.t('error_login_incorrect') })
     } finally {
       this.setState({ isLoading: false })
     }
@@ -60,21 +71,17 @@ class Login extends TextInputForm<{
   public render() {
     const { error, isLoading } = this.state
     return (
-        <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-          <View style={container.stretchContent}>
-            <Image style={image.headerMedium} source={Images.header.sailors}/>
-            <Image style={image.tagLine} source={Images.corporateIdentity.sapTagLine}/>
-            <View style={[registration.topContainer(), styles.textContainer]}>
-              <Text style={registration.claim()}>
-                <Text>{I18n.t('text_login_claim_01')}</Text>
-                <Text style={text.claimHighlighted}>{I18n.t('text_login_claim_02')}</Text>
-              </Text>
-            </View>
+      <View style={{ width: '100%', height: '100%' }}>
+        <ScrollContentView style={styles.scrollContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.claim}>{I18n.t('text_login').toUpperCase()}</Text>
           </View>
-          <View style={registration.bottomContainer()}>
+          <View style={styles.inputField}>
             <TextInput
                 value={this.state.username}
                 onChangeText={this.onUsernameChange}
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.inputStyle}
                 placeholder={I18n.t('text_placeholder_your_username')}
                 keyboardType={'default'}
                 returnKeyType="next"
@@ -86,6 +93,8 @@ class Login extends TextInputForm<{
                 value={this.state.password}
                 onChangeText={this.onPasswordChange}
                 style={styles.password}
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.inputStyle}
                 placeholder={I18n.t('text_placeholder_enter_password')}
                 keyboardType={'default'}
                 returnKeyType="go"
@@ -93,28 +102,25 @@ class Login extends TextInputForm<{
                 secureTextEntry={true}
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}
             />
-            {error && <Text style={registration.errorText()}>{error}</Text>}
+            <TouchableOpacity style={styles.forgotPassword} onPress={this.onPasswordResetPress}>
+              <Text style={styles.forgotPwText}>
+                {I18n.t('caption_forgot_password')}
+              </Text>
+            </TouchableOpacity>
+            {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>}
+          </View>
+          <View style={styles.bottomButtonField}>
             <TextButton
-                style={registration.nextButton()}
-                textStyle={button.actionText}
+                style={styles.loginButton}
+                textStyle={styles.loginButtonText}
                 onPress={this.onSubmit}
                 isLoading={isLoading}
             >
-              {I18n.t('caption_lets_go')}
+              {I18n.t('caption_login').toUpperCase()}
             </TextButton>
-
-            <TouchableOpacity style={styles.forgotPassword} onPress={this.onPasswordResetPress}>
-              <IconText
-                  source={Images.actions.help}
-                  iconTintColor={$primaryButtonColor}
-                  textStyle={button.textButtonSecondaryText}
-                  alignment="horizontal"
-              >
-                {I18n.t('caption_forgot_password')}
-              </IconText>
-            </TouchableOpacity>
           </View>
         </ScrollContentView>
+      </View>
     )
   }
 

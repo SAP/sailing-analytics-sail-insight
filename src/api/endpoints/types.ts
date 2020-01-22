@@ -1,10 +1,17 @@
 export interface CreateEventBody {
   eventName?: string
+  ispublic?: boolean
   boatclassname: string
   venuename: string
   numberofraces?: number
   competitorRegistrationType?: 'CLOSED' | 'OPEN_UNMODERATED' | 'OPEN_MODERATED'
   secret?: string
+  createleaderboardgroup?: boolean
+  createregatta?: boolean
+  startdate?: string
+  enddate?: string
+  rankingMetric?: 'ONE_DESIGN' | 'ORC_PERFORMANCE_CURVE' | 'TIME_ON_TIME_AND_DISTANCE'
+  leaderboardDiscardThresholds?: number[]
 }
 
 export interface UpdateEventBody {
@@ -206,7 +213,7 @@ export interface CompetitorManeuverItem {
   maneuvers: Maneuver[]
 }
 
-export interface BoatClassesdBody {
+export interface BoatClassesBody {
   name: string
   typicallyStartsUpwind: boolean,
   hullLengthInMeters: number,
@@ -224,4 +231,27 @@ export interface CountryCodeBody {
   unVehicle?: string,
   ianaInternet?: string,
   threeLetterIsoCode: string,
+}
+
+export interface AddMarkFixBody {
+  leaderboardName: string
+  raceColumnName: string
+  fleetName: string
+  markId: string
+  lonDeg: string
+  latDeg: string
+  timeMillis: string
+}
+
+export interface AddCourseDefinitionToRaceLogBody {
+  leaderboardName: string
+  raceColumnName: string
+  fleetName: string
+  controlPoints: any[]
+}
+
+export interface CreateCourseBody {
+  name: string,
+  markConfigurations: any[],
+  waypoints: any[]
 }

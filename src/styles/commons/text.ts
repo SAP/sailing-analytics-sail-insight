@@ -21,6 +21,7 @@ export default EStyleSheet.create({
     alignSelf: 'stretch',
     fontSize: '$titleFontSize',
     fontWeight: 'bold',
+    color: 'white',
   },
   claimHighlighted: {
     color: '$primaryActiveColor',

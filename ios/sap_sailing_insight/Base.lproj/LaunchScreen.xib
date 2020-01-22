@@ -1,35 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="SF-Pro-Display-HeavyItalic.otf">
+            <string>SFProDisplay-HeavyItalic</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BestRun" translatesAutoresizingMaskIntoConstraints="NO" id="79M-XO-Lo6">
-                    <rect key="frame" x="24" y="277" width="327" height="113"/>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Background" translatesAutoresizingMaskIntoConstraints="NO" id="KGp-6x-GIn">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                 </imageView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ws_logo" translatesAutoresizingMaskIntoConstraints="NO" id="AMo-1L-ui3">
+                    <rect key="frame" x="101.66666666666669" y="813" width="89" height="63"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="63" id="HEB-fb-QeU"/>
+                        <constraint firstAttribute="width" constant="89" id="cTb-1i-rK3"/>
+                    </constraints>
+                </imageView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SAP_Logo" translatesAutoresizingMaskIntoConstraints="NO" id="SLQ-Qv-dRy">
+                    <rect key="frame" x="223.66666666666663" y="813" width="89" height="63"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="63" id="Sdw-n4-3g9"/>
+                        <constraint firstAttribute="width" constant="89" id="YV5-Ig-ibT"/>
+                    </constraints>
+                </imageView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="App_Logo" translatesAutoresizingMaskIntoConstraints="NO" id="RWm-OU-oWe">
+                    <rect key="frame" x="100.66666666666669" y="241.66666666666663" width="213" height="155"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="213" id="0Yz-O7-6Rb"/>
+                        <constraint firstAttribute="height" constant="155" id="AzB-MK-w5S"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Track-Analyze-Perform" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XQn-no-BA7">
+                    <rect key="frame" x="74.666666666666686" y="417.66666666666669" width="265" height="24"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="265" id="RHI-gI-8gR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="SFProDisplay-HeavyItalic" family="SF Pro Display" pointSize="20"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="79M-XO-Lo6" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="8dQ-5u-4Id"/>
-                <constraint firstItem="79M-XO-Lo6" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="24" id="LAe-VY-93X"/>
-                <constraint firstAttribute="trailing" secondItem="79M-XO-Lo6" secondAttribute="trailing" constant="24" id="uVB-rr-PZl"/>
+                <constraint firstItem="AMo-1L-ui3" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" constant="-61" id="4CT-Tv-mVp"/>
+                <constraint firstItem="RWm-OU-oWe" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-128.83333333333337" id="9sG-bF-Ad9"/>
+                <constraint firstItem="KGp-6x-GIn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="EVZ-yW-R1t"/>
+                <constraint firstAttribute="bottom" secondItem="SLQ-Qv-dRy" secondAttribute="bottom" constant="20" id="MEK-ZC-AjX"/>
+                <constraint firstItem="KGp-6x-GIn" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Ne3-TD-Rht"/>
+                <constraint firstAttribute="trailing" secondItem="KGp-6x-GIn" secondAttribute="trailing" id="O94-01-fea"/>
+                <constraint firstItem="RWm-OU-oWe" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="QWg-Fz-WVL"/>
+                <constraint firstAttribute="bottom" secondItem="AMo-1L-ui3" secondAttribute="bottom" constant="20" id="U6N-O0-aFK"/>
+                <constraint firstItem="XQn-no-BA7" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="W0D-H9-Qwe"/>
+                <constraint firstItem="SLQ-Qv-dRy" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" constant="61" id="jEu-IR-Km8"/>
+                <constraint firstAttribute="bottom" secondItem="KGp-6x-GIn" secondAttribute="bottom" id="tb1-sW-HNX"/>
+                <constraint firstItem="XQn-no-BA7" firstAttribute="top" secondItem="RWm-OU-oWe" secondAttribute="bottom" constant="21.000000000000057" id="wJl-uO-pLe"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
-            <point key="canvasLocation" x="547.5" y="454.5"/>
+            <point key="canvasLocation" x="546.37681159420299" y="453.34821428571428"/>
         </view>
     </objects>
     <resources>
-        <image name="BestRun" width="375" height="113"/>
+        <image name="App_Logo" width="212.33332824707031" height="155"/>
+        <image name="Background" width="375" height="812"/>
+        <image name="SAP_Logo" width="89" height="62.666667938232422"/>
+        <image name="ws_logo" width="89" height="62.333332061767578"/>
     </resources>
 </document>

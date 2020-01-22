@@ -1,9 +1,9 @@
+import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
-import I18n from 'i18n'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
-import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
+import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessionDetail, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
 
@@ -14,10 +14,11 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { spreadableList } from 'helpers/utils'
 
+import { fetchEvent } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
-import { getCheckInByLeaderboardName, getActiveCheckInEntity } from 'selectors/checkIn'
-import { LocationTrackingStatus } from 'services/LocationService'
+import { getActiveCheckInEntity, getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
+import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
 import { mapResToRegatta } from '../models/Regatta'
 import { getCompetitor } from '../selectors/competitor'
@@ -49,7 +50,7 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
     } = checkInData
 
     const queue = ActionQueue.create(dispatch, [
-      ...spreadableList(eventId, fetchEntityAction(dataApi.requestEvent)(eventId, secret)),
+      ...spreadableList(eventId, fetchEvent(dataApi.requestEvent)(eventId, secret)),
       fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName, secret),
       fetchRegatta(regattaName, secret, serverUrl),
       fetchAllRaces(regattaName, secret, serverUrl),
@@ -94,7 +95,12 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
     Alert.alert(
       I18n.t('text_event_already_joined_title'),
       I18n.t('text_event_already_joined_message'),
-      [{ text: 'OK', onPress: navigateToSessions }],
+      [{ text: 'OK',
+        onPress: () => {
+          navigateToSessions(),
+          data.leaderboardName && navigateToSessionDetail(data.leaderboardName)
+        }
+      }],
       { cancelable: false }
     )
 
@@ -144,12 +150,15 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
   }
 }
 
-export const registerDevice = (leaderboardName: string) => withDataApi({ leaderboard: leaderboardName })(
+export const registerDevice = (leaderboardName: string, data?: Object) => withDataApi({ leaderboard: leaderboardName })(
   async (dataApi, dispatch, getState) => {
     const checkInData = getCheckInByLeaderboardName(leaderboardName)(getState())
+
     await dataApi.startDeviceMapping(
       leaderboardName,
-      CheckInService.checkInDeviceMappingData(checkInData),
+      { ...CheckInService.checkInDeviceMappingData(checkInData),
+        ...data
+      }
     )
   },
 )
