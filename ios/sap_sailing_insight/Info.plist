@@ -25,7 +25,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>comsailtrackssailinginsight</string>
+				<string>orgsailyachtresearchsailinsight</string>
 			</array>
 		</dict>
 	</array>
@@ -108,11 +108,11 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>branch_app_domain</key>
-	<string>sailinsight20-app.sapsailing.com</string>
+	<string>sailinsight30-app.sapsailing.com</string>
 	<key>branch_key</key>
 	<dict>
 		<key>live</key>
-		<string>key_live_dfPlye3KB3UqKx6h9FhdAmbbytkpdUuA</string>
+		<string>key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0</string>
 	</dict>
 </dict>
 </plist>
