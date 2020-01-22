@@ -43,7 +43,7 @@ const sagaMiddleware = createSagaMiddleware({
 
 const enhancers = composeWithDevTools(applyMiddleware(
   createNetworkMiddleware({
-    actionTypes: ['SET_RACE_TIME', 'SELECT_COURSE', 'FETCH_PERMISSIONS_FOR_EVENT',
+    actionTypes: ['SET_RACE_TIME', 'SELECT_COURSE', 'FETCH_EVENT_PERMISSION', 'CREATE_EVENT',
       'FETCH_RACES_TIMES_FOR_EVENT', 'FETCH_COURSES_FOR_EVENT', 'ADD_RACE_COLUMNS',
       'REMOVE_RACE_COLUMNS', 'SAVE_COURSE', 'LOAD_MARK_PROPERTIES'],
   }),
