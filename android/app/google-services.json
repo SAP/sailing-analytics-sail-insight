@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:353949874683:android:038abec13db9fe70",
+        "mobilesdk_app_id": "1:353949874683:android:85b76189a36a45c7f0f35e",
         "android_client_info": {
-          "package_name": "com.sailtracks.android.sailinginsight"
+          "package_name": "org.sailyachtresearch.sailinsight"
         }
       },
       "oauth_client": [

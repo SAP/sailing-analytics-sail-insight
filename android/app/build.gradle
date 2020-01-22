@@ -95,7 +95,7 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
-def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'com.sailtracks.android.sailinginsight'
+def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'org.sailyachtresearch.sailinsight'
 def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
 def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "65") as Integer
 def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.45"
@@ -166,21 +166,21 @@ android {
         dev {
             dimension "default"
             manifestPlaceholders = [
-                    branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_dfPlye3KB3UqKx6h9FhdAmbbytkpdUuA",
-                    branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_idPavc3PD7SCPu5i9qaV9aglyDgbmRyR",
-                    branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight20-app.sapsailing.com",
+                    branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0",
+                    branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_lhTIEBBwuu6qPvasPZfUcnlgyyb3fI7p",
+                    branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight30-app.sapsailing.com",
                     branchIOTestMode: false,
-                    branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "comsailtrackssailinginsight",
+                    branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "orgsailyachtresearchsailinsight",
             ]
         }
          live {
              dimension "default"
              manifestPlaceholders = [
-                     branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_dfPlye3KB3UqKx6h9FhdAmbbytkpdUuA",
-                     branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_idPavc3PD7SCPu5i9qaV9aglyDgbmRyR",
-                     branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight20-app.sapsailing.com",
+                     branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0",
+                     branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_lhTIEBBwuu6qPvasPZfUcnlgyyb3fI7p",
+                     branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight30-app.sapsailing.com",
                      branchIOTestMode: false,
-                     branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "comsailtrackssailinginsight",
+                     branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "orgsailyachtresearchsailinsight",
              ]
          }
     }
