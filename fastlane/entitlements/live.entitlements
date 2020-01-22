@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:sailinsight20-app.sapsailing.com</string>
+		<string>applinks:sailinsight30-app.sapsailing.com</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
