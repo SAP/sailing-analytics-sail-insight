@@ -5,7 +5,7 @@ declare var expect: any
 
 // tslint:disable-next-line
 const testUrl = 'https://d-labs.sapsailing.com/tracking/checkin?event_id=750d5773-77f9-4e8d-a704-9231b3ed435f&leaderboard_name=Regatta+Dorian&competitor_id=cf86ae7a-bb32-481e-94bc-246d3699a11b'
-const publicInviteLink = 'https://sailinsight20-app.sapsailing.com/publicInvite?regatta_name=dk-session-regatta-18-12-06--1&secret=5OY3T2677YIV6HIF1NY8'
+const publicInviteLink = 'https://sailinsight30-app.sapsailing.com/publicInvite?regatta_name=dk-session-regatta-18-12-06--1&secret=5OY3T2677YIV6HIF1NY8'
 
 const branchTestUrl = ''
 
