@@ -3,7 +3,9 @@ import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
          fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD, OPEN_SAP_ANALYTICS_EVENT,
          REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME, updateRaceTime, selectEvent } from 'actions/events'
-import { fetchPermissionsForEvent } from 'sagas/permissionsSaga'
+import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
+import { offlineActionTypes } from 'react-native-offline'
+import { fetchPermissionsForEvent } from 'actions/permissions'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
@@ -12,7 +14,7 @@ import { navigateToSessionDetail, navigateToSessionDetail4Organizer } from 'navi
 import { __, apply, compose, concat, curry, dec,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share } from 'react-native'
-import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest, take } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
@@ -25,7 +27,8 @@ const valueAtIndex = curry((index, array) => compose(
   [index]))
 
 function* selectEventSaga({ payload }: any) {
-  yield call(fetchPermissionsForEvent, { payload })
+  yield put(fetchPermissionsForEvent(payload))
+  yield take([UPDATE_EVENT_PERMISSION, offlineActionTypes.FETCH_OFFLINE_MODE])
 
   const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
 
