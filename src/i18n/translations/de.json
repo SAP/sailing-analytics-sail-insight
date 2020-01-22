@@ -267,8 +267,8 @@
   "error_need_email": "Bitte gebe deine E-Mail Adresse ein",
   "error_login_incorrect": "Kombination von Benutzername und Passwort sind falsch",
 
-  "url_eula": "http://konzeptwerft.com/konzeptwerft/sail-insight-powered-by-sap-terms-conditions/",
-  "url_privacy_policy": "http://konzeptwerft.com/datenschutz/",
+  "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
+  "url_privacy_policy": "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",
 
   "JIBE": "Halse",
   "HEAD_UP": "Anluven",

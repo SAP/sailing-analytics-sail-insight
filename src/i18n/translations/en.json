@@ -268,8 +268,8 @@
   "error_need_email": "Please enter your e-mail address",
   "error_login_incorrect": "The username or password you entered is incorrect",
 
-  "url_eula": "http://konzeptwerft.com/en/sail-insight-powered-sap-app/sail-insight-powered-sap-terms-conditions/",
-  "url_privacy_policy": "http://konzeptwerft.com/en/privacy/",
+  "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
+  "url_privacy_policy": "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",
 
   "JIBE": "Jibe",
   "HEAD_UP": "Heading Up",
