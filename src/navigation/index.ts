@@ -35,7 +35,6 @@ export const navigateToLeaderboard = () => NavigationService.navigate(Screens.Le
 export const navigateToSessionDetail = (data: string) => NavigationService.navigate(Screens.SessionDetail, { data })
 export const navigateToSessionDetail4Organizer = (data: string) => NavigationService.navigate(Screens.SessionDetail4Organizer, { data })
 export const navigateToRaceDetails = (data: string) => NavigationService.navigate(Screens.RaceDetails, { data })
-export const navigateToRaceSetup = (data: string) => NavigationService.navigate(Screens.RaceSetup, { data })
 export const navigateToRaceCourseLayout = () => NavigationService.navigate(Screens.RaceCourseLayout)
 export const navigateToCourseGeolocation = (data: object) => NavigationService.navigate(Screens.CourseGeolocation, { data })
 export const navigateToCourseTrackerBinding = (data: object) => NavigationService.navigate(Screens.CourseTrackerBinding, { data })

@@ -1,6 +1,8 @@
 import Images from '@assets/Images'
 import { Component, contramap, fold, fromClass, nothing,
-  recomposeWithHandlers as withHandlers } from 'components/fp/component'
+  recomposeWithHandlers as withHandlers,
+  recomposeBranch as branch,
+  nothingAsClass } from 'components/fp/component'
 import { forwardingPropsFlatList, iconText, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
 import I18n from 'i18n'
@@ -8,6 +10,7 @@ import { __, always, append, compose, concat, curry,
   equals, has, head, length, map, merge, objOf,
   prepend, prop, propEq, range, reduce, reject,
   remove, split, toString, toUpper, update, when } from 'ramda'
+import { navigateToEditCompetitor } from 'navigation'
 import { Dimensions } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
 import QRCode from 'react-native-qrcode-svg'
@@ -213,22 +216,35 @@ const qrCode = Component((props: any) => compose(
   }))
 ))
 
+const inviteCompetitorsButton = Component(props => compose(
+  fold(props),
+  styledButton({
+    onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
+  }),
+  text({ style: styles.buttonContent }))(
+  I18n.t('caption_invite_competitors').toUpperCase()))
+
+const joinAsCompetitorButton = Component(props => compose(
+  fold(props),
+  styledButton({
+    onPress: (props: any) => navigateToEditCompetitor(props.checkIn, { selectSessionAfter: props.session })
+  }),
+  text({ style: styles.buttonContent }))(
+  I18n.t('caption_join_as_competitor').toUpperCase()))
+
+const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
+const nothingIfCurrentUserIsNotCompetitor = branch(propEq('currentUserIsCompetitorForEvent', false), nothingAsClass)
+
 export const competitorsCard = Component((props: any) =>
   compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder4 }, nothing())),
     view({ style: styles.container4 }),
-    reduce(concat, nothing())
-  )([
-    text({ style: styles.headline }, I18n.t('caption_competitor').toUpperCase()),
-    // inlineText( { style: styles.text }, [
-    //   text({ style: styles.textLight }, `Event Status `),
-    //   text({ style: styles.textValue }, props.raceStatus)
-    // ]),
-    text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
-    styledButton({
-      onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
-    }, text({ style: styles.buttonContent }, I18n.t('caption_invite_competitors').toUpperCase())),
-    qrCode
-  ]),
-)
+    reduce(concat, nothing()))([
+      text({ style: styles.headline }, I18n.t('caption_competitor').toUpperCase()),
+      text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
+      nothingIfCurrentUserIsNotCompetitor(text({ style: styles.textLast }, I18n.t('text_user_is_competitor'))),
+      inviteCompetitorsButton,
+      nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton),
+      qrCode
+    ]))
