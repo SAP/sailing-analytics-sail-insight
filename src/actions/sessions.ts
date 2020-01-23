@@ -27,7 +27,8 @@ import { DispatchType, GetStateType } from 'helpers/types'
 import { addUrlParams } from 'helpers/utils'
 import { getSharingUuid } from 'helpers/uuid'
 
-
+import { BRANCH_APP_DOMAIN } from 'environment'
+import querystring from 'query-string'
 import { collectCheckInData, registerDevice, updateCheckIn } from 'actions/checkIn'
 import { startTracking } from 'actions/tracking'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
@@ -62,7 +63,16 @@ export const shareSession = (checkIn: CheckIn) => async () => {
     messageHeader: I18n.t('text_share_session_message_header', { regattaName: checkIn.regattaName }),
     messageBody: I18n.t('text_share_session_message_body', { regattaName: checkIn.regattaName }),
   }
-  return showShareSheet(await createSharingData(sharingData, shareOptions))
+  const path = querystring.stringify({
+    event_id: checkIn.eventId,
+    leaderboard_name: checkIn.leaderboardName,
+    secret: checkIn.secret
+  })
+  const checkinUrl = `${checkIn.serverUrl}/tracking/checkin?${path}`
+  const controlParams = {
+    $desktop_url: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`
+  }
+  return showShareSheet(await createSharingData(sharingData, shareOptions, controlParams))
 }
 
 export const shareSessionRegatta = (leaderboardName: string) => (dispatch: DispatchType, getState: GetStateType) => {
