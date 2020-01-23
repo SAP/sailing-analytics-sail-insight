@@ -61,6 +61,7 @@
 		6B2E059F2330CD0700C16CFC /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		6B4E87D42330B621009F8CCC /* TSBackgroundFetch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BB6CC3323301D9A00CAF4C9 /* TSBackgroundFetch.framework */; };
 		6B4E88122330B80E009F8CCC /* TSLocationManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BB6CC3523301DB000CAF4C9 /* TSLocationManager.framework */; };
+		6B70DEA323D98050000E7A1D /* sap_sailing_insight.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 98400D3621C03499002D36DE /* sap_sailing_insight.entitlements */; };
 		6B9E40E9232FC42C0007CD99 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BAED7CF22BB717A00657AFA /* libRNFS.a */; };
 		6BA3934523316586003B53FB /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BA043E5233101B3000C5071 /* libRNFirebase.a */; };
 		6BA39346233167F9003B53FB /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6BA043E5233101B3000C5071 /* libRNFirebase.a */; };
@@ -2034,6 +2035,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B70DEA323D98050000E7A1D /* sap_sailing_insight.entitlements in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				106D9AE62223141300E2D930 /* GoogleService-Info.plist in Resources */,

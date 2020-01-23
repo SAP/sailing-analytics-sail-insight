@@ -51,9 +51,11 @@ export interface Shareable {
   branchUniversalObject: any,
   linkProperties: any,
   shareOptions: any,
+  controlParams?: any
 }
 
-export const createSharingData = async (data: SharingData, shareOptions: ShareOptions) => {
+export const createSharingData = async (data: SharingData, shareOptions: ShareOptions, controlParams: any) => {
+
   const branchUniversalObject = await branch.createBranchUniversalObject(
     getSharingUuid(),
     data,
@@ -65,11 +67,12 @@ export const createSharingData = async (data: SharingData, shareOptions: ShareOp
     branchUniversalObject,
     linkProperties,
     shareOptions,
+    controlParams
   }
 }
 
 export const showShareSheet = async (sharingData: Shareable) => {
-  const { branchUniversalObject, shareOptions, linkProperties } = sharingData
+  const { branchUniversalObject, shareOptions, linkProperties, controlParams } = sharingData
   if (!branchUniversalObject) {
     return
   }
@@ -77,6 +80,7 @@ export const showShareSheet = async (sharingData: Shareable) => {
   const { completed, error } = await branchUniversalObject.showShareSheet(
     shareOptions,
     linkProperties,
+    controlParams
   )
   if (error) {
     Logger.debug('Share session error:', error)
