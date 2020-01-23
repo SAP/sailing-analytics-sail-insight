@@ -1,20 +1,24 @@
 import React from 'react'
-import { createBottomTabNavigator } from 'react-navigation'
+import { createBottomTabNavigator, createStackNavigator, HeaderBackButton } from 'react-navigation'
+import I18n from 'i18n'
 
 import Images from '@assets/Images'
 import { getTabItemTitleTranslation } from 'helpers/texts'
 import * as Screens from 'navigation/Screens'
-
+import * as commons from 'navigation/commons'
 import IconText from 'components/IconText'
 import MarkInventory from 'containers/Inventory/MarkInventory'
 import Sessions from 'containers/session/Sessions'
-
+import RaceDetails from 'containers/CourseCreation/RaceDetails'
+import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
+import SessionDetail4Organizer, { ShareButton4Organizer } from 'containers/session/SessionDetail4Organizer'
+import EventCreation from 'containers/session/EventCreation'
 import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
+import { navigateBack } from 'navigation/NavigationService'
 
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
 import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
-
 
 const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
   const { routeName = '' } = navigation.state
@@ -63,10 +67,78 @@ const onTabBarPress = (navigation: any) => (props: any = {}) => {
   return props.defaultHandler(props.navigation)
 }
 
+const sessionsStack = createStackNavigator({
+  [Screens.Sessions]: {
+    screen: Sessions,
+    navigationOptions: {
+      header: null
+    }
+  },
+  [Screens.SessionDetail]: {
+    screen: SessionDetail.fold,
+    navigationOptions: {
+      title: I18n.t('title_event_details'),
+      headerLeft: () => (
+        <HeaderBackButton
+          tintColor="white"
+          title=""
+          onPress={navigateBack}
+        />
+      ),
+      headerRight: ShareButton.fold({}),
+    },
+  },
+  [Screens.EventCreation]: {
+    screen: EventCreation.fold,
+    navigationOptions: {
+      title: I18n.t('title_event_creation'),
+      headerLeft: () => (
+        <HeaderBackButton
+          tintColor="white"
+          title=""
+          onPress={navigateBack}
+        />
+      ),
+    },
+  },
+  [Screens.SessionDetail4Organizer]: {
+    screen: SessionDetail4Organizer.fold,
+    navigationOptions: {
+      title: I18n.t('title_event_details'),
+      headerLeft: () => (
+        <HeaderBackButton
+          tintColor="white"
+          title=""
+          onPress={navigateBack}
+        />
+      ),
+      headerRight: ShareButton4Organizer.fold({}),
+    },
+  },
+  [Screens.RaceDetails]: {
+    screen: RaceDetails.fold,
+    navigationOptions: {
+      title: I18n.t('title_race_details'),
+      headerLeft: () => (
+        <HeaderBackButton
+          tintColor="white"
+          title=""
+          onPress={navigateBack}
+        />
+      ),
+    },
+  },
+},
+{
+  initialRouteName: Screens.Sessions,
+  ...commons.stackNavigatorConfig,
+  defaultNavigationOptions: () => commons.headerNavigationOptions,
+})
+
 export default createBottomTabNavigator(
   {
     [Screens.TrackingNavigator]: TrackingNavigator,
-    [Screens.Sessions]: Sessions,
+    [Screens.Sessions]: sessionsStack,
     [Screens.Inventory]: MarkInventory.fold,
     [Screens.Account]: AccountNavigator,
   },

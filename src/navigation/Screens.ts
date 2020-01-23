@@ -22,7 +22,6 @@ export const FilterSessions = 'FilterSessions'
 export const EventCreation = 'EventCreation'
 
 export const RaceDetails = 'RaceDetails'
-export const RaceSetup = 'RaceSetup'
 export const RaceCourseLayout = 'RaceCourseLayout'
 export const CourseGeolocation = 'CourseGeolocation'
 export const CourseTrackerBinding = 'CourseTrackerBinding'
