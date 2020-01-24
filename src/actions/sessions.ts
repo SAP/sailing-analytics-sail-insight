@@ -33,6 +33,7 @@ import { collectCheckInData, registerDevice, updateCheckIn } from 'actions/check
 import { startTracking } from 'actions/tracking'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
+import { selectEvent } from 'actions/events'
 import { saveTeam } from 'actions/user'
 import { getUserInfo } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
@@ -251,6 +252,8 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       if (options && options.startTrackingAfter) {
         const checkIn = getCheckInByLeaderboardName(data.leaderboardName)(getState())
         dispatch(startTracking(checkIn))
+      } else if (options && options.selectSessionAfter) {
+        dispatch(selectEvent(options.selectSessionAfter))
       } else {
         navigateToTrackingNavigator()
       }

@@ -16,12 +16,7 @@ import ImageButton from 'components/ImageButton'
 import WebView from 'components/WebView'
 import Geolocation from 'containers/CourseCreation/Geolocation'
 import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
-import RaceDetails from 'containers/CourseCreation/RaceDetails'
-import RaceSetup from 'containers/CourseCreation/RaceSetUp'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
-import EventCreation from 'containers/session/EventCreation'
-import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
-import SessionDetail4Organizer, { ShareButton4Organizer } from 'containers/session/SessionDetail4Organizer'
 import TeamDetails from 'containers/TeamDetails'
 import FirstContact from 'containers/user/FirstContact'
 import { navigateBack } from 'navigation/NavigationService'
@@ -69,71 +64,6 @@ export default createStackNavigator(
         backBehavior: 'none',
         gesturesEnabled: false,
       },
-    },
-    [Screens.EventCreation]: {
-      screen: EventCreation.fold,
-      navigationOptions: {
-        title: I18n.t('title_event_creation'),
-        headerLeft: () => (
-          <HeaderBackButton
-            tintColor="white"
-            title=""
-            onPress={navigateBack}
-          />
-        ),
-      },
-    },
-    [Screens.SessionDetail]: {
-      screen: SessionDetail.fold,
-      navigationOptions: {
-        title: I18n.t('title_event_details'),
-        headerLeft: () => (
-          <HeaderBackButton
-            tintColor="white"
-            title=""
-            onPress={navigateBack}
-          />
-        ),
-        headerRight: ShareButton.fold({}),
-      },
-    },
-    [Screens.SessionDetail4Organizer]: {
-      screen: SessionDetail4Organizer.fold,
-      navigationOptions: {
-        title: I18n.t('title_event_details'),
-        headerLeft: () => (
-          <HeaderBackButton
-            tintColor="white"
-            title=""
-            onPress={navigateBack}
-          />
-        ),
-        headerRight: ShareButton4Organizer.fold({}),
-      },
-    },
-    [Screens.RaceDetails]: {
-      screen: RaceDetails.fold,
-      navigationOptions: {
-        title: I18n.t('title_race_details'),
-        headerLeft: () => (
-          <HeaderBackButton
-            tintColor="white"
-            title=""
-            onPress={navigateBack}
-          />
-        ),
-      },
-    },
-    [Screens.RaceSetup]: {
-      screen: RaceSetup.fold,
-      navigationOptions: ({ navigation: navigationProps }: any) => ({
-        headerTitle: (
-          <HeaderTitle
-            firstLine={navigationProps.state.params.heading}
-            secondLine={navigationProps.state.params.subHeading}
-          />
-        ),
-      }),
     },
     [Screens.RaceCourseLayout]: {
       screen: RaceCourseLayout.fold,

@@ -124,7 +124,6 @@ export default EStyleSheets.create({
   },
   textLast: {
     color: 'white',
-    marginTop: 10,
     marginBottom: 10,
   },
   textHeader: {

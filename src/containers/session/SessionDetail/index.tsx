@@ -15,6 +15,7 @@ import { __, always, call, compose, concat, identity, inc, last, merge, reduce, 
 import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
+import { currentUserIsCompetitorForEvent, getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { container } from 'styles/commons'
 import {
   competitorsCard,
@@ -34,6 +35,7 @@ const shareIcon = fromClass(IconText).contramap(always({
 const mapStateToProps = (state: any, props: any) => {
   const leaderboardName = getCustomScreenParamData(props)
   const session = getSession(leaderboardName)(state)
+  const checkIn = getCheckInByLeaderboardName(leaderboardName)(state)
   const regattaRaces = getRegattaPlannedRaces(session.regattaName)(state)
 
   const { serverUrl, eventId, secret } = session
@@ -47,11 +49,13 @@ const mapStateToProps = (state: any, props: any) => {
 
   return {
     session,
+    checkIn,
     qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
     name: session.regattaName,
     startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate) || '? ? ?',
     location: session && session.event && session.event.venue && session.event.venue.name || '',
     boatClass: session && session.boat && session.boat.boatClass || '',
+    currentUserIsCompetitorForEvent: currentUserIsCompetitorForEvent(leaderboardName)(state),
     raceStatus: '? ? ?', //'Race 1 is currently running', or 'Event is open' ....
     discardRaces: '? ? ?', // like '2 | 4 | 6'
     races: regattaRaces.length,
