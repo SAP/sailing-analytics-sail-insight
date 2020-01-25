@@ -1,7 +1,7 @@
 import { prop, propEq, find, compose, path, defaultTo,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
-  apply, map, take, move, evolve, dissoc, not, flatten, tap, reject, __,
-  curry,reduce, assoc, keys, both } from 'ramda'
+  apply, map, take, move, evolve, dissoc, not, flatten, reject, __,
+  curry,reduce, assoc, keys, both, inc, range, concat } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
 
@@ -25,6 +25,16 @@ export const getSelectedCourse = createSelector(
   (state: any) => state.courses.selectedCourse,
   getCourses,
   (selectedEventInfo, selectedCourseInfo, courses) => courses[`${selectedEventInfo.regattaName} - ${selectedCourseInfo.race}`])
+
+export const getAllCoursesForSelectedEvent = createSelector(
+  getSelectedEventInfo,
+  getCourses,
+  (selectedEventInfo, courses) => compose(
+    map(prop(__, courses)),
+    map(compose(concat(`${selectedEventInfo.regattaName} - R`), String)),
+    range(1),
+    inc)(
+    selectedEventInfo.numberOfRaces))
 
 export const getEditedCourse = (state: any) => state.courses.editedCourse
 

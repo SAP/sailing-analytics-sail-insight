@@ -34,6 +34,7 @@ function* safeApiCall(method, ...args) {
   try {
     result = yield call(method, ...args)
   } catch (e) {
+    console.log('error', e)
     firebase.crashlytics().recordError(0, `Caught error in events saga: ${e.message}`)
   }
 
