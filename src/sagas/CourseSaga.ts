@@ -1,7 +1,7 @@
 import { map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
-  find, eqProps, propEq, when, tap, defaultTo, isEmpty,
-  __, head, last, includes, flatten, reject } from 'ramda'
+  find, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
+  __, head, last, includes, flatten, reject, filter, both } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe } from './index'
@@ -24,14 +24,16 @@ import {
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
 import { loadMarkProperties } from 'sagas/InventorySaga'
+import { getHashedDeviceId } from 'selectors/user'
 import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
 import { getCourseById, getEditedCourse, hasSameStartFinish,
   hasEditedCourseChanged, getSelectedMarkConfiguration,
-  getMarkConfigurationById } from 'selectors/course'
+  getMarkConfigurationById, getAllCoursesForSelectedEvent } from 'selectors/course'
 import {
   getSelectedEventInfo,
   getSelectedRaceInfo
 } from 'selectors/event'
+import { updateCheckIn } from 'actions/checkIn'
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
 import { navigateToRaceCourseLayout } from 'navigation'
@@ -138,7 +140,7 @@ const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) 
   course.waypoints))
 
 function* saveCourseFlow() {
-  const { serverUrl, regattaName, raceColumnName, fleet } = yield select(getSelectedRaceInfo)
+  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
   const raceId = getRaceId(regattaName, raceColumnName)
 
@@ -148,7 +150,9 @@ function* saveCourseFlow() {
   const markConfigurationUsedInEditedCourse = courseWaypointsUseMarkConfiguration(__, editedCourse)
 
   const course = evolve({
-    waypoints: map(dissoc('id')),
+    waypoints: compose(
+      reject(isEmpty),
+      map(dissoc('id'))),
     markConfigurations: compose(
       map(compose(
         mergeLeft({ storeToInventory: true }),
@@ -181,6 +185,21 @@ function* saveCourseFlow() {
     course: courseWithWaypointIds(updatedCourse)
   }))
 
+  const allCourses = yield select(getAllCoursesForSelectedEvent)
+  const markUsedWithCurrentDeviceAsTracker = compose(
+    head,
+    filter(compose(find(both(
+      propEq('trackingDeviceHash', getHashedDeviceId()),
+      compose(isNil, prop('trackingDeviceMappedToMillis')))),
+      prop('trackingDevices'))),
+    flatten,
+    map(prop('markConfigurations')))(
+    allCourses)
+
+  yield put(updateCheckIn({
+    leaderboardName,
+    markId: markUsedWithCurrentDeviceAsTracker ? markUsedWithCurrentDeviceAsTracker.markId : null
+  }))
   yield call(loadMarkProperties)
 }
 

@@ -6,6 +6,7 @@ import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
 import I18n from 'i18n'
+import { getHashedDeviceId } from 'selectors/user'
 
 import {
   loadCourse,
@@ -113,10 +114,16 @@ const markConfigurations = handleActions({
   [updateMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
       dissoc('lastKnownPosition'),
-      mergeLeft({ currentTrackingDeviceId: {
-        id: action.payload.deviceId,
-        type: 'smartphoneUUID',
-        stringRepresentation: action.payload.deviceId }}))),
+      mergeLeft({
+        trackingDevices: [{
+          trackingDeviceType: 'smartphoneUUID',
+          trackingDeviceHash: getHashedDeviceId(),
+          trackingDeviceMappedFromMillis: new Date().getTime()
+        }],
+        currentTrackingDeviceId: {
+          id: action.payload.deviceId,
+          type: 'smartphoneUUID',
+          stringRepresentation: action.payload.deviceId }}))),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
