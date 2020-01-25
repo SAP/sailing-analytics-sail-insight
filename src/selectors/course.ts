@@ -31,7 +31,7 @@ export const getAllCoursesForSelectedEvent = createSelector(
   getCourses,
   (selectedEventInfo, courses) => compose(
     map(prop(__, courses)),
-    map(compose(concat(`${selectedEventInfo.regattaName} - R`), String)),
+    map(compose(concat(`${selectedEventInfo.regattaName} - ${selectedEventInfo.trackPrefix || 'R'}`), String)),
     range(1),
     inc)(
     selectedEventInfo.numberOfRaces))
