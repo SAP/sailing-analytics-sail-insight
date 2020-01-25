@@ -176,6 +176,12 @@ function* saveCourseFlow() {
 
   const updatedCourse = yield call(api.createCourse, regattaName, raceColumnName, fleet, course)
 
+  // console.log('updated course', updatedCourse)
+  // const markUsedWithCurrentDeviceAsTracker = compose(
+  //   map()
+  //   prop('markConfigurations'))(
+  //   updatedCourse)
+
   yield put(loadCourse({
     raceId,
     course: courseWithWaypointIds(updatedCourse)

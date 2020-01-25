@@ -1,3 +1,4 @@
+import firebase from 'react-native-firebase'
 import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
@@ -6,12 +7,13 @@ import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
 import { fetchPermissionsForEvent } from 'actions/permissions'
+import { updateCheckIn } from 'actions/checkIn'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import { navigateToSessionDetail, navigateToSessionDetail4Organizer } from 'navigation'
-import { __, apply, compose, concat, curry, dec,
+import { __, apply, compose, concat, curry, dec, path, prop, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share } from 'react-native'
 import { all, call, put, select, takeEvery, takeLatest, take } from 'redux-saga/effects'
@@ -25,6 +27,18 @@ const valueAtIndex = curry((index, array) => compose(
   values,
   pick(__, array))(
   [index]))
+
+function* safeApiCall(method, ...args) {
+  let result
+
+  try {
+    result = yield call(method, ...args)
+  } catch (e) {
+    firebase.crashlytics().recordError(0, `Caught error in events saga: ${e.message}`)
+  }
+
+  return result
+}
 
 function* selectEventSaga({ payload }: any) {
   yield put(fetchPermissionsForEvent(payload))
@@ -48,7 +62,7 @@ function* fetchRacesTimesForCurrentEvent({ payload }: any) {
   const races = yield select(getRegattaPlannedRaces(payload.regattaName))
 
   const raceTimes = yield all(races.map((raceName: string) =>
-    call(api.requestRaceTime, payload.leaderboardName, raceName, 'Default')))
+    safeApiCall(api.requestRaceTime, payload.leaderboardName, raceName, 'Default')))
 
   yield all(raceTimes.map((raceTime: object, index: number) => put(updateRaceTime({
     [`${payload.leaderboardName}-${races[index]}`]: raceTime
@@ -60,7 +74,7 @@ function* fetchCoursesForCurrrentEvent({ payload }: any) {
   const races = yield select(getRegattaPlannedRaces(payload.regattaName))
 
   const raceCourses = yield all(races.map((raceName: string) =>
-    call(api.requestCourse, payload.regattaName, raceName, 'Default')
+    safeApiCall(api.requestCourse, payload.regattaName, raceName, 'Default')
   ))
 
   yield all(raceCourses.map((course: object, index: number) =>
@@ -83,7 +97,7 @@ function* setRaceTime({ payload }: any) {
 
   const { username } = yield select(getUserInfo)
 
-  yield call(api.updateRaceTime, leaderboardName, race, 'Default', {
+  yield safeApiCall(api.updateRaceTime, leaderboardName, race, 'Default', {
     authorName: username,
     authorPriority: 3,
     passId: 0,
@@ -92,7 +106,6 @@ function* setRaceTime({ payload }: any) {
   })
 
   const races = yield select(getRegattaPlannedRaces(regattaName))
-
   const previousRace = compose(
     valueAtIndex(__, races),
     dec,
@@ -100,7 +113,7 @@ function* setRaceTime({ payload }: any) {
     races)
 
   if (previousRace) {
-    yield call(api.setTrackingTimes, regattaName,
+    yield safeApiCall(api.setTrackingTimes, regattaName,
       {
         fleet: 'Default',
         race_column: previousRace,
@@ -108,34 +121,28 @@ function* setRaceTime({ payload }: any) {
       })
   }
 
-  try {
-    yield all(races.map((race: string) =>
-      call(api.startTracking, leaderboardName, {
-        race_column: race,
-        fleet: 'Default'
-    })))
-  } catch {}
+  yield all(races.map((race: string) =>
+    safeApiCall(api.startTracking, leaderboardName, {
+      race_column: race,
+      fleet: 'Default'
+  })))
 }
 
 function* createEvent({ payload: { payload: data} }: any) {
   const api = dataApi(data.serverUrl)
-
   const races = compose(
     map(compose(concat('R'), toString)),
     range(1),
     inc)(
     data.numberOfRaces)
-
   const regatta = yield select(getRegatta(data.regattaName))
 
   yield call(api.updateRegatta, data.regattaName,
     { controlTrackingFromStartAndFinishTimes: true,
       useStartTimeInference: false,
       defaultCourseAreaUuid: regatta.courseAreaId })
-
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
-
   yield put(selectEvent(data))
 }
 
@@ -150,35 +157,39 @@ function* addRaceColumns({ payload }: any) {
     map(inc))(
     [payload.existingNumberOfRaces, payload.existingNumberOfRaces + payload.numberofraces])
 
-    yield all(races.map((race: string) =>
-      call(api.startTracking, payload.leaderboardName, {
-        race_column: race,
-        fleet: 'Default',
-        trackedRaceName: race
-    })))
-
-    yield call(reloadRegattaAfterRaceColumnsChange, payload)
+  yield all(races.map(race =>
+    safeApiCall(api.denoteRaceForTracking, payload.leaderboardName, race, 'Default')))
+  yield call(reloadRegattaAfterRaceColumnsChange, payload)
 }
 
 function* removeRaceColumns({ payload }: any) {
   const api = dataApi(payload.serverUrl)
-
   const races = compose(
     map(compose(concat('R'), toString)),
     apply(range),
     map(inc))(
     [payload.existingNumberOfRaces - payload.numberofraces, payload.existingNumberOfRaces])
 
-    yield all(races.map((race: string) =>
-      call(api.removeRaceColumn, payload.regattaName, race)))
-
-    yield call(reloadRegattaAfterRaceColumnsChange, payload)
+  yield all(races.map((race: string) =>
+    safeApiCall(api.removeRaceColumn, payload.regattaName, race)))
+  yield call(reloadRegattaAfterRaceColumnsChange, payload)
 }
 
 function* reloadRegattaAfterRaceColumnsChange(payload: any) {
   const api = dataApi(payload.serverUrl)
   const entities = yield call(api.requestRegatta, payload.regattaName)
 
+  const numberOfRaces = compose(
+    length,
+    prop('races'),
+    head,
+    path(['entities', 'regatta', payload.regattaName, 'series']))(
+    entities)
+
+  yield put(updateCheckIn({
+    leaderboardName: payload.leaderboardName,
+    numberOfRaces
+  }))
   yield put(receiveEntities(entities))
 }
 
