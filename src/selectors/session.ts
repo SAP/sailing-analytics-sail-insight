@@ -1,4 +1,5 @@
 import { isEmpty, orderBy, values } from 'lodash'
+import { isNil } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { CheckIn, Session } from 'models'
@@ -32,7 +33,12 @@ const buildSession = (
   markEntity: any,
   userInfo: any,
 ) => {
+  if (isNil(checkIn)) {
+    return null
+  }
+  
   const result: Session = { ...checkIn }
+
   result.event = eventEntity && mapResToEvent(eventEntity[checkIn.eventId])
   result.leaderboard = leaderboardEntity && mapResToLeaderboard(leaderboardEntity[checkIn.leaderboardName])
   result.competitor =

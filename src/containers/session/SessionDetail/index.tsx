@@ -1,8 +1,12 @@
+import { __, always, call, compose, concat, identity, inc,
+  last, merge, reduce, take, isNil, prop } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { shareSessionRegatta } from 'actions/sessions'
-import { Component, connectActionSheet, fold, fromClass, nothing, reduxConnect as connect } from 'components/fp/component'
+import { Component, connectActionSheet, fold, fromClass, nothing, nothingAsClass,
+  recomposeBranch as branch,
+  reduxConnect as connect } from 'components/fp/component'
 import { scrollView, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
 import { BRANCH_APP_DOMAIN } from 'environment'
@@ -11,7 +15,6 @@ import I18n from 'i18n';
 import { navigateToRaceDetails } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import querystring from 'query-string'
-import { __, always, call, compose, concat, identity, inc, last, merge, reduce, take } from 'ramda'
 import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
@@ -32,9 +35,16 @@ const shareIcon = fromClass(IconText).contramap(always({
   iconStyle: { width: 25, height: 25 }
 }))
 
+const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
+
 const mapStateToProps = (state: any, props: any) => {
   const leaderboardName = getCustomScreenParamData(props)
   const session = getSession(leaderboardName)(state)
+
+  if (isNil(session)) {
+    return {}
+  }
+
   const checkIn = getCheckInByLeaderboardName(leaderboardName)(state)
   const regattaRaces = getRegattaPlannedRaces(session.regattaName)(state)
 
@@ -92,10 +102,11 @@ export default Component((props: any) =>
     fold(merge(props, sessionData)),
     connect(mapStateToProps, { checkOut, collectCheckInData, shareSessionRegatta }),
     scrollView({ style: styles.container }),
+    nothingIfNoSession,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
       sessionDetailsCard,
       typeAndBoatClassCard,
       racesAndScoringCard,
-      competitorsCard,
+      competitorsCard
     ]))
