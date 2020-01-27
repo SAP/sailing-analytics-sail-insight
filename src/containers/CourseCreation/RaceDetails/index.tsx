@@ -1,3 +1,6 @@
+import { __, always, append, compose, concat, defaultTo,
+  equals, isEmpty, isNil, map, merge, not,
+  objOf, prop, reduce, uncurryN, unless, when } from 'ramda'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
@@ -7,6 +10,8 @@ import {
   fold,
   fromClass,
   nothing,
+  nothingAsClass,
+  recomposeBranch as branch,
   recomposeMapProps as mapProps,
   reduxConnect as connect,
 } from 'components/fp/component'
@@ -16,9 +21,6 @@ import IconText from 'components/IconText'
 import { dateShortText, dateTimeShortHourText } from 'helpers/date'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
-import { __, always, append, compose, concat, defaultTo,
-  equals, isEmpty, isNil, map, merge, not,
-  objOf, prop, reduce, uncurryN, unless, when } from 'ramda'
 import DatePicker from 'react-native-datepicker'
 import { getCourseById } from 'selectors/course'
 import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
@@ -33,8 +35,16 @@ export const arrowRight = fromClass(IconText).contramap(merge({
 
 const getRegattaPlannedRacesN = uncurryN(2, getRegattaPlannedRaces)
 
+const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
+
 const mapStateToProps = (state: any, props: any) => {
-  const { leaderboardName, regattaName } = getSelectedEventInfo(state)
+  const eventData = getSelectedEventInfo(state)
+
+  if (isNil(eventData)) {
+    return {}
+  }
+
+  const { leaderboardName, regattaName } = eventData
   const session = getSession(leaderboardName)(state)
 
   const races = compose(
@@ -203,6 +213,7 @@ export default Component((props: Object) =>
     connect(mapStateToProps, {
       selectCourse, selectRace, setRaceTime,
       updateEventSettings, openTrackDetails }, null, { areStatePropsEqual: equals }),
+    nothingIfNoSession,
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
   ([nothingIfCannotUpdateCurrentEvent(organizerContainer),

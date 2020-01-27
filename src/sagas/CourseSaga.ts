@@ -193,7 +193,8 @@ function* saveCourseFlow() {
       compose(isNil, prop('trackingDeviceMappedToMillis')))),
       prop('trackingDevices'))),
     flatten,
-    map(prop('markConfigurations')))(
+    map(prop('markConfigurations')),
+    reject(isNil))(
     allCourses)
 
   yield put(updateCheckIn({
