@@ -51,8 +51,7 @@ function* selectEventSaga({ payload }: any) {
 
   if (currentUserCanUpdateEvent) {
     yield put(fetchCoursesForEvent(payload))
-    //navigateToSessionDetail4Organizer(payload.leaderboardName)
-    navigateToSessionDetail(payload.leaderboardName)
+    navigateToSessionDetail4Organizer(payload.leaderboardName)
   } else {
     navigateToSessionDetail(payload.leaderboardName)
   }

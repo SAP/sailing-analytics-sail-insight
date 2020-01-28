@@ -11,7 +11,7 @@ import MarkInventory from 'containers/Inventory/MarkInventory'
 import Sessions from 'containers/session/Sessions'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
-import SessionDetail4Organizer, { ShareButton4Organizer } from 'containers/session/SessionDetail4Organizer'
+import SessionDetail4Organizer from 'containers/session/SessionDetail4Organizer'
 import EventCreation from 'containers/session/EventCreation'
 import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
@@ -112,7 +112,7 @@ const sessionsStack = createStackNavigator({
           onPress={navigateBack}
         />
       ),
-      headerRight: ShareButton4Organizer.fold({}),
+      headerRight: ShareButton.fold({}),
     },
   },
   [Screens.RaceDetails]: {

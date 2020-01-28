@@ -37,7 +37,7 @@ const shareIcon = fromClass(IconText).contramap(always({
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 
-const mapStateToProps = (state: any, props: any) => {
+export const mapStateToSessionDetailsProps = (state: any, props: any) => {
   const leaderboardName = getCustomScreenParamData(props)
   const session = getSession(leaderboardName)(state)
 
@@ -98,7 +98,7 @@ export const ShareButton = Component(props => compose(
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToProps, { checkOut, collectCheckInData, shareSessionRegatta }),
+    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta }),
     scrollView({ style: styles.container }),
     nothingIfNoSession,
     view({ style: [container.list, styles.cardsContainer] }),
