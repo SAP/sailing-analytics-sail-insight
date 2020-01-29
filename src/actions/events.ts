@@ -64,7 +64,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     eventName:                  eventData.name,
     venuename:                  eventData.location,
     ispublic:                   true,
-    competitorRegistrationType: 'OPEN_UNMODERATED', // To be dynamic in the FUTURE
+    competitorRegistrationType: 'OPEN_UNMODERATED',
     createleaderboardgroup:     true,
     createregatta:              true,
     numberofraces:              eventData.numberOfRaces,
@@ -73,7 +73,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     boatclassname:
       eventData.regattaType === RegattaType.OneDesign
         ? eventData.boatClass
-        : 'Handicap', // Proxy boat class
+        : null,
     ...(eventData.dateFrom ? { startdate: eventData.dateFrom.toISOString() } : {}),
     ...(eventData.dateTo   ? { enddate: eventData.dateTo.toISOString() } : {}),
   } as CreateEventBody)

@@ -205,7 +205,7 @@ export const racesAndScoringCard = Component((props: any) => compose(
   ]),
 )
 
-const qrCode = Component((props: any) => compose(
+export const qrCode = Component((props: any) => compose(
   fold(props),
   view({ style: styles.qrCodeContainer }))(
   fromClass(QRCode).contramap((props: any) => ({
@@ -216,7 +216,7 @@ const qrCode = Component((props: any) => compose(
   }))
 ))
 
-const inviteCompetitorsButton = Component(props => compose(
+export const inviteCompetitorsButton = Component(props => compose(
   fold(props),
   styledButton({
     onPress: (props: any) => props.inviteCompetitors && props.inviteCompetitors(props),
@@ -224,7 +224,7 @@ const inviteCompetitorsButton = Component(props => compose(
   text({ style: styles.buttonContent }))(
   I18n.t('caption_invite_competitors').toUpperCase()))
 
-const joinAsCompetitorButton = Component(props => compose(
+export const joinAsCompetitorButton = Component(props => compose(
   fold(props),
   styledButton({
     onPress: (props: any) => navigateToEditCompetitor(props.checkIn, { selectSessionAfter: props.session })
