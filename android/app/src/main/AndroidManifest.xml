@@ -46,7 +46,7 @@
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
 
-        <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="d888eb46ab373eda59264a6f19afbda499ce304f95862bbb4c04f46877ed4a71" />
+        <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="3dc9e130898c2eaa54dbc5d29a6947337e460e82acda40c3c4e5da034dfc2ad6" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

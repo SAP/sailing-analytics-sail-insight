@@ -1,4 +1,4 @@
-import BackgroundGeolocation, { Config } from 'react-native-background-geolocation'
+import BackgroundGeolocation, { Config } from 'react-native-background-geolocation-android'
 
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import { getNowAsMillis, getTimestampAsMillis } from 'helpers/date'

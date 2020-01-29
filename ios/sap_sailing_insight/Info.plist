@@ -1,118 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
-	<key>CFBundleDisplayName</key>
-	<string>Sail Insight</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0.51</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>orgsailyachtresearchsailinsight</string>
-			</array>
-		</dict>
-	</array>
-	<key>CFBundleVersion</key>
-	<string>71</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>localhost</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-		</dict>
-	</dict>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>App requires media library</string>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>App requires bluetooth</string>
-	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>App requires bluetooth</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>App requires calendar</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Sail Insight requires camera access, to be able to scan QR-Codes and take a team photo. The permission is only used for this functionality.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>App requires microphone</string>
-	<key>NSMotionUsageDescription</key>
-	<string>Accelerometer use increases battery efficiency by intelligently toggling location-tracking</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>App requires photo library</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>App requires speech recognition</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>BentonSans-Bold.otf</string>
-		<string>BentonSans-ExtraLight.otf</string>
-		<string>BentonSans-Light.otf</string>
-		<string>BentonSans-Medium.otf</string>
-		<string>BentonSans-Regular.otf</string>
-		<string>BentonSans-Thin.otf</string>
-		<string>FloodStd.otf</string>
-		<string>SFCompactText-Bold.otf</string>
-		<string>SFCompactText-Regular.otf</string>
-		<string>SFProDisplay-Bold.otf</string>
-		<string>SFProDisplay-Heavy.otf</string>
-		<string>SFProDisplay-HeavyItalic.otf</string>
-		<string>SFProDisplay-Light.otf</string>
-		<string>SFProDisplay-Medium.otf</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-		<string>fetch</string>
-	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>armv7</string>
-	</array>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>branch_app_domain</key>
-	<string>sailinsight30-app.sapsailing.com</string>
-	<key>branch_key</key>
-	<dict>
-		<key>live</key>
-		<string>key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0</string>
-	</dict>
-</dict>
+  <dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleDisplayName</key>
+    <string>Sail Insight</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.52</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>orgsailyachtresearchsailinsight</string>
+        </array>
+      </dict>
+    </array>
+    <key>CFBundleVersion</key>
+    <string>72</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSExceptionDomains</key>
+      <dict>
+        <key>localhost</key>
+        <dict>
+          <key>NSExceptionAllowsInsecureHTTPLoads</key>
+          <true/>
+        </dict>
+      </dict>
+    </dict>
+    <key>NSAppleMusicUsageDescription</key>
+    <string>App requires media library</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>App requires bluetooth</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>App requires bluetooth</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>App requires calendar</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Sail Insight requires camera access, to be able to scan QR-Codes and take a team photo. The permission is only used for this functionality.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
+    <key>NSLocationUsageDescription</key>
+    <string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>App requires microphone</string>
+    <key>NSMotionUsageDescription</key>
+    <string>Accelerometer use increases battery efficiency by intelligently toggling location-tracking</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>App requires photo library</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>App requires speech recognition</string>
+    <key>UIAppFonts</key>
+    <array>
+      <string>BentonSans-Bold.otf</string>
+      <string>BentonSans-ExtraLight.otf</string>
+      <string>BentonSans-Light.otf</string>
+      <string>BentonSans-Medium.otf</string>
+      <string>BentonSans-Regular.otf</string>
+      <string>BentonSans-Thin.otf</string>
+      <string>FloodStd.otf</string>
+      <string>SFCompactText-Bold.otf</string>
+      <string>SFCompactText-Regular.otf</string>
+      <string>SFProDisplay-Bold.otf</string>
+      <string>SFProDisplay-Heavy.otf</string>
+      <string>SFProDisplay-HeavyItalic.otf</string>
+      <string>SFProDisplay-Light.otf</string>
+      <string>SFProDisplay-Medium.otf</string>
+    </array>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>fetch</string>
+      <string>location</string>
+    </array>
+    <key>UILaunchStoryboardName</key>
+    <string>LaunchScreen</string>
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+      <string>armv7</string>
+    </array>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+      <string>UIInterfaceOrientationPortrait</string>
+      <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    </array>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
+    <key>branch_app_domain</key>
+    <string>sailinsight30-app.sapsailing.com</string>
+    <key>branch_key</key>
+    <dict>
+      <key>live</key>
+      <string>key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0</string>
+    </dict>
+  </dict>
 </plist>

@@ -37,7 +37,7 @@ const shareIcon = fromClass(IconText).contramap(always({
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 
-const mapStateToProps = (state: any, props: any) => {
+export const mapStateToSessionDetailsProps = (state: any, props: any) => {
   const leaderboardName = getCustomScreenParamData(props)
   const session = getSession(leaderboardName)(state)
 
@@ -50,24 +50,22 @@ const mapStateToProps = (state: any, props: any) => {
 
   const { serverUrl, eventId, secret } = session
 
-  const path = querystring.stringify({
+  const checkInPath = querystring.stringify({
     event_id: eventId,
     leaderboard_name: leaderboardName,
     secret
   })
-  const checkinUrl = `${serverUrl}/tracking/checkin?${path}`
+  const checkinUrl = `${serverUrl}/tracking/checkin?${checkInPath}`
 
   return {
     session,
     checkIn,
     qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
     name: session.regattaName,
-    startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate) || '? ? ?',
-    location: session && session.event && session.event.venue && session.event.venue.name || '',
-    boatClass: session && session.boat && session.boat.boatClass || '',
+    startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate),
+    location: session && session.event && session.event.venue && session.event.venue.name,
+    boatClass: session && session.regatta && session.regatta.boatClass,
     currentUserIsCompetitorForEvent: currentUserIsCompetitorForEvent(leaderboardName)(state),
-    raceStatus: '? ? ?', //'Race 1 is currently running', or 'Event is open' ....
-    discardRaces: '? ? ?', // like '2 | 4 | 6'
     races: regattaRaces.length,
     racesButtonLabel: canUpdateCurrentEvent(state) ?
       I18n.t('text_define_races').toUpperCase() :
@@ -100,7 +98,7 @@ export const ShareButton = Component(props => compose(
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToProps, { checkOut, collectCheckInData, shareSessionRegatta }),
+    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta }),
     scrollView({ style: styles.container }),
     nothingIfNoSession,
     view({ style: [container.list, styles.cardsContainer] }),

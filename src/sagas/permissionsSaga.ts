@@ -4,9 +4,12 @@ import { authApi } from 'api'
 
 export function* fetchPermissionsForEvent({ payload }: any) {
   const permissions = [`EVENT:UPDATE:${payload.eventId}`]
-  const result = yield call(authApi(payload.serverUrl).hasPermissions, permissions)
 
-  return yield put(updateEventPermissions(result))
+  let result
+  try {
+    result = yield call(authApi(payload.serverUrl).hasPermissions, permissions)
+  } catch (e) { }
+  yield put(updateEventPermissions(result))
 }
 
 export default function* watchPermissions() {

@@ -80,6 +80,9 @@ project.ext.react = [
 
 apply from: "../../node_modules/react-native/react.gradle"
 
+Project background_geolocation = project(':react-native-background-geolocation-android')
+apply from: "${background_geolocation.projectDir}/app.gradle"
+
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -97,8 +100,8 @@ def enableProguardInReleaseBuilds = false
 
 def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'org.sailyachtresearch.sailinsight'
 def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
-def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "71") as Integer
-def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.51"
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "72") as Integer
+def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.52"
 
 android {
 	purgeBackgroundGeolocationDebugResources(applicationVariants)
@@ -142,6 +145,7 @@ android {
             resValue "string", "app_name", _appName
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFiles "${background_geolocation.projectDir}/proguard-rules.pro"
             signingConfig signingConfigs.release
         }
     }
@@ -187,6 +191,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-background-geolocation-android')
     implementation project(':@react-native-community_netinfo')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-snackbar')
@@ -201,7 +206,6 @@ dependencies {
     implementation project(':react-native-fast-image')
     implementation project(':react-native-keep-awake')
     implementation project(':react-native-background-fetch')
-    implementation project(':react-native-background-geolocation')
     implementation project(':react-native-background-timer')
     implementation project(':realm')
     implementation project(':react-native-device-info')

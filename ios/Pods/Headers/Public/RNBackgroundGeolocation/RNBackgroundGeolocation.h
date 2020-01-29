@@ -1,0 +1,1 @@
+../../../../../node_modules/react-native-background-geolocation-android/ios/RNBackgroundGeolocation/RNBackgroundGeolocation.h
