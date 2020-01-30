@@ -13,10 +13,10 @@ import { ApiBodyKeys as CheckInBodyKeys, CheckInUpdate, urlParamsToCheckIn } fro
 import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 
 
-export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueID())
+export const getDeviceId = async () => getDeviceUuid(await DeviceInfo.getUniqueId())
 
-export const getDeviceCountryIOC = () => {
-  const deviceCountry = DeviceInfo.getDeviceCountry()
+export const getDeviceCountryIOC = async () => {
+  const deviceCountry = await DeviceInfo.getDeviceCountry()
   if (!deviceCountry) {
     return
   }
@@ -107,8 +107,8 @@ const gpsFixPostItem = (fix: PositionFix) => fix && ({
   [GPSFixBodyKeys.Speed]: (fix.speedInKnots || 0) * 0.51444444444,
 })
 
-export const gpsFixPostData = (fixes: PositionFix[]) => fixes && ({
-  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueID()),
+export const gpsFixPostData = async (fixes: PositionFix[]) => fixes && ({
+  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(await DeviceInfo.getUniqueId()),
   [GPSFixBodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
 })
 

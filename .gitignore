@@ -32,6 +32,7 @@ local.properties
 android/app/bin
 android/app/dev
 android/app/live
+androd/app/debug/
 
 # node.js
 #

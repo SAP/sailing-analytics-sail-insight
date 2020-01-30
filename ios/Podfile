@@ -33,19 +33,6 @@ target 'sap_sailing_insight' do
 
   pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
 
-  pod 'Firebase/Core', '~> 5.20.1'
-  # pod 'Firebase/AdMob', '~> 5.20.1'
-  # pod 'Firebase/Auth', '~> 5.20.1'
-  # pod 'Firebase/Database', '~> 5.20.1'
-  # pod 'Firebase/Functions', '~> 5.20.1'
-  # pod 'Firebase/DynamicLinks', '~> 5.20.1'
-  # pod 'Firebase/Firestore', '~> 5.20.1'
-  # pod 'Firebase/Invites', '~> 5.20.1'
-  # pod 'Firebase/Messaging', '~> 5.20.1'
-  # pod 'Firebase/RemoteConfig', '~> 5.20.1'
-  # pod 'Firebase/Storage', '~> 5.20.1'
-  # pod 'Firebase/Performance', '~> 5.20.1'
-
   pod 'Fabric', '~> 1.9.0'
   pod 'Crashlytics', '~> 3.12.0'
 
@@ -56,7 +43,6 @@ target 'sap_sailing_insight' do
   pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
 
   pod 'react-native-maps', :path => '../node_modules/react-native-maps'
-  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
   pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
 
