@@ -32,7 +32,9 @@ local.properties
 android/app/bin
 android/app/dev
 android/app/live
-androd/app/debug/
+androd/app/debug
+
+ios/Pods/
 
 # node.js
 #
