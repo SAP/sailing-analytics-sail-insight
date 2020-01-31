@@ -32,7 +32,9 @@ local.properties
 android/app/bin
 android/app/dev
 android/app/live
-androd/app/debug
+android/app/debug
+android/app/release
+android/app/src/main/assets/index.android.bundle
 
 ios/Pods/
 
