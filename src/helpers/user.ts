@@ -15,9 +15,9 @@ export const openPrivacyPolicy = () => Linking.openURL(I18n.t('url_privacy_polic
 
 export const openSAPWebsite = () => Linking.openURL(sapUrl)
 
-export const openEmailToContact = async () => openEmailTo(
+export const openEmailToContact = () => openEmailTo(
   contactEmail,
-  I18n.t('text_email_help_subject', { subject: await DeviceInfo.getApplicationName(), version: getAppVersionText() }),
+  I18n.t('text_email_help_subject', { subject: DeviceInfo.getApplicationName(), version: getAppVersionText() }),
   I18n.t('text_email_help_body'),
 )
 

@@ -1,19 +1,14 @@
 import React from 'react'
-import {
-  AppState, NetInfo, View, ViewProps,
-} from 'react-native'
+import { AppState, View, ViewProps } from 'react-native'
+import NetInfo from "@react-native-community/netinfo"
 import Svg, { Circle } from 'react-native-svg'
 import { connect } from 'react-redux'
-
 import { getUnsentGpsFixCount } from 'selectors/location'
-
 import Text from 'components/Text'
-
 import I18n from 'i18n'
 import { $importantHighlightColor, $secondaryTextColor } from 'styles/colors'
 import { text } from 'styles/commons'
 import styles from './styles'
-
 
 class ConnectivityIndicator extends React.Component<ViewProps & {
   unsentPositionFixCount: number,

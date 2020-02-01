@@ -10,6 +10,7 @@ import {
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
 import { Switch, Platform } from 'react-native'
+import Geolocation from '@react-native-community/geolocation'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
@@ -206,7 +207,7 @@ const MarkPositionPing = Component((props: object) => compose(
   fold(props),
   touchableOpacity({
     style: styles.pingPositionButton,
-    onPress: (props: object) => navigator.geolocation.getCurrentPosition(compose(
+    onPress: (props: object) => Geolocation.getCurrentPosition(compose(
       position => props.updateMarkConfigurationLocation({
         id: props.selectedMarkConfiguration,
         value: position
@@ -233,7 +234,7 @@ const MarkPositionGeolocation = Component((props: object) =>
     concat(MarkPositionPing),
     touchableOpacity({
       style: styles.editPositionButton,
-      onPress: () => navigator.geolocation.getCurrentPosition(({ coords }) =>
+      onPress: () => Geolocation.getCurrentPosition(({ coords }) =>
         navigateToCourseGeolocation({
           selectedMarkConfiguration: props.selectedMarkConfiguration,
           currentPosition: coords,

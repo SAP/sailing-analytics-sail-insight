@@ -3,33 +3,15 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.transistorsoft.rnbackgroundgeolocation.RNBackgroundGeolocation;
-import com.reactnativecommunity.netinfo.NetInfoPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.azendoo.reactnativesnackbar.SnackbarPackage;
+import com.reactcommunity.rnlocalize.RNLocalizePackage;
 import com.horcrux.svg.SvgPackage;
-import com.airbnb.android.react.maps.MapsPackage;
-import com.reactnativecommunity.slider.ReactSliderPackage;
-import io.branch.rnbranch.RNBranchPackage;
-import com.rnfs.RNFSPackage;
-import com.reactnative.ivpusic.imagepicker.PickerPackage;
-import com.apsl.versionnumber.RNVersionNumberPackage;
-import com.dylanvann.fastimage.FastImageViewPackage;
-import com.corbt.keepawake.KCKeepAwakePackage;
-import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
-import com.ocetnik.timer.BackgroundTimerPackage;
-import io.realm.react.RealmReactPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.horcrux.svg.SvgPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 
 import io.branch.referral.Branch;
-import org.reactnative.camera.RNCameraPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.facebook.react.PackageList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,30 +26,10 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new RNBackgroundGeolocation(),
-            new NetInfoPackage(),
-            new RNGestureHandlerPackage(),
-            new SnackbarPackage(),
-            new SvgPackage(),
-            new MapsPackage(),
-            new ReactSliderPackage(),
-            new RNBranchPackage(),
-            new RNFSPackage(),
-            new PickerPackage(),
-            new RNVersionNumberPackage(),
-            new FastImageViewPackage(),
-            new KCKeepAwakePackage(),
-            new RNBackgroundFetchPackage(),
-            new BackgroundTimerPackage(),
-            new RealmReactPackage(),
-            new RNDeviceInfo(),
-            new LinearGradientPackage(),
-            new RNI18nPackage(),
-            new RNCameraPackage(),
-            new ShowAppSettingsPackage()
-      );
+      @SuppressWarnings("UnnecessaryLocalVariable")
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      packages.add(new ShowAppSettingsPackage());
+      return packages;
     }
 
     @Override

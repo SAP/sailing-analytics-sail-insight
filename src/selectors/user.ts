@@ -10,7 +10,7 @@ import { getFormFieldValue } from './form'
 import DeviceInfo from 'react-native-device-info'
 import { getDeviceUuid } from 'helpers/uuid'
 
-export const getDeviceId = async () => getDeviceUuid(await DeviceInfo.getUniqueId())
+export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueId())
 export const getHashedDeviceId = () => toHashedString(getDeviceId())
 export const getUserImages = (state: RootState = {}) => getEntities(state, 'images', 'user')
 

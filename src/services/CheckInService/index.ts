@@ -2,6 +2,7 @@ import { countries } from 'country-data'
 import querystring from 'query-string'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
+import * as RNLocalize from "react-native-localize"
 import parse from 'url-parse'
 
 import { getApiServerUrl } from 'api/config'
@@ -13,10 +14,10 @@ import { ApiBodyKeys as CheckInBodyKeys, CheckInUpdate, urlParamsToCheckIn } fro
 import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 
 
-export const getDeviceId = async () => getDeviceUuid(await DeviceInfo.getUniqueId())
+export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueId())
 
-export const getDeviceCountryIOC = async () => {
-  const deviceCountry = await DeviceInfo.getDeviceCountry()
+export const getDeviceCountryIOC = () => {
+  const deviceCountry = RNLocalize.getCountry()
   if (!deviceCountry) {
     return
   }
@@ -107,8 +108,8 @@ const gpsFixPostItem = (fix: PositionFix) => fix && ({
   [GPSFixBodyKeys.Speed]: (fix.speedInKnots || 0) * 0.51444444444,
 })
 
-export const gpsFixPostData = async (fixes: PositionFix[]) => fixes && ({
-  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(await DeviceInfo.getUniqueId()),
+export const gpsFixPostData = (fixes: PositionFix[]) => fixes && ({
+  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueId()),
   [GPSFixBodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
 })
 

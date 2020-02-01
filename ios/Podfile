@@ -39,7 +39,6 @@ target 'sap_sailing_insight' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
 
   pod 'Fabric', '~> 1.9.0'
   pod 'Crashlytics', '~> 3.12.0'
@@ -50,15 +49,13 @@ target 'sap_sailing_insight' do
 
   pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
 
-  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
-  pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
 
-  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
-  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
 
   pod 'RNBackgroundGeolocation', :path => '../node_modules/react-native-background-geolocation-android'
+
+  pod 'RNLocalize', :path => '../node_modules/react-native-localize'
 
   target 'sap_sailing_insightTests' do
     inherit! :search_paths

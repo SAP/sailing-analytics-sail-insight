@@ -1,13 +1,11 @@
 import React from 'react'
-import { View, WebView as RNWebView } from 'react-native'
+import { View } from 'react-native'
+import { WebView as RNWebView } from 'react-native-webview'
 import { connect } from 'react-redux'
-
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getAccessToken } from 'selectors/auth'
-
 import { container } from 'styles/commons'
 import styles from './styles'
-
 
 class WebView extends React.Component<{
   url: string,
