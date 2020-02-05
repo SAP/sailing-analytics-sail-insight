@@ -126,8 +126,7 @@ def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "77") as Integer
 def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.57"
 
 android {
-	purgeBackgroundGeolocationDebugResources(applicationVariants)
-    compileSdkVersion 28
+	compileSdkVersion 28
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -228,14 +227,7 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-localize')
-    implementation project(':react-native-background-geolocation-android')
-    implementation project(':@react-native-community_slider')
-    implementation project(':react-native-version-number')
-    implementation project(':react-native-keep-awake')
-    implementation project(':react-native-background-fetch')
     implementation project(':react-native-svg')
-    implementation project(':react-native-i18n')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "androidx.appcompat:appcompat:1.1.0"

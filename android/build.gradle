@@ -48,7 +48,6 @@ subprojects { subproject ->
 allprojects {
     repositories {
         mavenLocal()
-        maven { url "$rootDir/../node_modules/react-native-background-geolocation-android/android/libs" }
         maven { url "$rootDir/../node_modules/react-native/android" }
         maven { url "$rootDir/../node_modules/react-native-background-fetch/android/libs" }
         maven { url "https://jitpack.io" }

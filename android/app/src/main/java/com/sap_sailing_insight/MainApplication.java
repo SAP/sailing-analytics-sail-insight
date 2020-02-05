@@ -3,9 +3,7 @@ package com.sap_sailing_insight;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.reactcommunity.rnlocalize.RNLocalizePackage;
 import com.horcrux.svg.SvgPackage;
-import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 
 import io.branch.referral.Branch;
 import com.facebook.react.ReactNativeHost;
