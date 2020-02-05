@@ -1,14 +1,6 @@
-# Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 target 'sap_sailing_insight' do
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
-
-  # Pods for sap_sailing_insight
-
-  # this is very important to have!
   rn_path = '../node_modules/react-native'
   permissions_path = '../node_modules/react-native-permissions/ios'
 
@@ -43,8 +35,6 @@ target 'sap_sailing_insight' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  # Add new pods below this line
-
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing
@@ -52,27 +42,3 @@ target 'sap_sailing_insight' do
 
   use_native_modules!
 end
-
-target 'sap_sailing_insight-tvOS' do
-  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
-  # use_frameworks!
-
-  # Pods for sap_sailing_insight-tvOS
-
-  target 'sap_sailing_insight-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-end
-
-# very important to have, unless you removed React dependencies for Libraries 
-# and you rely on Cocoapods to manage it
-# post_install do |installer|
-#   targets_to_ignore = %w(React yoga)
-#   installer.pods_project.targets.each do |target|
-#     if targets_to_ignore.include? target.name
-#       target.remove_from_project
-#     end
-#   end
-# end

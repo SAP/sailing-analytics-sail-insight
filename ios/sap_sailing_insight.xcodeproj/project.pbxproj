@@ -30,7 +30,6 @@
 		475044098F5D49F48DF8B704 /* SFProDisplay-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6697E9E8466C41A1A1E26D10 /* SFProDisplay-Bold.otf */; };
 		4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B2B06EC2267239A0009FAEC /* InfoPlist.strings */; };
 		4EC14D9E183943FFB0DC1609 /* SFCompactText-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = F86F0DBAAFEC487A8C513B94 /* SFCompactText-Regular.otf */; };
-		69F462EE3A740E0A700C792D /* libPods-sap_sailing_insight-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E93485C20AB680545DA80AA /* libPods-sap_sailing_insight-tvOSTests.a */; };
 		6B1CF57623EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B1CF57523EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m */; };
 		6B70DEA323D98050000E7A1D /* sap_sailing_insight.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 98400D3621C03499002D36DE /* sap_sailing_insight.entitlements */; };
 		6D9ADD1B298D4DFB9CA60FE2 /* BentonSans-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 187464D2C7134C40AE6BFA41 /* BentonSans-Thin.otf */; };
@@ -40,7 +39,6 @@
 		A1CB7FA7252449A9BEFEDFBB /* FloodStd.otf in Resources */ = {isa = PBXBuildFile; fileRef = 17EA795099914E639499D806 /* FloodStd.otf */; };
 		AFBA82F3028D478795B5C06B /* SFProDisplay-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F668B25BE0E74E509D8219BB /* SFProDisplay-Medium.otf */; };
 		C7E535DE4E2D4ACD93494FAE /* BentonSans-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0F570E76DC0744C7A9FDCEC2 /* BentonSans-Medium.otf */; };
-		C97B15FFA0757C823910329E /* libPods-sap_sailing_insight-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DA5D904AD17589D7C1F9D71A /* libPods-sap_sailing_insight-tvOS.a */; };
 		D4CC3FC19B104979B3DC0F4F /* BentonSans-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76A85796BBA4701A924EC79 /* BentonSans-Light.otf */; };
 		D77472E005664B2AAC6AD997 /* SFCompactText-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 193171EC2B3B41F1A119F34F /* SFCompactText-Bold.otf */; };
 		E4D4090681F3452DB67042DC /* SFProDisplay-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = E12B304FAD7147CB92676106 /* SFProDisplay-Light.otf */; };
@@ -277,7 +275,6 @@
 		00E356EE1AD99517003FC87E /* sap_sailing_insightTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = sap_sailing_insightTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sap_sailing_insightTests.m; sourceTree = "<group>"; };
-		0B389589E225AFCED576C3D4 /* Pods-sap_sailing_insight-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insight-tvOSTests/Pods-sap_sailing_insight-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		0F570E76DC0744C7A9FDCEC2 /* BentonSans-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Medium.otf"; path = "../assets/fonts/BentonSans-Medium.otf"; sourceTree = "<group>"; };
 		106D9AE52223141300E2D930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sap_sailing_insight/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		106D9B47222316B300E2D930 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Pods/Fabric/iOS/Fabric.framework; sourceTree = "<group>"; };
@@ -300,7 +297,6 @@
 		48801B0D5D4B4D46A81DDB39 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		4B2B06EB2267239A0009FAEC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4BC71877226725C5007EE0CD /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		4E93485C20AB680545DA80AA /* libPods-sap_sailing_insight-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insight-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DE2493F5B194B6A89502462 /* libCocoaLumberjack.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libCocoaLumberjack.a; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		60424681A6D1664A3D5DB4BB /* Pods-sap_sailing_insight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight.debug.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insight/Pods-sap_sailing_insight.debug.xcconfig"; sourceTree = "<group>"; };
@@ -315,15 +311,11 @@
 		9A52AF3B35714CD9910AB7B1 /* BentonSans-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Regular.otf"; path = "../assets/fonts/BentonSans-Regular.otf"; sourceTree = "<group>"; };
 		9AC5B0B0594245C580F9D8DC /* SFProDisplay-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Heavy.otf"; path = "../assets/fonts/SFProDisplay-Heavy.otf"; sourceTree = "<group>"; };
 		9D1A38A0C578E4D95173B4BD /* Pods-sap_sailing_insightTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insightTests.release.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insightTests/Pods-sap_sailing_insightTests.release.xcconfig"; sourceTree = "<group>"; };
-		A0AAAA79A3D7BE6CA25D0941 /* Pods-sap_sailing_insight-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight-tvOS.release.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insight-tvOS/Pods-sap_sailing_insight-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		AF2794870904F520A9D207E3 /* libPods-sap_sailing_insight.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insight.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B91961EF410F2E11D10B1032 /* Pods-sap_sailing_insight-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insight-tvOSTests/Pods-sap_sailing_insight-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		C0914CD32F1F2C4A9DF5058D /* Pods-sap_sailing_insight-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insight-tvOS/Pods-sap_sailing_insight-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		C4F615FCC56D45608BB77A34 /* BentonSans-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Bold.otf"; path = "../assets/fonts/BentonSans-Bold.otf"; sourceTree = "<group>"; };
 		C4FBACC177EB4AD18CE21268 /* BentonSans-ExtraLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-ExtraLight.otf"; path = "../assets/fonts/BentonSans-ExtraLight.otf"; sourceTree = "<group>"; };
 		C76A85796BBA4701A924EC79 /* BentonSans-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Light.otf"; path = "../assets/fonts/BentonSans-Light.otf"; sourceTree = "<group>"; };
 		D9CE9EDC1130866B5F989C31 /* Pods-sap_sailing_insight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight.release.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insight/Pods-sap_sailing_insight.release.xcconfig"; sourceTree = "<group>"; };
-		DA5D904AD17589D7C1F9D71A /* libPods-sap_sailing_insight-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insight-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E12B304FAD7147CB92676106 /* SFProDisplay-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Light.otf"; path = "../assets/fonts/SFProDisplay-Light.otf"; sourceTree = "<group>"; };
 		F668B25BE0E74E509D8219BB /* SFProDisplay-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Medium.otf"; path = "../assets/fonts/SFProDisplay-Medium.otf"; sourceTree = "<group>"; };
 		F86F0DBAAFEC487A8C513B94 /* SFCompactText-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFCompactText-Regular.otf"; path = "../assets/fonts/SFCompactText-Regular.otf"; sourceTree = "<group>"; };
@@ -358,7 +350,6 @@
 				2D02E4C61E0B4AEC006451C7 /* libRCTSettings-tvOS.a in Frameworks */,
 				2D02E4C71E0B4AEC006451C7 /* libRCTText-tvOS.a in Frameworks */,
 				2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */,
-				C97B15FFA0757C823910329E /* libPods-sap_sailing_insight-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,7 +357,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				69F462EE3A740E0A700C792D /* libPods-sap_sailing_insight-tvOSTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,10 +368,6 @@
 			children = (
 				60424681A6D1664A3D5DB4BB /* Pods-sap_sailing_insight.debug.xcconfig */,
 				D9CE9EDC1130866B5F989C31 /* Pods-sap_sailing_insight.release.xcconfig */,
-				C0914CD32F1F2C4A9DF5058D /* Pods-sap_sailing_insight-tvOS.debug.xcconfig */,
-				A0AAAA79A3D7BE6CA25D0941 /* Pods-sap_sailing_insight-tvOS.release.xcconfig */,
-				0B389589E225AFCED576C3D4 /* Pods-sap_sailing_insight-tvOSTests.debug.xcconfig */,
-				B91961EF410F2E11D10B1032 /* Pods-sap_sailing_insight-tvOSTests.release.xcconfig */,
 				3433B17591236E6B5729A143 /* Pods-sap_sailing_insightTests.debug.xcconfig */,
 				9D1A38A0C578E4D95173B4BD /* Pods-sap_sailing_insightTests.release.xcconfig */,
 			);
@@ -450,8 +436,6 @@
 				48801B0D5D4B4D46A81DDB39 /* libz.tbd */,
 				106D9B47222316B300E2D930 /* Fabric.framework */,
 				AF2794870904F520A9D207E3 /* libPods-sap_sailing_insight.a */,
-				DA5D904AD17589D7C1F9D71A /* libPods-sap_sailing_insight-tvOS.a */,
-				4E93485C20AB680545DA80AA /* libPods-sap_sailing_insight-tvOSTests.a */,
 				888495AFB84DC55B2536A019 /* libPods-sap_sailing_insightTests.a */,
 			);
 			name = Frameworks;
@@ -595,7 +579,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "sap_sailing_insight-tvOS" */;
 			buildPhases = (
-				11B0FB0F11C500CB3F5AF8A0 /* [CP] Check Pods Manifest.lock */,
 				2D02E4771E0B4A5D006451C7 /* Sources */,
 				2D02E4781E0B4A5D006451C7 /* Frameworks */,
 				2D02E4791E0B4A5D006451C7 /* Resources */,
@@ -614,7 +597,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "sap_sailing_insight-tvOSTests" */;
 			buildPhases = (
-				74B24B91049780C87807B6F7 /* [CP] Check Pods Manifest.lock */,
 				2D02E48C1E0B4A5D006451C7 /* Sources */,
 				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
 				2D02E48E1E0B4A5D006451C7 /* Resources */,
@@ -940,28 +922,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/Fabric.framework/run\"\n";
 		};
-		11B0FB0F11C500CB3F5AF8A0 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-sap_sailing_insight-tvOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		1B9BE513DA77A37545408C1A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1014,28 +974,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-sap_sailing_insightTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		74B24B91049780C87807B6F7 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-sap_sailing_insight-tvOSTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1332,7 +1270,6 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C0914CD32F1F2C4A9DF5058D /* Pods-sap_sailing_insight-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1374,7 +1311,6 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A0AAAA79A3D7BE6CA25D0941 /* Pods-sap_sailing_insight-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -1416,7 +1352,6 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0B389589E225AFCED576C3D4 /* Pods-sap_sailing_insight-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1457,7 +1392,6 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B91961EF410F2E11D10B1032 /* Pods-sap_sailing_insight-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

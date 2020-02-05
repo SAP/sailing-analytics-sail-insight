@@ -447,7 +447,7 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - boost-for-react-native
     - Branch
     - CocoaLumberjack
@@ -614,16 +614,16 @@ SPEC CHECKSUMS:
   React-jsi: cb2cd74d7ccf4cffb071a46833613edc79cdf8f7
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
-  react-native-background-timer: 0d34748e53a972507c66963490c775321a88f6f2
+  react-native-background-timer: 1b6e6b4e10f1b74c367a1fdc3c72b67c619b222b
   react-native-branch: cc611a2d0e7e6c7c4cafebc8e59065b89c38002b
-  react-native-camera: 72d27f64745bfca589cd265041f4f09cc46ed155
-  react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
-  react-native-keep-awake: 3639320332410f01290323f735c33ec88eecaf61
+  react-native-camera: 705c7e9412436957b4dc894a1af61f43830787e2
+  react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
+  react-native-keep-awake: ff10b454b539786007df59fce87abbb7cd4634e3
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
-  react-native-netinfo: 3dd993921571d01b78a8f91f1caaffcab7a1e1c7
-  react-native-slider: b2f361499888302147205f17f6fffa921a7bda70
-  react-native-version-number: 15563dc4145a94aabfc1faab2a9af10174a4204e
-  react-native-webview: e11b5d7da61ac3acee13f3ae3184d417f773c5d5
+  react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
+  react-native-slider: 3a1cfd00c9c31068251b536822f7192e8d1d6b6f
+  react-native-version-number: b415bbec6a13f2df62bf978e85bc0d699462f37f
+  react-native-webview: e32e5ced4c99d7240362690a65e3467d7ef535ef
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72
@@ -635,10 +635,10 @@ SPEC CHECKSUMS:
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RealmJS: c19d60dbe21606dade0f6217f4dd0d1fb8bb4e3a
-  RNBackgroundFetch: 08bdaaa13a5aa71cdce42068def5602ed1e982c2
-  RNBackgroundGeolocation: eb666f1dff7d716a14149e8cc1e051990be4b8d3
-  RNCAsyncStorage: 8539fc80a0075fcc9c8e2dff84cd22dc5bf1dacf
-  RNDeviceInfo: d1d8b58e034178d86451fac067bf0b59bdf7699a
+  RNBackgroundFetch: 8d8d66b47eafcb9e772b2eb95057939038b3ef95
+  RNBackgroundGeolocation: 0235e5a01e4706afc749dc21da875739f0ee0d09
+  RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
+  RNDeviceInfo: 9b5790f85eb03e12de682a97618031a215c7f386
   RNFastImage: 4e3cd0485ffce7304537e3efc05f99cdc9808107
   RNFBAnalytics: 32a5b76f42a6f250063d3cfdd6fe731702e16c7f
   RNFBApp: ad3fbf3071c5ac5308e02b8dc21845f547976757
@@ -647,15 +647,15 @@ SPEC CHECKSUMS:
   RNGestureHandler: 02905abe54e1f6e59c081a10b4bd689721e17aa6
   RNI18n: e2f7e76389fcc6e84f2c8733ea89b92502351fd8
   RNImageCropPicker: 9d1a7eea4f8368fc479cbd2bf26459bd3c74d9aa
-  RNLocalize: 7ea191e47e1755d2ad48614a2e9d07d290abc58e
-  RNPermissions: 6db7e0a4d94c9c02390d11020b1d3d187aaf77e5
-  RNSnackbar: 2924764545b779c3dd130f875cd481d4162a6f3b
+  RNLocalize: a734b53c45e77acd3ffb78b92e63bb4d6cd13257
+  RNPermissions: 2f74237e97b08beda01e914301e12524ddddf5b8
+  RNSnackbar: 160077964866262ed08cfd33ab4760219ea2aef6
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   SDWebImage: 4d5c027c935438f341ed33dbac53ff9f479922ca
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 467f68f8a044da485f83afdb5d45bac0aa52c26c
+PODFILE CHECKSUM: 974d5105bf9aa81b943000a6d5c60fa3db2da395
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.4
