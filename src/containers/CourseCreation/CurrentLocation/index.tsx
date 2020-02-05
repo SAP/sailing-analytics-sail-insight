@@ -7,7 +7,7 @@ import {
   recomposeLifecycle as lifecycle,
 } from 'components/fp/component'
 import { image, text, view } from 'components/fp/react-native'
-
+import Geolocation from '@react-native-community/geolocation'
 import { coordinatesToString } from 'helpers/utils'
 
 import Images from '@assets/Images'
@@ -15,7 +15,7 @@ import Images from '@assets/Images'
 const withCurrentLocation = lifecycle({
   state: { currentLocation: undefined },
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition((location: any) =>
+    Geolocation.getCurrentPosition((location: any) =>
       this.setState({ currentLocation: location }),
     )
   },

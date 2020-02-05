@@ -1,7 +1,7 @@
 import { sha256 } from 'js-sha256'
 import { compose, join, map, move, reject, isNil, split, __, toUpper } from 'ramda'
 import { isArray, isMatch, isNumber, isObject, orderBy } from 'lodash'
-import { Alert, Linking, ListView } from 'react-native'
+import { Alert, Linking } from 'react-native'
 
 import { urlGenerator } from 'api/config'
 import I18n from 'i18n'
@@ -15,16 +15,6 @@ export const toHashedString = compose(
   sha256.digest,
   map(c => c.charCodeAt(0)),
   split(''))
-
-export const getListViewDataSource = (data: any, sectionIds?: any[]) => {
-  const dataSource = new ListView.DataSource({
-    rowHasChanged: (r1, r2) => (r1 !== r2),
-    sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
-  })
-  return isArray(data) ?
-  dataSource.cloneWithRows(data) :
-  dataSource.cloneWithRowsAndSections(data,  sectionIds)
-}
 
 export const notImplementedYetAlert = () => {
   Alert.alert(I18n.t('text_not_implemented_yet'))

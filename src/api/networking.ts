@@ -6,7 +6,7 @@ import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
-import firebase from 'react-native-firebase'
+import crashlytics from '@react-native-firebase/crashlytics'
 
 const responseHasFatalError = compose(
   includes(__, [400, 404, 405]),
@@ -116,9 +116,9 @@ export const request = async (
       when(responseHasFatalError, async (response: any) => {
         const error = await response.text()
 
-        firebase.crashlytics().setIntValue('status', response.status)
-        firebase.crashlytics().setStringValue('url', response.url)
-        firebase.crashlytics().recordError(0, error)
+        crashlytics().setAttribute('status', response.status)
+        crashlytics().setAttribute('url', response.url)
+        crashlytics().recordError(new Error(error))
       })(response)
     }
   }

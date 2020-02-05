@@ -7,10 +7,12 @@
 
 #import "AppDelegate.h"
 
-#import <Firebase.h>
+#import <React/RCTBridge.h>
+#import <RNBranch/RNBranch.h>
+#import <RNFBAppModule.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
-#import <react-native-branch/RNBranch.h>
+#import <Firebase/Firebase.h>
 
 @implementation AppDelegate
 
@@ -32,16 +34,11 @@
   [RNBranch initSessionWithLaunchOptions:launchOptions isReferrable:YES];
   
   // 4. ReactNative initialization
-  NSURL *jsCodeLocation;
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"sap_sailing_insight"
-                                               initialProperties:nil
-                                                   launchOptions:launchOptions];
-  
-  // 5. clear background, backgroundView can now be shown until ReactNative is fully loaded
-  rootView.backgroundColor = [UIColor clearColor];
+  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+                                                   moduleName:@"sap_sailing_insight"
+                                            initialProperties:nil];
+  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
   
   // 6. set loadingView to the LaunchScreen.xib view too (explicitly set all frames)
   UIView *launchScreenView = [[[NSBundle mainBundle] loadNibNamed:@"LaunchScreen" owner:self options:nil] firstObject];
@@ -61,6 +58,14 @@
   return YES;
 }
 
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
+{
+#if DEBUG
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+#else
+  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#endif
+}
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
   if (![RNBranch.branch application:app openURL:url options:options]) {
