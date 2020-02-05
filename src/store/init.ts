@@ -1,5 +1,5 @@
 import { AsyncStorage } from 'react-native'
-import firebase from 'react-native-firebase'
+import crashlytics from '@react-native-firebase/crashlytics'
 import { createNetworkMiddleware } from 'react-native-offline'
 import { applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
@@ -34,8 +34,9 @@ const persistConfig = {
 
 const sagaMiddleware = createSagaMiddleware({
   onError: (error: Error, { sagaStack }) => {
-    firebase.crashlytics().setStringValue('sagaStack', sagaStack)
-    firebase.crashlytics().recordError(0, `Error in saga: ${error.message}`)
+    crashlytics().setAttribute('saga', 'true')
+    crashlytics().setAttribute('sagaStack', sagaStack)
+    crashlytics().recordError(error)
 
     throw error
   }

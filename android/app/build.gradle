@@ -75,7 +75,8 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     entryFile: "index.js",
-    bundleInDebug: true
+    bundleInDebug: true,
+    enableHermes: false
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -98,14 +99,49 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
+/**
+ * The preferred build flavor of JavaScriptCore.
+ *
+ * For example, to use the international variant, you can use:
+ * `def jscFlavor = 'org.webkit:android-jsc-intl:+'`
+ *
+ * The international variant includes ICU i18n library and necessary data
+ * allowing to use e.g. `Date.toLocaleString` and `String.localeCompare` that
+ * give correct results when using with locales other than en-US.  Note that
+ * this variant is about 6MiB larger per architecture than default.
+ */
+def jscFlavor = 'org.webkit:android-jsc:+'
+/**
+ * Whether to enable the Hermes VM.
+ *
+ * This should be set on project.ext.react and mirrored here.  If it is not set
+ * on project.ext.react, JavaScript will not be compiled to Hermes Bytecode
+ * and the benefits of using Hermes will therefore be sharply reduced.
+ */
+def enableHermes = project.ext.react.get("enableHermes", false);
+
 def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'org.sailyachtresearch.sailinsight'
 def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
-def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "72") as Integer
-def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.52"
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "77") as Integer
+def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.57"
 
 android {
-	purgeBackgroundGeolocationDebugResources(applicationVariants)
-    compileSdkVersion rootProject.ext.compileSdkVersion
+	compileSdkVersion 28
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        pickFirst '**/libjsc.so'
+        pickFirst '**/libc++_shared.so'
+    }
+
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "4g"
+    }
 
     defaultConfig {
         applicationId _applicationId
@@ -113,8 +149,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode _versionCode
         versionName _versionName
-        vectorDrawables.useSupportLibrary = true // for react-native-crop-picker
         multiDexEnabled true
+        missingDimensionStrategy 'react-native-camera', 'general'
         ndk {
             abiFilters 'armeabi-v7a','arm64-v8a','x86','x86_64'
         }
@@ -191,52 +227,43 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-background-geolocation-android')
-    implementation project(':@react-native-community_netinfo')
-    implementation project(':react-native-gesture-handler')
-    implementation project(':react-native-snackbar')
     implementation project(':react-native-svg')
-    implementation project(':react-native-maps')
-    implementation project(':@react-native-community_slider')
-    implementation project(':react-native-fs')
-    implementation project(':@react-native-community_async-storage')
-    implementation project(':react-native-firebase')
-    implementation project(':react-native-image-crop-picker')
-    implementation project(':react-native-version-number')
-    implementation project(':react-native-fast-image')
-    implementation project(':react-native-keep-awake')
-    implementation project(':react-native-background-fetch')
-    implementation project(':react-native-background-timer')
-    implementation project(':realm')
-    implementation project(':react-native-device-info')
-    implementation project(':react-native-svg')
-    implementation project(':react-native-linear-gradient')
-    implementation project(':react-native-i18n')
-    implementation project(':react-native-branch')
-    implementation project(':react-native-camera')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation "androidx.multidex:multidex:2.0.1"
+    implementation "androidx.collection:collection:1.1.0"
+    implementation "androidx.core:core:1.0.1"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.1.0"
+    implementation "androidx.fragment:fragment:1.1.0"
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'com.android.installreferrer:installreferrer:1.1'
 
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    if (enableHermes) {
+        def hermesPath = "../../node_modules/hermes-engine/android/";
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
+    } else {
+        implementation jscFlavor
+    }
+
+    implementation "com.facebook.react:react-native:+"
     implementation 'com.facebook.fresco:fresco:1.10.0'
     implementation 'com.facebook.fresco:animated-gif:1.10.0'
 
     // Firebase dependencies
-    implementation "com.google.android.gms:play-services-base:16.0.1"
-    implementation "com.google.android.gms:play-services-tasks:16.0.1"
-    implementation "com.google.firebase:firebase-core:16.0.6"
+    implementation "com.google.android.gms:play-services-base:17.1.0"
+    implementation "com.google.android.gms:play-services-tasks:17.0.0"
+    implementation "com.google.android.gms:play-services-vision:17.0.2"
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true
     }
 
     configurations.all {
         resolutionStrategy {
-            force 'com.android.support:support-v4:28.0.0'
-            force 'com.google.android.gms:play-services-base:16.0.1'
-            force 'com.google.android.gms:play-services-tasks:16.0.1'
-            force 'com.google.android.gms:play-services-basement:16.0.1'
+            force 'com.google.android.gms:play-services-base:17.1.0'
+            force 'com.google.android.gms:play-services-tasks:17.0.0'
+            force 'com.google.android.gms:play-services-basement:17.1.0'
         }
     }
 }
@@ -247,6 +274,8 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 
 apply plugin: 'com.google.gms.google-services'
 com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

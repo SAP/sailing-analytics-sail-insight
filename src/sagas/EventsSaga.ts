@@ -1,4 +1,4 @@
-import firebase from 'react-native-firebase'
+import crashlytics from '@react-native-firebase/crashlytics'
 import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
@@ -34,8 +34,8 @@ function* safeApiCall(method, ...args) {
   try {
     result = yield call(method, ...args)
   } catch (e) {
-    console.log('error', e)
-    firebase.crashlytics().recordError(0, `Caught error in events saga: ${e.message}`)
+    crashlytics().setAttribute('saga', 'true')
+    crashlytics().recordError(e)
   }
 
   return result

@@ -3,12 +3,16 @@
 buildscript {
     ext {
         googlePlayServicesLocationVersion = "17.0.0"
-        buildToolsVersion = "28.0.2"
+        buildToolsVersion = "28.0.3"
         minSdkVersion = 16
         compileSdkVersion = 28
         targetSdkVersion = 28
-        supportLibVersion = "28.0.0"
-        googlePlayServicesVersion = "15.0.0"
+        supportLibVersion = "1.0.0"
+        googlePlayServicesVersion = "16.1.0"
+        googlePlayServicesIidVersion = "16.0.1"
+        googlePlayServicesVisionVersion = "17.0.2"
+        firebaseVersion = "17.6.0"
+        androidXCore = "1.1.0"
     }
 
     repositories {
@@ -21,8 +25,8 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
-        classpath 'com.google.gms:google-services:4.0.1'
+        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath 'com.google.gms:google-services:4.2.0'
         classpath 'io.fabric.tools:gradle:1.25.4'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -44,23 +48,25 @@ subprojects { subproject ->
 allprojects {
     repositories {
         mavenLocal()
-        google()
-        jcenter()
-
-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        maven { url "$rootDir/../node_modules/react-native-background-geolocation-android/android/libs" }
         maven { url "$rootDir/../node_modules/react-native/android" }
         maven { url "$rootDir/../node_modules/react-native-background-fetch/android/libs" }
         maven { url "https://jitpack.io" }
+
+        maven {
+            // Android JSC is installed from npm
+            url("$rootDir/../node_modules/jsc-android/dist")
+        }
+        google()
+        jcenter()
     }
 
     configurations.all {
-        resolutionStrategy.force "com.google.android.gms:play-services-base:16.1.0"
+        resolutionStrategy.force "com.google.android.gms:play-services-base:17.1.0"
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.7'
+wrapper {
+    gradleVersion = '4.4'
     distributionUrl = distributionUrl.replace("bin", "all")
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { ViewStyle } from 'react-native'
-import RNSlider from 'react-native-slider'
+import RNSlider from '@react-native-community/slider'
 
 import { $primaryInactiveColor, $primaryTextColor } from 'styles/colors'
 import styles from './styles'

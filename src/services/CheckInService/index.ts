@@ -2,6 +2,7 @@ import { countries } from 'country-data'
 import querystring from 'query-string'
 import { Platform } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
+import * as RNLocalize from "react-native-localize"
 import parse from 'url-parse'
 
 import { getApiServerUrl } from 'api/config'
@@ -13,10 +14,10 @@ import { ApiBodyKeys as CheckInBodyKeys, CheckInUpdate, urlParamsToCheckIn } fro
 import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 
 
-export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueID())
+export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueId())
 
 export const getDeviceCountryIOC = () => {
-  const deviceCountry = DeviceInfo.getDeviceCountry()
+  const deviceCountry = RNLocalize.getCountry()
   if (!deviceCountry) {
     return
   }
@@ -108,7 +109,7 @@ const gpsFixPostItem = (fix: PositionFix) => fix && ({
 })
 
 export const gpsFixPostData = (fixes: PositionFix[]) => fixes && ({
-  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueID()),
+  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueId()),
   [GPSFixBodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
 })
 

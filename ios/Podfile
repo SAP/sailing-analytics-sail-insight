@@ -1,5 +1,6 @@
 # Uncomment the next line to define a global platform for your project
 # platform :ios, '9.0'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 target 'sap_sailing_insight' do
   # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
@@ -9,68 +10,47 @@ target 'sap_sailing_insight' do
 
   # this is very important to have!
   rn_path = '../node_modules/react-native'
-  pod 'yoga', path: "#{rn_path}/ReactCommon/yoga/yoga.podspec"
-  pod 'React', path: rn_path, subspecs: [
-    'Core',
-    'CxxBridge',
-    'DevSupport',
-    'RCTActionSheet',
-    'RCTAnimation',
-    'RCTGeolocation',
-    'RCTImage',
-    'RCTLinkingIOS',
-    'RCTNetwork',
-    'RCTSettings',
-    'RCTText',
-    'RCTVibration',
-    'RCTWebSocket'
-  ]
+  permissions_path = '../node_modules/react-native-permissions/ios'
 
-  pod 'CocoaLumberjack'
-  pod 'DoubleConversion', :podspec => "#{rn_path}/third-party-podspecs/DoubleConversion.podspec"
-  pod 'glog', :podspec => "#{rn_path}/third-party-podspecs/glog.podspec"
-  pod 'Folly', :podspec => "#{rn_path}/third-party-podspecs/Folly.podspec"
+  pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
+  pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
+  pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
+  pod 'RCTTypeSafety', :path => "../node_modules/react-native/Libraries/TypeSafety"
+  pod 'React', :path => '../node_modules/react-native/'
+  pod 'React-Core', :path => '../node_modules/react-native/'
+  pod 'React-CoreModules', :path => '../node_modules/react-native/React/CoreModules'
+  pod 'React-Core/DevSupport', :path => '../node_modules/react-native/'
+  pod 'React-RCTActionSheet', :path => '../node_modules/react-native/Libraries/ActionSheetIOS'
+  pod 'React-RCTAnimation', :path => '../node_modules/react-native/Libraries/NativeAnimation'
+  pod 'React-RCTBlob', :path => '../node_modules/react-native/Libraries/Blob'
+  pod 'React-RCTImage', :path => '../node_modules/react-native/Libraries/Image'
+  pod 'React-RCTLinking', :path => '../node_modules/react-native/Libraries/LinkingIOS'
+  pod 'React-RCTNetwork', :path => '../node_modules/react-native/Libraries/Network'
+  pod 'React-RCTSettings', :path => '../node_modules/react-native/Libraries/Settings'
+  pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text'
+  pod 'React-RCTVibration', :path => '../node_modules/react-native/Libraries/Vibration'
+  pod 'React-Core/RCTWebSocket', :path => '../node_modules/react-native/'
 
-  pod 'RNImageCropPicker', :path =>  '../node_modules/react-native-image-crop-picker'
+  pod 'React-cxxreact', :path => '../node_modules/react-native/ReactCommon/cxxreact'
+  pod 'React-jsi', :path => '../node_modules/react-native/ReactCommon/jsi'
+  pod 'React-jsiexecutor', :path => '../node_modules/react-native/ReactCommon/jsiexecutor'
+  pod 'React-jsinspector', :path => '../node_modules/react-native/ReactCommon/jsinspector'
+  pod 'ReactCommon/jscallinvoker', :path => "../node_modules/react-native/ReactCommon"
+  pod 'ReactCommon/turbomodule/core', :path => "../node_modules/react-native/ReactCommon"
+  pod 'Yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
 
-  pod 'Firebase/Core', '~> 5.20.1'
-  # pod 'Firebase/AdMob', '~> 5.20.1'
-  # pod 'Firebase/Auth', '~> 5.20.1'
-  # pod 'Firebase/Database', '~> 5.20.1'
-  # pod 'Firebase/Functions', '~> 5.20.1'
-  # pod 'Firebase/DynamicLinks', '~> 5.20.1'
-  # pod 'Firebase/Firestore', '~> 5.20.1'
-  # pod 'Firebase/Invites', '~> 5.20.1'
-  # pod 'Firebase/Messaging', '~> 5.20.1'
-  # pod 'Firebase/RemoteConfig', '~> 5.20.1'
-  # pod 'Firebase/Storage', '~> 5.20.1'
-  # pod 'Firebase/Performance', '~> 5.20.1'
+  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'Fabric', '~> 1.9.0'
-  pod 'Crashlytics', '~> 3.12.0'
-
-  pod 'react-native-branch', path: '../node_modules/react-native-branch'
-  pod 'RNFS', :path => '../node_modules/react-native-fs'
-  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
-
-  pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
-
-  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
-  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
-
-  pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
-
-  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
-
-  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
-
-  pod 'RNBackgroundGeolocation', :path => '../node_modules/react-native-background-geolocation-android'
+  # Add new pods below this line
 
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing
   end
 
+  use_native_modules!
 end
 
 target 'sap_sailing_insight-tvOS' do
@@ -88,11 +68,11 @@ end
 
 # very important to have, unless you removed React dependencies for Libraries 
 # and you rely on Cocoapods to manage it
-post_install do |installer|
-  targets_to_ignore = %w(React yoga)
-  installer.pods_project.targets.each do |target|
-    if targets_to_ignore.include? target.name
-      target.remove_from_project
-    end
-  end
-end
+# post_install do |installer|
+#   targets_to_ignore = %w(React yoga)
+#   installer.pods_project.targets.each do |target|
+#     if targets_to_ignore.include? target.name
+#       target.remove_from_project
+#     end
+#   end
+# end
