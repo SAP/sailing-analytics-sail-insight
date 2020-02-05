@@ -144,7 +144,7 @@ android {
     }
 
     defaultConfig {
-        applicationId _applicationId
+        applicationId "org.sailyachtresearch.sailinsight"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode _versionCode
@@ -164,18 +164,27 @@ android {
         }
     }
     signingConfigs {
+        debug {
+            if (project.hasProperty('DEBUG_KEYSTORE')){
+                storeFile file(DEBUG_KEYSTORE)
+                storePassword DEBUG_KEYSTORE_PASSWORD
+                keyAlias DEBUG_KEY_ALIAS
+                keyPassword DEBUG_KEY_ALIAS_PASSWORD
+            }
+        }
         release {
-            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-                storeFile file(MYAPP_RELEASE_STORE_FILE)
-                storePassword MYAPP_RELEASE_STORE_PASSWORD
-                keyAlias MYAPP_RELEASE_KEY_ALIAS
-                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            if (project.hasProperty('RELEASE_KEYSTORE')) {
+                storeFile file(RELEASE_KEYSTORE)
+                storePassword RELEASE_KEYSTORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_ALIAS_PASSWORD
             }
         }
     }
     buildTypes {
         debug {
             resValue "string", "app_name", _appName
+            signingConfig signingConfigs.debug
         }
         release {
             resValue "string", "app_name", _appName
