@@ -1,15 +1,12 @@
 import { Alert, Linking, NativeModules, Platform } from 'react-native'
-import Permissions from 'react-native-permissions'
-
+import { PERMISSIONS, request, check } from 'react-native-permissions'
 import I18n from 'i18n'
 
-
 export const PermissionType = {
-  Photo : 'photo',
-  Camera : 'camera',
-  Location : 'location',
-  Contacts : 'contacts',
-  Notifications : 'notification',
+  Photo : Platform.select({ ios: PERMISSIONS.IOS.PHOTO_LIBRARY, android: PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE }),
+  Camera : Platform.select({ ios: PERMISSIONS.IOS.CAMERA, android: PERMISSIONS.ANDROID.CAMERA }),
+  Location : Platform.select({ ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION }),
+  Contacts : Platform.select({ ios: PERMISSIONS.IOS.CONTACTS, android: PERMISSIONS.ANDROID.READ_CONTACTS })
 }
 
 export const PERMISSION_DENIED = 'denied'
@@ -28,14 +25,15 @@ export const openSettings = () => {
 }
 
 export const requestPermission = async (permissionType: string) =>
-  await Permissions.request(permissionType) === PERMISSION_AUTHORIZED
+  await request(permissionType) === PERMISSION_AUTHORIZED
+
 
 export const checkPermissionWithSettingsCTA = async (
   permission: string,
   alertTitle: string,
   alertMessage: string,
 ) => {
-  if (await Permissions.check(permission) !== SETTINGS_CTA_PERMISSION_STATE) {
+  if (await check(permission) !== SETTINGS_CTA_PERMISSION_STATE) {
     return true
   }
   Alert.alert(
