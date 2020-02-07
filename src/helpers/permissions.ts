@@ -30,7 +30,7 @@ export const checkPermissionWithSettingsCTA = async (
   if (status === RESULTS.DENIED || status === RESULTS.GRANTED) {
     return true
   }
-  if (status === RESULTS.BLOCKED){
+  if (status === RESULTS.BLOCKED) {
     Alert.alert(
       alertTitle,
       alertMessage,
