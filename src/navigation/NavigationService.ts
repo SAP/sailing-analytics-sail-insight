@@ -12,12 +12,20 @@ export const navigate = (routeName: string, params?: any) => {
     return
   }
 
-  navigator.dispatch(
-    NavigationActions.navigate({
+  if (params && params.data && params.data.replaceCurrentScreen) {
+    navigator.dispatch({
+      key: routeName,
+      type: 'replaceCurrentScreen',
       routeName,
-      params,
-    }),
-  )
+      params
+    })
+  } else {
+    navigator.dispatch(
+      NavigationActions.navigate({
+        routeName,
+        params
+      }))
+  }
 }
 
 export const pop = (params?: any) => {

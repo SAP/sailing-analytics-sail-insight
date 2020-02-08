@@ -38,7 +38,7 @@ const shareIcon = fromClass(IconText).contramap(always({
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 
 export const mapStateToSessionDetailsProps = (state: any, props: any) => {
-  const leaderboardName = getCustomScreenParamData(props)
+  const leaderboardName = getCustomScreenParamData(props).leaderboardName
   const session = getSession(leaderboardName)(state)
 
   if (isNil(session)) {
