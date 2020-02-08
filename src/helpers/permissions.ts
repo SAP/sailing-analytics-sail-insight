@@ -1,5 +1,5 @@
 import { Alert, Linking, NativeModules, Platform } from 'react-native'
-import { PERMISSIONS, request, check } from 'react-native-permissions'
+import { PERMISSIONS, RESULTS, request, check, Permission } from 'react-native-permissions'
 import I18n from 'i18n'
 
 export const PermissionType = {
@@ -9,13 +9,6 @@ export const PermissionType = {
   Contacts : Platform.select({ ios: PERMISSIONS.IOS.CONTACTS, android: PERMISSIONS.ANDROID.READ_CONTACTS })
 }
 
-export const PERMISSION_DENIED = 'denied'
-export const PERMISSION_AUTHORIZED = 'authorized'
-export const PERMISSION_UNDETERMINED = 'undetermined'
-export const PERMISSION_RESTRICTED = 'restricted'
-
-const SETTINGS_CTA_PERMISSION_STATE = Platform.OS === 'ios' ? PERMISSION_DENIED : PERMISSION_RESTRICTED
-
 export const openSettings = () => {
   if (Platform.OS === 'android') {
     NativeModules.ShowAppSettings.show()
@@ -24,43 +17,41 @@ export const openSettings = () => {
   }
 }
 
-export const requestPermission = async (permissionType: string) =>
-  await request(permissionType) === PERMISSION_AUTHORIZED
+export const requestPermission = async (permissionType: Permission) =>
+  await request(permissionType) === RESULTS.GRANTED
 
 
 export const checkPermissionWithSettingsCTA = async (
-  permission: string,
+  permission: Permission,
   alertTitle: string,
   alertMessage: string,
 ) => {
-  if (await check(permission) !== SETTINGS_CTA_PERMISSION_STATE) {
+  const status = await check(permission);
+  if (status === RESULTS.DENIED || status === RESULTS.GRANTED) {
     return true
   }
-  Alert.alert(
-    alertTitle,
-    alertMessage,
-    [
-      { text: I18n.t('caption_cancel'), style: 'cancel' },
-      { text: I18n.t('caption_settings'), onPress: openSettings },
-    ],
-    { cancelable: false },
-  )
+  if (status === RESULTS.BLOCKED) {
+    Alert.alert(
+      alertTitle,
+      alertMessage,
+      [
+        { text: I18n.t('caption_cancel'), style: 'cancel' },
+        { text: I18n.t('caption_settings'), onPress: openSettings },
+      ],
+      { cancelable: false },
+    )
+  }
+  // if unavailable return false
   return false
 }
 
 export const requestPermissionsForImagePickerUsingCamera = async () =>
-  checkPermissionWithSettingsCTA(
+  await checkPermissionWithSettingsCTA(
     PermissionType.Camera,
     I18n.t('caption_take_photo'),
     I18n.t('text_permission_camera_settings_cta'),
   ) &&
-  await checkPermissionWithSettingsCTA(
-    PermissionType.Photo,
-    I18n.t('caption_take_photo'),
-    I18n.t('text_permission_camera_settings_cta'),
-  ) &&
-  await requestPermission(PermissionType.Camera) &&
-  requestPermission(PermissionType.Photo)
+  await requestPermission(PermissionType.Camera)
 
 export const requestPermissionsForImagePickerUsingPhotos = async () =>
   await checkPermissionWithSettingsCTA(
@@ -68,4 +59,4 @@ export const requestPermissionsForImagePickerUsingPhotos = async () =>
     I18n.t('caption_open_photos'),
     I18n.t('text_permission_photo_gallery_settings_cta'),
   ) &&
-  requestPermission(PermissionType.Photo)
+  await requestPermission(PermissionType.Photo)
