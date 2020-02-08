@@ -12,7 +12,7 @@ import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
-import { navigateToSessionDetail, navigateToSessionDetail4Organizer } from 'navigation'
+import { navigateToSessionDetail, navigateToOrganizerSessionDetail } from 'navigation'
 import { __, apply, compose, concat, curry, dec, path, prop, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share } from 'react-native'
@@ -51,10 +51,10 @@ function* selectEventSaga({ payload }: any) {
 
   if (currentUserCanUpdateEvent) {
     yield put(fetchCoursesForEvent(payload))
-    //navigateToSessionDetail4Organizer(payload.leaderboardName)
-    navigateToSessionDetail(payload.leaderboardName)
+    //navigateToOrganizerSessionDetail(payload)
+    navigateToSessionDetail(payload)
   } else {
-    navigateToSessionDetail(payload.leaderboardName)
+    navigateToSessionDetail(payload)
   }
 }
 
@@ -144,7 +144,7 @@ function* createEvent({ payload: { payload: data} }: any) {
       defaultCourseAreaUuid: regatta.courseAreaId })
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
-  yield put(selectEvent(data))
+  yield put(selectEvent({...data, replaceCurrentScreen: true }))
 }
 
 function* addRaceColumns({ payload }: any) {
