@@ -2,14 +2,14 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
   container: {
-    marginBottom: '$tinySpacing',
+    marginBottom: '$tinySpacing'
   },
   leftAction: {
     width: 200,
-    backgroundColor: '#FF6C52',
+    backgroundColor: '$Orange',
     justifyContent: 'center',
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 8,
     marginRight: -10,
   },
   actionImage: {
