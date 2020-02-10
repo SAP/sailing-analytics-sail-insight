@@ -1,8 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-
-import { $primaryActiveColor } from 'styles/colors'
+import { Dimensions } from 'react-native'
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
-import { white, withDefaultFont, withDefaultBoldFont } from 'styles/compositions/text'
+import { withDefaultFont, withDefaultBoldFont } from 'styles/compositions/text'
 
 export const lighterGray = '#C7C7C7'
 export const darkerGray = '#C5C5C5'
@@ -22,12 +21,13 @@ export default EStyleSheets.create({
   },
   eventStatsContainer: {
     backgroundColor: 'white',
+    borderRadius: 2,
     paddingLeft: 10,
     paddingTop: 15,
     paddingBottom: 15,
     marginRight: 15,
-    marginBottom: 5,
-    marginLeft: 15
+    marginLeft: 15,
+    marginTop: 5
   },
   eventTitle: {
     ...withDefaultBoldFont,
@@ -51,50 +51,67 @@ export default EStyleSheets.create({
     flex: 1
   },
   raceItemContainer: {
-    marginTop: 5,
+    marginTop: 15,
     marginRight: 15,
-    marginBottom: 5,
     marginLeft: 15,
-    height: 60,
     flex: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'column',
     backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 2
   },
 
   raceTimeContainer: {
     paddingLeft: 5,
     paddingRight: 5,
-    backgroundColor: '#123748',
     height: 60,
-    width: 100,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row'
   },
 
-  raceTimeContainerWithTime: {
-    backgroundColor: $primaryActiveColor,
+  sapAnalyticsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: '$delimiterColor'
+  },
+
+  sapAnalyticsButton: {
+    borderWidth: 1,
+    borderRadius: 25,
+    padding: 5,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderColor: '#526986',
+    color: '#526986'
+  },
+
+  raceDetailsContainer: {
+    flexDirection: 'row'
   },
 
   raceTimeText: {
-    ...white,
+    color: 'black',
     ...withDefaultFont,
+    paddingBottom: 0
+  },
+
+  raceNameTimeContainer: {
+    borderRightWidth: 1,
+    borderRightColor: '$delimiterColor',
+    width: Dimensions.get('window').width / 2 - 30,
+    paddingBottom: 0
   },
 
   raceTimeTextSet: {
     fontSize: 20,
+    fontWeight: 'bold'
   },
 
-  raceNameText: {
+  defineCourseText: {
     ...withDefaultBoldFont,
+    fontWeight: 'bold',
     color: 'black',
     fontSize: 20
-  },
-
-  raceDateAndTimeContainer: {
-    marginLeft: 5,
-    marginRight: 5,
-    flexShrink: 0,
-    flexGrow: 1
   }
 })

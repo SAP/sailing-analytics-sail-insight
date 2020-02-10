@@ -25,3 +25,4 @@ export const $MediumBlue = '#476987'
 export const $LightBlue  = '#4B7B90'
 
 export const $Orange = '#F0AB00'
+export const $delimiterColor = '#E2E2E2'

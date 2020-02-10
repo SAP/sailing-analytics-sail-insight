@@ -1,7 +1,7 @@
 import { __, always, append, compose, concat, defaultTo,
   equals, isEmpty, isNil, map, merge, not,
   objOf, prop, reduce, uncurryN, unless, when } from 'ramda'
-import Images from '@assets/Images'
+import { Dimensions } from 'react-native'
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
 import { openTrackDetails } from 'actions/navigation'
@@ -17,7 +17,7 @@ import {
 } from 'components/fp/component'
 import { forwardingPropsFlatList, text, touchableOpacity, view } from 'components/fp/react-native'
 import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } from 'components/helpers'
-import IconText from 'components/IconText'
+import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { dateShortText, dateTimeShortHourText } from 'helpers/date'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
@@ -29,13 +29,19 @@ import { getSession } from 'selectors/session'
 import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard, withUpdatingDiscardItem } from '../../session/common'
 import styles from './styles'
 
-export const arrowRight = fromClass(IconText).contramap(merge({
-  source: Images.actions.arrowRight,
-  style: { justifyContent: 'center' } }))
-
 const getRegattaPlannedRacesN = uncurryN(2, getRegattaPlannedRaces)
 
+const getRaceStartTime = compose(
+  prop('startTimeAsMillis'),
+  defaultTo({}),
+  prop('raceTime'))
+
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
+const nothingIfNoRaceTime = branch(compose(
+  isNil,
+  getRaceStartTime,
+  prop('item')),
+  nothingAsClass)
 
 const mapStateToProps = (state: any, props: any) => {
   const eventData = getSelectedEventInfo(state)
@@ -66,6 +72,7 @@ const mapStateToProps = (state: any, props: any) => {
 
   return {
     session,
+    canUpdateCurrentEvent: canUpdateCurrentEvent(state),
     numberOfRaces: races.length,
     races,
   }
@@ -92,31 +99,30 @@ const defineLayoutButton = Component((props: any) =>
     fold(props),
     touchableOpacity({
       style: { flexGrow: 1 },
+      disabled: !props.canUpdateCurrentEvent,
       onPress: () => onSeeCourse(props)
-    }))(
-      text(
-        {}, 
-        props.item.courseDefined ? I18n.t('caption_see_course') : I18n.t('caption_define_course')
-      )
-    )
-  )
+    }),
+    view({ style: { flexDirection: 'column' }}),
+    reduce(concat, nothing()))([
+      text({}, 'Course'),
+      text({ style: styles.defineCourseText },
+        !props.canUpdateCurrentEvent ? '--' :
+        props.item.courseDefined ? I18n.t('caption_see_course') :
+        I18n.t('caption_define_course'))
+    ]))
 
 const raceAnalyticsButton = Component((props: any) =>
   compose(
     fold(props),
     touchableOpacity({
+      style: styles.sapAnalyticsContainer,
       onPress: () => props.openTrackDetails(props.item)
     }))(
-    text({}, 'SAP Analytics')))
-
-const getRaceStartTime = compose(
-  prop('startTimeAsMillis'),
-  defaultTo({}),
-  prop('raceTime'))
+    text({ style: styles.sapAnalyticsButton }, 'Go to SAP-Analytics')))
 
 const raceTimePicker = Component((props: any) => compose(
   fold(props),
-  view({ style: [styles.raceTimeContainer, getRaceStartTime(props.item) && styles.raceTimeContainerWithTime] }),
+  view({ style: styles.raceTimeContainer }),
   concat(__, fromClass(DatePicker).contramap(always({
     onDateChange: (value: number) => props.setRaceTime({
       race: props.item.name,
@@ -129,28 +135,22 @@ const raceTimePicker = Component((props: any) => compose(
     confirmBtnText: I18n.t('caption_confirm'),
     cancelBtnText: I18n.t('caption_cancel'),
     hideText: true,
+    disabled: !props.canUpdateCurrentEvent,
     showIcon: false,
-    style: {position: 'absolute', width: 100, height: 60, top: 0, left: 0 },
+    style: {position: 'absolute', width: Dimensions.get('window').width / 2 - 30, height: 60, top: 0, left: 0 },
     customStyles: {
       dateInput: {
         height: 60,
-        width: 100,
+        width: Dimensions.get('window').width / 2 - 30,
         borderWidth: 0,
       }
     },
   }))),
-  concat(fromClass(IconText).contramap(merge({ source: Images.info.time, iconStyle: { tintColor: 'white' }}))),
-  text({ style: [styles.raceTimeText, getRaceStartTime(props.item) && styles.raceTimeTextSet] }),
-  when(isNil, always(I18n.t('caption_set_time'))),
+  view({ style: styles.raceNameTimeContainer }),
+  concat(text({}, defaultTo('', props.item.name))),
+  text({ style: [styles.raceTimeText, styles.raceTimeTextSet] }),
+  when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always('--')),
   unless(isNil, dateTimeShortHourText),
-  getRaceStartTime)(
-  props.item))
-
-const raceDateAndTime = Component((props: any) => compose(
-  fold(props),
-  text({}),
-  when(isNil, always('--')),
-  unless(isNil, time => `${dateShortText(time)} | ${dateTimeShortHourText(time)}`),
   getRaceStartTime)(
   props.item))
 
@@ -158,15 +158,12 @@ const raceItem = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.raceItemContainer }),
-    concat(nothingIfCannotUpdateCurrentEvent(raceTimePicker)),
-    concat(__, [
-      nothingIfCannotUpdateCurrentEvent(defineLayoutButton),
-      raceAnalyticsButton,
-      arrowRight]),
-    view({ style: styles.raceDateAndTimeContainer }),
+    concat(__, nothingIfNoRaceTime(raceAnalyticsButton)),
+    view({ style: styles.raceDetailsContainer }),
     reduce(concat, nothing()))([
-    nothingIfCanUpdateCurrentEvent(raceDateAndTime),
-    text({ style: styles.raceNameText }, defaultTo('', props.item.name)) ]))
+      raceTimePicker,
+      defineLayoutButton
+     ]))
 
 const raceList = Component((props: object) => compose(
   fold(props),
