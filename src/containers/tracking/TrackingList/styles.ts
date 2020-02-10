@@ -25,7 +25,7 @@ export default EStyleSheets.create({
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 0,
-    backgroundColor: 'transparent',
+    backgroundColor: '$primaryBackgroundColor',
     borderWidth: 2,
     borderColor: '#F0AB00',
   },
