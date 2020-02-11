@@ -2,6 +2,7 @@ import { compose, concat, merge, reduce } from 'ramda'
 
 import { Component, fold, nothing, reduxConnect as connect } from 'components/fp/component'
 import { view } from 'components/fp/react-native'
+import I18n from 'i18n'
 
 import { container } from 'styles/commons'
 import styles from './styles'
@@ -62,5 +63,5 @@ export default Component((props: any) =>
       competitorsCard,
       nextButton({
         onPress: createEvent,
-        label: 'Create Event',
+        label: I18n.t('title_event_creation'),
       })]))
