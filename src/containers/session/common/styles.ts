@@ -124,7 +124,6 @@ export default EStyleSheets.create({
   },
   textLast: {
     color: 'white',
-    marginBottom: 10,
   },
   textHeader: {
     color: 'white',
@@ -148,7 +147,6 @@ export default EStyleSheets.create({
     color: 'black',
     fontSize: 44,
     textAlign: 'center',
-    marginTop: 13,
   },
   discardContainer: {
     marginBottom: 20,
