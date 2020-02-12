@@ -1,6 +1,6 @@
 import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { withDefaultBoldFont, withSecondaryHeavyFont, withSecondaryLightFont, withSecondaryBoldFont, withDefaultUniversalFont, withDefaultUniversalBoldFont } from 'styles/compositions/text'
+import { withDefaultBoldFont, withSecondaryHeavyFont, withSecondaryLightFont, withSecondaryBoldFont, withDefaultFont } from 'styles/compositions/text'
 
 const discardSelectorCircleDiameter = 50
 
@@ -39,7 +39,7 @@ export default EStyleSheets.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    ...withDefaultUniversalBoldFont,
+    ...withDefaultBoldFont,
   },
   container1: {
     backgroundColor: '$primaryBackgroundColor',
@@ -106,7 +106,7 @@ export default EStyleSheets.create({
   headline: {
     color: 'white',
     fontSize: 18,
-    ...withDefaultUniversalBoldFont,
+    ...withDefaultBoldFont,
   },
   text: {
     color: 'white',
@@ -133,7 +133,7 @@ export default EStyleSheets.create({
   textOverlay: {
     color: '#FFFFFF',
     fontSize: 40,
-    ...withDefaultUniversalFont,
+    ...withDefaultFont,
   },
   framedNumber: {
     flexDirection: 'row',

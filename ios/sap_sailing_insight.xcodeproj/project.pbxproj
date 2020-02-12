@@ -26,20 +26,14 @@
 		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* sap_sailing_insightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */; };
 		384B92F5DF3EF51B44A06BDE /* libPods-sap_sailing_insight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AF2794870904F520A9D207E3 /* libPods-sap_sailing_insight.a */; };
-		3CFD8936773B468E8AF69EB3 /* BentonSans-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C4F615FCC56D45608BB77A34 /* BentonSans-Bold.otf */; };
 		475044098F5D49F48DF8B704 /* SFProDisplay-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6697E9E8466C41A1A1E26D10 /* SFProDisplay-Bold.otf */; };
 		4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B2B06EC2267239A0009FAEC /* InfoPlist.strings */; };
 		4EC14D9E183943FFB0DC1609 /* SFCompactText-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = F86F0DBAAFEC487A8C513B94 /* SFCompactText-Regular.otf */; };
 		6B1CF57623EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B1CF57523EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m */; };
 		6B70DEA323D98050000E7A1D /* sap_sailing_insight.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 98400D3621C03499002D36DE /* sap_sailing_insight.entitlements */; };
-		6D9ADD1B298D4DFB9CA60FE2 /* BentonSans-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 187464D2C7134C40AE6BFA41 /* BentonSans-Thin.otf */; };
 		75E12998B1F7482F875C58B8 /* SFProDisplay-HeavyItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 22B060AAFBC445FDAA1D0A59 /* SFProDisplay-HeavyItalic.otf */; };
-		86C11B2BFB794E3E81D660D3 /* BentonSans-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = C4FBACC177EB4AD18CE21268 /* BentonSans-ExtraLight.otf */; };
-		9ACC46B62BA74A1AAE3CB968 /* BentonSans-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9A52AF3B35714CD9910AB7B1 /* BentonSans-Regular.otf */; };
 		A1CB7FA7252449A9BEFEDFBB /* FloodStd.otf in Resources */ = {isa = PBXBuildFile; fileRef = 17EA795099914E639499D806 /* FloodStd.otf */; };
 		AFBA82F3028D478795B5C06B /* SFProDisplay-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F668B25BE0E74E509D8219BB /* SFProDisplay-Medium.otf */; };
-		C7E535DE4E2D4ACD93494FAE /* BentonSans-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0F570E76DC0744C7A9FDCEC2 /* BentonSans-Medium.otf */; };
-		D4CC3FC19B104979B3DC0F4F /* BentonSans-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = C76A85796BBA4701A924EC79 /* BentonSans-Light.otf */; };
 		D77472E005664B2AAC6AD997 /* SFCompactText-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 193171EC2B3B41F1A119F34F /* SFCompactText-Bold.otf */; };
 		E4D4090681F3452DB67042DC /* SFProDisplay-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = E12B304FAD7147CB92676106 /* SFProDisplay-Light.otf */; };
 		F9E8BFABFCBC41728C88DEA6 /* SFProDisplay-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9AC5B0B0594245C580F9D8DC /* SFProDisplay-Heavy.otf */; };
@@ -275,7 +269,6 @@
 		00E356EE1AD99517003FC87E /* sap_sailing_insightTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = sap_sailing_insightTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* sap_sailing_insightTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sap_sailing_insightTests.m; sourceTree = "<group>"; };
-		0F570E76DC0744C7A9FDCEC2 /* BentonSans-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Medium.otf"; path = "../assets/fonts/BentonSans-Medium.otf"; sourceTree = "<group>"; };
 		106D9AE52223141300E2D930 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sap_sailing_insight/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		106D9B47222316B300E2D930 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = Pods/Fabric/iOS/Fabric.framework; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
@@ -288,7 +281,6 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = sap_sailing_insight/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sap_sailing_insight/main.m; sourceTree = "<group>"; };
 		17EA795099914E639499D806 /* FloodStd.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FloodStd.otf; path = ../assets/fonts/FloodStd.otf; sourceTree = "<group>"; };
-		187464D2C7134C40AE6BFA41 /* BentonSans-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Thin.otf"; path = "../assets/fonts/BentonSans-Thin.otf"; sourceTree = "<group>"; };
 		193171EC2B3B41F1A119F34F /* SFCompactText-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFCompactText-Bold.otf"; path = "../assets/fonts/SFCompactText-Bold.otf"; sourceTree = "<group>"; };
 		22B060AAFBC445FDAA1D0A59 /* SFProDisplay-HeavyItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-HeavyItalic.otf"; path = "../assets/fonts/SFProDisplay-HeavyItalic.otf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* sap_sailing_insight-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sap_sailing_insight-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -308,13 +300,9 @@
 		888495AFB84DC55B2536A019 /* libPods-sap_sailing_insightTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insightTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		98400D3621C03499002D36DE /* sap_sailing_insight.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sap_sailing_insight.entitlements; path = sap_sailing_insight/sap_sailing_insight.entitlements; sourceTree = "<group>"; };
 		98F71BA32153B20D008D1AC5 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
-		9A52AF3B35714CD9910AB7B1 /* BentonSans-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Regular.otf"; path = "../assets/fonts/BentonSans-Regular.otf"; sourceTree = "<group>"; };
 		9AC5B0B0594245C580F9D8DC /* SFProDisplay-Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Heavy.otf"; path = "../assets/fonts/SFProDisplay-Heavy.otf"; sourceTree = "<group>"; };
 		9D1A38A0C578E4D95173B4BD /* Pods-sap_sailing_insightTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insightTests.release.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insightTests/Pods-sap_sailing_insightTests.release.xcconfig"; sourceTree = "<group>"; };
 		AF2794870904F520A9D207E3 /* libPods-sap_sailing_insight.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insight.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		C4F615FCC56D45608BB77A34 /* BentonSans-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Bold.otf"; path = "../assets/fonts/BentonSans-Bold.otf"; sourceTree = "<group>"; };
-		C4FBACC177EB4AD18CE21268 /* BentonSans-ExtraLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-ExtraLight.otf"; path = "../assets/fonts/BentonSans-ExtraLight.otf"; sourceTree = "<group>"; };
-		C76A85796BBA4701A924EC79 /* BentonSans-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BentonSans-Light.otf"; path = "../assets/fonts/BentonSans-Light.otf"; sourceTree = "<group>"; };
 		D9CE9EDC1130866B5F989C31 /* Pods-sap_sailing_insight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight.release.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insight/Pods-sap_sailing_insight.release.xcconfig"; sourceTree = "<group>"; };
 		E12B304FAD7147CB92676106 /* SFProDisplay-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Light.otf"; path = "../assets/fonts/SFProDisplay-Light.otf"; sourceTree = "<group>"; };
 		F668B25BE0E74E509D8219BB /* SFProDisplay-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Medium.otf"; path = "../assets/fonts/SFProDisplay-Medium.otf"; sourceTree = "<group>"; };
@@ -412,12 +400,6 @@
 		2753BF697C684F71AE74EF73 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				C4F615FCC56D45608BB77A34 /* BentonSans-Bold.otf */,
-				C4FBACC177EB4AD18CE21268 /* BentonSans-ExtraLight.otf */,
-				C76A85796BBA4701A924EC79 /* BentonSans-Light.otf */,
-				0F570E76DC0744C7A9FDCEC2 /* BentonSans-Medium.otf */,
-				9A52AF3B35714CD9910AB7B1 /* BentonSans-Regular.otf */,
-				187464D2C7134C40AE6BFA41 /* BentonSans-Thin.otf */,
 				17EA795099914E639499D806 /* FloodStd.otf */,
 				193171EC2B3B41F1A119F34F /* SFCompactText-Bold.otf */,
 				F86F0DBAAFEC487A8C513B94 /* SFCompactText-Regular.otf */,
@@ -816,12 +798,6 @@
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				106D9AE62223141300E2D930 /* GoogleService-Info.plist in Resources */,
 				4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */,
-				3CFD8936773B468E8AF69EB3 /* BentonSans-Bold.otf in Resources */,
-				86C11B2BFB794E3E81D660D3 /* BentonSans-ExtraLight.otf in Resources */,
-				D4CC3FC19B104979B3DC0F4F /* BentonSans-Light.otf in Resources */,
-				C7E535DE4E2D4ACD93494FAE /* BentonSans-Medium.otf in Resources */,
-				9ACC46B62BA74A1AAE3CB968 /* BentonSans-Regular.otf in Resources */,
-				6D9ADD1B298D4DFB9CA60FE2 /* BentonSans-Thin.otf in Resources */,
 				D77472E005664B2AAC6AD997 /* SFCompactText-Bold.otf in Resources */,
 				4EC14D9E183943FFB0DC1609 /* SFCompactText-Regular.otf in Resources */,
 				475044098F5D49F48DF8B704 /* SFProDisplay-Bold.otf in Resources */,

@@ -1,5 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { withSecondaryLightFont, withSecondaryHeavyFont, withDefaultUniversalBoldFont } from 'styles/compositions/text'
+import { withSecondaryLightFont, withSecondaryHeavyFont, withDefaultBoldFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   container: {
@@ -46,7 +46,7 @@ export default EStyleSheets.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    ...withDefaultUniversalBoldFont,
+    ...withDefaultBoldFont,
   },
   textContainer: {
     flexDirection: 'column',

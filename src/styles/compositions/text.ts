@@ -6,14 +6,6 @@ export const withDefaultBoldFont = {
   fontFamily: '$defaultBoldFontFamily',
 }
 
-export const withDefaultUniversalFont = {
-  fontFamily: '$defaultUniversalFontFamily',
-}
-
-export const withDefaultUniversalBoldFont = {
-  fontFamily: '$defaultUniversalBoldFontFamily',
-}
-
 export const withSecondaryLightFont = {
   fontFamily: '$secondaryLightFontFamily',
 }

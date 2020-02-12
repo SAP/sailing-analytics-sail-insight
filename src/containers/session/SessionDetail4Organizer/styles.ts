@@ -1,6 +1,6 @@
 import { Dimensions } from 'react-native';
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { withSecondaryHeavyFont, withSecondaryLightFont, withSecondaryBoldFont, withDefaultUniversalBoldFont, withTertiaryFont } from 'styles/compositions/text';
+import { withSecondaryHeavyFont, withSecondaryLightFont, withSecondaryBoldFont, withTertiaryFont, withDefaultBoldFont } from 'styles/compositions/text';
 
 export default EStyleSheets.create({
   container: {
@@ -38,13 +38,13 @@ export default EStyleSheets.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    ...withDefaultUniversalBoldFont,
+    ...withDefaultBoldFont,
   },
   buttonBigContent: {
     textAlign: 'center',
     color: 'white',
     fontSize: 24,
-    ...withDefaultUniversalBoldFont,
+    ...withDefaultBoldFont,
   },
   container1: {
     alignItems: 'center',
@@ -115,13 +115,13 @@ export default EStyleSheets.create({
   headline: {
     color: 'white',
     fontSize: 18,
-    ...withDefaultUniversalBoldFont,
+    ...withDefaultBoldFont,
   },
   headlineTop: {
     backgroundColor: '$primaryBackgroundColor',
     color: 'white',
     fontSize: 20,
-    ...withDefaultUniversalBoldFont,
+    ...withDefaultBoldFont,
     margin: 5,
     width: 40,
     height: 40,
