@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryLightFont, withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 
 export default EStyleSheets.create({
@@ -11,7 +12,7 @@ export default EStyleSheets.create({
   },
   inputStyle: {
     fontSize: 16,
-    fontFamily: 'SFProDisplay-Light',
+    ...withSecondaryLightFont,
     borderBottomColor: '#FFFFFF',
     borderBottomWidth: 1,
   },
@@ -27,12 +28,12 @@ export default EStyleSheets.create({
   title: {
     color: 'white',
     fontSize: 12,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   text: {
     color: 'white',
     fontSize: 16,
-    fontFamily: 'SFProDisplay-Light',
+    ...withSecondaryLightFont,
   },
   bottomButtonField: {
     width: '100%',
@@ -52,7 +53,7 @@ export default EStyleSheets.create({
   saveButtonText: {
     color: '#FFFFFF',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   logoutButton: {
     marginTop: '$smallSpacing',
@@ -60,6 +61,6 @@ export default EStyleSheets.create({
     marginRight: 'auto',
     color: '$primaryButtonColor',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
 })

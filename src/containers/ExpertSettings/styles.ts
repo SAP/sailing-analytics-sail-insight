@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withDefaultBoldFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   textContainer: {
@@ -39,6 +40,6 @@ export default EStyleSheets.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultBoldFont,
   },
 })

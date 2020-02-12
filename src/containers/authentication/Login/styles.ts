@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   scrollContainer: {
@@ -40,12 +41,12 @@ export default EStyleSheets.create({
   loginButtonText: {
     color: '#FFFFFF',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   claim: {
     color: '#FFFFFF',
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
   },

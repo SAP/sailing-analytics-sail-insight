@@ -1,4 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
+import { withSecondaryMediumFont, withSecondaryBoldFont } from 'styles/compositions/text'
 
 export default EStyleSheet.create({
   size: {
@@ -13,11 +14,11 @@ export default EStyleSheet.create({
   textButtonText: {
     color: '$primaryButtonColor',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Bold',
+    ...withSecondaryBoldFont,
   },
   textColorRegister: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
 })

@@ -1,5 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
+import { withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 
 export default EStyleSheets.create({
@@ -14,7 +15,7 @@ export default EStyleSheets.create({
     marginTop: '$tinySpacing',
     marginBottom: '$tinySpacing',
     fontSize: 26,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   timeText: {
     color: 'white',
@@ -51,16 +52,16 @@ export default EStyleSheets.create({
   joinButtonText: {
     color: '#FFFFFF',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   textButtonText: {
     color: '$primaryButtonColor',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
   textButtonTextWhite: {
     color: 'white',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
 })

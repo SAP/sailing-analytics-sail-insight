@@ -1,7 +1,13 @@
 import { isPlatformAndroid } from 'environment'
 
-export const $defaultFontFamily = isPlatformAndroid ? 'sfcompact_regular' : 'BentonSans Regular'
-export const $defaultBoldFontFamily = isPlatformAndroid ? 'sfcompact_bold' : 'BentonSans Bold'
+export const $defaultFontFamily = isPlatformAndroid ? 'sfcompact_regular' : 'SFCompactText-Regular'
+export const $defaultBoldFontFamily = isPlatformAndroid ? 'sfcompact_bold' : 'SFCompactText-Bold'
+export const $secondaryLightFontFamily = "SFProDisplay-Light"
+export const $secondaryMediumFontFamily = "SFProDisplay-Medium"
+export const $secondaryBoldFontFamily = "SFProDisplay-Bold"
+export const $secondaryHeavyFontFamily = "SFProDisplay-Heavy"
+export const $secondaryHeavyItalicFontFamily = "SFProDisplay-HeavyItalic"
+export const $tertiaryFontFamily = 'FloodStd'
 
 export const $microFontSize = 8
 export const $smallFontSize = 11
