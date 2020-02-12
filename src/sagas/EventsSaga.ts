@@ -196,8 +196,9 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
 
 function* openEventLeaderboard() {
   const { serverUrl, eventId, regattaName } = yield select(getSelectedEventInfo)
+  const urlEventLeaderBoard = `${serverUrl}/gwt/Home.html#/regatta/minileaderboard/:eventId=${eventId}&regattaId=` + encodeURIComponent(regattaName);
 
-  openUrl(`${serverUrl}/gwt/Home.html#/regatta/minileaderboard/:eventId=${eventId}&regattaId=${regattaName}`)
+  openUrl(urlEventLeaderBoard);
 }
 
 function* openSAPAnalyticsEvent() {
