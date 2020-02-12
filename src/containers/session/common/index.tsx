@@ -45,11 +45,7 @@ export const overlayPicker = curry((
           marginTop: 30,
           backgroundColor: '#123748',
         },
-        optionTextStyle: {
-          color: '#FFFFFF',
-          fontSize: 40,
-          fontFamily: 'SFCompactText-Regular',
-        },
+        optionTextStyle: styles.textOverlay,
         selectedKey: selectedValue,
         onChange: (v: any) => onValueChange(v.key),
         cancelText: (I18n.t('caption_cancel')),

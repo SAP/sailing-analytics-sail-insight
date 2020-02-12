@@ -6,6 +6,38 @@ export const withDefaultBoldFont = {
   fontFamily: '$defaultBoldFontFamily',
 }
 
+export const withDefaultUniversalFont = {
+  fontFamily: '$defaultUniversalFontFamily',
+}
+
+export const withDefaultUniversalBoldFont = {
+  fontFamily: '$defaultUniversalBoldFontFamily',
+}
+
+export const withSecondaryLightFont = {
+  fontFamily: '$secondaryLightFontFamily',
+}
+
+export const withSecondaryMediumFont = {
+  fontFamily: '$secondaryMediumFontFamily',
+}
+
+export const withSecondaryBoldFont = {
+  fontFamily: '$secondaryBoldFontFamily',
+}
+
+export const withSecondaryHeavyFont = {
+  fontFamily: '$secondaryHeavyFontFamily',
+}
+
+export const withSecondaryHeavyItalicFont = {
+  fontFamily: '$secondaryHeavyItalicFontFamily',
+}
+
+export const withTertiaryFont = {
+  fontFamily: '$tertiaryFontFamily',
+}
+
 export const withTitleSize = {
   fontSize: '$titleFontSize',
 }

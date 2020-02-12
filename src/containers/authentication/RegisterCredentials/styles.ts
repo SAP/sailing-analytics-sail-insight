@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 
 export default EStyleSheets.create({
@@ -15,14 +16,14 @@ export default EStyleSheets.create({
   claim1: {
     color: '#F0AB00',
     fontSize: 17,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
   },
   claim2: {
     color: '#FFFFFF',
     fontSize: 17,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
   },
@@ -72,7 +73,7 @@ export default EStyleSheets.create({
   registrationButtonText: {
     color: '#FFFFFF',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   loginText: {
     marginTop: '$smallSpacing',
@@ -80,7 +81,7 @@ export default EStyleSheets.create({
     marginRight: 'auto',
     color: '#FFFFFF',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
   redBalloon: {
     marginTop: '$smallSpacing',

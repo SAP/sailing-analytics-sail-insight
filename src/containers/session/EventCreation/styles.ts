@@ -1,5 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { white, withDefaultBoldFont, withDefaultFont, withTitleSize } from 'styles/compositions/text'
+import { white, withDefaultBoldFont, withDefaultFont, withTitleSize, withSecondaryHeavyFont } from 'styles/compositions/text'
 import { Platform } from 'react-native'
 
 export const sectionHeaderStyle = {
@@ -51,7 +51,7 @@ export default EStyleSheets.create({
   createButtonText: {
     ...white,
     ...withTitleSize,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     letterSpacing: 1.5,
   },
 })

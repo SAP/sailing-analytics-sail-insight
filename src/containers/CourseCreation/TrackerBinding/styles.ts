@@ -1,5 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { white, withTitleSize, withDefaultFont } from 'styles/compositions/text'
+import { white, withTitleSize, withDefaultFont, withSecondaryHeavyFont } from 'styles/compositions/text'
 import { Dimensions } from 'react-native'
 
 export default EStyleSheets.create({
@@ -34,7 +34,7 @@ export default EStyleSheets.create({
   useThisDeviceButtonText: {
     ...white,
     ...withTitleSize,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     letterSpacing: 1.5,
   },
   qrCodeContainer: {

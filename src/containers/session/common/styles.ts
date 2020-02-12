@@ -1,6 +1,6 @@
 import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { withDefaultBoldFont } from 'styles/compositions/text'
+import { withDefaultBoldFont, withSecondaryHeavyFont, withSecondaryLightFont, withSecondaryBoldFont, withDefaultUniversalFont, withDefaultUniversalBoldFont } from 'styles/compositions/text'
 
 const discardSelectorCircleDiameter = 50
 
@@ -39,7 +39,7 @@ export default EStyleSheets.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultUniversalBoldFont,
   },
   container1: {
     backgroundColor: '$primaryBackgroundColor',
@@ -101,12 +101,12 @@ export default EStyleSheets.create({
     color: 'white',
     marginTop: 10,
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   headline: {
     color: 'white',
     fontSize: 18,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultUniversalBoldFont,
   },
   text: {
     color: 'white',
@@ -115,12 +115,12 @@ export default EStyleSheets.create({
   textLight: {
     color: 'white',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Light',
+    ...withSecondaryLightFont,
   },
   textValue: {
     color: 'white',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Bold',
+    ...withSecondaryBoldFont,
   },
   textLast: {
     color: 'white',
@@ -129,6 +129,11 @@ export default EStyleSheets.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: '$regularLargeFontSize',
+  },
+  textOverlay: {
+    color: '#FFFFFF',
+    fontSize: 40,
+    ...withDefaultUniversalFont,
   },
   framedNumber: {
     flexDirection: 'row',

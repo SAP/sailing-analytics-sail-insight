@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryLightFont, withSecondaryHeavyFont, withDefaultUniversalBoldFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   container: {
@@ -14,7 +15,7 @@ export default EStyleSheets.create({
     marginBottom: 8,
     color: 'white',
     fontSize: 16,
-    fontFamily: 'SFProDisplay-Light',
+    ...withSecondaryLightFont,
   },
   item2: {
     padding: '$tinySpacing',
@@ -24,12 +25,12 @@ export default EStyleSheets.create({
   title: {
     color: 'white',
     fontSize: 12,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   text: {
     color: 'white',
     fontSize: 16,
-    fontFamily: 'SFProDisplay-Light',
+    ...withSecondaryLightFont,
   },
   button: {
     padding: 12,
@@ -45,7 +46,7 @@ export default EStyleSheets.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultUniversalBoldFont,
   },
   textContainer: {
     flexDirection: 'column',
