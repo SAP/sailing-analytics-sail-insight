@@ -1,5 +1,5 @@
 import React from 'react'
-import { createBottomTabNavigator, createStackNavigator, HeaderBackButton } from 'react-navigation'
+import { createBottomTabNavigator, createStackNavigator, HeaderBackButton, BottomTabBar } from 'react-navigation'
 import I18n from 'i18n'
 
 import Images from '@assets/Images'
@@ -16,9 +16,11 @@ import EventCreation from 'containers/session/EventCreation'
 import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 import { navigateBack } from 'navigation/NavigationService'
+import { Platform } from 'react-native'
 
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
 import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
+import DisappearingTabBar from 'navigation/navigators/DisappearingTabBar'
 
 const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
   const { routeName = '' } = navigation.state
@@ -175,5 +177,7 @@ export default createBottomTabNavigator(
       tabBarIcon: getTabBarIcon(navigation),
       tabBarOnPress:  onTabBarPress(navigation),
     }),
+    tabBarComponent: (Platform.OS === 'android') ? props => <DisappearingTabBar {...props}/> : BottomTabBar,
+    tabBarPosition: 'bottom',
   },
 )
