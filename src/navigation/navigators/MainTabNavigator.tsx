@@ -57,14 +57,23 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
   )
 }
 
-const onTabBarPress = (navigation: any) => (props: any = {}) => {
-  if (!props.defaultHandler || !props.navigation) {
+const onTabBarPress = (props: any = {}) => {
+  const { defaultHandler, navigation } = props
+
+  if (!defaultHandler || !navigation) {
     return
   }
-  if (!props.navigation.state) {
-    return props.defaultHandler(navigation)
+  if (!navigation.state) {
+    return defaultHandler(navigation)
   }
-  return props.defaultHandler(props.navigation)
+  // Prevent exit tracking screen when track navigator is selected and user taps on
+  // the tracking tab in main navigator
+  if (navigation.state.key === 'TrackingNavigator' &&
+      navigation.isFocused() &&
+      navigation.state.index === 1) {
+    return
+  }
+  return defaultHandler(navigation)
 }
 
 const sessionsStack = createStackNavigator({
@@ -173,7 +182,7 @@ export default createBottomTabNavigator(
     },
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: getTabBarIcon(navigation),
-      tabBarOnPress:  onTabBarPress(navigation),
+      tabBarOnPress: onTabBarPress,
     }),
   },
 )
