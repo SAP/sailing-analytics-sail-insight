@@ -1,8 +1,10 @@
 import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
-  prop, isNil } from 'ramda'
+  prop, isNil, both } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
+import { startTracking, stopTracking } from 'actions/events'
+import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
@@ -17,8 +19,9 @@ import styles from './styles'
 import { mapStateToSessionDetailsProps } from '../SessionDetail'
 import { qrCode, inviteCompetitorsButton, joinAsCompetitorButton } from '../../session/common'
 
-const nothingWhenEntryIsClosed = branch(propEq('entryClosed', true), nothingAsClass)
-const nothingWhenTrackingIsStopped = branch(propEq('trackingStopped', true), nothingAsClass)
+const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
+const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
+const nothingWhenEntryIsOpen = branch(both(propEq('isTracking', false), propEq('isFinished', false)), nothingAsClass)
 const nothingWhenNoBoatClass = branch(compose(isNil, prop('boatClass')), nothingAsClass)
 
 const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
@@ -31,8 +34,8 @@ const mapStateToProps = (state: any, props: any) => {
 
   return {
     ...sessionData,
-    entryClosed: false,
-    trackingStopped: false
+    isTracking: isCurrentLeaderboardTracking(state),
+    isFinished: isCurrentLeaderboardFinished(state)
   }
 }
 
@@ -43,14 +46,14 @@ const sessionData = {
 
 const closeEntry = (props: any) => {
   Alert.alert(I18n.t('caption_start_tracking'), I18n.t('text_alert_for_start_tracking'), [
-    { text: I18n.t('button_yes'), onPress: () => 'todo: closeEntryAction' }, // todo: set event state to entry closed
+    { text: I18n.t('button_yes'), onPress: () => props.startTracking(props.session) },
     { text: I18n.t('button_no') },
   ])
 }
 
 const endEvent = (props: any) => {
   Alert.alert(I18n.t('caption_end_event'), I18n.t('text_tracking_alert_stop_confirmation_message'), [
-    { text: I18n.t('button_yes'), onPress: () => 'todo: stopTrackingAction' }, // todo: set event state to stop tracking
+    { text: I18n.t('button_yes'), onPress: () => props.stopTracking(props.session) },
     { text: I18n.t('button_no') },
   ])
 }
@@ -82,7 +85,7 @@ export const defineRacesCard = Component((props: any) => compose(
     text({ style: styles.headlineTop }, '1'),
     text({ style: styles.headline }, I18n.t('caption_define').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
-      props.entryClosed ?
+      props.isTracking || props.isFinished ?
       I18n.t('text_define_races_long_text_running') :
       I18n.t('text_define_races_long_text_planning')),
     styledButton({
@@ -98,12 +101,12 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
     text({ style: styles.headlineTop }, '2'),
     text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
-      props.entryClosed ?
+      props.isTracking || props.isFinished ?
       I18n.t('text_invite_competitors_long_text_running') :
       I18n.t('text_invite_competitors_long_text_planning')),
-    nothingWhenEntryIsClosed(inviteCompetitorsButton),
-    nothingWhenEntryIsClosed(joinAsCompetitorButton),
-    qrCode
+    nothingWhenFinished(nothingWhenTracking(inviteCompetitorsButton)),
+    nothingWhenFinished(nothingWhenTracking(joinAsCompetitorButton)),
+    nothingWhenFinished(nothingWhenTracking(qrCode))
   ]))
 
 export const closeEntryCard = Component((props: any) => compose(
@@ -114,7 +117,7 @@ export const closeEntryCard = Component((props: any) => compose(
     text({ style: styles.headlineTop }, '3'),
     text({ style: styles.headline }, I18n.t('caption_close').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_close_entry_long_text')),
-    nothingWhenEntryIsClosed(styledButton({
+    nothingWhenTracking(styledButton({
       onPress: (props: any) => closeEntry(props),
       style: styles.buttonBig,
     },text({ style: styles.buttonBigContent }, I18n.t('caption_close_entry').toUpperCase())))
@@ -128,19 +131,17 @@ export const endEventCard = Component((props: any) => compose(
     text({ style: styles.headlineTop }, '3'),
     text({ style: styles.headline }, I18n.t('caption_end').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, !props.trackingStopped ? I18n.t('text_end_event_long_text_running') : I18n.t('text_end_event_long_text_finished')),
-    nothingWhenTrackingIsStopped(
+    nothingWhenFinished(
     styledButton({
       onPress: (props: any) => endEvent(props),
       style: styles.buttonBig,
-    },text({ style: styles.buttonContent }, I18n.t('caption_end_event'))))
+    },text({ style: styles.buttonBigContent }, I18n.t('caption_end_event').toUpperCase())))
   ]))
 
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
     connect(mapStateToProps, { 
-      checkOut,
-      collectCheckInData,
-      shareSessionRegatta
+      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta
     }),
     scrollView({ style: styles.container }),
     view({ style: [container.list, styles.cardsContainer] }),
@@ -148,5 +149,6 @@ export default Component((props: any) => compose(
     sessionDetailsCard,
     defineRacesCard,
     inviteCompetitorsCard,
-    closeEntryCard, // !props.entryClosed ? closeEntryCard : endEventCard, // ToDo: how and when is it closed
+    nothingWhenFinished(nothingWhenTracking(closeEntryCard)),
+    nothingWhenFinished(nothingWhenEntryIsOpen(endEventCard))
   ]))

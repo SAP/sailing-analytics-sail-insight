@@ -39,6 +39,7 @@ import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue,
   $secondaryBackgroundColor, $primaryBackgroundColor } from 'styles/colors'
 import { Dimensions } from 'react-native'
 import I18n from 'i18n'
+import { withSecondaryBoldFont } from 'styles/compositions/text'
 
 const mapIndexed = addIndex(map)
 
@@ -600,7 +601,7 @@ const WaypointsList = Component(props => {
             fill: '#fff',
             fontSize: 18,
             textAnchor,
-            fontFamily: 'SFProDisplay-Bold',
+            ...withSecondaryBoldFont,
             letterSpacing: '.016em'
           })))(
         props.waypointLabel(waypoint))

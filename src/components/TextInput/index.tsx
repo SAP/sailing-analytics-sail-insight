@@ -34,6 +34,7 @@ export interface TextInputProps {
   onBlur?: () => void
   containerStyle?: ViewStyle
   highlight?: boolean
+  hideTopPlaceholder: boolean
 }
 
 class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInputProps> {
@@ -54,6 +55,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
   public render() {
     const {
       placeholder,
+      hideTopPlaceholder,
       error,
       hint,
       autoGrow,
@@ -87,7 +89,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
     }
 
     const showEntrySecuredToggle = secureTextEntry && !!stateText && stateText !== ''
-    const showTopPlaceholder = placeholder && (!isEmpty(additionalProps.value) || isFocused)
+    const showTopPlaceholder = !hideTopPlaceholder && placeholder && (!isEmpty(additionalProps.value) || isFocused)
     const assistiveText = error || hint
     const isHighlighted = error || highlight
     const highlightStyle = isHighlighted ? text.error : undefined

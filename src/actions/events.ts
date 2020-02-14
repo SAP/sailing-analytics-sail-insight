@@ -23,6 +23,8 @@ export const ADD_RACE_COLUMNS = 'ADD_RACE_COLUMNS'
 export const REMOVE_RACE_COLUMNS = 'REMOVE_RACE_COLUMNS'
 export const OPEN_SAP_ANALYTICS_EVENT = 'OPEN_SAP_ANALYTICS_EVENT'
 export const OPEN_EVENT_LEADERBOARD = 'OPEN_EVENT_LEADERBOARD'
+export const START_TRACKING = 'START_TRACKING'
+export const STOP_TRACKING = 'STOP_TRACKING'
 
 export const updateEvent = createAction('UPDATE_EVENT')
 export const receiveEvent = createAction('RECEIVE_EVENT')
@@ -132,3 +134,5 @@ export const fetchRacesTimesForEvent = createAction(FETCH_RACES_TIMES_FOR_EVENT)
 export const updateRaceTime = createAction(UPDATE_RACE_TIME)
 export const openSAPAnalyticsEvent = createAction(OPEN_SAP_ANALYTICS_EVENT)
 export const openEventLeaderboard = createAction(OPEN_EVENT_LEADERBOARD)
+export const startTracking = createAction(START_TRACKING)
+export const stopTracking = createAction(STOP_TRACKING)
