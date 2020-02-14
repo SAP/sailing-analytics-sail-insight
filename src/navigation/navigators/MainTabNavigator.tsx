@@ -57,7 +57,7 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
   )
 }
 
-const onTabBarPress = (navigation: any) => (props: any = {}) => {
+const onTabBarPress = (props: any = {}) => {
   const { defaultHandler, navigation } = props
 
   if (!defaultHandler || !navigation) {
@@ -182,7 +182,7 @@ export default createBottomTabNavigator(
     },
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: getTabBarIcon(navigation),
-      tabBarOnPress:  onTabBarPress(navigation),
+      tabBarOnPress: onTabBarPress,
     }),
   },
 )
