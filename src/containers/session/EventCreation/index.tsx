@@ -9,7 +9,7 @@ import { Component,  fold, nothing, fromClass, nothingAsClass,
   recomposeWithState as withState,
   recomposeBranch as branch,
   reduxConnect as connect } from 'components/fp/component'
-import { scrollView, text, touchableOpacity, view, keyboardAvoidingView } from 'components/fp/react-native'
+import { scrollView, text, touchableOpacity, view, keyboardAvoidingView, textButton } from 'components/fp/react-native'
 import { reduxForm } from 'components/fp/redux-form'
 import { getFormSyncErrors, hasSubmitFailed } from 'redux-form'
 import BasicsSetup from 'containers/session/BasicsSetup'
@@ -54,11 +54,14 @@ const createEvent = (props: any) => async (formValues: any) => {
 
   Keyboard.dismiss()
   props.setApiErrors([])
+  props.setEventIsLoading(true)
 
   try {
     await props.createEventActionQueue(eventCreationData).execute()
   } catch (e) {
     props.setApiErrors([getErrorDisplayMessage(e)])
+  } finally {
+    props.setEventIsLoading(false)
   }
 }
 
@@ -67,6 +70,7 @@ const formSettings = {
   form: EVENT_CREATION_FORM_NAME,
 }
 
+const withEventIsLoading = withState('eventIsLoading', 'setEventIsLoading', false)
 const withApiErrors = withState('apiErrors', 'setApiErrors', [])
 const nothingWhenNoErrors = branch(compose(
   isEmpty,
@@ -108,18 +112,22 @@ const errorText = Component(props => compose(
 const createButton = Component(
   (props: any) => compose(
     fold(props),
-    view({ style: { backgroundColor: $LightBlue } }),
-    touchableOpacity({
-      onPress: props.handleSubmit(createEvent(props)),
-      style: styles.createButton,
-    }))(
-    text({ style: styles.createButtonText }, I18n.t('caption_create'))))
+    view({ style: { backgroundColor: $LightBlue }}),
+  )(
+  textButton({
+    style: styles.createButton, 
+    textStyle: styles.createButtonText,  
+    onPress: props.handleSubmit(createEvent(props)), 
+    isLoading: props.eventIsLoading},
+    text({}, I18n.t('caption_create'))))
+)
 
 export default Component(
   (props: Object) => compose(
     fold(props),
     withBoatClasses,
     withApiErrors,
+    withEventIsLoading,
     connect(mapStateToProps, { createEventActionQueue }),
     reduxForm(formSettings),
     keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: Header.HEIGHT }),
