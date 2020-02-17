@@ -9,13 +9,13 @@ import { Component,  fold, nothing, fromClass, nothingAsClass,
   recomposeWithState as withState,
   recomposeBranch as branch,
   reduxConnect as connect } from 'components/fp/component'
-import { scrollView, text, touchableOpacity, view, keyboardAvoidingView, textButton } from 'components/fp/react-native'
+import { scrollView, text, view, keyboardAvoidingView, textButton } from 'components/fp/react-native'
 import { reduxForm } from 'components/fp/redux-form'
 import { getFormSyncErrors, hasSubmitFailed } from 'redux-form'
 import BasicsSetup from 'containers/session/BasicsSetup'
 import RacesAndScoring from 'containers/session/RacesAndScoring'
 import TypeAndBoatClass from 'containers/session/TypeAndBoatClass'
-import { createEventActionQueue } from 'actions/events'
+import { createEventActionQueue, updateCreatingEvent } from 'actions/events'
 import {
   EVENT_CREATION_FORM_NAME,
   eventCreationDataFromFormValues,
@@ -33,6 +33,7 @@ import styles from './styles'
 import { $declineColor } from 'styles/colors'
 import IconText from 'components/IconText'
 import Images from '@assets/Images'
+import { isCreatingEvent } from 'selectors/event'
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -46,7 +47,8 @@ const mapStateToProps = (state: any) => ({
     values,
     when(always(equals(hasSubmitFailed(EVENT_CREATION_FORM_NAME)(state), false)), always({})),
     defaultTo({}))(
-    getFormSyncErrors(EVENT_CREATION_FORM_NAME)(state))
+    getFormSyncErrors(EVENT_CREATION_FORM_NAME)(state)),
+  isCreatingEvent: isCreatingEvent(state),
 })
 
 const createEvent = (props: any) => async (formValues: any) => {
@@ -54,14 +56,12 @@ const createEvent = (props: any) => async (formValues: any) => {
 
   Keyboard.dismiss()
   props.setApiErrors([])
-  props.setEventIsLoading(true)
 
   try {
     await props.createEventActionQueue(eventCreationData).execute()
   } catch (e) {
     props.setApiErrors([getErrorDisplayMessage(e)])
-  } finally {
-    props.setEventIsLoading(false)
+    props.updateCreatingEvent(false)
   }
 }
 
@@ -70,7 +70,6 @@ const formSettings = {
   form: EVENT_CREATION_FORM_NAME,
 }
 
-const withEventIsLoading = withState('eventIsLoading', 'setEventIsLoading', false)
 const withApiErrors = withState('apiErrors', 'setApiErrors', [])
 const nothingWhenNoErrors = branch(compose(
   isEmpty,
@@ -118,7 +117,7 @@ const createButton = Component(
     style: styles.createButton, 
     textStyle: styles.createButtonText,  
     onPress: props.handleSubmit(createEvent(props)), 
-    isLoading: props.eventIsLoading},
+    isLoading: props.isCreatingEvent},
     text({}, I18n.t('caption_create'))))
 )
 
@@ -127,8 +126,7 @@ export default Component(
     fold(props),
     withBoatClasses,
     withApiErrors,
-    withEventIsLoading,
-    connect(mapStateToProps, { createEventActionQueue }),
+    connect(mapStateToProps, { createEventActionQueue, updateCreatingEvent }),
     reduxForm(formSettings),
     keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: Header.HEIGHT }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: props.setScrollViewRef }),
