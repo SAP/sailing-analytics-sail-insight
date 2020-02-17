@@ -16,6 +16,7 @@ import EventCreation from 'containers/session/EventCreation'
 import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 import { navigateBack } from 'navigation/NavigationService'
+import { Platform } from 'react-native'
 
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
 import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
@@ -179,6 +180,7 @@ export default createBottomTabNavigator(
       },
       showLabel: false,
       showIcon: true,
+      keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,
     },
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: getTabBarIcon(navigation),
