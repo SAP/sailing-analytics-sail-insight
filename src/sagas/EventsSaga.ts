@@ -50,6 +50,7 @@ function* selectEventSaga({ payload }: any) {
   const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
 
   yield put(fetchRacesTimesForEvent(payload))
+  yield put(updateCreatingEvent(false))
 
   if (currentUserCanUpdateEvent) {
     yield put(fetchCoursesForEvent(payload))
@@ -140,7 +141,6 @@ function* createEvent({ payload: { payload: data} }: any) {
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
   yield put(selectEvent({...data, replaceCurrentScreen: true }))
-  yield put(updateCreatingEvent(false))
 }
 
 function* addRaceColumns({ payload }: any) {

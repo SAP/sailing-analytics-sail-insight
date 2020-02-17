@@ -93,6 +93,13 @@ const withBoatClasses = compose(
     }
   }))
 
+const withUpdateCreationEvent = lifecycle({
+    componentDidMount() {
+      this.props.updateCreatingEvent(false)
+    }
+  }
+)
+
 const arrowUp = icon({
   source: Images.courseConfig.arrowUp,
   style: { justifyContent: 'flex-end', height: 25 },
@@ -127,6 +134,7 @@ export default Component(
     withBoatClasses,
     withApiErrors,
     connect(mapStateToProps, { createEventActionQueue, updateCreatingEvent }),
+    withUpdateCreationEvent,
     reduxForm(formSettings),
     keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: Header.HEIGHT }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: props.setScrollViewRef }),
