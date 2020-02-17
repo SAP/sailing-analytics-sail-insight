@@ -30,6 +30,9 @@ export const getTrackedLeaderboardEntity = (state: any) => {
   return getLeaderboard(leaderboardName)(state)
 }
 
+export const getLatestLeaderboardRace = (state: any) =>
+  state.leaderboardTracking.latestTrackedRace
+
 export const getLeaderboardCompetitorCurrentRaceColumn = (
   competitorData: LeaderboardCompetitor,
 ): LeaderboardColumn | undefined =>

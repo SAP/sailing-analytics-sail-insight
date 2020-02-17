@@ -1,9 +1,7 @@
 import { get, toPairs } from 'lodash'
 import { handleActions } from 'redux-actions'
-
 import { CompetitorGap, CompetitorGapMap, LeaderboardTrackingState } from 'reducers/config'
-
-import { clearLeaderboardGaps, updateLeaderboardGaps  } from '../actions/leaderboards'
+import { clearLeaderboardGaps, updateLeaderboardGaps, updateLatestTrackedRace } from '../actions/leaderboards'
 
 const initialState: LeaderboardTrackingState = {
   competitorGaps: {} as CompetitorGapMap,
@@ -62,6 +60,10 @@ const reducer = handleActions(
         },
       }
     },
+    [updateLatestTrackedRace as any]: (state: any, action: any) => ({
+      ...state,
+      latestTrackedRace: action.payload
+    }),
     [clearLeaderboardGaps as any]: () => initialState,
   },
   initialState,

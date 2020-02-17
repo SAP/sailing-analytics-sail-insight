@@ -12,6 +12,7 @@ import * as LeaderboardService from '../services/LeaderboardService'
 
 export const updateLeaderboardGaps = createAction('UPDATE_LEADERBOARD_GAPS')
 export const clearLeaderboardGaps = createAction('CLEAR_LEADERBOARD_GAPS')
+export const updateLatestTrackedRace = createAction('UPDATE_LATEST_TRACKED_RACE')
 
 export const fetchLeaderboardV2 = (leaderboard: string) =>
   withDataApi({ leaderboard })(dataApi =>
