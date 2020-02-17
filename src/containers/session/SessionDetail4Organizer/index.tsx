@@ -29,6 +29,8 @@ const styledButton = curry(({ onPress, style }, content: any) => Component((prop
   touchableOpacity({ onPress }))(
   view({ style: [ styles.button, style ] }, content))))
 
+const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
+
 const mapStateToProps = (state: any, props: any) => {
   const sessionData = mapStateToSessionDetailsProps(state, props)
 
@@ -144,6 +146,7 @@ export default Component((props: any) => compose(
       checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta
     }),
     scrollView({ style: styles.container }),
+    nothingIfNoSession,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
     sessionDetailsCard,
