@@ -1,6 +1,5 @@
-import { values } from 'lodash'
-
-import { updateLeaderboardTracking } from 'actions/leaderboards'
+import { prop, find, propEq, keys, sortBy, identity, last, compose, values } from 'ramda'
+import { updateLeaderboardTracking, updateLatestTrackedRace } from 'actions/leaderboards'
 import { DataApi } from 'api'
 import { fetchEntityAction } from 'helpers/actions'
 import { Leaderboard } from 'models'
@@ -21,15 +20,23 @@ export const backgroundSyncLeaderboard = async (
 ) => {
   try {
     const { payload } = await dispatch(
-      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard, secret, competitorId),
-    )
+      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard, secret, competitorId))
 
     const receivedLeaderboards =
       payload.entities &&
       payload.entities.leaderboard &&
       values(payload.entities.leaderboard)
     const receivedLeaderboard = receivedLeaderboards[0] as Leaderboard
+    const latestRace = compose(
+      last,
+      sortBy(identity),
+      keys,
+      prop('columns'),
+      find(propEq('id', competitorId)),
+      prop('competitors'))(
+      receivedLeaderboard)
 
+    await dispatch(updateLatestTrackedRace(latestRace))
     await dispatch(updateLeaderboardTracking(receivedLeaderboard, rankingMetric))
   } catch (err) {
     Logger.debug('Error while executing syncLeaderboard', err)
