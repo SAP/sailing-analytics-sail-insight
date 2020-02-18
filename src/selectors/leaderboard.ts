@@ -97,8 +97,9 @@ const createCurrentEventRacesStatusSelector = (status: string) => createSelector
   getLeaderboards,
   (event, leaderboards) => compose(
     all(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
+    defaultTo({}),
     prop('trackedRacesInfo'),
-    find(propEq('name', event.leaderboardName)))(
+    find(propEq('name', defaultTo({}, event).leaderboardName)))(
     leaderboards))
 
 export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusSelector('TRACKING')
