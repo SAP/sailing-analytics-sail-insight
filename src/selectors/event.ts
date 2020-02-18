@@ -2,6 +2,7 @@ import { EVENT_ENTITY_NAME } from 'api/schemas'
 import { find, identity, propEq, values } from 'ramda'
 import { createSelector } from 'reselect'
 import { getEntities, getEntityArrayByType, getEntityById } from './entity'
+import { RootState } from 'reducers/config'
 
 import {
   SelectedEventInfo,
@@ -36,3 +37,7 @@ export const getSelectedRaceInfo = createSelector(
 export const getRaceTime = (leaderboard: string, raceName: string) =>
   createSelector((state: any) =>
     state.events.raceTimes[`${leaderboard}-${raceName}`], identity)
+
+export const isCreatingEvent = (state: RootState = {}) =>  {
+    return state.events && state.events.isCreatingEvent
+}

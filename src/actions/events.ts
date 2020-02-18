@@ -14,6 +14,7 @@ import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
+export const UPDATE_CREATING_EVENT = 'UPDATE_CREATING_EVENT'
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
 export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
@@ -91,6 +92,7 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
   dispatch: DispatchType,
 ) =>
   ActionQueue.create(dispatch, [
+    updateCreatingEvent(true),
     createEvent(eventData),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
       collectCheckInData(data),
@@ -127,6 +129,7 @@ export const updateEventSettings = (session: object, data: object) => (dispatch:
   }
 }
 
+export const updateCreatingEvent = createAction(UPDATE_CREATING_EVENT)
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)
 export const setRaceTime = createAction(SET_RACE_TIME)

@@ -30,6 +30,9 @@ export const getTrackedLeaderboardEntity = (state: any) => {
   return getLeaderboard(leaderboardName)(state)
 }
 
+export const getLatestLeaderboardRace = (state: any) =>
+  state.leaderboardTracking.latestTrackedRace
+
 export const getLeaderboardCompetitorCurrentRaceColumn = (
   competitorData: LeaderboardCompetitor,
 ): LeaderboardColumn | undefined =>
@@ -94,8 +97,9 @@ const createCurrentEventRacesStatusSelector = (status: string) => createSelector
   getLeaderboards,
   (event, leaderboards) => compose(
     all(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
+    defaultTo({}),
     prop('trackedRacesInfo'),
-    find(propEq('name', event.leaderboardName)))(
+    find(propEq('name', defaultTo({}, event).leaderboardName)))(
     leaderboards))
 
 export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusSelector('TRACKING')
