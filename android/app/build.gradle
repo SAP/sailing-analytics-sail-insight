@@ -122,8 +122,8 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 
 def _applicationId = System.getenv("ANDROID_APP_IDENTIFIER") ?: 'org.sailyachtresearch.sailinsight'
 def _appName = System.getenv("ANDROID_APP_NAME") ?: 'Sail Insight'
-def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "82") as Integer
-def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.62"
+def _versionCode = (System.getenv("CI_BUILD_NUMBER") ?: "83") as Integer
+def _versionName = System.getenv("APP_VERSION_NAME") ?: "1.0.63"
 
 android {
 	compileSdkVersion 28
