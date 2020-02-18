@@ -91,22 +91,6 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
   }
   dispatch(updateCheckIn(data))
 
-  if (alreadyJoined) {
-    Alert.alert(
-      I18n.t('text_event_already_joined_title'),
-      I18n.t('text_event_already_joined_message'),
-      [{ text: 'OK',
-        onPress: () => {
-          navigateToSessions(),
-          data.leaderboardName && navigateToSessionDetail(data.leaderboardName)
-        }
-      }],
-      { cancelable: false }
-    )
-
-    return
-  }
-
   if (data.competitorId || data.markId || data.boatId) {
     await dispatch(registerDevice(data.leaderboardName))
     const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
