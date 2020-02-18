@@ -169,7 +169,7 @@ export default createBottomTabNavigator(
   },
   {
     initialRouteName: Screens.TrackingNavigator,
-    backBehavior: 'none',
+    backBehavior: 'initialRoute',
     swipeEnabled: false,
     tabBarOptions: {
       activeTintColor: $primaryTextColor,
