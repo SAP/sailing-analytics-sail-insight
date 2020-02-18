@@ -4,7 +4,7 @@ import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
   OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
-  updateRaceTime, selectEvent } from 'actions/events'
+  updateRaceTime, selectEvent, updateCreatingEvent } from 'actions/events'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
 import { fetchPermissionsForEvent } from 'actions/permissions'
@@ -50,6 +50,7 @@ function* selectEventSaga({ payload }: any) {
   const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
 
   yield put(fetchRacesTimesForEvent(payload))
+  yield put(updateCreatingEvent(false))
 
   if (currentUserCanUpdateEvent) {
     yield put(fetchCoursesForEvent(payload))

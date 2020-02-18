@@ -1,5 +1,6 @@
 import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
 import IconText from 'components/IconText'
+import TextButton from 'components/TextButton'
 import { __, always, compose, concat, curry, has, head, merge, mergeLeft, objOf, reduce, when } from 'ramda'
 import { useState as reactUseState } from 'react'
 import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
@@ -86,3 +87,15 @@ export const inlineText = curry((settings, c) => Component((props: Object) => co
   text(merge({ style: { flexDirection: 'row' } }, settings)),
   reduce(concat, nothing()),
   )(c)))
+
+export const textButton = curry((settings, c) => Component((props: Object) => compose(
+  fold(props),
+  fromClass(TextButton).contramap,
+  always,
+  merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props)}),
+  merge(settings),
+  objOf('children'),
+  head,
+  when(has('fold'), fold(props)))(
+  c)))
+
