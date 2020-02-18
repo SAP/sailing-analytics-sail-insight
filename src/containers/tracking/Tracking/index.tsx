@@ -1,12 +1,13 @@
 import { get } from 'lodash'
 import React from 'react'
-import { Alert, BackHandler, Image, View } from 'react-native'
+import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
 import { stopTracking, StopTrackingAction } from 'actions/tracking'
+import { openLatestRaceTrackDetails } from 'actions/navigation'
 import { durationText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { degToCompass } from 'helpers/physics'
@@ -38,6 +39,7 @@ const EMPTY_DURATION_TEXT = '00:00:00'
 
 class Tracking extends React.Component<{
   stopTracking: StopTrackingAction,
+  openLatestRaceTrackDetails: any,
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
@@ -81,12 +83,14 @@ class Tracking extends React.Component<{
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={styles.container}>
           <View style={styles.propertyReverseRow}>
-            <View style={{ justifyContent: 'flex-end' }}>
-              <Image
-                style={styles.tagLine}
-                source={Images.defaults.sap_logo}
-              />
-            </View>
+            <TouchableOpacity onPress={this.props.openLatestRaceTrackDetails}>
+              <View style={{ justifyContent: 'flex-end' }}>
+                <Image
+                  style={styles.tagLine}
+                  source={Images.defaults.sap_logo}
+                />
+              </View>
+            </TouchableOpacity>
             {leaderboardEnabled &&
               <TrackingPropertyAutoFit
                 style={styles.rank}
@@ -250,4 +254,7 @@ const mapStateToProps = (state: any) => {
   }
 }
 
-export default connect(mapStateToProps, { stopTracking })(Tracking)
+export default connect(
+  mapStateToProps,
+  { stopTracking, openLatestRaceTrackDetails })(
+  Tracking)
