@@ -23,13 +23,16 @@ export const FORM_KEY_NUMBER_OF_RACES = 'numberOfRaces'
 export const FORM_KEY_DISCARDS = 'discards'
 
 export const generateInitialValues = () => ({
-  [FORM_KEY_NAME]: generateNewSessionName(),
   [FORM_KEY_DATE_FROM]: moment(new Date()).startOf('day'),
   [FORM_KEY_DATE_TO]: moment(new Date()).endOf('day'),
   [FORM_KEY_NUMBER_OF_RACES]: 3,
   [FORM_KEY_DISCARDS]: [],
   [FORM_KEY_REGATTA_TYPE]: RegattaType.OneDesign,
   [FORM_KEY_BOAT_CLASS]: null
+})
+
+export const generatePlaceholderValues = () => ({
+  [FORM_KEY_NAME]: generateNewSessionName(),
 })
 
 export const eventCreationDataFromFormValues = (values: any) => values && ({

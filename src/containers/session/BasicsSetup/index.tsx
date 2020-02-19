@@ -46,11 +46,14 @@ const boxedTextInput = fieldBox(
     style: styles.textInput
   })))
 
-const nameInput = reduxFormField({
-  label: I18n.t('text_placeholder_session_name'),
-  name: FORM_KEY_NAME,
-  component: boxedTextInput.fold,
-})
+const nameInput = Component((props: any) => compose(
+  fold(props))(
+  reduxFormField({
+    label: I18n.t('text_placeholder_session_name'),
+    placeholder: props.placeholderValues && props.placeholderValues[FORM_KEY_NAME],
+    name: FORM_KEY_NAME,
+    component: boxedTextInput.fold,
+})))
 
 const locationInput = reduxFormField({
   label: I18n.t('text_location'),
