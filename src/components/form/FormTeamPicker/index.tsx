@@ -3,6 +3,7 @@ import React from 'react'
 import { TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
 import RNPickerSelect from 'react-native-picker-select'
 import { WrappedFieldProps } from 'redux-form'
+import { Chevron } from 'react-native-shapes'
 
 import {
   FORM_KEY_BOAT_CLASS,
@@ -71,12 +72,20 @@ class FormTeamPicker extends React.Component<ViewProps & RNTextInputProps & Wrap
                 label: I18n.t('text_placeholder_team_picker'),
                 value: null,
               }}
+              Icon={() => {
+                return <Chevron size={1.5} color="white"/>;
+              }}
               items={teamsToPickerItems(teams)}
               onValueChange={this.onSelectTeam}
+              useNativeAndroidPickerStyle={false}
               style={{
                 inputIOS: styles.inputIOS,
                 inputAndroid: styles.inputAndroid,
                 underline: styles.underline,
+                placeholder: styles.inputPlaceholder,
+                iconContainer: styles.containerIcon,
+                viewContainer: styles.containerPicker, //iOS container style
+                headlessAndroidContainer: styles.containerPicker, //Android container style
               }}
               {...additionalProps}
             />
