@@ -10,7 +10,7 @@ export default EStyleSheets.create({
   },
   list: {
     backgroundColor: 'transparent',
-    paddingBottom: 110,
+    paddingBottom: 150,
   },
   cardsContainer: {
     flexDirection: 'row',
