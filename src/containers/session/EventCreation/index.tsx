@@ -23,7 +23,7 @@ import {
   FORM_KEY_NUMBER_OF_RACES,
   generateInitialValues,
   validate,
-  generatePlaceholderValues,
+  generateDefaultValues,
 } from 'forms/eventCreation'
 import { getFormFieldValue } from 'selectors/form'
 import I18n from 'i18n'
@@ -42,7 +42,7 @@ const icon = compose(
 
 const mapStateToProps = (state: any) => ({
   initialValues: generateInitialValues(),
-  placeholderValues: generatePlaceholderValues(),
+  defaultValues: generateDefaultValues(),
   maxNumberOfDiscards: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_NUMBER_OF_RACES)(state) + 1,
   regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state),
   formErrors: compose(
@@ -54,7 +54,7 @@ const mapStateToProps = (state: any) => ({
 })
 
 const createEvent = (props: any) => async (formValues: any) => {
-  const eventCreationData = eventCreationDataFromFormValues(formValues)
+  const eventCreationData = eventCreationDataFromFormValues({...props.defaultValues, ...formValues})
 
   Keyboard.dismiss()
   props.setApiErrors([])

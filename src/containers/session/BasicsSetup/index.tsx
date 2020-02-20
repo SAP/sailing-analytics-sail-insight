@@ -50,7 +50,7 @@ const nameInput = Component((props: any) => compose(
   fold(props))(
   reduxFormField({
     label: I18n.t('text_placeholder_session_name'),
-    placeholder: props.placeholderValues && props.placeholderValues[FORM_KEY_NAME],
+    placeholder: props.defaultValues && props.defaultValues[FORM_KEY_NAME],
     name: FORM_KEY_NAME,
     component: boxedTextInput.fold,
 })))

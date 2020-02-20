@@ -31,7 +31,7 @@ export const generateInitialValues = () => ({
   [FORM_KEY_BOAT_CLASS]: null
 })
 
-export const generatePlaceholderValues = () => ({
+export const generateDefaultValues = () => ({
   [FORM_KEY_NAME]: generateNewSessionName(),
 })
 
@@ -54,8 +54,8 @@ const validateAscendingOrder = (arr: number[]) =>
     ? undefined
     : 'Discard values must be in ascending order'
 
-export const validate = (values: any = {}) => ({
-  [FORM_KEY_NAME]: validateRequiredWithErrorCode('error_no_name')(values[FORM_KEY_NAME]),
+export const validate = (values: any = {}, props: any = {}) => ({
+  [FORM_KEY_NAME]: validateRequiredWithErrorCode('error_no_name')(props.defaultValues && props.defaultValues[FORM_KEY_NAME]) && validateRequiredWithErrorCode('error_no_name')(values[FORM_KEY_NAME]),
   [FORM_KEY_LOCATION]: validateRequiredWithErrorCode('error_no_venue')(values[FORM_KEY_LOCATION]),
   [FORM_KEY_BOAT_CLASS]: values[FORM_KEY_REGATTA_TYPE] === RegattaType.OneDesign ?
     validateRequiredWithErrorCode('error_no_boat_class')(values[FORM_KEY_BOAT_CLASS]) :
