@@ -13,4 +13,7 @@ export default EStyleSheets.create({
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
   },
+  switchSelectorText: {
+    fontSize: '$largeFontSize',
+  },
 })
