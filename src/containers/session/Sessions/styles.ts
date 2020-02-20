@@ -10,7 +10,7 @@ export default EStyleSheets.create({
   },
   list: {
     backgroundColor: 'transparent',
-    paddingBottom: 50,
+    paddingBottom: 150,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -39,14 +39,14 @@ export default EStyleSheets.create({
     ...withSecondaryMediumFont,
   },
   bottomButton: {
+    position: 'absolute',
     width: '100%',
     height: 'auto',
-    backgroundColor: '$primaryBackgroundColor',
+    backgroundColor: 'transparent',
     bottom: 0,
   },
   qrButton: {
-    marginTop: 15,
-    marginBottom: 15,
+    marginBottom: 30,
   },
   qrButtonText: {
     color: 'white',
