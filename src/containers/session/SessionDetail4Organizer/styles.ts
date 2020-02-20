@@ -161,8 +161,8 @@ export default EStyleSheets.create({
   textExplain: {
     textAlign: 'center',
     color: 'white',
-    ...withTertiaryFont,
-    fontSize: 14,
+    ...withSecondaryLightFont,
+    fontSize: 17,
   },
   location: {
     maxWidth: '50%',
