@@ -14,7 +14,8 @@ export interface SecurityApi {
   accessToken: (email: string, password: string) => any,
   updateUser: (data: any) => any,
   requestPasswordReset: (username: string, email: string) => any,
-  hasPermissions: (permissions: string) => any
+  hasPermissions: (permissions: string) => any,
+  putAcl: (objectType: string, typeRelativeObjectId: string, body: any) => any
 }
 
 const securityEndpoints = (serverUrl: string) => {
@@ -24,7 +25,8 @@ const securityEndpoints = (serverUrl: string) => {
     user: getSecurityUrl('/user'),
     accessToken: getSecurityUrl('/access_token'),
     forgotPassword: getSecurityUrl('/forgot_password'),
-    hasPermissions: getSecurityUrl('/has_permission')
+    hasPermissions: getSecurityUrl('/has_permission'),
+    ownershipAcl: getSecurityUrl('/ownership/{0}/{1}/acl'),
   }
 }
 
@@ -64,7 +66,14 @@ const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
 
     hasPermissions: (permissions: string) => dataRequest(
       endpoints.hasPermissions({ urlParams: { permission: permissions } })
-    )
+    ),
+
+    putAcl: (objectType: string, typeRelativeObjectId: string, body: any) => dataRequest(
+      endpoints.ownershipAcl({
+        pathParams: [objectType, typeRelativeObjectId]
+      }),
+      { body, method: HttpMethods.PUT }
+    ),
   }
 }
 
