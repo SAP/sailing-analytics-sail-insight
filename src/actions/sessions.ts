@@ -1,7 +1,7 @@
 import { find, get, head, includes, orderBy } from 'lodash'
 import { Alert } from 'react-native'
 
-import { selfTrackingApi } from 'api'
+import { authApi, selfTrackingApi } from 'api'
 import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
 import { ManeuverChangeItem } from 'api/endpoints/types'
@@ -123,6 +123,25 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   return timeOnTimeFactor
 }
 
+const allowReadAccessToCompetitorAndBoat = (competitorId: string, boatId: string) => {
+  const acl = {
+    displayName: 'Read all',
+    acl: [
+      {
+        groupId: null,
+        actions: ['READ_PUBLIC']
+      }
+    ]
+  }
+
+  const api = authApi()
+
+  return Promise.all([
+    api.putAcl('COMPETITOR', competitorId, acl),
+    api.putAcl('BOAT', boatId, acl),
+  ])
+}
+
 export const createUserAttachmentToSession = (
   regattaName: string,
   competitorInfo: CompetitorInfo,
@@ -195,6 +214,7 @@ export const createUserAttachmentToSession = (
 
     if (newCompetitorWithBoat) {
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
+      await allowReadAccessToCompetitorAndBoat(newCompetitorWithBoat.id, newCompetitorWithBoat.boat.id)
     }
 
     dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))

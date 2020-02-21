@@ -119,7 +119,7 @@ function* selectCourseFlow({ payload }: any) {
   yield put(updateCourseLoading(false))
 }
 
-const hasMarkConfigurationChangedAcrossCourses = curry((fromCourse, toCourse, configuration) => {
+const didConfigurationPropertyChangedAcrossCourses = curry((fromCourse, toCourse, property, configuration) => {
   const getById = id => compose(
     defaultTo({}),
     find(propEq('id', id)),
@@ -130,7 +130,7 @@ const hasMarkConfigurationChangedAcrossCourses = curry((fromCourse, toCourse, co
   const from = getByConfigurationId(fromCourse)
   const to = getByConfigurationId(toCourse)
 
-  return !eqProps('effectiveProperties', from, to) && from.markPropertiesId === to.markPropertiesId
+  return !eqProps(property, from, to) && from.markPropertiesId === to.markPropertiesId
 })
 
 const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) => compose(
@@ -146,7 +146,8 @@ function* saveCourseFlow() {
 
   const editedCourse = yield select(getEditedCourse)
   const existingCourse = yield select(getCourseById(raceId))
-  const hasMarkConfigurationChange = hasMarkConfigurationChangedAcrossCourses(existingCourse, editedCourse)
+  const didEffectivePropertiesChanged = didConfigurationPropertyChangedAcrossCourses(existingCourse, editedCourse, 'effectiveProperties')
+  const didLastKnownPositionChanged = didConfigurationPropertyChangedAcrossCourses(existingCourse, editedCourse, 'lastKnownPosition')
   const markConfigurationUsedInEditedCourse = courseWaypointsUseMarkConfiguration(__, editedCourse)
 
   const course = evolve({
@@ -156,7 +157,7 @@ function* saveCourseFlow() {
     markConfigurations: compose(
       map(compose(
         mergeLeft({ storeToInventory: true }),
-        when(has('lastKnownPosition'), compose(
+        when(both(has('lastKnownPosition'), didLastKnownPositionChanged), compose(
           evolve({
             positioning: compose(
               objOf('position'),
@@ -172,7 +173,7 @@ function* saveCourseFlow() {
           dissoc('lastKnownPosition'),
         )),
         dissoc('effectiveProperties'),
-        when(hasMarkConfigurationChange, compose(
+        when(didEffectivePropertiesChanged, compose(
           dissoc('markId'),
           renameKeys({ effectiveProperties: 'freestyleProperties' }))))),
       reject(compose(not, markConfigurationUsedInEditedCourse, prop('id'))))
