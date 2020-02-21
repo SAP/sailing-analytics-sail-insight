@@ -12,7 +12,7 @@ export default EStyleSheet.create({
     width: 30,
   },
   inputAndroid: {
-    width: 40,
+    width: 30,
     color: 'transparent',
   },
   underline: {
@@ -29,8 +29,13 @@ export default EStyleSheet.create({
     flex: 1,
   },
   containerIcon: {
+    position: 'absolute',
     top: '35%',
+    right: 0,
     marginRight: 5.25,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   inputPlaceholder: {
     color: 'transparent',
@@ -39,6 +44,7 @@ export default EStyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    paddingRight: '$smallSpacing'
+    marginRight: '$smallSpacing',
+    backgroundColor: 'transparent'
   },
 })

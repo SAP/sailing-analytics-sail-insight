@@ -67,28 +67,27 @@ class FormTeamPicker extends React.Component<ViewProps & RNTextInputProps & Wrap
           />
           {
             isEmpty(teams) ? null :
-            <RNPickerSelect
-              placeholder={{
-                label: I18n.t('text_placeholder_team_picker'),
-                value: null,
-              }}
-              Icon={() => {
-                return <Chevron size={1.5} color="white"/>;
-              }}
-              items={teamsToPickerItems(teams)}
-              onValueChange={this.onSelectTeam}
-              useNativeAndroidPickerStyle={false}
-              style={{
-                inputIOS: styles.inputIOS,
-                inputAndroid: styles.inputAndroid,
-                underline: styles.underline,
-                placeholder: styles.inputPlaceholder,
-                iconContainer: styles.containerIcon,
-                viewContainer: styles.containerPicker, //iOS container style
-                headlessAndroidContainer: styles.containerPicker, //Android container style
-              }}
-              {...additionalProps}
-            />
+            <View style={styles.containerPicker}>
+              <View style={styles.containerIcon}><Chevron size={1.5} color="white"/></View>
+              <RNPickerSelect
+                placeholder={{
+                  label: I18n.t('text_placeholder_team_picker'),
+                  value: null,
+                }}
+                Icon={() => { return null;}}
+                items={teamsToPickerItems(teams)}
+                onValueChange={this.onSelectTeam}
+                useNativeAndroidPickerStyle={true}
+                style={{
+                  inputIOS: styles.inputIOS,
+                  inputAndroid: styles.inputAndroid,
+                  underline: styles.underline,
+                  placeholder: styles.inputPlaceholder,
+                }}
+                {...additionalProps}
+              /> 
+              
+            </View>
           }
         </View>
         {
