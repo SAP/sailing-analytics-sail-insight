@@ -1,21 +1,18 @@
+import { always, merge } from 'ramda'
 import { get, toPairs } from 'lodash'
+import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
-import { CompetitorGap, CompetitorGapMap, LeaderboardTrackingState } from 'reducers/config'
+
+import { CompetitorGap } from 'reducers/config'
 import { clearLeaderboardGaps, updateLeaderboardGaps, updateLatestTrackedRace } from '../actions/leaderboards'
 
-const initialState: LeaderboardTrackingState = {
-  competitorGaps: {} as CompetitorGapMap,
-}
-
-const reducer = handleActions(
-  {
+const competitorGaps = handleActions({
     [updateLeaderboardGaps as any]: (state: any = {}, action: any) => {
       if (!action || !action.payload) {
         return state
       }
 
-      const oldGaps = state.competitorGaps
-
+      const oldGaps = state
 
       const updates = toPairs(action.payload)
         .reduce((aggregator: any, [competitor, gap]: any[]) => {
@@ -45,28 +42,19 @@ const reducer = handleActions(
             }
           }
 
-          return {
-            ...aggregator,
-            [competitor]: competitorGap,
-          }
-
+          return merge(aggregator, { [competitor]: competitorGap })
         },      {})
 
-      return {
-        ...state,
-        competitorGaps: {
-          ...state.competitorGaps,
-          ...updates,
-        },
-      }
+      return merge(state, updates)
     },
-    [updateLatestTrackedRace as any]: (state: any, action: any) => ({
-      ...state,
-      latestTrackedRace: action.payload
-    }),
-    [clearLeaderboardGaps as any]: () => initialState,
-  },
-  initialState,
-)
+    [clearLeaderboardGaps as any]: always({}),
+}, {})
 
-export default reducer
+const latestTrackedRace = handleActions({
+  [updateLatestTrackedRace as any]: (state: any, action: any) => action.payload
+}, null)
+
+export default combineReducers({
+  competitorGaps,
+  latestTrackedRace,
+})
