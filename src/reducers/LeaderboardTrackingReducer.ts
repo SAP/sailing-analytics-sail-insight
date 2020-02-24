@@ -1,4 +1,4 @@
-import { always, merge } from 'ramda'
+import { always, merge, defaultTo } from 'ramda'
 import { get, toPairs } from 'lodash'
 import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
@@ -51,7 +51,7 @@ const competitorGaps = handleActions({
 }, {})
 
 const latestTrackedRace = handleActions({
-  [updateLatestTrackedRace as any]: (state: any, action: any) => action.payload
+  [updateLatestTrackedRace as any]: (state: any, action: any) => defaultTo(null, action.payload)
 }, null)
 
 export default combineReducers({
