@@ -79,8 +79,6 @@ export const startTracking: StartTrackingAction = data =>  async (
   dispatch(updateLoadingCheckInFlag(true))
   dispatch(resetTrackingStatistics())
 
-  deleteAllGPSFixRequests()
-
   navigateToTracking()
   let showAlertRaceNotStarted = false
 
