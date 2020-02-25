@@ -27,7 +27,7 @@ import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import { container } from 'styles/commons'
 import { $smallSpacing } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
-import styles from './styles'
+import styles, { normalRowValueFontSize, topRowValueFontSize } from './styles'
 
 export const EMPTY_VALUE = '-'
 
@@ -43,9 +43,20 @@ export enum ColumnValueType {
 
 const TRIANGLE_UP = () => {
   return (
-    <Image source={Images.actions.arrowUp} />
+    <View style={styles.triangleUp}>
+      <Image source={Images.actions.arrowUp} style={styles.titleArrow} />
+    </View>
   )
 }
+
+const TRIANGLE_DOWN = () => {
+  return (
+    <View style={styles.triangleDown}>
+      <Image source={Images.actions.arrowDown} style={styles.titleArrow} />
+    </View>
+  )
+}
+
 class Leaderboard extends React.Component<{
   trackedCheckInCompetitorId: string | undefined
   leaderboard: LeaderboardCompetitorCurrentTrack[]
@@ -54,17 +65,25 @@ class Leaderboard extends React.Component<{
   public state = {
     selectedCompetitor: undefined,
     selectedColumn: ColumnValueType.GapToLeader,
+    chooseMetricModalShowing: false,
   }
 
   public render() {
-    const { trackedCheckInCompetitorId: myCompetitorId, rankingMetric } = this.props
+    const {
+      trackedCheckInCompetitorId: myCompetitorId,
+      rankingMetric,
+    } = this.props
     const leaderboard = sortBy(
       this.props.leaderboard,
       (o: LeaderboardCompetitorCurrentTrack) =>
         o.trackedColumn ? o.trackedColumn.trackedRank : o.rank,
     )
 
-    const { selectedCompetitor, selectedColumn } = this.state
+    const {
+      chooseMetricModalShowing,
+      selectedCompetitor,
+      selectedColumn,
+    } = this.state
 
     const myCompetitorData = this.getCompetitorById(myCompetitorId)
 
@@ -74,41 +93,63 @@ class Leaderboard extends React.Component<{
       ? this.getCompetitorById(selectedCompetitor)
       : ({} as LeaderboardCompetitorCurrentTrack)
 
-    const columnText = selectedColumn === ColumnValueType.GapToCompetitor ?
-      `${I18n.t(selectedColumn)} ${comparedCompetitorData.name}`.toUpperCase()
-      : (selectedColumn && I18n.t(selectedColumn).toUpperCase())
+    const columnText =
+      selectedColumn === ColumnValueType.GapToCompetitor
+        ? `${I18n.t(selectedColumn)} ${comparedCompetitorData.name}`
+        : selectedColumn && I18n.t(selectedColumn)
 
     return (
-      <View style={[container.main]}>
+      <View style={styles.mainContainer}>
         <ConnectivityIndicator style={styles.connectivity} />
+        <Text style={styles.header}>{'Leaderboard'.toUpperCase()}</Text>
         <View style={styles.container}>
           <View style={styles.propertyRow}>
             <View style={styles.leftPropertyContainer}>
-              <TrackingPropertyReverse
-                titleStyle={styles.rankTitle}
-                valueStyle={styles.rankValue}
-                title={I18n.t('text_leaderboard_my_rank')}
-                value={(rank && String(rank)) || EMPTY_VALUE}
-              />
+              <View style={[styles.textContainer]}>
+                <Text style={[styles.gapText]}>
+                  {(rank && String(rank)) || EMPTY_VALUE}
+                </Text>
+              </View>
+              <Text style={styles.rankTitle}>
+                {I18n.t('text_leaderboard_my_rank')}
+              </Text>
             </View>
             <View style={[styles.rightPropertyContainer]}>
               <MyColumnValue
                 selectedColumn={selectedColumn}
                 competitorData={myCompetitorData}
                 comparedCompetitorData={comparedCompetitorData}
-                fontSize={56}
-                rankingMetric={rankingMetric}/>
+                fontSize={topRowValueFontSize}
+                rankingMetric={rankingMetric}
+              />
               <ModalDropdown
-                options={difference(Object.values(ColumnValueType), [ColumnValueType.GapToCompetitor])}
+                options={difference(Object.values(ColumnValueType), [
+                  ColumnValueType.GapToCompetitor,
+                ])}
                 onSelect={this.onDropdownSelect}
                 adjustFrame={this.renderAdjustFrame}
-                renderRow={this.renderDropdownRow}>
-                <Text
-                  style={[styles.title]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {`${columnText} `}<TRIANGLE_UP />
-                </Text>
+                renderRow={this.renderDropdownRow}
+                onDropdownWillShow={() =>
+                  this.setState({ chooseMetricModalShowing: true })
+                }
+                onDropdownWillHide={() =>
+                  this.setState({ chooseMetricModalShowing: false })
+                }
+              >
+                <View style={{ flexDirection: 'row' }}>
+                  <Text
+                    style={[styles.title]}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {`${columnText} `}
+                  </Text>
+                  {chooseMetricModalShowing ? (
+                    <TRIANGLE_UP />
+                  ) : (
+                    <TRIANGLE_DOWN />
+                  )}
+                </View>
               </ModalDropdown>
             </View>
           </View>
@@ -137,16 +178,14 @@ class Leaderboard extends React.Component<{
 
   private renderAdjustFrame = (propertyStyle: any) => {
     propertyStyle.left = $smallSpacing
-    propertyStyle.width = Dimensions.get('window').width - 2 *  $smallSpacing
+    propertyStyle.width = Dimensions.get('window').width - 2 * $smallSpacing
     propertyStyle.height = 235
     propertyStyle.marginTop = -10
     return propertyStyle
   }
 
   private renderDropdownRow = (option: any) => (
-    <Text style={[styles.dropdownRowText]}>
-      {I18n.t(option)}
-    </Text>
+    <Text style={[styles.dropdownRowText]}>{I18n.t(option)}</Text>
   )
 
   private onDropdownSelect = (index: any, value: any) => {
@@ -161,26 +200,34 @@ class Leaderboard extends React.Component<{
     const { selectedColumn } = this.state
     const { rankingMetric } = this.props
 
-    return <TouchableHighlight onPress={this.onLeaderboardItemPress(id)}>
-      <View style={[styles.listRowContainer]}>
-        <View
-          style={[
-            container.smallHorizontalMargin,
-            styles.listItemContainer,
-          ]}>
-          <View style={[styles.textContainer]}>
-            <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
-            <Flag style={[styles.flag]} code={countryCode} size={24} />
-            <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
+    return (
+      <TouchableHighlight
+        style={[styles.listRowButtonContainer]}
+        onPress={this.onLeaderboardItemPress(id)}
+      >
+        <View style={[styles.listRowContainer]}>
+          <View style={[styles.listItemContainer]}>
+            <View style={[styles.textContainer, styles.itemTextContainer]}>
+              <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
+              <Flag
+                style={[styles.flag]}
+                code={countryCode}
+                size={normalRowValueFontSize}
+              />
+              <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
+            </View>
+            <View style={{ flex: 0 }}>
+              <ColumnValue
+                selectedColumn={selectedColumn}
+                competitorData={item}
+                rankingMetric={rankingMetric}
+                fontSize={normalRowValueFontSize}
+              />
+            </View>
           </View>
-          <ColumnValue
-            selectedColumn={selectedColumn}
-            competitorData={item}
-            rankingMetric={rankingMetric}
-            fontSize={24}/>
         </View>
-      </View>
-    </TouchableHighlight>
+      </TouchableHighlight>
+    )
   }
 }
 
