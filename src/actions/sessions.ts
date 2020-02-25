@@ -215,6 +215,10 @@ export const createUserAttachmentToSession = (
     if (newCompetitorWithBoat) {
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
       await allowReadAccessToCompetitorAndBoat(newCompetitorWithBoat.id, newCompetitorWithBoat.boat.id)
+    } else if (boatId && competitorId){
+      // Still update the ACL for boats that were created before the change that
+      // changes ACLs when creating a new boat
+      await allowReadAccessToCompetitorAndBoat(competitorId, boatId)
     }
 
     dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
