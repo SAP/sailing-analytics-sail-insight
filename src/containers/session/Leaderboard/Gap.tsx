@@ -36,6 +36,7 @@ const Gap = ({ gap, gain, fontSize, rankingMetric }: Props) => {
   }
 
   const fontSizeOverride = fontSize === undefined ? {} : { fontSize }
+  const triangleFontSizeOverride = fontSize === undefined ? {} : { fontSize: fontSize - 10 }
   const emptySpaceOverride = fontSize === undefined ? {} : { width: fontSize }
 
   return (
@@ -49,7 +50,7 @@ const Gap = ({ gap, gain, fontSize, rankingMetric }: Props) => {
       <Text
         style={[
           styles.triangle,
-          fontSizeOverride,
+          triangleFontSizeOverride,
           gain === true ? styles.green : styles.red,
         ]}
       >
