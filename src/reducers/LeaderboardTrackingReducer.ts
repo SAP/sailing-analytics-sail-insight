@@ -1,5 +1,4 @@
-import { always, merge, defaultTo } from 'ramda'
-import { get, toPairs } from 'lodash'
+import { always, merge, defaultTo, toPairs, prop } from 'ramda'
 import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
 
@@ -16,9 +15,9 @@ const competitorGaps = handleActions({
 
       const updates = toPairs(action.payload)
         .reduce((aggregator: any, [competitor, gap]: any[]) => {
-          const previousGap: CompetitorGap | undefined = get(
-            oldGaps,
+          const previousGap: CompetitorGap | undefined = prop(
             competitor,
+            oldGaps,
           )
 
           let competitorGap
