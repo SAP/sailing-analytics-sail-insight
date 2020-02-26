@@ -2,8 +2,9 @@ import crashlytics from '@react-native-firebase/crashlytics'
 import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
-         fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD, OPEN_SAP_ANALYTICS_EVENT,
-         REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME, updateRaceTime, selectEvent } from 'actions/events'
+  START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
+  OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
+  updateRaceTime, selectEvent, updateCreatingEvent } from 'actions/events'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
 import { fetchPermissionsForEvent } from 'actions/permissions'
@@ -21,6 +22,7 @@ import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
 import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
+import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -48,11 +50,11 @@ function* selectEventSaga({ payload }: any) {
   const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
 
   yield put(fetchRacesTimesForEvent(payload))
+  yield put(updateCreatingEvent(false))
 
   if (currentUserCanUpdateEvent) {
     yield put(fetchCoursesForEvent(payload))
-    //navigateToOrganizerSessionDetail(payload)
-    navigateToSessionDetail(payload)
+    navigateToOrganizerSessionDetail(payload)
   } else {
     navigateToSessionDetail(payload)
   }
@@ -121,12 +123,6 @@ function* setRaceTime({ payload }: any) {
         endoftrackingasmillis: moment(date).subtract(1, 'minutes').valueOf()
       })
   }
-
-  yield all(races.map((race: string) =>
-    safeApiCall(api.startTracking, leaderboardName, {
-      race_column: race,
-      fleet: 'Default'
-  })))
 }
 
 function* createEvent({ payload: { payload: data} }: any) {
@@ -160,6 +156,15 @@ function* addRaceColumns({ payload }: any) {
 
   yield all(races.map(race =>
     safeApiCall(api.denoteRaceForTracking, payload.leaderboardName, race, 'Default')))
+
+  if (yield select(isCurrentLeaderboardTracking)) {
+    yield all(races.map((race: string) =>
+    safeApiCall(api.startTracking, payload.leaderboardName, {
+      race_column: race,
+      fleet: 'Default'
+    })))
+  }
+
   yield call(reloadRegattaAfterRaceColumnsChange, payload)
 }
 
@@ -196,8 +201,9 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
 
 function* openEventLeaderboard() {
   const { serverUrl, eventId, regattaName } = yield select(getSelectedEventInfo)
+  const urlEventLeaderBoard = `${serverUrl}/gwt/Home.html#/regatta/minileaderboard/:eventId=${eventId}&regattaId=` + encodeURIComponent(regattaName);
 
-  openUrl(`${serverUrl}/gwt/Home.html#/regatta/minileaderboard/:eventId=${eventId}&regattaId=${regattaName}`)
+  openUrl(urlEventLeaderBoard);
 }
 
 function* openSAPAnalyticsEvent() {
@@ -211,6 +217,35 @@ function* openSAPAnalyticsEvent() {
   })
 }
 
+function* startTracking({ payload }: any) {
+  const { regattaName, serverUrl, leaderboardName } = payload
+  const api = dataApi(serverUrl)
+  const races = yield select(getRegattaPlannedRaces(regattaName))
+
+  yield all(races.map((race: string) =>
+    safeApiCall(api.startTracking, leaderboardName, {
+      race_column: race,
+      fleet: 'Default'
+  })))
+
+  const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
+  if (leaderboardData) {
+    yield put(receiveEntities(leaderboardData))
+  }
+}
+
+function* stopTracking({ payload }: any) {
+  const { serverUrl, leaderboardName } = payload
+  const api = dataApi(serverUrl)
+
+  yield safeApiCall(api.stopTracking, leaderboardName, { fleet: 'Default' })
+
+  const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
+  if (leaderboardData) {
+    yield put(receiveEntities(leaderboardData))
+  }
+}
+
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventSaga)
     yield takeLatest(FETCH_RACES_TIMES_FOR_EVENT, fetchRacesTimesForCurrentEvent)
@@ -221,4 +256,6 @@ export default function* watchEvents() {
     yield takeEvery(REMOVE_RACE_COLUMNS, removeRaceColumns)
     yield takeLatest(OPEN_EVENT_LEADERBOARD, openEventLeaderboard)
     yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
+    yield takeLatest(START_TRACKING, startTracking)
+    yield takeLatest(STOP_TRACKING, stopTracking)
 }

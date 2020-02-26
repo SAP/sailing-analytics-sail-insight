@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   list: {
@@ -8,7 +9,7 @@ export default EStyleSheets.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   addButton: {
     height: 56,

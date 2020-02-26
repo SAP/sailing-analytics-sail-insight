@@ -9,13 +9,13 @@ import { Component,  fold, nothing, fromClass, nothingAsClass,
   recomposeWithState as withState,
   recomposeBranch as branch,
   reduxConnect as connect } from 'components/fp/component'
-import { scrollView, text, touchableOpacity, view, keyboardAvoidingView } from 'components/fp/react-native'
+import { scrollView, text, view, keyboardAvoidingView, textButton } from 'components/fp/react-native'
 import { reduxForm } from 'components/fp/redux-form'
 import { getFormSyncErrors, hasSubmitFailed } from 'redux-form'
 import BasicsSetup from 'containers/session/BasicsSetup'
 import RacesAndScoring from 'containers/session/RacesAndScoring'
 import TypeAndBoatClass from 'containers/session/TypeAndBoatClass'
-import { createEventActionQueue } from 'actions/events'
+import { createEventActionQueue, updateCreatingEvent } from 'actions/events'
 import {
   EVENT_CREATION_FORM_NAME,
   eventCreationDataFromFormValues,
@@ -23,6 +23,7 @@ import {
   FORM_KEY_NUMBER_OF_RACES,
   generateInitialValues,
   validate,
+  generateDefaultValues,
 } from 'forms/eventCreation'
 import { getFormFieldValue } from 'selectors/form'
 import I18n from 'i18n'
@@ -33,6 +34,7 @@ import styles from './styles'
 import { $declineColor } from 'styles/colors'
 import IconText from 'components/IconText'
 import Images from '@assets/Images'
+import { isCreatingEvent } from 'selectors/event'
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -40,17 +42,19 @@ const icon = compose(
 
 const mapStateToProps = (state: any) => ({
   initialValues: generateInitialValues(),
+  defaultValues: generateDefaultValues(),
   maxNumberOfDiscards: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_NUMBER_OF_RACES)(state) + 1,
   regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state),
   formErrors: compose(
     values,
     when(always(equals(hasSubmitFailed(EVENT_CREATION_FORM_NAME)(state), false)), always({})),
     defaultTo({}))(
-    getFormSyncErrors(EVENT_CREATION_FORM_NAME)(state))
+    getFormSyncErrors(EVENT_CREATION_FORM_NAME)(state)),
+  isCreatingEvent: isCreatingEvent(state),
 })
 
 const createEvent = (props: any) => async (formValues: any) => {
-  const eventCreationData = eventCreationDataFromFormValues(formValues)
+  const eventCreationData = eventCreationDataFromFormValues({...props.defaultValues, ...formValues})
 
   Keyboard.dismiss()
   props.setApiErrors([])
@@ -59,6 +63,7 @@ const createEvent = (props: any) => async (formValues: any) => {
     await props.createEventActionQueue(eventCreationData).execute()
   } catch (e) {
     props.setApiErrors([getErrorDisplayMessage(e)])
+    props.updateCreatingEvent(false)
   }
 }
 
@@ -108,19 +113,22 @@ const errorText = Component(props => compose(
 const createButton = Component(
   (props: any) => compose(
     fold(props),
-    view({ style: { backgroundColor: $LightBlue } }),
-    touchableOpacity({
-      onPress: props.handleSubmit(createEvent(props)),
-      style: styles.createButton,
-    }))(
-    text({ style: styles.createButtonText }, I18n.t('caption_create'))))
+    view({ style: { backgroundColor: $LightBlue }}),
+  )(
+  textButton({
+    style: styles.createButton, 
+    textStyle: styles.createButtonText,  
+    onPress: props.handleSubmit(createEvent(props)), 
+    isLoading: props.isCreatingEvent},
+    text({}, I18n.t('caption_create'))))
+)
 
 export default Component(
   (props: Object) => compose(
     fold(props),
     withBoatClasses,
     withApiErrors,
-    connect(mapStateToProps, { createEventActionQueue }),
+    connect(mapStateToProps, { createEventActionQueue, updateCreatingEvent }),
     reduxForm(formSettings),
     keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: Header.HEIGHT }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: props.setScrollViewRef }),

@@ -1,14 +1,16 @@
 import { removeUserData } from 'actions/auth'
-import { receiveEvent, selectEvent, selectRace, updateEvent, updateEventFilters, updateRaceTime } from 'actions/events'
+import { receiveEvent, selectEvent, selectRace, updateEvent, updateEventFilters, updateRaceTime, updateCreatingEvent } from 'actions/events'
 import { EventFilter } from 'models/EventFilter'
 import { path } from 'ramda'
 import { EventState } from 'reducers/config'
 import { handleActions } from 'redux-actions'
+import { itemUpdateHandler } from 'helpers/reducers'
 
 const initialState: EventState = {
   all: {} as Map<string, any>,
   activeFilters: [EventFilter.All],
   raceTimes: {},
+  isCreatingEvent: false,
 } as EventState
 
 const reducer = handleActions(
@@ -68,6 +70,7 @@ const reducer = handleActions(
       }
     },
     [removeUserData as any]: () => initialState,
+    [updateCreatingEvent as any]: itemUpdateHandler('isCreatingEvent'),
   },
   initialState,
 )

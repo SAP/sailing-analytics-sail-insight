@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyItalicFont } from 'styles/compositions/text'
 
 
 export default EStyleSheets.create({
@@ -24,7 +25,7 @@ export default EStyleSheets.create({
   subtitle: {
     color: '#FFFFFF',
     fontSize: 20,
-    fontFamily: 'SFProDisplay-HeavyItalic',
+    ...withSecondaryHeavyItalicFont,
   },
   logoContainer: {
     flexGrow: 0,

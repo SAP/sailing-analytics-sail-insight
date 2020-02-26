@@ -1,6 +1,6 @@
 import React from 'react'
 import { when, isEmpty, always, either, isNil } from 'ramda'
-import { ImageBackground, Text, View, ViewProps } from 'react-native'
+import { ImageBackground, Text, View, ViewProps, BackHandler } from 'react-native'
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
 import {
@@ -16,11 +16,33 @@ import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
+import { NavigationScreenProps } from 'react-navigation'
 
-class WelcomeTracking extends React.Component<ViewProps & {
+class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean
   user: User,
 }> {
+
+  constructor(props: any) {
+    super(props)
+    this.onBackButtonPressAndroid = this.onBackButtonPressAndroid.bind(this)
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+  }
+
+  onBackButtonPressAndroid = () => {
+    if (this.props.navigation.isFocused()) {
+      BackHandler.exitApp()
+      return true
+    }
+    return false
+  };
 
   public render() {
     const { isLoggedIn, user } = this.props

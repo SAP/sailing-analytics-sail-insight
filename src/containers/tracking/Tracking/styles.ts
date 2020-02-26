@@ -2,6 +2,7 @@ import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { $tinySpacing, $smallSpacing } from 'styles/dimensions'
+import { withSecondaryLightFont, withSecondaryHeavyFont, withDefaultBoldFont } from 'styles/compositions/text'
 
 const windowHeight = Dimensions.get('window').height
 const skipAndroid = true
@@ -23,17 +24,17 @@ export default EStyleSheets.create({
   measurementTitle: {
     color: 'black',
     fontSize: 16,
-    fontFamily: 'SFProDisplay-Light',
+    ...withSecondaryLightFont,
   },
   measurementValue: {
     color: 'black',
     fontSize: 30,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   measurementValueBig: {
     color: 'black',
     fontSize: 60,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   rank: {
     paddingLeft: 32,
@@ -41,13 +42,13 @@ export default EStyleSheets.create({
   rankTitle: {
     color: 'white',
     fontSize: 14,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultBoldFont,
     textAlign: 'center',
   },
   rankText: {
     color: '$Orange',
     fontSize: 60,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   connectivity: {
     marginTop: getStatusBarHeight(skipAndroid),

@@ -1,5 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-
+import { withSecondaryHeavyFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   scrollContainer: {
@@ -14,7 +14,7 @@ export default EStyleSheets.create({
   claim: {
     color: '#FFFFFF',
     fontSize: 17,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
   },
@@ -38,7 +38,7 @@ export default EStyleSheets.create({
     marginTop: 16,
     color: '#FFFFFF',
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   redBalloon: {
     marginTop: '$smallSpacing',
@@ -83,6 +83,6 @@ export default EStyleSheets.create({
   resetButtonText: {
     color: '#FFFFFF',
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
 })

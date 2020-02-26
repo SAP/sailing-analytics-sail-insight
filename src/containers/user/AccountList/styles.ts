@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   container: {
@@ -27,7 +28,7 @@ export default EStyleSheets.create({
   headline: {
     color: 'white',
     fontSize: 30,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     position: 'absolute',
     top: 80,
     left: 16,

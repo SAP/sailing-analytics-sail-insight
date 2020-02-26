@@ -1,5 +1,6 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { $DarkBlue } from 'styles/colors'
+import { withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   scrollContainer: {
@@ -11,7 +12,7 @@ export default EStyleSheets.create({
   headLine: {
     color: 'white',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     margin: 10,
   },
   list: {
@@ -46,7 +47,7 @@ export default EStyleSheets.create({
   createButtonText: {
     color: 'white',
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
   bottomButton: {
     position: 'absolute',
@@ -62,6 +63,6 @@ export default EStyleSheets.create({
   qrButtonText: {
     color: $DarkBlue,
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
 })

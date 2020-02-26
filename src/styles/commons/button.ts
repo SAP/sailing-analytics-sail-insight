@@ -1,4 +1,5 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 export default EStyleSheet.create({
   $textButtonTextColor: '$primaryButtonColor',
@@ -30,7 +31,7 @@ export default EStyleSheet.create({
   actionText: {
     color: 'white',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   trackingActionText: {
     color: 'white',
@@ -48,7 +49,7 @@ export default EStyleSheet.create({
     color: '$textButtonTextColor',
     // fontSize: '$textButtonTextFontSize',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
   textButtonSecondaryText: {
     color: '$textButtonTextColor',

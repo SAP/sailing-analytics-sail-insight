@@ -1,5 +1,6 @@
 import { Dimensions } from 'react-native';
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyFont, withSecondaryLightFont, withSecondaryBoldFont, withTertiaryFont, withDefaultBoldFont } from 'styles/compositions/text';
 
 export default EStyleSheets.create({
   container: {
@@ -37,13 +38,13 @@ export default EStyleSheets.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 18,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultBoldFont,
   },
   buttonBigContent: {
     textAlign: 'center',
     color: 'white',
     fontSize: 24,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultBoldFont,
   },
   container1: {
     alignItems: 'center',
@@ -109,18 +110,18 @@ export default EStyleSheets.create({
     color: 'white',
     marginTop: 10,
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   headline: {
     color: 'white',
     fontSize: 18,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultBoldFont,
   },
   headlineTop: {
     backgroundColor: '$primaryBackgroundColor',
     color: 'white',
     fontSize: 20,
-    fontFamily: 'SFCompactText-Bold',
+    ...withDefaultBoldFont,
     margin: 5,
     width: 40,
     height: 40,
@@ -140,12 +141,12 @@ export default EStyleSheets.create({
   textLight: {
     color: 'white',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Light',
+    ...withSecondaryLightFont,
   },
   textValue: {
     color: 'white',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Bold',
+    ...withSecondaryBoldFont,
   },
   textLast: {
     color: 'white',
@@ -160,8 +161,8 @@ export default EStyleSheets.create({
   textExplain: {
     textAlign: 'center',
     color: 'white',
-    fontFamily: 'FloodStd',
-    fontSize: 14,
+    ...withSecondaryLightFont,
+    fontSize: 17,
   },
   location: {
     maxWidth: '50%',

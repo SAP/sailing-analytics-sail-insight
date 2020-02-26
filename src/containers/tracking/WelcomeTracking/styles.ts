@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   $sideMargin: 24,
@@ -20,7 +21,7 @@ export default EStyleSheets.create({
   title: {
     color: '#FFFFFF',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
     textTransform: 'uppercase',
     marginBottom: '$largeSpacing',
   },
@@ -48,11 +49,11 @@ export default EStyleSheets.create({
   bigButtonText: {
     color: 'white',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   bigButtonTextInverse: {
     color: '#1D3F4E',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
 })

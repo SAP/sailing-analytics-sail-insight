@@ -1,4 +1,5 @@
-import { find, get, last, values } from 'lodash'
+import { compose, all, prop, propEq, head, find, defaultTo } from 'ramda'
+import { get, last, values } from 'lodash'
 import { createSelector } from 'reselect'
 
 import { LEADERBOARD_ENTITY_NAME } from 'api/schemas'
@@ -14,6 +15,7 @@ import {
 import { mapResToLeaderboardColumnData } from 'models/Leaderboard'
 import { CompetitorGapMap, RootState } from 'reducers/config'
 import { getTrackedLeaderboardName } from 'selectors/location'
+import { getSelectedEventInfo } from 'selectors/event'
 import { getTrackedCheckIn, getTrackedCheckInCompetitorId } from './checkIn'
 
 export const getLeaderboardEntity = (state: any) =>
@@ -28,11 +30,13 @@ export const getTrackedLeaderboardEntity = (state: any) => {
   return getLeaderboard(leaderboardName)(state)
 }
 
+export const getLatestLeaderboardRace = (state: any) =>
+  state.leaderboardTracking.latestTrackedRace
+
 export const getLeaderboardCompetitorCurrentRaceColumn = (
   competitorData: LeaderboardCompetitor,
 ): LeaderboardColumn | undefined =>
   competitorData.columns && last(values(competitorData.columns))
-
 
 export const getTrackedCompetitorLeaderboardRank = createSelector(
   getTrackedLeaderboardEntity,
@@ -40,7 +44,7 @@ export const getTrackedCompetitorLeaderboardRank = createSelector(
   (leaderboard, competitorId) => {
     const trackedCompetitor = (leaderboard &&
       leaderboard.competitors &&
-      find(leaderboard.competitors, { id: competitorId })) || {}
+      find(propEq('id', competitorId), leaderboard.competitors)) || {}
     const currentLeaderboardTrack =
       trackedCompetitor &&
       getLeaderboardCompetitorCurrentRaceColumn(trackedCompetitor)
@@ -86,5 +90,17 @@ export const getTrackedLeaderboard = createSelector(
         .map(extractCompetitorData(gaps))
 
     return stuff
-  },
-)
+  })
+
+const createCurrentEventRacesStatusSelector = (status: string) => createSelector(
+  getSelectedEventInfo,
+  getLeaderboards,
+  (event, leaderboards) => compose(
+    all(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
+    defaultTo({}),
+    prop('trackedRacesInfo'),
+    find(propEq('name', defaultTo({}, event).leaderboardName)))(
+    leaderboards))
+
+export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusSelector('TRACKING')
+export const isCurrentLeaderboardFinished = createCurrentEventRacesStatusSelector('FINISHED')

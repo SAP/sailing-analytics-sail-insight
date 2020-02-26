@@ -80,6 +80,7 @@ export interface UserState {
 export interface EventState {
   all: Map<string, any>
   activeFilters: string[]
+  isCreatingEvent: boolean
 }
 
 export interface CheckInState {

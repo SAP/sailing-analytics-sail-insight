@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryMediumFont, withSecondaryHeavyFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   scrollContainer: {
@@ -9,7 +10,7 @@ export default EStyleSheets.create({
   },
   list: {
     backgroundColor: 'transparent',
-    paddingBottom: 110,
+    paddingBottom: 150,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -35,7 +36,7 @@ export default EStyleSheets.create({
   createButtonText: {
     color: 'white',
     fontSize: 20,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
   bottomButton: {
     position: 'absolute',
@@ -50,6 +51,6 @@ export default EStyleSheets.create({
   qrButtonText: {
     color: 'white',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
 })

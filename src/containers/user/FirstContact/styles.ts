@@ -1,4 +1,5 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
+import { withSecondaryHeavyItalicFont, withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
   $sideMargin: 24,
@@ -23,7 +24,7 @@ export default EStyleSheets.create({
   subtitle: {
     color: '#FFFFFF',
     fontSize: 20,
-    fontFamily: 'SFProDisplay-HeavyItalic',
+    ...withSecondaryHeavyItalicFont,
     marginBottom: '$largeSpacing',
   },
   logoContainer: {
@@ -50,14 +51,14 @@ export default EStyleSheets.create({
   bigButtonText: {
     color: 'white',
     fontSize: 24,
-    fontFamily: 'SFProDisplay-Heavy',
+    ...withSecondaryHeavyFont,
   },
   loginText: {
     marginLeft: 'auto',
     marginRight: 'auto',
     color: '#FFFFFF',
     fontSize: 14,
-    fontFamily: 'SFProDisplay-Medium',
+    ...withSecondaryMediumFont,
   },
   ws_logo: {
     marginRight: 16,

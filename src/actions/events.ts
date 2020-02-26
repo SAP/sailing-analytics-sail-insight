@@ -14,6 +14,7 @@ import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
+export const UPDATE_CREATING_EVENT = 'UPDATE_CREATING_EVENT'
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
 export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
@@ -23,6 +24,8 @@ export const ADD_RACE_COLUMNS = 'ADD_RACE_COLUMNS'
 export const REMOVE_RACE_COLUMNS = 'REMOVE_RACE_COLUMNS'
 export const OPEN_SAP_ANALYTICS_EVENT = 'OPEN_SAP_ANALYTICS_EVENT'
 export const OPEN_EVENT_LEADERBOARD = 'OPEN_EVENT_LEADERBOARD'
+export const START_TRACKING = 'START_TRACKING'
+export const STOP_TRACKING = 'STOP_TRACKING'
 
 export const updateEvent = createAction('UPDATE_EVENT')
 export const receiveEvent = createAction('RECEIVE_EVENT')
@@ -89,6 +92,7 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
   dispatch: DispatchType,
 ) =>
   ActionQueue.create(dispatch, [
+    updateCreatingEvent(true),
     createEvent(eventData),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
       collectCheckInData(data),
@@ -125,6 +129,7 @@ export const updateEventSettings = (session: object, data: object) => (dispatch:
   }
 }
 
+export const updateCreatingEvent = createAction(UPDATE_CREATING_EVENT)
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)
 export const setRaceTime = createAction(SET_RACE_TIME)
@@ -132,3 +137,5 @@ export const fetchRacesTimesForEvent = createAction(FETCH_RACES_TIMES_FOR_EVENT)
 export const updateRaceTime = createAction(UPDATE_RACE_TIME)
 export const openSAPAnalyticsEvent = createAction(OPEN_SAP_ANALYTICS_EVENT)
 export const openEventLeaderboard = createAction(OPEN_EVENT_LEADERBOARD)
+export const startTracking = createAction(START_TRACKING)
+export const stopTracking = createAction(STOP_TRACKING)
