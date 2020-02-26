@@ -1,7 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { Dimensions } from 'react-native'
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
-import { withDefaultFont, withDefaultBoldFont } from 'styles/compositions/text'
+import { withDefaultFont, withDefaultBoldFont, withSecondaryBoldFont } from 'styles/compositions/text'
 
 export const lighterGray = '#C7C7C7'
 export const darkerGray = '#C5C5C5'
@@ -47,46 +47,86 @@ export default EStyleSheets.create({
     borderWidth: 0,
   },
   racesListContainer: {
-    backgroundColor: '#4B7B90',
+    backgroundColor: '$MediumBlue',
     flex: 1
   },
   raceItemContainer: {
     marginTop: 15,
     marginRight: 15,
     marginLeft: 15,
-    flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
-    padding: 15,
+    paddingHorizontal: 15,
+    // paddingBottom: 15,
     borderRadius: 2
   },
 
+  raceNameText: {
+    ...withSecondaryBoldFont,
+    color: 'black',
+    fontSize: 32
+  },
+
+  raceItemButtonContainer: {
+    marginLeft: 20,
+    flexDirection: 'column',
+    flex: 1
+  },
+
+  iconStyle: {
+    width: 20,
+    height: 20
+  },
+
+  arrowRightContainerStyle: {
+    paddingTop: 5,
+    marginRight: 5
+  },
+
+  clockIconContainerStyle: {
+    paddingTop: 2,
+    marginRight: 5
+  },
+
+  defineLayoutButtonContainer: {
+    borderTopWidth: 1,
+    borderTopColor: '$delimiterColor',
+    height: 60,
+    justifyContent: 'center',
+  },
+
   raceTimeContainer: {
-    paddingLeft: 5,
     paddingRight: 5,
     height: 60,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
   sapAnalyticsContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 15,
+    paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '$delimiterColor'
+    borderTopColor: '$delimiterColor',
+    paddingBottom: 10,
   },
 
   sapAnalyticsButton: {
+    ...withSecondaryBoldFont,
     borderWidth: 1,
-    borderRadius: 25,
-    padding: 5,
+    borderRadius: 3,
+    paddingBottom: 5,
+    paddingTop: 7,
     paddingLeft: 15,
     paddingRight: 15,
     borderColor: '#526986',
-    color: '#526986'
+    color: '#526986',
+    fontSize: 12,
+    letterSpacing: 0.8,
   },
 
   raceDetailsContainer: {
+    height: 120,
     flexDirection: 'row'
   },
 
@@ -97,8 +137,8 @@ export default EStyleSheets.create({
   },
 
   raceNameTimeContainer: {
-    borderRightWidth: 1,
-    borderRightColor: '$delimiterColor',
+    flexDirection: 'row',
+    alignItems: 'center',
     width: Dimensions.get('window').width / 2 - 30,
     paddingBottom: 0
   },

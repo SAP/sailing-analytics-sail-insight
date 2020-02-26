@@ -17,17 +17,24 @@ import {
 } from 'components/fp/component'
 import { forwardingPropsFlatList, text, touchableOpacity, view } from 'components/fp/react-native'
 import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } from 'components/helpers'
+import Images from '@assets/Images'
+import IconText from 'components/IconText'
 import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { dateShortText, dateTimeShortHourText } from 'helpers/date'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import DatePicker from 'react-native-datepicker'
-import { getCourseById } from 'selectors/course'
+import { getCourseById, getCourseSequenceDisplay } from 'selectors/course'
 import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
 import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard, withUpdatingDiscardItem } from '../../session/common'
 import styles from './styles'
+
+const icon = compose(
+  fromClass(IconText).contramap,
+  always
+)
 
 const getRegattaPlannedRacesN = uncurryN(2, getRegattaPlannedRaces)
 
@@ -53,22 +60,29 @@ const mapStateToProps = (state: any, props: any) => {
   const { leaderboardName, regattaName } = eventData
   const session = getSession(leaderboardName)(state)
 
+  const getCourseId = (raceName: string) => `${session.regattaName} - ${raceName}`
+  const isCourseDefined = (raceName: string) => (state: any) =>
+    compose(
+      not,
+      isEmpty,
+      defaultTo({}),
+      prop('waypoints'),
+      getCourseById(getCourseId(raceName))
+    )(state)
+
   const races = compose(
     map((name: string) => ({
       name,
       regattaName,
-      courseDefined: compose(
-        not,
-        isEmpty,
-        defaultTo({}),
-        prop('waypoints'),
-        getCourseById(`${session.regattaName} - ${name}`))(
-        state),
+      sequenceDisplay: getCourseSequenceDisplay(getCourseId(name))(state),
+      courseDefined: isCourseDefined(name)(state),
       raceTime: getRaceTime(leaderboardName, name)(state)
     })),
     getRegattaPlannedRacesN(__, state),
     getSelectedRegatta)(
     state)
+
+  console.log({races})
 
   return {
     session,
@@ -94,31 +108,46 @@ const onSeeCourse = (props: any) => {
   props.selectCourse({ race: name })
 }
 
+
+const arrowRight = icon({
+  source: Images.actions.arrowRight,
+  iconStyle: styles.iconStyle,
+  style: styles.arrowRightContainerStyle,
+  iconTintColor: 'black'
+})
+
 const defineLayoutButton = Component((props: any) =>
   compose(
     fold(props),
+    view({ style: styles.defineLayoutButtonContainer }),
     touchableOpacity({
-      style: { flexGrow: 1 },
       disabled: !props.canUpdateCurrentEvent,
       onPress: () => onSeeCourse(props)
     }),
-    view({ style: { flexDirection: 'column' }}),
+    view({ style: { flexDirection: 'row' }}),
+    concat(arrowRight),
     reduce(concat, nothing()))([
-      text({}, 'Course'),
       text({ style: styles.defineCourseText },
         !props.canUpdateCurrentEvent ? '--' :
-        props.item.courseDefined ? I18n.t('caption_see_course') :
+        props.item.courseDefined ? props.item.sequenceDisplay :
         I18n.t('caption_define_course'))
     ]))
 
 const raceAnalyticsButton = Component((props: any) =>
   compose(
     fold(props),
+    view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      style: styles.sapAnalyticsContainer,
       onPress: () => props.openTrackDetails(props.item)
     }))(
-    text({ style: styles.sapAnalyticsButton }, 'Go to SAP-Analytics')))
+    text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
+
+const clockIcon = icon({
+  source: Images.tabs.account,
+  iconStyle: styles.clockIconStyle,
+  style: styles.clockIconContainerStyle,
+  iconTintColor: 'black'
+})
 
 const raceTimePicker = Component((props: any) => compose(
   fold(props),
@@ -147,7 +176,8 @@ const raceTimePicker = Component((props: any) => compose(
     },
   }))),
   view({ style: styles.raceNameTimeContainer }),
-  concat(text({}, defaultTo('', props.item.name))),
+  concat(arrowRight),
+  concat(clockIcon),
   text({ style: [styles.raceTimeText, styles.raceTimeTextSet] }),
   when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always('--')),
   unless(isNil, dateTimeShortHourText),
@@ -160,6 +190,8 @@ const raceItem = Component((props: object) =>
     view({ style: styles.raceItemContainer }),
     concat(__, nothingIfNoRaceTime(raceAnalyticsButton)),
     view({ style: styles.raceDetailsContainer }),
+    concat(text({ style: styles.raceNameText }, defaultTo('', props.item.name))),
+    view({ style: styles.raceItemButtonContainer }),
     reduce(concat, nothing()))([
       raceTimePicker,
       defineLayoutButton
