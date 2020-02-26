@@ -82,6 +82,9 @@ export const startTracking: StartTrackingAction = data =>  async (
   navigateToTracking()
   let showAlertRaceNotStarted = false
 
+  try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
+  catch (e) {}
+
   try {
     const shouldCreateTrack = checkInData.isSelfTracking
     const bulkTransfer = getBulkGpsSetting(getState())
@@ -95,7 +98,6 @@ export const startTracking: StartTrackingAction = data =>  async (
         await dispatch(startTrack(checkInData.leaderboardName, newTrack.racename, newTrack.seriesname))
       }
     } else {
-      await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret))
       const races = getRaces(checkInData.leaderboardName)(getState())
       const now = getNowAsMillis()
       const activeRaces = races

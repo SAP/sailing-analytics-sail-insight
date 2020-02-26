@@ -4,7 +4,6 @@ import * as CheckInService from 'services/CheckInService'
 import * as GpsFixService from 'services/GPSFixService'
 import * as LocationService from 'services/LocationService'
 import LocationTrackingException from 'services/LocationService/LocationTrackingException'
-
 import { currentTimestampAsText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'
