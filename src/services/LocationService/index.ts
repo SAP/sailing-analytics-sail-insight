@@ -7,7 +7,6 @@ import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'
 import I18n from '../../i18n'
 
-
 const LOG_TAG = '[BG_LOCATION]'
 const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
