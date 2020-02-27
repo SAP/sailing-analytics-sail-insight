@@ -200,6 +200,8 @@ class Leaderboard extends React.Component<{
     const { selectedColumn } = this.state
     const { rankingMetric } = this.props
 
+    const myCompetitorData = this.getCompetitorById(this.props.trackedCheckInCompetitorId)
+
     return (
       <TouchableHighlight
         style={[styles.listRowButtonContainer]}
@@ -220,6 +222,7 @@ class Leaderboard extends React.Component<{
               <ColumnValue
                 selectedColumn={selectedColumn}
                 competitorData={item}
+                myCompetitorData={myCompetitorData}
                 rankingMetric={rankingMetric}
                 fontSize={normalRowValueFontSize}
               />

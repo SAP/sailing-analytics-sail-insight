@@ -11,10 +11,11 @@ interface Props {
   rankingMetric: string
   gap?: number
   gain?: boolean
+  fontColor?: string
   fontSize?: number
 }
 
-const Gap = ({ gap, gain, fontSize, rankingMetric }: Props) => {
+const Gap = ({ gap, gain, fontSize, fontColor, rankingMetric }: Props) => {
   let gapText
 
   if (gap === undefined) {
@@ -35,13 +36,14 @@ const Gap = ({ gap, gain, fontSize, rankingMetric }: Props) => {
     gapText = `${Math.ceil(gap)}m`
   }
 
+  const fontColorOverride = fontColor === undefined ? {} : { color: fontColor }
   const fontSizeOverride = fontSize === undefined ? {} : { fontSize }
   const triangleFontSizeOverride = fontSize === undefined ? {} : { fontSize: fontSize - 10 }
   const emptySpaceOverride = fontSize === undefined ? {} : { width: fontSize }
 
   return (
     <View style={[styles.textContainer]}>
-      <Text style={[styles.gapText, fontSizeOverride]}>{gapText}</Text>
+      <Text style={[styles.gapText, fontSizeOverride, fontColorOverride]}>{gapText}</Text>
       {/* This is so that numbers wihtout the indicators are aligned
           with numbers which have indicators */}
       {gain === undefined && (
