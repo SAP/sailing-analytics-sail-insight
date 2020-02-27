@@ -1,9 +1,9 @@
 import { __, always, append, compose, concat, defaultTo,
-  equals, isEmpty, isNil, map, merge, not,
+  equals, ifElse, isEmpty, isNil, map, merge, not,
   objOf, prop, reduce, uncurryN, unless, when } from 'ramda'
-import { Dimensions } from 'react-native'
+import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import { selectCourse } from 'actions/courses'
-import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
+import { selectRace, setRaceTime, startTracking, updateEventSettings } from 'actions/events'
 import { openTrackDetails } from 'actions/navigation'
 import {
   Component,
@@ -27,6 +27,7 @@ import DatePicker from 'react-native-datepicker'
 import { getCourseById, getCourseSequenceDisplay } from 'selectors/course'
 import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
+import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { getSession } from 'selectors/session'
 import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard, withUpdatingDiscardItem } from '../../session/common'
 import styles from './styles'
@@ -86,6 +87,7 @@ const mapStateToProps = (state: any, props: any) => {
 
   return {
     session,
+    isTracking: isCurrentLeaderboardTracking(state),
     canUpdateCurrentEvent: canUpdateCurrentEvent(state),
     numberOfRaces: races.length,
     races,
@@ -138,7 +140,11 @@ const raceAnalyticsButton = Component((props: any) =>
     fold(props),
     view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      onPress: () => props.openTrackDetails(props.item)
+      onPress: ifElse(
+        always(props.isTracking),
+        () => props.openTrackDetails(props.item),
+        () => Alert.alert('Entry open', 'You have to close entry to competitors first to see the race on SAP analytics.')
+      )
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
 
@@ -149,15 +155,45 @@ const clockIcon = icon({
   iconTintColor: 'black'
 })
 
+
+const touchableHighlightWithConfirmationAlert = ({ isTracking }: any) => fromClass(
+  TouchableHighlight
+).contramap((props: any) => merge(props, {
+  onPress: async (args: any) => {
+    if (!isTracking) {
+      const continueAnyways = await new Promise(resolve =>
+        Alert.alert(
+          'Entry open',
+          'Selecting a start time will close entry to other competitors. Do you want to continue?',
+          [
+            { text: 'Cancel', onPress: () => resolve(false) },
+            { text: 'OK', onPress: () => resolve(true) }
+          ]
+        )
+      )
+
+      if (!continueAnyways) return
+    }
+    return props.onPress(args)
+  }
+}))
+
+
 const raceTimePicker = Component((props: any) => compose(
   fold(props),
   view({ style: styles.raceTimeContainer }),
   concat(__, fromClass(DatePicker).contramap(always({
-    onDateChange: (value: number) => props.setRaceTime({
-      race: props.item.name,
-      raceTime: props.item.raceTime,
-      value
-    }),
+    TouchableComponent: touchableHighlightWithConfirmationAlert(props).fold,
+    onDateChange: (value: number) => {
+      if (!props.isTracking) {
+        props.startTracking(props.session)
+      }
+      return props.setRaceTime({
+        race: props.item.name,
+        raceTime: props.item.raceTime,
+        value
+      })
+    },
     date: moment(getRaceStartTime(props.item) || new Date()),
     androidMode: 'spinner',
     mode: 'datetime',
@@ -240,7 +276,7 @@ export default Component((props: Object) =>
   compose(
     fold(props),
     connect(mapStateToProps, {
-      selectCourse, selectRace, setRaceTime,
+      selectCourse, selectRace, setRaceTime, startTracking,
       updateEventSettings, openTrackDetails }, null, { areStatePropsEqual: equals }),
     nothingIfNoSession,
     view({ style: styles.mainContainer }),
