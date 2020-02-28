@@ -163,7 +163,7 @@ const raceAnalyticsButton = Component((props: any) =>
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
 
 const clockIcon = icon({
-  source: Images.tabs.account,
+  source: Images.info.clock,
   iconStyle: styles.clockIconStyle,
   style: styles.clockIconContainerStyle,
   iconTintColor: clockIconColor
