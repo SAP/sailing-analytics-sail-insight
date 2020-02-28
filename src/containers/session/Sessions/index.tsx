@@ -1,6 +1,6 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { TouchableOpacity, View, ViewProps } from 'react-native'
+import { Text, TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import { navigateToQRScanner } from 'navigation'
@@ -21,10 +21,11 @@ import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
 import SessionItem from 'components/session/SessionItem'
+import SessionItemDark from 'components/session/SessionItemDark'
 import TextButton from 'components/TextButton'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
-import styles from './styles'
+import createStyles from './styles'
 
 
 @connectActionSheet
@@ -34,7 +35,13 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   startTracking: StartTrackingAction,
   authBasedNewSession: () => void,
   selectEvent: any,
+  forTracking: boolean,
 } > {
+
+  constructor(props) {
+    super(props)
+    this.styles = createStyles(props.forTracking)
+  }
 
   public state = {
     hideAddButton: false,
@@ -48,40 +55,59 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     return <EmptySessionsHeader/>
   }
 
-  public renderItem = ({ item }: any) =>
-    <SessionItem
-      style={styles.cardsContainer}
-      onItemPress={() => this.props.selectEvent(item)}
-      session={item}/>
+  public renderItem = ({ item }: any) => {
+    if (!this.props.forTracking) {
+      return (
+        <SessionItem
+          style={this.styles.cardsContainer}
+          onItemPress={() => this.props.selectEvent(item)}
+          session={item}
+        />
+      )
+    } else {
+      return (
+        <SessionItemDark
+          style={this.styles.cardsContainer}
+          onItemPress={() => this.props.startTracking(item)}
+          session={item}
+        />
+      )
+    }
+  }
 
   public render() {
+    const { forTracking } = this.props
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
-        <ScrollContentView style={styles.scrollContainer}>
+        <ScrollContentView style={this.styles.scrollContainer}>
+          {forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
-            style={styles.createButton}
-            onPress={this.props.authBasedNewSession}>
+            style={this.styles.createButton}
+            onPress={this.props.authBasedNewSession}
+          >
             <IconText
               source={Images.actions.add}
-              iconStyle={styles.createButtonIcon}
-              textStyle={styles.createButtonText}
+              iconStyle={this.styles.createButtonIcon}
+              textStyle={this.styles.createButtonText}
               iconTintColor="white"
-              alignment="horizontal">
+              alignment="horizontal"
+            >
               {I18n.t('session_create_new_event').toUpperCase()}
             </IconText>
           </TouchableOpacity>
           <FloatingComponentList
-            style={styles.list}
+            style={this.styles.list}
             data={this.props.sessions}
             ListHeaderComponent={this.renderHeader}
             renderItem={this.renderItem}
           />
         </ScrollContentView>
-        <View style={styles.bottomButton}>
+        <View style={this.styles.bottomButton}>
           <TextButton
-              style={[button.actionFullWidth, container.largeHorizontalMargin, styles.qrButton]}
-              textStyle={styles.qrButtonText}
-              onPress={() => navigateToQRScanner()}>
+              style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
+              textStyle={this.styles.qrButtonText}
+              onPress={() => navigateToQRScanner()}
+          >
             {I18n.t('caption_qr_scanner').toUpperCase()}
           </TextButton>
         </View>
