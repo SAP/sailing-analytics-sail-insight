@@ -143,7 +143,7 @@ const raceAnalyticsButton = Component((props: any) =>
       onPress: ifElse(
         always(props.isTracking),
         () => props.openTrackDetails(props.item),
-        () => Alert.alert('Entry open', 'You have to close entry to competitors first to see the race on SAP analytics.')
+        () => Alert.alert('', I18n.t('text_entry_open_SAP_Analytics_button'))
       )
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
@@ -163,11 +163,11 @@ const touchableHighlightWithConfirmationAlert = ({ isTracking }: any) => fromCla
     if (!isTracking) {
       const continueAnyways = await new Promise(resolve =>
         Alert.alert(
-          'Entry open',
-          'Selecting a start time will close entry to other competitors. Do you want to continue?',
+          '',
+          I18n.t('text_entry_open_when_setting_time'),
           [
-            { text: 'Cancel', onPress: () => resolve(false) },
-            { text: 'OK', onPress: () => resolve(true) }
+            { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
+            { text: I18n.t('caption_close_entry'), onPress: () => resolve(true) }
           ]
         )
       )

@@ -330,6 +330,8 @@
   "caption_define": "Define",
   "button_yes": "Yes",
   "button_no": "No",
+  "text_entry_open_SAP_Analytics_button": "You can only view the SAP Sailing Analytics after the entry list has been closed (note that no competitors can be added afterwards).",
+  "text_entry_open_when_setting_time": "Start time cannot be set until the entry list is closed. Are you ready to close the entry? Note that no competitors can be added afterwards.",
 
   "caption_basics": "Basics",
   "caption_event_creation_date": "Date",
