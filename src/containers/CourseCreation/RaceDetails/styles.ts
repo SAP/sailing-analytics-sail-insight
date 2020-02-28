@@ -2,9 +2,13 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 import { Dimensions } from 'react-native'
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
 import { withDefaultFont, withDefaultBoldFont, withSecondaryBoldFont } from 'styles/compositions/text'
+import { $MediumBlue, $LightBlue } from 'styles/colors'
 
 export const lighterGray = '#C7C7C7'
 export const darkerGray = '#C5C5C5'
+
+export const arrowColor = $MediumBlue
+export const clockIconColor = $LightBlue
 
 export default EStyleSheets.create({
   mainContainer: {
@@ -119,8 +123,8 @@ export default EStyleSheets.create({
     paddingTop: 7,
     paddingLeft: 15,
     paddingRight: 15,
-    borderColor: '#526986',
-    color: '#526986',
+    borderColor: '$LightBlue',
+    color: '$LightBlue',
     fontSize: 12,
     letterSpacing: 0.8,
   },
@@ -131,9 +135,10 @@ export default EStyleSheets.create({
   },
 
   raceTimeText: {
-    color: 'black',
-    ...withDefaultFont,
-    paddingBottom: 0
+    color: '$MediumBlue',
+    ...withDefaultBoldFont,
+    paddingBottom: 0,
+    fontSize: 20,
   },
 
   raceNameTimeContainer: {
@@ -143,15 +148,9 @@ export default EStyleSheets.create({
     paddingBottom: 0
   },
 
-  raceTimeTextSet: {
-    fontSize: 20,
-    fontWeight: 'bold'
-  },
-
   defineCourseText: {
     ...withDefaultBoldFont,
-    fontWeight: 'bold',
-    color: 'black',
+    color: '$MediumBlue',
     fontSize: 20
   }
 })

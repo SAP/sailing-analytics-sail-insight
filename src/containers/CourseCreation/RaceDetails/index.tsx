@@ -30,7 +30,7 @@ import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { getSession } from 'selectors/session'
 import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard, withUpdatingDiscardItem } from '../../session/common'
-import styles from './styles'
+import styles, { arrowColor, clockIconColor } from './styles'
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -115,7 +115,7 @@ const arrowRight = icon({
   source: Images.actions.arrowRight,
   iconStyle: styles.iconStyle,
   style: styles.arrowRightContainerStyle,
-  iconTintColor: 'black'
+  iconTintColor: arrowColor
 })
 
 const defineLayoutButton = Component((props: any) =>
@@ -152,7 +152,7 @@ const clockIcon = icon({
   source: Images.tabs.account,
   iconStyle: styles.clockIconStyle,
   style: styles.clockIconContainerStyle,
-  iconTintColor: 'black'
+  iconTintColor: clockIconColor
 })
 
 
@@ -214,7 +214,7 @@ const raceTimePicker = Component((props: any) => compose(
   view({ style: styles.raceNameTimeContainer }),
   concat(arrowRight),
   concat(clockIcon),
-  text({ style: [styles.raceTimeText, styles.raceTimeTextSet] }),
+  text({ style: [styles.raceTimeText] }),
   when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always('--')),
   unless(isNil, dateTimeShortHourText),
   getRaceStartTime)(
