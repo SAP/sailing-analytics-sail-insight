@@ -17,7 +17,7 @@ export default (forTracking: boolean) => EStyleSheets.create({
   },
   list: {
     backgroundColor: 'transparent',
-    paddingBottom: 150,
+    paddingBottom: forTracking ? 150 + 40 : 150,
   },
   cardsContainer: {
     flexDirection: 'row',
