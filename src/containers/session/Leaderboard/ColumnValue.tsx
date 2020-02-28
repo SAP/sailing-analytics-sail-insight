@@ -1,6 +1,8 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
+import { always, cond, gt, isNil, lt, T } from 'ramda'
+
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 
 import Gap from './Gap'
@@ -10,13 +12,27 @@ import styles from './styles'
 export interface Props {
   selectedColumn?: ColumnValueType
   competitorData: LeaderboardCompetitorCurrentTrack
+  myCompetitorData?: LeaderboardCompetitorCurrentTrack
   fontSize?: number
   rankingMetric?: string
 }
 
+const getGapValueByRankingMetric = (
+  competitorData: LeaderboardCompetitorCurrentTrack,
+  rankingMetric?: string
+) =>
+  competitorData.trackedColumnData &&
+  (rankingMetric === 'ONE_DESIGN'
+    ? competitorData.trackedColumnData.gapToLeaderInM
+    : competitorData.trackedColumnData.gapToLeaderInS)
+
+const RED = '#D42F33'
+const GREEN = '#0B7A07'
+
 const ColumnValue = ({
   selectedColumn,
   competitorData,
+  myCompetitorData,
   fontSize,
   rankingMetric = 'ONE_DESIGN',
 }: Props) => {
@@ -25,17 +41,22 @@ const ColumnValue = ({
     selectedColumn === ColumnValueType.GapToCompetitor
   ) {
     const { gain } = competitorData
-    const gapToLeader =
-      competitorData.trackedColumnData &&
-      (rankingMetric === 'ONE_DESIGN'
-        ? competitorData.trackedColumnData.gapToLeaderInM
-        : competitorData.trackedColumnData.gapToLeaderInS)
+    const gapToLeader = getGapValueByRankingMetric(competitorData, rankingMetric)
+    const myGapToLeader = myCompetitorData && getGapValueByRankingMetric(myCompetitorData, rankingMetric)
+    const fontColor = cond([
+      [always(isNil(myGapToLeader)), always(undefined)],
+      [isNil, always(undefined)],
+      [lt(myGapToLeader), always(RED)],
+      [gt(myGapToLeader), always(GREEN)],
+      [T, always(undefined)]
+    ])(gapToLeader)
 
     return (
       <Gap
         gap={gapToLeader}
         gain={gain}
         fontSize={fontSize}
+        fontColor={fontColor}
         rankingMetric={rankingMetric}
       />
     )
