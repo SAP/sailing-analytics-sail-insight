@@ -143,7 +143,21 @@ const raceAnalyticsButton = Component((props: any) =>
       onPress: ifElse(
         always(props.isTracking),
         () => props.openTrackDetails(props.item),
-        () => Alert.alert('', I18n.t('text_entry_open_SAP_Analytics_button'))
+        async () => {
+          const startTracking = await new Promise(resolve =>
+            Alert.alert('', I18n.t('text_entry_open_SAP_Analytics_button'),
+              [
+                { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
+                { text: I18n.t('caption_close_entry'), onPress: () => resolve(true) }
+              ]
+            )
+          )
+
+          if (startTracking) {
+            await props.startTracking(props.session)
+            props.openTrackDetails(props.item)
+          }
+        }
       )
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
