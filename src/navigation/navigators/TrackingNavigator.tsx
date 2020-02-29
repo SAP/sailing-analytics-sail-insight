@@ -7,9 +7,52 @@ import * as commons from 'navigation/commons'
 import { navigateBack } from 'navigation/NavigationService'
 import * as Screens from 'navigation/Screens'
 import React from 'react'
-import { createStackNavigator, HeaderBackButton } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack'
 
-export default createStackNavigator(
+const Stack = createStackNavigator()
+
+export default function TrackingStack()
+{
+  return (
+    <Stack.Navigator
+      initialRouteName = {Screens.WelcomeTracking}
+      {...commons.stackNavigatorConfig}
+      screenOptions = {{...commons.navHeaderTransparentProps}}
+    >
+      <Stack.Screen
+        name = {Screens.WelcomeTracking}
+        component = {WelcomeTracking}
+        options = {{headerShown: false}}
+      />
+      <Stack.Screen
+        name = {Screens.Tracking}
+        component = {Tracking}
+        options = {{headerShown: false, gestureEnabled: false, title: I18n.t('title_tracking')}}
+      />
+      <Stack.Screen
+        name = {Screens.SetWind}
+        component = {SetWind}
+        options = {{title: I18n.t('title_set_wind')}}
+      />
+      <Stack.Screen
+        name = {Screens.Leaderboard}
+        component = {Leaderboard}
+        options = {() => ({
+          title: I18n.t('title_leaderboard'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  )
+}
+
+/*export default createStackNavigator(
   {
     [Screens.
     WelcomeTracking]: {
@@ -51,4 +94,4 @@ export default createStackNavigator(
     ...commons.stackNavigatorConfig,
     defaultNavigationOptions: () => commons.headerNavigationOptions,
   },
-)
+)*/

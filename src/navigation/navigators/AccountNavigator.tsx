@@ -1,4 +1,4 @@
-import { createStackNavigator, HeaderBackButton } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack'
 
 import I18n from 'i18n'
 import * as commons from 'navigation/commons'
@@ -13,7 +13,74 @@ import { navigateBack } from 'navigation/NavigationService';
 import React from 'react';
 import RegistrationNavigator from './RegistrationNavigator'
 
-export default createStackNavigator(
+const Stack = createStackNavigator()
+
+export default function AccountStack() 
+{
+  return (
+    <Stack.Navigator
+      initialRouteName = {Screens.AccountList}
+      {...commons.stackNavigatorConfig}
+      screenOptions = {{...commons.headerNavigationOptions}}
+    >
+      <Stack.Screen
+        name = {Screens.AccountList}
+        component = {AccountList}
+        options = {{headerShown: false}}
+      />
+      <Stack.Screen
+        name = {Screens.UserProfile}
+        component = {UserProfile}
+        options = {() => ({
+          title: I18n.t('title_your_account'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name =  {Screens.TeamList}
+        component = {TeamList}
+        options = {() => ({
+          title: I18n.t('caption_tab_teamlist'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name = {Screens.AppSettings}
+        component = {AppSettings}
+        options = {() => ({
+          title: I18n.t('caption_tab_appsettings'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name = {Screens.Register2}
+        component = {RegistrationNavigator}
+        options = {{headerShown: false}}
+      />
+
+    </Stack.Navigator>
+  )
+}
+
+/*export default createStackNavigator(
   {
     [Screens.AccountList]: {
       screen: AccountList,
@@ -72,4 +139,4 @@ export default createStackNavigator(
     ...commons.stackNavigatorConfig,
     defaultNavigationOptions: () => commons.headerNavigationOptions,
   },
-)
+)*/

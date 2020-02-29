@@ -1,24 +1,28 @@
-import { Platform, StatusBar } from 'react-native'
-import { NavigationParams, StackNavigatorConfig, Header } from 'react-navigation'
+import { Platform, StatusBar, Dimensions } from 'react-native'
+import { StackNavigationOptions } from '@react-navigation/stack'
 
 import { $headerTintColor, $primaryBackgroundColor } from 'styles/colors'
 import { navigation as navigationStyles } from 'styles/commons'
+import { StackNavigatorConfig } from 'react-navigation'
 
-
-export const headerNavigationOptions: NavigationParams = {
+export const headerNavigationOptions: StackNavigationOptions = {
   headerTitleStyle: navigationStyles.headerTitle,
   headerTintColor: $headerTintColor,
   headerStyle: {
     backgroundColor: $primaryBackgroundColor,
-    height: Header.HEIGHT + (Platform.OS === 'ios' ? 0 : StatusBar.currentHeight),
+    ...Platform.select({
+      android : {
+        height: Dimensions.get('screen').height - Dimensions.get('window').height + (StatusBar.currentHeight ? StatusBar.currentHeight : 0),
+      }
+    }),
     paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
   },
+  headerTitleAlign: 'center',
 }
 
 export const stackNavigatorConfig: StackNavigatorConfig = {
   mode: 'card',
   headerMode: 'screen',
-  headerLayoutPreset: 'center',
 }
 
 export const navHeaderTransparentProps = {

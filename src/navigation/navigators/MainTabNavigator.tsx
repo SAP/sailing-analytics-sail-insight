@@ -1,5 +1,7 @@
 import React from 'react'
-import { createBottomTabNavigator, createStackNavigator, HeaderBackButton } from 'react-navigation'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack'
+import { StackRouter, useNavigationBuilder, useNavigation } from '@react-navigation/native'
 import I18n from 'i18n'
 
 import Images from '@assets/Images'
@@ -21,10 +23,10 @@ import { Platform } from 'react-native'
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
 import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
 
-const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
-  const { routeName = '' } = navigation.state
+const getTabBarIcon = (route: any, tintColor: any, focused: any) => {
+  const { name = '' } = route
   let icon
-  switch (routeName) {
+  switch (name) {
     case Screens.TrackingNavigator:
       icon = Images.tabs.tracking
       break
@@ -52,15 +54,15 @@ const getTabBarIcon = (navigation: any) => ({ focused, tintColor }: any) => {
       source={icon}
       iconTintColor={iconTintColor}
       iconPosition="first"
+      iconOnly={false}
     >
-      {getTabItemTitleTranslation(routeName)}
+      {getTabItemTitleTranslation(name)}
     </IconText>
   )
 }
 
 const onTabBarPress = (props: any = {}) => {
   const { defaultHandler, navigation } = props
-
   if (!defaultHandler || !navigation) {
     return
   }
@@ -69,7 +71,7 @@ const onTabBarPress = (props: any = {}) => {
   }
   // Prevent exit tracking screen when track navigator is selected and user taps on
   // the tracking tab in main navigator
-  if (navigation.state.key === 'TrackingNavigator' &&
+  if (navigation.route.key === 'TrackingNavigator' &&
       navigation.isFocused() &&
       navigation.state.index === 1) {
     return
@@ -77,7 +79,84 @@ const onTabBarPress = (props: any = {}) => {
   return defaultHandler(navigation)
 }
 
-const sessionsStack = createStackNavigator({
+const Stack = createStackNavigator()
+
+function SessionsStack() 
+{
+  return (
+    <Stack.Navigator
+      initialRouteName = {Screens.Sessions}
+      {...commons.stackNavigatorConfig}
+      screenOptions = {{...commons.headerNavigationOptions}}  
+    >
+      <Stack.Screen
+        name = {Screens.Sessions}
+        component = {Sessions}
+        options = {{headerShown: false}}
+      />
+      <Stack.Screen
+        name = {Screens.SessionDetail}
+        component = {SessionDetail.fold}
+        options = {() => ({
+          title: I18n.t('title_event_details'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+          headerRight: () => ShareButton.fold({}),
+        })}
+      />
+      <Stack.Screen
+        name = {Screens.EventCreation}
+        component = {EventCreation.fold}
+        options = {() => ({
+          title: I18n.t('title_event_creation'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+        })}
+      />
+      <Stack.Screen
+        name = {Screens.SessionDetail4Organizer}
+        component = {SessionDetail4Organizer.fold}
+        options = {() => ({
+          title: I18n.t('title_event_details'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+          headerRight: () => ShareButton.fold({}),
+        })}
+      />
+      <Stack.Screen
+        name = {Screens.RaceDetails}
+        component = {RaceDetails.fold}
+        options = {() => ({
+          title: I18n.t('title_race_details'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  )
+}
+
+/*const sessionsStack = createStackNavigator({
   [Screens.Sessions]: {
     screen: Sessions,
     navigationOptions: {
@@ -143,9 +222,9 @@ const sessionsStack = createStackNavigator({
   initialRouteName: Screens.Sessions,
   ...commons.stackNavigatorConfig,
   defaultNavigationOptions: () => commons.headerNavigationOptions,
-})
+})*/
 
-const sessionGetStateForAction = sessionsStack.router.getStateForAction
+/*const sessionGetStateForAction = sessionsStack.router.getStateForAction
 
 sessionsStack.router.getStateForAction = (action, state) => {
   if (state && action.type === 'replaceCurrentScreen') {
@@ -158,9 +237,55 @@ sessionsStack.router.getStateForAction = (action, state) => {
     }
   }
   return sessionGetStateForAction(action, state)
+}*/
+
+const Tabs = createBottomTabNavigator()
+
+export default function MainTabNavigator()
+{
+  return (
+    <Tabs.Navigator
+      initialRouteName = {Screens.TrackingNavigator}
+      backBehavior = 'initialRoute'
+      tabBarOptions = {{
+        activeTintColor: $primaryTextColor,
+        inactiveTintColor: $secondaryTextColor,
+        style: {
+          height: 56,
+          backgroundColor: '#123748',
+        },
+        showLabel: false,
+        showIcon: true,
+        keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,
+      }}
+      screenOptions = {({ route }) => ({
+        tabBarIcon: ({ color, focused}) => getTabBarIcon(route, color, focused),
+      })}
+    >
+      <Tabs.Screen
+        name = {Screens.TrackingNavigator}
+        component = {TrackingNavigator}
+        listeners = {{
+          tabPress: (navigation) => onTabBarPress(navigation),
+        }}
+      />
+      <Tabs.Screen
+        name = {Screens.Sessions}
+        component = {SessionsStack}
+      />
+      <Tabs.Screen
+        name = {Screens.Inventory}
+        component = {MarkInventory.fold}
+      />
+      <Tabs.Screen
+        name = {Screens.Account}
+        component = {AccountNavigator}
+      />
+    </Tabs.Navigator>
+  )
 }
 
-export default createBottomTabNavigator(
+/*function createBottomTabNavigator(
   {
     [Screens.TrackingNavigator]: TrackingNavigator,
     [Screens.Sessions]: sessionsStack,
@@ -187,4 +312,4 @@ export default createBottomTabNavigator(
       tabBarOnPress: onTabBarPress,
     }),
   },
-)
+)*/

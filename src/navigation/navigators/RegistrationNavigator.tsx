@@ -1,5 +1,5 @@
 import React from 'react'
-import { createStackNavigator, HeaderBackButton } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack'
 
 import I18n from 'i18n'
 import * as commons from 'navigation/commons'
@@ -15,8 +15,53 @@ import RegisterCredentials from 'containers/authentication/RegisterCredentials'
 import { navigateBack } from 'navigation/NavigationService';
 import { $headerTintColor } from 'styles/colors'
 
+const Stack = createStackNavigator()
 
-export default createStackNavigator(
+export default function RegistrationStack()
+{
+  return (
+    <Stack.Navigator
+      initialRouteName = {Screens.RegisterCredentials}
+      {...commons.stackNavigatorConfig}
+      screenOptions = {{...commons.navHeaderTransparentProps}}
+    >
+      <Stack.Screen
+        name = {Screens.RegisterCredentials}
+        component = {RegisterCredentials}
+        options = {() => ({
+          ...commons.navHeaderTransparentProps,
+          title: '',
+          headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+          headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} />,
+        })}
+      />
+      <Stack.Screen
+        name = {Screens.RegisterBoat}
+        component = {RegisterBoat}
+        options = {{headerShown: false}}
+      />
+      <Stack.Screen
+        name = {Screens.Login}
+        component = {Login}
+        options = {() => ({
+          ...commons.navHeaderTransparentProps,
+          title: '',
+          headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              onPress={navigateBack}
+              labelVisible={false}
+            />
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  )
+}
+
+
+/*export default createStackNavigator(
   {
     [Screens.RegisterCredentials]: {
       screen: RegisterCredentials,
@@ -53,4 +98,4 @@ export default createStackNavigator(
     ...commons.stackNavigatorConfig,
     defaultNavigationOptions: () => commons.headerNavigationOptions,
   },
-)
+)*/

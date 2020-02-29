@@ -86,6 +86,7 @@ export interface EventState {
 export interface CheckInState {
   active: any
   isLoadingCheckIn: boolean
+  isLoadingSplash: boolean
 }
 
 export interface CourseReducerState {
