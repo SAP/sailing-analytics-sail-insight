@@ -1,6 +1,6 @@
 import { __, always, append, compose, concat, defaultTo,
-  equals, isEmpty, isNil, map, merge, not,
-  objOf, prop, reduce, uncurryN, unless, when } from 'ramda'
+  equals, isEmpty, isNil, map, merge, not, apply, unapply,
+  objOf, prop, reduce, uncurryN, unless, when, dissocPath } from 'ramda'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
@@ -212,7 +212,10 @@ export default Component((props: Object) =>
     fold(props),
     connect(mapStateToProps, {
       selectCourse, selectRace, setRaceTime,
-      updateEventSettings, openTrackDetails }, null, { areStatePropsEqual: equals }),
+      updateEventSettings, openTrackDetails }, null,
+      { areStatePropsEqual: compose(
+        apply(equals),
+        unapply(map(dissocPath(['session', 'leaderboard'])))) }),
     nothingIfNoSession,
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
