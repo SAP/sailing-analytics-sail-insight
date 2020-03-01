@@ -1,7 +1,6 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack'
-import { StackRouter, useNavigationBuilder, useNavigation } from '@react-navigation/native'
 import I18n from 'i18n'
 
 import Images from '@assets/Images'
@@ -17,7 +16,7 @@ import SessionDetail4Organizer from 'containers/session/SessionDetail4Organizer'
 import EventCreation from 'containers/session/EventCreation'
 import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
-import { navigateBack } from 'navigation/NavigationService'
+import { navigateBack, getRootState } from 'navigation/NavigationService'
 import { Platform } from 'react-native'
 
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
@@ -62,21 +61,24 @@ const getTabBarIcon = (route: any, tintColor: any, focused: any) => {
 }
 
 const onTabBarPress = (props: any = {}) => {
-  const { defaultHandler, navigation } = props
-  if (!defaultHandler || !navigation) {
+  const { preventDefault } = props
+  const navigationTracking = getRootState('TrackingNavigator')
+  const navigationTabs = getRootState('MainTabs')
+
+  if (!navigationTracking || !navigationTabs || !preventDefault ) {
     return
   }
-  if (!navigation.state) {
-    return defaultHandler(navigation)
+
+  if (!navigationTracking.state || !navigationTabs.state) {
+    return
   }
   // Prevent exit tracking screen when track navigator is selected and user taps on
   // the tracking tab in main navigator
-  if (navigation.route.key === 'TrackingNavigator' &&
-      navigation.isFocused() &&
-      navigation.state.index === 1) {
-    return
+  if (navigationTracking.name === 'TrackingNavigator' &&
+      navigationTabs.state.index === 0 && //focused
+      navigationTracking.state.index === 1) {
+    preventDefault()
   }
-  return defaultHandler(navigation)
 }
 
 const Stack = createStackNavigator()
@@ -260,13 +262,14 @@ export default function MainTabNavigator()
       }}
       screenOptions = {({ route }) => ({
         tabBarIcon: ({ color, focused}) => getTabBarIcon(route, color, focused),
+        
       })}
     >
-      <Tabs.Screen
+      <Tabs.Screen 
         name = {Screens.TrackingNavigator}
         component = {TrackingNavigator}
         listeners = {{
-          tabPress: (navigation) => onTabBarPress(navigation),
+          tabPress: onTabBarPress,
         }}
       />
       <Tabs.Screen

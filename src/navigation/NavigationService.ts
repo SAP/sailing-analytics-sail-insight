@@ -7,6 +7,34 @@ export const setTopLevelNavigator = (navigatorRef: any) => {
   navigator = navigatorRef
 }
 
+const findInnerState = (routes: any, routeName: string) => {
+  for(var i = 0; i < routes.length; i++) {
+      const route = routes[i]
+      if (route.name === routeName) {
+          return route;
+      } else if (route.state && route.state.routes && route.state.routes.length > 0) {
+          const result: any = findInnerState(route.state.routes, routeName)
+          if (result) {
+            return result
+          }
+      }
+  }
+  return false
+}
+
+export const getRootState = (routeName: string): any => {
+  if (!navigator) {
+    return null
+  }
+
+  const state = navigator.getRootState()
+  if (state && state.routes) {
+    return findInnerState(state.routes, routeName)
+  }
+
+  return null
+}
+
 export const navigate = (name: string, params?: any) => {
   if (!navigator) {
     return
