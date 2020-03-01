@@ -17,7 +17,7 @@ export default function TrackingStack()
     <Stack.Navigator
       initialRouteName = {Screens.WelcomeTracking}
       {...commons.stackNavigatorConfig}
-      screenOptions = {{...commons.navHeaderTransparentProps}}
+      screenOptions = {{...commons.headerNavigationOptions}}
     >
       <Stack.Screen
         name = {Screens.WelcomeTracking}
@@ -27,7 +27,11 @@ export default function TrackingStack()
       <Stack.Screen
         name = {Screens.Tracking}
         component = {Tracking}
-        options = {{headerShown: false, gestureEnabled: false, title: I18n.t('title_tracking')}}
+        options = {{
+          gestureEnabled: false, 
+          title: I18n.t('title_tracking'),
+          headerLeft: () => null,
+        }}
       />
       <Stack.Screen
         name = {Screens.SetWind}

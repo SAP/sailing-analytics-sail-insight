@@ -23,14 +23,14 @@ export default function RegistrationStack()
     <Stack.Navigator
       initialRouteName = {Screens.RegisterCredentials}
       {...commons.stackNavigatorConfig}
-      screenOptions = {{...commons.navHeaderTransparentProps}}
+      screenOptions = {{...commons.headerNavigationOptions}}
     >
       <Stack.Screen
         name = {Screens.RegisterCredentials}
         component = {RegisterCredentials}
         options = {() => ({
           ...commons.navHeaderTransparentProps,
-          title: '',
+          headerTitle: () => null,
           headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
           headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} />,
         })}
@@ -45,7 +45,7 @@ export default function RegistrationStack()
         component = {Login}
         options = {() => ({
           ...commons.navHeaderTransparentProps,
-          title: '',
+          headerTitle: () => null,
           headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
           headerLeft: () => (
             <HeaderBackButton
