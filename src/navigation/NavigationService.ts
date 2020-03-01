@@ -13,12 +13,7 @@ export const navigate = (name: string, params?: any) => {
   }
 
   if (params && params.data && params.data.replaceCurrentScreen) {
-    navigator.dispatch({
-      key: name,
-      type: 'replaceCurrentScreen',
-      name,
-      params
-    })
+    navigator.dispatch(StackActions.replace(name, params))
   } else {
     navigator.dispatch(
       CommonActions.navigate({
