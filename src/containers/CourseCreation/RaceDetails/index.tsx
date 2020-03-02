@@ -1,7 +1,8 @@
 import { __, always, append, compose, concat, defaultTo,
-  equals, cond, isEmpty, isNil, map, merge, not,
-  objOf, prop, reduce, uncurryN, unless, when, T } from 'ramda'
+  equals, cond, isEmpty, isNil, map, merge, not, apply, unapply,
+  objOf, prop, reduce, uncurryN, unless, when, dissocPath, T } from 'ramda'
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
+import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, startTracking, updateEventSettings } from 'actions/events'
 import { openTrackDetails } from 'actions/navigation'
@@ -17,7 +18,6 @@ import {
 } from 'components/fp/component'
 import { forwardingPropsFlatList, text, touchableOpacity, view } from 'components/fp/react-native'
 import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } from 'components/helpers'
-import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { dateShortText, dateTimeShortHourText } from 'helpers/date'
@@ -291,7 +291,10 @@ export default Component((props: Object) =>
     fold(props),
     connect(mapStateToProps, {
       selectCourse, selectRace, setRaceTime, startTracking,
-      updateEventSettings, openTrackDetails }, null, { areStatePropsEqual: equals }),
+      updateEventSettings, openTrackDetails }, null,
+      { areStatePropsEqual: compose(
+        apply(equals),
+        unapply(map(dissocPath(['session', 'leaderboard'])))) }),
     nothingIfNoSession,
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
