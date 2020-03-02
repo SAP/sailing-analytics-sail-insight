@@ -79,10 +79,11 @@ export const startTracking: StartTrackingAction = data =>  async (
   dispatch(updateLoadingCheckInFlag(true))
   dispatch(resetTrackingStatistics())
 
-  deleteAllGPSFixRequests()
-
   navigateToTracking()
   let showAlertRaceNotStarted = false
+
+  try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
+  catch (e) {}
 
   try {
     const shouldCreateTrack = checkInData.isSelfTracking
@@ -97,7 +98,6 @@ export const startTracking: StartTrackingAction = data =>  async (
         await dispatch(startTrack(checkInData.leaderboardName, newTrack.racename, newTrack.seriesname))
       }
     } else {
-      await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret))
       const races = getRaces(checkInData.leaderboardName)(getState())
       const now = getNowAsMillis()
       const activeRaces = races

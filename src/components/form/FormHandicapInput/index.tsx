@@ -8,6 +8,7 @@ import FormTextInput from 'components/form/FormTextInput'
 import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
 
 import styles from './styles'
+import { $primaryActiveColor, $primaryBackgroundColor } from 'styles/colors'
 
 const handicapTypeSelectorOptions = [
   { label: 'Yardstick', value: HandicapTypes.Yardstick },
@@ -41,17 +42,19 @@ class FormHandicapInput extends React.Component<
              * the handicap type changes */
             true
           }
-          backgroundColor="#EEEEEE"
-          selectedColor="#028DD4"
-          buttonColor="#FFFFFF"
-          textColor="#909090"
-          borderColor="#EEEEEE"
+          backgroundColor={$primaryBackgroundColor}
+          selectedColor={'white'}
+          buttonColor={$primaryActiveColor}
+          textColor={'white'}
+          borderColor={'white'}
           borderRadius={3}
           hasPadding={
             /* This is for the padding between the button color and border */
             true
           }
           style={styles.switchSelector}
+          textStyle={styles.switchSelectorText}
+          selectedTextStyle={styles.switchSelectorText}
         />
         <FormTextInput
           {...this.getHandicapValueProps()}
@@ -74,7 +77,7 @@ class FormHandicapInput extends React.Component<
     const handicapValueFloat = parseFloat(value.replace(',', '.'))
     if (fromType === HandicapTypes.Yardstick && toType === HandicapTypes.TimeOnTime ||
         fromType === HandicapTypes.TimeOnTime && toType === HandicapTypes.Yardstick) {
-      return (+(100 / handicapValueFloat).toFixed(4)).toString()
+      return (+(100 / handicapValueFloat).toFixed(1)).toString()
     }
 
     return value

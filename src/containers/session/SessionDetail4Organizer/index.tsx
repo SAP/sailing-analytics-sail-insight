@@ -23,6 +23,7 @@ const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
 const nothingWhenEntryIsOpen = branch(both(propEq('isTracking', false), propEq('isFinished', false)), nothingAsClass)
 const nothingWhenNoBoatClass = branch(compose(isNil, prop('boatClass')), nothingAsClass)
+const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
 
 const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
   fold(props),
@@ -107,7 +108,7 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
       I18n.t('text_invite_competitors_long_text_running') :
       I18n.t('text_invite_competitors_long_text_planning')),
     nothingWhenFinished(nothingWhenTracking(inviteCompetitorsButton)),
-    nothingWhenFinished(nothingWhenTracking(joinAsCompetitorButton)),
+    nothingWhenFinished(nothingWhenTracking(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton))),
     nothingWhenFinished(nothingWhenTracking(qrCode))
   ]))
 

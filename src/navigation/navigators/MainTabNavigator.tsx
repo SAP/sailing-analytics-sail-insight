@@ -79,7 +79,7 @@ const onTabBarPress = (props: any = {}) => {
 
 const sessionsStack = createStackNavigator({
   [Screens.Sessions]: {
-    screen: Sessions,
+    screen: (props) => <Sessions {...props} forTracking={false} />,
     navigationOptions: {
       header: null
     }
