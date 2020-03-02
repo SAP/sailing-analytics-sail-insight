@@ -9,6 +9,7 @@ const headerTitleStyleProps = isPlatformAndroid ? { flexGrow: 1 } : { width: scr
 export default EStyleSheets.create({
   container: {
     alignItems: 'center',
+    justifyContent: 'center',
     textAlign: 'center',
     textAlignVertical: 'center',
     alignSelf: 'center',
