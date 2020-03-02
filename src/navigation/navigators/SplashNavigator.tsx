@@ -33,18 +33,3 @@ export default function SplashStack()
     </AuthContext.Consumer>
   )
 }
-
-/*export default createSwitchNavigator(
-  {
-    [Screens.Splash]: {
-      screen: SplashScreen,
-      navigationOptions: {
-        header: null,
-      },
-    },
-    [Screens.App]: AppNavigator,
-  },
-  {
-    initialRouteName: Screens.Splash,
-  },
-))*/

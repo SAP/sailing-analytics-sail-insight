@@ -158,89 +158,6 @@ function SessionsStack()
   )
 }
 
-/*const sessionsStack = createStackNavigator({
-  [Screens.Sessions]: {
-    screen: Sessions,
-    navigationOptions: {
-      header: null
-    }
-  },
-  [Screens.SessionDetail]: {
-    screen: SessionDetail.fold,
-    navigationOptions: {
-      title: I18n.t('title_event_details'),
-      headerLeft: () => (
-        <HeaderBackButton
-          tintColor="white"
-          title=""
-          onPress={navigateBack}
-        />
-      ),
-      headerRight: ShareButton.fold({}),
-    },
-  },
-  [Screens.EventCreation]: {
-    screen: EventCreation.fold,
-    navigationOptions: {
-      title: I18n.t('title_event_creation'),
-      headerLeft: () => (
-        <HeaderBackButton
-          tintColor="white"
-          title=""
-          onPress={navigateBack}
-        />
-      ),
-    },
-  },
-  [Screens.SessionDetail4Organizer]: {
-    screen: SessionDetail4Organizer.fold,
-    navigationOptions: {
-      title: I18n.t('title_event_details'),
-      headerLeft: () => (
-        <HeaderBackButton
-          tintColor="white"
-          title=""
-          onPress={navigateBack}
-        />
-      ),
-      headerRight: ShareButton.fold({}),
-    },
-  },
-  [Screens.RaceDetails]: {
-    screen: RaceDetails.fold,
-    navigationOptions: {
-      title: I18n.t('title_race_details'),
-      headerLeft: () => (
-        <HeaderBackButton
-          tintColor="white"
-          title=""
-          onPress={navigateBack}
-        />
-      ),
-    },
-  },
-},
-{
-  initialRouteName: Screens.Sessions,
-  ...commons.stackNavigatorConfig,
-  defaultNavigationOptions: () => commons.headerNavigationOptions,
-})*/
-
-/*const sessionGetStateForAction = sessionsStack.router.getStateForAction
-
-sessionsStack.router.getStateForAction = (action, state) => {
-  if (state && action.type === 'replaceCurrentScreen') {
-    const routes = state.routes.slice(0, state.routes.length - 1)
-    routes.push(action)
-    return {
-      ...state,
-      routes,
-      index: routes.length - 1
-    }
-  }
-  return sessionGetStateForAction(action, state)
-}*/
-
 const Tabs = createBottomTabNavigator()
 
 export default function MainTabNavigator()
@@ -262,7 +179,6 @@ export default function MainTabNavigator()
       }}
       screenOptions = {({ route }) => ({
         tabBarIcon: ({ color, focused}) => getTabBarIcon(route, color, focused),
-        
       })}
     >
       <Tabs.Screen 
@@ -287,32 +203,3 @@ export default function MainTabNavigator()
     </Tabs.Navigator>
   )
 }
-
-/*function createBottomTabNavigator(
-  {
-    [Screens.TrackingNavigator]: TrackingNavigator,
-    [Screens.Sessions]: sessionsStack,
-    [Screens.Inventory]: MarkInventory.fold,
-    [Screens.Account]: AccountNavigator,
-  },
-  {
-    initialRouteName: Screens.TrackingNavigator,
-    backBehavior: 'initialRoute',
-    swipeEnabled: false,
-    tabBarOptions: {
-      activeTintColor: $primaryTextColor,
-      inactiveTintColor: $secondaryTextColor,
-      style: {
-        height: 56,
-        backgroundColor: '#123748',
-      },
-      showLabel: false,
-      showIcon: true,
-      keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,
-    },
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: getTabBarIcon(navigation),
-      tabBarOnPress: onTabBarPress,
-    }),
-  },
-)*/

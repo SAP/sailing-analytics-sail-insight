@@ -55,7 +55,7 @@ export const pop = (params?: any) => {
   if (!navigator) {
     return
   }
-  if (!params) {
+  if (params) {
     navigator.dispatch(StackActions.pop(params))
   } else {
     navigator.dispatch(StackActions.popToTop())
