@@ -1,7 +1,8 @@
-import { prop, propEq, find, compose, path, defaultTo,
+import { prop, propEq, propOr, find, compose, path, defaultTo,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
   apply, map, take, move, evolve, dissoc, not, flatten, reject, __,
-  curry,reduce, assoc, keys, both, inc, range, concat } from 'ramda'
+  curry,reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr
+} from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
 
@@ -152,3 +153,25 @@ export const getMarkPositionsExceptCurrent = createSelector(
     map(prop('markConfigurationIds')),
     prop('waypoints'))(
     course))
+
+export const getCourseSequenceDisplay = (courseId: string) => (state: any) => {
+  const courseById = getCourseById(courseId)(state)
+
+  return compose(
+    join('-'),
+    map(
+      ifElse(
+        prop('controlPointShortName'),
+        prop('controlPointShortName'),
+        compose(
+          pathOr('\u2022', ['effectiveProperties', 'shortName']),
+          find(__, propOr([], 'markConfigurations', courseById)),
+          propEq('id'),
+          pathOr(-1, ['markConfigurationIds', 0])
+        )
+      )
+    ),
+    Object.values,
+    propOr({}, 'waypoints'),
+  )(courseById)
+}
