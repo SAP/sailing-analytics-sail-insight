@@ -12,6 +12,7 @@ export interface SecurityApi {
   user: (username?: string) => any,
   register: (username: string, email: string, password: string, fullName?: string) => any,
   accessToken: (email: string, password: string) => any,
+  removeAccessToken: () => any,
   updateUser: (data: any) => any,
   requestPasswordReset: (username: string, email: string) => any,
   hasPermissions: (permissions: string) => any,
@@ -24,6 +25,7 @@ const securityEndpoints = (serverUrl: string) => {
     createUser: getSecurityUrl('/create_user'),
     user: getSecurityUrl('/user'),
     accessToken: getSecurityUrl('/access_token'),
+    removeAccessToken: getSecurityUrl('/remove_access_token'),
     forgotPassword: getSecurityUrl('/forgot_password'),
     hasPermissions: getSecurityUrl('/has_permission'),
     ownershipAcl: getSecurityUrl('/ownership/{0}/{1}/acl'),
@@ -52,6 +54,11 @@ const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
         bodyType: 'x-www-form-urlencoded'
       },
     ) as Promise<ApiAccessToken>,
+
+    removeAccessToken: () => dataRequest(
+      endpoints.removeAccessToken(),
+      { method: HttpMethods.POST },
+    ),
 
     updateUser: (data: any) => request(
       endpoints.user({ urlParams: data }),

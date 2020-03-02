@@ -329,6 +329,8 @@
   "caption_define": "Definieren",
   "button_yes": "Ja",
   "button_no": "Nein",
+  "text_entry_open_SAP_Analytics_button": "Sie können die SAP Sailing Analytics erst nach dem Schließen der Teilnehmerliste anzeigen. Sind Sie bereit den Zugang zu schließen? Beachten Sie, dass keine Teilnehmer nachträglich hinzugefügt werden können.",
+  "text_entry_open_when_setting_time": "Die Startzeit kann erst festgelegt werden, wenn der Teilnehmerliste geschlossen wurde. Sind Sie bereit den Zugang zu schließen?Beachten Sie, dass keine Teilnehmer nachträglich hinzugefügt werden können.",
 
   "caption_basics": "Basis",
   "caption_event_creation_date": "Datum",
