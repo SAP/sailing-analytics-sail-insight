@@ -1,6 +1,6 @@
 import { __, always, append, compose, concat, defaultTo,
-  equals, cond, isEmpty, isNil, map, merge, not, apply, unapply,
-  objOf, prop, reduce, uncurryN, unless, when, dissocPath, T } from 'ramda'
+  equals, ifElse, isEmpty, isNil, map, merge, not, apply, unapply,
+  objOf, prop, reduce, uncurryN, unless, when, dissocPath } from 'ramda'
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
@@ -140,10 +140,11 @@ const raceAnalyticsButton = Component((props: any) =>
     fold(props),
     view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      onPress: cond([
-        [always(props.isTracking), () => props.openTrackDetails(props.item)],
-        [always(!props.canUpdateCurrentEvent), always(undefined)], // Do nothing if user can't close entry
-        [T, async () => {
+      disabled: !props.canUpdateCurrentEvent,
+      onPress: ifElse(
+        always(props.isTracking),
+        () => props.openTrackDetails(props.item),
+        async () => {
           const startTracking = await new Promise(resolve =>
             Alert.alert('', I18n.t('text_entry_open_SAP_Analytics_button'),
               [
@@ -157,8 +158,8 @@ const raceAnalyticsButton = Component((props: any) =>
             await props.startTracking(props.session)
             props.openTrackDetails(props.item)
           }
-        }]
-      ])
+        }
+      )
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
 
