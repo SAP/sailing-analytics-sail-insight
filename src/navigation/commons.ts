@@ -1,4 +1,4 @@
-import { Platform, StatusBar, Dimensions } from 'react-native'
+import { Platform, StatusBar } from 'react-native'
 import { StackNavigationOptions } from '@react-navigation/stack'
 
 import { $headerTintColor, $primaryBackgroundColor } from 'styles/colors'
@@ -10,11 +10,6 @@ export const headerNavigationOptions: StackNavigationOptions = {
   headerTintColor: $headerTintColor,
   headerStyle: {
     backgroundColor: $primaryBackgroundColor,
-    ...Platform.select({
-      android : {
-        height: Dimensions.get('screen').height - Dimensions.get('window').height + (StatusBar.currentHeight ? StatusBar.currentHeight : 0),
-      }
-    }),
     paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
   },
   headerTitleAlign: 'center',
