@@ -28,7 +28,7 @@ const reducer = handleActions(
     [updateServerUrlSetting as any]: itemUpdateHandler('serverUrl'),
     [updateVerboseLoggingSetting as any]: itemUpdateHandler('verboseLogging'),
     [updateLeaderboardEnabledSetting as any]: itemUpdateHandler('leaderboardEnabled'),
-    [removeUserData as any]: () => initialState,
+    [removeUserData as any]: (state:SettingsState) => ({ ...initialState, serverUrl: state.serverUrl }),
   },
   initialState,
 )
