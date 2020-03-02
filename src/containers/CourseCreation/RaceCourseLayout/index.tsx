@@ -601,7 +601,7 @@ const WaypointsList = Component(props => {
             fill: '#fff',
             fontSize: 18,
             textAnchor,
-            ...withSecondaryBoldFont,
+            ...styles.waypointText,
             letterSpacing: '.016em'
           })))(
         props.waypointLabel(waypoint))

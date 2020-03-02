@@ -2,7 +2,7 @@ import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet' 
 
 import { $DarkBlue, $LightDarkBlue, $Orange } from 'styles/colors'
-import { white, withDefaultBoldFont, withDefaultFont } from 'styles/compositions/text'
+import { white, withDefaultBoldFont, withDefaultFont, withSecondaryBoldFont } from 'styles/compositions/text'
 
 const roundElementContainer = {
   width: 50,
@@ -40,6 +40,10 @@ export default EStyleSheets.create({
     shadowOpacity: 0.32,
     shadowRadius: 5.46,
     elevation: 9,
+  },
+
+  waypointText: {
+    ...withSecondaryBoldFont,
   },
 
   sectionTitle: {
