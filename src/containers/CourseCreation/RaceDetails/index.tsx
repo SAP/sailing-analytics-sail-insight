@@ -83,8 +83,6 @@ const mapStateToProps = (state: any, props: any) => {
     getSelectedRegatta)(
     state)
 
-  console.log({races})
-
   return {
     session,
     isTracking: isCurrentLeaderboardTracking(state),
