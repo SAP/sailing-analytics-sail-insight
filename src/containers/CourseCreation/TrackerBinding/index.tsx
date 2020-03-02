@@ -84,7 +84,7 @@ const useThisDeviceButton = Component(props => compose(
 const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: (payload: any) => !payload.state && props.fetchAndUpdateMarkConfigurationDeviceTracking()
+    onWillBlur: (payload: any) => (!payload || !payload.state) && props.fetchAndUpdateMarkConfigurationDeviceTracking()
   })),
   fromClass)(
   NavigationEvents))

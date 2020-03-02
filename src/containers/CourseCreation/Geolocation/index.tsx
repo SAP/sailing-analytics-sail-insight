@@ -90,7 +90,7 @@ const Map = Component((props: any) => compose(
 const navigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: (payload: any) => !payload.state && props.updateMarkConfigurationLocation({
+    onWillBlur: (payload: any) => (!payload || !payload.state) && props.updateMarkConfigurationLocation({
       id: props.selectedMarkConfiguration,
       value: pick(['latitude', 'longitude'], props.region)
     })

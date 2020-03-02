@@ -28,7 +28,7 @@ const TeamDetailsHeader = connect(
 
 const MarkLocationHeader = connect(
   (state: any) => {
-    const markProps = getSelectedMarkProperties(state)
+    const markProps: any = getSelectedMarkProperties(state)
 
     return { markName: `(${markProps.shortName}) ${markProps.name}` }
   })(
@@ -43,7 +43,7 @@ const teamDeleteHeader = (route: any) => (route.params.paramTeamName) && (
   />
 )
 
-const shareOnPress = (data = {}) => () => {
+const shareOnPress = (data: any = {}) => () => {
   const message = `${I18n.t('text_track_share')}${data.url}`
   Share.share({ message })
 }
@@ -81,7 +81,7 @@ export default function MainStack()
       <Stack.Screen
         name = {Screens.CourseGeolocation}
         component = {Geolocation
-                    .contramap((props: object) => ({
+                    .contramap((props: any) => ({
                       ...props,
                       selectedMarkConfiguration: props.route.params.data.selectedMarkConfiguration,
                       currentPosition: props.route.params.data.currentPosition,
@@ -89,7 +89,7 @@ export default function MainStack()
                     .fold
                   }
         options = {() => ({
-          header: () => <MarkLocationHeader/>,
+          headerTitle: () => <MarkLocationHeader/>,
           headerLeft: () => (
             <HeaderBackButton
               tintColor="white"
@@ -102,7 +102,7 @@ export default function MainStack()
       <Stack.Screen
         name = {Screens.CourseTrackerBinding}
         component = {TrackerBinding
-                    .contramap((props: object) => ({
+                    .contramap((props: any) => ({
                       ...props,
                       selectedMarkConfiguration: props.route.params.data.selectedMarkConfiguration,
                     }))
