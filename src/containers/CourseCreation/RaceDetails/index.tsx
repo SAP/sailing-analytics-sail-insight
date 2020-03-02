@@ -1,9 +1,9 @@
 import { __, always, append, compose, concat, defaultTo,
   equals, isEmpty, isNil, map, merge, not, apply, unapply,
-  objOf, prop, reduce, uncurryN, unless, when, dissocPath } from 'ramda'
+  objOf, prop, reduce, uncurryN, unless, when, dissocPath, path, addIndex } from 'ramda'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
-import { selectRace, setRaceTime, updateEventSettings } from 'actions/events'
+import { selectRace, setRaceTime, setDiscards, updateEventSettings } from 'actions/events'
 import { openTrackDetails } from 'actions/navigation'
 import {
   Component,
@@ -67,6 +67,7 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     session,
     numberOfRaces: races.length,
+    discards: path(['leaderboard', 'discardIndexResultsStartingWithHowManyRaces'])(session),
     races,
   }
 }
@@ -95,7 +96,7 @@ const defineLayoutButton = Component((props: any) =>
       onPress: () => onSeeCourse(props)
     }))(
       text(
-        {}, 
+        {},
         props.item.courseDefined ? I18n.t('caption_see_course') : I18n.t('caption_define_course')
       )
     )
@@ -177,16 +178,23 @@ const raceList = Component((props: object) => compose(
       renderItem: raceItem.fold
     }, props))))
 
+const mapIndexed = addIndex(map)
+
 const withDiscardDataFromEvent = mapProps(props => compose(
   merge(props),
   objOf('data'),
-  append({ type: 'add' }))([]))
+  append({ type: 'add' }),
+  mapIndexed((value, index) => ({ value, index })),
+  prop('discards')
+)(props))
 
-const discardSelector = compose(
+const discardSelector = Component((props:any) => compose(
+  fold(props),
   withDiscardDataFromEvent,
-  withUpdatingDiscardItem(() => {}),
-  withAddDiscard(() => {}))(
-  DiscardSelector)
+  withUpdatingDiscardItem((discards) => props.setDiscards({discards, session: props.session })),
+  withAddDiscard((discards) => props.setDiscards({discards, session: props.session })))
+  (DiscardSelector)
+)
 
 const organizerContainer = Component((props: Object) =>
   compose(
@@ -195,7 +203,7 @@ const organizerContainer = Component((props: Object) =>
     reduce(concat, nothing()))
   ([
     raceNumberSelector,
-    /*discardSelector*/]))
+    discardSelector]))
 
 const competitorContainer = Component((props: any) =>
   compose(
@@ -212,7 +220,7 @@ export default Component((props: Object) =>
     fold(props),
     connect(mapStateToProps, {
       selectCourse, selectRace, setRaceTime,
-      updateEventSettings, openTrackDetails }, null,
+      updateEventSettings, openTrackDetails, setDiscards }, null,
       { areStatePropsEqual: compose(
         apply(equals),
         unapply(map(dissocPath(['session', 'leaderboard'])))) }),
