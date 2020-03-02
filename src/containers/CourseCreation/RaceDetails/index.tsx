@@ -1,6 +1,6 @@
 import { __, always, append, compose, concat, defaultTo,
-  equals, ifElse, isEmpty, isNil, map, merge, not,
-  objOf, prop, reduce, uncurryN, unless, when } from 'ramda'
+  equals, cond, isEmpty, isNil, map, merge, not,
+  objOf, prop, reduce, uncurryN, unless, when, T } from 'ramda'
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, startTracking, updateEventSettings } from 'actions/events'
@@ -140,10 +140,10 @@ const raceAnalyticsButton = Component((props: any) =>
     fold(props),
     view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      onPress: ifElse(
-        always(props.isTracking),
-        () => props.openTrackDetails(props.item),
-        async () => {
+      onPress: cond([
+        [always(props.isTracking), () => props.openTrackDetails(props.item)],
+        [always(!props.canUpdateCurrentEvent), always(undefined)], // Do nothing if user can't close entry
+        [T, async () => {
           const startTracking = await new Promise(resolve =>
             Alert.alert('', I18n.t('text_entry_open_SAP_Analytics_button'),
               [
@@ -157,8 +157,8 @@ const raceAnalyticsButton = Component((props: any) =>
             await props.startTracking(props.session)
             props.openTrackDetails(props.item)
           }
-        }
-      )
+        }]
+      ])
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
 
@@ -170,11 +170,11 @@ const clockIcon = icon({
 })
 
 
-const touchableHighlightWithConfirmationAlert = ({ isTracking }: any) => fromClass(
+const touchableHighlightWithConfirmationAlert = ({ isTracking, canUpdateCurrentEvent }: any) => fromClass(
   TouchableHighlight
 ).contramap((props: any) => merge(props, {
   onPress: async (args: any) => {
-    if (!isTracking) {
+    if (!isTracking && canUpdateCurrentEvent) {
       const continueAnyways = await new Promise(resolve =>
         Alert.alert(
           '',
