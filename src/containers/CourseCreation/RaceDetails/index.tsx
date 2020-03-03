@@ -128,7 +128,7 @@ const defineLayoutButton = Component((props: any) =>
     concat(arrowRight),
     reduce(concat, nothing()))([
       text({ style: styles.defineCourseText },
-        !props.canUpdateCurrentEvent ? '--' :
+        !props.canUpdateCurrentEvent ? I18n.t('caption_course_not_defined'):
         props.item.courseDefined ? props.item.sequenceDisplay :
         I18n.t('caption_define_course'))
     ]))
@@ -231,7 +231,7 @@ const raceTimePicker = Component((props: any) => compose(
   concat(arrowRight),
   concat(clockIcon),
   text({ style: [styles.raceTimeText] }),
-  when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always('--')),
+  when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always(I18n.t('caption_time_not_set'))),
   unless(isNil, dateTimeShortHourText),
   getRaceStartTime)(
   props.item))
