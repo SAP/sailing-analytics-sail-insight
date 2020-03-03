@@ -47,11 +47,11 @@ class RegisterCredentials extends TextInputForm<Props> {
       onOptionsPressed: this.onOptionsPressed,
     })
     this.loggedInCheck()
-    this.listener = this.props.navigation.addListener('willFocus', this.loggedInCheck)
+    this.listener = this.props.navigation.addListener('focus', this.loggedInCheck)
   }
 
   public componentWillUnmount() {
-    this.listener.remove()
+    this.listener()
   }
 
   public onOptionsPressed = () => {

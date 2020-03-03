@@ -20,7 +20,7 @@ import { getDeviceId } from 'selectors/user'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getMarkConfigurationById } from 'selectors/course'
 import { BRANCH_APP_DOMAIN } from 'environment'
-import { NavigationEvents } from 'react-navigation'
+import { NavigationEvents } from '@react-navigation/compat'
 import I18n from 'i18n'
 
 const { width: viewportWidth } = Dimensions.get('window')
@@ -81,10 +81,10 @@ const useThisDeviceButton = Component(props => compose(
   toUpper)(
   I18n.t('caption_course_creator_use_this_device')))
 
-const NavigationBackHandler = Component(props => compose(
+const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: payload => !payload.state && props.fetchAndUpdateMarkConfigurationDeviceTracking()
+    onWillBlur: (payload: any) => (!payload || !payload.state) && props.fetchAndUpdateMarkConfigurationDeviceTracking()
   })),
   fromClass)(
   NavigationEvents))

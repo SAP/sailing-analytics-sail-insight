@@ -3,7 +3,7 @@ import { get } from 'lodash'
 
 export const getScreenParamsFromProps = (props: any) => get(
   props,
-  'navigation.state.params',
+  'route.params',
 )
 
 export const getCustomScreenParamData = (props: any) =>

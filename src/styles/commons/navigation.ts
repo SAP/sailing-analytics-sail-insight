@@ -3,13 +3,15 @@ import { Dimensions } from 'react-native'
 
 import { $defaultFontFamily, $titleFontSize } from 'styles/fonts'
 
+import EStyleSheet from 'react-native-extended-stylesheet'
+
 
 const screen = Dimensions.get('window')
 const headerTitleStyleProps = isPlatformAndroid ?
   { /* flexGrow: 1 */ } :
   { /* width: screen.width */ }
 
-export default {
+export default EStyleSheet.create({
   headerTitle: {
     color: '#fff', // quickfix to set dyn. title in teamdetails to white
     textAlign: 'center',
@@ -25,4 +27,4 @@ export default {
     ...headerTitleStyleProps,
     fontSize: '$regularLargeFontSize',
   },
-}
+})

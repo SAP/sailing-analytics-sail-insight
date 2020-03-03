@@ -65,6 +65,10 @@ export default EStyleSheets.create({
     borderRadius: 2
   },
 
+  raceLastItemContainer: {
+    marginBottom: 15,
+  },
+
   raceNameText: {
     ...withSecondaryBoldFont,
     color: 'black',
@@ -89,7 +93,7 @@ export default EStyleSheets.create({
 
   clockIconContainerStyle: {
     paddingTop: 2,
-    marginRight: 10
+    marginRight: 7
   },
 
   defineLayoutButtonContainer: {
