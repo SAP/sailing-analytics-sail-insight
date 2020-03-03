@@ -33,7 +33,7 @@ import SwitchSelector from 'react-native-switch-selector'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
-import { NavigationEvents } from 'react-navigation'
+import { NavigationEvents } from '@react-navigation/compat'
 import styles from './styles'
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue,
   $secondaryBackgroundColor, $primaryBackgroundColor } from 'styles/colors'
@@ -609,15 +609,15 @@ const WaypointsList = Component(props => {
       props.course.waypoints)
 })
 
-const LoadingIndicator = Component(props => compose(
+const LoadingIndicator = Component((props: any) => compose(
   fold(props),
   view({ style: styles.loadingContainer }))(
   text({ style: styles.loadingText }, I18n.t('caption_course_creator_loading'))))
 
-const NavigationBackHandler = Component(props => compose(
+const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: payload => !payload.state && props.navigateBackFromCourseCreation()
+    onDidBlur: (payload: any) => (!payload || !payload.state) && props.navigateBackFromCourseCreation()
   })),
   fromClass)(
   NavigationEvents))

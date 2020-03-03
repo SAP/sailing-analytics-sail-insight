@@ -24,11 +24,11 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
 
   public componentDidMount() {
     this.loggedInCheck()
-    this.listener = this.props.navigation.addListener('willFocus', this.loggedInCheck)
+    this.listener = this.props.navigation.addListener('focus', this.loggedInCheck)
   }
 
   public componentWillUnmount() {
-    this.listener.remove()
+    this.listener()
   }
 
   public render() {

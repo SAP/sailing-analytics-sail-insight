@@ -1,27 +1,23 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Dimensions, Platform } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
-import { Header, HeaderProps } from 'react-navigation'
+import { StackHeaderProps } from '@react-navigation/stack'
 
-import styles from './styles'
-
-
-class GradientNavigationBar extends React.Component<HeaderProps & {
+class GradientNavigationBar extends React.Component<StackHeaderProps & {
   transparent: boolean,
 } > {
   public render() {
-    const { transparent, ...remainingProps } = this.props
+    const { transparent } = this.props
     return (
       <View>
         <LinearGradient
           colors={transparent ? ['transparent', 'transparent'] : ['black', 'transparent']}
-          style={[StyleSheet.absoluteFill, { height: Header.HEIGHT + getStatusBarHeight(true) }]}
+          style={[StyleSheet.absoluteFill, 
+            { ...Platform.select({
+              android: {height: Dimensions.get('screen').height - Dimensions.get('window').height + getStatusBarHeight(true)}
+            })}]}
         >
-          <Header
-            {...remainingProps}
-            style={styles.header}
-          />
         </LinearGradient>
       </View>
     )

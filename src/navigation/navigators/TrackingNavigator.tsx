@@ -7,48 +7,51 @@ import * as commons from 'navigation/commons'
 import { navigateBack } from 'navigation/NavigationService'
 import * as Screens from 'navigation/Screens'
 import React from 'react'
-import { createStackNavigator, HeaderBackButton } from 'react-navigation'
+import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack'
 
-export default createStackNavigator(
-  {
-    [Screens.
-    WelcomeTracking]: {
-      screen: WelcomeTracking,
-      navigationOptions: {
-        header: null,
-      },
-    },
-    [Screens.Tracking]: {
-      screen: Tracking,
-      navigationOptions: {
-        gesturesEnabled: false,
-        title: I18n.t('title_tracking'),
-        headerLeft: null,
-      },
-    },
-    [Screens.SetWind]: {
-      screen: SetWind,
-      navigationOptions: {
-        title: I18n.t('title_set_wind'),
-      },
-    },
-    [Screens.Leaderboard]: {
-      screen: Leaderboard,
-      navigationOptions: {
-        title: I18n.t('title_leaderboard'),
-        headerLeft: () => (
-          <HeaderBackButton
-            tintColor="white"
-            title=""
-            onPress={navigateBack}
-          />
-        ),
-      },
-    },
-  },
-  {
-    initialRouteName: Screens.WelcomeTracking,
-    ...commons.stackNavigatorConfig,
-    defaultNavigationOptions: () => commons.headerNavigationOptions,
-  },
-)
+const Stack = createStackNavigator()
+
+export default function TrackingStack()
+{
+  return (
+    <Stack.Navigator
+      initialRouteName = {Screens.WelcomeTracking}
+      {...commons.stackNavigatorConfig}
+      screenOptions = {{...commons.headerNavigationOptions}}
+    >
+      <Stack.Screen
+        name = {Screens.WelcomeTracking}
+        component = {WelcomeTracking}
+        options = {{headerShown: false}}
+      />
+      <Stack.Screen
+        name = {Screens.Tracking}
+        component = {Tracking}
+        options = {{
+          gestureEnabled: false, 
+          title: I18n.t('title_tracking'),
+          headerLeft: () => null,
+        }}
+      />
+      <Stack.Screen
+        name = {Screens.SetWind}
+        component = {SetWind}
+        options = {{title: I18n.t('title_set_wind')}}
+      />
+      <Stack.Screen
+        name = {Screens.Leaderboard}
+        component = {Leaderboard}
+        options = {() => ({
+          title: I18n.t('title_leaderboard'),
+          headerLeft: () => (
+            <HeaderBackButton
+              tintColor="white"
+              labelVisible={false}
+              onPress={navigateBack}
+            />
+          ),
+        })}
+      />
+    </Stack.Navigator>
+  )
+}
