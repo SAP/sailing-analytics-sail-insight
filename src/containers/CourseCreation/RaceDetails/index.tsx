@@ -138,7 +138,7 @@ const raceAnalyticsButton = Component((props: any) =>
     fold(props),
     view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      disabled: !props.canUpdateCurrentEvent,
+      disabled: !props.canUpdateCurrentEvent && !props.isTracking,
       onPress: ifElse(
         always(props.isTracking),
         () => props.openTrackDetails(props.item),
