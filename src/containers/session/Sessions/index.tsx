@@ -16,6 +16,7 @@ import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
 
+import { SessionsContext } from 'navigation/NavigationContext'
 import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
@@ -35,12 +36,13 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   startTracking: StartTrackingAction,
   authBasedNewSession: () => void,
   selectEvent: any,
-  forTracking: boolean,
 } > {
 
-  constructor(props) {
-    super(props)
-    this.styles = createStyles(props.forTracking)
+  static contextType = SessionsContext
+
+  constructor(props, context) {
+    super(props, context)
+    this.styles = createStyles(this.context.forTracking)
   }
 
   public state = {
@@ -56,7 +58,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public renderItem = ({ item }: any) => {
-    if (!this.props.forTracking) {
+    if (!this.context.forTracking) {
       return (
         <SessionItem
           style={this.styles.cardsContainer}
@@ -76,7 +78,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public render() {
-    const { forTracking } = this.props
+    const { forTracking } = this.context
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
         <ScrollContentView style={this.styles.scrollContainer}>

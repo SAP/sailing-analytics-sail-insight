@@ -57,3 +57,4 @@ export const getServerUrl = (leaderboardName?: string) => (state: any) => {
 }
 
 export const isLoadingCheckIn = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingCheckIn
+export const isLoadingSplash = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingSplash

@@ -23,7 +23,7 @@ import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import styles from './styles'
 import { Switch, Platform } from 'react-native'
-import { NavigationEvents } from 'react-navigation'
+import { NavigationEvents } from '@react-navigation/compat'
 import { dd2ddm, ddm2dd } from 'helpers/utils'
 import { $Orange, $primaryBackgroundColor, $secondaryBackgroundColor } from 'styles/colors'
 
@@ -87,10 +87,10 @@ const Map = Component((props: any) => compose(
       }
     }))))
 
-const navigationBackHandler = Component(props => compose(
+const navigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: payload => !payload.state && props.updateMarkConfigurationLocation({
+    onWillBlur: (payload: any) => (!payload || !payload.state) && props.updateMarkConfigurationLocation({
       id: props.selectedMarkConfiguration,
       value: pick(['latitude', 'longitude'], props.region)
     })
