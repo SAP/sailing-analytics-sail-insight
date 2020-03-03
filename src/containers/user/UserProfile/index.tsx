@@ -4,7 +4,7 @@ import { Alert, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
-import { removeUserData, updateUser } from 'actions/auth'
+import { logout, updateUser } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
 import * as Screens from 'navigation/Screens'
@@ -32,7 +32,7 @@ import styles from './styles'
 interface Props {
   user: User,
   formFullName?: string,
-  removeUserData: () => void,
+  logout: () => void,
   fetchUserInfo: () => void,
   updateUser: (u: User) => void,
 }
@@ -125,7 +125,7 @@ class UserProfile extends TextInputForm<Props> {
           },
           { text: I18n.t('caption_ok'),
             onPress: () => {
-              this.props.removeUserData(),
+              this.props.logout(),
               navigateWithReset(Screens.Main, 0, { rootReset: true })
             },
           },
@@ -161,7 +161,7 @@ const mapStateToProps = (state: any) => {
 
 export default connect(
   mapStateToProps,
-  { removeUserData, fetchUserInfo, updateUser },
+  { logout, fetchUserInfo, updateUser },
 )(reduxForm<{}, Props>({
   form: userForm.USER_FORM_NAME,
   destroyOnUnmount: false,

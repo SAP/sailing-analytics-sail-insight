@@ -55,6 +55,7 @@ export default {
     error: require('./img/icons/icon-error.png'),
     mark: require('./img/icons/icon-mark.png'),
     competitor: require('./img/icons/icon-account-filled.png'),
+    clock: require('./img/new_icons/clock_icon.png'),
   },
   animations: {
     waveLoadingIndicator: require('./img/animations/wave_loading.json'),

@@ -9,7 +9,7 @@ import FilterSessions from 'containers/session/FilterSessions'
 import JoinRegatta from 'containers/session/JoinRegatta'
 import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
-import TrackingList from 'containers/tracking/TrackingList'
+import Sessions from 'containers/session/Sessions'
 import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import { navigateBack } from 'navigation/NavigationService'
@@ -47,7 +47,6 @@ export default function AppStack()
               />
               <Stack.Screen
                 name = {Screens.TrackingList}
-                component = {TrackingList}
                 options = {() => ({
                   ...commons.navHeaderTransparentProps,
                   title: '',
@@ -55,7 +54,9 @@ export default function AppStack()
                   headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} />,
                   headerLeft: () => null,
                 })}
-              />
+              >
+                {props => <Sessions {...props} forTracking={true} />}
+              </Stack.Screen>
               <Stack.Screen
                 name = {Screens.TrackingNavigator}
                 component = {TrackingNavigator}

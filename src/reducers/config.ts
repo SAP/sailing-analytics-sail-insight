@@ -51,6 +51,7 @@ export type CompetitorGapMap = Map<string, CompetitorGap>
 
 export interface LeaderboardTrackingState {
   competitorGaps: CompetitorGapMap
+  latestTrackedRace: any
 }
 
 export interface OnboardingState {

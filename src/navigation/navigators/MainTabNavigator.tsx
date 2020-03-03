@@ -93,9 +93,10 @@ function SessionsStack()
     >
       <Stack.Screen
         name = {Screens.Sessions}
-        component = {Sessions}
         options = {{headerShown: false}}
-      />
+      >
+        {props => <Sessions {...props} forTracking={false} />}
+      </Stack.Screen>
       <Stack.Screen
         name = {Screens.SessionDetail}
         component = {SessionDetail.fold}

@@ -130,7 +130,7 @@ const didConfigurationPropertyChangedAcrossCourses = curry((fromCourse, toCourse
   const from = getByConfigurationId(fromCourse)
   const to = getByConfigurationId(toCourse)
 
-  return !eqProps(property, from, to) && from.markPropertiesId === to.markPropertiesId
+  return isEmpty(from) || (!eqProps(property, from, to) && from.markPropertiesId === to.markPropertiesId)
 })
 
 const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) => compose(

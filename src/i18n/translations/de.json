@@ -313,6 +313,8 @@
   "caption_see_course": "Kurs ansehen",
   "caption_define_course": "Kurs erstellen",
   "caption_set_time": "Uhrzeit",
+  "caption_course_not_defined": "Noch kein Kurs",
+  "caption_time_not_set": "Noch keine Startzeit",
   "text_discard_after": "Streicher nach Rennen",
   "caption_discard_after_races": "Streicher nach Anzahl von Rennen",
   "caption_competitor": "Teilnehmer",
@@ -329,6 +331,8 @@
   "caption_define": "Definieren",
   "button_yes": "Ja",
   "button_no": "Nein",
+  "text_entry_open_SAP_Analytics_button": "Sie können die SAP Sailing Analytics erst nach dem Schließen der Teilnehmerliste anzeigen. Sind Sie bereit den Zugang zu schließen? Beachten Sie, dass keine Teilnehmer nachträglich hinzugefügt werden können.",
+  "text_entry_open_when_setting_time": "Die Startzeit kann erst festgelegt werden, wenn der Teilnehmerliste geschlossen wurde. Sind Sie bereit den Zugang zu schließen?Beachten Sie, dass keine Teilnehmer nachträglich hinzugefügt werden können.",
 
   "caption_basics": "Basis",
   "caption_event_creation_date": "Datum",

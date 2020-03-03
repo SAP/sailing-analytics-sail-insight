@@ -1,11 +1,14 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-
-import { $primaryActiveColor } from 'styles/colors'
+import { Dimensions } from 'react-native'
 import { sectionHeaderStyle } from 'containers/session/EventCreation/styles'
-import { white, withDefaultFont, withDefaultBoldFont } from 'styles/compositions/text'
+import { withDefaultFont, withDefaultBoldFont, withSecondaryBoldFont } from 'styles/compositions/text'
+import { $MediumBlue, $LightBlue } from 'styles/colors'
 
 export const lighterGray = '#C7C7C7'
 export const darkerGray = '#C5C5C5'
+
+export const arrowColor = $MediumBlue
+export const clockIconColor = $LightBlue
 
 export default EStyleSheets.create({
   mainContainer: {
@@ -22,12 +25,13 @@ export default EStyleSheets.create({
   },
   eventStatsContainer: {
     backgroundColor: 'white',
+    borderRadius: 2,
     paddingLeft: 10,
     paddingTop: 15,
     paddingBottom: 15,
     marginRight: 15,
-    marginBottom: 5,
-    marginLeft: 15
+    marginLeft: 15,
+    marginTop: 5
   },
   eventTitle: {
     ...withDefaultBoldFont,
@@ -47,54 +51,110 @@ export default EStyleSheets.create({
     borderWidth: 0,
   },
   racesListContainer: {
-    backgroundColor: '#4B7B90',
+    backgroundColor: '$MediumBlue',
     flex: 1
   },
   raceItemContainer: {
-    marginTop: 5,
+    marginTop: 15,
     marginRight: 15,
-    marginBottom: 5,
     marginLeft: 15,
-    height: 60,
-    flex: 1,
-    alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'column',
     backgroundColor: 'white',
+    paddingHorizontal: 15,
+    // paddingBottom: 15,
+    borderRadius: 2
   },
 
-  raceTimeContainer: {
-    paddingLeft: 5,
-    paddingRight: 5,
-    backgroundColor: '#123748',
-    height: 60,
-    width: 100,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  raceTimeContainerWithTime: {
-    backgroundColor: $primaryActiveColor,
-  },
-
-  raceTimeText: {
-    ...white,
-    ...withDefaultFont,
-  },
-
-  raceTimeTextSet: {
-    fontSize: 20,
+  raceLastItemContainer: {
+    marginBottom: 15,
   },
 
   raceNameText: {
-    ...withDefaultBoldFont,
+    ...withSecondaryBoldFont,
     color: 'black',
-    fontSize: 20
+    fontSize: 32
   },
 
-  raceDateAndTimeContainer: {
-    marginLeft: 5,
-    marginRight: 5,
-    flexShrink: 0,
-    flexGrow: 1
+  raceItemButtonContainer: {
+    marginLeft: 20,
+    flexDirection: 'column',
+    flex: 1
+  },
+
+  iconStyle: {
+    width: 20,
+    height: 20
+  },
+
+  arrowRightContainerStyle: {
+    paddingTop: 5,
+    marginRight: 5
+  },
+
+  clockIconContainerStyle: {
+    paddingTop: 2,
+    marginRight: 7
+  },
+
+  defineLayoutButtonContainer: {
+    borderTopWidth: 1,
+    borderTopColor: '$delimiterColor',
+    height: 60,
+    justifyContent: 'center',
+  },
+
+  raceTimeContainer: {
+    paddingRight: 5,
+    height: 60,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  sapAnalyticsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '$delimiterColor',
+    paddingBottom: 10,
+  },
+
+  sapAnalyticsButton: {
+    ...withSecondaryBoldFont,
+    borderWidth: 1,
+    borderRadius: 3,
+    paddingBottom: 5,
+    paddingTop: 7,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderColor: '$LightBlue',
+    color: '$LightBlue',
+    fontSize: 12,
+    letterSpacing: 0.8,
+  },
+
+  raceDetailsContainer: {
+    height: 120,
+    flexDirection: 'row'
+  },
+
+  raceTimeText: {
+    color: '$MediumBlue',
+    ...withDefaultBoldFont,
+    paddingBottom: 0,
+    fontSize: 20,
+  },
+
+  raceNameTimeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: Dimensions.get('window').width / 2 - 30,
+    paddingBottom: 0
+  },
+
+  defineCourseText: {
+    ...withDefaultBoldFont,
+    color: '$MediumBlue',
+    fontSize: 20
   }
 })
