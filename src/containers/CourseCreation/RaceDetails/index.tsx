@@ -128,8 +128,8 @@ const defineLayoutButton = Component((props: any) =>
     concat(arrowRight),
     reduce(concat, nothing()))([
       text({ style: styles.defineCourseText },
-        !props.canUpdateCurrentEvent ? I18n.t('caption_course_not_defined'):
         props.item.courseDefined ? props.item.sequenceDisplay :
+        !props.canUpdateCurrentEvent ? I18n.t('caption_course_not_defined'):
         I18n.t('caption_define_course'))
     ]))
 
