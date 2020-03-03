@@ -239,7 +239,11 @@ const raceTimePicker = Component((props: any) => compose(
 const raceItem = Component((props: object) =>
   compose(
     fold(props),
-    view({ style: styles.raceItemContainer }),
+    view({ style:
+      [styles.raceItemContainer,
+        ...(props.index == props.numberOfRaces - 1 ? [styles.raceLastItemContainer] : [])
+      ]
+    }),
     concat(__, nothingIfNoRaceTime(raceAnalyticsButton)),
     view({ style: styles.raceDetailsContainer }),
     concat(text({ style: styles.raceNameText }, defaultTo('', props.item.name))),
