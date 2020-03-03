@@ -313,6 +313,8 @@
   "caption_see_course": "Kurs ansehen",
   "caption_define_course": "Kurs erstellen",
   "caption_set_time": "Uhrzeit",
+  "caption_course_not_defined": "Noch kein Kurs",
+  "caption_time_not_set": "Noch keine Startzeit",
   "text_discard_after": "Streicher nach Rennen",
   "caption_discard_after_races": "Streicher nach Anzahl von Rennen",
   "caption_competitor": "Teilnehmer",

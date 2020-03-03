@@ -128,8 +128,8 @@ const defineLayoutButton = Component((props: any) =>
     concat(arrowRight),
     reduce(concat, nothing()))([
       text({ style: styles.defineCourseText },
-        !props.canUpdateCurrentEvent ? '--' :
         props.item.courseDefined ? props.item.sequenceDisplay :
+        !props.canUpdateCurrentEvent ? I18n.t('caption_course_not_defined'):
         I18n.t('caption_define_course'))
     ]))
 
@@ -161,12 +161,15 @@ const raceAnalyticsButton = Component((props: any) =>
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
 
-const clockIcon = icon({
-  source: Images.info.clock,
-  iconStyle: styles.clockIconStyle,
-  style: styles.clockIconContainerStyle,
-  iconTintColor: clockIconColor
-})
+const clockIcon = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.clockIconContainerStyle })
+  )(icon({
+    source: Images.info.clock,
+    iconStyle: styles.clockIconStyle,
+    iconTintColor: clockIconColor
+  }))
+)
 
 
 const touchableHighlightWithConfirmationAlert = ({ isTracking, canUpdateCurrentEvent }: any) => fromClass(
@@ -228,7 +231,7 @@ const raceTimePicker = Component((props: any) => compose(
   concat(arrowRight),
   concat(clockIcon),
   text({ style: [styles.raceTimeText] }),
-  when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always('--')),
+  when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always(I18n.t('caption_time_not_set'))),
   unless(isNil, dateTimeShortHourText),
   getRaceStartTime)(
   props.item))
