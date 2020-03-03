@@ -27,6 +27,7 @@ import {
   StartTrackingBody,
   StopTrackingBody,
   UpdateEventBody,
+  UpdateLeaderboardBody,
   WindBody,
   WindBodyData,
 } from 'api/endpoints/types'
@@ -81,6 +82,7 @@ const apiEndpoints = (serverUrl: string) => {
     competitors: getUrlV1('/competitors/{0}'),
     createEvent: getUrlV1('/events/createEvent'),
     updateEvent: getUrlV1('/events/{0}/update'),
+    updateLeaderboard: getUrlV1('/leaderboards/{0}/update'),
     putWind: getUrlV1('/wind/putWind'),
     raceLog: getRaceUrl('/racelog'),
     preferences: getUrlV1('/preferences/{0}'),
@@ -141,6 +143,7 @@ export interface DataApi {
   sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
   createEvent: (body: CreateEventBody) => Promise<CreateEventResponseData>
   updateEvent: (id: string, body: UpdateEventBody) => any
+  updateLeaderboard: (name: string, body: UpdateLeaderboardBody) => any
   addRaceColumns: (regattaName: string, data?: AddRaceColumnsBody) => Promise<AddRaceColumnResponseData[]>
   removeRaceColumn: (regattaName: string, raceColumnName: string) => any
   startTracking: (leaderboardName: string, data: StartTrackingBody) => any
@@ -283,6 +286,10 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         method: HttpMethods.PUT,
         bodyType: 'x-www-form-urlencoded',
       },
+    ),
+    updateLeaderboard: (name, body) => dataRequest(
+      endpoints.updateLeaderboard({ pathParams: [name] }),
+      { body, method: HttpMethods.POST },
     ),
     addRaceColumns: (regattaName, data) => dataRequest(
       endpoints.addRaceColumns({ urlParams: data, pathParams: [regattaName] }),
