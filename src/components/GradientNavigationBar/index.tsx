@@ -15,7 +15,7 @@ class GradientNavigationBar extends React.Component<StackHeaderProps & {
           colors={transparent ? ['transparent', 'transparent'] : ['black', 'transparent']}
           style={[StyleSheet.absoluteFill, 
             { ...Platform.select({
-              android: Dimensions.get('screen').height - Dimensions.get('window').height + getStatusBarHeight(true) 
+              android: {height: Dimensions.get('screen').height - Dimensions.get('window').height + getStatusBarHeight(true)}
             })}]}
         >
         </LinearGradient>

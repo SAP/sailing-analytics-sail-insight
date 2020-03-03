@@ -600,7 +600,7 @@ const WaypointsList = Component(props => {
             fill: '#fff',
             fontSize: 18,
             textAnchor,
-            ...styles.waypointText,
+            fontFamily: 'SFProDisplay-Bold',
             letterSpacing: '.016em'
           })))(
         props.waypointLabel(waypoint))

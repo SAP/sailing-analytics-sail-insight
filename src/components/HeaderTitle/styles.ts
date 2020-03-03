@@ -1,10 +1,6 @@
-import { Dimensions } from 'react-native'
-
-import { isPlatformAndroid } from 'environment'
 import EStyleSheets from 'react-native-extended-stylesheet'
 
-const screen = Dimensions.get('window')
-const headerTitleStyleProps = isPlatformAndroid ? { flexGrow: 1 } : { width: screen.width - 100}
+const headerTitleStyleProps = { flexGrow: 1 }
 
 export default EStyleSheets.create({
   container: {

@@ -42,10 +42,6 @@ export default EStyleSheets.create({
     elevation: 9,
   },
 
-  waypointText: {
-    ...withSecondaryBoldFont,
-  },
-
   sectionTitle: {
     ...withDefaultBoldFont,
     ...white,
