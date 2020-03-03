@@ -58,6 +58,7 @@ const MyColumnValue = ({
     <ColumnValue
       selectedColumn={selectedColumn}
       competitorData={competitorData}
+      myCompetitorData={competitorData}
       fontSize={fontSize}
       rankingMetric={rankingMetric}
     />
