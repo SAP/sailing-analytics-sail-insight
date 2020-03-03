@@ -1,4 +1,3 @@
-import { Platform, StatusBar } from 'react-native'
 import { StackNavigationOptions } from '@react-navigation/stack'
 
 import { $headerTintColor, $primaryBackgroundColor } from 'styles/colors'
@@ -10,7 +9,6 @@ export const headerNavigationOptions: StackNavigationOptions = {
   headerTintColor: $headerTintColor,
   headerStyle: {
     backgroundColor: $primaryBackgroundColor,
-    paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
   },
   headerTitleAlign: 'center',
 }
