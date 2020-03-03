@@ -65,6 +65,10 @@ export default EStyleSheets.create({
     borderRadius: 2
   },
 
+  raceLastItemContainer: {
+    marginBottom: 15,
+  },
+
   raceNameText: {
     ...withSecondaryBoldFont,
     color: 'black',
