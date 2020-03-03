@@ -161,12 +161,15 @@ const raceAnalyticsButton = Component((props: any) =>
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
 
-const clockIcon = icon({
-  source: Images.info.clock,
-  iconStyle: styles.clockIconStyle,
-  style: styles.clockIconContainerStyle,
-  iconTintColor: clockIconColor
-})
+const clockIcon = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.clockIconContainerStyle })
+  )(icon({
+    source: Images.info.clock,
+    iconStyle: styles.clockIconStyle,
+    iconTintColor: clockIconColor
+  }))
+)
 
 
 const touchableHighlightWithConfirmationAlert = ({ isTracking, canUpdateCurrentEvent }: any) => fromClass(
