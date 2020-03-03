@@ -21,6 +21,7 @@ import { Platform } from 'react-native'
 
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
 import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
+import { SessionsContext } from 'navigation/NavigationContext'
 
 const getTabBarIcon = (route: any, tintColor: any, focused: any) => {
   const { name = '' } = route
@@ -86,76 +87,77 @@ const Stack = createStackNavigator()
 function SessionsStack() 
 {
   return (
-    <Stack.Navigator
-      initialRouteName = {Screens.Sessions}
-      {...commons.stackNavigatorConfig}
-      screenOptions = {{...commons.headerNavigationOptions}}  
-    >
-      <Stack.Screen
-        name = {Screens.Sessions}
-        options = {{headerShown: false}}
+    <SessionsContext.Provider value ={{forTracking: false}}>
+      <Stack.Navigator
+        initialRouteName = {Screens.Sessions}
+        {...commons.stackNavigatorConfig}
+        screenOptions = {{...commons.headerNavigationOptions}}  
       >
-        {props => <Sessions {...props} forTracking={false} />}
-      </Stack.Screen>
-      <Stack.Screen
-        name = {Screens.SessionDetail}
-        component = {SessionDetail.fold}
-        options = {() => ({
-          title: I18n.t('title_event_details'),
-          headerLeft: () => (
-            <HeaderBackButton
-              tintColor="white"
-              labelVisible={false}
-              onPress={navigateBack}
-            />
-          ),
-          headerRight: () => ShareButton.fold({}),
-        })}
-      />
-      <Stack.Screen
-        name = {Screens.EventCreation}
-        component = {EventCreation.fold}
-        options = {() => ({
-          title: I18n.t('title_event_creation'),
-          headerLeft: () => (
-            <HeaderBackButton
-              tintColor="white"
-              labelVisible={false}
-              onPress={navigateBack}
-            />
-          ),
-        })}
-      />
-      <Stack.Screen
-        name = {Screens.SessionDetail4Organizer}
-        component = {SessionDetail4Organizer.fold}
-        options = {() => ({
-          title: I18n.t('title_event_details'),
-          headerLeft: () => (
-            <HeaderBackButton
-              tintColor="white"
-              labelVisible={false}
-              onPress={navigateBack}
-            />
-          ),
-          headerRight: () => ShareButton.fold({}),
-        })}
-      />
-      <Stack.Screen
-        name = {Screens.RaceDetails}
-        component = {RaceDetails.fold}
-        options = {() => ({
-          title: I18n.t('title_race_details'),
-          headerLeft: () => (
-            <HeaderBackButton
-              tintColor="white"
-              labelVisible={false}
-              onPress={navigateBack}
-            />
-          ),
-        })}
-      />
-    </Stack.Navigator>
+        <Stack.Screen
+          name = {Screens.Sessions}
+          component = {Sessions}
+          options = {{headerShown: false}}
+        />
+        <Stack.Screen
+          name = {Screens.SessionDetail}
+          component = {SessionDetail.fold}
+          options = {() => ({
+            title: I18n.t('title_event_details'),
+            headerLeft: () => (
+              <HeaderBackButton
+                tintColor="white"
+                labelVisible={false}
+                onPress={navigateBack}
+              />
+            ),
+            headerRight: () => ShareButton.fold({}),
+          })}
+        />
+        <Stack.Screen
+          name = {Screens.EventCreation}
+          component = {EventCreation.fold}
+          options = {() => ({
+            title: I18n.t('title_event_creation'),
+            headerLeft: () => (
+              <HeaderBackButton
+                tintColor="white"
+                labelVisible={false}
+                onPress={navigateBack}
+              />
+            ),
+          })}
+        />
+        <Stack.Screen
+          name = {Screens.SessionDetail4Organizer}
+          component = {SessionDetail4Organizer.fold}
+          options = {() => ({
+            title: I18n.t('title_event_details'),
+            headerLeft: () => (
+              <HeaderBackButton
+                tintColor="white"
+                labelVisible={false}
+                onPress={navigateBack}
+              />
+            ),
+            headerRight: () => ShareButton.fold({}),
+          })}
+        />
+        <Stack.Screen
+          name = {Screens.RaceDetails}
+          component = {RaceDetails.fold}
+          options = {() => ({
+            title: I18n.t('title_race_details'),
+            headerLeft: () => (
+              <HeaderBackButton
+                tintColor="white"
+                labelVisible={false}
+                onPress={navigateBack}
+              />
+            ),
+          })}
+        />
+      </Stack.Navigator>
+    </SessionsContext.Provider>
   )
 }
 
