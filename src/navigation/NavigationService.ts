@@ -68,17 +68,3 @@ export const navigateBack = (params?: any) => {
   }
   navigator.dispatch({...CommonActions.goBack(), source: params})
 }
-
-export const navigateWithReset = (route: string | string[] , index: number = 0, options?: {rootReset: boolean}) => {
-  if (!navigator) {
-    return
-  }
-
-  const routes: string[] = isString(route) ? [route] : route
-
-  navigator.dispatch(CommonActions.reset({
-    index: 1,
-    routes: routes.map(name => { return { name }}),
-    ...(options && options.rootReset ? { key: null } : {}),
-  }))
-}
