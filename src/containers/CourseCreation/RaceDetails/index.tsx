@@ -1,6 +1,8 @@
 import { __, always, append, compose, concat, defaultTo,
   equals, ifElse, isEmpty, isNil, map, merge, not, apply, unapply,
-  objOf, prop, reduce, uncurryN, unless, when, dissocPath, path, addIndex } from 'ramda'
+  objOf, prop, reduce, uncurryN, unless, when, dissocPath, path, addIndex,
+  gte
+} from 'ramda'
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
@@ -45,11 +47,29 @@ const getRaceStartTime = compose(
   prop('raceTime'))
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
-const nothingIfNoRaceTime = branch(compose(
-  isNil,
-  getRaceStartTime,
-  prop('item')),
-  nothingAsClass)
+
+const nothingIfMoreThan5MinutesBeforeStart = branch(compose(
+    gte(-5*60*1000), // 5 minutes before
+    (startTime: number) => Date.now() - startTime,
+    defaultTo(Infinity),
+    getRaceStartTime,
+    prop('item')
+  ),
+  nothingAsClass
+)
+const nothingIfCantUpdateAndNotTracking = branch(
+  (props: any) => !props.canUpdateCurrentEvent && !props.isTracking,
+  nothingAsClass
+)
+
+const nothingIfRaceTimeNotSet = branch(
+  compose(
+    isNil,
+    getRaceStartTime,
+    prop('item')
+  ),
+  nothingAsClass
+)
 
 const mapStateToProps = (state: any, props: any) => {
   const eventData = getSelectedEventInfo(state)
@@ -139,7 +159,6 @@ const raceAnalyticsButton = Component((props: any) =>
     fold(props),
     view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      disabled: !props.canUpdateCurrentEvent && !props.isTracking,
       onPress: ifElse(
         always(props.isTracking),
         () => props.openTrackDetails(props.item),
@@ -245,7 +264,13 @@ const raceItem = Component((props: object) =>
         ...(props.index == props.numberOfRaces - 1 ? [styles.raceLastItemContainer] : [])
       ]
     }),
-    concat(__, nothingIfNoRaceTime(raceAnalyticsButton)),
+    concat(__,
+      compose(
+        nothingIfRaceTimeNotSet,
+        nothingIfCantUpdateAndNotTracking,
+        nothingIfMoreThan5MinutesBeforeStart
+      )(raceAnalyticsButton)
+    ),
     view({ style: styles.raceDetailsContainer }),
     concat(text({ style: styles.raceNameText }, defaultTo('', props.item.name))),
     view({ style: styles.raceItemButtonContainer }),
