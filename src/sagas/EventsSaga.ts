@@ -4,7 +4,7 @@ import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
   OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
-  updateRaceTime, selectEvent, updateCreatingEvent } from 'actions/events'
+  SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent } from 'actions/events'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
 import { fetchPermissionsForEvent } from 'actions/permissions'
@@ -122,6 +122,21 @@ function* setRaceTime({ payload }: any) {
         race_column: previousRace,
         endoftrackingasmillis: moment(date).subtract(1, 'minutes').valueOf()
       })
+  }
+}
+
+function* setDiscards({ payload }: any) {
+  const { discards, session } = payload
+  const { leaderboardName, serverUrl } = session
+  const api = dataApi(serverUrl)
+
+  yield safeApiCall(api.updateLeaderboard, leaderboardName, {
+    resultDiscardingThresholds: discards
+  })
+
+  const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
+  if (leaderboardData) {
+    yield put(receiveEntities(leaderboardData))
   }
 }
 
@@ -254,6 +269,7 @@ export default function* watchEvents() {
     yield takeEvery(CREATE_EVENT, createEvent)
     yield takeEvery(ADD_RACE_COLUMNS, addRaceColumns)
     yield takeEvery(REMOVE_RACE_COLUMNS, removeRaceColumns)
+    yield takeEvery(SET_DISCARDS, setDiscards)
     yield takeLatest(OPEN_EVENT_LEADERBOARD, openEventLeaderboard)
     yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
     yield takeLatest(START_TRACKING, startTracking)
