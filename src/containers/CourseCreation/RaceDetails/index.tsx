@@ -1,7 +1,7 @@
 import { __, always, append, compose, concat, defaultTo,
   equals, ifElse, isEmpty, isNil, map, merge, not, apply, unapply,
   objOf, prop, reduce, uncurryN, unless, when, dissocPath, path, addIndex,
-  gte
+  gte, allPass
 } from 'ramda'
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import Images from '@assets/Images'
@@ -48,13 +48,20 @@ const getRaceStartTime = compose(
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 
-const nothingIfMoreThan5MinutesBeforeStart = branch(compose(
-    gte(-5*60*1000), // 5 minutes before
-    (startTime: number) => Date.now() - startTime,
-    defaultTo(Infinity),
-    getRaceStartTime,
-    prop('item')
-  ),
+const nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent = branch(
+  allPass([
+    compose(
+      gte(-10*60*1000), // 10 minutes before
+      (startTime: number) => Date.now() - startTime,
+      defaultTo(Infinity),
+      getRaceStartTime,
+      prop('item')
+    ),
+    compose(
+      not,
+      prop('canUpdateCurrentEvent')
+    )
+  ]),
   nothingAsClass
 )
 const nothingIfCantUpdateAndNotTracking = branch(
@@ -268,7 +275,7 @@ const raceItem = Component((props: object) =>
       compose(
         nothingIfRaceTimeNotSet,
         nothingIfCantUpdateAndNotTracking,
-        nothingIfMoreThan5MinutesBeforeStart
+        nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent
       )(raceAnalyticsButton)
     ),
     view({ style: styles.raceDetailsContainer }),
