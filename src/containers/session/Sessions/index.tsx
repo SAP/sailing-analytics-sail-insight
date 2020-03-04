@@ -17,7 +17,6 @@ import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
 
 import { SessionsContext } from 'navigation/NavigationContext'
-import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
@@ -51,10 +50,6 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 
   public componentDidMount() {
     this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
-  }
-
-  public renderHeader() {
-    return <EmptySessionsHeader/>
   }
 
   public renderItem = ({ item }: any) => {
@@ -100,7 +95,6 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           <FloatingComponentList
             style={this.styles.list}
             data={this.props.sessions}
-            ListHeaderComponent={this.renderHeader}
             renderItem={this.renderItem}
           />
         </ScrollContentView>

@@ -3,7 +3,7 @@ import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
-import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessionDetail, navigateToSessions } from 'navigation'
+import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
 

@@ -11,7 +11,7 @@ import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
 import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
-import { navigateToManeuver, navigateToTrackingNavigator } from 'navigation'
+import { navigateToManeuver, navigateToSessions } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -279,7 +279,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent(options.selectSessionAfter))
       } else {
-        navigateToTrackingNavigator()
+        navigateToSessions()
       }
     } catch (err) {
       Logger.debug(err)

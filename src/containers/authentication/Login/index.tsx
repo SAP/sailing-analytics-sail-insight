@@ -8,7 +8,7 @@ import { login } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import I18n from 'i18n'
-import { navigateToMainTabs, navigateToPasswordReset } from 'navigation'
+import { navigateToMain, navigateToPasswordReset } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import ScrollContentView from 'components/ScrollContentView'
@@ -57,7 +57,7 @@ class Login extends TextInputForm<{
       this.setState({ isLoading: true })
       await this.props.login(username, password)
       this.props.fetchUserInfo()
-      navigateToMainTabs()
+      navigateToMain()
     } catch (err) {
       this.setState({ error: I18n.t('error_login_incorrect') })
     } finally {
