@@ -17,7 +17,7 @@ import EventCreation from 'containers/session/EventCreation'
 import { $primaryTextColor, $secondaryTextColor } from 'styles/colors'
 import { tab } from 'styles/commons'
 import { navigateBack, getRootState } from 'navigation/NavigationService'
-import { Platform } from 'react-native'
+import { Platform, Text } from 'react-native'
 
 import AccountNavigator from 'navigation/navigators/AccountNavigator'
 import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
@@ -49,15 +49,25 @@ const getTabBarIcon = (route: any, tintColor: any, focused: any) => {
 
   return (
     <IconText
+      style={{marginTop: 6}}
       iconStyle={[tab.tabItemIcon, { tintColor: iconTintColor }]}
       textStyle={[tab.bottomTabItemText, { color: tintColor }, focusStyle]}
       source={icon}
       iconTintColor={iconTintColor}
       iconPosition="first"
       iconOnly={false}
-    >
-      {getTabItemTitleTranslation(name)}
-    </IconText>
+    />
+  )
+}
+
+const getTabBarLabel = (route: any, color: any, focused: any) => {
+  const { name = '' } = route
+
+  const tintColor = color
+  const focusStyle = focused ? { fontWeight: 'bold' } : undefined
+
+  return (
+    <Text style={[tab.bottomTabItemText, {color: tintColor, marginBottom: 3}, focusStyle ]}>{getTabItemTitleTranslation(name)}</Text>
   )
 }
 
@@ -173,15 +183,15 @@ export default function MainTabNavigator()
         activeTintColor: $primaryTextColor,
         inactiveTintColor: $secondaryTextColor,
         style: {
-          height: 56,
           backgroundColor: '#123748',
         },
-        showLabel: false,
+        showLabel: true,
         showIcon: true,
         keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,
       }}
       screenOptions = {({ route }) => ({
         tabBarIcon: ({ color, focused}) => getTabBarIcon(route, color, focused),
+        tabBarLabel: ({ color, focused }) => getTabBarLabel(route, color, focused),
       })}
     >
       <Tabs.Screen 
