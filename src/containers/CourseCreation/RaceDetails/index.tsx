@@ -251,7 +251,7 @@ const raceItem = Component((props: object) =>
     view({ style: styles.raceItemButtonContainer }),
     reduce(concat, nothing()))([
       raceTimePicker,
-      defineLayoutButton
+      nothingIfCannotUpdateCurrentEvent(defineLayoutButton)
      ]))
 
 const raceList = Component((props: object) => compose(
