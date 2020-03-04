@@ -134,7 +134,6 @@ export default EStyleSheets.create({
   },
 
   raceDetailsContainer: {
-    height: 120,
     flexDirection: 'row'
   },
 
