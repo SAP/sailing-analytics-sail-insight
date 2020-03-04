@@ -34,13 +34,10 @@ export default function AppStack()
       <AuthContext.Consumer>
         {({isLoading, isLoggedIn}) => (
           <Stack.Navigator
-            initialRouteName = {Screens.Main}
+            initialRouteName = {isLoggedIn ? Screens.Main : Screens.FirstContact}
             {...commons.stackNavigatorConfig}
             mode = 'modal'
-            screenOptions = {{...commons.headerNavigationOptions}}
-          >
-            {isLoggedIn === true ? (
-              <>
+            screenOptions = {{...commons.headerNavigationOptions}}>
                 <Stack.Screen
                   name = {Screens.Main}
                   component = {MainNavigator}
@@ -119,9 +116,6 @@ export default function AppStack()
                     headerLeft: () => null 
                   })}
                 />
-              </>
-            ) : (
-              <>
                 <Stack.Screen
                   name = {Screens.FirstContact}
                   component = {FirstContact}
@@ -143,17 +137,6 @@ export default function AppStack()
                     })}
                   />
                   <Stack.Screen
-                    name = {Screens.QRScanner}
-                    component = {QRScanner}
-                    options = {() => ({
-                      ...commons.navHeaderTransparentProps,
-                      title: '',
-                      headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-                      headerRight: () => <ModalBackButton type="icon" iconColor={$primaryButtonColor}/>,
-                      headerLeft: () => null,
-                    })}
-                  />
-                  <Stack.Screen
                     name = {Screens.PasswordReset}
                     component = {PasswordReset}
                     options = {() => ({
@@ -169,8 +152,6 @@ export default function AppStack()
                       ),
                     })}
                   />
-                </>
-            )}
           </Stack.Navigator>
         )}
       </AuthContext.Consumer>

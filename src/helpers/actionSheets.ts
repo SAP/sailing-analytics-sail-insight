@@ -16,24 +16,6 @@ export const settingsActionSheetOptions = [
   },
 ]
 
-export const settingsWithCheckoutActionSheetOptions = (onCheckout?: () => void) => [
-  {
-    options: [I18n.t('caption_checkout'), ...settingsOptionsItems],
-    cancelButtonIndex: 2,
-    destructiveButtonIndex: 0,
-  },
-  (buttonIndex: number) => {
-    switch (buttonIndex) {
-      case 0:
-        return onCheckout && onCheckout()
-      case 1:
-        return navigateToAppSettings()
-      default:
-        return
-    }
-  },
-]
-
 export const helpActionSheetOptions = () => [
   {
     options: [I18n.t('caption_need_help'), I18n.t('title_eula'), I18n.t('caption_cancel')],
