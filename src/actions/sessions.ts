@@ -123,7 +123,7 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   return timeOnTimeFactor
 }
 
-const allowReadAccessToCompetitorAndBoat = (competitorId: string, boatId: string) => {
+const allowReadAccessToCompetitorAndBoat = (serverUrl: string, competitorId: string, boatId: string) => {
   const acl = {
     displayName: 'Read all',
     acl: [
@@ -134,7 +134,7 @@ const allowReadAccessToCompetitorAndBoat = (competitorId: string, boatId: string
     ]
   }
 
-  const api = authApi()
+  const api = authApi(serverUrl)
 
   return Promise.all([
     api.putAcl('COMPETITOR', competitorId, acl),
@@ -214,11 +214,11 @@ export const createUserAttachmentToSession = (
 
     if (newCompetitorWithBoat) {
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
-      await allowReadAccessToCompetitorAndBoat(newCompetitorWithBoat.id, newCompetitorWithBoat.boat.id)
+      await allowReadAccessToCompetitorAndBoat(serverUrl, newCompetitorWithBoat.id, newCompetitorWithBoat.boat.id)
     } else if (boatId && competitorId){
       // Still update the ACL for boats that were created before the change that
       // changes ACLs when creating a new boat
-      await allowReadAccessToCompetitorAndBoat(competitorId, boatId)
+      await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
     }
 
     dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
