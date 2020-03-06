@@ -87,8 +87,11 @@ const onTabBarPress = (props: any = {}) => {
   // the tracking tab in main navigator
   if (navigationTracking.name === 'TrackingNavigator' &&
       navigationTabs.state.index === 0 && //focused
-      navigationTracking.state.index === 1) {
+      navigationTracking.state.index >= 1) {
     preventDefault()
+    if (navigationTracking.state.index > 1) {
+      navigateBack()
+    }
   }
 }
 

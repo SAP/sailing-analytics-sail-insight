@@ -33,11 +33,12 @@ import styles from './styles'
 
 import ScrollContentView from 'components/ScrollContentView';
 import Toast from 'react-native-root-toast'
+import { NavigationScreenProps } from 'react-navigation'
 
 const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
 
-class Tracking extends React.Component<{
+class Tracking extends React.Component<NavigationScreenProps & {
   stopTracking: StopTrackingAction,
   openLatestRaceTrackDetails: any,
   trackingStats: LocationStats,
@@ -173,7 +174,12 @@ class Tracking extends React.Component<{
   }
 
   protected handleBackButton = () => {
-    return true
+    if (this.props.navigation.isFocused()) {
+      return true
+    }
+    else {
+      return false
+    }
   }
 
   protected handleTimerEvent = () => {
