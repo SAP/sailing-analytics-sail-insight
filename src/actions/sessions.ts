@@ -168,7 +168,7 @@ export const createUserAttachmentToSession = (
 
     const serverUrl = getServerUrl(regattaName)(getState())
     const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
-    const boatId = get(userBoat, ['id', serverUrl])
+    let boatId = get(userBoat, ['id', serverUrl])
     let competitorId = get(userBoat, ['competitorId', serverUrl])
 
     let registrationSuccess = false
@@ -206,6 +206,7 @@ export const createUserAttachmentToSession = (
       })
 
       competitorId = newCompetitorWithBoat.id
+      boatId = newCompetitorWithBoat.boat.id
     }
 
     if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
@@ -214,10 +215,9 @@ export const createUserAttachmentToSession = (
 
     if (newCompetitorWithBoat) {
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
-      await allowReadAccessToCompetitorAndBoat(serverUrl, newCompetitorWithBoat.id, newCompetitorWithBoat.boat.id)
-    } else if (boatId && competitorId){
-      // Still update the ACL for boats that were created before the change that
-      // changes ACLs when creating a new boat
+    }
+
+    if (user && boatId && competitorId) {
       await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
     }
 
