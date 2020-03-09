@@ -106,7 +106,7 @@ class Leaderboard extends React.Component<{
         <View style={styles.container}>
           <View style={styles.propertyRow}>
             <View style={styles.leftPropertyContainer}>
-              <View style={[styles.textContainer]}>
+              <View style={[styles.textContainer, styles.topRowItemContainer]}>
                 <Text style={[styles.gapText]}>
                   {(rank && String(rank)) || EMPTY_VALUE}
                 </Text>
@@ -116,13 +116,15 @@ class Leaderboard extends React.Component<{
               </Text>
             </View>
             <View style={[styles.rightPropertyContainer]}>
-              <MyColumnValue
-                selectedColumn={selectedColumn}
-                competitorData={myCompetitorData}
-                comparedCompetitorData={comparedCompetitorData}
-                fontSize={topRowValueFontSize}
-                rankingMetric={rankingMetric}
-              />
+              <View style={[styles.textContainer, styles.topRowItemContainer]}>
+                <MyColumnValue
+                  selectedColumn={selectedColumn}
+                  competitorData={myCompetitorData}
+                  comparedCompetitorData={comparedCompetitorData}
+                  fontSize={topRowValueFontSize}
+                  rankingMetric={rankingMetric}
+                />
+              </View>
               <ModalDropdown
                 options={difference(Object.values(ColumnValueType), [
                   ColumnValueType.GapToCompetitor,

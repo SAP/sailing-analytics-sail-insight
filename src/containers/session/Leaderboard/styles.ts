@@ -103,6 +103,9 @@ export default EStyleSheets.create({
   itemTextContainer: {
     flex: 1,
   },
+  topRowItemContainer: {
+    height: 2 * topRowValueFontSize
+  },
   separator: {
     height: 2,
     backgroundColor: '$secondaryBackgroundColor',

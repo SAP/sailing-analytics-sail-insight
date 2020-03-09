@@ -50,6 +50,7 @@ const MyColumnValue = ({
         competitorData={modifiedCompetitorData}
         fontSize={fontSize}
         rankingMetric={rankingMetric}
+        halveGapIfOverOneHour={true}
       />
     )
   }
@@ -61,6 +62,7 @@ const MyColumnValue = ({
       myCompetitorData={competitorData}
       fontSize={fontSize}
       rankingMetric={rankingMetric}
+      halveGapIfOverOneHour={true}
     />
   )
 }
