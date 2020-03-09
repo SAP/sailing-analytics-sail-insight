@@ -28,8 +28,8 @@ export default EStyleSheets.create({
   },
   listItemContainer: {
     flex: 1,
-    marginTop: 7,
-    marginBottom: 7,
+    marginTop: 3,
+    marginBottom: 3,
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
     flexDirection: 'row',
@@ -137,7 +137,7 @@ export default EStyleSheets.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 10,
+    paddingBottom: 0,
     paddingLeft: 20,
   },
   leftPropertyContainer: {
