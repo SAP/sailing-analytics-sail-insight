@@ -2,7 +2,6 @@ import TextButton from 'components/TextButton'
 import I18n from 'i18n'
 import {
   navigateToLoginFromSplash,
-  navigateToMainTabs,
   navigateToQRScanner,
   navigateToUserRegistration,
 } from 'navigation'
@@ -19,18 +18,6 @@ interface Props {
   isLoggedIn: boolean,
 }
 class FirstContact extends React.Component<ViewProps & NavigationScreenProps & Props> {
-
-  private listener: any
-
-  public componentDidMount() {
-    this.loggedInCheck()
-    this.listener = this.props.navigation.addListener('willFocus', this.loggedInCheck)
-  }
-
-  public componentWillUnmount() {
-    this.listener.remove()
-  }
-
   public render() {
     return (
         <ImageBackground source={Images.defaults.map2} style={{ width: '100%', height: '100%' }}>
@@ -63,11 +50,6 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
       </ImageBackground>
     )
   }
-
-  private loggedInCheck = () => {
-    this.props.isLoggedIn && navigateToMainTabs()
-  }
-
 }
 
 const mapStateToProps = (state: any) => ({

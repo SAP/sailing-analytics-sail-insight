@@ -315,6 +315,8 @@
   "caption_see_course": "See Course",
   "caption_define_course": "Define Course",
   "caption_set_time": "Set Time",
+  "caption_course_not_defined": "No course yet",
+  "caption_time_not_set": "No start time yet",
   "text_discard_after": "Discard after Races",
   "caption_discard_after_races": "Discard after race numbers",
   "caption_competitor": "Competitors",

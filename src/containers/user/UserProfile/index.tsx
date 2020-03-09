@@ -7,7 +7,6 @@ import { Field, reduxForm } from 'redux-form'
 import { logout, updateUser } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
-import * as Screens from 'navigation/Screens'
 import { validateRequired } from 'forms/validators'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
@@ -24,7 +23,6 @@ import { getFormFieldValue } from 'selectors/form'
 import { container } from 'styles/commons'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
-import { navigateWithReset } from 'navigation/NavigationService'
 import Logger from '../../../helpers/Logger'
 import styles from './styles'
 
@@ -125,8 +123,7 @@ class UserProfile extends TextInputForm<Props> {
           },
           { text: I18n.t('caption_ok'),
             onPress: () => {
-              this.props.logout(),
-              navigateWithReset(Screens.Main, 0, { rootReset: true })
+              this.props.logout()
             },
           },
         ],

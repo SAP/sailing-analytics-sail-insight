@@ -1,15 +1,13 @@
-import { Dimensions } from 'react-native'
-
-import { isPlatformAndroid } from 'environment'
 import EStyleSheets from 'react-native-extended-stylesheet'
 
-const screen = Dimensions.get('window')
-const headerTitleStyleProps = isPlatformAndroid ? { flexGrow: 1 } : { width: screen.width }
+const headerTitleStyleProps = { flexGrow: 1 }
 
 export default EStyleSheets.create({
   container: {
     alignItems: 'center',
+    justifyContent: 'center',
     textAlign: 'center',
+    textAlignVertical: 'center',
     alignSelf: 'center',
     paddingRight: '$mediumSpacing',
     paddingLeft: '$mediumSpacing',

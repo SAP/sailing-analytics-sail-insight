@@ -313,6 +313,8 @@ PODS:
     - React
   - react-native-netinfo (4.7.0):
     - React
+  - react-native-safe-area-context (0.7.3):
+    - React
   - react-native-slider (2.0.8):
     - React
   - react-native-version-number (0.3.6):
@@ -364,6 +366,8 @@ PODS:
     - React
   - RNCAsyncStorage (1.7.1):
     - React
+  - RNCMaskedView (0.1.6):
+    - React
   - RNDeviceInfo (5.4.3):
     - React
   - RNFastImage (7.0.0):
@@ -401,6 +405,8 @@ PODS:
   - RNLocalize (1.3.3):
     - React
   - RNPermissions (2.0.9):
+    - React
+  - RNScreens (2.0.0-beta.13):
     - React
   - RNSnackbar (2.2.0):
     - React
@@ -448,6 +454,7 @@ DEPENDENCIES:
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-version-number (from `../node_modules/react-native-version-number`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -466,6 +473,7 @@ DEPENDENCIES:
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation-android`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
@@ -477,6 +485,7 @@ DEPENDENCIES:
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
+  - RNScreens (from `../node_modules/react-native-screens`)
   - RNSnackbar (from `../node_modules/react-native-snackbar`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -566,6 +575,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-safe-area-context:
+    :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
   react-native-version-number:
@@ -600,6 +611,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-geolocation-android"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNCMaskedView:
+    :path: "../node_modules/@react-native-community/masked-view"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
@@ -622,6 +635,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-localize"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
+  RNScreens:
+    :path: "../node_modules/react-native-screens"
   RNSnackbar:
     :path: "../node_modules/react-native-snackbar"
   RNSVG:
@@ -678,6 +693,7 @@ SPEC CHECKSUMS:
   react-native-keep-awake: ff10b454b539786007df59fce87abbb7cd4634e3
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
+  react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-slider: 3a1cfd00c9c31068251b536822f7192e8d1d6b6f
   react-native-version-number: b415bbec6a13f2df62bf978e85bc0d699462f37f
   react-native-webview: e32e5ced4c99d7240362690a65e3467d7ef535ef
@@ -695,6 +711,7 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 8d8d66b47eafcb9e772b2eb95057939038b3ef95
   RNBackgroundGeolocation: 0235e5a01e4706afc749dc21da875739f0ee0d09
   RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
+  RNCMaskedView: a88953beefbd347a29072d9eba90e42945fe291e
   RNDeviceInfo: 9b5790f85eb03e12de682a97618031a215c7f386
   RNFastImage: 4e3cd0485ffce7304537e3efc05f99cdc9808107
   RNFBAnalytics: 32a5b76f42a6f250063d3cfdd6fe731702e16c7f
@@ -706,6 +723,7 @@ SPEC CHECKSUMS:
   RNImageCropPicker: cf129d17e042ce3e96fb9ada967c28f21f977c82
   RNLocalize: a734b53c45e77acd3ffb78b92e63bb4d6cd13257
   RNPermissions: 2f74237e97b08beda01e914301e12524ddddf5b8
+  RNScreens: ba539a5086136eb356e43699cb588a80369763ca
   RNSnackbar: 160077964866262ed08cfd33ab4760219ea2aef6
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a

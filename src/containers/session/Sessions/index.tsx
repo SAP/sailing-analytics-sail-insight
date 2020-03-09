@@ -16,7 +16,7 @@ import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
 
-import EmptySessionsHeader from 'components/EmptySessionsHeader'
+import { SessionsContext } from 'navigation/NavigationContext'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
@@ -35,12 +35,13 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   startTracking: StartTrackingAction,
   authBasedNewSession: () => void,
   selectEvent: any,
-  forTracking: boolean,
 } > {
 
-  constructor(props) {
-    super(props)
-    this.styles = createStyles(props.forTracking)
+  static contextType = SessionsContext
+
+  constructor(props, context) {
+    super(props, context)
+    this.styles = createStyles(this.context.forTracking)
   }
 
   public state = {
@@ -51,12 +52,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
   }
 
-  public renderHeader() {
-    return <EmptySessionsHeader/>
-  }
-
   public renderItem = ({ item }: any) => {
-    if (!this.props.forTracking) {
+    if (!this.context.forTracking) {
       return (
         <SessionItem
           style={this.styles.cardsContainer}
@@ -76,7 +73,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public render() {
-    const { forTracking } = this.props
+    const { forTracking } = this.context
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
         <ScrollContentView style={this.styles.scrollContainer}>
@@ -98,7 +95,6 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           <FloatingComponentList
             style={this.styles.list}
             data={this.props.sessions}
-            ListHeaderComponent={this.renderHeader}
             renderItem={this.renderItem}
           />
         </ScrollContentView>

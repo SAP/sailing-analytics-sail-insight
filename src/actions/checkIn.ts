@@ -3,7 +3,7 @@ import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
-import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessionDetail, navigateToSessions } from 'navigation'
+import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
 
@@ -30,6 +30,7 @@ import { saveTeam } from './user'
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 export const updateLoadingCheckInFlag = createAction('UPDATE_LOADING_CHECK_IN_FLAG')
+export const updateLoadingSplashFlag = createAction('UPDATE_LOADING_SPLASH_FLAG')
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(
   async (dataApi, dispatch) => {

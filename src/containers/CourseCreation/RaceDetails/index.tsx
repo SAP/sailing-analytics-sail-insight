@@ -1,10 +1,12 @@
 import { __, always, append, compose, concat, defaultTo,
   equals, ifElse, isEmpty, isNil, map, merge, not, apply, unapply,
-  objOf, prop, reduce, uncurryN, unless, when, dissocPath } from 'ramda'
+  objOf, prop, reduce, uncurryN, unless, when, dissocPath, path, addIndex,
+  gte, allPass
+} from 'ramda'
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
-import { selectRace, setRaceTime, startTracking, updateEventSettings } from 'actions/events'
+import { selectRace, setRaceTime, startTracking, setDiscards, updateEventSettings } from 'actions/events'
 import { openTrackDetails } from 'actions/navigation'
 import {
   Component,
@@ -45,11 +47,36 @@ const getRaceStartTime = compose(
   prop('raceTime'))
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
-const nothingIfNoRaceTime = branch(compose(
-  isNil,
-  getRaceStartTime,
-  prop('item')),
-  nothingAsClass)
+
+const nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent = branch(
+  allPass([
+    compose(
+      gte(-10*60*1000), // 10 minutes before
+      (startTime: number) => Date.now() - startTime,
+      defaultTo(Infinity),
+      getRaceStartTime,
+      prop('item')
+    ),
+    compose(
+      not,
+      prop('canUpdateCurrentEvent')
+    )
+  ]),
+  nothingAsClass
+)
+const nothingIfCantUpdateAndNotTracking = branch(
+  (props: any) => !props.canUpdateCurrentEvent && !props.isTracking,
+  nothingAsClass
+)
+
+const nothingIfRaceTimeNotSet = branch(
+  compose(
+    isNil,
+    getRaceStartTime,
+    prop('item')
+  ),
+  nothingAsClass
+)
 
 const mapStateToProps = (state: any, props: any) => {
   const eventData = getSelectedEventInfo(state)
@@ -88,6 +115,7 @@ const mapStateToProps = (state: any, props: any) => {
     isTracking: isCurrentLeaderboardTracking(state),
     canUpdateCurrentEvent: canUpdateCurrentEvent(state),
     numberOfRaces: races.length,
+    discards: path(['leaderboard', 'discardIndexResultsStartingWithHowManyRaces'])(session),
     races,
   }
 }
@@ -128,8 +156,8 @@ const defineLayoutButton = Component((props: any) =>
     concat(arrowRight),
     reduce(concat, nothing()))([
       text({ style: styles.defineCourseText },
-        !props.canUpdateCurrentEvent ? '--' :
         props.item.courseDefined ? props.item.sequenceDisplay :
+        !props.canUpdateCurrentEvent ? I18n.t('caption_course_not_defined'):
         I18n.t('caption_define_course'))
     ]))
 
@@ -138,7 +166,6 @@ const raceAnalyticsButton = Component((props: any) =>
     fold(props),
     view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      disabled: !props.canUpdateCurrentEvent,
       onPress: ifElse(
         always(props.isTracking),
         () => props.openTrackDetails(props.item),
@@ -161,12 +188,15 @@ const raceAnalyticsButton = Component((props: any) =>
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
 
-const clockIcon = icon({
-  source: Images.info.clock,
-  iconStyle: styles.clockIconStyle,
-  style: styles.clockIconContainerStyle,
-  iconTintColor: clockIconColor
-})
+const clockIcon = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.clockIconContainerStyle })
+  )(icon({
+    source: Images.info.clock,
+    iconStyle: styles.clockIconStyle,
+    iconTintColor: clockIconColor
+  }))
+)
 
 
 const touchableHighlightWithConfirmationAlert = ({ isTracking, canUpdateCurrentEvent }: any) => fromClass(
@@ -228,7 +258,7 @@ const raceTimePicker = Component((props: any) => compose(
   concat(arrowRight),
   concat(clockIcon),
   text({ style: [styles.raceTimeText] }),
-  when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always('--')),
+  when(isNil, props.canUpdateCurrentEvent ? always(I18n.t('caption_set_time')) : always(I18n.t('caption_time_not_set'))),
   unless(isNil, dateTimeShortHourText),
   getRaceStartTime)(
   props.item))
@@ -236,14 +266,24 @@ const raceTimePicker = Component((props: any) => compose(
 const raceItem = Component((props: object) =>
   compose(
     fold(props),
-    view({ style: styles.raceItemContainer }),
-    concat(__, nothingIfNoRaceTime(raceAnalyticsButton)),
+    view({ style:
+      [styles.raceItemContainer,
+        ...(props.index == props.numberOfRaces - 1 ? [styles.raceLastItemContainer] : [])
+      ]
+    }),
+    concat(__,
+      compose(
+        nothingIfRaceTimeNotSet,
+        nothingIfCantUpdateAndNotTracking,
+        nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent
+      )(raceAnalyticsButton)
+    ),
     view({ style: styles.raceDetailsContainer }),
     concat(text({ style: styles.raceNameText }, defaultTo('', props.item.name))),
     view({ style: styles.raceItemButtonContainer }),
     reduce(concat, nothing()))([
       raceTimePicker,
-      defineLayoutButton
+      nothingIfCannotUpdateCurrentEvent(defineLayoutButton)
      ]))
 
 const raceList = Component((props: object) => compose(
@@ -255,16 +295,23 @@ const raceList = Component((props: object) => compose(
       renderItem: raceItem.fold
     }, props))))
 
+const mapIndexed = addIndex(map)
+
 const withDiscardDataFromEvent = mapProps(props => compose(
   merge(props),
   objOf('data'),
-  append({ type: 'add' }))([]))
+  append({ type: 'add' }),
+  mapIndexed((value, index) => ({ value, index })),
+  prop('discards')
+)(props))
 
-const discardSelector = compose(
+const discardSelector = Component((props:any) => compose(
+  fold(props),
   withDiscardDataFromEvent,
-  withUpdatingDiscardItem(() => {}),
-  withAddDiscard(() => {}))(
-  DiscardSelector)
+  withUpdatingDiscardItem((discards) => props.setDiscards({discards, session: props.session })),
+  withAddDiscard((discards) => props.setDiscards({discards, session: props.session })))
+  (DiscardSelector)
+)
 
 const organizerContainer = Component((props: Object) =>
   compose(
@@ -273,7 +320,7 @@ const organizerContainer = Component((props: Object) =>
     reduce(concat, nothing()))
   ([
     raceNumberSelector,
-    /*discardSelector*/]))
+    discardSelector]))
 
 const competitorContainer = Component((props: any) =>
   compose(
@@ -290,7 +337,7 @@ export default Component((props: Object) =>
     fold(props),
     connect(mapStateToProps, {
       selectCourse, selectRace, setRaceTime, startTracking,
-      updateEventSettings, openTrackDetails }, null,
+      updateEventSettings, openTrackDetails, setDiscards }, null,
       { areStatePropsEqual: compose(
         apply(equals),
         unapply(map(dissocPath(['session', 'leaderboard'])))) }),

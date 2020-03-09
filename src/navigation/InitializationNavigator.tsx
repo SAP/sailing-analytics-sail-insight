@@ -1,22 +1,19 @@
 import React from 'react'
-import { View } from 'react-native'
-import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import { connect } from 'react-redux'
 
 import { initializeApp } from 'actions/appLoading'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { isLoadingCheckIn } from 'selectors/checkIn'
-
-import { container } from 'styles/commons'
+import { isLoadingSplash } from 'selectors/checkIn'
 
 import * as NavigationService from './NavigationService'
 import SplashNavigator from './navigators/SplashNavigator'
-
+import { NavigationContainer } from '@react-navigation/native'
+import { AuthContext } from './NavigationContext'
 
 class InitializationNavigator extends React.Component<{
   initializeApp: () => void,
   isLoggedIn: boolean,
-  showLoadingOverlay: boolean,
+  showSplash: boolean,
 } > {
 
   public initializeAppFlow = () => this.props.initializeApp()
@@ -28,25 +25,21 @@ class InitializationNavigator extends React.Component<{
   }
 
   public render() {
-    const { isLoggedIn, showLoadingOverlay } = this.props
+    const { isLoggedIn, showSplash } = this.props
     return (
-      <View style={container.main}>
-        <SpinnerOverlay
-          visible={showLoadingOverlay}
-          cancelable={false}
-        />
-        <SplashNavigator
-          screenProps={{ isLoggedIn }}
-          ref={this.handleNavigatorRef}
-        />
-      </View>
+      <AuthContext.Provider value = {{isLoading: showSplash, isLoggedIn}}>
+        <NavigationContainer ref={this.handleNavigatorRef}>
+          <SplashNavigator
+          />
+        </NavigationContainer>
+      </AuthContext.Provider>
     )
   }
 }
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
-  showLoadingOverlay: isLoadingCheckIn(state),
+  showSplash: isLoadingSplash(state),
 })
 
 export default connect(mapStateToProps, { initializeApp })(InitializationNavigator)

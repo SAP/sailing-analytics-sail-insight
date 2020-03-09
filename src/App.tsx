@@ -10,6 +10,7 @@ import { getPersistor, getStore } from 'store'
 import { initStyles, recalculateStyles } from 'styles'
 
 import AppRoot from './AppRoot'
+import { enableScreens } from 'react-native-screens'
 
 
 declare var module: any
@@ -18,6 +19,8 @@ declare var module: any
 initStyles()
 const store = getStore()
 const persistor = getPersistor()
+
+enableScreens()
 
 // enable hot module replacement for reducers
 if (module.hot) {
