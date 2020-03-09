@@ -1,7 +1,7 @@
 import { map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
-  __, head, last, includes, flatten, reject, filter, both } from 'ramda'
+  __, head, last, includes, flatten, reject, filter, both, path, propOr } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe } from './index'
@@ -20,7 +20,7 @@ import {
   assignMarkOrMarkPropertiesToMarkConfiguration,
   changeWaypointMarkConfigurationToNew,
   changeWaypointToNewLine,
-  updateMarkConfigurationDeviceTracking
+  changeMarkConfigurationDeviceTracking
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
 import { loadMarkProperties } from 'sagas/InventorySaga'
@@ -300,19 +300,41 @@ function* navigateBackFromCourseCreation() {
   }
 }
 
+function* navigateBackFromTrackerBinding() {
+  const raceId = getRaceId(regattaName, race)
+  const course = yield select(getCourseById(raceId))
+}
+
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {
   const selectedMarkConfiguration = yield select(getSelectedMarkConfiguration)
   const markConfiguration = yield select(getMarkConfigurationById(selectedMarkConfiguration))
-  const { serverUrl, leaderboardName, secret } = yield select(getSelectedEventInfo)
+
+  if (isNil(markConfiguration.markId)) {
+    return
+  }
+
+  const { serverUrl, regattaName, raceColumnName } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
+  const latestCourseState = yield safe(call(api.requestCourse, regattaName, raceColumnName, 'Default'))
 
-  const { result: markState } = yield safe(call(api.requestMark, leaderboardName, markConfiguration.markId, secret))
+  if (!latestCourseState) {
+    return
+  }
 
-  if (markState) {
-    yield call(updateMarkConfigurationDeviceTracking, {
+  const trackingDevice = compose(
+    path(['trackingDevices', '0']),
+    defaultTo({}),
+    find(propEq('markId', markConfiguration.markId)),
+    propOr([], 'markConfigurations'),
+    defaultTo({}),
+    prop('result')
+  )(latestCourseState)
+
+  if (trackingDevice) {
+    yield put(changeMarkConfigurationDeviceTracking({
+      trackingDevice,
       id: selectedMarkConfiguration,
-      deviceId: markState.location && markState.location.deviceUUID
-    })
+    }))
   }
 }
 

@@ -27,6 +27,7 @@ import {
   changeWaypointToNewMark,
   changeWaypointToNewLine,
   changeWaypointMarkConfigurationToNew,
+  changeMarkConfigurationDeviceTracking,
   assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration
 } from 'actions/courses'
@@ -124,6 +125,12 @@ const markConfigurations = handleActions({
           id: action.payload.deviceId,
           type: 'smartphoneUUID',
           stringRepresentation: action.payload.deviceId }}))),
+    state),
+  [changeMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), compose(
+      mergeLeft({
+        trackingDevices: [action.payload.trackingDevice],
+      }))),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
