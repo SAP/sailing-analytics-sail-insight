@@ -1,7 +1,7 @@
 import { map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
-  find, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
-  __, head, last, includes, flatten, reject, filter, both, path, propOr } from 'ramda'
+  find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
+  __, head, last, includes, flatten, reject, filter, both } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe } from './index'
@@ -313,26 +313,26 @@ function* fetchAndUpdateMarkConfigurationDeviceTracking() {
     return
   }
 
-  const { serverUrl, regattaName, raceColumnName } = yield select(getSelectedRaceInfo)
+  const { serverUrl, regattaName } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
-  const latestCourseState = yield safe(call(api.requestCourse, regattaName, raceColumnName, 'Default'))
+  const allTrackingDevices = yield safe(call(api.requestTrackingDevices, regattaName))
 
-  if (!latestCourseState) {
+  if (!allTrackingDevices || isEmpty(allTrackingDevices.result)) {
     return
   }
 
-  const trackingDevice = compose(
-    path(['trackingDevices', '0']),
+  const trackingDevices = compose(
+    prop('deviceStatuses'),
     defaultTo({}),
-    find(propEq('markId', markConfiguration.markId)),
-    propOr([], 'markConfigurations'),
-    defaultTo({}),
+    findLast(propEq('markId', markConfiguration.markId)),
+    defaultTo([]),
+    prop('marks'),
     prop('result')
-  )(latestCourseState)
+  )(allTrackingDevices)
 
-  if (trackingDevice) {
+  if (trackingDevices) {
     yield put(changeMarkConfigurationDeviceTracking({
-      trackingDevice,
+      trackingDevices,
       id: selectedMarkConfiguration,
     }))
   }

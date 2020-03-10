@@ -1,12 +1,13 @@
 import { merge, defaultTo, prop, compose, insert, reject, tap,
   propEq, head, map, when, mergeLeft, mergeDeepLeft, always, ifElse,
   append, concat, pick, dissoc, evolve, equals, isNil, find, has,
-  apply, take, move, last, includes, __, path } from 'ramda'
+  apply, applySpec, take, move, last, includes, __, path } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
 import I18n from 'i18n'
 import { getHashedDeviceId } from 'selectors/user'
+import { toHashedString } from 'helpers/utils'
 
 import {
   loadCourse,
@@ -129,7 +130,12 @@ const markConfigurations = handleActions({
   [changeMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
       mergeLeft({
-        trackingDevices: [action.payload.trackingDevice],
+        trackingDevices: map(applySpec({
+          trackingDeviceType: path(['deviceId', 'type']),
+          trackingDeviceHash: compose(toHashedString, path(['deviceId', 'id'])),
+          trackingDeviceMappedFromMillis: prop('mappedFrom'),
+          trackingDeviceLastKnownPosition: prop('lastGPSFix'),
+        }))(action.payload.trackingDevices),
       }))),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
