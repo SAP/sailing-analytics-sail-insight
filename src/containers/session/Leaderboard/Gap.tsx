@@ -15,12 +15,13 @@ interface Props {
   gain?: boolean
   fontColor?: string
   fontSize?: number
-  halveGapIfOverOneHour?: boolean
+  fontMultiplierIfOverOneHour?: number
 }
 
-const Gap = ({ gap, gain, fontSize, fontColor, rankingMetric, halveGapIfOverOneHour = false }: Props) => {
+const Gap = ({ gap, gain, fontSize, fontColor, rankingMetric, fontMultiplierIfOverOneHour = 1 }: Props) => {
   let gapText
   let adjustedFontSize = fontSize
+  let adjustedTriangleFontSize = fontSize - 10
 
   if (gap === undefined) {
     gapText = EMPTY_VALUE
@@ -28,20 +29,23 @@ const Gap = ({ gap, gain, fontSize, fontColor, rankingMetric, halveGapIfOverOneH
     const negative = gap < 0
     const negativeText = negative ? '-' : ''
 
-    const formattedTime = moment.duration(Math.abs(gap), 'seconds').format('DD:HH:mm:ss')
+    const cappedGap = Math.min(Math.abs(gap), 100 * 24 * 60 * 60 - 1) // The cap is 100 days
+
+    const formattedTime = moment.duration(cappedGap, 'seconds').format('DD:HH:mm:ss')
     gapText = `${negativeText}${formattedTime}`
-    if (halveGapIfOverOneHour && Math.abs(gap) >= 3600) {
-      adjustedFontSize = Math.floor(fontSize / 2)
+    if (cappedGap >= 3600) {
+      adjustedFontSize = Math.floor(fontSize * fontMultiplierIfOverOneHour)
+      adjustedTriangleFontSize = Math.floor(adjustedTriangleFontSize * fontMultiplierIfOverOneHour)
     }
   } else {
     gapText = `${Math.ceil(gap)}m`
   }
 
   const fontColorOverride = fontColor === undefined ? {} : { color: fontColor }
-  const triangleFontSizeOverride = fontSize === undefined ? {} : { fontSize: fontSize - 10 }
 
   const fontSizeOverride = fontSize === undefined ? {} : { fontSize: adjustedFontSize }
-  const emptySpaceOverride = fontSize === undefined ? {} : { width: adjustedFontSize }
+  const triangleFontSizeOverride = fontSize === undefined ? {} : { fontSize: adjustedTriangleFontSize }
+  const emptySpaceOverride = fontSize === undefined ? {} : { width: fontSize }
 
   return (
     <View style={[styles.textContainer]}>
