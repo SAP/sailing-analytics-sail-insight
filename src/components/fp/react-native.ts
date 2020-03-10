@@ -8,17 +8,6 @@ import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
 import { G, Path, Svg, Text as rnSvgText } from 'react-native-svg'
 import { Component, contramap, fold, fromClass, nothing } from './component'
 
-const buildComponentWithChildren = curry((Comp, settings, c) =>
-  Component((props: Object) =>
-    compose(
-      fold(props),
-      fromClass(Comp).contramap,
-      always,
-      merge(settings),
-      objOf('children'),
-      when(has('fold'), fold(props))
-    )(c)))
-
 export const view = buildComponentWithChildren(View)
 export const scrollView = buildComponentWithChildren(ScrollView)
 export const keyboardAvoidingView = buildComponentWithChildren(KeyboardAvoidingView)

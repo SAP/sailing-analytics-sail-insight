@@ -1,28 +1,65 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
-import React, { Component } from 'react'
+import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
 
 import 'store/init'
 
+import SplashScreen from 'containers/SplashScreen'
+import * as Screens from 'navigation/Screens'
 import Logger from 'helpers/Logger'
 import * as DeepLinking from 'integrations/DeepLinking'
-import InitializationNavigator from 'navigation/InitializationNavigator'
 import * as LocationService from 'services/LocationService'
-
+import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 import * as GpsFixService from './services/GPSFixService'
-
+import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+import { isLoadingSplash } from 'selectors/checkIn'
+import { NavigationContainer } from '@react-navigation/native'
+import { AuthContext } from 'navigation/NavigationContext'
+import { screen, stackNavigator } from 'components/fp/navigation'
+import { Component, fold, nothing } from 'components/fp/component'
+import { compose, reduce, concat } from 'ramda'
 
 interface Props {
+  initializeApp: () => void,
   performDeepLink: any
   updateTrackingStatus: any
   handleLocation: any
   initLocationUpdates: any
+  isLoggedIn: any
+  showSplash: any
 }
 
-class AppRoot extends Component<Props> {
+//const Stack = createStackNavigator()
+// const AppNavigator = props =>
+//   <AuthContext.Consumer>
+//   {({isLoading}) => (
+//   <Stack.Navigator initialRouteName = {Screens.Splash}>
+//     {isLoading === true ? (
+//     <Stack.Screen
+//       name = {Screens.Splash}
+//       component = {SplashScreen}
+//       options = {{headerShown: false}}
+//     />) : (
+//     <Stack.Screen
+//       name = {Screens.App}
+//       component = {AppNavigator}
+//       options = {{headerShown: false}}
+//     />)}
+//   </Stack.Navigator>)}
+//   </AuthContext.Consumer>
+
+const AppNavigator = Component(props => compose(
+  fold(props),
+  stackNavigator({ initialRootName: Screens.Splash }),
+  reduce(concat, nothing()))([
+  screen({ name: Screens.Splash, component: SplashScreen }),
+  //screen({ name: Screens.App, component: AppNavigator })
+]))
+
+class AppRoot extends ReactComponent<Props> {
   public deepLinkSubscriber: any
 
   public componentDidMount() {
@@ -32,6 +69,7 @@ class AppRoot extends Component<Props> {
     LocationService.addLocationListener(this.handleGeolocation)
     LocationService.registerEvents()
     this.props.initLocationUpdates()
+    this.props.initializeApp()
   }
 
   public componentWillUnmount() {
@@ -44,9 +82,14 @@ class AppRoot extends Component<Props> {
   }
 
   public render() {
+    const { isLoggedIn, showSplash } = this.props
     return (
       <ActionSheetProvider>
-        <InitializationNavigator />
+        <AuthContext.Provider value = {{isLoading: showSplash, isLoggedIn}}>
+          <NavigationContainer>
+            { AppNavigator.fold(this.props) }
+          </NavigationContainer>
+        </AuthContext.Provider>
       </ActionSheetProvider>
     )
   }
@@ -86,9 +129,15 @@ class AppRoot extends Component<Props> {
   }
 }
 
-export default connect(null, {
+const mapStateToProps = (state: any) => ({
+  isLoggedIn: isLoggedInSelector(state),
+  showSplash: isLoadingSplash(state),
+})
+
+export default connect(mapStateToProps, {
   performDeepLink,
   updateTrackingStatus,
   handleLocation,
   initLocationUpdates,
+  initializeApp
 })(AppRoot)
