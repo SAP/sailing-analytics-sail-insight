@@ -158,7 +158,7 @@ class Leaderboard extends React.Component<{
           </View>
         </View>
         <View style={[styles.listContainer]}>
-          <FlatList data={leaderboard} renderItem={this.renderItem} />
+          <FlatList data={leaderboard} contentContainerStyle={[styles.listContentContainer]} renderItem={this.renderItem} />
         </View>
       </View>
     )

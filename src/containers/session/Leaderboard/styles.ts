@@ -119,6 +119,10 @@ export default EStyleSheets.create({
     backgroundColor: 'white',
   },
   listContainer: {
+    flex: 1,
+    marginVertical: 5
+  },
+  listContentContainer: {
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
     marginTop: 15,
