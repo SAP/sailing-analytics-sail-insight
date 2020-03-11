@@ -21,7 +21,6 @@ interface Props {
 const Gap = ({ gap, gain, fontSize, fontColor, rankingMetric, fontMultiplierIfOverOneHour = 1 }: Props) => {
   let gapText
   let adjustedFontSize = fontSize
-  let adjustedTriangleFontSize = fontSize - 10
 
   if (gap === undefined) {
     gapText = EMPTY_VALUE
@@ -35,7 +34,6 @@ const Gap = ({ gap, gain, fontSize, fontColor, rankingMetric, fontMultiplierIfOv
     gapText = `${negativeText}${formattedTime}`
     if (cappedGap >= 3600) {
       adjustedFontSize = Math.floor(fontSize * fontMultiplierIfOverOneHour)
-      adjustedTriangleFontSize = Math.floor(adjustedTriangleFontSize * fontMultiplierIfOverOneHour)
     }
   } else {
     gapText = `${Math.ceil(gap)}m`
@@ -43,9 +41,10 @@ const Gap = ({ gap, gain, fontSize, fontColor, rankingMetric, fontMultiplierIfOv
 
   const fontColorOverride = fontColor === undefined ? {} : { color: fontColor }
 
+  const triangleFontSize = Math.floor(fontSize * 0.4)
   const fontSizeOverride = fontSize === undefined ? {} : { fontSize: adjustedFontSize }
-  const triangleFontSizeOverride = fontSize === undefined ? {} : { fontSize: adjustedTriangleFontSize }
-  const emptySpaceOverride = fontSize === undefined ? {} : { width: fontSize }
+  const triangleFontSizeOverride = fontSize === undefined ? {} : { fontSize: triangleFontSize }
+  const emptySpaceOverride = fontSize === undefined ? {} : { width: triangleFontSize }
 
   return (
     <View style={[styles.textContainer]}>

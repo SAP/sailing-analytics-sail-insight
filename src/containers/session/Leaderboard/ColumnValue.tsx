@@ -58,12 +58,25 @@ const ColumnValue = ({
       ? gapToLeader - myGapToLeader
       : gapToLeader
 
+    const isMyCompetitorAndGapToMyBoat =
+      selectedColumn === ColumnValueType.GapToMyBoat &&
+      myCompetitorData &&
+      competitorData &&
+      myCompetitorData.id === competitorData.id
+
+    const myGapFontColor =
+      isMyCompetitorAndGapToMyBoat &&
+      !isNil(gap) &&
+      '#A5A5A5'
+
+    const adjustedGain = isMyCompetitorAndGapToMyBoat ? undefined : gain
+
     return (
       <Gap
         gap={gap}
-        gain={gain}
+        gain={adjustedGain}
         fontSize={fontSize}
-        fontColor={fontColor}
+        fontColor={myGapFontColor || fontColor}
         rankingMetric={rankingMetric}
         fontMultiplierIfOverOneHour={fontMultiplierIfOverOneHour}
       />

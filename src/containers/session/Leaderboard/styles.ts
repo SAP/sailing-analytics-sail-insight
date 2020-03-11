@@ -31,7 +31,7 @@ export default EStyleSheets.create({
     marginTop: 3,
     marginBottom: 3,
     marginLeft: '$smallSpacing',
-    marginRight: '$smallSpacing',
+    marginRight: '$tinySpacing',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
