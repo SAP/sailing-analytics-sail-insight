@@ -1,11 +1,15 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
+import { compose, reduce, concat, mergeDeepLeft } from 'ramda'
 
 import 'store/init'
 
+import GradientNavigationBar from 'components/GradientNavigationBar'
+import ModalBackButton from 'components/ModalBackButton'
 import SplashScreen from 'containers/SplashScreen'
 import * as Screens from 'navigation/Screens'
+import * as commons from 'navigation/commons'
 import Logger from 'helpers/Logger'
 import * as DeepLinking from 'integrations/DeepLinking'
 import * as LocationService from 'services/LocationService'
@@ -20,9 +24,10 @@ import { NavigationContainer } from '@react-navigation/native'
 import { AuthContext } from 'navigation/NavigationContext'
 import { screen, stackNavigator } from 'components/fp/navigation'
 import { Component, fold, nothing } from 'components/fp/component'
-import { compose, reduce, concat } from 'ramda'
 import MainNavigator from 'navigation/navigators/MainNavigator'
 import FirstContact from 'containers/user/FirstContact'
+import Sessions from 'containers/session/Sessions'
+import { $headerTintColor, $primaryButtonColor } from 'styles/colors'
 
 interface Props {
   initializeApp: () => void,
@@ -34,20 +39,27 @@ interface Props {
   showSplash: any
 }
 
-const withoutHeader = {options: { headerShown: false }}
+const withoutHeader = mergeDeepLeft({ options: { headerShown: false } })
+const withTransparentHeader = mergeDeepLeft({ options: { ...commons.navHeaderTransparentProps } })
+const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
+const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
+const withoutHeaderLeft = mergeDeepLeft({ options: { headerLeft: () => null } })
 
 const getInitialRouteName = props =>
   props.isLoadingSplash ? Screens.Splash :
-  props.isLoggedIn ? Screens.Main :
+  props.isLoggedIn ? Screens.TrackingList :
   Screens.FirstContact
 
 const AppNavigator = Component(props => compose(
   fold(props),
   stackNavigator({ initialRouteName: getInitialRouteName(props) }),
   reduce(concat, nothing()))([
-  screen({ name: Screens.Splash, component: SplashScreen, ...withoutHeader }),
-  screen({ name: Screens.FirstContact, component: FirstContact, ...withoutHeader }),
-  screen({ name: Screens.Main, component: MainNavigator, ...withoutHeader })
+  screen(withoutHeader({ name: Screens.Splash, component: SplashScreen })),
+  screen(withoutHeader({ name: Screens.FirstContact, component: FirstContact })),
+  screen(withoutHeader({ name: Screens.Main, component: MainNavigator })),
+  screen(compose(withTransparentHeader, withGradientHeaderBackground,
+    withRightModalBackButton, withoutHeaderLeft)(
+    { name: Screens.TrackingList, component: Sessions }))
 ]))
 
 class AppRoot extends ReactComponent<Props> {
