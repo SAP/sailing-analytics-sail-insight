@@ -67,7 +67,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     secret,
     eventName:                  eventData.name,
     venuename:                  eventData.location,
-    ispublic:                   true,
+    ispublic:                   false,
     competitorRegistrationType: 'OPEN_UNMODERATED',
     createleaderboardgroup:     true,
     createregatta:              true,
