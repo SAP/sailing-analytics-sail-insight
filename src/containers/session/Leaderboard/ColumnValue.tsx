@@ -15,6 +15,7 @@ export interface Props {
   myCompetitorData?: LeaderboardCompetitorCurrentTrack
   fontSize?: number
   rankingMetric?: string
+  halveGapIfOverOneHour?: boolean
 }
 
 const getGapValueByRankingMetric = (
@@ -35,10 +36,12 @@ const ColumnValue = ({
   myCompetitorData,
   fontSize,
   rankingMetric = 'ONE_DESIGN',
+  halveGapIfOverOneHour = false,
 }: Props) => {
   if (
     selectedColumn === ColumnValueType.GapToLeader ||
-    selectedColumn === ColumnValueType.GapToCompetitor
+    selectedColumn === ColumnValueType.GapToCompetitor ||
+    selectedColumn === ColumnValueType.GapToMyBoat
   ) {
     const { gain } = competitorData
     const gapToLeader = getGapValueByRankingMetric(competitorData, rankingMetric)
@@ -46,18 +49,23 @@ const ColumnValue = ({
     const fontColor = cond([
       [always(isNil(myGapToLeader)), always(undefined)],
       [isNil, always(undefined)],
-      [lt(myGapToLeader), always(RED)],
-      [gt(myGapToLeader), always(GREEN)],
+      [lt(myGapToLeader), always(GREEN)],
+      [gt(myGapToLeader), always(RED)],
       [T, always(undefined)]
     ])(gapToLeader)
 
+    const gap = selectedColumn === ColumnValueType.GapToMyBoat && !isNil(myGapToLeader) && !isNil(gapToLeader)
+      ? gapToLeader - myGapToLeader
+      : gapToLeader
+
     return (
       <Gap
-        gap={gapToLeader}
+        gap={gap}
         gain={gain}
         fontSize={fontSize}
         fontColor={fontColor}
         rankingMetric={rankingMetric}
+        halveGapIfOverOneHour={halveGapIfOverOneHour}
       />
     )
   }

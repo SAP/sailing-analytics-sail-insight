@@ -123,7 +123,7 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   return timeOnTimeFactor
 }
 
-const allowReadAccessToCompetitorAndBoat = (competitorId: string, boatId: string) => {
+const allowReadAccessToCompetitorAndBoat = (serverUrl: string, competitorId: string, boatId: string) => {
   const acl = {
     displayName: 'Read all',
     acl: [
@@ -134,7 +134,7 @@ const allowReadAccessToCompetitorAndBoat = (competitorId: string, boatId: string
     ]
   }
 
-  const api = authApi()
+  const api = authApi(serverUrl)
 
   return Promise.all([
     api.putAcl('COMPETITOR', competitorId, acl),
@@ -168,7 +168,7 @@ export const createUserAttachmentToSession = (
 
     const serverUrl = getServerUrl(regattaName)(getState())
     const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
-    const boatId = get(userBoat, ['id', serverUrl])
+    let boatId = get(userBoat, ['id', serverUrl])
     let competitorId = get(userBoat, ['competitorId', serverUrl])
 
     let registrationSuccess = false
@@ -206,6 +206,7 @@ export const createUserAttachmentToSession = (
       })
 
       competitorId = newCompetitorWithBoat.id
+      boatId = newCompetitorWithBoat.boat.id
     }
 
     if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
@@ -214,11 +215,10 @@ export const createUserAttachmentToSession = (
 
     if (newCompetitorWithBoat) {
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
-      await allowReadAccessToCompetitorAndBoat(newCompetitorWithBoat.id, newCompetitorWithBoat.boat.id)
-    } else if (boatId && competitorId){
-      // Still update the ACL for boats that were created before the change that
-      // changes ACLs when creating a new boat
-      await allowReadAccessToCompetitorAndBoat(competitorId, boatId)
+    }
+
+    if (user && boatId && competitorId) {
+      await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
     }
 
     dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
