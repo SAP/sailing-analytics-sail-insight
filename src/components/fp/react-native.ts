@@ -6,7 +6,7 @@ import { useState as reactUseState } from 'react'
 import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
   TouchableHighlight, TouchableOpacity, View } from 'react-native'
 import { G, Path, Svg, Text as rnSvgText } from 'react-native-svg'
-import { Component, contramap, fold, fromClass, nothing } from './component'
+import { Component, contramap, fold, fromClass, nothing, buildComponentWithChildren } from './component'
 
 export const view = buildComponentWithChildren(View)
 export const scrollView = buildComponentWithChildren(ScrollView)

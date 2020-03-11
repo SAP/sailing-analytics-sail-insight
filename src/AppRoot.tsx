@@ -21,6 +21,8 @@ import { AuthContext } from 'navigation/NavigationContext'
 import { screen, stackNavigator } from 'components/fp/navigation'
 import { Component, fold, nothing } from 'components/fp/component'
 import { compose, reduce, concat } from 'ramda'
+import MainNavigator from 'navigation/navigators/MainNavigator'
+import FirstContact from 'containers/user/FirstContact'
 
 interface Props {
   initializeApp: () => void,
@@ -32,31 +34,20 @@ interface Props {
   showSplash: any
 }
 
-//const Stack = createStackNavigator()
-// const AppNavigator = props =>
-//   <AuthContext.Consumer>
-//   {({isLoading}) => (
-//   <Stack.Navigator initialRouteName = {Screens.Splash}>
-//     {isLoading === true ? (
-//     <Stack.Screen
-//       name = {Screens.Splash}
-//       component = {SplashScreen}
-//       options = {{headerShown: false}}
-//     />) : (
-//     <Stack.Screen
-//       name = {Screens.App}
-//       component = {AppNavigator}
-//       options = {{headerShown: false}}
-//     />)}
-//   </Stack.Navigator>)}
-//   </AuthContext.Consumer>
+const withoutHeader = {options: { headerShown: false }}
+
+const getInitialRouteName = props =>
+  props.isLoadingSplash ? Screens.Splash :
+  props.isLoggedIn ? Screens.Main :
+  Screens.FirstContact
 
 const AppNavigator = Component(props => compose(
   fold(props),
-  stackNavigator({ initialRootName: Screens.Splash }),
+  stackNavigator({ initialRouteName: getInitialRouteName(props) }),
   reduce(concat, nothing()))([
-  screen({ name: Screens.Splash, component: SplashScreen }),
-  //screen({ name: Screens.App, component: AppNavigator })
+  screen({ name: Screens.Splash, component: SplashScreen, ...withoutHeader }),
+  screen({ name: Screens.FirstContact, component: FirstContact, ...withoutHeader }),
+  screen({ name: Screens.Main, component: MainNavigator, ...withoutHeader })
 ]))
 
 class AppRoot extends ReactComponent<Props> {
@@ -131,7 +122,7 @@ class AppRoot extends ReactComponent<Props> {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
-  showSplash: isLoadingSplash(state),
+  isLoadingSplash: isLoadingSplash(state),
 })
 
 export default connect(mapStateToProps, {
