@@ -47,16 +47,6 @@ const MyColumnValue = ({
     }
   }
 
-  if (selectedColumn === ColumnValueType.GapToMyBoat) {
-    adjustedCompetitorData = {
-      ...competitorData,
-      trackedColumnData: {
-        ...competitorData.trackedColumnData,
-        [rankingMetric === 'ONE_DESIGN' ? 'gapToLeaderInM' : 'gapToLeaderInS']: undefined,
-      },
-    }
-  }
-
   return (
     <ColumnValue
       selectedColumn={selectedColumn}
@@ -64,7 +54,7 @@ const MyColumnValue = ({
       myCompetitorData={competitorData}
       fontSize={fontSize}
       rankingMetric={rankingMetric}
-      fontMultiplierIfOverOneHour={0.5}
+      fontSizeMultiplier={0.5}
     />
   )
 }
