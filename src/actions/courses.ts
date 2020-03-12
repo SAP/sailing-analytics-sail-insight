@@ -24,7 +24,7 @@ export const updateWaypointPassingInstruction = createAction('UPDATE_WAYPOINT_PA
 export const updateMarkConfigurationName = createAction('UPDATE_MARK_NAME')
 export const updateMarkConfigurationShortName = createAction('UPDATE_MARK_SHORT_NAME')
 export const updateMarkConfigurationLocation = createAction('UPDATE_MARK_LOCATION')
-export const updateMarkConfigurationDeviceTracking = createAction('UPDATE_MARK_DEVICE_TRACKING')
+export const updateMarkConfigurationWithCurrentDeviceAsTracker = createAction('UPDATE_MARK_WITH_CURRENT_DEVICE_AS_TRACKER')
 
 export const changeWaypointToNewMark = createAction('CHANGE_WAYPOINT_TO_NEW_MARK')
 export const changeWaypointToNewLine = createAction('CHANGE_WAYPOINT_TO_NEW_LINE')

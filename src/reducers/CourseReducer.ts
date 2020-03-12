@@ -24,7 +24,7 @@ import {
   updateWaypointPassingInstruction,
   updateMarkConfigurationShortName,
   updateMarkConfigurationLocation,
-  updateMarkConfigurationDeviceTracking,
+  updateMarkConfigurationWithCurrentDeviceAsTracker,
   changeWaypointToNewMark,
   changeWaypointToNewLine,
   changeWaypointMarkConfigurationToNew,
@@ -41,7 +41,7 @@ const updateWaypointMarkConfiguration = (state: any, action: any) => {
     take(2),
     move(-1, 0))(
     state)
-  
+
   const startFinishIds = [head(state).id, last(state).id]
   const isStartOrFinish = includes(action.payload.id, startFinishIds)
   const idsToUpdate = isStartOrFinish && sameStartFinish ? startFinishIds : [action.payload.id]
@@ -77,7 +77,7 @@ const waypoints = handleActions({
         id: action.payload.id,
         passingInstruction: action.payload.passingInstruction || PassingInstruction.Port,
         markConfigurationIds: action.payload.markConfigurationIds
-      })), state), 
+      })), state),
   [changeWaypointToNewLine as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id),
       always({
@@ -113,7 +113,7 @@ const markConfigurations = handleActions({
           latitude_deg: action.payload.value.latitude,
           longitude_deg: action.payload.value.longitude } }))),
     state),
-  [updateMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
+  [updateMarkConfigurationWithCurrentDeviceAsTracker as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
       dissoc('lastKnownPosition'),
       mergeLeft({
