@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { isLoggedIn } from 'selectors/auth'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
+import { QRScanner } from 'navigation/Screens'
 import styles from './styles'
 
 interface Props {
@@ -34,7 +35,7 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
             <TextButton
               style={[container.largeHorizontalMargin, styles.bigButtonTransparent]}
               textStyle={styles.bigButtonText}
-              onPress={navigateToQRScanner}>
+              onPress={() => this.props.navigation.navigate(QRScanner)}>
               {I18n.t('caption_qr_scanner').toUpperCase()}
             </TextButton>
             { !this.props.isLoggedIn && <Text onPress={navigateToLoginFromSplash} style={styles.loginText}>

@@ -27,6 +27,7 @@ import { Component, fold, nothing } from 'components/fp/component'
 import MainNavigator from 'navigation/navigators/MainNavigator'
 import FirstContact from 'containers/user/FirstContact'
 import Sessions from 'containers/session/Sessions'
+import QRScanner from 'containers/session/QRScanner'
 import { $headerTintColor, $primaryButtonColor } from 'styles/colors'
 
 interface Props {
@@ -40,6 +41,7 @@ interface Props {
 }
 
 const withoutHeader = mergeDeepLeft({ options: { headerShown: false } })
+const withoutTitle = mergeDeepLeft({ options: { title: '' }})
 const withTransparentHeader = mergeDeepLeft({ options: { ...commons.navHeaderTransparentProps } })
 const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
 const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
@@ -58,8 +60,11 @@ const AppNavigator = Component(props => compose(
   screen(withoutHeader({ name: Screens.FirstContact, component: FirstContact })),
   screen(withoutHeader({ name: Screens.Main, component: MainNavigator })),
   screen(compose(withTransparentHeader, withGradientHeaderBackground,
-    withRightModalBackButton, withoutHeaderLeft)(
-    { name: Screens.TrackingList, component: Sessions }))
+    withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
+    { name: Screens.TrackingList, component: Sessions })),
+  screen(compose(withTransparentHeader, withGradientHeaderBackground,
+    withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
+    { name: Screens.QRScanner, component: QRScanner })),
 ]))
 
 class AppRoot extends ReactComponent<Props> {
