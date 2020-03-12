@@ -300,11 +300,6 @@ function* navigateBackFromCourseCreation() {
   }
 }
 
-function* navigateBackFromTrackerBinding() {
-  const raceId = getRaceId(regattaName, race)
-  const course = yield select(getCourseById(raceId))
-}
-
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {
   const selectedMarkConfiguration = yield select(getSelectedMarkConfiguration)
   const markConfiguration = yield select(getMarkConfigurationById(selectedMarkConfiguration))
