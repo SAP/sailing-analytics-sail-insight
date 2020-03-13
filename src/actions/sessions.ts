@@ -6,12 +6,12 @@ import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
 import { ManeuverChangeItem } from 'api/endpoints/types'
 import { competitorSchema } from 'api/schemas'
-
+import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
 import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
-import { navigateToManeuver, navigateToSessions } from 'navigation'
+import { navigateToManeuver } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -264,7 +264,7 @@ export const createSessionCreationQueue: CreateSessionCreationQueueAction = (ses
     ],
   )
 
-export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any) =>
+export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {
     if (!data) {
       throw new CheckInException('data is missing')
@@ -279,7 +279,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent(options.selectSessionAfter))
       } else {
-        navigateToSessions()
+        navigation.navigate(Screens.Main, { screen: Screens.SessionsNavigator })
       }
     } catch (err) {
       Logger.debug(err)

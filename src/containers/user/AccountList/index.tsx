@@ -1,16 +1,10 @@
 import React, { ReactNode } from 'react'
 import { FlatList, Text, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
-
-import { authBasedUserProfile } from 'actions/auth'
+import * as Screens from 'navigation/Screens'
 import AccountListItem from 'components/AccountListItem'
 import I18n from 'i18n'
 import User from 'models/User'
-import {
-  navigateToAppSettings,
-  navigateToTeamList,
-  navigateToUserProfile,
-} from 'navigation'
 import { NavigationScreenProps } from 'react-navigation'
 import { container } from 'styles/commons'
 import Images from '../../../../assets/Images'
@@ -23,16 +17,16 @@ import styles from './styles'
 
 const EMPTY_VALUE = '-'
 
-const loggedInItems = (user: User) => [
+const loggedInItems = (props: any) => [
   {
-    title: user.fullName || EMPTY_VALUE,
-    subtitle: user.email || EMPTY_VALUE,
+    title: props.user.fullName || EMPTY_VALUE,
+    subtitle: props.user.email || EMPTY_VALUE,
     big: true,
-    onPress: navigateToUserProfile,
+    onPress: () => props.navigation.navigate(Screens.UserProfile),
   },
   {
     title: I18n.t('caption_my_teams'),
-    onPress: navigateToTeamList,
+    onPress: () => props.navigation.navigate(Screens.TeamList),
   },
 ]
 
@@ -41,26 +35,25 @@ const notLoggedInItems = (props: Readonly<{ children?: ReactNode }> & Readonly<a
     title: I18n.t('caption_register'),
     subtitle: I18n.t('caption_login'),
     big: true,
-    onPress: props.authBasedUserProfile,
+    onPress: () => props.navigation.navigate(Screens.RegisterCredentials),
   },
 ]
 
-const settingsItem = {
+const settingsItem = (props: any) => ({
   title: I18n.t('caption_settings'),
-  onPress: navigateToAppSettings,
-}
+  onPress: () => props.navigation.navigate(Screens.AppSettings),
+})
 
 class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean
   user: User,
-  authBasedUserProfile: () => void,
 }> {
   public render() {
-    const { isLoggedIn, user } = this.props
+    const { isLoggedIn } = this.props
 
     const data = [
-      ...(isLoggedIn ? loggedInItems(user) : notLoggedInItems(this.props)),
-      settingsItem,
+      ...(isLoggedIn ? loggedInItems(this.props) : notLoggedInItems(this.props)),
+      settingsItem(this.props),
     ]
 
     return (
@@ -95,4 +88,4 @@ const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
 })
 
-export default connect(mapStateToProps, { authBasedUserProfile })(AccountList)
+export default connect(mapStateToProps)(AccountList)

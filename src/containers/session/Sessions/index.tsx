@@ -3,8 +3,7 @@ import React from 'react'
 import { Text, TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
-import { navigateToQRScanner } from 'navigation'
-
+import * as Screens from 'navigation/Screens'
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheetType } from 'helpers/types'
@@ -16,7 +15,6 @@ import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
 
-import { SessionsContext } from 'navigation/NavigationContext'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
@@ -37,11 +35,9 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   selectEvent: any,
 } > {
 
-  static contextType = SessionsContext
-
-  constructor(props, context) {
-    super(props, context)
-    this.styles = createStyles(this.context.forTracking)
+  constructor(props) {
+    super(props)
+    this.styles = createStyles(this.props.route?.params?.forTracking)
   }
 
   public state = {
@@ -53,7 +49,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public renderItem = ({ item }: any) => {
-    if (!this.context.forTracking) {
+    if (!this.props.route?.params?.forTracking) {
       return (
         <SessionItem
           style={this.styles.cardsContainer}
@@ -73,22 +69,19 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public render() {
-    const { forTracking } = this.context
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
         <ScrollContentView style={this.styles.scrollContainer}>
-          {forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
+          {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
             style={this.styles.createButton}
-            onPress={this.props.authBasedNewSession}
-          >
+            onPress={() => this.props.authBasedNewSession(this.props.navigation)}>
             <IconText
               source={Images.actions.add}
               iconStyle={this.styles.createButtonIcon}
               textStyle={this.styles.createButtonText}
               iconTintColor="white"
-              alignment="horizontal"
-            >
+              alignment="horizontal">
               {I18n.t('session_create_new_event').toUpperCase()}
             </IconText>
           </TouchableOpacity>
@@ -102,8 +95,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
               textStyle={this.styles.qrButtonText}
-              onPress={() => navigateToQRScanner()}
-          >
+              onPress={() => this.props.navigation.navigate(Screens.QRScanner)}>
             {I18n.t('caption_qr_scanner').toUpperCase()}
           </TextButton>
         </View>

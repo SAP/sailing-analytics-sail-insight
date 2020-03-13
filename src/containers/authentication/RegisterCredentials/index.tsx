@@ -5,14 +5,14 @@ import { Image, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
-
+import * as Screens from 'navigation/Screens'
 import { register, RegisterActionType } from 'actions/auth'
 import * as registrationForm from 'forms/registration'
 import { validateEmail, validatePassword, validateUsername } from 'forms/validators'
 import { helpActionSheetOptions } from 'helpers/actionSheets'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToLogin, navigateToUserRegistrationBoat } from 'navigation'
+import { navigateToUserRegistrationBoat } from 'navigation'
 
 import TextInputForm from 'components/base/TextInputForm'
 import EulaLink from 'components/EulaLink'
@@ -122,7 +122,7 @@ class RegisterCredentials extends TextInputForm<Props> {
             >
               {I18n.t('caption_register').toUpperCase()}
             </TextButton>
-            <Text onPress={navigateToLogin} style={styles.loginText}>
+            <Text onPress={() => this.props.navigation.navigate(Screens.Login)} style={styles.loginText}>
               {I18n.t('text_login_already_account')}
             </Text>
           </View>

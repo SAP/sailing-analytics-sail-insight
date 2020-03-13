@@ -3,10 +3,10 @@ import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
-import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
+import { navigateToJoinRegatta } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
-
+import * as Screens from 'navigation/Screens'
 
 import { ActionQueue, fetchEntityAction, withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
@@ -86,7 +86,7 @@ export const isEventAlreadyJoined = ({ eventId }: CheckIn, activeCheckIns: any) 
   Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
 
 
-export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!data) {
     throw new CheckInException('data is missing')
   }
@@ -103,7 +103,7 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
       update.trackingContext = 'MARK'
     }
     dispatch(updateCheckIn(update))
-    navigateToSessions()
+    navigation.navigate(Screens.Sessions)
 
     if (data.competitorId) {
       const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
@@ -131,7 +131,8 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
     }
   }
   if (!data.competitorId && !data.markId && !data.boatId) {
-    navigateToEditCompetitor(data)
+    //navigateToEditCompetitor(data)
+    navigation.navigate(Screens.EditCompetitor, { data })
   }
 }
 

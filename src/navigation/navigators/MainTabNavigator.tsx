@@ -23,53 +23,7 @@ import AccountNavigator from 'navigation/navigators/AccountNavigator'
 import TrackingNavigator from 'navigation/navigators/TrackingNavigator'
 import { SessionsContext } from 'navigation/NavigationContext'
 
-const getTabBarIcon = (route: any, tintColor: any, focused: any) => {
-  const { name = '' } = route
-  let icon
-  switch (name) {
-    case Screens.TrackingNavigator:
-      icon = Images.tabs.tracking
-      break
-    case Screens.Sessions:
-      icon = Images.tabs.sessions
-      break
-    case Screens.CheckIn:
-      icon = Images.tabs.join
-      break
-    case Screens.Account:
-      icon = Images.tabs.account
-      break
-    case Screens.Inventory:
-      icon = Images.tabs.inventory
-      break
-  }
 
-  const iconTintColor = focused ? 'white' : 'gray'
-  const focusStyle = focused ? { fontWeight: 'bold' } : undefined
-
-  return (
-    <IconText
-      style={{marginTop: 6}}
-      iconStyle={[tab.tabItemIcon, { tintColor: iconTintColor }]}
-      textStyle={[tab.bottomTabItemText, { color: tintColor }, focusStyle]}
-      source={icon}
-      iconTintColor={iconTintColor}
-      iconPosition="first"
-      iconOnly={false}
-    />
-  )
-}
-
-const getTabBarLabel = (route: any, color: any, focused: any) => {
-  const { name = '' } = route
-
-  const tintColor = color
-  const focusStyle = focused ? { fontWeight: 'bold' } : undefined
-
-  return (
-    <Text style={[tab.bottomTabItemText, {color: tintColor, marginBottom: 3}, focusStyle ]}>{getTabItemTitleTranslation(name)}</Text>
-  )
-}
 
 const onTabBarPress = (props: any = {}) => {
   const { preventDefault } = props
@@ -124,20 +78,6 @@ function SessionsStack()
               />
             ),
             headerRight: () => ShareButton.fold({}),
-          })}
-        />
-        <Stack.Screen
-          name = {Screens.EventCreation}
-          component = {EventCreation.fold}
-          options = {() => ({
-            title: I18n.t('title_event_creation'),
-            headerLeft: () => (
-              <HeaderBackButton
-                tintColor="white"
-                labelVisible={false}
-                onPress={navigateBack}
-              />
-            ),
           })}
         />
         <Stack.Screen
@@ -203,18 +143,6 @@ export default function MainTabNavigator()
         listeners = {{
           tabPress: onTabBarPress,
         }}
-      />
-      <Tabs.Screen
-        name = {Screens.Sessions}
-        component = {SessionsStack}
-      />
-      <Tabs.Screen
-        name = {Screens.Inventory}
-        component = {MarkInventory.fold}
-      />
-      <Tabs.Screen
-        name = {Screens.Account}
-        component = {AccountNavigator}
       />
     </Tabs.Navigator>
   )

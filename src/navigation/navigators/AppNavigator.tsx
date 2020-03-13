@@ -6,20 +6,16 @@ import PasswordReset from 'containers/authentication/PasswordReset'
 import RegisterBoat from 'containers/authentication/RegisterBoat'
 import EditCompetitor from 'containers/session/EditCompetitor'
 import FilterSessions from 'containers/session/FilterSessions'
-import JoinRegatta from 'containers/session/JoinRegatta'
-import QRScanner from 'containers/session/QRScanner'
 import ManeuverMonitor from 'containers/tracking/ManeuverMonitor'
-import Sessions from 'containers/session/Sessions'
 import I18n from 'i18n'
 import * as commons from 'navigation/commons'
 import { navigateBack } from 'navigation/NavigationService'
 import * as Screens from 'navigation/Screens'
 import React from 'react'
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack'
-import { $headerTintColor, $primaryButtonColor } from 'styles/colors'
+import { $headerTintColor } from 'styles/colors'
 import ExpertSettings from '../../containers/ExpertSettings'
 import { navigateToTracking } from '../index'
-import MainNavigator from './MainNavigator'
 import RegistrationNavigator from './RegistrationNavigator'
 import TrackingNavigator from './TrackingNavigator'
 import { AuthContext, SessionsContext } from 'navigation/NavigationContext'
@@ -34,51 +30,13 @@ export default function AppStack()
       <AuthContext.Consumer>
         {({isLoading, isLoggedIn}) => (
           <Stack.Navigator
-            initialRouteName = {isLoggedIn ? Screens.Main : Screens.FirstContact}
             {...commons.stackNavigatorConfig}
             mode = 'modal'
             screenOptions = {{...commons.headerNavigationOptions}}>
                 <Stack.Screen
-                  name = {Screens.Main}
-                  component = {MainNavigator}
-                  options = {{headerShown: false}}
-                />
-                <Stack.Screen
-                  name = {Screens.TrackingList}
-                  component = {Sessions}
-                  options = {() => ({
-                    ...commons.navHeaderTransparentProps,
-                    title: '',
-                    headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-                    headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} />,
-                    headerLeft: () => null,
-                  })}
-                />
-                <Stack.Screen
                   name = {Screens.TrackingNavigator}
                   component = {TrackingNavigator}
                   options = {{headerShown: false, gestureEnabled: false}}
-                />
-                <Stack.Screen
-                  name = {Screens.QRScanner}
-                  component = {QRScanner}
-                  options = {() => ({
-                    ...commons.navHeaderTransparentProps,
-                    title: '',
-                    headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} />,
-                    headerRight: () => <ModalBackButton type="icon" iconColor={$primaryButtonColor}/>,
-                    headerLeft: () => null,
-                  })}
-                />
-                <Stack.Screen
-                  name = {Screens.JoinRegatta}
-                  component = {JoinRegatta}
-                  options = {{headerShown: false}}
-                />
-                <Stack.Screen
-                  name = {Screens.EditCompetitor}
-                  component = {EditCompetitor}
-                  options = {{headerShown: false}}
                 />
                 <Stack.Screen
                   name = {Screens.ManeuverMonitor}
@@ -121,21 +79,6 @@ export default function AppStack()
                   component = {FirstContact}
                   options = {{headerShown: false}}
                 />
-                <Stack.Screen
-                  name = {Screens.Register}
-                  component = {RegistrationNavigator}
-                  options = {{headerShown: false}}
-                />
-                <Stack.Screen
-                    name = {Screens.LoginFromSplash}
-                    component = {Login}
-                    options = {() => ({
-                      title: '',
-                      ...commons.navHeaderTransparentProps,
-                      headerLeft: () => null,
-                      headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} />,
-                    })}
-                  />
                   <Stack.Screen
                     name = {Screens.PasswordReset}
                     component = {PasswordReset}

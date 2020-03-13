@@ -37,6 +37,7 @@ export const EditCompetitor = 'EditCompetitor'
 export const MainTabs = 'MainTabs'
 export const Account = 'Account'
 export const Sessions = 'Sessions'
+export const SessionsNavigator = 'SessionsNavigator'
 export const Inventory = 'Inventory'
 export const WelcomeTracking = 'WelcomeTracking'
 
