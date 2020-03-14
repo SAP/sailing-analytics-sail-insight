@@ -18,6 +18,7 @@ export default props => {
     onPress,
     type = 'text',
     dropShadow,
+    icon,
     iconColor,
     ...extraProps
   } = props
@@ -35,6 +36,6 @@ export default props => {
       onPress={onPress || navigation.goBack}>
       <Image
         style={[button.actionIconNavBar, iconColor && { tintColor: iconColor }]}
-        source={Images.actions.close}/>
+        source={icon || Images.actions.close}/>
     </TouchableOpacity>
 }

@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 
 import * as Screens from 'navigation/Screens'
 import { startTracking, StartTrackingAction } from 'actions/tracking'
-import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
 
@@ -44,16 +43,13 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     hideAddButton: false,
   }
 
-  public componentDidMount() {
-    this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
-  }
-
   public renderItem = ({ item }: any) => {
     if (!this.props.route?.params?.forTracking) {
       return (
         <SessionItem
           style={this.styles.cardsContainer}
-          onItemPress={() => this.props.selectEvent(item)}
+          onItemPress={() => this.props.selectEvent({ data: item, navigation: this.props.navigation })}
+          //onItemPress={() => console.log('item select')}
           session={item}
         />
       )
@@ -61,7 +57,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
       return (
         <SessionItemDark
           style={this.styles.cardsContainer}
-          onItemPress={() => this.props.startTracking(item)}
+          onItemPress={() => this.props.startTracking({ data: item, navigation: this.props.navigation })}
           session={item}
         />
       )
@@ -101,10 +97,6 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
         </View>
       </View>
     )
-  }
-
-  protected onOptionsPressed = () => {
-    this.props.showActionSheetWithOptions(...settingsActionSheetOptions)
   }
 }
 

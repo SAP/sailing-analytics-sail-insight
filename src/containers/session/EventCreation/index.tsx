@@ -60,7 +60,7 @@ const createEvent = (props: any) => async (formValues: any) => {
   props.setApiErrors([])
 
   try {
-    await props.createEventActionQueue(eventCreationData).execute()
+    await props.createEventActionQueue({ eventData: eventCreationData, navigation: props.navigation }).execute()
   } catch (e) {
     props.setApiErrors([getErrorDisplayMessage(e)])
     props.updateCreatingEvent(false)

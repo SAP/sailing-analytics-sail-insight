@@ -11,7 +11,6 @@ import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
 import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
-import { navigateToManeuver } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -275,11 +274,11 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
 
       if (options && options.startTrackingAfter) {
         const checkIn = getCheckInByLeaderboardName(data.leaderboardName)(getState())
-        dispatch(startTracking(checkIn))
+        dispatch(startTracking({ data: checkIn, navigation }))
       } else if (options && options.selectSessionAfter) {
-        dispatch(selectEvent(options.selectSessionAfter))
+        dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
-        navigation.navigate(Screens.Main, { screen: Screens.SessionsNavigator })
+        navigation.navigate(Screens.SessionsNavigator)
       }
     } catch (err) {
       Logger.debug(err)
@@ -326,7 +325,7 @@ export const handleManeuverChange = (maneuverChangeData?: ManeuverChangeItem[]) 
       }
       const trackingStatus = getLocationTrackingStatus(getState())
       if (trackingStatus !== LocationService.LocationTrackingStatus.RUNNING) { return }
-      navigateToManeuver(maneuver)
+      //navigateToManeuver(maneuver)
     } catch (err) {
       Logger.debug(err)
     }

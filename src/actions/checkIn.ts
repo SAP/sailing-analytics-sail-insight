@@ -30,7 +30,6 @@ import { saveTeam } from './user'
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 export const updateLoadingCheckInFlag = createAction('UPDATE_LOADING_CHECK_IN_FLAG')
-export const updateLoadingSplashFlag = createAction('UPDATE_LOADING_SPLASH_FLAG')
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(
   async (dataApi, dispatch) => {
@@ -131,7 +130,6 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object
     }
   }
   if (!data.competitorId && !data.markId && !data.boatId) {
-    //navigateToEditCompetitor(data)
     navigation.navigate(Screens.EditCompetitor, { data })
   }
 }
