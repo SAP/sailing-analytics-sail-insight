@@ -8,6 +8,8 @@ import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
 import crashlytics from '@react-native-firebase/crashlytics'
 
+import SINetwork from 'react-native-network/index';
+
 const responseHasFatalError = compose(
   includes(__, [400, 404, 405]),
   prop('status'))
@@ -88,6 +90,7 @@ export const request = async (
   } = options
 
   const data = body && { body: getBody(bodyType, body) }
+
   const fetchOptions = {
     method,
     timeout,
@@ -96,7 +99,7 @@ export const request = async (
   }
   let response
   try {
-    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
+    response = await timeoutPromise(SINetwork.fetch(url, fetchOptions), timeout, 'Server request timeout')
   } catch (err) {
     throw err
   } finally {
@@ -115,7 +118,6 @@ export const request = async (
     } else {
       when(responseHasFatalError, async (response: any) => {
         const error = await response.text()
-
         crashlytics().setAttribute('status', response.status.toString())
         crashlytics().setAttribute('url', response.url)
         crashlytics().recordError(new Error(error))
