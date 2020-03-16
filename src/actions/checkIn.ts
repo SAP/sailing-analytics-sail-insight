@@ -157,7 +157,8 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
   },
 )
 
-export const joinLinkInvitation = (checkInUrl: string, navigation: any) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
+  async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
 
   if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
@@ -170,8 +171,6 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) => async
 
     return
   }
-
-  console.log('####', navigation)
 
   try {
     dispatch(updateLoadingCheckInFlag(true))

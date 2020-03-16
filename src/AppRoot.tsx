@@ -1,7 +1,7 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
-import { compose, reduce, concat, mergeDeepLeft, merge } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft } from 'ramda'
 import { Text } from 'react-native'
 import 'store/init'
 
@@ -87,22 +87,6 @@ const navHeaderTransparentProps = {
   },
 }
 
-const navigationContainer = React.createRef()
-
-const withoutHeader = mergeDeepLeft({ options: { headerShown: false } })
-const withoutTitle = mergeDeepLeft({ options: { title: '' }})
-const withoutHeaderTitle = mergeDeepLeft({ options: { headerTitle: () => null }})
-const withoutHeaderLeft = mergeDeepLeft({ options: { headerLeft: () => null } })
-const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparentProps } })
-const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
-const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
-const withLeftHeaderBackButton = mergeDeepLeft({ options: {
-  headerLeft: () => <HeaderBackButton onPress={() => navigationContainer.current.goBack()} tintColor="white"	labelVisible={false} />}})
-
-const getInitialRouteName = props =>
-  props.isLoggedIn ? Screens.Main :
-  Screens.FirstContact
-
 const getTabBarIcon = (route: any, tintColor: any, focused: any) => {
   const { name = '' } = route
   let icon
@@ -127,17 +111,14 @@ const getTabBarIcon = (route: any, tintColor: any, focused: any) => {
   const iconTintColor = focused ? 'white' : 'gray'
   const focusStyle = focused ? { fontWeight: 'bold' } : undefined
 
-  return (
-    <IconText
+  return <IconText
       style={{marginTop: 6}}
       iconStyle={[tab.tabItemIcon, { tintColor: iconTintColor }]}
       textStyle={[tab.bottomTabItemText, { color: tintColor }, focusStyle]}
       source={icon}
       iconTintColor={iconTintColor}
       iconPosition="first"
-      iconOnly={false}
-    />
-  )
+      iconOnly={false}/>
 }
 
 const getTabBarLabel = (route: any, color: any, focused: any) => {
@@ -149,6 +130,38 @@ const getTabBarLabel = (route: any, color: any, focused: any) => {
     <Text style={[tab.bottomTabItemText, {color: tintColor, marginBottom: 3}, focusStyle ]}>{getTabItemTitleTranslation(name)}</Text>
   )
 }
+
+const teamDeleteHeader = (route: any) => (route.params.paramTeamName) && (
+  <ImageButton
+    source={Images.actions.delete}
+    style={button.actionIconNavBar}
+    imageStyle={{ tintColor: 'white' }}
+    onPress={route.params?.onOptionsPressed}
+  />)
+
+const TeamDetailsHeader = connect(
+  (state: any) => ({ text: getFormTeamName(state) }))(
+  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')}/>)
+
+const MarkLocationHeader = connect(
+  (state: any) => {
+    const markProps: any = getSelectedMarkProperties(state)
+
+    return { markName: `(${markProps.shortName}) ${markProps.name}` }
+  })(
+  (props: any) => <HeaderTitle firstLine={props.markName}/>)
+
+const navigationContainer = React.createRef()
+
+const withoutHeader = mergeDeepLeft({ options: { headerShown: false } })
+const withoutTitle = mergeDeepLeft({ options: { title: '' }})
+const withoutHeaderTitle = mergeDeepLeft({ options: { headerTitle: () => null }})
+const withoutHeaderLeft = mergeDeepLeft({ options: { headerLeft: () => null } })
+const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparentProps } })
+const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
+const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
+const withLeftHeaderBackButton = mergeDeepLeft({ options: {
+  headerLeft: () => <HeaderBackButton onPress={() => navigationContainer.current.goBack()} tintColor="white"	labelVisible={false} />}})
 
 const trackingNavigator = Component(props => compose(
   fold(props),
@@ -162,14 +175,6 @@ const trackingNavigator = Component(props => compose(
   stackScreen({ name: Screens.SetWind, component: SetWind, options: { title: I18n.t('title_set_wind') } }),
   stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') } })),
 ]))
-
-const MarkLocationHeader = connect(
-  (state: any) => {
-    const markProps: any = getSelectedMarkProperties(state)
-
-    return { markName: `(${markProps.shortName}) ${markProps.name}` }
-  })(
-  (props: any) => <HeaderTitle firstLine={props.markName}/>)
 
 const sessionsNavigator = Component(props => compose(
   fold(props),
@@ -201,18 +206,6 @@ const sessionsNavigator = Component(props => compose(
     })).fold,
     options: { title: I18n.t('caption_course_creator_bind_with_tracker') } })),
 ]))
-
-const teamDeleteHeader = (route: any) => (route.params.paramTeamName) && (
-  <ImageButton
-    source={Images.actions.delete}
-    style={button.actionIconNavBar}
-    imageStyle={{ tintColor: 'white' }}
-    onPress={route.params?.onOptionsPressed}
-  />)
-
-const TeamDetailsHeader = connect(
-  (state: any) => ({ text: getFormTeamName(state) }))(
-  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')}/>)
 
 const accountNavigator = Component(props => compose(
   fold(props),
@@ -259,7 +252,10 @@ const mainTabsNavigator = Component(props => compose(
 
 const AppNavigator = Component(props => compose(
   fold(props),
-  stackNavigator({ initialRouteName: getInitialRouteName(props), ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
+  stackNavigator({
+    initialRouteName: props.isLoggedIn ? Screens.Main : Screens.FirstContact,
+    ...stackNavigatorConfig,
+    screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.Splash, component: SplashScreen })),
   stackScreen(withoutHeader({ name: Screens.FirstContact, component: FirstContact })),
@@ -270,19 +266,15 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
     withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
     { name: Screens.QRScanner, component: QRScanner })),
-
   stackScreen(compose(withoutHeaderLeft, withTransparentHeader, withRightModalBackButton, withoutTitle)({
     name: Screens.LoginFromSplash, component: Login
   })),
-
   stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withGradientHeaderBackground, withLeftHeaderBackButton)({
     name: Screens.Login, component: Login
   })),
-
   stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withoutHeaderLeft, withGradientHeaderBackground, withRightModalBackButton)({
     name: Screens.RegisterCredentials, component: RegisterCredentials
   })),
-
   stackScreen(compose(withoutTitle, withTransparentHeader, withGradientHeaderBackground, withLeftHeaderBackButton)({
     name: Screens.PasswordReset, component: PasswordReset
   }))
