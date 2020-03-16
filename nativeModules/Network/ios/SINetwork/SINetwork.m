@@ -34,13 +34,9 @@ RCT_EXPORT_METHOD(fetch:(NSString *)url options:(NSDictionary *)options resolver
     NSMutableURLRequest * request = [self composeRequest: options url: url];
     
     NSURLSessionDataTask *dataTask = [self.sessionManager dataTaskWithRequest: request uploadProgress: nil downloadProgress: nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-        if (error) {
-            reject(@"Error during the request", error.localizedDescription, error);
-        } else {
-            NSMutableDictionary * responseDic = [self composeResponseObj:response responseObject:responseObject];
-            
-            resolve(responseDic);
-        }
+        NSMutableDictionary * responseDic = [self composeResponseObj:response status: (error == nil) responseObject:responseObject];
+        
+        resolve(responseDic);
     }];
 
     [dataTask resume];
@@ -69,12 +65,12 @@ RCT_EXPORT_METHOD(fetch:(NSString *)url options:(NSDictionary *)options resolver
     return request;
 }
 
-- (NSMutableDictionary *)composeResponseObj:(NSURLResponse * _Nonnull)response responseObject:(id _Nullable)responseObject {
+- (NSMutableDictionary *)composeResponseObj:(NSURLResponse * _Nonnull)response status:(BOOL)status responseObject:(id _Nullable)responseObject {
     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
     NSMutableDictionary *responseDic = [NSMutableDictionary dictionaryWithDictionary: responseObject];
     responseDic[@"status"] = @(httpResponse.statusCode);
     responseDic[@"headers"] = httpResponse.allHeaderFields;
-    responseDic[@"ok"] = @(YES);
+    responseDic[@"ok"] = @(status);
     responseDic[@"url"] = httpResponse.URL.absoluteString;
     return responseDic;
 }
