@@ -11,6 +11,7 @@ import SplashScreen from 'containers/SplashScreen'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import Logger from 'helpers/Logger'
+import SpinnerOverlay from 'react-native-loading-spinner-overlay'	
 import * as DeepLinking from 'integrations/DeepLinking'
 import * as LocationService from 'services/LocationService'
 import { initializeApp } from 'actions/appLoading'
@@ -19,6 +20,7 @@ import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+import { isLoadingCheckIn } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/stack'
 import { AuthContext } from 'navigation/NavigationContext'
@@ -85,6 +87,8 @@ const navHeaderTransparentProps = {
   },
 }
 
+const navigationContainer = React.createRef()
+
 const withoutHeader = mergeDeepLeft({ options: { headerShown: false } })
 const withoutTitle = mergeDeepLeft({ options: { title: '' }})
 const withoutHeaderTitle = mergeDeepLeft({ options: { headerTitle: () => null }})
@@ -93,7 +97,7 @@ const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparent
 const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
 const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
 const withLeftHeaderBackButton = mergeDeepLeft({ options: {
-  headerLeft: () => <ModalBackButton type="icon" icon={Images.actions.arrowLeft} iconColor={$headerTintColor} />}})
+  headerLeft: () => <HeaderBackButton onPress={() => navigationContainer.current.goBack()} tintColor="white"	labelVisible={false} />}})
 
 const getInitialRouteName = props =>
   props.isLoggedIn ? Screens.Main :
@@ -294,7 +298,7 @@ class AppRoot extends ReactComponent {
     LocationService.addLocationListener(this.handleGeolocation)
     LocationService.registerEvents()
     this.props.initLocationUpdates()
-    this.props.initializeApp()
+    this.props.initializeApp(navigationContainer.current)
   }
 
   public componentWillUnmount() {
@@ -307,12 +311,13 @@ class AppRoot extends ReactComponent {
   }
 
   public render() {
-    const { isLoggedIn } = this.props
+    const { isLoggedIn,isLoadingCheckIn } = this.props
     return (
       <ActionSheetProvider>
         <AuthContext.Provider value = {{ isLoggedIn }}>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationContainer}>
             { AppNavigator.fold(this.props) }
+            <SpinnerOverlay visible={isLoadingCheckIn} cancelable={false}/>
           </NavigationContainer>
         </AuthContext.Provider>
       </ActionSheetProvider>
@@ -332,7 +337,7 @@ class AppRoot extends ReactComponent {
   }
 
   protected handleDeeplink = (params: any) => {
-    this.props.performDeepLink(params)
+    this.props.performDeepLink(params, navigationContainer.current)
   }
 
   protected handleLocationTrackingStatus = (enabled: boolean) => {
@@ -356,6 +361,7 @@ class AppRoot extends ReactComponent {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
+  isLoadingCheckIn: isLoadingCheckIn(state)
 })
 
 export default connect(mapStateToProps, {

@@ -3,7 +3,6 @@ import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
-import { navigateToJoinRegatta } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
 import * as Screens from 'navigation/Screens'
@@ -158,7 +157,7 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
   },
 )
 
-export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const joinLinkInvitation = (checkInUrl: string, navigation: any) => async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
 
   if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
@@ -172,13 +171,14 @@ export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: Dispa
     return
   }
 
+  console.log('####', navigation)
 
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
     const activeCheckIns = getActiveCheckInEntity(getState()) || {}
     const alreadyJoined = isEventAlreadyJoined(sessionCheckIn, activeCheckIns)
-    navigateToJoinRegatta(sessionCheckIn, alreadyJoined)
+    navigation.navigate(Screens.JoinRegatta, { data: { checkInData: sessionCheckIn, alreadyJoined } })
   } catch (err) {
     Logger.debug(err)
     error = err

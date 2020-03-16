@@ -52,12 +52,11 @@ class Login extends TextInputForm<{
       return
     }
 
-    // try to login
     try {
       this.setState({ isLoading: true })
       await this.props.login(username, password)
       this.props.fetchUserInfo()
-      this.props.navigation.navigate(Screens.Main)
+      this.props.navigation.reset({ index: 1, routes: [{ name: Screens.Main }]})
     } catch (err) {
       this.setState({ error: I18n.t('error_login_incorrect') })
     } finally {
