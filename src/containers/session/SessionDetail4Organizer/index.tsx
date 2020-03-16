@@ -1,5 +1,5 @@
 import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
-  prop, isNil, both } from 'ramda'
+  prop, isNil, equals, both } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
@@ -22,7 +22,7 @@ import { qrCode, inviteCompetitorsButton, joinAsCompetitorButton } from '../../s
 const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
 const nothingWhenEntryIsOpen = branch(both(propEq('isTracking', false), propEq('isFinished', false)), nothingAsClass)
-const nothingWhenNoBoatClass = branch(compose(isNil, prop('boatClass')), nothingAsClass)
+const nothingWhenNoBoatClass = branch(compose(equals(''), prop('boatClass')), nothingAsClass)
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
 
 const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
