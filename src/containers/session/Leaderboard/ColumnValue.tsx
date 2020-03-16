@@ -15,7 +15,7 @@ export interface Props {
   myCompetitorData?: LeaderboardCompetitorCurrentTrack
   fontSize?: number
   rankingMetric?: string
-  halveGapIfOverOneHour?: boolean
+  fontSizeMultiplier?: number
 }
 
 const getGapValueByRankingMetric = (
@@ -36,7 +36,7 @@ const ColumnValue = ({
   myCompetitorData,
   fontSize,
   rankingMetric = 'ONE_DESIGN',
-  halveGapIfOverOneHour = false,
+  fontSizeMultiplier = 0.75,
 }: Props) => {
   if (
     selectedColumn === ColumnValueType.GapToLeader ||
@@ -58,14 +58,27 @@ const ColumnValue = ({
       ? gapToLeader - myGapToLeader
       : gapToLeader
 
+    const isMyCompetitorAndGapToMyBoat =
+      selectedColumn === ColumnValueType.GapToMyBoat &&
+      myCompetitorData &&
+      competitorData &&
+      myCompetitorData.id === competitorData.id
+
+    const myGapFontColor =
+      isMyCompetitorAndGapToMyBoat &&
+      !isNil(gap) &&
+      '#A5A5A5'
+
+    const adjustedGain = isMyCompetitorAndGapToMyBoat ? undefined : gain
+
     return (
       <Gap
         gap={gap}
-        gain={gain}
+        gain={adjustedGain}
         fontSize={fontSize}
-        fontColor={fontColor}
+        fontColor={myGapFontColor || fontColor}
         rankingMetric={rankingMetric}
-        halveGapIfOverOneHour={halveGapIfOverOneHour}
+        fontSizeMultiplier={fontSizeMultiplier}
       />
     )
   }

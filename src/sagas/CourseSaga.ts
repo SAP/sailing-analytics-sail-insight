@@ -23,6 +23,7 @@ import {
   updateMarkConfigurationDeviceTracking
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
+import * as Screens from 'navigation/Screens'
 import { loadMarkProperties } from 'sagas/InventorySaga'
 import { getHashedDeviceId } from 'selectors/user'
 import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
@@ -36,7 +37,6 @@ import {
 import { updateCheckIn } from 'actions/checkIn'
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
-import { navigateToRaceCourseLayout } from 'navigation'
 import { PassingInstruction } from 'models/Course'
 
 const renameKeys = curry((keysMap, obj) =>
@@ -68,11 +68,11 @@ const courseWithWaypointIds = evolve({
 })
 
 function* selectCourseFlow({ payload }: any) {
-  const { race } = payload
+  const { race, navigation } = payload
   const { regattaName, serverUrl } = yield select(getSelectedEventInfo)
   const api = dataApi(serverUrl)
 
-  navigateToRaceCourseLayout()
+  navigation.navigate(Screens.RaceCourseLayout)
 
   yield put(updateCourseLoading(true))
   yield put(selectRace(race))
