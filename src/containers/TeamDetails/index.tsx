@@ -23,7 +23,6 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
 import { getDefaultHandicap, Handicap, hasHandicapChanged } from 'models/TeamTemplate'
-import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getFormFieldValue } from 'selectors/form'
 import { getUserTeamNames } from 'selectors/user'
@@ -206,7 +205,7 @@ class TeamDetails extends TextInputForm<Props> {
         {
           text: I18n.t('caption_ok'), onPress: async () => {
             deleteTeamAction(formTeamName)
-            navigateBack()
+            this.props.navigation.goBack()
           },
         },
       ],
@@ -222,7 +221,7 @@ class TeamDetails extends TextInputForm<Props> {
         return false
       }
       await this.props.saveTeam(team, { replaceTeamName: this.props.paramTeamName })
-      navigateBack()
+      this.props.navigation.goBack()
       return true
     } catch (err) {
       Logger.debug(err)

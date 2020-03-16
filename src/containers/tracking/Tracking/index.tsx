@@ -4,7 +4,7 @@ import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
-
+import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
@@ -13,7 +13,6 @@ import Logger from 'helpers/Logger'
 import { degToCompass } from 'helpers/physics'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
-import { navigateBack, navigateToLeaderboard, navigateToSetWind } from 'navigation'
 import { getBoat } from 'selectors/boat'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
@@ -84,7 +83,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={styles.container}>
           <View style={styles.propertyReverseRow}>
-            <TouchableOpacity onPress={this.props.openLatestRaceTrackDetails}>
+            <TouchableOpacity onPress={() => this.props.openLatestRaceTrackDetails(this.props.navigation)}>
               <View style={{ justifyContent: 'flex-end' }}>
                 <Image
                   style={styles.tagLine}
@@ -192,7 +191,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
     try {
       timer.clearInterval(this)
       await this.props.stopTracking(this.props.checkInData)
-      navigateBack()
+      this.props.navigation.goBack()
     } catch (err) {
       Logger.debug('onStopTrackingPress Error', err)
       this.setState({ buttonText: I18n.t('caption_resend').toUpperCase() })
@@ -213,7 +212,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
   }
 
   protected onLeaderboardPress = () => {
-    navigateToLeaderboard()
+    this.props.navigation.navigate(Screens.Leaderboard)
   }
 
   protected onSetWindPress = () => {
@@ -225,10 +224,10 @@ class Tracking extends React.Component<NavigationScreenProps & {
       )
       return
     }
-    navigateToSetWind({
+    this.props.navigation.navigate(Screens.SetWind, { data: {
       speedInKnots: trackingStats.lastWindSpeedInKnots,
       directionInDeg: trackingStats.lastWindDirection,
-    })
+    } })
   }
 
   protected createWindProps() {

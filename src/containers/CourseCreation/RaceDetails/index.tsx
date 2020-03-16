@@ -133,7 +133,7 @@ const raceNumberSelector = Component((props: any) =>
 
 const onSeeCourse = (props: any) => {
   const { name } = props.item
-  props.selectCourse({ race: name })
+  props.selectCourse({ race: name, navigation: props.navigation })
 }
 
 
@@ -168,7 +168,7 @@ const raceAnalyticsButton = Component((props: any) =>
     touchableOpacity({
       onPress: ifElse(
         always(props.isTracking),
-        () => props.openTrackDetails(props.item),
+        () => props.openTrackDetails(props.item, props.navigation),
         async () => {
           const startTracking = await new Promise(resolve =>
             Alert.alert('', I18n.t('text_entry_open_SAP_Analytics_button'),
@@ -181,7 +181,7 @@ const raceAnalyticsButton = Component((props: any) =>
 
           if (startTracking) {
             await props.startTracking(props.session)
-            props.openTrackDetails(props.item)
+            props.openTrackDetails(props.item, props.navigation)
           }
         }
       )

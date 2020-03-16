@@ -5,25 +5,20 @@ import { Image, View } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
-
+import * as Screens from 'navigation/Screens'
 import { register, RegisterActionType } from 'actions/auth'
 import * as registrationForm from 'forms/registration'
 import { validateEmail, validatePassword, validateUsername } from 'forms/validators'
-import { helpActionSheetOptions } from 'helpers/actionSheets'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateToLogin, navigateToUserRegistrationBoat } from 'navigation'
-
 import TextInputForm from 'components/base/TextInputForm'
 import EulaLink from 'components/EulaLink'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-
 import Images from '../../../../assets/Images'
 import styles from './styles'
-
 
 interface Props extends NavigationScreenProps {
   register: RegisterActionType
@@ -36,16 +31,6 @@ class RegisterCredentials extends TextInputForm<Props> {
   public state = {
     error: null,
     isLoading: false,
-  }
-
-  public componentDidMount() {
-    this.props.navigation.setParams({
-      onOptionsPressed: this.onOptionsPressed,
-    })
-  }
-
-  public onOptionsPressed = () => {
-    this.props.showActionSheetWithOptions(...helpActionSheetOptions())
   }
 
   public render() {
@@ -122,7 +107,7 @@ class RegisterCredentials extends TextInputForm<Props> {
             >
               {I18n.t('caption_register').toUpperCase()}
             </TextButton>
-            <Text onPress={navigateToLogin} style={styles.loginText}>
+            <Text onPress={() => this.props.navigation.navigate(Screens.Login)} style={styles.loginText}>
               {I18n.t('text_login_already_account')}
             </Text>
           </View>
@@ -174,7 +159,7 @@ class RegisterCredentials extends TextInputForm<Props> {
         values[registrationForm.FORM_KEY_NAME],
       )
       this.loggedIn = true
-      navigateToUserRegistrationBoat()
+      this.props.navigation.navigate(Screens.RegisterBoat)
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
     } finally {

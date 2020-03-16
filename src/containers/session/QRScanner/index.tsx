@@ -7,13 +7,11 @@ import { fetchCheckIn, isEventAlreadyJoined } from 'actions/checkIn'
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
 import I18n from 'i18n'
-import { navigateBack, navigateToJoinRegatta } from 'navigation'
 import { container } from 'styles/commons'
 import styles from './styles'
-
+import * as Screens from 'navigation/Screens'
 import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
 import { getActiveCheckInEntity } from 'selectors/checkIn'
-
 
 class QRScanner extends React.Component<{
   fetchCheckIn: (url: string) => any,
@@ -25,11 +23,9 @@ class QRScanner extends React.Component<{
 
   public scanner: any
 
-
   public componentDidMount() {
     this.reactivateScanner()
   }
-
 
   public onQrScannerRef = (ref: any) => {
     this.scanner = ref
@@ -49,8 +45,8 @@ class QRScanner extends React.Component<{
       const activeCheckIns = this.props.activeCheckIns
       const alreadyJoined = isEventAlreadyJoined(checkIn, activeCheckIns)
 
-      navigateBack()
-      navigateToJoinRegatta(checkIn, alreadyJoined)
+      this.props.navigation.goBack()
+      this.props.navigation.navigate(Screens.JoinRegatta, { data: { checkInData: checkIn, alreadyJoined } })
     } catch (err) {
       Logger.debug(err)
       const title = getErrorTitle()

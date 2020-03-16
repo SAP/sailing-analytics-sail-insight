@@ -9,21 +9,16 @@ import I18n from 'i18n'
 import { getBulkGpsSetting, getEnableAnalyticsSettings } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
 import { BULK_UPDATE_TIME_INTERVAL_IN_MILLIS } from 'services/GPSFixService'
-
+import * as Screens from 'navigation/Screens'
 import EditItemSwitch from 'components/EditItemSwitch'
-import LineSeparator from 'components/LineSeparator'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-
-import { button, container } from 'styles/commons'
-import { registration } from 'styles/components'
+import { container } from 'styles/commons'
 import Logger from '../../helpers/Logger'
-import { navigateToExpertSettings } from '../../navigation'
 import { readGPSFixRequestDuplicates, readGPSFixRequests } from '../../storage'
 import { GPS_FIX_PROPERTY_NAME } from '../../storage/schemas'
 import styles from './styles'
-
 
 class AppSettings extends React.Component<ViewProps & {
   updateGpsBulkSetting: (value: boolean) => void,
@@ -112,7 +107,7 @@ class AppSettings extends React.Component<ViewProps & {
   protected handleExpertSettings = () => {
     if (this.state.expertSettingsClickCount >= 14) {
       this.setState({ expertSettingsClickCount: 0 })
-      navigateToExpertSettings()
+      this.props.navigation.navigate(Screens.ExpertSettings)
     } else {
       this.setState({ expertSettingsClickCount: this.state.expertSettingsClickCount + 1 })
     }

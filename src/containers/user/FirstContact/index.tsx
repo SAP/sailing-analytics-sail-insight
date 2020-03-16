@@ -1,10 +1,5 @@
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
-import {
-  navigateToLoginFromSplash,
-  navigateToQRScanner,
-  navigateToUserRegistration,
-} from 'navigation'
 import React from 'react'
 import { Image, ImageBackground, Text, View, ViewProps } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation';
@@ -12,6 +7,7 @@ import { connect } from 'react-redux'
 import { isLoggedIn } from 'selectors/auth'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
+import { QRScanner, LoginFromSplash, RegisterCredentials } from 'navigation/Screens'
 import styles from './styles'
 
 interface Props {
@@ -28,18 +24,18 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
             <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, styles.bigButton]}
               textStyle={styles.bigButtonText}
-              onPress={navigateToUserRegistration}>
+              onPress={() => this.props.navigation.navigate(RegisterCredentials)}>
               {I18n.t('caption_register').toUpperCase()}
             </TextButton>
             <TextButton
               style={[container.largeHorizontalMargin, styles.bigButtonTransparent]}
               textStyle={styles.bigButtonText}
-              onPress={navigateToQRScanner}>
+              onPress={() => this.props.navigation.navigate(QRScanner)}>
               {I18n.t('caption_qr_scanner').toUpperCase()}
             </TextButton>
-            { !this.props.isLoggedIn && <Text onPress={navigateToLoginFromSplash} style={styles.loginText}>
-              {I18n.t('text_login_already_account')}
-            </Text> }
+              <Text onPress={() => this.props.navigation.navigate(LoginFromSplash)} style={styles.loginText}>
+                {I18n.t('text_login_already_account')}
+              </Text>
           </View>
 
           <View style={styles.logoContainer}>

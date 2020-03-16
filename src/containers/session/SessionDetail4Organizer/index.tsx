@@ -4,6 +4,7 @@ import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking, stopTracking } from 'actions/events'
+import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
 import { Component, fold, nothing,
   reduxConnect as connect,
@@ -12,7 +13,6 @@ import { Component, fold, nothing,
 } from 'components/fp/component'
 import { iconText, scrollView, text, inlineText, touchableOpacity, view } from 'components/fp/react-native'
 import I18n from 'i18n'
-import { navigateToRaceDetails } from 'navigation'
 import { Alert } from 'react-native'
 import { container } from 'styles/commons'
 import styles from './styles'
@@ -43,7 +43,7 @@ const mapStateToProps = (state: any, props: any) => {
 }
 
 const sessionData = {
-  racesAndScoringOnPress: (props: any) => navigateToRaceDetails(props.session),
+  racesAndScoringOnPress: (props: any) => props.navigation.navigate(Screens.RaceDetails, { data: props.session }),
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
 
