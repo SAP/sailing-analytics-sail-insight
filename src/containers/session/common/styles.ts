@@ -44,6 +44,7 @@ export default EStyleSheets.create({
   container1: {
     backgroundColor: '$primaryBackgroundColor',
     paddingHorizontal: '$smallSpacing',
+    alignItems: 'center',
   },
   containerAngledBorder1: {
     width: Dimensions.get('window').width,
@@ -58,6 +59,7 @@ export default EStyleSheets.create({
   container2: {
     backgroundColor: '#476987',
     paddingHorizontal: '$smallSpacing',
+    alignItems: 'center',
   },
   containerAngledBorder2: {
     width: Dimensions.get('window').width,
@@ -72,6 +74,7 @@ export default EStyleSheets.create({
   container3: {
     backgroundColor: '$LightBlue',
     paddingHorizontal: '$smallSpacing',
+    alignItems: 'center',
   },
   containerAngledBorder3: {
     width: Dimensions.get('window').width,
@@ -86,6 +89,7 @@ export default EStyleSheets.create({
   container4: {
     backgroundColor: '#789BAA',
     paddingHorizontal: '$smallSpacing',
+    alignItems: 'center',
   },
   containerAngledBorder4: {
     width: Dimensions.get('window').width,
