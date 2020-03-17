@@ -56,6 +56,7 @@ const apiEndpoints = (serverUrl: string) => {
     regattaRaces: getUrlV1('/regattas/{0}/races'),
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
+    regattaTrackingDevices: getUrlV1('/regattas/{0}/tracking_devices'),
     course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
     raceTime: getUrlV1('/leaderboards/{0}/starttime'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
@@ -178,6 +179,7 @@ export interface DataApi {
     raceName: string,
     filter?: {competitorId?: string, fromTime?: number},
   ) => Promise<CompetitorManeuverItem[]>
+  requestTrackingDevices: (regattaName: string) => any
   requestBoatClasses: () => Promise<BoatClassesBody[]>
   requestCountryCodes: () => Promise<CountryCodeBody[]>
   uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
@@ -357,6 +359,9 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestManeuvers: (regattaName, raceName, filters) => dataRequest(
       endpoints.regattaRaceManeuvers({ pathParams: [regattaName, raceName], urlParams: filters }),
       { dataProcessor: data => get(data, 'bycompetitor') },
+    ),
+    requestTrackingDevices: regattaName => dataRequest(
+      endpoints.regattaTrackingDevices({ pathParams: [regattaName] }),
     ),
     createAutoCourse: (leaderboardName, raceColumn, fleet) => dataRequest(
       endpoints.createAutoCourse({ pathParams: [leaderboardName], urlParams: { fleet, race_column: raceColumn } }),
