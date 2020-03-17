@@ -34,7 +34,7 @@ import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { selectEvent } from 'actions/events'
 import { saveTeam } from 'actions/user'
-import { getUserInfo } from 'selectors/auth'
+import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { getUserBoatByBoatName } from 'selectors/user'
@@ -278,7 +278,9 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
-        navigation.navigate(Screens.SessionsNavigator)
+        const isLogged = isLoggedIn(getState())
+        isLogged ? navigation.navigate(Screens.SessionsNavigator) :
+          navigation.navigate(Screens.Main, { screen: Screens.SessionsNavigator })
       }
     } catch (err) {
       Logger.debug(err)
