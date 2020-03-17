@@ -160,6 +160,7 @@ class RegisterCredentials extends TextInputForm<Props> {
       )
       this.loggedIn = true
       this.props.navigation.navigate(Screens.RegisterBoat)
+      this.props.destroy()
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
     } finally {
