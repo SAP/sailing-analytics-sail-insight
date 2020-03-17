@@ -60,11 +60,6 @@ export default EStyleSheets.create({
 
   indentedContainer: { ...withPadding },
 
-  extendedBackgroundContainer: {
-    flexGrow: 1,
-    backgroundColor: $LightDarkBlue
-  },
-
   gateEditContainer: {
     ...withPadding,
     paddingTop: 15,
