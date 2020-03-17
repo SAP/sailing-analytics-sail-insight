@@ -2,19 +2,13 @@ import React, { Component } from 'react'
 import { ReduxNetworkProvider } from 'react-native-offline'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
-
 import 'store/init'
-
 import { getPersistor, getStore } from 'store'
-
 import { initStyles, recalculateStyles } from 'styles'
-
 import AppRoot from './AppRoot'
 import { enableScreens } from 'react-native-screens'
 
-
 declare var module: any
-
 
 initStyles()
 const store = getStore()

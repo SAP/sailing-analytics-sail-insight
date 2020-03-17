@@ -15,6 +15,7 @@ export interface Props {
   myCompetitorData?: LeaderboardCompetitorCurrentTrack
   fontSize?: number
   rankingMetric?: string
+  fontSizeMultiplier?: number
 }
 
 const getGapValueByRankingMetric = (
@@ -35,10 +36,12 @@ const ColumnValue = ({
   myCompetitorData,
   fontSize,
   rankingMetric = 'ONE_DESIGN',
+  fontSizeMultiplier = 0.75,
 }: Props) => {
   if (
     selectedColumn === ColumnValueType.GapToLeader ||
-    selectedColumn === ColumnValueType.GapToCompetitor
+    selectedColumn === ColumnValueType.GapToCompetitor ||
+    selectedColumn === ColumnValueType.GapToMyBoat
   ) {
     const { gain } = competitorData
     const gapToLeader = getGapValueByRankingMetric(competitorData, rankingMetric)
@@ -46,18 +49,36 @@ const ColumnValue = ({
     const fontColor = cond([
       [always(isNil(myGapToLeader)), always(undefined)],
       [isNil, always(undefined)],
-      [lt(myGapToLeader), always(RED)],
-      [gt(myGapToLeader), always(GREEN)],
+      [lt(myGapToLeader), always(GREEN)],
+      [gt(myGapToLeader), always(RED)],
       [T, always(undefined)]
     ])(gapToLeader)
 
+    const gap = selectedColumn === ColumnValueType.GapToMyBoat && !isNil(myGapToLeader) && !isNil(gapToLeader)
+      ? gapToLeader - myGapToLeader
+      : gapToLeader
+
+    const isMyCompetitorAndGapToMyBoat =
+      selectedColumn === ColumnValueType.GapToMyBoat &&
+      myCompetitorData &&
+      competitorData &&
+      myCompetitorData.id === competitorData.id
+
+    const myGapFontColor =
+      isMyCompetitorAndGapToMyBoat &&
+      !isNil(gap) &&
+      '#A5A5A5'
+
+    const adjustedGain = isMyCompetitorAndGapToMyBoat ? undefined : gain
+
     return (
       <Gap
-        gap={gapToLeader}
-        gain={gain}
+        gap={gap}
+        gain={adjustedGain}
         fontSize={fontSize}
-        fontColor={fontColor}
+        fontColor={myGapFontColor || fontColor}
         rankingMetric={rankingMetric}
+        fontSizeMultiplier={fontSizeMultiplier}
       />
     )
   }

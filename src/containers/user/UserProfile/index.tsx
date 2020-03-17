@@ -7,6 +7,7 @@ import { Field, reduxForm } from 'redux-form'
 import { logout, updateUser } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
+import * as Screens from 'navigation/Screens'
 import { validateRequired } from 'forms/validators'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
@@ -82,14 +83,12 @@ class UserProfile extends TextInputForm<Props> {
             textStyle={styles.saveButtonText}
             isLoading={this.state.isLoading}
             onPress={this.props.handleSubmit(this.onSubmit)}
-            disabled={isSaveDisabled}
-          >
+            disabled={isSaveDisabled}>
             {I18n.t('caption_save')}
           </TextButton>
           <TextButton
             textStyle={styles.logoutButton}
-            onPress={this.deleteUserDataAlert}
-          >
+            onPress={this.deleteUserDataAlert}>
             Log out
           </TextButton>
         </View>
@@ -124,6 +123,7 @@ class UserProfile extends TextInputForm<Props> {
           { text: I18n.t('caption_ok'),
             onPress: () => {
               this.props.logout()
+              this.props.navigation.navigate(Screens.FirstContact)
             },
           },
         ],

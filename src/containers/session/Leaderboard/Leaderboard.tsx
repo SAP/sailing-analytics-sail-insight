@@ -34,6 +34,7 @@ export const EMPTY_VALUE = '-'
 export enum ColumnValueType {
   GapToLeader = 'text_leaderboard_column_gap',
   GapToCompetitor = 'text_leaderboard_column_gap_competitor',
+  GapToMyBoat = 'text_leaderboard_column_gap_my_boat',
   RegattaRank = 'text_leaderboard_column_regattaRank',
   Speed = 'text_leaderboard_column_speed',
   AverageSpeed = 'text_leaderboard_column_averageSpeed',
@@ -105,7 +106,7 @@ class Leaderboard extends React.Component<{
         <View style={styles.container}>
           <View style={styles.propertyRow}>
             <View style={styles.leftPropertyContainer}>
-              <View style={[styles.textContainer]}>
+              <View style={[styles.textContainer, styles.topRowItemContainer]}>
                 <Text style={[styles.gapText]}>
                   {(rank && String(rank)) || EMPTY_VALUE}
                 </Text>
@@ -115,13 +116,15 @@ class Leaderboard extends React.Component<{
               </Text>
             </View>
             <View style={[styles.rightPropertyContainer]}>
-              <MyColumnValue
-                selectedColumn={selectedColumn}
-                competitorData={myCompetitorData}
-                comparedCompetitorData={comparedCompetitorData}
-                fontSize={topRowValueFontSize}
-                rankingMetric={rankingMetric}
-              />
+              <View style={[styles.textContainer, styles.topRowItemContainer]}>
+                <MyColumnValue
+                  selectedColumn={selectedColumn}
+                  competitorData={myCompetitorData}
+                  comparedCompetitorData={comparedCompetitorData}
+                  fontSize={topRowValueFontSize}
+                  rankingMetric={rankingMetric}
+                />
+              </View>
               <ModalDropdown
                 options={difference(Object.values(ColumnValueType), [
                   ColumnValueType.GapToCompetitor,
@@ -155,7 +158,7 @@ class Leaderboard extends React.Component<{
           </View>
         </View>
         <View style={[styles.listContainer]}>
-          <FlatList data={leaderboard} renderItem={this.renderItem} />
+          <FlatList data={leaderboard} contentContainerStyle={[styles.listContentContainer]} renderItem={this.renderItem} />
         </View>
       </View>
     )

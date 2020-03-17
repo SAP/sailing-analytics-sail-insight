@@ -67,7 +67,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     secret,
     eventName:                  eventData.name,
     venuename:                  eventData.location,
-    ispublic:                   true,
+    ispublic:                   false,
     competitorRegistrationType: 'OPEN_UNMODERATED',
     createleaderboardgroup:     true,
     createregatta:              true,
@@ -81,6 +81,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     ...(eventData.dateFrom ? { startdate: eventData.dateFrom.toISOString() } : {}),
     ...(eventData.dateTo   ? { enddate: eventData.dateTo.toISOString() } : {}),
   } as CreateEventBody)
+  console.log('create event response', response)
   return eventCreationResponseToCheckIn(response, {
     secret,
     trackPrefix: 'R',
@@ -89,7 +90,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
   })
 }
 
-export const createEventActionQueue = (eventData: EventCreationData) => (
+export const createEventActionQueue = ({ eventData, navigation }: any) => (
   dispatch: DispatchType,
 ) =>
   ActionQueue.create(dispatch, [
@@ -102,7 +103,7 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
       updateCheckIn(data),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
-      createAction(CREATE_EVENT)(data),
+      createAction(CREATE_EVENT)({ ...data, navigation }),
     ),
   ])
 

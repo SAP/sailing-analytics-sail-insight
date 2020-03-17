@@ -1,7 +1,6 @@
 import { __,  compose, concat, reduce, toUpper, merge, isNil, propEq } from 'ramda'
 import querystring from 'query-string'
 import QRCode from 'react-native-qrcode-svg'
-import { navigateBack } from 'navigation'
 import {
   Component,
   fold,
@@ -73,7 +72,7 @@ const useThisDeviceButton = Component(props => compose(
         id: props.selectedMarkConfiguration,
         deviceId: getDeviceId()
       })
-      navigateBack()
+      props.navigation.goBack()
     },
     style: styles.useThisDeviceButton,
   }),

@@ -1,9 +1,10 @@
 import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
-  prop, isNil, both } from 'ramda'
+  prop, isNil, equals, both } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking, stopTracking } from 'actions/events'
+import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
 import { Component, fold, nothing,
   reduxConnect as connect,
@@ -12,7 +13,6 @@ import { Component, fold, nothing,
 } from 'components/fp/component'
 import { iconText, scrollView, text, inlineText, touchableOpacity, view } from 'components/fp/react-native'
 import I18n from 'i18n'
-import { navigateToRaceDetails } from 'navigation'
 import { Alert } from 'react-native'
 import { container } from 'styles/commons'
 import styles from './styles'
@@ -22,7 +22,7 @@ import { qrCode, inviteCompetitorsButton, joinAsCompetitorButton } from '../../s
 const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
 const nothingWhenEntryIsOpen = branch(both(propEq('isTracking', false), propEq('isFinished', false)), nothingAsClass)
-const nothingWhenNoBoatClass = branch(compose(isNil, prop('boatClass')), nothingAsClass)
+const nothingWhenNoBoatClass = branch(compose(equals(''), prop('boatClass')), nothingAsClass)
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
 
 const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
@@ -43,7 +43,7 @@ const mapStateToProps = (state: any, props: any) => {
 }
 
 const sessionData = {
-  racesAndScoringOnPress: (props: any) => navigateToRaceDetails(props.session),
+  racesAndScoringOnPress: (props: any) => props.navigation.navigate(Screens.RaceDetails, { data: props.session }),
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
 

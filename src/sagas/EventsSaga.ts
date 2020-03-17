@@ -5,6 +5,8 @@ import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
   OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
   SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent } from 'actions/events'
+import { fetchRegatta } from 'actions/regattas'
+import * as Screens from 'navigation/Screens'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
 import { fetchPermissionsForEvent } from 'actions/permissions'
@@ -13,7 +15,6 @@ import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
-import { navigateToSessionDetail, navigateToOrganizerSessionDetail } from 'navigation'
 import { __, apply, compose, concat, curry, dec, path, prop, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share } from 'react-native'
@@ -23,6 +24,7 @@ import { getSelectedEventInfo } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
 import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
+import { StackActions } from '@react-navigation/native'
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -44,19 +46,29 @@ function* safeApiCall(method, ...args) {
 }
 
 function* selectEventSaga({ payload }: any) {
-  yield put(fetchPermissionsForEvent(payload))
+  const eventData = payload.data
+  const navigation = payload.navigation
+  const replaceCurrentScreen = payload.replaceCurrentScreen
+
+  yield put(fetchPermissionsForEvent(eventData))
   yield take([UPDATE_EVENT_PERMISSION, offlineActionTypes.FETCH_OFFLINE_MODE])
 
-  const currentUserCanUpdateEvent = yield select(canUpdateEvent(payload.eventId))
+  const currentUserCanUpdateEvent = yield select(canUpdateEvent(eventData.eventId))
+  const { regattaName, secret, serverUrl } = eventData
 
-  yield put(fetchRacesTimesForEvent(payload))
+  yield put(fetchRegatta(regattaName, secret, serverUrl))
+  yield put(fetchRacesTimesForEvent(eventData))
   yield put(updateCreatingEvent(false))
 
   if (currentUserCanUpdateEvent) {
-    yield put(fetchCoursesForEvent(payload))
-    navigateToOrganizerSessionDetail(payload)
+    yield put(fetchCoursesForEvent(eventData))
+    if (replaceCurrentScreen) {
+      navigation.dispatch(StackActions.replace(Screens.SessionDetail4Organizer, { data: eventData }))
+    } else {
+      navigation.navigate(Screens.SessionDetail4Organizer, { data: eventData })
+    }
   } else {
-    navigateToSessionDetail(payload)
+    navigation.navigate(Screens.SessionDetail, { data: eventData })
   }
 }
 
@@ -140,7 +152,9 @@ function* setDiscards({ payload }: any) {
   }
 }
 
-function* createEvent({ payload: { payload: data} }: any) {
+function* createEvent(payload: object) {
+  const data = payload.payload.payload
+  const navigation = payload.payload.navigation
   const api = dataApi(data.serverUrl)
   const races = compose(
     map(compose(concat('R'), toString)),
@@ -149,13 +163,15 @@ function* createEvent({ payload: { payload: data} }: any) {
     data.numberOfRaces)
   const regatta = yield select(getRegatta(data.regattaName))
 
+  console.log('create event', payload)
+
   yield call(api.updateRegatta, data.regattaName,
     { controlTrackingFromStartAndFinishTimes: true,
       useStartTimeInference: false,
       defaultCourseAreaUuid: regatta.courseAreaId })
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
-  yield put(selectEvent({...data, replaceCurrentScreen: true }))
+  yield put(selectEvent({ data, replaceCurrentScreen: true, navigation }))
 }
 
 function* addRaceColumns({ payload }: any) {

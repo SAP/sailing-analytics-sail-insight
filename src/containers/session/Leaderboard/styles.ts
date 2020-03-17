@@ -13,7 +13,7 @@ const skipAndroid = true
 const topMargin = windowHeight * 0.057
 
 const chooseMetricTextColor = '#476987'
-export const topRowValueFontSize = 48
+export const topRowValueFontSize = 36
 export const normalRowValueFontSize = 24
 
 export default EStyleSheets.create({
@@ -28,10 +28,10 @@ export default EStyleSheets.create({
   },
   listItemContainer: {
     flex: 1,
-    marginTop: 7,
-    marginBottom: 7,
+    marginTop: 3,
+    marginBottom: 3,
     marginLeft: '$smallSpacing',
-    marginRight: '$smallSpacing',
+    marginRight: '$tinySpacing',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -103,6 +103,9 @@ export default EStyleSheets.create({
   itemTextContainer: {
     flex: 1,
   },
+  topRowItemContainer: {
+    height: 1.6 * topRowValueFontSize
+  },
   separator: {
     height: 2,
     backgroundColor: '$secondaryBackgroundColor',
@@ -116,6 +119,10 @@ export default EStyleSheets.create({
     backgroundColor: 'white',
   },
   listContainer: {
+    flex: 1,
+    marginVertical: 5
+  },
+  listContentContainer: {
     marginLeft: '$smallSpacing',
     marginRight: '$smallSpacing',
     marginTop: 15,
@@ -134,7 +141,7 @@ export default EStyleSheets.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 10,
+    paddingBottom: 0,
     paddingLeft: 20,
   },
   leftPropertyContainer: {
