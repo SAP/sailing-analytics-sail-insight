@@ -639,7 +639,7 @@ export default Component((props: object) =>
           apply(equals),
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(
           [next, prev]) }),
-    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
+    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true, contentContainerStyle: { flexGrow: 1 } }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
       nothingWhenNotLoading(LoadingIndicator),

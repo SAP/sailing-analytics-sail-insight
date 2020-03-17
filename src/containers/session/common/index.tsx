@@ -166,7 +166,7 @@ export const typeAndBoatClassCard = Component((props: any) => compose(
     reduce(concat, nothing()),
   )([
     text({ style: styles.headline }, I18n.t('caption_regatta_details').toUpperCase()),
-    inlineText( props.boatClass !== '' ? { style: styles.text } : { style: styles.textLast }, [
+    inlineText({ style: styles.text }, [
       text({ style: styles.textLight }, 'Style '),
       props.boatClass !== '' ? 
         text({ style: styles.textValue }, I18n.t('caption_one_design').toUpperCase()) 
@@ -238,7 +238,7 @@ export const competitorsCard = Component((props: any) =>
     view({ style: styles.container4 }),
     reduce(concat, nothing()))([
       text({ style: styles.headline }, I18n.t('caption_competitor').toUpperCase()),
-      text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
+      text({ style: styles.text }, I18n.t('text_info_for_invite')),
       nothingIfCurrentUserIsNotCompetitor(text({ style: styles.textLast }, I18n.t('text_user_is_competitor'))),
       inviteCompetitorsButton,
       nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton),

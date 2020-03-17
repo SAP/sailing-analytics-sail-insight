@@ -9,6 +9,7 @@ import styles from './styles'
 
 class FloatingComponentList<ItemType> extends React.Component<FlatListProps<ItemType> & {
   renderFloatingItem?: () => Element | JSX.Element,
+  hideFloatingItemOnScroll?: boolean,
 }> {
 
   public state = {
@@ -36,11 +37,17 @@ class FloatingComponentList<ItemType> extends React.Component<FlatListProps<Item
   }
 
   protected showAdd = () => {
-    this.setState({ hideFloatingComponent: false })
+    const { hideFloatingItemOnScroll = true } = this.props
+    if (hideFloatingItemOnScroll) {
+      this.setState({ hideFloatingComponent: false })
+    }
   }
 
   protected hideAdd = () => {
-    this.setState({ hideFloatingComponent: true })
+    const { hideFloatingItemOnScroll = true } = this.props
+    if (hideFloatingItemOnScroll) {
+      this.setState({ hideFloatingComponent: true })
+    }
   }
 
 }

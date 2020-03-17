@@ -1,6 +1,6 @@
 import { map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
-  find, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
+  find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
@@ -20,7 +20,7 @@ import {
   assignMarkOrMarkPropertiesToMarkConfiguration,
   changeWaypointMarkConfigurationToNew,
   changeWaypointToNewLine,
-  updateMarkConfigurationDeviceTracking
+  changeMarkConfigurationDeviceTracking
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
 import * as Screens from 'navigation/Screens'
@@ -303,16 +303,33 @@ function* navigateBackFromCourseCreation() {
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {
   const selectedMarkConfiguration = yield select(getSelectedMarkConfiguration)
   const markConfiguration = yield select(getMarkConfigurationById(selectedMarkConfiguration))
-  const { serverUrl, leaderboardName, secret } = yield select(getSelectedEventInfo)
+
+  if (isNil(markConfiguration.markId)) {
+    return
+  }
+
+  const { serverUrl, regattaName } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
+  const allTrackingDevices = yield safe(call(api.requestTrackingDevices, regattaName))
 
-  const { result: markState } = yield safe(call(api.requestMark, leaderboardName, markConfiguration.markId, secret))
+  if (!allTrackingDevices || isEmpty(allTrackingDevices.result)) {
+    return
+  }
 
-  if (markState) {
-    yield call(updateMarkConfigurationDeviceTracking, {
+  const trackingDevices = compose(
+    prop('deviceStatuses'),
+    defaultTo({}),
+    findLast(propEq('markId', markConfiguration.markId)),
+    defaultTo([]),
+    prop('marks'),
+    prop('result')
+  )(allTrackingDevices)
+
+  if (trackingDevices) {
+    yield put(changeMarkConfigurationDeviceTracking({
+      trackingDevices,
       id: selectedMarkConfiguration,
-      deviceId: markState.location && markState.location.deviceUUID
-    })
+    }))
   }
 }
 

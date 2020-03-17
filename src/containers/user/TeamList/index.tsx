@@ -33,6 +33,7 @@ class TeamList extends React.Component<ViewProps & {
         renderFloatingItem={this.renderAddItem}
         refreshing={this.state.refreshing}
         onRefresh={this.onRefresh}
+        hideFloatingItemOnScroll={false}
       />
     )
   }

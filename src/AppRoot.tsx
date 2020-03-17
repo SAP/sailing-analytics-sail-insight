@@ -1,7 +1,7 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
-import { compose, reduce, concat, mergeDeepLeft } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft, merge, includes } from 'ramda'
 import { Text } from 'react-native'
 import 'store/init'
 
@@ -222,6 +222,22 @@ const accountNavigator = Component(props => compose(
   }) })),
 ]))
 
+const trackingTabPress = (props: any) => {
+  const { navigation, route, preventDefault } = props
+  const selectedTab = route.state.routes[route.state.index]
+
+  if (selectedTab.name === Screens.TrackingNavigator) {
+    const selectedTrackingStack = selectedTab.state.routes[selectedTab.state.index].name
+    const toPrevent = [Screens.Tracking, Screens.SetWind, Screens.Leaderboard]
+    const toGoBack = [Screens.SetWind, Screens.Leaderboard]
+
+    if (includes(selectedTrackingStack, toPrevent))
+      preventDefault()
+    if (includes(selectedTrackingStack, toGoBack))
+      navigation.goBack()
+  }
+}
+
 const mainTabsNavigator = Component(props => compose(
   fold(props),
   tabsNavigator({
@@ -244,7 +260,7 @@ const mainTabsNavigator = Component(props => compose(
     })
   }),
   reduce(concat, nothing()))([
-  tabsScreen({ name: Screens.TrackingNavigator, component: trackingNavigator.fold }),
+  tabsScreen({ name: Screens.TrackingNavigator, component: trackingNavigator.fold, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
   tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold }),
   tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }),
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
