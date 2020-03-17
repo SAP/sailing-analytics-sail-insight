@@ -49,17 +49,10 @@ export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
 
 export const authBasedNewSession = (navigation:object) => (dispatch: DispatchType, getState: GetStateType) => {
   const isLoggedIn = isLoggedInSelector(getState())
-
-  if (isLoggedIn) {
-    navigation.navigate(Screens.EventCreation)
-    //navigation.navigate(Screens.Main, { screen: Screens.SessionsNavigator, params: { screen: Screens.EventCreation } })
-  } else {
-    navigation.navigate(Screens.RegisterCredentials)
-  }
+  navigation.navigate(isLoggedIn ? Screens.EventCreation : Screens.RegisterCredentials)
 }
 
 export const updateUser = (user: User) => async (dispatch: DispatchType) => {
-  // sync with server
   await authApi().updateUser(mapUserToRes(user))
   dispatch(fetchCurrentUser())
 }
