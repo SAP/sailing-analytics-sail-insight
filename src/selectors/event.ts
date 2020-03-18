@@ -44,3 +44,6 @@ export const isCreatingEvent = (state: RootState = {}) =>  {
 
 export const getEventIdThatsBeingSelected = (state: any) =>
   state.events && state.events.isSelectingEvent && state.events.selectedEvent
+
+export const isStartingTracking = (state: any) =>
+  !!(state.events && state.events.isStartingTracking)

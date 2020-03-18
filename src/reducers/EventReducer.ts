@@ -3,11 +3,13 @@ import {
   receiveEvent,
   selectEvent,
   selectRace,
+  startTracking,
   updateEvent,
   updateEventFilters,
   updateRaceTime,
   updateCreatingEvent,
   updateSelectingEvent,
+  updateStartingTracking,
 } from "actions/events";
 import { EventFilter } from 'models/EventFilter'
 import { path } from 'ramda'
@@ -21,6 +23,7 @@ const initialState: EventState = {
   raceTimes: {},
   isCreatingEvent: false,
   isSelectingEvent: false,
+  isStartingTracking: false,
 } as EventState
 
 const reducer = handleActions(
@@ -80,9 +83,14 @@ const reducer = handleActions(
         activeFilters: action.payload,
       }
     },
+    [startTracking as any]: (state: any) => ({
+      ...state,
+      isStartingTracking: true
+    }),
     [removeUserData as any]: () => initialState,
     [updateCreatingEvent as any]: itemUpdateHandler('isCreatingEvent'),
     [updateSelectingEvent as any]: itemUpdateHandler('isSelectingEvent'),
+    [updateStartingTracking as any]: itemUpdateHandler('isStartingTracking'),
   },
   initialState,
 )

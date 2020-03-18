@@ -5,7 +5,7 @@ import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
   OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
   SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent,
-  updateSelectingEvent } from 'actions/events'
+  updateSelectingEvent, updateStartingTracking } from 'actions/events'
 import { fetchRegatta } from 'actions/regattas'
 import * as Screens from 'navigation/Screens'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
@@ -265,6 +265,8 @@ function* startTracking({ payload }: any) {
   if (leaderboardData) {
     yield put(receiveEntities(leaderboardData))
   }
+
+  yield put(updateStartingTracking(false))
 }
 
 function* stopTracking({ payload }: any) {
