@@ -6,13 +6,11 @@ import Images from '@assets/Images'
 import I18n from 'i18n'
 import { button, container, image, text } from 'styles/commons'
 import styles from './styles'
-
 import { checkIn } from 'actions/checkIn'
 import { dateTimeText } from 'helpers/date'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { openEmailToContact } from 'helpers/user'
 import { CheckIn } from 'models'
-import { navigateToTrackingNavigator } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 import { getBoat } from 'selectors/boat'
 import { getCompetitor } from 'selectors/competitor'
@@ -39,7 +37,7 @@ class JoinRegatta extends React.Component<{
   competitor?: any,
   boat?: any,
   mark?: any,
-  checkIn: (c: CheckIn, aj: boolean) => any,
+  checkIn: (c: CheckIn, aj: boolean, navigation:object) => any,
 } > {
 
   public state = {
@@ -51,7 +49,7 @@ class JoinRegatta extends React.Component<{
   public onJoinPress = async () => {
     await this.setState({ isLoading: true })
     try {
-      await this.props.checkIn(this.props.checkInData, this.props.alreadyJoined)
+      await this.props.checkIn(this.props.checkInData, this.props.alreadyJoined, this.props.navigation)
     } catch (err) {
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
@@ -146,7 +144,7 @@ class JoinRegatta extends React.Component<{
             style={button.closeButton}
             imageStyle={{ tintColor: '#FFFFFF' }}
             source={Images.actions.close}
-            onPress={navigateToTrackingNavigator}
+            onPress={() => this.props.navigation.goBack()}
         />
       </ScrollContentView>
     )

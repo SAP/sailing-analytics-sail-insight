@@ -3,10 +3,7 @@ import { when, isEmpty, always, either, isNil } from 'ramda'
 import { ImageBackground, Text, View, ViewProps, BackHandler } from 'react-native'
 import TextButton from 'components/TextButton'
 import I18n from 'i18n'
-import {
-  navigateToQRScanner,
-  navigateToTrackingList,
-} from 'navigation'
+import * as Screens from 'navigation/Screens'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
 import styles from './styles'
@@ -59,14 +56,14 @@ class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps 
             <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, styles.bigButton]}
               textStyle={styles.bigButtonText}
-              onPress={navigateToTrackingList}
+              onPress={() => this.props.navigation.navigate(Screens.TrackingList)}
             >
               {I18n.t('caption_start_tracking').toUpperCase()}
             </TextButton>
             <TextButton
               style={[container.largeHorizontalMargin, styles.bigButtonWhite]}
               textStyle={styles.bigButtonTextInverse}
-              onPress={navigateToQRScanner}
+              onPress={() => this.props.navigation.navigate(Screens.QRScanner)}
             >
               {I18n.t('caption_qr_scanner').toUpperCase()}
             </TextButton>

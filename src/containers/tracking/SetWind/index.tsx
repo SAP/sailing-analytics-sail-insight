@@ -8,7 +8,6 @@ import { degToCompass, speedToWindClassification } from 'helpers/physics'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { WindFix } from 'models'
-import { navigateBack } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 
 import ImageButton from 'components/ImageButton'
@@ -111,7 +110,7 @@ class SetWind extends React.Component<ViewProps & {
     try {
       this.setState({ isLoading: true })
       await this.props.sendWind(windAngleInDeg, windSpeedInKnots)
-      navigateBack()
+      this.props.navigation.goBack()
     } catch (err) {
       Alert.alert(getErrorDisplayMessage(err))
     } finally {

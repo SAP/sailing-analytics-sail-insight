@@ -1,12 +1,13 @@
 import { merge, defaultTo, prop, compose, insert, reject, tap,
   propEq, head, map, when, mergeLeft, mergeDeepLeft, always, ifElse,
   append, concat, pick, dissoc, evolve, equals, isNil, find, has,
-  apply, take, move, last, includes, __, path } from 'ramda'
+  apply, applySpec, take, move, last, includes, __, path } from 'ramda'
 import { handleActions } from 'redux-actions'
 import { combineReducers } from 'redux'
 import { PassingInstruction } from 'models/Course'
 import I18n from 'i18n'
 import { getHashedDeviceId } from 'selectors/user'
+import { toHashedString } from 'helpers/utils'
 
 import {
   loadCourse,
@@ -23,10 +24,11 @@ import {
   updateWaypointPassingInstruction,
   updateMarkConfigurationShortName,
   updateMarkConfigurationLocation,
-  updateMarkConfigurationDeviceTracking,
+  updateMarkConfigurationWithCurrentDeviceAsTracker,
   changeWaypointToNewMark,
   changeWaypointToNewLine,
   changeWaypointMarkConfigurationToNew,
+  changeMarkConfigurationDeviceTracking,
   assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration
 } from 'actions/courses'
@@ -39,7 +41,7 @@ const updateWaypointMarkConfiguration = (state: any, action: any) => {
     take(2),
     move(-1, 0))(
     state)
-  
+
   const startFinishIds = [head(state).id, last(state).id]
   const isStartOrFinish = includes(action.payload.id, startFinishIds)
   const idsToUpdate = isStartOrFinish && sameStartFinish ? startFinishIds : [action.payload.id]
@@ -75,7 +77,7 @@ const waypoints = handleActions({
         id: action.payload.id,
         passingInstruction: action.payload.passingInstruction || PassingInstruction.Port,
         markConfigurationIds: action.payload.markConfigurationIds
-      })), state), 
+      })), state),
   [changeWaypointToNewLine as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id),
       always({
@@ -111,7 +113,7 @@ const markConfigurations = handleActions({
           latitude_deg: action.payload.value.latitude,
           longitude_deg: action.payload.value.longitude } }))),
     state),
-  [updateMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
+  [updateMarkConfigurationWithCurrentDeviceAsTracker as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
       dissoc('lastKnownPosition'),
       mergeLeft({
@@ -124,6 +126,17 @@ const markConfigurations = handleActions({
           id: action.payload.deviceId,
           type: 'smartphoneUUID',
           stringRepresentation: action.payload.deviceId }}))),
+    state),
+  [changeMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), compose(
+      mergeLeft({
+        trackingDevices: map(applySpec({
+          trackingDeviceType: path(['deviceId', 'type']),
+          trackingDeviceHash: compose(toHashedString, path(['deviceId', 'id'])),
+          trackingDeviceMappedFromMillis: prop('mappedFrom'),
+          trackingDeviceLastKnownPosition: prop('lastGPSFix'),
+        }))(action.payload.trackingDevices),
+      }))),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(

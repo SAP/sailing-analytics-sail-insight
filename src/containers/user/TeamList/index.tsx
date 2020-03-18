@@ -6,15 +6,13 @@ import { fetchUserInfo } from 'actions/user'
 import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
-import { navigateToTeamDetails } from 'navigation'
+import * as Screens from 'navigation/Screens'
 import { getLastUsedTeam, getUserTeams } from 'selectors/user'
-
 import FloatingComponentList from 'components/FloatingComponentList'
 import TeamItem from 'components/TeamItem'
 import Text from 'components/Text'
 import { button } from 'styles/commons'
 import styles from './styles'
-
 
 class TeamList extends React.Component<ViewProps & {
   teams: TeamTemplate[],
@@ -35,6 +33,7 @@ class TeamList extends React.Component<ViewProps & {
         renderFloatingItem={this.renderAddItem}
         refreshing={this.state.refreshing}
         onRefresh={this.onRefresh}
+        hideFloatingItemOnScroll={false}
       />
     )
   }
@@ -50,16 +49,11 @@ class TeamList extends React.Component<ViewProps & {
     }
   }
 
-  protected onNewBoatPress = () => {
-    navigateToTeamDetails()
-  }
-
   protected renderAddItem = () => {
     return(
       <TouchableOpacity
         style={[button.actionRectangular, styles.addButton]}
-        onPress={this.onNewBoatPress}
-      >
+        onPress={() => this.props.navigation.navigate(Screens.TeamDetails)}>
         <Text style={styles.textStyle}>
           {I18n.t('caption_new_team').toUpperCase()}
         </Text>
@@ -69,12 +63,10 @@ class TeamList extends React.Component<ViewProps & {
 
   protected renderItem = ({ item }: {item: TeamTemplate}) => {
     const { lastUsedTeam } = this.props
-    return (
-      <TeamItem
-        lastUsed={lastUsedTeam && lastUsedTeam.name === item.name}
-        team={item}
-      />
-    )
+    return <TeamItem
+      lastUsed={lastUsedTeam && lastUsedTeam.name === item.name}
+      onPress={() => this.props.navigation.navigate(Screens.TeamDetails,  { data: item })}
+      team={item}/>
   }
 }
 

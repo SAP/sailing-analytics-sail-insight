@@ -23,7 +23,6 @@ import {
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
 import * as expertSettingsForm from '../../forms/settings'
-import { navigateBack } from '../../navigation'
 import {
   getLeaderboardEnabledSetting,
   getServerUrlSetting,
@@ -111,14 +110,14 @@ class ExpertSettings extends TextInputForm<Props> {
 
   protected onSubmit = async (values: any) => {
     await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
-    navigateBack()
+    this.props.navigation.goBack()
   }
 
   protected onLogToEmailSubmit = () => {
     this.setState({ emailLoading: true })
     BackgroundGeolocation.emailLog('sailinsight@sailtracks.tv').then(() => {
       Alert.alert(I18n.t('caption_success'))
-      navigateBack()
+      this.props.navigation.goBack()
     }).catch(() => {
       Alert.alert(I18n.t('error_unknown'))
       this.setState({ emailLoading: false })

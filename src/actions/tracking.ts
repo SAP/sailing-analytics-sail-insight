@@ -5,10 +5,9 @@ import { Alert } from 'react-native'
 import { AddRaceColumnResponseData } from 'api/endpoints/types'
 import I18n from 'i18n'
 import { CheckIn, CheckInUpdate } from 'models'
-import { navigateToTracking, navigateToEditCompetitor } from 'navigation'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
-
+import * as Screens from 'navigation/Screens'
 import { withDataApi } from 'helpers/actions'
 import { getNowAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
@@ -28,7 +27,6 @@ import {
   getVerboseLoggingSetting,
 } from '../selectors/settings'
 import { syncAllFixes } from '../services/GPSFixService'
-import { deleteAllGPSFixRequests } from '../storage'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
 
 
@@ -55,8 +53,7 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
   },
 )
 
-export type StartTrackingAction = (data?: CheckIn | string) => any
-export const startTracking: StartTrackingAction = data =>  async (
+export const startTracking = ({ data, navigation }: any) => async (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
@@ -72,14 +69,14 @@ export const startTracking: StartTrackingAction = data =>  async (
     checkInData)
 
   if (eventIsNotBound) {
-    navigateToEditCompetitor(checkInData, { startTrackingAfter: true });
+    navigation.navigate(Screens.EditCompetitor, { data: checkInData, options: { startTrackingAfter: true } })
     return
   }
 
   dispatch(updateLoadingCheckInFlag(true))
   dispatch(resetTrackingStatistics())
 
-  navigateToTracking()
+  navigation.navigate(Screens.Tracking)
   let showAlertRaceNotStarted = false
 
   try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
