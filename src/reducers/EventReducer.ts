@@ -1,5 +1,14 @@
 import { removeUserData } from 'actions/auth'
-import { receiveEvent, selectEvent, selectRace, updateEvent, updateEventFilters, updateRaceTime, updateCreatingEvent } from 'actions/events'
+import {
+  receiveEvent,
+  selectEvent,
+  selectRace,
+  updateEvent,
+  updateEventFilters,
+  updateRaceTime,
+  updateCreatingEvent,
+  updateSelectingEvent,
+} from "actions/events";
 import { EventFilter } from 'models/EventFilter'
 import { path } from 'ramda'
 import { EventState } from 'reducers/config'
@@ -11,6 +20,7 @@ const initialState: EventState = {
   activeFilters: [EventFilter.All],
   raceTimes: {},
   isCreatingEvent: false,
+  isSelectingEvent: false,
 } as EventState
 
 const reducer = handleActions(
@@ -19,6 +29,7 @@ const reducer = handleActions(
       ...state,
       selectedEvent: action.payload.data.eventId,
       selectedRegatta: action.payload.data.regattaName,
+      isSelectingEvent: true,
     }),
     [selectRace as any]: (state: any = {}, action: any) => ({
       ...state,
@@ -71,6 +82,7 @@ const reducer = handleActions(
     },
     [removeUserData as any]: () => initialState,
     [updateCreatingEvent as any]: itemUpdateHandler('isCreatingEvent'),
+    [updateSelectingEvent as any]: itemUpdateHandler('isSelectingEvent'),
   },
   initialState,
 )

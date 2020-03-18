@@ -15,6 +15,7 @@ import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
 export const UPDATE_CREATING_EVENT = 'UPDATE_CREATING_EVENT'
+export const UPDATE_SELECTING_EVENT = 'UPDATE_SELECTING_EVENT'
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
 export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
@@ -132,6 +133,7 @@ export const updateEventSettings = (session: object, data: object) => (dispatch:
 }
 
 export const updateCreatingEvent = createAction(UPDATE_CREATING_EVENT)
+export const updateSelectingEvent = createAction(UPDATE_SELECTING_EVENT)
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)
 export const setRaceTime = createAction(SET_RACE_TIME)
