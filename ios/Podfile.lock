@@ -305,6 +305,8 @@ PODS:
     - React
   - react-native-camera/RN (3.16.0):
     - React
+  - react-native-communication-boat (1.1.0):
+    - React
   - react-native-geolocation (2.0.2):
     - React
   - react-native-keep-awake (3.1.0):
@@ -450,6 +452,7 @@ DEPENDENCIES:
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-branch (from `../node_modules/react-native-branch`)
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-communication-boat (from `../node_modules/react-native-communication-boat`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - react-native-maps (from `../node_modules/react-native-maps`)
@@ -567,6 +570,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-branch"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-communication-boat:
+    :path: "../node_modules/react-native-communication-boat"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-keep-awake:
@@ -689,6 +694,7 @@ SPEC CHECKSUMS:
   react-native-background-timer: 1b6e6b4e10f1b74c367a1fdc3c72b67c619b222b
   react-native-branch: cc611a2d0e7e6c7c4cafebc8e59065b89c38002b
   react-native-camera: 705c7e9412436957b4dc894a1af61f43830787e2
+  react-native-communication-boat: 2f3811257ba5b8d4e3ef715156a2934a02740b32
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
   react-native-keep-awake: ff10b454b539786007df59fce87abbb7cd4634e3
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
@@ -731,6 +737,6 @@ SPEC CHECKSUMS:
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 4fd1c0707f00136893638e5ac5f76ee3f2fd7554
+PODFILE CHECKSUM: 9037b8b48bfeba02da1aa3be974b061e5f6beba8
 
 COCOAPODS: 1.8.4

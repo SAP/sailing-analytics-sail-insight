@@ -15,6 +15,7 @@ import OnboardingReducer from './OnboardingReducer'
 import permissions from './permissionsReducer'
 import SettingsReducer from './SettingsReducer'
 import UserReducer from './UserReducer'
+import CommunicationsReducer from './CommunicationsReducer'
 
 const reducer: RootState = {
   auth: AuthReducer,
@@ -30,6 +31,7 @@ const reducer: RootState = {
   courses: CourseReducer,
   events: EventReducer,
   permissions,
+  communications: CommunicationsReducer,
 }
 
 const reducers = combineReducers(reducer)

@@ -6472,6 +6472,10 @@ react-native-check-box@^2.1.7:
   dependencies:
     prop-types "^15.5.7"
 
+"react-native-communication-boat@https://github.com/radurad/react-native-communication-boat":
+  version "1.1.0"
+  resolved "https://github.com/radurad/react-native-communication-boat#edbc2d4a110eb8cede1144be73863e192e5cd80f"
+
 react-native-dash@0.0.9:
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/react-native-dash/-/react-native-dash-0.0.9.tgz#a07eb06a360530e42980e9cf90fd7f862705e2f2"
