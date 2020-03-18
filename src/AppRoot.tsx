@@ -224,9 +224,9 @@ const accountNavigator = Component(props => compose(
 
 const trackingTabPress = (props: any) => {
   const { navigation, route, preventDefault } = props
-  const selectedTab = route.state.routes[route.state.index]
+  const selectedTab = route.state?.routes[route.state?.index]
 
-  if (selectedTab.name === Screens.TrackingNavigator) {
+  if (selectedTab && selectedTab.name === Screens.TrackingNavigator) {
     const selectedTrackingStack = selectedTab.state.routes[selectedTab.state.index].name
     const toPrevent = [Screens.Tracking, Screens.SetWind, Screens.Leaderboard]
     const toGoBack = [Screens.SetWind, Screens.Leaderboard]
