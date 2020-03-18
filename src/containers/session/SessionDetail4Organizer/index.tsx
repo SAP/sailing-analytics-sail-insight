@@ -74,6 +74,10 @@ export const sessionDetailsCard = Component((props: any) => compose(
       textStyle: [props.boatClass !== '' ? styles.textValue : styles.textLast, styles.textValue],
       source: Images.info.location,
       alignment: 'horizontal'}, props.location),
+    inlineText({ style: props.boatClass !== '' ? styles.text : styles.textLast }, [
+      text({ style: styles.textLight }, 'Style '),
+      text({ style: styles.textValue }, I18n.t(props.boatClass !== '' ? 'caption_one_design' : 'text_handicap_label').toUpperCase())
+    ]),
     nothingWhenNoBoatClass(inlineText( { style: styles.textLast }, [
       text({ style: styles.textLight }, `${I18n.t('text_class')} `),
       text({ style: styles.textValue }, props.boatClass),
