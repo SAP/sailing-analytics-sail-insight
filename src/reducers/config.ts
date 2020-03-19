@@ -82,6 +82,8 @@ export interface EventState {
   all: Map<string, any>
   activeFilters: string[]
   isCreatingEvent: boolean
+  isSelectingEvent: boolean
+  isStartingTracking: boolean
 }
 
 export interface CheckInState {
