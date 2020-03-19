@@ -46,11 +46,9 @@ const defaultResponseHandler = (dataHandler?: (response: any) => any) => async (
 
 const jsonData = async (response: any) => {
   if (response.text) {
-    console.log('jsonData - text')
     const text = await response.text()
     return text && JSON.parse(text)
   }
-  console.log('jsonData - obj')
   return response
 }
 
