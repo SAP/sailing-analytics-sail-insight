@@ -106,4 +106,5 @@ export interface CommunicationsReducerState {
   port: string
   state: boolean
   valid: boolean
+  startLine: object
 }

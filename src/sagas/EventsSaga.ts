@@ -1,5 +1,5 @@
 import crashlytics from '@react-native-firebase/crashlytics'
-import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
+import { FETCH_COURSES_FOR_EVENT, FETCH_COURSE_FOR_TRACKING, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
@@ -11,6 +11,7 @@ import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
 import { fetchPermissionsForEvent } from 'actions/permissions'
 import { updateCheckIn } from 'actions/checkIn'
+import { updateStartLine } from 'actions/communications'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
@@ -277,6 +278,36 @@ function* stopTracking({ payload }: any) {
   }
 }
 
+function* fetchCoursesForTracking({ payload }: any) {
+
+  const { raceName, regattaName, serverUrl } = payload
+  const api = dataApi(serverUrl)
+
+  const course = yield call(api.requestCourse, regattaName, raceName, 'Default')
+
+  // update start line
+  if (course.markConfigurations && course.markConfigurations.length > 0) {
+    const wayPoints = course && course.waypoints && course.waypoints.length > 0 && course.waypoints.find((waypoint: any) => waypoint.controlPointName === 'Start')
+    const markConfigurationIds = wayPoints.markConfigurationIds && wayPoints.markConfigurationIds.length > 1 && wayPoints.markConfigurationIds
+    const startFinishPin = markConfigurationIds && course.markConfigurations.find((markConfiguration: any) => markConfiguration.id === markConfigurationIds[0])
+    const startFinishBoat = markConfigurationIds && course.markConfigurations.find((markConfiguration: any) => markConfiguration.id === markConfigurationIds[0])
+
+    const pinLatitude = startFinishPin.lastKnownPosition && startFinishPin.lastKnownPosition.lat_deg
+    const pinLongitude = startFinishPin.lastKnownPosition && startFinishPin.lastKnownPosition.lon_deg
+
+    const boatLatitude = startFinishBoat.lastKnownPosition && startFinishPin.lastKnownPosition.lat_deg
+    const boatLongitude = startFinishBoat.lastKnownPosition && startFinishPin.lastKnownPosition.lon_deg
+
+    if (pinLatitude && pinLatitude && boatLongitude && boatLongitude) {
+      const startLine = {pinLatitude, pinLongitude, boatLatitude, boatLongitude}
+      yield put(updateStartLine(startLine))
+    } else {
+      yield put(updateStartLine({}))
+    }
+  }
+
+}
+
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventSaga)
     yield takeLatest(FETCH_RACES_TIMES_FOR_EVENT, fetchRacesTimesForCurrentEvent)
@@ -290,4 +321,5 @@ export default function* watchEvents() {
     yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
     yield takeLatest(START_TRACKING, startTracking)
     yield takeLatest(STOP_TRACKING, stopTracking)
+    yield takeLatest(FETCH_COURSE_FOR_TRACKING, fetchCoursesForTracking)
 }
