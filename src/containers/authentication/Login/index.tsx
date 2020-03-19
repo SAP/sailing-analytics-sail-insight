@@ -8,8 +8,8 @@ import { login } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import I18n from 'i18n'
-import { navigateToMain, navigateToPasswordReset } from 'navigation'
-
+import * as Screens from 'navigation/Screens'
+import { PasswordReset } from 'navigation/Screens'
 import TextInputForm from 'components/base/TextInputForm'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
@@ -52,12 +52,11 @@ class Login extends TextInputForm<{
       return
     }
 
-    // try to login
     try {
       this.setState({ isLoading: true })
       await this.props.login(username, password)
       this.props.fetchUserInfo()
-      navigateToMain()
+      this.props.navigation.reset({ index: 1, routes: [{ name: Screens.Main }]})
     } catch (err) {
       this.setState({ error: I18n.t('error_login_incorrect') })
     } finally {
@@ -87,8 +86,7 @@ class Login extends TextInputForm<{
                 returnKeyType="next"
                 autoCapitalize="none"
                 onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_PASSWORD)}
-                inputRef={this.handleInputRef(FORM_KEY_USERNAME)}
-            />
+                inputRef={this.handleInputRef(FORM_KEY_USERNAME)}/>
             <TextInput
                 value={this.state.password}
                 onChangeText={this.onPasswordChange}
@@ -100,9 +98,8 @@ class Login extends TextInputForm<{
                 returnKeyType="go"
                 onSubmitEditing={this.onSubmit}
                 secureTextEntry={true}
-                inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}
-            />
-            <TouchableOpacity style={styles.forgotPassword} onPress={this.onPasswordResetPress}>
+                inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}/>
+            <TouchableOpacity style={styles.forgotPassword} onPress={() => this.props.navigation.navigate(PasswordReset)}>
               <Text style={styles.forgotPwText}>
                 {I18n.t('caption_forgot_password')}
               </Text>
@@ -114,8 +111,7 @@ class Login extends TextInputForm<{
                 style={styles.loginButton}
                 textStyle={styles.loginButtonText}
                 onPress={this.onSubmit}
-                isLoading={isLoading}
-            >
+                isLoading={isLoading}>
               {I18n.t('caption_login').toUpperCase()}
             </TextButton>
           </View>
@@ -123,9 +119,6 @@ class Login extends TextInputForm<{
       </View>
     )
   }
-
-  private onPasswordResetPress = () => {
-    return navigateToPasswordReset()
-  }
 }
+
 export default connect(null, { fetchUserInfo, login })(Login)

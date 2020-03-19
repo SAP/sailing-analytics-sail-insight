@@ -19,14 +19,12 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import { TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
-import { navigateToMain } from 'navigation'
-
+import * as Screens from 'navigation/Screens'
 import TextInputForm from 'components/base/TextInputForm'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-
 import { button, container, text } from 'styles/commons'
 import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
@@ -37,7 +35,6 @@ import FormImagePicker from '../../../components/form/FormImagePicker'
 import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import { getFormFieldValue } from '../../../selectors/form'
 import styles from './styles'
-
 
 interface Props {
   saveTeam: SaveTeamAction,
@@ -152,7 +149,7 @@ class RegisterBoat extends TextInputForm<Props> {
           <TextButton
             style={registration.lowerButton()}
             textStyle={button.textButtonSecondaryText}
-            onPress={this.onSkip}
+            onPress={() => this.props.navigation.navigate(Screens.Main)}
           >
             {I18n.t('caption_skip')}
           </TextButton>
@@ -168,10 +165,6 @@ class RegisterBoat extends TextInputForm<Props> {
     }
   }
 
-  protected onSkip() {
-    navigateToMain()
-  }
-
   protected onSubmit = async (values: any) => {
     try {
       this.setState({ isLoading: true, error: null })
@@ -184,7 +177,7 @@ class RegisterBoat extends TextInputForm<Props> {
         imageData: values[FORM_KEY_IMAGE],
         handicap: values[FORM_KEY_HANDICAP],
       } as TeamTemplate)
-      navigateToMain()
+      this.props.navigation.navigate(Screens.Main)
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
     } finally {

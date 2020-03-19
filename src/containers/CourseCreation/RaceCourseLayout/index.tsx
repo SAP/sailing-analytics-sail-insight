@@ -26,8 +26,8 @@ import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguratio
   isDefaultWaypointSelection } from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { getHashedDeviceId } from 'selectors/user'
-import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
+import * as Screens from 'navigation/Screens'
 import TextInput from 'components/TextInput'
 import SwitchSelector from 'react-native-switch-selector'
 import Images from '@assets/Images'
@@ -193,9 +193,8 @@ const MarkPositionTracking = Component((props: object) =>
     concat(text({ style: styles.trackingText }, props.selectedMarkDeviceTracking)),
     touchableOpacity({
       style: styles.changeTrackingButton,
-      onPress: () => navigateToCourseTrackerBinding({
-        selectedMarkConfiguration: props.selectedMarkConfiguration
-      })
+      onPress: () => props.navigation.navigate(Screens.CourseTrackerBinding,
+        { data: { selectedMarkConfiguration: props.selectedMarkConfiguration } })
     }))(
     text(
       { style: styles.changeTrackingText },
@@ -235,10 +234,11 @@ const MarkPositionGeolocation = Component((props: object) =>
     touchableOpacity({
       style: styles.editPositionButton,
       onPress: () => Geolocation.getCurrentPosition(({ coords }) =>
-        navigateToCourseGeolocation({
-          selectedMarkConfiguration: props.selectedMarkConfiguration,
-          currentPosition: coords,
-          markPosition: props.selectedMarkLocation })) }))(
+        props.navigation.navigate(Screens.CourseGeolocation,
+          { data: {
+            selectedMarkConfiguration: props.selectedMarkConfiguration,
+            currentPosition: coords,
+            markPosition: props.selectedMarkLocation } })) }))(
     text({ style: styles.locationText }, I18n.t('caption_course_creation_edit_position'))))
 
 const locationTypes = [
@@ -639,7 +639,7 @@ export default Component((props: object) =>
           apply(equals),
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(
           [next, prev]) }),
-    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
+    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true, contentContainerStyle: { flexGrow: 1 } }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
       nothingWhenNotLoading(LoadingIndicator),

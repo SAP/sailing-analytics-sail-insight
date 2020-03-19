@@ -40,6 +40,7 @@ export default EStyleSheets.create({
     shadowOpacity: 0.32,
     shadowRadius: 5.46,
     elevation: 9,
+    flexGrow: 0,
   },
 
   sectionTitle: {
@@ -54,6 +55,7 @@ export default EStyleSheets.create({
 
   editContainer: {
     paddingTop: 15,
+    flexGrow: 1,
   },
 
   indentedContainer: { ...withPadding },
@@ -62,6 +64,7 @@ export default EStyleSheets.create({
     ...withPadding,
     paddingTop: 15,
     backgroundColor: $LightDarkBlue,
+    flexGrow: 1,
   },
 
   passingInstruction: roundElementContainer,
@@ -270,7 +273,6 @@ export default EStyleSheets.create({
 
   markNameEditContainer: {
     flexDirection: 'row',
-    flex: 1
   },
 
   markPropertiesDropdownTextContainer: {

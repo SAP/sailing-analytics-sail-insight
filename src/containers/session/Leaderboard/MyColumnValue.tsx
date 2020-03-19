@@ -17,6 +17,8 @@ const MyColumnValue = ({
   rankingMetric = 'ONE_DESIGN',
 }: MyColumnValueProps) => {
 
+  let adjustedCompetitorData: LeaderboardCompetitorCurrentTrack = competitorData
+
   if (selectedColumn === ColumnValueType.GapToCompetitor) {
     const myGapToLeader =
       competitorData.trackedColumnData &&
@@ -35,7 +37,7 @@ const MyColumnValue = ({
         ? undefined
         : myGapToLeader - comparedGapToLeader
 
-    const modifiedCompetitorData: LeaderboardCompetitorCurrentTrack = {
+    adjustedCompetitorData = {
       ...competitorData,
       gain: undefined,
       trackedColumnData: {
@@ -43,26 +45,16 @@ const MyColumnValue = ({
         [rankingMetric === 'ONE_DESIGN' ? 'gapToLeaderInM' : 'gapToLeaderInS']: gapToCompetitor,
       },
     }
-
-    return (
-      <ColumnValue
-        selectedColumn={selectedColumn}
-        competitorData={modifiedCompetitorData}
-        fontSize={fontSize}
-        rankingMetric={rankingMetric}
-        halveGapIfOverOneHour={true}
-      />
-    )
   }
 
   return (
     <ColumnValue
       selectedColumn={selectedColumn}
-      competitorData={competitorData}
+      competitorData={adjustedCompetitorData}
       myCompetitorData={competitorData}
       fontSize={fontSize}
       rankingMetric={rankingMetric}
-      halveGapIfOverOneHour={true}
+      fontSizeMultiplier={0.5}
     />
   )
 }

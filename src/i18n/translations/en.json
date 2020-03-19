@@ -186,7 +186,7 @@
   "caption_tab_trackingsetupaction": "Tracking",
   "caption_tab_trackingnavigator": "Tracking",
   "caption_tab_trackinglist": "Tracking",
-  "caption_tab_sessions": "Events",
+  "caption_tab_sessionsnavigator": "Events",
   "caption_tab_checkin": "Join Regatta",
   "caption_tab_account": "Account",
   "caption_tab_usersessions": "My events",
@@ -353,7 +353,7 @@
   "caption_course_creation_change_device": "Change Tracking Device",
   "caption_course_creation_delete_this_mark": "Delete this Mark from Course",
   "caption_course_creator_ping_position": "Ping Current Position",
-  "caption_course_creation_edit_position": "Define Position",
+  "caption_course_creation_edit_position": "Define Position On Map",
 
   "caption_course_creator_bind_with_tracker": "Bind with Tracker",
   "text_course_creator_explain_qr": "Scannen Sie diesen ...",

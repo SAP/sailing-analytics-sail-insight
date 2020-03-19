@@ -8,11 +8,11 @@ import { Component, connectActionSheet, fold, fromClass, nothing, nothingAsClass
   recomposeBranch as branch,
   reduxConnect as connect } from 'components/fp/component'
 import { scrollView, touchableOpacity, view } from 'components/fp/react-native'
+import * as Screens from 'navigation/Screens'
 import IconText from 'components/IconText'
 import { BRANCH_APP_DOMAIN } from 'environment'
-import { dateFromToText } from 'helpers/date';
-import I18n from 'i18n';
-import { navigateToRaceDetails } from 'navigation'
+import { dateFromToText } from 'helpers/date'
+import I18n from 'i18n'
 import { getCustomScreenParamData } from 'navigation/utils'
 import querystring from 'query-string'
 import { canUpdateCurrentEvent } from 'selectors/permissions'
@@ -74,7 +74,7 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
 }
 
 const sessionData = {
-  racesAndScoringOnPress: (props: any) => navigateToRaceDetails(props.session),
+  racesAndScoringOnPress: (props: any) => props.navigation.navigate(Screens.RaceDetails, { data: props.session }),
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
 

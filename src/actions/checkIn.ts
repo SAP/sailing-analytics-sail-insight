@@ -3,10 +3,9 @@ import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
-import { navigateToEditCompetitor, navigateToJoinRegatta, navigateToSessions } from 'navigation'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
-
+import * as Screens from 'navigation/Screens'
 
 import { ActionQueue, fetchEntityAction, withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
@@ -30,7 +29,6 @@ import { saveTeam } from './user'
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 export const updateLoadingCheckInFlag = createAction('UPDATE_LOADING_CHECK_IN_FLAG')
-export const updateLoadingSplashFlag = createAction('UPDATE_LOADING_SPLASH_FLAG')
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(
   async (dataApi, dispatch) => {
@@ -86,7 +84,7 @@ export const isEventAlreadyJoined = ({ eventId }: CheckIn, activeCheckIns: any) 
   Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
 
 
-export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!data) {
     throw new CheckInException('data is missing')
   }
@@ -103,7 +101,7 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
       update.trackingContext = 'MARK'
     }
     dispatch(updateCheckIn(update))
-    navigateToSessions()
+    navigation.navigate(Screens.Sessions)
 
     if (data.competitorId) {
       const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
@@ -131,7 +129,7 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean) => async (dispatc
     }
   }
   if (!data.competitorId && !data.markId && !data.boatId) {
-    navigateToEditCompetitor(data)
+    navigation.navigate(Screens.EditCompetitor, { data })
   }
 }
 
@@ -159,7 +157,8 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
   },
 )
 
-export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
+  async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
 
   if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
@@ -173,13 +172,12 @@ export const joinLinkInvitation = (checkInUrl: string) => async (dispatch: Dispa
     return
   }
 
-
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
     const activeCheckIns = getActiveCheckInEntity(getState()) || {}
     const alreadyJoined = isEventAlreadyJoined(sessionCheckIn, activeCheckIns)
-    navigateToJoinRegatta(sessionCheckIn, alreadyJoined)
+    navigation.navigate(Screens.JoinRegatta, { data: { checkInData: sessionCheckIn, alreadyJoined } })
   } catch (err) {
     Logger.debug(err)
     error = err
