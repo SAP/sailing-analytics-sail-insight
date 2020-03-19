@@ -1,7 +1,7 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
-import { compose, reduce, concat, mergeDeepLeft, merge, includes } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft, merge, includes, propEq } from 'ramda'
 import { Text } from 'react-native'
 import 'store/init'
 
@@ -11,7 +11,7 @@ import SplashScreen from 'containers/SplashScreen'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import Logger from 'helpers/Logger'
-import SpinnerOverlay from 'react-native-loading-spinner-overlay'	
+import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import * as DeepLinking from 'integrations/DeepLinking'
 import * as LocationService from 'services/LocationService'
 import { initializeApp } from 'actions/appLoading'
@@ -20,12 +20,13 @@ import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { isLoadingCheckIn } from 'selectors/checkIn'
+import { isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/stack'
 import { AuthContext } from 'navigation/NavigationContext'
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
-import { Component, fold, nothing } from 'components/fp/component'
+import { Component, fold, nothing, reduxConnect, recomposeBranch as branch, nothingAsClass, fromClass } from 'components/fp/component'
+import { view, text } from 'components/fp/react-native'
 import FirstContact from 'containers/user/FirstContact'
 import Sessions from 'containers/session/Sessions'
 import QRScanner from 'containers/session/QRScanner'
@@ -47,6 +48,7 @@ import ExpertSettings from 'containers/ExpertSettings'
 import Leaderboard from 'containers/session/Leaderboard/Leaderboard'
 import SetWind from 'containers/tracking/SetWind'
 import Tracking from 'containers/tracking/Tracking'
+import MarkTracking from 'containers/tracking/MarkTracking'
 import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import HeaderTitle from 'components/HeaderTitle'
@@ -163,11 +165,28 @@ const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <
 const withLeftHeaderBackButton = mergeDeepLeft({ options: {
   headerLeft: () => <HeaderBackButton onPress={() => navigationContainer.current.goBack()} tintColor="white"	labelVisible={false} />}})
 
+const nothingWhenBoundToMark = branch(propEq('boundToMark', true), nothingAsClass)
+const nothingWhenNotBoundToMark = branch(propEq('boundToMark', false), nothingAsClass)
+
+const TrackingSwitch = Component((props: any) => compose(
+  fold(props),
+  reduxConnect((state: any) => {
+    return {
+      boundToMark: isBoundToMark(state)
+    }
+  }),
+  view({ style: { flex: 1 } }),
+  reduce(concat, nothing())
+)([
+  nothingWhenBoundToMark(fromClass(WelcomeTracking)),
+  nothingWhenNotBoundToMark(MarkTracking)
+]))
+
 const trackingNavigator = Component(props => compose(
   fold(props),
   stackNavigator({ initialRouteName: Screens.WelcomeTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
-  stackScreen(withoutHeader({ name: Screens.WelcomeTracking, component: WelcomeTracking })),
+  stackScreen(withoutHeader({ name: Screens.WelcomeTracking, component: TrackingSwitch.fold })),
   stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
     withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
     { name: Screens.TrackingList, component: Sessions, initialParams: { forTracking: true } })),

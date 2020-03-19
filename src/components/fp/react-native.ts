@@ -1,6 +1,7 @@
 import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
 import IconText from 'components/IconText'
 import TextButton from 'components/TextButton'
+import Button from 'components/Button'
 import { __, always, compose, concat, curry, has, head, merge, mergeLeft, objOf, reduce, when } from 'ramda'
 import { useState as reactUseState } from 'react'
 import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
@@ -17,6 +18,11 @@ export const svgPath = fromClass(Path)
 export const svgGroup = buildComponentWithChildren(G)
 export const svgText = buildComponentWithChildren(rnSvgText)
 export const iconText = buildComponentWithChildren(IconText)
+
+export const icon = compose(
+  fromClass(IconText).contramap,
+  always
+)
 
 export const image = (settings: Object) => Component((props: Object) => compose(
   fold(props),
@@ -88,3 +94,13 @@ export const textButton = curry((settings, c) => Component((props: Object) => co
   when(has('fold'), fold(props)))(
   c)))
 
+export const button = curry((settings, c) => Component((props: Object) => compose(
+  fold(props),
+  fromClass(Button).contramap,
+  always,
+  merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props)}),
+  merge(settings),
+  objOf('children'),
+  head,
+  when(has('fold'), fold(props)))(
+  c)))

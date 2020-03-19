@@ -26,6 +26,12 @@ import { getUserTeamByNameBoatClassNationalitySailnumber } from '../selectors/us
 import { getStore } from '../store'
 import { saveTeam } from './user'
 
+export const DELETE_MARK_BINDING = 'DELETE_MARK_BINDING'
+export const UPDATE_DELETING_MARK_BINDING = 'UPDATE_DELETING_MARK_BINDING'
+
+export const deleteMarkBinding = createAction(DELETE_MARK_BINDING)
+export const updateDeletingMarkBinding = createAction(UPDATE_DELETING_MARK_BINDING)
+
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 export const updateLoadingCheckInFlag = createAction('UPDATE_LOADING_CHECK_IN_FLAG')

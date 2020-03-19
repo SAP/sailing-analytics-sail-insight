@@ -90,6 +90,7 @@ export interface CheckInState {
   active: any
   isLoadingCheckIn: boolean
   isLoadingSplash: boolean
+  isDeletingMarkBinding: boolean
 }
 
 export interface CourseReducerState {

@@ -174,6 +174,7 @@
   "caption_close": "Close",
   "caption_confirm": "Confirm",
   "caption_qr_scanner": "Scan a QR-Code",
+  "caption_delete_mark_binding": "Delete binding with this device",
   "caption_start_tracking": "Start tracking",
   "caption_stop_tracking": "Stop tracking",
   "caption_to_event": "To the event",
@@ -335,6 +336,7 @@
   "button_no": "No",
   "text_entry_open_SAP_Analytics_button": "You can only view the SAP Sailing Analytics after the entry list has been closed. Are you ready to close the entry list (note that no competitors can be added afterwards)?",
   "text_entry_open_when_setting_time": "Start time cannot be set until the entry list is closed. Are you ready to close the entry? Note that no competitors can be added afterwards.",
+  "text_delete_binding_alert": "Do you really want to delete the binding?",
 
   "caption_basics": "Basics",
   "caption_event_creation_date": "Date",

@@ -53,7 +53,7 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
   },
 )
 
-export const startTracking = ({ data, navigation }: any) => async (
+export const startTracking = ({ data, navigation, markTracking = false }: any) => async (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
@@ -76,7 +76,9 @@ export const startTracking = ({ data, navigation }: any) => async (
   dispatch(updateLoadingCheckInFlag(true))
   dispatch(resetTrackingStatistics())
 
-  navigation.navigate(Screens.Tracking)
+  if (!markTracking) {
+    navigation.navigate(Screens.Tracking)
+  }
   let showAlertRaceNotStarted = false
 
   try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
@@ -138,7 +140,7 @@ export const startTracking = ({ data, navigation }: any) => async (
   } finally {
     dispatch(updateLoadingCheckInFlag(false))
 
-    if (showAlertRaceNotStarted) {
+    if (showAlertRaceNotStarted && !markTracking) {
       // workaround for stuck fullscreen loading indicator when alert is called
       setTimeout(async () => Alert.alert(
           I18n.t('caption_race_not_started_yet'),
