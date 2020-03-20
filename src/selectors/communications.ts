@@ -17,6 +17,9 @@ export const getServerProtocol = (state: RootState = {}) =>
 export const getServerValid = (state: RootState = {}) => 
   state.communications && state.communications.valid
 
+export const getStartLine = (state: RootState = {}) =>
+  state.communications && state.communications.startLine
+
 export const getMarkPositionsForCourse = (course: any, mark: string) => {
 
   const getMarkPositions = compose(

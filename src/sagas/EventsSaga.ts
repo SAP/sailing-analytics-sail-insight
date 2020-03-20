@@ -25,8 +25,8 @@ import { getSelectedEventInfo } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
 import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
-import { StackActions } from '@react-navigation/native'
 import { getMarkPositionsForCourse } from 'selectors/communications'
+import { StackActions } from '@react-navigation/native'
 
 const valueAtIndex = curry((index, array) => compose(
   head,
