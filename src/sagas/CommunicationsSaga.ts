@@ -9,7 +9,7 @@ export function* updateStartLine({ payload }: any) {
   //#L,P,16.9903666666667,-61.7697833333333*3E
 
   const startPin = `#L,P,${payload.pinLatitude},${payload.pinLongitude}*3F`
-  const startBoat = `#L,P,${payload.pinLatitude},${payload.pinLongitude}*3E`
+  const startBoat = `#L,P,${payload.boatLatitude},${payload.boatLongitude}*3E`
 
   sendServerMessage(startPin)
   sendServerMessage(startBoat)

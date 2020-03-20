@@ -26,6 +26,7 @@ import { canUpdateEvent } from 'selectors/permissions'
 import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { StackActions } from '@react-navigation/native'
+import { getMarkPositionsForCourse } from 'selectors/communications'
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -278,7 +279,7 @@ function* stopTracking({ payload }: any) {
   }
 }
 
-function* fetchCoursesForTracking({ payload }: any) {
+function* fetchCoursesForTrackingSaga({ payload }: any) {
 
   const { raceName, regattaName, serverUrl } = payload
   const api = dataApi(serverUrl)
@@ -286,24 +287,12 @@ function* fetchCoursesForTracking({ payload }: any) {
   const course = yield call(api.requestCourse, regattaName, raceName, 'Default')
 
   // update start line
-  if (course.markConfigurations && course.markConfigurations.length > 0) {
-    const wayPoints = course && course.waypoints && course.waypoints.length > 0 && course.waypoints.find((waypoint: any) => waypoint.controlPointName === 'Start')
-    const markConfigurationIds = wayPoints.markConfigurationIds && wayPoints.markConfigurationIds.length > 1 && wayPoints.markConfigurationIds
-    const startFinishPin = markConfigurationIds && course.markConfigurations.find((markConfiguration: any) => markConfiguration.id === markConfigurationIds[0])
-    const startFinishBoat = markConfigurationIds && course.markConfigurations.find((markConfiguration: any) => markConfiguration.id === markConfigurationIds[0])
+  const startLine: any = getMarkPositionsForCourse(course, 'Start')
 
-    const pinLatitude = startFinishPin.lastKnownPosition && startFinishPin.lastKnownPosition.lat_deg
-    const pinLongitude = startFinishPin.lastKnownPosition && startFinishPin.lastKnownPosition.lon_deg
-
-    const boatLatitude = startFinishBoat.lastKnownPosition && startFinishPin.lastKnownPosition.lat_deg
-    const boatLongitude = startFinishBoat.lastKnownPosition && startFinishPin.lastKnownPosition.lon_deg
-
-    if (pinLatitude && pinLatitude && boatLongitude && boatLongitude) {
-      const startLine = {pinLatitude, pinLongitude, boatLatitude, boatLongitude}
-      yield put(updateStartLine(startLine))
-    } else {
-      yield put(updateStartLine({}))
-    }
+  if (startLine.length > 1) {
+    yield put(updateStartLine({pinLatitude: startLine[0].lat_deg, pinLongitude: startLine[0].lon_deg, boatLatitude: startLine[1].lat_deg, boatLongitude: startLine[1].lon_deg}))
+  } else {
+    yield put(updateStartLine({}))
   }
 
 }
@@ -321,5 +310,5 @@ export default function* watchEvents() {
     yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
     yield takeLatest(START_TRACKING, startTracking)
     yield takeLatest(STOP_TRACKING, stopTracking)
-    yield takeLatest(FETCH_COURSE_FOR_TRACKING, fetchCoursesForTracking)
+    yield takeLatest(FETCH_COURSE_FOR_TRACKING, fetchCoursesForTrackingSaga)
 }
