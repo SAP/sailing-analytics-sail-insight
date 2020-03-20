@@ -8,7 +8,7 @@ import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
 import crashlytics from '@react-native-firebase/crashlytics'
 
-import SINetwork from 'react-native-network/index'
+import SailInsightMtcpNetwork from 'sail-insight-mtcp-network/index'
 
 const responseHasFatalError = compose(
   includes(__, [400, 404, 405]),
@@ -102,7 +102,7 @@ export const request = async (
     if (isPlatformAndroid) {
       response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
     } else {
-      response = await timeoutPromise(SINetwork.fetch(url, fetchOptions), timeout, 'Server request timeout')
+      response = await timeoutPromise(SailInsightMtcpNetwork.fetch(url, fetchOptions), timeout, 'Server request timeout')
     }
   } catch (err) {
     throw err
