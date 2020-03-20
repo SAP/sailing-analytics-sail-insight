@@ -71,6 +71,7 @@
     "react-native-masked-text": "1.9.1",
     "react-native-modal-dropdown": "^0.7.0",
     "react-native-modal-selector": "^1.1.2",
+    "react-native-network": "file:nativeModules/network",
     "react-native-offline": "^5.2.0",
     "react-native-permissions": "^2.0.9",
     "react-native-picker-select": "^6.0.0",

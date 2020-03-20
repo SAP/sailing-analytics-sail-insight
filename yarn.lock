@@ -6625,6 +6625,9 @@ react-native-modal-selector@^1.1.2:
   dependencies:
     prop-types "^15.5.10"
 
+"react-native-network@file:nativeModules/Network":
+  version "1.0.0"
+
 react-native-offline@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/react-native-offline/-/react-native-offline-5.2.0.tgz#9196415daad92a587d7bfdfd8b7eb7884300d09d"
