@@ -1,52 +1,53 @@
-import ExpeditionCommunication from 'sail-insight-expedition-communication'
+import ExpeditionCommunication, { Server1, Server1Protocol } from 'sail-insight-expedition-communication'
+import { NetworkInfo } from "react-native-network-info"
+
 import { updateServerProtocol, updateServerIP, updateServerPort, updateServerState, updateServerValid } from 'actions/communications'
 import { getStartLine } from 'selectors/communications'
 import { getStore } from 'store'
 
+const Server1Port = 8001
+let Server1IP = "0.0.0.0"
+
 const getServerState = () => {
-    if (ExpeditionCommunication.Server1 && ExpeditionCommunication.Server1Protocol) {
-        ExpeditionCommunication.getCommunicationStatus(ExpeditionCommunication.Server1, (status: boolean) => {
-            let store = getStore()
-            store.dispatch(updateServerState(status))
-        })
-    }
+    ExpeditionCommunication.getCommunicationStatus(Server1, (status: boolean) => {
+        let store = getStore()
+        store.dispatch(updateServerState(status))
+    })
 }
 
 export const getServerInfo = () => {
     let store = getStore()
 
-    if (ExpeditionCommunication.Server1 && ExpeditionCommunication.Server1Protocol) {
-        store.dispatch(updateServerState(false))
-        store.dispatch(updateServerProtocol(ExpeditionCommunication.Server1Protocol))
-        ExpeditionCommunication.getCommunicationIP(ExpeditionCommunication.Server1, (ip: string) => {
-            store.dispatch(updateServerIP(ip))
-            ExpeditionCommunication.getCommunicationPort(ExpeditionCommunication.Server1, (port: number) => {
-                store.dispatch(updateServerPort(port))
-                store.dispatch(updateServerValid(true))
-                getServerState()
-            })
-        })
-    }
+    store.dispatch(updateServerValid(false))
+    store.dispatch(updateServerPort(Server1Port))
+    store.dispatch(updateServerProtocol(Server1Protocol))
+    
+    // get wifi address
+    NetworkInfo.getIPV4Address().then(ipWifi => {
+        if (ipWifi) {
+            Server1IP = ipWifi
+            store.dispatch(updateServerValid(true))
+        }
+        store.dispatch(updateServerIP(ipWifi))
+    })
+    // get server state
+    getServerState()
 }
 
 export const setServerState = (state: boolean) => {
     let store = getStore()
 
-    if (ExpeditionCommunication.Server1 && ExpeditionCommunication.Server1Protocol) {
-        if (state === true) {
-            ExpeditionCommunication.startCommunication(ExpeditionCommunication.Server1)
-            store.dispatch(updateServerState(true))
-        } else {
-            ExpeditionCommunication.stopCommunication(ExpeditionCommunication.Server1)
-            store.dispatch(updateServerState(false))
-        }
+    if (state === true) {
+        ExpeditionCommunication.startCommunication(Server1, Server1IP, Server1Port)
+        store.dispatch(updateServerState(true))
+    } else {
+        ExpeditionCommunication.stopCommunication(Server1)
+        store.dispatch(updateServerState(false))
     }
 }
 
 export const sendServerMessage = (message: string) => {
-    if (ExpeditionCommunication.Server1 && ExpeditionCommunication.Server1Protocol) {
-        ExpeditionCommunication.sendCommunicationMessage(ExpeditionCommunication.Server1, message)
-    }
+    ExpeditionCommunication.sendCommunicationMessage(Server1, message)
 }
 
 export const sendStartLine = () => {
