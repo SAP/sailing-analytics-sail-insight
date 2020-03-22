@@ -305,8 +305,6 @@ PODS:
     - React
   - react-native-camera/RN (3.16.0):
     - React
-  - react-native-communication-boat (1.1.0):
-    - React
   - react-native-geolocation (2.0.2):
     - React
   - react-native-keep-awake (3.1.0):
@@ -415,6 +413,8 @@ PODS:
   - RNSVG (9.13.6):
     - React
   - RSKImageCropper (2.2.3)
+  - SailInsightExpeditionCommunication (1.1.0):
+    - React
   - SDWebImage (5.5.2):
     - SDWebImage/Core (= 5.5.2)
   - SDWebImage/Core (5.5.2)
@@ -452,7 +452,6 @@ DEPENDENCIES:
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-branch (from `../node_modules/react-native-branch`)
   - react-native-camera (from `../node_modules/react-native-camera`)
-  - react-native-communication-boat (from `../node_modules/react-native-communication-boat`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - react-native-maps (from `../node_modules/react-native-maps`)
@@ -491,6 +490,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSnackbar (from `../node_modules/react-native-snackbar`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - SailInsightExpeditionCommunication (from `../node_modules/sail-insight-expedition-communication`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -570,8 +570,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-branch"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
-  react-native-communication-boat:
-    :path: "../node_modules/react-native-communication-boat"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-keep-awake:
@@ -646,6 +644,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-snackbar"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  SailInsightExpeditionCommunication:
+    :path: "../node_modules/sail-insight-expedition-communication"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -694,7 +694,6 @@ SPEC CHECKSUMS:
   react-native-background-timer: 1b6e6b4e10f1b74c367a1fdc3c72b67c619b222b
   react-native-branch: cc611a2d0e7e6c7c4cafebc8e59065b89c38002b
   react-native-camera: 705c7e9412436957b4dc894a1af61f43830787e2
-  react-native-communication-boat: 2f3811257ba5b8d4e3ef715156a2934a02740b32
   react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
   react-native-keep-awake: ff10b454b539786007df59fce87abbb7cd4634e3
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
@@ -733,10 +732,11 @@ SPEC CHECKSUMS:
   RNSnackbar: 160077964866262ed08cfd33ab4760219ea2aef6
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
+  SailInsightExpeditionCommunication: 6b7a7ccd5f05b57677e36a45eb6fb3377a0e455c
   SDWebImage: 4d5c027c935438f341ed33dbac53ff9f479922ca
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 9037b8b48bfeba02da1aa3be974b061e5f6beba8
+PODFILE CHECKSUM: 1de0a27bb510b147278d0308d69465c4d24dda49
 
 COCOAPODS: 1.8.4

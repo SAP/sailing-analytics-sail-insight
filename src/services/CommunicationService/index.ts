@@ -1,20 +1,29 @@
-import CommunicationBoat from 'react-native-communication-boat'
+import ExpeditionCommunication from 'sail-insight-expedition-communication'
 import { updateServerProtocol, updateServerIP, updateServerPort, updateServerState, updateServerValid } from 'actions/communications'
 import { getStartLine } from 'selectors/communications'
 import { getStore } from 'store'
 
+const getServerState = () => {
+    if (ExpeditionCommunication.Server1 && ExpeditionCommunication.Server1Protocol) {
+        ExpeditionCommunication.getCommunicationStatus(ExpeditionCommunication.Server1, (status: boolean) => {
+            let store = getStore()
+            store.dispatch(updateServerState(status))
+        })
+    }
+}
 
 export const getServerInfo = () => {
     let store = getStore()
 
-    if (CommunicationBoat.Server1 && CommunicationBoat.Server1Protocol) {
+    if (ExpeditionCommunication.Server1 && ExpeditionCommunication.Server1Protocol) {
         store.dispatch(updateServerState(false))
-        store.dispatch(updateServerProtocol(CommunicationBoat.Server1Protocol))
-        CommunicationBoat.getCommunicationIP(CommunicationBoat.Server1, (ip: string) => {
+        store.dispatch(updateServerProtocol(ExpeditionCommunication.Server1Protocol))
+        ExpeditionCommunication.getCommunicationIP(ExpeditionCommunication.Server1, (ip: string) => {
             store.dispatch(updateServerIP(ip))
-            CommunicationBoat.getCommunicationPort(CommunicationBoat.Server1, (port: number) => {
+            ExpeditionCommunication.getCommunicationPort(ExpeditionCommunication.Server1, (port: number) => {
                 store.dispatch(updateServerPort(port))
                 store.dispatch(updateServerValid(true))
+                getServerState()
             })
         })
     }
@@ -23,20 +32,20 @@ export const getServerInfo = () => {
 export const setServerState = (state: boolean) => {
     let store = getStore()
 
-    if (CommunicationBoat.Server1 && CommunicationBoat.Server1Protocol) {
+    if (ExpeditionCommunication.Server1 && ExpeditionCommunication.Server1Protocol) {
         if (state === true) {
-            CommunicationBoat.startCommunication(CommunicationBoat.Server1)
+            ExpeditionCommunication.startCommunication(ExpeditionCommunication.Server1)
             store.dispatch(updateServerState(true))
         } else {
-            CommunicationBoat.stopCommunication(CommunicationBoat.Server1)
+            ExpeditionCommunication.stopCommunication(ExpeditionCommunication.Server1)
             store.dispatch(updateServerState(false))
         }
     }
 }
 
 export const sendServerMessage = (message: string) => {
-    if (CommunicationBoat.Server1 && CommunicationBoat.Server1Protocol) {
-        CommunicationBoat.sendCommunicationMessage(CommunicationBoat.Server1, message)
+    if (ExpeditionCommunication.Server1 && ExpeditionCommunication.Server1Protocol) {
+        ExpeditionCommunication.sendCommunicationMessage(ExpeditionCommunication.Server1, message)
     }
 }
 
