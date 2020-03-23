@@ -14,14 +14,6 @@
 #import <React/RCTRootView.h>
 #import <Firebase/Firebase.h>
 
-@interface AppDelegate ()
-{
-  UIBackgroundTaskIdentifier taskIdentifier;
-}
-
-
-@end
-
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -63,9 +55,6 @@
   
   // 9. after the window is visible, add the rootView as a subview to your backgroundView
   [backgroundView addSubview:rootView];
-  
-  taskIdentifier = 0;
-  
   return YES;
 }
 
@@ -88,46 +77,5 @@
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *restorableObjects))restorationHandler {
   return [RNBranch continueUserActivity:userActivity];
 }
-
-
-
-- (void)applicationWillResignActive:(UIApplication *)application
-{
-  taskIdentifier = [UIApplication.sharedApplication beginBackgroundTaskWithName:@"test" expirationHandler:^{
-    [self endBackgroundUpdateTask];
-  }];
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-  [self endBackgroundUpdateTask];
-}
-
-- (void)endBackgroundUpdateTask
-{
-  [UIApplication.sharedApplication endBackgroundTask:taskIdentifier];
-  taskIdentifier = UIBackgroundTaskInvalid;
-  
-  taskIdentifier = [UIApplication.sharedApplication beginBackgroundTaskWithName:@"test" expirationHandler:^{
-    [self endBackgroundUpdateTask];
-  }];
-}
-
-
-
-/*var backgroundUpdateTask: UIBackgroundTask/*Identifier = UIBackgroundTaskIdentifier(rawValue: 0)
-func endBackgroundUpdateTask() {
-    UIApplication.shared.endBackgroundTask(self.backgroundUpdateTask)
-    self.backgroundUpdateTask = UIBackgroundTaskIdentifier.invalid
-}
-func applicationWillResignActive(_ application: UIApplication) {
-    self.backgroundUpdateTask = UIApplication.shared.beginBackgroundTask(expirationHandler: {
-        self.endBackgroundUpdateTask()
-    })
-}
-func applicationDidBecomeActive(_ application: UIApplication) {
-    self.endBackgroundUpdateTask()
-
-}*/
 
 @end
