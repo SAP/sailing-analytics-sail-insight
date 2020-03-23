@@ -57,8 +57,8 @@ export const sendStartLine = () => {
         //#L,P,16.9897166666667,-61.7854166666667*3F
         //#L,P,16.9903666666667,-61.7697833333333*3E
 
-        const startPin = `#L,P,${startLine.pinLatitude},${startLine.pinLongitude}*3F`
-        const startBoat = `#L,P,${startLine.boatLatitude},${startLine.boatLongitude}*3E`
+        const startPin = `#L,P,${startLine.pinLatitude},${startLine.pinLongitude}`
+        const startBoat = `#L,P,${startLine.boatLatitude},${startLine.boatLongitude}`
 
         sendServerMessage(startPin)
         sendServerMessage(startBoat)

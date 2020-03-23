@@ -6630,7 +6630,7 @@ react-native-network-info@^5.2.1:
   resolved "https://registry.yarnpkg.com/react-native-network-info/-/react-native-network-info-5.2.1.tgz#b701f10d4ed1aeadcfe77b197328d1ae846f6d3a"
   integrity sha512-iam74xXtrSqqZurCl1/bSjZ9jXcsJY84g7brx1/4uVGCY26c6m+4CArHNSHOsz5ATg2NQT+81sjNy0KlCPyK4g==
 
-"react-native-network@file:nativeModules/Network":
+"react-native-network@file:nativeModules/network":
   version "1.0.0"
 
 react-native-offline@^5.2.0:
@@ -7296,9 +7296,9 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-"sail-insight-expedition-communication@https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git":
-  version "1.1.0"
-  resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#79df3cef0d545b480880fd74c455ee8c5152eeaa"
+"sail-insight-expedition-communication@https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#1.1.1":
+  version "1.1.1"
+  resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#3026e5f6b8a206bd61cbd030323da800400be03f"
 
 sane@^4.0.3:
   version "4.1.0"
