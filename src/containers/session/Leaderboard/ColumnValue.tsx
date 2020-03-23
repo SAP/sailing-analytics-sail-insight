@@ -47,6 +47,7 @@ const ColumnValue = ({
     const gapToLeader = getGapValueByRankingMetric(competitorData, rankingMetric)
     const myGapToLeader = myCompetitorData && getGapValueByRankingMetric(myCompetitorData, rankingMetric)
     const fontColor = cond([
+      [always(selectedColumn !== ColumnValueType.GapToMyBoat), always(undefined)],
       [always(isNil(myGapToLeader)), always(undefined)],
       [isNil, always(undefined)],
       [lt(myGapToLeader), always(GREEN)],

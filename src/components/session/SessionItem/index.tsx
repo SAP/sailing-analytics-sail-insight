@@ -21,11 +21,13 @@ class SessionItem extends React.Component<ViewProps & {
   onTrackingPress?: OnPressType,
   archiveEvent: any,
   onItemPress: OnPressType,
+  loading?: boolean
 } > {
   public render() {
     const {
       style,
       session,
+      loading = false,
     } = this.props
 
     const archived = session.event && session.event.archived || false
@@ -65,6 +67,7 @@ class SessionItem extends React.Component<ViewProps & {
               style={style}
               session={session}
               onTrackingPress={this.props.onTrackingPress}
+              loading={loading}
             />
           </TouchableOpacity>
       </View>
