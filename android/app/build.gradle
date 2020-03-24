@@ -236,6 +236,7 @@ android {
 }
 
 dependencies {
+    implementation project(':realm')
     implementation project(':react-native-svg')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
