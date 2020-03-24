@@ -1,48 +1,18 @@
-import ExpeditionCommunication, { Server1, Server1Protocol } from 'sail-insight-expedition-communication'
-import { NetworkInfo } from "react-native-network-info"
+import ExpeditionCommunication, { Server1 } from 'sail-insight-expedition-communication'
 
-import { updateServerProtocol, updateServerIP, updateServerPort, updateServerState, updateServerValid } from 'actions/communications'
-import { getStartLine } from 'selectors/communications'
-import { getStore } from 'store'
-
-const Server1Port = 8001
-let Server1IP = "0.0.0.0"
-
-const getServerState = () => {
-    ExpeditionCommunication.getCommunicationStatus(Server1, (status: boolean) => {
-        let store = getStore()
-        store.dispatch(updateServerState(status))
+export const getServerState = () => {
+    return new Promise((resolve) => {
+        ExpeditionCommunication.getCommunicationStatus(Server1, (status: boolean) => {
+            resolve(status)
+        })
     })
 }
 
-export const getServerInfo = () => {
-    let store = getStore()
-
-    store.dispatch(updateServerValid(false))
-    store.dispatch(updateServerPort(Server1Port))
-    store.dispatch(updateServerProtocol(Server1Protocol))
-    
-    // get wifi address
-    NetworkInfo.getIPV4Address().then(ipWifi => {
-        if (ipWifi) {
-            Server1IP = ipWifi
-            store.dispatch(updateServerValid(true))
-        }
-        store.dispatch(updateServerIP(ipWifi))
-    })
-    // get server state
-    getServerState()
-}
-
-export const setServerState = (state: boolean) => {
-    let store = getStore()
-
+export const setServerState = (state: boolean, ip: string, port: number) => {
     if (state === true) {
-        ExpeditionCommunication.startCommunication(Server1, Server1IP, Server1Port)
-        store.dispatch(updateServerState(true))
+        ExpeditionCommunication.startCommunication(Server1, ip, port)
     } else {
         ExpeditionCommunication.stopCommunication(Server1)
-        store.dispatch(updateServerState(false))
     }
 }
 
@@ -50,8 +20,7 @@ export const sendServerMessage = (message: string) => {
     ExpeditionCommunication.sendCommunicationMessage(Server1, message)
 }
 
-export const sendStartLine = () => {
-    const startLine: any = getStartLine(getStore().getState())
+export const sendStartLine = (startLine: any) => {
 
     if (startLine.pinLongitude && startLine.pinLongitude && startLine.boatLatitude && startLine.boatLongitude) {
         //#L,P,16.9897166666667,-61.7854166666667*3F

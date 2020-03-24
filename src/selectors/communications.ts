@@ -5,10 +5,10 @@ import { compose, find,
 export const getServerState = (state: RootState = {}) =>
   state.communications && state.communications.state
 
-export const getServerIP = (state: RootState = {}) =>
+export const getServerIP = () => (state: RootState = {}) =>
   state.communications && state.communications.ip
 
-export const getServerPort = (state: RootState = {}) =>
+export const getServerPort = () => (state: RootState = {}) =>
   state.communications && state.communications.port
 
 export const getServerProtocol = (state: RootState = {}) =>
@@ -17,7 +17,7 @@ export const getServerProtocol = (state: RootState = {}) =>
 export const getServerValid = (state: RootState = {}) => 
   state.communications && state.communications.valid
 
-export const getStartLine = (state: RootState = {}) =>
+export const getStartLine = () => (state: RootState = {}) =>
   state.communications && state.communications.startLine
 
 export const getMarkPositionsForCourse = (course: any, mark: string) => {

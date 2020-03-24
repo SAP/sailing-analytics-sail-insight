@@ -20,7 +20,6 @@ import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
 import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
-import { fetchCourseForTracking } from 'actions/courses'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import {
   getBulkGpsSetting,
@@ -29,7 +28,7 @@ import {
 } from '../selectors/settings'
 import { syncAllFixes } from '../services/GPSFixService'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
-import { updateStartLine } from 'actions/communications'
+import { updateStartLine, updateStartLineBasedOnCurrentCourse } from 'actions/communications'
 
 
 export type StopTrackingAction = (data?: CheckIn) => any
@@ -127,7 +126,7 @@ export const startTracking = ({ data, navigation }: any) => async (
 
         // get starting line
         let fetchData = {regattaName: data.regattaName, raceName: latestActiveRace?.name, serverUrl: data.serverUrl}
-        dispatch(fetchCourseForTracking(fetchData))
+        dispatch(updateStartLineBasedOnCurrentCourse(fetchData))
       }
     }
     const trackName = (newTrack && newTrack.racename) || checkInData.currentTrackName
