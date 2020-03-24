@@ -49,7 +49,7 @@ const jsonData = async (response: any) => {
     const text = await response.text()
     return text && JSON.parse(text)
   }
-  return response
+  return response.data
 }
 
 const jsonDataArray = async (response: any) => {
