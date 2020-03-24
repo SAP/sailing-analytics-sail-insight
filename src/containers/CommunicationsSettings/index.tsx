@@ -21,10 +21,6 @@ class CommunicationSettings extends React.Component<ViewProps & {
   serverPort: string,
 }> {
 
-  public state = {
-    expertSettingsClickCount: 0,
-  }
-
   public componentWillMount() {
     this.props.fetchCommunicationInfo()
   }
