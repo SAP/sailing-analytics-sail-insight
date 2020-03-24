@@ -13,6 +13,7 @@ import { selectEvent } from 'actions/events'
 import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
+import { getEventIdThatsBeingSelected } from 'selectors/event'
 
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
@@ -32,6 +33,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   startTracking: StartTrackingAction,
   authBasedNewSession: () => void,
   selectEvent: any,
+  eventIdThatsBeingSelected?: string,
 } > {
 
   constructor(props) {
@@ -44,6 +46,9 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public renderItem = ({ item }: any) => {
+    const { eventIdThatsBeingSelected } = this.props
+    const { eventId } = item
+    const isLoading = eventId === eventIdThatsBeingSelected
     if (!this.props.route?.params?.forTracking) {
       return (
         <SessionItem
@@ -51,6 +56,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           onItemPress={() => this.props.selectEvent({ data: item, navigation: this.props.navigation })}
           //onItemPress={() => console.log('item select')}
           session={item}
+          loading={isLoading}
         />
       )
     } else {
@@ -102,6 +108,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 
 const mapStateToProps = (state: any) => ({
   sessions: getFilteredSessionList(state),
+  eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
 })
 
 export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)

@@ -6430,7 +6430,7 @@ react-native-autocomplete-input@^4.1.0:
   resolved "https://registry.yarnpkg.com/react-native-autocomplete-input/-/react-native-autocomplete-input-4.1.0.tgz#979ece28d891b245ecb967b6d31f1f924445b8ab"
   integrity sha512-Yn4GulZ9F6tde74UUGZHdVFeYWVuL7+EbUZy6kt+QHrzMc5B4OuRop1FT4RyWLpvbySW/vvqYgj9LAmlzkuEqA==
 
-react-native-background-fetch@^2.7.1, react-native-background-fetch@~2.7.1:
+react-native-background-fetch@^2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-2.7.1.tgz#1467aed0fd2851edfdf10d3d9ac4ffd0cf069a85"
   integrity sha512-BNWBVL3kewDJL+B+0gF84iF8viws3AGHwxsWPp+MhWvgb/Su6BPWjgi8u0A9fRYhacozmAcNEPT7E3tah1P8lg==
@@ -6439,13 +6439,22 @@ react-native-background-fetch@^2.7.1, react-native-background-fetch@~2.7.1:
     plist "^3.0.1"
     xcode "^2.0.0"
 
-"react-native-background-geolocation-android@git+https://ed6ed5986726e28f086dbd5838155f030c96019a:x-oauth-basic@github.com/transistorsoft/react-native-background-geolocation-android.git#3.5.1":
-  version "3.5.1"
-  resolved "git+https://ed6ed5986726e28f086dbd5838155f030c96019a:x-oauth-basic@github.com/transistorsoft/react-native-background-geolocation-android.git#33c8614cb194eabf19af1b719de0c6ea82eb265e"
+react-native-background-fetch@~3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-3.0.3.tgz#ec5fa38aaebdbaa7d3f670de8cdaaa277def4db7"
+  integrity sha512-lO0rUvdFjOXAkV9hEIQcbPa0t3I8lwHvKD5kWS9fTIYAtkLSHC8DIVQI353fPaMgyY05toRS3bcT/T2ZM5jBGw==
+  dependencies:
+    fast-plist "^0.1.2"
+    plist "^3.0.1"
+    xcode "^2.0.0"
+
+"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.6.0":
+  version "3.6.0"
+  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#9e3971eddf10da28e347682a4723c0885a7617be"
   dependencies:
     fast-plist "^0.1.2"
     plist "^2.0.1"
-    react-native-background-fetch "~2.7.1"
+    react-native-background-fetch "~3.0.3"
     xcode "^0.9.1"
 
 react-native-background-timer@2.1.1:
@@ -6615,6 +6624,9 @@ react-native-modal-selector@^1.1.2:
   integrity sha512-LHFvEsoUUSFrpU3vZIYO/0wjizaGC5vSbkypKsf8qmVGoXvOtUVvJrvyf12YFkr0S1FkYYjRFb0t/H1PNdDRRQ==
   dependencies:
     prop-types "^15.5.10"
+
+"react-native-network@file:nativeModules/Network":
+  version "1.0.0"
 
 react-native-offline@^5.2.0:
   version "5.2.0"
@@ -7278,10 +7290,6 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
-
-"sail-insight-mtcp-network@https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git":
-  version "1.0.0"
-  resolved "https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#13581452e6fd7ec7771c33510474593ca64770dc"
 
 sane@^4.0.3:
   version "4.1.0"

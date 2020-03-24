@@ -46,7 +46,7 @@
     "react-native": "0.61.5",
     "react-native-autocomplete-input": "^4.1.0",
     "react-native-background-fetch": "^2.7.1",
-    "react-native-background-geolocation-android": "git+https://ed6ed5986726e28f086dbd5838155f030c96019a:x-oauth-basic@github.com/transistorsoft/react-native-background-geolocation-android.git#3.5.1",
+    "react-native-background-geolocation-android": "https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.6.0",
     "react-native-background-timer": "2.1.1",
     "react-native-branch": "4.2.1",
     "react-native-camera": "3.16.0",
