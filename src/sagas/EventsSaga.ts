@@ -1,5 +1,5 @@
 import crashlytics from '@react-native-firebase/crashlytics'
-import { FETCH_COURSES_FOR_EVENT, loadCourse } from 'actions/courses'
+import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
