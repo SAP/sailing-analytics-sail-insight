@@ -431,6 +431,7 @@ PODS:
     - React
   - RSKImageCropper (2.2.3)
   - SailInsightExpeditionCommunication (1.1.0):
+    - React
   - SailInsightMTCPNetwork (1.0.0):
     - React
   - SDWebImage (5.6.0):

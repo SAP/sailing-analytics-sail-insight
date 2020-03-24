@@ -60,8 +60,12 @@ export const sendStartLine = () => {
         const startPin = `#L,P,${startLine.pinLatitude},${startLine.pinLongitude}`
         const startBoat = `#L,P,${startLine.boatLatitude},${startLine.boatLongitude}`
 
+        ExpeditionCommunication.clearMessages(Server1)
+
         sendServerMessage(startPin)
         sendServerMessage(startBoat)
+    } else {
+        ExpeditionCommunication.clearMessages(Server1)
     }
     
 }
