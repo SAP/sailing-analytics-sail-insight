@@ -99,11 +99,7 @@ export const request = async (
   }
   let response
   try {
-    if (isPlatformAndroid) {
-      response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
-    } else {
-      response = await timeoutPromise(SailInsightMtcpNetwork.fetch(url, fetchOptions), timeout, 'Server request timeout')
-    }
+    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
   } catch (err) {
     throw err
   } finally {
