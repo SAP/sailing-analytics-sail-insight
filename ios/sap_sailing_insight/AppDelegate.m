@@ -13,6 +13,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <Firebase/Firebase.h>
+#import <TSBackgroundFetch/TSBackgroundFetch.h>
 
 @implementation AppDelegate
 
@@ -55,6 +56,10 @@
   
   // 9. after the window is visible, add the rootView as a subview to your backgroundView
   [backgroundView addSubview:rootView];
+  
+  // [REQUIRED] Register BackgroundFetch
+  [[TSBackgroundFetch sharedInstance] didFinishLaunching];
+  
   return YES;
 }
 
