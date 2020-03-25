@@ -227,7 +227,7 @@ const trackingTabPress = (props: any) => {
   const selectedTab = route.state?.routes[route.state?.index]
 
   if (selectedTab && selectedTab.name === Screens.TrackingNavigator) {
-    const selectedTrackingStack = selectedTab.state.routes[selectedTab.state.index].name
+    const selectedTrackingStack = selectedTab.state?.routes[selectedTab.state?.index].name
     const toPrevent = [Screens.Tracking, Screens.SetWind, Screens.Leaderboard]
     const toGoBack = [Screens.SetWind, Screens.Leaderboard]
 
