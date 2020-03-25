@@ -3,9 +3,7 @@ import { View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import I18n from 'i18n'
-import { updateServerState, updateServerValid } from 'actions/communications'
-import { getServerInfo, setServerState } from 'services/CommunicationService'
-import { getDeviceId } from 'services/CheckInService'
+import { fetchCommunicationInfo, setCommunicationState } from 'actions/communications'
 import EditItemSwitch from 'components/EditItemSwitch'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
@@ -14,8 +12,8 @@ import styles from './styles'
 import { getServerState, getServerValid, getServerIP, getServerPort, getServerProtocol } from 'selectors/communications'
 
 class CommunicationSettings extends React.Component<ViewProps & {
-  updateServerState: (value: boolean) => void,
-  updateServerValid: (value: boolean) => void,
+  fetchCommunicationInfo: () => void,
+  setCommunicationState: (value: boolean) => void,
   serverState: boolean,
   serverValid: boolean,
   serverProtocol: string,
@@ -23,16 +21,12 @@ class CommunicationSettings extends React.Component<ViewProps & {
   serverPort: string,
 }> {
 
-  public state = {
-    expertSettingsClickCount: 0,
-  }
-
   public componentWillMount() {
-    getServerInfo()
+    this.props.fetchCommunicationInfo()
   }
 
   public onServerState = (value: boolean) => {
-    setServerState(value)
+    this.props.setCommunicationState(value)
   }
 
   public render() {
@@ -72,8 +66,8 @@ const mapStateToProps = (state: any) => ({
   serverState: getServerState(state),
   serverValid: getServerValid(state),
   serverProtocol: getServerProtocol(state),
-  serverIP: getServerIP(state),
-  serverPort: getServerPort(state),
+  serverIP: getServerIP()(state),
+  serverPort: getServerPort()(state),
 })
 
-export default connect(mapStateToProps, { updateServerState, updateServerValid } )(CommunicationSettings)
+export default connect(mapStateToProps, { fetchCommunicationInfo, setCommunicationState } )(CommunicationSettings)

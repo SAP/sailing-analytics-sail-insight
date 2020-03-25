@@ -1,5 +1,5 @@
 import crashlytics from '@react-native-firebase/crashlytics'
-import { FETCH_COURSES_FOR_EVENT, FETCH_COURSE_FOR_TRACKING, fetchCoursesForEvent, loadCourse } from 'actions/courses'
+import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
@@ -12,7 +12,6 @@ import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
 import { fetchPermissionsForEvent } from 'actions/permissions'
 import { updateCheckIn } from 'actions/checkIn'
-import { updateStartLine } from 'actions/communications'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
@@ -26,7 +25,6 @@ import { getSelectedEventInfo } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
 import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
-import { getMarkPositionsForCourse } from 'selectors/communications'
 import { StackActions } from '@react-navigation/native'
 
 const valueAtIndex = curry((index, array) => compose(
@@ -283,24 +281,6 @@ function* stopTracking({ payload }: any) {
   }
 }
 
-function* fetchCoursesForTrackingSaga({ payload }: any) {
-
-  const { raceName, regattaName, serverUrl } = payload
-  const api = dataApi(serverUrl)
-
-  const course = yield call(api.requestCourse, regattaName, raceName, 'Default')
-
-  // update start line
-  const startLine: any = getMarkPositionsForCourse(course, 'Start')
-
-  if (startLine.length > 1) {
-    yield put(updateStartLine({pinLatitude: startLine[0].lat_deg, pinLongitude: startLine[0].lon_deg, boatLatitude: startLine[1].lat_deg, boatLongitude: startLine[1].lon_deg}))
-  } else {
-    yield put(updateStartLine({}))
-  }
-
-}
-
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventSaga)
     yield takeLatest(FETCH_RACES_TIMES_FOR_EVENT, fetchRacesTimesForCurrentEvent)
@@ -314,5 +294,4 @@ export default function* watchEvents() {
     yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
     yield takeLatest(START_TRACKING, startTracking)
     yield takeLatest(STOP_TRACKING, stopTracking)
-    yield takeLatest(FETCH_COURSE_FOR_TRACKING, fetchCoursesForTrackingSaga)
 }
