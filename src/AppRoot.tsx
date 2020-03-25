@@ -37,6 +37,7 @@ import RegisterCredentials from 'containers/authentication/RegisterCredentials'
 import PasswordReset from 'containers/authentication/PasswordReset'
 import MarkInventory from 'containers/Inventory/MarkInventory'
 import AppSettings from 'containers/AppSettings'
+import CommunicationsSettings from 'containers/CommunicationsSettings'
 import { getSelectedMarkProperties } from 'selectors/course'
 import AccountList from 'containers/user/AccountList'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
@@ -215,6 +216,7 @@ const accountNavigator = Component(props => compose(
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.UserProfile, component: UserProfile, options: { title: I18n.t('title_your_account') } })),
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.TeamList, component: TeamList, options: { title: I18n.t('caption_tab_teamlist') } })),
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.AppSettings, component: AppSettings, options: { title: I18n.t('caption_tab_appsettings') } })),
+  stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.Communications, component: CommunicationsSettings, options: { title: I18n.t('caption_tab_communicationssettings') } })),
   stackScreen(compose(withRightModalBackButton, withoutHeaderLeft)({ name: Screens.ExpertSettings, component: ExpertSettings, options: { title: I18n.t('title_expert_settings') } })),
   stackScreen(compose(withLeftHeaderBackButton, )({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
     headerTitle: () => <TeamDetailsHeader/>,
@@ -227,7 +229,7 @@ const trackingTabPress = (props: any) => {
   const selectedTab = route.state?.routes[route.state?.index]
 
   if (selectedTab && selectedTab.name === Screens.TrackingNavigator) {
-    const selectedTrackingStack = selectedTab.state.routes[selectedTab.state.index].name
+    const selectedTrackingStack = selectedTab.state?.routes[selectedTab.state?.index].name
     const toPrevent = [Screens.Tracking, Screens.SetWind, Screens.Leaderboard]
     const toGoBack = [Screens.SetWind, Screens.Leaderboard]
 

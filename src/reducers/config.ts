@@ -19,7 +19,8 @@ export interface RootState {
   events?: any | EventState
   courses?: any | CourseReducerState
   markInventory?: any,
-  permissions?: any
+  permissions?: any,
+  communications?: any | CommunicationsReducerState,
 }
 
 
@@ -99,4 +100,13 @@ export interface CourseReducerState {
   // ID of the waypoint that is selected for editing
   selectedWaypoint?: string
   sameStartFinish: boolean
+}
+
+export interface CommunicationsReducerState {
+  protocol: string
+  ip: string
+  port: string
+  state: boolean
+  valid: boolean
+  startLine: object
 }

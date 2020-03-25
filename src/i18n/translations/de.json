@@ -179,6 +179,7 @@
   "caption_to_leaderboard": "Zum Leaderboard",
   "caption_done": "Fertig",
   "caption_settings": "Einstellungen",
+  "caption_communications": "Kommunikation",
   "caption_my_teams": "Meine teams",
   "caption_checkout": "Checkout",
   "caption_tab_trackingsetup": "Tracking",
@@ -194,6 +195,7 @@
   "caption_tab_userprofile": "Mein Profil",
   "caption_tab_teamlist": "Teamliste",
   "caption_tab_appsettings": "Einstellungen",
+  "caption_tab_communicationssettings": "Kommunikation",
   "caption_new_session": "Neues Event",
   "caption_new_team": "Neues Team",
   "caption_start": "Start",
@@ -371,5 +373,12 @@
 
   "caption_sap_analytics_header": "SAP Analytics",
 
-  "text_temporary_mark_inventory": "Zur Zeit können Kurs-Marken hier lediglich gelöscht werden. Neue und bestehende Marken können nur innerhalb einer Regatta erzeugt oder editiert werden. Dies wird sich bald ändern."
+  "text_temporary_mark_inventory": "Zur Zeit können Kurs-Marken hier lediglich gelöscht werden. Neue und bestehende Marken können nur innerhalb einer Regatta erzeugt oder editiert werden. Dies wird sich bald ändern.",
+
+  "text_communications_server" : "Expeditionsnetzwerk",
+  "text_communications_ip": "IP",
+  "text_communications_port": "Port",
+  "text_communications_protocol": "Protokoll",
+  "text_communications_server_on": "Server online",
+  "text_communications_server_off": "Server offline"
 }
