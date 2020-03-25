@@ -328,6 +328,8 @@ PODS:
     - React
   - react-native-netinfo (4.7.0):
     - React
+  - react-native-network-info (5.2.1):
+    - React
   - react-native-safe-area-context (0.7.3):
     - React
   - react-native-slider (2.0.8):
@@ -428,6 +430,8 @@ PODS:
   - RNSVG (9.13.6):
     - React
   - RSKImageCropper (2.2.3)
+  - SailInsightExpeditionCommunication (1.1.0):
+    - React
   - SailInsightMTCPNetwork (1.0.0):
     - React
   - SDWebImage (5.6.0):
@@ -472,6 +476,7 @@ DEPENDENCIES:
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-network-info (from `../node_modules/react-native-network-info`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-version-number (from `../node_modules/react-native-version-number`)
@@ -506,6 +511,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSnackbar (from `../node_modules/react-native-snackbar`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - SailInsightExpeditionCommunication (from `../node_modules/sail-insight-expedition-communication`)
   - SailInsightMTCPNetwork (from `../node_modules/sail-insight-mtcp-network`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -595,6 +601,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-network-info:
+    :path: "../node_modules/react-native-network-info"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
@@ -661,6 +669,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-snackbar"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  SailInsightExpeditionCommunication:
+    :path: "../node_modules/sail-insight-expedition-communication"
   SailInsightMTCPNetwork:
     :path: "../node_modules/sail-insight-mtcp-network"
   Yoga:
@@ -716,6 +726,7 @@ SPEC CHECKSUMS:
   react-native-keep-awake: ff10b454b539786007df59fce87abbb7cd4634e3
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
+  react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-slider: 3a1cfd00c9c31068251b536822f7192e8d1d6b6f
   react-native-version-number: b415bbec6a13f2df62bf978e85bc0d699462f37f
@@ -750,6 +761,7 @@ SPEC CHECKSUMS:
   RNSnackbar: 160077964866262ed08cfd33ab4760219ea2aef6
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
+  SailInsightExpeditionCommunication: 6b7a7ccd5f05b57677e36a45eb6fb3377a0e455c
   SailInsightMTCPNetwork: f209727dbd4a0869f50f33e256901dada1101d41
   SDWebImage: 21b19f56b4226cdfe3aefe4e6848dc43ed129a86
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
