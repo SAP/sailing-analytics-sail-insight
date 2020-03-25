@@ -6,12 +6,13 @@ import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking, stopTracking } from 'actions/events'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
+import { isStartingTracking } from 'selectors/event'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
   nothingAsClass
 } from 'components/fp/component'
-import { iconText, scrollView, text, inlineText, touchableOpacity, view } from 'components/fp/react-native'
+import { iconText, scrollView, text, inlineText, touchableOpacity, view, textButton } from 'components/fp/react-native'
 import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { container } from 'styles/commons'
@@ -38,7 +39,8 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     ...sessionData,
     isTracking: isCurrentLeaderboardTracking(state),
-    isFinished: isCurrentLeaderboardFinished(state)
+    isFinished: isCurrentLeaderboardFinished(state),
+    isStartingTracking: isStartingTracking(state),
   }
 }
 
@@ -74,6 +76,10 @@ export const sessionDetailsCard = Component((props: any) => compose(
       textStyle: [props.boatClass !== '' ? styles.textValue : styles.textLast, styles.textValue],
       source: Images.info.location,
       alignment: 'horizontal'}, props.location),
+    inlineText({ style: props.boatClass !== '' ? styles.text : styles.textLast }, [
+      text({ style: styles.textLight }, 'Style '),
+      text({ style: styles.textValue }, I18n.t(props.boatClass !== '' ? 'caption_one_design' : 'text_handicap_label').toUpperCase())
+    ]),
     nothingWhenNoBoatClass(inlineText( { style: styles.textLast }, [
       text({ style: styles.textLight }, `${I18n.t('text_class')} `),
       text({ style: styles.textValue }, props.boatClass),
@@ -120,10 +126,12 @@ export const closeEntryCard = Component((props: any) => compose(
     text({ style: styles.headlineTop }, '3'),
     text({ style: styles.headline }, I18n.t('caption_close').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_close_entry_long_text')),
-    nothingWhenTracking(styledButton({
+    textButton({
       onPress: (props: any) => closeEntry(props),
       style: styles.buttonBig,
-    },text({ style: styles.buttonBigContent }, I18n.t('caption_close_entry').toUpperCase())))
+      isLoading: props.isStartingTracking,
+      preserveShapeWhenLoading: true
+    },text({ style: styles.buttonBigContent }, I18n.t('caption_close_entry').toUpperCase()))
   ]))
 
 export const endEventCard = Component((props: any) => compose(
@@ -135,7 +143,7 @@ export const endEventCard = Component((props: any) => compose(
     text({ style: styles.headline }, I18n.t('caption_end').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, !props.trackingStopped ? I18n.t('text_end_event_long_text_running') : I18n.t('text_end_event_long_text_finished')),
     nothingWhenFinished(
-    styledButton({
+    textButton({
       onPress: (props: any) => endEvent(props),
       style: styles.buttonBig,
     },text({ style: styles.buttonBigContent }, I18n.t('caption_end_event').toUpperCase())))

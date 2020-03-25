@@ -179,6 +179,7 @@
   "caption_to_leaderboard": "Zum Leaderboard",
   "caption_done": "Fertig",
   "caption_settings": "Einstellungen",
+  "caption_communications": "Kommunikation",
   "caption_my_teams": "Meine teams",
   "caption_checkout": "Checkout",
   "caption_tab_trackingsetup": "Tracking",
@@ -194,6 +195,7 @@
   "caption_tab_userprofile": "Mein Profil",
   "caption_tab_teamlist": "Teamliste",
   "caption_tab_appsettings": "Einstellungen",
+  "caption_tab_communicationssettings": "Kommunikation",
   "caption_new_session": "Neues Event",
   "caption_new_team": "Neues Team",
   "caption_start": "Start",
@@ -301,9 +303,9 @@
   "text_info_for_invite": "Jeder kann über einen Link oder QR-Code teilnehmen.",
   "text_define_races_long_text_planning": "Definiere Kurse und Startzeiten für dieses Event.",
   "text_define_races_long_text_running": "Sehen Sie alle Rennen, die Sie definiert haben, und finden Sie die Ergebnisse in SAP Sailing Analytics.",
-  "text_invite_competitors_long_text_planning": "Lade Teilnehmer ein und/oder tracke dich selbst mit diesem Gerät.",
+  "text_invite_competitors_long_text_planning": "Lade Teilnehmer ein und/oder tracke dich selbst mit diesem Gerät. Achtung: Erinnere alle Teilnehmer das Tracking vor dem ersten Rennen zu starten (Tracking Tab unten auswählen > START TRACKING auswählen > Event auswählen).",
   "text_invite_competitors_long_text_running": "Sie haben die Teilnahme bereits geschlossen, daher ist es nicht mehr möglich, weitere Teilnehmer einzuladen.",
-  "text_close_entry_long_text": "Bitte schließe die Meldeliste vor dem ersten Start wenn sich alle Teilnehmer angemeldet haben. Achtung: Dieser Schritt kann nicht rückgängig gemacht werden. Erinnere auch alle Teilnehmer daran das Tracking auf ihren Geräten zu starten.",
+  "text_close_entry_long_text": "Bitte schließe die Meldeliste vor dem ersten Start wenn sich alle Teilnehmer angemeldet haben. Achtung: Dieser Schritt kann nicht rückgängig gemacht werden.",
   "text_end_event_long_text_running": "Sie müssen Ihr Event nach dem letzten Rennen beenden, damit alle Statistiken für Sie erfolgreich berechnet werden können.",
   "text_end_event_long_text_finished": "Ihr Event wurde beendet.",
   "text_planned_number_of_races": "Anzahl der Rennen",
@@ -326,7 +328,7 @@
   "caption_regatta_details": "Regatta",
   "caption_remove_discard": "Entfernen",
   "caption_invite": "Einladen",
-  "caption_close_entry": "Zugang schließen",
+  "caption_close_entry": "Anmeldung schließen",
   "caption_end_event": "Event beenden",
   "caption_end": "Ende",
   "caption_define": "Kurse + Startzeiten",
@@ -371,5 +373,12 @@
 
   "caption_sap_analytics_header": "SAP Analytics",
 
-  "text_temporary_mark_inventory": "Zur Zeit können Kurs-Marken hier lediglich gelöscht werden. Neue und bestehende Marken können nur innerhalb einer Regatta erzeugt oder editiert werden. Dies wird sich bald ändern."
+  "text_temporary_mark_inventory": "Zur Zeit können Kurs-Marken hier lediglich gelöscht werden. Neue und bestehende Marken können nur innerhalb einer Regatta erzeugt oder editiert werden. Dies wird sich bald ändern.",
+
+  "text_communications_server" : "Expeditionsnetzwerk",
+  "text_communications_ip": "IP",
+  "text_communications_port": "Port",
+  "text_communications_protocol": "Protokoll",
+  "text_communications_server_on": "Server online",
+  "text_communications_server_off": "Server offline"
 }

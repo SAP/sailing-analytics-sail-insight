@@ -4,7 +4,8 @@ import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
   OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
-  SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent } from 'actions/events'
+  SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent,
+  updateSelectingEvent, updateStartingTracking } from 'actions/events'
 import { fetchRegatta } from 'actions/regattas'
 import * as Screens from 'navigation/Screens'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
@@ -61,7 +62,7 @@ function* selectEventSaga({ payload }: any) {
   yield put(updateCreatingEvent(false))
 
   if (currentUserCanUpdateEvent) {
-    yield put(fetchCoursesForEvent(eventData))
+    yield call(fetchCoursesForCurrrentEvent, { payload: eventData })
     if (replaceCurrentScreen) {
       navigation.dispatch(StackActions.replace(Screens.SessionDetail4Organizer, { data: eventData }))
     } else {
@@ -70,6 +71,7 @@ function* selectEventSaga({ payload }: any) {
   } else {
     navigation.navigate(Screens.SessionDetail, { data: eventData })
   }
+  yield put(updateSelectingEvent(false))
 }
 
 function* fetchRacesTimesForCurrentEvent({ payload }: any) {
@@ -263,6 +265,8 @@ function* startTracking({ payload }: any) {
   if (leaderboardData) {
     yield put(receiveEntities(leaderboardData))
   }
+
+  yield put(updateStartingTracking(false))
 }
 
 function* stopTracking({ payload }: any) {

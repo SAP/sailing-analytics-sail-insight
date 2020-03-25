@@ -44,6 +44,11 @@ const settingsItem = (props: any) => ({
   onPress: () => props.navigation.navigate(Screens.AppSettings),
 })
 
+const communicationsItem = (props: any) => ({
+  title: I18n.t('caption_communications'),
+  onPress: () => props.navigation.navigate(Screens.Communications),
+})
+
 class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean
   user: User,
@@ -54,6 +59,7 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
     const data = [
       ...(isLoggedIn ? loggedInItems(this.props) : notLoggedInItems(this.props)),
       settingsItem(this.props),
+      communicationsItem(this.props),
     ]
 
     return (

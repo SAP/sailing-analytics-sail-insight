@@ -11,6 +11,7 @@ export const ExpertSettings = 'ExpertSettings'
 export const UserProfile = 'UserProfile'
 export const TeamList = 'TeamList'
 export const TeamDetails = 'TeamDetails'
+export const Communications = 'Communications'
 
 // sessions
 export const UserSessions = 'UserSessions'

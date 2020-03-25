@@ -44,6 +44,12 @@ target 'sap_sailing_insight' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'AFNetworking'
+
+  pod 'SailInsightMTCPNetwork', :path => '../node_modules/sail-insight-mtcp-network'
+
+  pod 'RealmJS', :path => '../node_modules/realm'
+
   target 'sap_sailing_insightTests' do
     inherit! :search_paths
     # Pods for testing

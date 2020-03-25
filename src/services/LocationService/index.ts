@@ -31,6 +31,7 @@ const config: Config = {
   logMaxDays: 2,
   // iOS:
   locationAuthorizationRequest: 'Always',
+  showsBackgroundLocationIndicator: true,
   stationaryRadius: 1,
   preventSuspend: true,
   // Android:

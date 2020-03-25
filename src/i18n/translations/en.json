@@ -180,6 +180,7 @@
   "caption_to_leaderboard": "To the leaderboard",
   "caption_done": "Done",
   "caption_settings": "Settings",
+  "caption_communications": "Communications",
   "caption_my_teams": "My teams",
   "caption_checkout": "Checkout",
   "caption_tab_trackingsetup": "Tracking",
@@ -195,6 +196,7 @@
   "caption_tab_userprofile": "My Profile",
   "caption_tab_teamlist": "Teamlist",
   "caption_tab_appsettings": "Settings",
+  "caption_tab_communicationssettings": "Communications",
   "caption_new_session": "New event",
   "caption_new_team": "New team",
   "caption_start": "Start",
@@ -302,7 +304,7 @@
   "text_info_for_invite": "Anyone with the link or QR code can join.",
   "text_define_races_long_text_planning": "Set starting times and define courses for the races of this event.",
   "text_define_races_long_text_running": "See all the races that you have defined and find the results in the SAP Sailing Analytics.",
-  "text_invite_competitors_long_text_planning": "Notify all competitors about your event and let them join the race!",
+  "text_invite_competitors_long_text_planning": "Notify all competitors about your event and let them join the race! Remember to remind the competitors to start tracking before the first race.",
   "text_invite_competitors_long_text_running": "You have already closed entry, thus inviting more competitors is not possible anymore.",
   "text_close_entry_long_text": "Please close entry to your event before the first start, so that your competitors can successfully track themselves. Only close when all competitors have joined, closing cannot be undone.",
   "text_end_event_long_text_running": "You must end your event after the last race, so that all statistics can be successfully calculated for you.",
@@ -372,5 +374,12 @@
 
   "caption_sap_analytics_header": "SAP Analytics",
 
-  "text_temporary_mark_inventory": "Currently, you can only delete marks from your inventory. Adding and Editing Marks (Name, Location, etc.) is only possible via the course-creator inside an event. We will soon add these features here."
+  "text_temporary_mark_inventory": "Currently, you can only delete marks from your inventory. Adding and Editing Marks (Name, Location, etc.) is only possible via the course-creator inside an event. We will soon add these features here.",
+
+  "text_communications_server" : "Expedition Network",
+  "text_communications_ip": "IP",
+  "text_communications_port": "Port",
+  "text_communications_protocol": "Protocol",
+  "text_communications_server_on": "Server online",
+  "text_communications_server_off": "Server offline"
 }
