@@ -516,7 +516,7 @@ const WaypointEditForm = Component((props: any) =>
       reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(nothingWhenNotStartOrFinishGate(SameStartFinish)),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(GateNameDropdown))),
-      nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true }))))),
+      nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true })))))),
       nothingWhenEmptyWaypoint(nothingWhenNotAGate(GateMarkSelector))
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
