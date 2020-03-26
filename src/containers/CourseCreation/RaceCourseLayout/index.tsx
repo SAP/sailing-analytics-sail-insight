@@ -119,10 +119,10 @@ const locationIcon = icon({ source: Images.courseConfig.location, iconStyle: { w
 const bigLocationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 25, height: 25 } })
 const chevronArrowDown = icon({ source: Images.actions.arrowDown, iconStyle: { width: 14, height: 14 } })
 const chevronArrowUp = icon({ source: Images.actions.arrowUp, iconStyle: { width: 14, height: 14 } })
-const arrowUp = ({ color = $LightDarkBlue }: any = {}) => icon({
+const arrowUp = ({ color = $LightDarkBlue, size = 25, iconStyle = { height: 12 } }: any = {}) => icon({
   source: Images.courseConfig.arrowUp,
-  style: { justifyContent: 'flex-end', height: 25 },
-  iconStyle: { height: 12, tintColor: color } })
+  style: { justifyContent: 'flex-end', height: size },
+  iconStyle: { tintColor: color, ...iconStyle } })
 
 const dashLine = fromClass(Dash).contramap(always({
   style: { height: 50, width: 90, alignItems: 'center' },
@@ -133,7 +133,7 @@ const GateMarkSelectorItem = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.gateMarkSelectorItemContainer }),
-    concat(__, nothingWhenNotSelected(arrowUp())),
+    concat(__, nothingWhenNotSelected(arrowUp({ size: 35, iconStyle: { width: 37, height: 24 } }))),
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
       onPress: (props: any) => props.selectMarkConfiguration(props.markConfigurationId) }),
@@ -516,7 +516,7 @@ const WaypointEditForm = Component((props: any) =>
       reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(nothingWhenNotStartOrFinishGate(SameStartFinish)),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(GateNameDropdown))),
-      nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true }))))),
+      nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true })))))),
       nothingWhenEmptyWaypoint(nothingWhenNotAGate(GateMarkSelector))
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
