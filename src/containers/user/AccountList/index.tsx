@@ -13,6 +13,7 @@ import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
+import { getMtcpAndCommunicationSetting } from '../../../selectors/settings';
 import styles from './styles'
 
 const EMPTY_VALUE = '-'
@@ -52,15 +53,19 @@ const communicationsItem = (props: any) => ({
 class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean
   user: User,
+  expeditionCommunicationEnabled: boolean
 }> {
   public render() {
     const { isLoggedIn } = this.props
 
-    const data = [
+    let data = [
       ...(isLoggedIn ? loggedInItems(this.props) : notLoggedInItems(this.props)),
-      settingsItem(this.props),
-      communicationsItem(this.props),
+      settingsItem(this.props)
     ]
+
+    if (this.props.expeditionCommunicationEnabled) {
+      data.push(communicationsItem(this.props))
+    }
 
     return (
       <View style={[container.main, styles.container]}>
@@ -92,6 +97,7 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 const mapStateToProps = (state: any) => ({
   user: getUserInfo(state) || {},
   isLoggedIn: isLoggedInSelector(state),
+  expeditionCommunicationEnabled: getMtcpAndCommunicationSetting(state)
 })
 
 export default connect(mapStateToProps)(AccountList)

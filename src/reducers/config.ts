@@ -65,6 +65,7 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
+  mtcpAndCommunication: boolean,
   leaderboardEnabled: boolean,
 }
 

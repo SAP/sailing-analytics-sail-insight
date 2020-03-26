@@ -6,6 +6,7 @@ import {
   updateLeaderboardEnabledSetting,
   updateServerUrlSetting,
   updateVerboseLoggingSetting,
+  updateMtcpAndCommunicationSetting
 } from 'actions/settings'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { SettingsState } from 'reducers/config'
@@ -18,6 +19,7 @@ const initialState: SettingsState = {
   enableAnalytics: false,
   serverUrl: DEFAULT_SERVER_URL,
   verboseLogging: false,
+  mtcpAndCommunication: false,
   leaderboardEnabled: false,
 }
 
@@ -27,6 +29,7 @@ const reducer = handleActions(
     [updateAnalyticsSettings as any]: itemUpdateHandler('enableAnalytics'),
     [updateServerUrlSetting as any]: itemUpdateHandler('serverUrl'),
     [updateVerboseLoggingSetting as any]: itemUpdateHandler('verboseLogging'),
+    [updateMtcpAndCommunicationSetting as any]: itemUpdateHandler('mtcpAndCommunication'),
     [updateLeaderboardEnabledSetting as any]: itemUpdateHandler('leaderboardEnabled'),
     [removeUserData as any]: (state:SettingsState) => ({ ...initialState, serverUrl: state.serverUrl }),
   },
