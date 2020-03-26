@@ -168,25 +168,18 @@ const withLeftHeaderBackButton = mergeDeepLeft({ options: {
 const nothingWhenBoundToMark = branch(propEq('boundToMark', true), nothingAsClass)
 const nothingWhenNotBoundToMark = branch(propEq('boundToMark', false), nothingAsClass)
 
-const TrackingSwitch = Component((props: any) => compose(
+const markTrackingNavigator = Component(props => compose(
   fold(props),
-  reduxConnect((state: any) => {
-    return {
-      boundToMark: isBoundToMark(state)
-    }
-  }),
-  view({ style: { flex: 1 } }),
-  reduce(concat, nothing())
-)([
-  nothingWhenBoundToMark(fromClass(WelcomeTracking)),
-  nothingWhenNotBoundToMark(MarkTracking)
+  stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
+  reduce(concat, nothing()))([
+  stackScreen(withoutHeader({ name: Screens.MarkTracking, component: MarkTracking.fold })),
 ]))
 
 const trackingNavigator = Component(props => compose(
   fold(props),
   stackNavigator({ initialRouteName: Screens.WelcomeTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
-  stackScreen(withoutHeader({ name: Screens.WelcomeTracking, component: TrackingSwitch.fold })),
+  stackScreen(withoutHeader({ name: Screens.WelcomeTracking, component: WelcomeTracking })),
   stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
     withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
     { name: Screens.TrackingList, component: Sessions, initialParams: { forTracking: true } })),
@@ -194,6 +187,30 @@ const trackingNavigator = Component(props => compose(
   stackScreen({ name: Screens.SetWind, component: SetWind, options: { title: I18n.t('title_set_wind') } }),
   stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') } })),
 ]))
+
+// const TrackingSwitch = Component((props: any) => compose(
+//   fold(props),
+//   reduxConnect((state: any) => {
+//     return {
+//       boundToMark: isBoundToMark(state)
+//     }
+//   }),
+//   view({ style: { flex: 1 } }),
+//   reduce(concat, nothing())
+// )([
+//   nothingWhenBoundToMark(trackingNavigator),
+//   nothingWhenNotBoundToMark(markTrackingNavigator)
+// ]))
+
+const TrackingSwitch = connect((state: any) => {
+  return {
+    boundToMark: isBoundToMark(state)
+  }
+})(props => {
+  return props.boundToMark
+    ? markTrackingNavigator.fold(props)
+    : trackingNavigator.fold(props)
+})
 
 const sessionsNavigator = Component(props => compose(
   fold(props),
@@ -279,7 +296,7 @@ const mainTabsNavigator = Component(props => compose(
     })
   }),
   reduce(concat, nothing()))([
-  tabsScreen({ name: Screens.TrackingNavigator, component: trackingNavigator.fold, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
+  tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
   tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold }),
   tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }),
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
