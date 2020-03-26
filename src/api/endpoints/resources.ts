@@ -70,6 +70,7 @@ const apiEndpoints = (serverUrl: string) => {
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
     markProperties: getSharedUrlV1('/markproperties'),
     markProperty: getSharedUrlV1('/markproperties/{0}'),
+    markPropertyPositioning: getSharedUrlV1('/markproperties/{0}/positioning'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
@@ -133,6 +134,7 @@ export interface DataApi {
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
   requestMarkProperties: ApiFunction,
   requestMarkProperty: (id: string) => any,
+  updateMarkPropertyPositioning: (id: string, deviceUuid?: string, latDeg?: number, lonDeg?: number) => any,
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
   requestCourse: (regattaName: string, raceName: string, fleet: String) => any
@@ -233,6 +235,16 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markPropertiesSchema] }),
     requestMarkProperty: (id: string) => dataRequest(endpoints.markProperty({ pathParams: [id]}),
       { dataSchema: markPropertiesSchema }),
+    updateMarkPropertyPositioning: (id, deviceUuid, latDeg, lonDeg) => dataRequest(
+      endpoints.markPropertyPositioning({
+        pathParams: [id],
+        urlParams: { deviceUuid, latDeg, lonDeg }}),
+      {
+        method: HttpMethods.PUT,
+        bodyType: 'x-www-form-urlencoded',
+        dataSchema: markPropertiesSchema
+      },
+    ),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }), { dataSchema: markSchema }
     ),

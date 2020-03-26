@@ -78,16 +78,32 @@ export const isBoundToMark = createSelector(
   compose(not, isNil)
 )
 
-export const getNameOfBoundMark = createSelector(
+export const getBoundMarkEntity = createSelector(
   getMarkBindingCheckIn,
   getMarkEntity,
   (markCheckIn, marks) =>
     markCheckIn &&
     markCheckIn.markId &&
     compose(
-      path([markCheckIn.markId, 'name']),
+      prop(markCheckIn.markId),
       defaultTo({})
     )(marks)
+)
+
+export const getNameOfBoundMark = createSelector(
+  getBoundMarkEntity,
+  compose(
+    prop('name'),
+    defaultTo({}),
+  )
+)
+
+export const getMarkPropertiesIdOfBoundMark = createSelector(
+  getBoundMarkEntity,
+  compose(
+    prop('originatingMarkPropertiesId'),
+    defaultTo({}),
+  )
 )
 
 export const isLoadingCheckIn = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingCheckIn
