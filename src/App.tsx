@@ -14,6 +14,7 @@ initStyles()
 const store = getStore()
 const persistor = getPersistor()
 
+
 enableScreens()
 
 // enable hot module replacement for reducers
