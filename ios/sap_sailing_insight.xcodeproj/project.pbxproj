@@ -29,7 +29,7 @@
 		475044098F5D49F48DF8B704 /* SFProDisplay-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6697E9E8466C41A1A1E26D10 /* SFProDisplay-Bold.otf */; };
 		4B2B06EA2267239A0009FAEC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B2B06EC2267239A0009FAEC /* InfoPlist.strings */; };
 		4EC14D9E183943FFB0DC1609 /* SFCompactText-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = F86F0DBAAFEC487A8C513B94 /* SFCompactText-Regular.otf */; };
-		6B1CF57623EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B1CF57523EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m */; };
+		6B2D3B92242B317F0084B4B6 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B2D3B91242B317F0084B4B6 /* RNBackgroundFetch+AppDelegate.m */; };
 		6B70DEA323D98050000E7A1D /* sap_sailing_insight.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 98400D3621C03499002D36DE /* sap_sailing_insight.entitlements */; };
 		75E12998B1F7482F875C58B8 /* SFProDisplay-HeavyItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 22B060AAFBC445FDAA1D0A59 /* SFProDisplay-HeavyItalic.otf */; };
 		A1CB7FA7252449A9BEFEDFBB /* FloodStd.otf in Resources */ = {isa = PBXBuildFile; fileRef = 17EA795099914E639499D806 /* FloodStd.otf */; };
@@ -294,7 +294,7 @@
 		60424681A6D1664A3D5DB4BB /* Pods-sap_sailing_insight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sap_sailing_insight.debug.xcconfig"; path = "Target Support Files/Pods-sap_sailing_insight/Pods-sap_sailing_insight.debug.xcconfig"; sourceTree = "<group>"; };
 		6048B79C9C874E60B9C94B37 /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 		6697E9E8466C41A1A1E26D10 /* SFProDisplay-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SFProDisplay-Bold.otf"; path = "../assets/fonts/SFProDisplay-Bold.otf"; sourceTree = "<group>"; };
-		6B1CF57523EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
+		6B2D3B91242B317F0084B4B6 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		888495AFB84DC55B2536A019 /* libPods-sap_sailing_insightTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sap_sailing_insightTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -386,8 +386,8 @@
 				98400D3621C03499002D36DE /* sap_sailing_insight.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				6B1CF57523EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
+				6B2D3B91242B317F0084B4B6 /* RNBackgroundFetch+AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
@@ -981,9 +981,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B2D3B92242B317F0084B4B6 /* RNBackgroundFetch+AppDelegate.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				6B1CF57623EA124100C8F360 /* RNBackgroundFetch+AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
