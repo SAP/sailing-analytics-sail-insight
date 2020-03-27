@@ -19,6 +19,7 @@ import {
   updateLeaderboardEnabledSetting,
   updateServerUrlSetting,
   updateVerboseLoggingSetting,
+  updateMtcpAndCommunicationSetting
 } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
@@ -27,6 +28,7 @@ import {
   getLeaderboardEnabledSetting,
   getServerUrlSetting,
   getVerboseLoggingSetting,
+  getMtcpAndCommunicationSetting
 } from '../../selectors/settings'
 import styles from './styles'
 
@@ -34,7 +36,9 @@ interface Props {
   formServer?: string,
   updateServerUrlSetting: (value: string) => void,
   verboseLogging: boolean,
+  mtcpAndCommunication: boolean,
   updateVerboseLoggingSetting: (value: boolean) => void,
+  updateMtcpAndCommunicationSetting: (value: boolean) => void,
   leaderboardEnabled: boolean,
   updateLeaderboardEnabledSetting: (value: boolean) => void,
 }
@@ -71,6 +75,13 @@ class ExpertSettings extends TextInputForm<Props> {
             title={I18n.t('text_verbose_logging')}
             switchValue={this.props.verboseLogging}
             onSwitchValueChange={this.props.updateVerboseLoggingSetting}
+          />
+          <EditItemSwitch
+              style={styles.item}
+              titleStyle={{ color: 'white' }}
+              title={I18n.t('text_mtcp_and_communication')}
+              switchValue={this.props.mtcpAndCommunication}
+              onSwitchValueChange={this.props.updateMtcpAndCommunicationSetting}
           />
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
@@ -133,13 +144,14 @@ const mapStateToProps = (state: any) => {
       [expertSettingsForm.FORM_KEY_SERVER_URL]: getServerUrlSetting(state),
     },
     verboseLogging: getVerboseLoggingSetting(state),
+    mtcpAndCommunication: getMtcpAndCommunicationSetting(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
   }
 }
 
 export default connect(
   mapStateToProps,
-  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting },
+  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting, updateMtcpAndCommunicationSetting },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,
