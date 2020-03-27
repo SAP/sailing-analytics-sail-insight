@@ -34,8 +34,12 @@ function* deleteMarkBinding({ payload }: any) {
     yield call(api.stopDeviceMapping, leaderboardName, deviceMappinpData)
 
     // Remove positioning information from markProperties
-    const updatedMarkProperties = yield call(api.updateMarkPropertyPositioning, markPropertiesId)
-    yield put(receiveEntities(updatedMarkProperties))
+    try {
+      const updatedMarkProperties = yield call(api.updateMarkPropertyPositioning, markPropertiesId)
+      yield put(receiveEntities(updatedMarkProperties))
+    // Everyone who is not the owner of the markProperties to be edited will get an
+    // error because of missing permissions, which we can ignore.
+    } catch (err) {}
 
     const updatedCheckIn = {
       leaderboardName,
