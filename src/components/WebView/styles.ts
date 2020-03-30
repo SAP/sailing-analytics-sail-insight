@@ -5,5 +5,6 @@ export default EStyleSheet.create({
   web: {
     height: '100%',
     backgroundColor: '$primaryBackgroundColor',
+    opacity: 0.99,
   },
 })
