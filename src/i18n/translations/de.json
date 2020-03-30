@@ -49,6 +49,7 @@
   "text_email": "E-Mail",
   "text_base_server": "Server",
   "text_verbose_logging": "Enable verbose background GPS logging",
+  "text_mtcp_and_communication": "Enable Multipath TCP and expedition communication",
   "text_placeholder_your_username": "Benutzername",
   "text_placeholder_your_email": "Deine E-Mail Adresse",
   "text_placeholder_enter_password": "Passwort",

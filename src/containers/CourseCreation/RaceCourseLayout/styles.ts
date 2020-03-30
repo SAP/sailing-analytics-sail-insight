@@ -1,5 +1,4 @@
-import { Dimensions } from 'react-native'
-import EStyleSheets from 'react-native-extended-stylesheet' 
+import EStyleSheets from 'react-native-extended-stylesheet'
 
 import { $DarkBlue, $LightDarkBlue, $Orange } from 'styles/colors'
 import { white, withDefaultBoldFont, withDefaultFont, withSecondaryBoldFont } from 'styles/compositions/text'
@@ -321,7 +320,7 @@ export default EStyleSheets.create({
   },
 
   loadingContainer: {
-    height: Dimensions.get('window').height,
+    flex: 1,
     justifyContent: 'center'
   },
 
