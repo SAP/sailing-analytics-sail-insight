@@ -96,6 +96,7 @@ class Login extends TextInputForm<{
                 placeholder={I18n.t('text_placeholder_enter_password')}
                 keyboardType={'default'}
                 returnKeyType="go"
+                autoCapitalize="none"
                 onSubmitEditing={this.onSubmit}
                 secureTextEntry={true}
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}/>
