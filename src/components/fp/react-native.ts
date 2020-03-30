@@ -30,9 +30,9 @@ export const image = (settings: Object) => Component((props: Object) => compose(
   always)(
   settings))
 
-export const touchableHighlight = curry((settings, c) => Component((props: Object) => compose(
+const pressable = curry((buttonComponent, settings, c) => Component((props: Object) => compose(
   fold(props),
-  fromClass(TouchableHighlight).contramap,
+  fromClass(buttonComponent).contramap,
   always,
   merge(__, { onPress: () => settings.onPress(props) }),
   merge(settings),
@@ -41,16 +41,10 @@ export const touchableHighlight = curry((settings, c) => Component((props: Objec
   when(has('fold'), fold(props)))(
   c)))
 
-export const touchableOpacity = curry((settings, c) => Component((props: Object) => compose(
-  fold(props),
-  fromClass(TouchableOpacity).contramap,
-  always,
-  merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props) }),
-  merge(settings),
-  objOf('children'),
-  head,
-  when(has('fold'), fold(props)))(
-  c)))
+export const touchableHighlight =  pressable(TouchableHighlight)
+export const touchableOpacity = pressable(TouchableOpacity)
+export const textButton = pressable(TextButton)
+export const button = pressable(Button)
 
 export const forwardingPropsFlatList = Component((props: any) =>
   compose(
@@ -83,24 +77,3 @@ export const inlineText = curry((settings, c) => Component((props: Object) => co
   reduce(concat, nothing()),
   )(c)))
 
-export const textButton = curry((settings, c) => Component((props: Object) => compose(
-  fold(props),
-  fromClass(TextButton).contramap,
-  always,
-  merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props)}),
-  merge(settings),
-  objOf('children'),
-  head,
-  when(has('fold'), fold(props)))(
-  c)))
-
-export const button = curry((settings, c) => Component((props: Object) => compose(
-  fold(props),
-  fromClass(Button).contramap,
-  always,
-  merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props)}),
-  merge(settings),
-  objOf('children'),
-  head,
-  when(has('fold'), fold(props)))(
-  c)))
