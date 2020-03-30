@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native'
+import { Dimensions, Platform } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { $smallSpacing, $tinySpacing } from 'styles/dimensions'
@@ -44,12 +44,16 @@ export default EStyleSheets.create({
       Dimensions.get('window').width / 2 - $smallSpacing - $tinySpacing - 30,
   },
   triangleUp: {
-    paddingTop: 10,
+    paddingTop: Platform.OS === 'ios' ? 5 : 10,
     paddingLeft: 5,
+    width: 15,
+    height: 15,
   },
   triangleDown: {
-    paddingTop: 5,
+    paddingTop: Platform.OS === 'ios' ? 0 : 5,
     paddingLeft: 5,
+    width: 15,
+    height: 15,
   },
   titleArrow: {
     tintColor: chooseMetricTextColor,
