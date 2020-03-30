@@ -77,7 +77,9 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
     return
   }
 
-  dispatch(updateLoadingCheckInFlag(true))
+  if (!markTracking) {
+    dispatch(updateLoadingCheckInFlag(true))
+  }
   dispatch(resetTrackingStatistics())
 
   if (!markTracking) {
