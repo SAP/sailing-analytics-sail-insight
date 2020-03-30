@@ -9,6 +9,11 @@ import { getTrackedEventId, getTrackedLeaderboardName } from './location'
 export const getActiveCheckInEntity = (state: RootState = {}) =>
   state.checkIn && state.checkIn.active
 
+export const areThereActiveCheckIns = createSelector(
+  getActiveCheckInEntity,
+  (checkInEntity = {}) => Object.keys(checkInEntity).length > 0
+)
+
 
 export const getCheckInByLeaderboardName = (leaderboardName?: string) => (state: RootState = {}) => {
   const data = leaderboardName &&

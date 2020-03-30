@@ -20,7 +20,7 @@ import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { isLoadingCheckIn } from 'selectors/checkIn'
+import { areThereActiveCheckIns, isLoadingCheckIn } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/stack'
 import { AuthContext } from 'navigation/NavigationContext'
@@ -271,7 +271,7 @@ const mainTabsNavigator = Component(props => compose(
 const AppNavigator = Component(props => compose(
   fold(props),
   stackNavigator({
-    initialRouteName: props.isLoggedIn ? Screens.Main : Screens.FirstContact,
+    initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,
     screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
@@ -371,7 +371,8 @@ class AppRoot extends ReactComponent {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
-  isLoadingCheckIn: isLoadingCheckIn(state)
+  isLoadingCheckIn: isLoadingCheckIn(state),
+  shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state)
 })
 
 export default connect(mapStateToProps, {
