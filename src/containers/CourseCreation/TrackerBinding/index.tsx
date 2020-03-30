@@ -38,8 +38,6 @@ const mapStateToProps = (state: any, props: any) => {
   })
   const checkinUrl = `${serverUrl}/tracking/checkin?${path}`
 
-  console.log({ trackerQrCode:  `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}` })
-
   return {
     qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
     invalidMark: isNil(markId)
