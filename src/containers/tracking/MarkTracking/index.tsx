@@ -1,5 +1,5 @@
 import { always, compose, concat, not, prop, reduce } from 'ramda'
-import { Alert } from 'react-native'
+import { Alert, Dimensions } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 
 import Images from '@assets/Images'
@@ -26,7 +26,7 @@ import { getLocationStats } from 'selectors/location'
 import * as LocationService from 'services/LocationService'
 import { getUnknownErrorMessage } from 'helpers/texts'
 
-import styles, { deleteBindingColor } from './styles'
+import styles, { deleteBindingColor, headerImageBackgroundColor } from './styles'
 
 const mapStateToProps = (state: any) => ({
   markName: getNameOfBoundMark(state),
@@ -58,7 +58,12 @@ const withKeepAwake = lifecycle({
 const withIsLoading = withState('isLoading', 'setIsLoading', false)
 
 const markImage = image({
-  style: styles.headerImage,
+  style: {
+    width: '100%',
+    resizeMode: 'contain',
+    height: Dimensions.get('window').height * 0.4,
+    backgroundColor: headerImageBackgroundColor
+  },
   source: Images.tracking.markBoundHeader
 })
 

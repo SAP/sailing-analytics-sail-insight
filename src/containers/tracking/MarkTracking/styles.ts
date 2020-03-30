@@ -1,13 +1,11 @@
-import { Dimensions } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { withSecondaryLightFont, withSecondaryMediumFont, withSecondaryHeavyFont } from 'styles/compositions/text'
 
-const headerImageBackgroundColor = '#2699FB'
+export const headerImageBackgroundColor = '#2699FB'
 export const deleteBindingColor = '#466888'
 const deleteBindingFontSize = 14
 
-const windowHeight = Dimensions.get('window').height
 const skipAndroid = false
 
 export default EStyleSheets.create({
@@ -18,12 +16,6 @@ export default EStyleSheets.create({
   connectivity: {
     backgroundColor: headerImageBackgroundColor,
     paddingTop: getStatusBarHeight(skipAndroid),
-  },
-  headerImage: {
-    width: '100%',
-    resizeMode: 'contain',
-    height: windowHeight * 0.40,
-    backgroundColor: headerImageBackgroundColor
   },
   trackingButton: {
     marginBottom: 30,
