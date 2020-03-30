@@ -1,6 +1,7 @@
 import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
 import IconText from 'components/IconText'
 import TextButton from 'components/TextButton'
+import Button from 'components/Button'
 import { __, always, compose, concat, curry, has, head, merge, mergeLeft, objOf, reduce, when } from 'ramda'
 import { useState as reactUseState } from 'react'
 import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
@@ -18,15 +19,20 @@ export const svgGroup = buildComponentWithChildren(G)
 export const svgText = buildComponentWithChildren(rnSvgText)
 export const iconText = buildComponentWithChildren(IconText)
 
+export const icon = compose(
+  fromClass(IconText).contramap,
+  always
+)
+
 export const image = (settings: Object) => Component((props: Object) => compose(
   fold(props),
   fromClass(Image).contramap,
   always)(
   settings))
 
-export const touchableHighlight = curry((settings, c) => Component((props: Object) => compose(
+const pressable = curry((buttonComponent, settings, c) => Component((props: Object) => compose(
   fold(props),
-  fromClass(TouchableHighlight).contramap,
+  fromClass(buttonComponent).contramap,
   always,
   merge(__, { onPress: () => settings.onPress(props) }),
   merge(settings),
@@ -35,16 +41,10 @@ export const touchableHighlight = curry((settings, c) => Component((props: Objec
   when(has('fold'), fold(props)))(
   c)))
 
-export const touchableOpacity = curry((settings, c) => Component((props: Object) => compose(
-  fold(props),
-  fromClass(TouchableOpacity).contramap,
-  always,
-  merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props) }),
-  merge(settings),
-  objOf('children'),
-  head,
-  when(has('fold'), fold(props)))(
-  c)))
+export const touchableHighlight =  pressable(TouchableHighlight)
+export const touchableOpacity = pressable(TouchableOpacity)
+export const textButton = pressable(TextButton)
+export const button = pressable(Button)
 
 export const forwardingPropsFlatList = Component((props: any) =>
   compose(
@@ -76,15 +76,4 @@ export const inlineText = curry((settings, c) => Component((props: Object) => co
   text(merge({ style: { flexDirection: 'row' } }, settings)),
   reduce(concat, nothing()),
   )(c)))
-
-export const textButton = curry((settings, c) => Component((props: Object) => compose(
-  fold(props),
-  fromClass(TextButton).contramap,
-  always,
-  merge(__, { onPress: () => settings.onPress ? settings.onPress(props) : props.onPress(props)}),
-  merge(settings),
-  objOf('children'),
-  head,
-  when(has('fold'), fold(props)))(
-  c)))
 

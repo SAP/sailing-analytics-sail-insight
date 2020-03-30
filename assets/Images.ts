@@ -27,6 +27,7 @@ export default {
     arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
     arrowLeft: require('./img/icons/icon-arrow-chevron-left.png'),
     close: require('./img/icons/icon-cross.png'),
+    closeCircled: require('./img/new_icons/delete_icon_circle.png'),
     expandLess: require('./img/icons/icon-arrow-expand-less.png'),
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
     pickImage: require('./img/new_icons/camera.png'),
@@ -88,5 +89,8 @@ export default {
   account: {
     account_placeholder: require('./img/account/account_placeholder.png'),
     account_gradient: require('./img/account/gradient.png'),
+  },
+  tracking: {
+    markBoundHeader: require('./img/tracking/MarkBindedMode.png'),
   },
 }

@@ -1,6 +1,7 @@
 import { all } from 'redux-saga/effects'
 
 import watchCourses from './CourseSaga'
+import watchCheckIn from './checkInSaga'
 import watchEvents from './EventsSaga'
 import watchMarks from './InventorySaga'
 import watchPermissions from './permissionsSaga'
@@ -21,6 +22,7 @@ export default function* rootSaga() {
     watchEvents(),
     watchMarks(),
     watchPermissions(),
+    watchCheckIn(),
     watchOffline(),
     watchCommunications()
   ])
