@@ -19,7 +19,7 @@ export default EStyleSheets.create({
   },
   trackingButton: {
     marginBottom: 30,
-    backgroundColor: '#FF6B4C',
+    backgroundColor: '$Orange',
   },
   trackingButtonText: {
     color: 'white',
