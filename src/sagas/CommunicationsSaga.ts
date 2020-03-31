@@ -2,6 +2,7 @@ import { UPDATE_START_LINE, UPDATE_SERVER_STATE, UPDATE_START_LINE_FOR_CURRENT_C
   updateStartLine, updateServerValid, updateServerPort, updateServerProtocol, updateServerIP, fetchCommunicationState, updateServerState } from 'actions/communications'
 import { sendStartLine, getServerState, setServerState } from 'services/CommunicationService'
 import { getMarkPositionsForCourse, getServerIP, getServerPort, getStartLine } from 'selectors/communications'
+import { getMtcpAndCommunicationSetting } from "selectors/settings";
 
 import { NetworkInfo } from "react-native-network-info"
 import { takeLatest, all, call, put, select} from 'redux-saga/effects'
@@ -69,24 +70,30 @@ export function* setCommunicationStateSage({payload}: any) {
 
 export function* updateStartLineForCurrentCourseSaga({payload}: any){
 
-  const { raceName, regattaName, serverUrl } = payload
-  const api = dataApi(serverUrl)
+  const communicationEnabled = yield select(getMtcpAndCommunicationSetting)
 
-  const course = yield call(api.requestCourse, regattaName, raceName, 'Default')
+  if (communicationEnabled) {
+    const { raceName, regattaName, serverUrl } = payload
+    const api = dataApi(serverUrl)
 
-  // update start line
-  const startLine: any = getMarkPositionsForCourse(course, 'Start')
+    getMtcpAndCommunicationSetting()
 
-  if (startLine.length > 1) {
-    if (startLine[0] !== undefined && startLine[1] !== undefined &&
-      startLine[0].lat_deg !== undefined && startLine[0].lon_deg !== undefined &&
-      startLine[1].lat_deg !== undefined && startLine[1].lon_deg !== undefined) {
-      yield put(updateStartLine({pinLatitude: startLine[0].lat_deg, pinLongitude: startLine[0].lon_deg, boatLatitude: startLine[1].lat_deg, boatLongitude: startLine[1].lon_deg}))
+    const course = yield call(api.requestCourse, regattaName, raceName, 'Default')
+
+    // update start line
+    const startLine: any = getMarkPositionsForCourse(course, 'Start')
+
+    if (startLine.length > 1) {
+      if (startLine[0] !== undefined && startLine[1] !== undefined &&
+        startLine[0].lat_deg !== undefined && startLine[0].lon_deg !== undefined &&
+        startLine[1].lat_deg !== undefined && startLine[1].lon_deg !== undefined) {
+        yield put(updateStartLine({pinLatitude: startLine[0].lat_deg, pinLongitude: startLine[0].lon_deg, boatLatitude: startLine[1].lat_deg, boatLongitude: startLine[1].lon_deg}))
+      } else {
+        yield put(updateStartLine({}))
+      }
     } else {
       yield put(updateStartLine({}))
     }
-  } else {
-    yield put(updateStartLine({}))
   }
 }
 
