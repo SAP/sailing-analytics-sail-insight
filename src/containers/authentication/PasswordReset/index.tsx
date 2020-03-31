@@ -1,24 +1,17 @@
 import { isEmpty } from 'lodash'
 import React from 'react'
-import { Alert, ImageBackground, View } from 'react-native'
+import { Alert, View } from 'react-native'
 import { connect } from 'react-redux'
-
 import Images from '@assets/Images'
 import { FORM_KEY_EMAIL, FORM_KEY_USERNAME } from 'forms/registration'
 import I18n from 'i18n'
-
 import TextInputForm from 'components/base/TextInputForm'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
-
-import { button, container } from 'styles/commons'
-import { registration } from 'styles/components'
 import { requestPasswordReset } from '../../../actions/auth'
-import { navigateBack } from '../../../navigation/NavigationService'
 import styles from './styles'
-
 
 class PasswordReset extends TextInputForm<{
   requestPasswordReset: (u: string, e: string) => any,
@@ -50,7 +43,7 @@ class PasswordReset extends TextInputForm<{
         [
           {
             text: I18n.t('caption_ok'), onPress: async () => {
-              navigateBack()
+              this.props.navigation.goBack()
             },
           },
         ],

@@ -5,10 +5,9 @@ import { Alert } from 'react-native'
 import { AddRaceColumnResponseData } from 'api/endpoints/types'
 import I18n from 'i18n'
 import { CheckIn, CheckInUpdate } from 'models'
-import { navigateToTracking, navigateToEditCompetitor } from 'navigation'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
-
+import * as Screens from 'navigation/Screens'
 import { withDataApi } from 'helpers/actions'
 import { getNowAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
@@ -28,8 +27,8 @@ import {
   getVerboseLoggingSetting,
 } from '../selectors/settings'
 import { syncAllFixes } from '../services/GPSFixService'
-import { deleteAllGPSFixRequests } from '../storage'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
+import { updateStartLine, updateStartLineBasedOnCurrentCourse } from 'actions/communications'
 
 
 export type StopTrackingAction = (data?: CheckIn) => any
@@ -52,11 +51,13 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
     }
     dispatch(fetchRegattaAndRaces(data.regattaName, data.secret))
     dispatch(removeTrackedRegatta())
+
+    // clear start line
+    dispatch(updateStartLine({}))
   },
 )
 
-export type StartTrackingAction = (data?: CheckIn | string) => any
-export const startTracking: StartTrackingAction = data =>  async (
+export const startTracking = ({ data, navigation, markTracking = false }: any) => async (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
@@ -72,17 +73,22 @@ export const startTracking: StartTrackingAction = data =>  async (
     checkInData)
 
   if (eventIsNotBound) {
-    navigateToEditCompetitor(checkInData, { startTrackingAfter: true });
+    navigation.navigate(Screens.EditCompetitor, { data: checkInData, options: { startTrackingAfter: true } })
     return
   }
 
-  dispatch(updateLoadingCheckInFlag(true))
+  if (!markTracking) {
+    dispatch(updateLoadingCheckInFlag(true))
+  }
   dispatch(resetTrackingStatistics())
 
-  deleteAllGPSFixRequests()
-
-  navigateToTracking()
+  if (!markTracking) {
+    navigation.navigate(Screens.Tracking)
+  }
   let showAlertRaceNotStarted = false
+
+  try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
+  catch (e) {}
 
   try {
     const shouldCreateTrack = checkInData.isSelfTracking
@@ -97,7 +103,6 @@ export const startTracking: StartTrackingAction = data =>  async (
         await dispatch(startTrack(checkInData.leaderboardName, newTrack.racename, newTrack.seriesname))
       }
     } else {
-      await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret))
       const races = getRaces(checkInData.leaderboardName)(getState())
       const now = getNowAsMillis()
       const activeRaces = races
@@ -119,6 +124,13 @@ export const startTracking: StartTrackingAction = data =>  async (
           )
           checkInData.currentTrackName = latestTrackName
         }
+
+        // clear start line
+        dispatch(updateStartLine({}))
+
+        // get starting line
+        let fetchData = {regattaName: data.regattaName, raceName: latestActiveRace?.name, serverUrl: data.serverUrl}
+        dispatch(updateStartLineBasedOnCurrentCourse(fetchData))
       }
     }
     const trackName = (newTrack && newTrack.racename) || checkInData.currentTrackName
@@ -141,7 +153,7 @@ export const startTracking: StartTrackingAction = data =>  async (
   } finally {
     dispatch(updateLoadingCheckInFlag(false))
 
-    if (showAlertRaceNotStarted) {
+    if (showAlertRaceNotStarted && !markTracking) {
       // workaround for stuck fullscreen loading indicator when alert is called
       setTimeout(async () => Alert.alert(
           I18n.t('caption_race_not_started_yet'),

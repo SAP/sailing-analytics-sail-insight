@@ -1,6 +1,8 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
+import moment from 'moment'
+
 import { EMPTY_VALUE } from './Leaderboard'
 import styles from './styles'
 
@@ -11,36 +13,45 @@ interface Props {
   rankingMetric: string
   gap?: number
   gain?: boolean
+  fontColor?: string
   fontSize?: number
+  fontSizeMultiplier?: number
 }
 
-const Gap = ({ gap, gain, fontSize, rankingMetric }: Props) => {
+const Gap = ({ gap, gain, fontSize, fontColor, rankingMetric, fontSizeMultiplier = 1 }: Props) => {
   let gapText
+  let adjustedFontSize = fontSize
 
   if (gap === undefined) {
     gapText = EMPTY_VALUE
   } else if (rankingMetric !== 'ONE_DESIGN') {
+    adjustedFontSize = fontSize * fontSizeMultiplier
+
     const negative = gap < 0
     const negativeText = negative ? '-' : ''
 
-    const gapRounded = Math.ceil(gap)
-    const gapAbs = Math.abs(gapRounded)
-    const minutes = Math.floor(gapAbs / 60)
-    const seconds = gapAbs % 60
-    gapText =
-      minutes !== 0
-        ? `${negativeText}${minutes}m ${seconds}s`
-        : `${negativeText}${seconds}s`
+    const cappedGap = Math.min(Math.abs(gap), 100 * 24 * 60 * 60 - 1) // The cap is 100 days
+
+    let formattedTime = moment.duration(cappedGap, 'seconds').format('DD:HH:mm:ss')
+    if (cappedGap < 60) {
+      formattedTime = `00:${formattedTime}`
+    }
+    gapText = `${negativeText}${formattedTime}`
   } else {
     gapText = `${Math.ceil(gap)}m`
   }
 
-  const fontSizeOverride = fontSize === undefined ? {} : { fontSize }
-  const emptySpaceOverride = fontSize === undefined ? {} : { width: fontSize }
+  const fontColorOverride = fontColor === undefined ? {} : { color: fontColor }
+
+  const triangleFontSize = Math.floor(fontSize * 0.4)
+
+  const fontSizeOverride = fontSize === undefined ? {} : { fontSize: adjustedFontSize }
+  const triangleFontSizeOverride = fontSize === undefined ? {} : { fontSize: triangleFontSize }
+  const emptySpaceOverride = fontSize === undefined ? {} : { width: triangleFontSize }
 
   return (
     <View style={[styles.textContainer]}>
-      <Text style={[styles.gapText, fontSizeOverride]}>{gapText}</Text>
+      <Text style={[styles.gapText, fontSizeOverride, fontColorOverride]}>{gapText}</Text>
       {/* This is so that numbers wihtout the indicators are aligned
           with numbers which have indicators */}
       {gain === undefined && (
@@ -49,7 +60,7 @@ const Gap = ({ gap, gain, fontSize, rankingMetric }: Props) => {
       <Text
         style={[
           styles.triangle,
-          fontSizeOverride,
+          triangleFontSizeOverride,
           gain === true ? styles.green : styles.red,
         ]}
       >

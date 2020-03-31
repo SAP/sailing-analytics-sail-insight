@@ -80,4 +80,7 @@ export default EStyleSheets.create({
     justifyContent: 'center',
     marginLeft: 'auto',
   },
+  spinnerStyle: {
+    paddingRight: 5,
+  }
 })

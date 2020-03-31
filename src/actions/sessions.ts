@@ -6,12 +6,11 @@ import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
 import { ManeuverChangeItem } from 'api/endpoints/types'
 import { competitorSchema } from 'api/schemas'
-
+import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
 import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
 import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
-import { navigateToManeuver, navigateToTrackingNavigator } from 'navigation'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -35,7 +34,7 @@ import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { selectEvent } from 'actions/events'
 import { saveTeam } from 'actions/user'
-import { getUserInfo } from 'selectors/auth'
+import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { getUserBoatByBoatName } from 'selectors/user'
@@ -123,7 +122,7 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   return timeOnTimeFactor
 }
 
-const allowReadAccessToCompetitorAndBoat = (competitorId: string, boatId: string) => {
+const allowReadAccessToCompetitorAndBoat = (serverUrl: string, competitorId: string, boatId: string) => {
   const acl = {
     displayName: 'Read all',
     acl: [
@@ -134,7 +133,7 @@ const allowReadAccessToCompetitorAndBoat = (competitorId: string, boatId: string
     ]
   }
 
-  const api = authApi()
+  const api = authApi(serverUrl)
 
   return Promise.all([
     api.putAcl('COMPETITOR', competitorId, acl),
@@ -168,7 +167,7 @@ export const createUserAttachmentToSession = (
 
     const serverUrl = getServerUrl(regattaName)(getState())
     const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
-    const boatId = get(userBoat, ['id', serverUrl])
+    let boatId = get(userBoat, ['id', serverUrl])
     let competitorId = get(userBoat, ['competitorId', serverUrl])
 
     let registrationSuccess = false
@@ -206,6 +205,7 @@ export const createUserAttachmentToSession = (
       })
 
       competitorId = newCompetitorWithBoat.id
+      boatId = newCompetitorWithBoat.boat.id
     }
 
     if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
@@ -214,7 +214,10 @@ export const createUserAttachmentToSession = (
 
     if (newCompetitorWithBoat) {
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
-      await allowReadAccessToCompetitorAndBoat(newCompetitorWithBoat.id, newCompetitorWithBoat.boat.id)
+    }
+
+    if (user && boatId && competitorId) {
+      await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
     }
 
     dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
@@ -260,7 +263,7 @@ export const createSessionCreationQueue: CreateSessionCreationQueueAction = (ses
     ],
   )
 
-export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any) =>
+export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {
     if (!data) {
       throw new CheckInException('data is missing')
@@ -271,11 +274,13 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
 
       if (options && options.startTrackingAfter) {
         const checkIn = getCheckInByLeaderboardName(data.leaderboardName)(getState())
-        dispatch(startTracking(checkIn))
+        dispatch(startTracking({ data: checkIn, navigation }))
       } else if (options && options.selectSessionAfter) {
-        dispatch(selectEvent(options.selectSessionAfter))
+        dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
-        navigateToTrackingNavigator()
+        const isLogged = isLoggedIn(getState())
+        isLogged ? navigation.navigate(Screens.SessionsNavigator) :
+          navigation.navigate(Screens.Main, { screen: Screens.SessionsNavigator })
       }
     } catch (err) {
       Logger.debug(err)
@@ -322,7 +327,7 @@ export const handleManeuverChange = (maneuverChangeData?: ManeuverChangeItem[]) 
       }
       const trackingStatus = getLocationTrackingStatus(getState())
       if (trackingStatus !== LocationService.LocationTrackingStatus.RUNNING) { return }
-      navigateToManeuver(maneuver)
+      //navigateToManeuver(maneuver)
     } catch (err) {
       Logger.debug(err)
     }

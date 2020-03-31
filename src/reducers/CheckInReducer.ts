@@ -1,7 +1,7 @@
 import { omit } from 'lodash'
 import { handleActions } from 'redux-actions'
 
-import { removeCheckIn, updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
+import { deleteMarkBinding, removeCheckIn, updateCheckIn, updateDeletingMarkBinding, updateLoadingCheckInFlag } from 'actions/checkIn'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { removeUserData } from '../actions/auth'
 import { CheckInState } from './config'
@@ -10,11 +10,17 @@ import { CheckInState } from './config'
 const initialState: CheckInState = {
   active: {},
   isLoadingCheckIn: false,
+  isDeletingMarkBinding: false,
 }
 
 const reducer = handleActions(
   {
     [updateLoadingCheckInFlag as any]: itemUpdateHandler('isLoadingCheckIn'),
+    [updateDeletingMarkBinding as any]: itemUpdateHandler('isDeletingMarkBinding'),
+    [deleteMarkBinding as any]: (state: any) => ({
+      ...state,
+      isDeletingMarkBinding: true,
+    }),
     [updateCheckIn as any]: (state: any = initialState, action) => {
       const leaderboardName = action.payload.leaderboardName
       if (!leaderboardName) {

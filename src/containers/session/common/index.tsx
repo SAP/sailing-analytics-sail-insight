@@ -5,12 +5,12 @@ import { Component, contramap, fold, fromClass, nothing,
   nothingAsClass } from 'components/fp/component'
 import { forwardingPropsFlatList, iconText, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
+import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { __, always, append, compose, concat, curry,
   equals, has, head, length, map, merge, objOf,
   prepend, prop, propEq, range, reduce, reject,
   remove, split, toString, toUpper, update, when } from 'ramda'
-import { navigateToEditCompetitor } from 'navigation'
 import { Dimensions } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
 import QRCode from 'react-native-qrcode-svg'
@@ -166,7 +166,7 @@ export const typeAndBoatClassCard = Component((props: any) => compose(
     reduce(concat, nothing()),
   )([
     text({ style: styles.headline }, I18n.t('caption_regatta_details').toUpperCase()),
-    inlineText( props.boatClass !== '' ? { style: styles.text } : { style: styles.textLast }, [
+    inlineText({ style: styles.text }, [
       text({ style: styles.textLight }, 'Style '),
       props.boatClass !== '' ? 
         text({ style: styles.textValue }, I18n.t('caption_one_design').toUpperCase()) 
@@ -223,7 +223,7 @@ export const inviteCompetitorsButton = Component(props => compose(
 export const joinAsCompetitorButton = Component(props => compose(
   fold(props),
   styledButton({
-    onPress: (props: any) => navigateToEditCompetitor(props.checkIn, { selectSessionAfter: props.session })
+    onPress: (props: any) => props.navigation.navigate(Screens.EditCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
   }),
   text({ style: styles.buttonContent }))(
   I18n.t('caption_join_as_competitor').toUpperCase()))
@@ -238,7 +238,7 @@ export const competitorsCard = Component((props: any) =>
     view({ style: styles.container4 }),
     reduce(concat, nothing()))([
       text({ style: styles.headline }, I18n.t('caption_competitor').toUpperCase()),
-      text({ style: styles.textLast }, I18n.t('text_info_for_invite')),
+      text({ style: styles.text }, I18n.t('text_info_for_invite')),
       nothingIfCurrentUserIsNotCompetitor(text({ style: styles.textLast }, I18n.t('text_user_is_competitor'))),
       inviteCompetitorsButton,
       nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton),

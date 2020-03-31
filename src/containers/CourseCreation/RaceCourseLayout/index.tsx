@@ -26,20 +26,19 @@ import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguratio
   isDefaultWaypointSelection } from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { getHashedDeviceId } from 'selectors/user'
-import { navigateToCourseGeolocation, navigateToCourseTrackerBinding } from 'navigation'
 import { coordinatesToString } from 'helpers/utils'
+import * as Screens from 'navigation/Screens'
 import TextInput from 'components/TextInput'
 import SwitchSelector from 'react-native-switch-selector'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import Dash from 'react-native-dash'
-import { NavigationEvents } from 'react-navigation'
+import { NavigationEvents } from '@react-navigation/compat'
 import styles from './styles'
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue,
   $secondaryBackgroundColor, $primaryBackgroundColor } from 'styles/colors'
 import { Dimensions } from 'react-native'
 import I18n from 'i18n'
-import { withSecondaryBoldFont } from 'styles/compositions/text'
 
 const mapIndexed = addIndex(map)
 
@@ -120,10 +119,10 @@ const locationIcon = icon({ source: Images.courseConfig.location, iconStyle: { w
 const bigLocationIcon = icon({ source: Images.courseConfig.location, iconStyle: { width: 25, height: 25 } })
 const chevronArrowDown = icon({ source: Images.actions.arrowDown, iconStyle: { width: 14, height: 14 } })
 const chevronArrowUp = icon({ source: Images.actions.arrowUp, iconStyle: { width: 14, height: 14 } })
-const arrowUp = ({ color = $LightDarkBlue }: any = {}) => icon({
+const arrowUp = ({ color = $LightDarkBlue, size = 25, iconStyle = { height: 12 } }: any = {}) => icon({
   source: Images.courseConfig.arrowUp,
-  style: { justifyContent: 'flex-end', height: 25 },
-  iconStyle: { height: 12, tintColor: color } })
+  style: { justifyContent: 'flex-end', height: size },
+  iconStyle: { tintColor: color, ...iconStyle } })
 
 const dashLine = fromClass(Dash).contramap(always({
   style: { height: 50, width: 90, alignItems: 'center' },
@@ -134,7 +133,7 @@ const GateMarkSelectorItem = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.gateMarkSelectorItemContainer }),
-    concat(__, nothingWhenNotSelected(arrowUp())),
+    concat(__, nothingWhenNotSelected(arrowUp({ size: 35, iconStyle: { width: 37, height: 24 } }))),
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
       onPress: (props: any) => props.selectMarkConfiguration(props.markConfigurationId) }),
@@ -194,9 +193,8 @@ const MarkPositionTracking = Component((props: object) =>
     concat(text({ style: styles.trackingText }, props.selectedMarkDeviceTracking)),
     touchableOpacity({
       style: styles.changeTrackingButton,
-      onPress: () => navigateToCourseTrackerBinding({
-        selectedMarkConfiguration: props.selectedMarkConfiguration
-      })
+      onPress: () => props.navigation.navigate(Screens.CourseTrackerBinding,
+        { data: { selectedMarkConfiguration: props.selectedMarkConfiguration } })
     }))(
     text(
       { style: styles.changeTrackingText },
@@ -236,10 +234,11 @@ const MarkPositionGeolocation = Component((props: object) =>
     touchableOpacity({
       style: styles.editPositionButton,
       onPress: () => Geolocation.getCurrentPosition(({ coords }) =>
-        navigateToCourseGeolocation({
-          selectedMarkConfiguration: props.selectedMarkConfiguration,
-          currentPosition: coords,
-          markPosition: props.selectedMarkLocation })) }))(
+        props.navigation.navigate(Screens.CourseGeolocation,
+          { data: {
+            selectedMarkConfiguration: props.selectedMarkConfiguration,
+            currentPosition: coords,
+            markPosition: props.selectedMarkLocation } })) }))(
     text({ style: styles.locationText }, I18n.t('caption_course_creation_edit_position'))))
 
 const locationTypes = [
@@ -517,7 +516,7 @@ const WaypointEditForm = Component((props: any) =>
       reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(nothingWhenNotStartOrFinishGate(SameStartFinish)),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(GateNameDropdown))),
-      nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true }))))),
+      nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true })))))),
       nothingWhenEmptyWaypoint(nothingWhenNotAGate(GateMarkSelector))
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
@@ -601,7 +600,7 @@ const WaypointsList = Component(props => {
             fill: '#fff',
             fontSize: 18,
             textAnchor,
-            ...withSecondaryBoldFont,
+            fontFamily: 'SFProDisplay-Bold',
             letterSpacing: '.016em'
           })))(
         props.waypointLabel(waypoint))
@@ -610,15 +609,15 @@ const WaypointsList = Component(props => {
       props.course.waypoints)
 })
 
-const LoadingIndicator = Component(props => compose(
+const LoadingIndicator = Component((props: any) => compose(
   fold(props),
   view({ style: styles.loadingContainer }))(
   text({ style: styles.loadingText }, I18n.t('caption_course_creator_loading'))))
 
-const NavigationBackHandler = Component(props => compose(
+const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: payload => !payload.state && props.navigateBackFromCourseCreation()
+    onDidBlur: (payload: any) => (!payload || !payload.state) && props.navigateBackFromCourseCreation()
   })),
   fromClass)(
   NavigationEvents))
@@ -640,7 +639,7 @@ export default Component((props: object) =>
           apply(equals),
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(
           [next, prev]) }),
-    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true }),
+    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true, contentContainerStyle: { flexGrow: 1 } }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
       nothingWhenNotLoading(LoadingIndicator),

@@ -1,8 +1,8 @@
 import { always, compose, concat, objOf, reduce, flatten, isEmpty,
   map, values, defaultTo, reject, isNil, when, equals, pick } from 'ramda'
 import { Alert, Platform, Keyboard } from 'react-native'
-import { Header } from 'react-navigation'
 import { getErrorDisplayMessage } from 'helpers/texts'
+import { useHeaderHeight } from '@react-navigation/stack'
 import { Component,  fold, nothing, fromClass, nothingAsClass,
   recomposeLifecycle as lifecycle,
   recomposeWithStateHandlers as withStateHandlers,
@@ -60,7 +60,7 @@ const createEvent = (props: any) => async (formValues: any) => {
   props.setApiErrors([])
 
   try {
-    await props.createEventActionQueue(eventCreationData).execute()
+    await props.createEventActionQueue({ eventData: eventCreationData, navigation: props.navigation }).execute()
   } catch (e) {
     props.setApiErrors([getErrorDisplayMessage(e)])
     props.updateCreatingEvent(false)
@@ -130,7 +130,7 @@ export default Component(
     withApiErrors,
     connect(mapStateToProps, { createEventActionQueue, updateCreatingEvent }),
     reduxForm(formSettings),
-    keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: Header.HEIGHT }),
+    keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: useHeaderHeight() }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: props.setScrollViewRef }),
     view({ style: styles.content }),
     reduce(concat, nothing()))([

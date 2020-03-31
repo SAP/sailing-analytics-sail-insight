@@ -1,6 +1,8 @@
 import React from 'react'
 import { Text, View } from 'react-native'
 
+import { always, cond, gt, isNil, lt, T } from 'ramda'
+
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 
 import Gap from './Gap'
@@ -10,33 +12,74 @@ import styles from './styles'
 export interface Props {
   selectedColumn?: ColumnValueType
   competitorData: LeaderboardCompetitorCurrentTrack
+  myCompetitorData?: LeaderboardCompetitorCurrentTrack
   fontSize?: number
   rankingMetric?: string
+  fontSizeMultiplier?: number
 }
+
+const getGapValueByRankingMetric = (
+  competitorData: LeaderboardCompetitorCurrentTrack,
+  rankingMetric?: string
+) =>
+  competitorData.trackedColumnData &&
+  (rankingMetric === 'ONE_DESIGN'
+    ? competitorData.trackedColumnData.gapToLeaderInM
+    : competitorData.trackedColumnData.gapToLeaderInS)
+
+const RED = '#D42F33'
+const GREEN = '#0B7A07'
 
 const ColumnValue = ({
   selectedColumn,
   competitorData,
+  myCompetitorData,
   fontSize,
   rankingMetric = 'ONE_DESIGN',
+  fontSizeMultiplier = 0.75,
 }: Props) => {
   if (
     selectedColumn === ColumnValueType.GapToLeader ||
-    selectedColumn === ColumnValueType.GapToCompetitor
+    selectedColumn === ColumnValueType.GapToCompetitor ||
+    selectedColumn === ColumnValueType.GapToMyBoat
   ) {
     const { gain } = competitorData
-    const gapToLeader =
-      competitorData.trackedColumnData &&
-      (rankingMetric === 'ONE_DESIGN'
-        ? competitorData.trackedColumnData.gapToLeaderInM
-        : competitorData.trackedColumnData.gapToLeaderInS)
+    const gapToLeader = getGapValueByRankingMetric(competitorData, rankingMetric)
+    const myGapToLeader = myCompetitorData && getGapValueByRankingMetric(myCompetitorData, rankingMetric)
+    const fontColor = cond([
+      [always(selectedColumn !== ColumnValueType.GapToMyBoat), always(undefined)],
+      [always(isNil(myGapToLeader)), always(undefined)],
+      [isNil, always(undefined)],
+      [lt(myGapToLeader), always(GREEN)],
+      [gt(myGapToLeader), always(RED)],
+      [T, always(undefined)]
+    ])(gapToLeader)
+
+    const gap = selectedColumn === ColumnValueType.GapToMyBoat && !isNil(myGapToLeader) && !isNil(gapToLeader)
+      ? gapToLeader - myGapToLeader
+      : gapToLeader
+
+    const isMyCompetitorAndGapToMyBoat =
+      selectedColumn === ColumnValueType.GapToMyBoat &&
+      myCompetitorData &&
+      competitorData &&
+      myCompetitorData.id === competitorData.id
+
+    const myGapFontColor =
+      isMyCompetitorAndGapToMyBoat &&
+      !isNil(gap) &&
+      '#A5A5A5'
+
+    const adjustedGain = isMyCompetitorAndGapToMyBoat ? undefined : gain
 
     return (
       <Gap
-        gap={gapToLeader}
-        gain={gain}
+        gap={gap}
+        gain={adjustedGain}
         fontSize={fontSize}
+        fontColor={myGapFontColor || fontColor}
         rankingMetric={rankingMetric}
+        fontSizeMultiplier={fontSizeMultiplier}
       />
     )
   }

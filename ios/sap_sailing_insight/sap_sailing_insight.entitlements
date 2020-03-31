@@ -6,5 +6,7 @@
 	<array>
 		<string>applinks:sailinsight30-app.sapsailing.com</string>
 	</array>
+	<key>com.apple.developer.networking.multipath</key>
+	<true/>
 </dict>
 </plist>

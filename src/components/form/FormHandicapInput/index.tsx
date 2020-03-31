@@ -77,7 +77,7 @@ class FormHandicapInput extends React.Component<
     const handicapValueFloat = parseFloat(value.replace(',', '.'))
     if (fromType === HandicapTypes.Yardstick && toType === HandicapTypes.TimeOnTime ||
         fromType === HandicapTypes.TimeOnTime && toType === HandicapTypes.Yardstick) {
-      return (+(100 / handicapValueFloat).toFixed(4)).toString()
+      return (+(100 / handicapValueFloat).toFixed(1)).toString()
     }
 
     return value

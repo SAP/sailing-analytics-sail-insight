@@ -20,6 +20,7 @@ import Images from '@assets/Images'
 import { Dimensions } from 'react-native'
 import { $smallSpacing } from 'styles/dimensions'
 import styles, { darkerGray, lighterGray } from './styles'
+import { $primaryButtonColor } from 'styles/colors'
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -80,7 +81,7 @@ const formDatePicker = Component((props: any) => compose(
         borderWidth: 0,
       },
       btnTextConfirm: {
-        color: '$primaryButtonColor',
+        color: $primaryButtonColor
       },
     },
     confirmBtnText: I18n.t('caption_ok'),

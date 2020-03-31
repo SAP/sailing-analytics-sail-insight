@@ -14,9 +14,15 @@ abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & 
   onPress?: OnPressType,
   loadingColor?: string,
   disabledStyle?: TextStyle | ViewStyle,
+  preserveShapeWhenLoading?: boolean
 }, S, SS> {
 
   protected abstract renderContent: () => Element | JSX.Element
+
+  protected state = {
+    width: undefined,
+    height: undefined
+  }
 
   public renderSpinner() {
     const props = this.props.loadingColor && { color: this.props.loadingColor }
@@ -36,14 +42,28 @@ abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & 
       disabled,
       onPress,
       disabledStyle,
+      preserveShapeWhenLoading = false
     } = this.props
+
+    const { width, height } = this.state
+
+    const dimensionOverride =
+      preserveShapeWhenLoading && isLoading && width && height
+        ? { width, height }
+        : {}
 
     const touchableStyle = this.getTouchableStyle()
     const additionalStyle = disabled ? [styles.disabled, disabledStyle] : undefined
     return (
       <TouchableOpacity
         onLayout={this.handleContentSizeChanged}
-        style={[!touchableStyle || isLoading ? [styles.containerStyle, style] : [touchableStyle], additionalStyle]}
+        style={[
+          !touchableStyle || isLoading
+            ? [styles.containerStyle, style]
+            : [touchableStyle],
+          additionalStyle,
+          dimensionOverride
+        ]}
         disabled={isLoading || disabled}
         onPress={onPress}
       >
@@ -53,6 +73,10 @@ abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & 
   }
 
   protected handleContentSizeChanged: (event: any) => void = (event: any) => {
+    const { width, height } = event?.nativeEvent?.layout
+    if (width && height && !this.props.isLoading) {
+      this.setState({ width, height })
+    }
     return
   }
 

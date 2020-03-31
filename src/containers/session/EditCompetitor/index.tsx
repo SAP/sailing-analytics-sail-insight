@@ -10,7 +10,6 @@ import Logger from 'helpers/Logger'
 import I18n from 'i18n'
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
-import { navigateToSessions } from 'navigation'
 import { getCustomScreenParamData, getCustomScreenParamOptions } from 'navigation/utils'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getLastUsedTeam, getUserTeams } from 'selectors/user'
@@ -22,8 +21,6 @@ import ImageButton from 'components/ImageButton'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-
-
 import { validateRequired } from 'forms/validators'
 import { button, container, input, text } from 'styles/commons'
 import { registration } from 'styles/components'
@@ -39,7 +36,7 @@ import styles from './styles'
 
 interface Props {
   teams: TeamTemplate[]
-  registerCompetitorAndDevice: (data: any, values: any, options?: any) => any
+  registerCompetitorAndDevice: (data: any, values: any, options?: any, navigation:object) => any
   checkInData: CheckIn,
   isLoggedIn: boolean,
   formSailNumber?: string,
@@ -165,7 +162,7 @@ class EditCompetitor extends TextInputForm<Props> {
         <ImageButton
             style={[button.closeButton, styles.closeButton]}
             source={Images.actions.close}
-            onPress={navigateToSessions}
+            onPress={this.props.navigation.goBack}
         />
       </ScrollContentView>
     )
@@ -181,7 +178,7 @@ class EditCompetitor extends TextInputForm<Props> {
   private onSubmit = async (values: CompetitorInfo) => {
     try {
       this.setState({ isLoading: true })
-      await this.props.registerCompetitorAndDevice(this.props.checkInData, values, this.props.options)
+      await this.props.registerCompetitorAndDevice(this.props.checkInData, values, this.props.options, this.props.navigation)
       return true
     } catch (err) {
       Logger.debug(err)

@@ -1,12 +1,10 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { TouchableOpacity, View, ViewProps } from 'react-native'
+import { Text, TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
-import { navigateToQRScanner } from 'navigation'
-
+import * as Screens from 'navigation/Screens'
 import { startTracking, StartTrackingAction } from 'actions/tracking'
-import { settingsActionSheetOptions } from 'helpers/actionSheets'
 import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
 
@@ -15,16 +13,17 @@ import { selectEvent } from 'actions/events'
 import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
+import { getEventIdThatsBeingSelected } from 'selectors/event'
 
-import EmptySessionsHeader from 'components/EmptySessionsHeader'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
 import SessionItem from 'components/session/SessionItem'
+import SessionItemDark from 'components/session/SessionItemDark'
 import TextButton from 'components/TextButton'
 import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
-import styles from './styles'
+import createStyles from './styles'
 
 
 @connectActionSheet
@@ -34,68 +33,82 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   startTracking: StartTrackingAction,
   authBasedNewSession: () => void,
   selectEvent: any,
+  eventIdThatsBeingSelected?: string,
 } > {
+
+  constructor(props) {
+    super(props)
+    this.styles = createStyles(this.props.route?.params?.forTracking)
+  }
 
   public state = {
     hideAddButton: false,
   }
 
-  public componentDidMount() {
-    this.props.navigation.setParams({ onOptionsPressed: this.onOptionsPressed })
+  public renderItem = ({ item }: any) => {
+    const { eventIdThatsBeingSelected } = this.props
+    const { eventId } = item
+    const isLoading = eventId === eventIdThatsBeingSelected
+    if (!this.props.route?.params?.forTracking) {
+      return (
+        <SessionItem
+          style={this.styles.cardsContainer}
+          onItemPress={() => this.props.selectEvent({ data: item, navigation: this.props.navigation })}
+          //onItemPress={() => console.log('item select')}
+          session={item}
+          loading={isLoading}
+        />
+      )
+    } else {
+      return (
+        <SessionItemDark
+          style={this.styles.cardsContainer}
+          onItemPress={() => this.props.startTracking({ data: item, navigation: this.props.navigation })}
+          session={item}
+        />
+      )
+    }
   }
-
-  public renderHeader() {
-    return <EmptySessionsHeader/>
-  }
-
-  public renderItem = ({ item }: any) =>
-    <SessionItem
-      style={styles.cardsContainer}
-      onItemPress={() => this.props.selectEvent(item)}
-      session={item}/>
 
   public render() {
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
-        <ScrollContentView style={styles.scrollContainer}>
+        <ScrollContentView style={this.styles.scrollContainer}>
+          {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
-            style={styles.createButton}
-            onPress={this.props.authBasedNewSession}>
+            style={this.styles.createButton}
+            onPress={() => this.props.authBasedNewSession(this.props.navigation)}>
             <IconText
               source={Images.actions.add}
-              iconStyle={styles.createButtonIcon}
-              textStyle={styles.createButtonText}
+              iconStyle={this.styles.createButtonIcon}
+              textStyle={this.styles.createButtonText}
               iconTintColor="white"
               alignment="horizontal">
               {I18n.t('session_create_new_event').toUpperCase()}
             </IconText>
           </TouchableOpacity>
           <FloatingComponentList
-            style={styles.list}
+            style={this.styles.list}
             data={this.props.sessions}
-            ListHeaderComponent={this.renderHeader}
             renderItem={this.renderItem}
           />
         </ScrollContentView>
-        <View style={styles.bottomButton}>
+        <View style={this.styles.bottomButton}>
           <TextButton
-              style={[button.actionFullWidth, container.largeHorizontalMargin, styles.qrButton]}
-              textStyle={styles.qrButtonText}
-              onPress={() => navigateToQRScanner()}>
+              style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
+              textStyle={this.styles.qrButtonText}
+              onPress={() => this.props.navigation.navigate(Screens.QRScanner)}>
             {I18n.t('caption_qr_scanner').toUpperCase()}
           </TextButton>
         </View>
       </View>
     )
   }
-
-  protected onOptionsPressed = () => {
-    this.props.showActionSheetWithOptions(...settingsActionSheetOptions)
-  }
 }
 
 const mapStateToProps = (state: any) => ({
   sessions: getFilteredSessionList(state),
+  eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
 })
 
 export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)

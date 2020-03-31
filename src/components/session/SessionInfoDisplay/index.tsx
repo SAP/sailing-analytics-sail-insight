@@ -17,6 +17,7 @@ import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
 import TrackingContext from 'components/session/TrackingContext'
 import Text from 'components/Text'
+import ActivityIndicator from 'components/ActivityIndicator'
 
 import { button, text } from 'styles/commons'
 import styles from './styles'
@@ -28,6 +29,7 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
   eventImageSize?: 'large' | 'medium',
   onTrackingPress?: OnPressType,
   onSettingsPress?: OnPressType,
+  loading?: boolean
 } > {
 
   public state = { isTrackingLoading: false }
@@ -51,6 +53,7 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
       style,
       session,
       onSettingsPress,
+      loading = false,
     } = this.props
 
     let boatInfoText = (session.regatta && session.regatta.boatClass) || I18n.t('text_empty_value_placeholder')
@@ -98,9 +101,13 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
           </View>
         </View>
         <View style={styles.arrowContainer}>
-          <Image
-            source={Images.actions.arrowRight}
-          />
+        {
+          loading ? (
+            <ActivityIndicator style={styles.spinnerStyle} size="small" color="black" />
+          ) : (
+            <Image source={Images.actions.arrowRight} />
+          )
+        }
         </View>
       </View>
     )

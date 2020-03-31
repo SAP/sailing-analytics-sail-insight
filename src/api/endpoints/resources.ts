@@ -27,6 +27,7 @@ import {
   StartTrackingBody,
   StopTrackingBody,
   UpdateEventBody,
+  UpdateLeaderboardBody,
   WindBody,
   WindBodyData,
 } from 'api/endpoints/types'
@@ -55,6 +56,7 @@ const apiEndpoints = (serverUrl: string) => {
     regattaRaces: getUrlV1('/regattas/{0}/races'),
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
+    regattaTrackingDevices: getUrlV1('/regattas/{0}/tracking_devices'),
     course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
     raceTime: getUrlV1('/leaderboards/{0}/starttime'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
@@ -68,6 +70,7 @@ const apiEndpoints = (serverUrl: string) => {
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
     markProperties: getSharedUrlV1('/markproperties'),
     markProperty: getSharedUrlV1('/markproperties/{0}'),
+    markPropertyPositioning: getSharedUrlV1('/markproperties/{0}/positioning'),
     startDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/start'),
     endDeviceMapping: getUrlV1('/leaderboards/{0}/device_mappings/end'),
     startTracking: getUrlV1('/leaderboards/{0}/starttracking'),
@@ -81,6 +84,7 @@ const apiEndpoints = (serverUrl: string) => {
     competitors: getUrlV1('/competitors/{0}'),
     createEvent: getUrlV1('/events/createEvent'),
     updateEvent: getUrlV1('/events/{0}/update'),
+    updateLeaderboard: getUrlV1('/leaderboards/{0}/update'),
     putWind: getUrlV1('/wind/putWind'),
     raceLog: getRaceUrl('/racelog'),
     preferences: getUrlV1('/preferences/{0}'),
@@ -130,6 +134,7 @@ export interface DataApi {
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
   requestMarkProperties: ApiFunction,
   requestMarkProperty: (id: string) => any,
+  updateMarkPropertyPositioning: (id: string, deviceUuid?: string, latDeg?: number, lonDeg?: number) => any,
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
   requestCourse: (regattaName: string, raceName: string, fleet: String) => any
@@ -141,6 +146,7 @@ export interface DataApi {
   sendGpsFixes: (gpsFixes: any) => Promise<ManeuverChangeItem[]>
   createEvent: (body: CreateEventBody) => Promise<CreateEventResponseData>
   updateEvent: (id: string, body: UpdateEventBody) => any
+  updateLeaderboard: (name: string, body: UpdateLeaderboardBody) => any
   addRaceColumns: (regattaName: string, data?: AddRaceColumnsBody) => Promise<AddRaceColumnResponseData[]>
   removeRaceColumn: (regattaName: string, raceColumnName: string) => any
   startTracking: (leaderboardName: string, data: StartTrackingBody) => any
@@ -175,6 +181,7 @@ export interface DataApi {
     raceName: string,
     filter?: {competitorId?: string, fromTime?: number},
   ) => Promise<CompetitorManeuverItem[]>
+  requestTrackingDevices: (regattaName: string) => any
   requestBoatClasses: () => Promise<BoatClassesBody[]>
   requestCountryCodes: () => Promise<CountryCodeBody[]>
   uploadTeamImage: (competitorId: string, base64ImageData: string, mimeType: string) => any
@@ -228,6 +235,16 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markPropertiesSchema] }),
     requestMarkProperty: (id: string) => dataRequest(endpoints.markProperty({ pathParams: [id]}),
       { dataSchema: markPropertiesSchema }),
+    updateMarkPropertyPositioning: (id, deviceUuid, latDeg, lonDeg) => dataRequest(
+      endpoints.markPropertyPositioning({
+        pathParams: [id],
+        urlParams: { deviceUuid, latDeg, lonDeg }}),
+      {
+        method: HttpMethods.PUT,
+        bodyType: 'x-www-form-urlencoded',
+        dataSchema: markPropertiesSchema
+      },
+    ),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }), { dataSchema: markSchema }
     ),
@@ -283,6 +300,10 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         method: HttpMethods.PUT,
         bodyType: 'x-www-form-urlencoded',
       },
+    ),
+    updateLeaderboard: (name, body) => dataRequest(
+      endpoints.updateLeaderboard({ pathParams: [name] }),
+      { body, method: HttpMethods.POST },
     ),
     addRaceColumns: (regattaName, data) => dataRequest(
       endpoints.addRaceColumns({ urlParams: data, pathParams: [regattaName] }),
@@ -350,6 +371,9 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestManeuvers: (regattaName, raceName, filters) => dataRequest(
       endpoints.regattaRaceManeuvers({ pathParams: [regattaName, raceName], urlParams: filters }),
       { dataProcessor: data => get(data, 'bycompetitor') },
+    ),
+    requestTrackingDevices: regattaName => dataRequest(
+      endpoints.regattaTrackingDevices({ pathParams: [regattaName] }),
     ),
     createAutoCourse: (leaderboardName, raceColumn, fleet) => dataRequest(
       endpoints.createAutoCourse({ pathParams: [leaderboardName], urlParams: { fleet, race_column: raceColumn } }),

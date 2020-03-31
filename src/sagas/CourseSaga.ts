@@ -1,6 +1,6 @@
 import { map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
-  find, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
+  find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
@@ -20,9 +20,10 @@ import {
   assignMarkOrMarkPropertiesToMarkConfiguration,
   changeWaypointMarkConfigurationToNew,
   changeWaypointToNewLine,
-  updateMarkConfigurationDeviceTracking
+  changeMarkConfigurationDeviceTracking
 } from 'actions/courses'
 import { selectRace } from 'actions/events'
+import * as Screens from 'navigation/Screens'
 import { loadMarkProperties } from 'sagas/InventorySaga'
 import { getHashedDeviceId } from 'selectors/user'
 import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
@@ -34,9 +35,10 @@ import {
   getSelectedRaceInfo
 } from 'selectors/event'
 import { updateCheckIn } from 'actions/checkIn'
+import { receiveEntities } from 'actions/entities'
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
-import { navigateToRaceCourseLayout } from 'navigation'
+import I18n from 'i18n'
 import { PassingInstruction } from 'models/Course'
 
 const renameKeys = curry((keysMap, obj) =>
@@ -59,7 +61,7 @@ const newCourse = () => {
     waypoints: [
       { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Start', controlPointShortName: 'S' },
       { passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
-      { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Finish', controlPointShortName: 'F' }]
+      { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: I18n.t('text_finish_waypoint_long_name'), controlPointShortName: I18n.t('text_finish_waypoint_short_name')}]
   }
 }
 
@@ -68,11 +70,11 @@ const courseWithWaypointIds = evolve({
 })
 
 function* selectCourseFlow({ payload }: any) {
-  const { race } = payload
+  const { race, navigation } = payload
   const { regattaName, serverUrl } = yield select(getSelectedEventInfo)
   const api = dataApi(serverUrl)
 
-  navigateToRaceCourseLayout()
+  navigation.navigate(Screens.RaceCourseLayout)
 
   yield put(updateCourseLoading(true))
   yield put(selectRace(race))
@@ -130,7 +132,7 @@ const didConfigurationPropertyChangedAcrossCourses = curry((fromCourse, toCourse
   const from = getByConfigurationId(fromCourse)
   const to = getByConfigurationId(toCourse)
 
-  return !eqProps(property, from, to) && from.markPropertiesId === to.markPropertiesId
+  return isEmpty(from) || (!eqProps(property, from, to) && from.markPropertiesId === to.markPropertiesId)
 })
 
 const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) => compose(
@@ -140,7 +142,7 @@ const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) 
   course.waypoints))
 
 function* saveCourseFlow() {
-  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName } = yield select(getSelectedRaceInfo)
+  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
   const raceId = getRaceId(regattaName, raceColumnName)
 
@@ -198,10 +200,15 @@ function* saveCourseFlow() {
     reject(isNil))(
     allCourses)
 
-  yield put(updateCheckIn({
-    leaderboardName,
-    markId: markUsedWithCurrentDeviceAsTracker ? markUsedWithCurrentDeviceAsTracker.markId : null
-  }))
+  if (markUsedWithCurrentDeviceAsTracker) {
+    yield put(updateCheckIn({
+      leaderboardName,
+      markId: markUsedWithCurrentDeviceAsTracker.markId
+    }))
+
+    const mark = yield call(api.requestMark, leaderboardName, markUsedWithCurrentDeviceAsTracker.markId, secret)
+    yield put(receiveEntities(mark))
+  }
   yield call(loadMarkProperties)
 }
 
@@ -303,16 +310,33 @@ function* navigateBackFromCourseCreation() {
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {
   const selectedMarkConfiguration = yield select(getSelectedMarkConfiguration)
   const markConfiguration = yield select(getMarkConfigurationById(selectedMarkConfiguration))
-  const { serverUrl, leaderboardName, secret } = yield select(getSelectedEventInfo)
+
+  if (isNil(markConfiguration.markId)) {
+    return
+  }
+
+  const { serverUrl, regattaName } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
+  const allTrackingDevices = yield safe(call(api.requestTrackingDevices, regattaName))
 
-  const { result: markState } = yield safe(call(api.requestMark, leaderboardName, markConfiguration.markId, secret))
+  if (!allTrackingDevices || isEmpty(allTrackingDevices.result)) {
+    return
+  }
 
-  if (markState) {
-    yield call(updateMarkConfigurationDeviceTracking, {
+  const trackingDevices = compose(
+    prop('deviceStatuses'),
+    defaultTo({}),
+    findLast(propEq('markId', markConfiguration.markId)),
+    defaultTo([]),
+    prop('marks'),
+    prop('result')
+  )(allTrackingDevices)
+
+  if (trackingDevices) {
+    yield put(changeMarkConfigurationDeviceTracking({
+      trackingDevices,
       id: selectedMarkConfiguration,
-      deviceId: markState.location && markState.location.deviceUUID
-    })
+    }))
   }
 }
 

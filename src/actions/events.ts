@@ -15,6 +15,8 @@ import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
 export const UPDATE_CREATING_EVENT = 'UPDATE_CREATING_EVENT'
+export const UPDATE_SELECTING_EVENT = 'UPDATE_SELECTING_EVENT'
+export const UPDATE_STARTING_TRACKING = 'UPDATE_STARTING_TRACKING'
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
 export const UPDATE_RACE_TIME = 'UPDATE_RACE_TIME'
@@ -22,6 +24,7 @@ export const FETCH_RACES_TIMES_FOR_EVENT = 'FETCH_RACES_TIMES_FOR_EVENT'
 export const SET_RACE_TIME = 'SET_RACE_TIME'
 export const ADD_RACE_COLUMNS = 'ADD_RACE_COLUMNS'
 export const REMOVE_RACE_COLUMNS = 'REMOVE_RACE_COLUMNS'
+export const SET_DISCARDS = 'SET_DISCARDS'
 export const OPEN_SAP_ANALYTICS_EVENT = 'OPEN_SAP_ANALYTICS_EVENT'
 export const OPEN_EVENT_LEADERBOARD = 'OPEN_EVENT_LEADERBOARD'
 export const START_TRACKING = 'START_TRACKING'
@@ -66,7 +69,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     secret,
     eventName:                  eventData.name,
     venuename:                  eventData.location,
-    ispublic:                   true,
+    ispublic:                   false,
     competitorRegistrationType: 'OPEN_UNMODERATED',
     createleaderboardgroup:     true,
     createregatta:              true,
@@ -80,6 +83,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
     ...(eventData.dateFrom ? { startdate: eventData.dateFrom.toISOString() } : {}),
     ...(eventData.dateTo   ? { enddate: eventData.dateTo.toISOString() } : {}),
   } as CreateEventBody)
+  console.log('create event response', response)
   return eventCreationResponseToCheckIn(response, {
     secret,
     trackPrefix: 'R',
@@ -88,7 +92,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
   })
 }
 
-export const createEventActionQueue = (eventData: EventCreationData) => (
+export const createEventActionQueue = ({ eventData, navigation }: any) => (
   dispatch: DispatchType,
 ) =>
   ActionQueue.create(dispatch, [
@@ -101,7 +105,7 @@ export const createEventActionQueue = (eventData: EventCreationData) => (
       updateCheckIn(data),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
-      createAction(CREATE_EVENT)(data),
+      createAction(CREATE_EVENT)({ ...data, navigation }),
     ),
   ])
 
@@ -130,11 +134,14 @@ export const updateEventSettings = (session: object, data: object) => (dispatch:
 }
 
 export const updateCreatingEvent = createAction(UPDATE_CREATING_EVENT)
+export const updateSelectingEvent = createAction(UPDATE_SELECTING_EVENT)
+export const updateStartingTracking = createAction(UPDATE_STARTING_TRACKING)
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)
 export const setRaceTime = createAction(SET_RACE_TIME)
 export const fetchRacesTimesForEvent = createAction(FETCH_RACES_TIMES_FOR_EVENT)
 export const updateRaceTime = createAction(UPDATE_RACE_TIME)
+export const setDiscards = createAction(SET_DISCARDS)
 export const openSAPAnalyticsEvent = createAction(OPEN_SAP_ANALYTICS_EVENT)
 export const openEventLeaderboard = createAction(OPEN_EVENT_LEADERBOARD)
 export const startTracking = createAction(START_TRACKING)

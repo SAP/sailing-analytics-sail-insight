@@ -1,5 +1,16 @@
 import { removeUserData } from 'actions/auth'
-import { receiveEvent, selectEvent, selectRace, updateEvent, updateEventFilters, updateRaceTime, updateCreatingEvent } from 'actions/events'
+import {
+  receiveEvent,
+  selectEvent,
+  selectRace,
+  startTracking,
+  updateEvent,
+  updateEventFilters,
+  updateRaceTime,
+  updateCreatingEvent,
+  updateSelectingEvent,
+  updateStartingTracking,
+} from "actions/events";
 import { EventFilter } from 'models/EventFilter'
 import { path } from 'ramda'
 import { EventState } from 'reducers/config'
@@ -11,14 +22,17 @@ const initialState: EventState = {
   activeFilters: [EventFilter.All],
   raceTimes: {},
   isCreatingEvent: false,
+  isSelectingEvent: false,
+  isStartingTracking: false,
 } as EventState
 
 const reducer = handleActions(
   {
     [selectEvent as any]: (state: any = {}, action: any) => ({
       ...state,
-      selectedEvent: action.payload.eventId,
-      selectedRegatta: action.payload.regattaName,
+      selectedEvent: action.payload.data.eventId,
+      selectedRegatta: action.payload.data.regattaName,
+      isSelectingEvent: true,
     }),
     [selectRace as any]: (state: any = {}, action: any) => ({
       ...state,
@@ -69,8 +83,14 @@ const reducer = handleActions(
         activeFilters: action.payload,
       }
     },
+    [startTracking as any]: (state: any) => ({
+      ...state,
+      isStartingTracking: true
+    }),
     [removeUserData as any]: () => initialState,
     [updateCreatingEvent as any]: itemUpdateHandler('isCreatingEvent'),
+    [updateSelectingEvent as any]: itemUpdateHandler('isSelectingEvent'),
+    [updateStartingTracking as any]: itemUpdateHandler('isStartingTracking'),
   },
   initialState,
 )

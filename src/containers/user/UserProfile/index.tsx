@@ -4,7 +4,7 @@ import { Alert, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 
-import { removeUserData, updateUser } from 'actions/auth'
+import { logout, updateUser } from 'actions/auth'
 import { fetchUserInfo } from 'actions/user'
 import * as userForm from 'forms/user'
 import * as Screens from 'navigation/Screens'
@@ -24,7 +24,6 @@ import { getFormFieldValue } from 'selectors/form'
 import { container } from 'styles/commons'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 
-import { navigateWithReset } from 'navigation/NavigationService'
 import Logger from '../../../helpers/Logger'
 import styles from './styles'
 
@@ -32,7 +31,7 @@ import styles from './styles'
 interface Props {
   user: User,
   formFullName?: string,
-  removeUserData: () => void,
+  logout: () => void,
   fetchUserInfo: () => void,
   updateUser: (u: User) => void,
 }
@@ -84,14 +83,12 @@ class UserProfile extends TextInputForm<Props> {
             textStyle={styles.saveButtonText}
             isLoading={this.state.isLoading}
             onPress={this.props.handleSubmit(this.onSubmit)}
-            disabled={isSaveDisabled}
-          >
+            disabled={isSaveDisabled}>
             {I18n.t('caption_save')}
           </TextButton>
           <TextButton
             textStyle={styles.logoutButton}
-            onPress={this.deleteUserDataAlert}
-          >
+            onPress={this.deleteUserDataAlert}>
             Log out
           </TextButton>
         </View>
@@ -125,8 +122,8 @@ class UserProfile extends TextInputForm<Props> {
           },
           { text: I18n.t('caption_ok'),
             onPress: () => {
-              this.props.removeUserData(),
-              navigateWithReset(Screens.Main, 0, { rootReset: true })
+              this.props.logout()
+              this.props.navigation.navigate(Screens.FirstContact)
             },
           },
         ],
@@ -161,7 +158,7 @@ const mapStateToProps = (state: any) => {
 
 export default connect(
   mapStateToProps,
-  { removeUserData, fetchUserInfo, updateUser },
+  { logout, fetchUserInfo, updateUser },
 )(reduxForm<{}, Props>({
   form: userForm.USER_FORM_NAME,
   destroyOnUnmount: false,

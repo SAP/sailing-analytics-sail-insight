@@ -18,6 +18,11 @@ export interface UpdateEventBody {
   enddateasmillis: number
 }
 
+export interface UpdateLeaderboardBody {
+  resultDiscardingThresholds?: number[],
+  leaderboardDisplayName?: string
+}
+
 export interface AddRaceColumnsBody {
   prefix?: string
   numberofraces?: number

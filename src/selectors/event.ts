@@ -41,3 +41,9 @@ export const getRaceTime = (leaderboard: string, raceName: string) =>
 export const isCreatingEvent = (state: RootState = {}) =>  {
     return state.events && state.events.isCreatingEvent
 }
+
+export const getEventIdThatsBeingSelected = (state: any) =>
+  state.events && state.events.isSelectingEvent && state.events.selectedEvent
+
+export const isStartingTracking = (state: any) =>
+  !!(state.events && state.events.isStartingTracking)

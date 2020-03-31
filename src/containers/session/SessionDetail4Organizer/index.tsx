@@ -1,18 +1,19 @@
 import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
-  prop, isNil, both } from 'ramda'
+  prop, isNil, equals, both } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking, stopTracking } from 'actions/events'
+import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
+import { isStartingTracking } from 'selectors/event'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
   nothingAsClass
 } from 'components/fp/component'
-import { iconText, scrollView, text, inlineText, touchableOpacity, view } from 'components/fp/react-native'
+import { iconText, scrollView, text, inlineText, touchableOpacity, view, textButton } from 'components/fp/react-native'
 import I18n from 'i18n'
-import { navigateToRaceDetails } from 'navigation'
 import { Alert } from 'react-native'
 import { container } from 'styles/commons'
 import styles from './styles'
@@ -22,7 +23,7 @@ import { qrCode, inviteCompetitorsButton, joinAsCompetitorButton } from '../../s
 const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
 const nothingWhenEntryIsOpen = branch(both(propEq('isTracking', false), propEq('isFinished', false)), nothingAsClass)
-const nothingWhenNoBoatClass = branch(compose(isNil, prop('boatClass')), nothingAsClass)
+const nothingWhenNoBoatClass = branch(compose(equals(''), prop('boatClass')), nothingAsClass)
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
 
 const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
@@ -38,12 +39,13 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     ...sessionData,
     isTracking: isCurrentLeaderboardTracking(state),
-    isFinished: isCurrentLeaderboardFinished(state)
+    isFinished: isCurrentLeaderboardFinished(state),
+    isStartingTracking: isStartingTracking(state),
   }
 }
 
 const sessionData = {
-  racesAndScoringOnPress: (props: any) => navigateToRaceDetails(props.session),
+  racesAndScoringOnPress: (props: any) => props.navigation.navigate(Screens.RaceDetails, { data: props.session }),
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
 
@@ -74,6 +76,10 @@ export const sessionDetailsCard = Component((props: any) => compose(
       textStyle: [props.boatClass !== '' ? styles.textValue : styles.textLast, styles.textValue],
       source: Images.info.location,
       alignment: 'horizontal'}, props.location),
+    inlineText({ style: props.boatClass !== '' ? styles.text : styles.textLast }, [
+      text({ style: styles.textLight }, 'Style '),
+      text({ style: styles.textValue }, I18n.t(props.boatClass !== '' ? 'caption_one_design' : 'text_handicap_label').toUpperCase())
+    ]),
     nothingWhenNoBoatClass(inlineText( { style: styles.textLast }, [
       text({ style: styles.textLight }, `${I18n.t('text_class')} `),
       text({ style: styles.textValue }, props.boatClass),
@@ -82,10 +88,10 @@ export const sessionDetailsCard = Component((props: any) => compose(
 
 export const defineRacesCard = Component((props: any) => compose(
     fold(props),
-    concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
-    view({ style: styles.container2 }),
+    concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
+    view({ style: styles.container3 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '1'),
+    text({ style: styles.headlineTop }, '2'),
     text({ style: styles.headline }, I18n.t('caption_define').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
       props.isTracking || props.isFinished ?
@@ -98,10 +104,10 @@ export const defineRacesCard = Component((props: any) => compose(
 
 export const inviteCompetitorsCard = Component((props: any) => compose(
     fold(props),
-    concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
-    view({ style: styles.container3 }),
+    concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
+    view({ style: styles.container2 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '2'),
+    text({ style: styles.headlineTop }, '1'),
     text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
       props.isTracking || props.isFinished ?
@@ -120,10 +126,12 @@ export const closeEntryCard = Component((props: any) => compose(
     text({ style: styles.headlineTop }, '3'),
     text({ style: styles.headline }, I18n.t('caption_close').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_close_entry_long_text')),
-    nothingWhenTracking(styledButton({
+    textButton({
       onPress: (props: any) => closeEntry(props),
       style: styles.buttonBig,
-    },text({ style: styles.buttonBigContent }, I18n.t('caption_close_entry').toUpperCase())))
+      isLoading: props.isStartingTracking,
+      preserveShapeWhenLoading: true
+    },text({ style: styles.buttonBigContent }, I18n.t('caption_close_entry').toUpperCase()))
   ]))
 
 export const endEventCard = Component((props: any) => compose(
@@ -135,7 +143,7 @@ export const endEventCard = Component((props: any) => compose(
     text({ style: styles.headline }, I18n.t('caption_end').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, !props.trackingStopped ? I18n.t('text_end_event_long_text_running') : I18n.t('text_end_event_long_text_finished')),
     nothingWhenFinished(
-    styledButton({
+    textButton({
       onPress: (props: any) => endEvent(props),
       style: styles.buttonBig,
     },text({ style: styles.buttonBigContent }, I18n.t('caption_end_event').toUpperCase())))
@@ -151,8 +159,8 @@ export default Component((props: any) => compose(
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
     sessionDetailsCard,
-    defineRacesCard,
     inviteCompetitorsCard,
+    defineRacesCard,
     nothingWhenFinished(nothingWhenTracking(closeEntryCard)),
     nothingWhenFinished(nothingWhenEntryIsOpen(endEventCard))
   ]))

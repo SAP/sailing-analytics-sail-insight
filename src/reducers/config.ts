@@ -19,7 +19,8 @@ export interface RootState {
   events?: any | EventState
   courses?: any | CourseReducerState
   markInventory?: any,
-  permissions?: any
+  permissions?: any,
+  communications?: any | CommunicationsReducerState,
 }
 
 
@@ -51,6 +52,7 @@ export type CompetitorGapMap = Map<string, CompetitorGap>
 
 export interface LeaderboardTrackingState {
   competitorGaps: CompetitorGapMap
+  latestTrackedRace: any
 }
 
 export interface OnboardingState {
@@ -63,6 +65,7 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
+  mtcpAndCommunication: boolean,
   leaderboardEnabled: boolean,
 }
 
@@ -81,11 +84,15 @@ export interface EventState {
   all: Map<string, any>
   activeFilters: string[]
   isCreatingEvent: boolean
+  isSelectingEvent: boolean
+  isStartingTracking: boolean
 }
 
 export interface CheckInState {
   active: any
   isLoadingCheckIn: boolean
+  isLoadingSplash: boolean
+  isDeletingMarkBinding: boolean
 }
 
 export interface CourseReducerState {
@@ -95,4 +102,13 @@ export interface CourseReducerState {
   // ID of the waypoint that is selected for editing
   selectedWaypoint?: string
   sameStartFinish: boolean
+}
+
+export interface CommunicationsReducerState {
+  protocol: string
+  ip: string
+  port: string
+  state: boolean
+  valid: boolean
+  startLine: object
 }

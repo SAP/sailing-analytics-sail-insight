@@ -1,7 +1,6 @@
 import { __,  compose, concat, reduce, toUpper, merge, isNil, propEq } from 'ramda'
 import querystring from 'query-string'
 import QRCode from 'react-native-qrcode-svg'
-import { navigateBack } from 'navigation'
 import {
   Component,
   fold,
@@ -15,12 +14,12 @@ import {
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import styles from './styles'
 import { Dimensions } from 'react-native'
-import { updateMarkConfigurationDeviceTracking, fetchAndUpdateMarkConfigurationDeviceTracking } from 'actions/courses'
+import { updateMarkConfigurationWithCurrentDeviceAsTracker, fetchAndUpdateMarkConfigurationDeviceTracking } from 'actions/courses'
 import { getDeviceId } from 'selectors/user'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getMarkConfigurationById } from 'selectors/course'
 import { BRANCH_APP_DOMAIN } from 'environment'
-import { NavigationEvents } from 'react-navigation'
+import { NavigationEvents } from '@react-navigation/compat'
 import I18n from 'i18n'
 
 const { width: viewportWidth } = Dimensions.get('window')
@@ -69,11 +68,11 @@ const useThisDeviceButton = Component(props => compose(
   fold(props),
   touchableOpacity({
     onPress: () => {
-      props.updateMarkConfigurationDeviceTracking({
+      props.updateMarkConfigurationWithCurrentDeviceAsTracker({
         id: props.selectedMarkConfiguration,
         deviceId: getDeviceId()
       })
-      navigateBack()
+      props.navigation.goBack()
     },
     style: styles.useThisDeviceButton,
   }),
@@ -81,10 +80,10 @@ const useThisDeviceButton = Component(props => compose(
   toUpper)(
   I18n.t('caption_course_creator_use_this_device')))
 
-const NavigationBackHandler = Component(props => compose(
+const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: payload => !payload.state && props.fetchAndUpdateMarkConfigurationDeviceTracking()
+    onWillBlur: (payload: any) => (!payload || !payload.state) && props.fetchAndUpdateMarkConfigurationDeviceTracking()
   })),
   fromClass)(
   NavigationEvents))
@@ -93,7 +92,7 @@ export default Component((props: object) =>
   compose(
     fold(props),
     connect(mapStateToProps, {
-      updateMarkConfigurationDeviceTracking,
+      updateMarkConfigurationWithCurrentDeviceAsTracker,
       fetchAndUpdateMarkConfigurationDeviceTracking }),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
