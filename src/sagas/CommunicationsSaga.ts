@@ -78,7 +78,13 @@ export function* updateStartLineForCurrentCourseSaga({payload}: any){
   const startLine: any = getMarkPositionsForCourse(course, 'Start')
 
   if (startLine.length > 1) {
-    yield put(updateStartLine({pinLatitude: startLine[0].lat_deg, pinLongitude: startLine[0].lon_deg, boatLatitude: startLine[1].lat_deg, boatLongitude: startLine[1].lon_deg}))
+    if (startLine[0] !== undefined && startLine[1] !== undefined &&
+      startLine[0].lat_deg !== undefined && startLine[0].lon_deg !== undefined &&
+      startLine[1].lat_deg !== undefined && startLine[1].lon_deg !== undefined) {
+      yield put(updateStartLine({pinLatitude: startLine[0].lat_deg, pinLongitude: startLine[0].lon_deg, boatLatitude: startLine[1].lat_deg, boatLongitude: startLine[1].lon_deg}))
+    } else {
+      yield put(updateStartLine({}))
+    }
   } else {
     yield put(updateStartLine({}))
   }
