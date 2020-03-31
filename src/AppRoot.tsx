@@ -20,13 +20,12 @@ import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
+import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/stack'
 import { AuthContext } from 'navigation/NavigationContext'
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
-import { Component, fold, nothing, reduxConnect, recomposeBranch as branch, nothingAsClass, fromClass } from 'components/fp/component'
-import { view, text } from 'components/fp/react-native'
+import { Component, fold, nothing, recomposeBranch as branch, nothingAsClass } from 'components/fp/component'
 import FirstContact from 'containers/user/FirstContact'
 import Sessions from 'containers/session/Sessions'
 import QRScanner from 'containers/session/QRScanner'
@@ -166,9 +165,6 @@ const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <
 const withLeftHeaderBackButton = mergeDeepLeft({ options: {
   headerLeft: () => <HeaderBackButton onPress={() => navigationContainer.current.goBack()} tintColor="white"	labelVisible={false} />}})
 
-const nothingWhenBoundToMark = branch(propEq('boundToMark', true), nothingAsClass)
-const nothingWhenNotBoundToMark = branch(propEq('boundToMark', false), nothingAsClass)
-
 const markTrackingNavigator = Component(props => compose(
   fold(props),
   stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
@@ -188,20 +184,6 @@ const trackingNavigator = Component(props => compose(
   stackScreen({ name: Screens.SetWind, component: SetWind, options: { title: I18n.t('title_set_wind') } }),
   stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') } })),
 ]))
-
-// const TrackingSwitch = Component((props: any) => compose(
-//   fold(props),
-//   reduxConnect((state: any) => {
-//     return {
-//       boundToMark: isBoundToMark(state)
-//     }
-//   }),
-//   view({ style: { flex: 1 } }),
-//   reduce(concat, nothing())
-// )([
-//   nothingWhenBoundToMark(trackingNavigator),
-//   nothingWhenNotBoundToMark(markTrackingNavigator)
-// ]))
 
 const TrackingSwitch = connect((state: any) => {
   return {
@@ -307,7 +289,7 @@ const mainTabsNavigator = Component(props => compose(
 const AppNavigator = Component(props => compose(
   fold(props),
   stackNavigator({
-    initialRouteName: props.isLoggedIn ? Screens.Main : Screens.FirstContact,
+    initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,
     screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
@@ -407,7 +389,8 @@ class AppRoot extends ReactComponent {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
-  isLoadingCheckIn: isLoadingCheckIn(state)
+  isLoadingCheckIn: isLoadingCheckIn(state),
+  shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state)
 })
 
 export default connect(mapStateToProps, {
