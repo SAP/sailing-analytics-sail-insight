@@ -44,7 +44,7 @@ target 'sap_sailing_insight' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'AFNetworking'
+  pod 'AFNetworking', '~> 4.0'
 
   pod 'SailInsightMTCPNetwork', :path => '../node_modules/sail-insight-mtcp-network'
 
