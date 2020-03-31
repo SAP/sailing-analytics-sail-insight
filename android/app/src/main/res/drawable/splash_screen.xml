@@ -3,4 +3,6 @@
 
     <item android:drawable="@color/splash_background"/>
 
+    <item android:drawable="@mipmap/splash_background" />
+
 </layer-list>

@@ -7,6 +7,7 @@ import {
   ListRenderItemInfo,
   TouchableHighlight,
   View,
+  Platform,
 } from 'react-native'
 import Flag from 'react-native-flags'
 import ModalDropdown from 'react-native-modal-dropdown'
@@ -183,7 +184,7 @@ class Leaderboard extends React.Component<{
     propertyStyle.left = $smallSpacing
     propertyStyle.width = Dimensions.get('window').width - 2 * $smallSpacing
     propertyStyle.height = 235
-    propertyStyle.marginTop = -10
+    propertyStyle.marginTop = Platform.OS === 'ios' ? 10 : -10
     return propertyStyle
   }
 

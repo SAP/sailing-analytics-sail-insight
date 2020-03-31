@@ -174,6 +174,7 @@
   "caption_close": "Schließen",
   "caption_confirm": "Bestätigen",
   "caption_qr_scanner": "QR-Code scannen",
+  "caption_delete_mark_binding": "Verknüpfung mit diesem Gerät aufheben",
   "caption_start_tracking": "Starte Tracking",
   "caption_stop_tracking": "Stoppe Tracking",
   "caption_to_event": "Zum Event",
@@ -337,6 +338,7 @@
   "button_no": "Nein",
   "text_entry_open_SAP_Analytics_button": "Sie können die SAP Sailing Analytics erst nach dem Schließen der Teilnehmerliste anzeigen. Bist Du bereit den Zugang zu schließen? Beachte dass keine Teilnehmer nachträglich hinzugefügt werden können.",
   "text_entry_open_when_setting_time": "Die Startzeit kann erst festgelegt werden, wenn die Teilnehmerliste geschlossen wurde. Bist Du bereit den Zugang zu schließen? Beachte dass keine Teilnehmer nachträglich hinzugefügt werden können.",
+  "text_delete_binding_alert": "Bist Du sicher, dass Du die Verknüpfung aufheben möchtest?",
 
   "caption_basics": "Basis",
   "caption_event_creation_date": "Datum",

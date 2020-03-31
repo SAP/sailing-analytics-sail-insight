@@ -7297,9 +7297,9 @@ safe-regex@^1.1.0:
   version "1.1.10"
   resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#d639425066a8e9a16c365f9166b89e9c74caf048"
 
-"sail-insight-mtcp-network@https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#1.0.3":
+"sail-insight-mtcp-network@https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#1.0.4":
   version "1.0.3"
-  resolved "https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#68149f90defbb1e3b474b72b6a823434079444ef"
+  resolved "https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#811b414ebffee284cb7fee5b9e184ec6b7d4d07d"
 
 sane@^4.0.3:
   version "4.1.0"

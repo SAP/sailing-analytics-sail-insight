@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import { FlatList, Text, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
+import { debounce } from 'lodash'
 import * as Screens from 'navigation/Screens'
 import AccountListItem from 'components/AccountListItem'
 import I18n from 'i18n'
@@ -50,6 +51,14 @@ const communicationsItem = (props: any) => ({
   onPress: () => props.navigation.navigate(Screens.Communications),
 })
 
+const debounceNavigation = (waitTime: number, props: any) => ({
+  ...props,
+  navigation: {
+    ...props.navigation,
+    navigate: debounce(props.navigation.navigate, waitTime, { leading: true, trailing: false })
+  }
+})
+
 class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean
   user: User,
@@ -58,13 +67,15 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
   public render() {
     const { isLoggedIn } = this.props
 
+    const propsWithDebouncedNavigation = debounceNavigation(1000, this.props)
+
     let data = [
-      ...(isLoggedIn ? loggedInItems(this.props) : notLoggedInItems(this.props)),
-      settingsItem(this.props)
+      ...(isLoggedIn ? loggedInItems(propsWithDebouncedNavigation) : notLoggedInItems(propsWithDebouncedNavigation)),
+      settingsItem(propsWithDebouncedNavigation)
     ]
 
-    if (this.props.expeditionCommunicationEnabled) {
-      data.push(communicationsItem(this.props))
+    if (propsWithDebouncedNavigation.expeditionCommunicationEnabled) {
+      data.push(communicationsItem(propsWithDebouncedNavigation))
     }
 
     return (

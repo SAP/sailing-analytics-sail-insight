@@ -1,10 +1,12 @@
-import { compose,isNil, not, prop } from 'ramda'
+import { any, chain, compose, findLast, isNil, not, path, prop, propEq,
+  values, defaultTo } from 'ramda'
 import { createSelector } from 'reselect'
 import { CheckIn } from 'models'
 import { mapResToEvent } from 'models/Event'
 import { RootState } from 'reducers/config'
 import { getEventEntity } from './event'
 import { getTrackedEventId, getTrackedLeaderboardName } from './location'
+import { getMarkEntity } from './mark'
 
 export const getActiveCheckInEntity = (state: RootState = {}) =>
   state.checkIn && state.checkIn.active
@@ -61,5 +63,54 @@ export const getServerUrl = (leaderboardName?: string) => (state: any) => {
   return checkIn && checkIn.serverUrl
 }
 
+const isMarkBinding =  compose(
+  not,
+  isNil,
+  prop('markId')
+)
+
+export const getMarkBindingCheckIn = createSelector(
+  getActiveCheckInEntity,
+  compose(
+    findLast(isMarkBinding),
+    values,
+    defaultTo({})
+  )
+)
+
+export const isBoundToMark = createSelector(
+  getMarkBindingCheckIn,
+  compose(not, isNil)
+)
+
+export const getBoundMarkEntity = createSelector(
+  getMarkBindingCheckIn,
+  getMarkEntity,
+  (markCheckIn, marks) =>
+    markCheckIn &&
+    markCheckIn.markId &&
+    compose(
+      prop(markCheckIn.markId),
+      defaultTo({})
+    )(marks)
+)
+
+export const getNameOfBoundMark = createSelector(
+  getBoundMarkEntity,
+  compose(
+    prop('name'),
+    defaultTo({}),
+  )
+)
+
+export const getMarkPropertiesIdOfBoundMark = createSelector(
+  getBoundMarkEntity,
+  compose(
+    prop('originatingMarkPropertiesId'),
+    defaultTo({}),
+  )
+)
+
 export const isLoadingCheckIn = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingCheckIn
 export const isLoadingSplash = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingSplash
+export const isDeletingMarkBinding = (state: RootState = {}) => state.checkIn && state.checkIn.isDeletingMarkBinding
