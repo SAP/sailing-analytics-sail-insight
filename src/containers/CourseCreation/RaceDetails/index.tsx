@@ -23,11 +23,13 @@ import { nothingIfCannotUpdateCurrentEvent, nothingIfCanUpdateCurrentEvent } fro
 import IconText from 'components/IconText'
 import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { dateShortText, dateTimeShortHourText } from 'helpers/date'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import DatePicker from 'react-native-datepicker'
 import { getCourseById, getCourseSequenceDisplay } from 'selectors/course'
 import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
+import { isNetworkConnected } from 'selectors/network'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { getSession } from 'selectors/session'
@@ -116,6 +118,7 @@ const mapStateToProps = (state: any, props: any) => {
     canUpdateCurrentEvent: canUpdateCurrentEvent(state),
     numberOfRaces: races.length,
     discards: path(['leaderboard', 'discardIndexResultsStartingWithHowManyRaces'])(session),
+    isNetworkConnected: isNetworkConnected(state),
     races,
   }
 }
@@ -199,10 +202,14 @@ const clockIcon = Component((props: any) => compose(
 )
 
 
-const touchableHighlightWithConfirmationAlert = ({ isTracking, canUpdateCurrentEvent }: any) => fromClass(
+const raceTimePickerTouchableHighlight = ({ isNetworkConnected, isTracking, canUpdateCurrentEvent }: any) => fromClass(
   TouchableHighlight
 ).contramap((props: any) => merge(props, {
   onPress: async (args: any) => {
+    if (!isNetworkConnected) {
+      showNetworkRequiredSnackbarMessage()
+      return
+    }
     if (!isTracking && canUpdateCurrentEvent) {
       const continueAnyways = await new Promise(resolve =>
         Alert.alert(
@@ -226,7 +233,7 @@ const raceTimePicker = Component((props: any) => compose(
   fold(props),
   view({ style: styles.raceTimeContainer }),
   concat(__, fromClass(DatePicker).contramap(always({
-    TouchableComponent: touchableHighlightWithConfirmationAlert(props).fold,
+    TouchableComponent: raceTimePickerTouchableHighlight(props).fold,
     onDateChange: (value: number) => {
       if (!props.isTracking) {
         props.startTracking(props.session)
