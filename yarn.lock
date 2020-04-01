@@ -6706,10 +6706,10 @@ react-native-safe-area-view@^1.0.0:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
-react-native-screens@^2.0.0-beta.13:
-  version "2.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-beta.13.tgz#ada338c3b46d016b06d0416e59d4aa0b9b39c731"
-  integrity sha512-u2ajGWVv9QoQnFzRFHD2Oe0v+jRqWzGNXJm31B9b03x21oFDv6NRTCMF3UqntQcg1SRJh6PdlQQc2M0qymDIww==
+react-native-screens@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.4.0.tgz#7706f24d942dee387626014ee4d96094a3d1b9ce"
+  integrity sha512-7GcXlaj7IIrM4l5Ub7BPTkNQJ2slHGt2bhmfWmW73NTXEv+7pjHlp+JpQO32Yn+O8UQGPFf0rsesfYUdER7ppQ==
   dependencies:
     debounce "^1.2.0"
 
@@ -7293,13 +7293,13 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-"sail-insight-expedition-communication@https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#1.1.10":
-  version "1.1.10"
-  resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#d639425066a8e9a16c365f9166b89e9c74caf048"
+"sail-insight-expedition-communication@https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#1.1.12":
+  version "1.1.12"
+  resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#5574ff4045b30e88d2d5edeea2f71b9d09f23c6d"
 
-"sail-insight-mtcp-network@https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#1.0.4":
-  version "1.0.3"
-  resolved "https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#811b414ebffee284cb7fee5b9e184ec6b7d4d07d"
+"sail-insight-mtcp-network@https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#1.0.5":
+  version "1.0.5"
+  resolved "https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#5611db364370ce10308a29db567d55497466d9bc"
 
 sane@^4.0.3:
   version "4.1.0"
