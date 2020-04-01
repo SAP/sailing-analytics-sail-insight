@@ -1,3 +1,4 @@
+import { Platform } from 'react-native'
 import React, { Component } from 'react'
 import { ReduxNetworkProvider } from 'react-native-offline'
 import { Provider } from 'react-redux'
@@ -14,7 +15,7 @@ initStyles()
 const store = getStore()
 const persistor = getPersistor()
 
-enableScreens()
+Platform.OS === 'ios' && enableScreens()
 
 // enable hot module replacement for reducers
 if (module.hot) {
