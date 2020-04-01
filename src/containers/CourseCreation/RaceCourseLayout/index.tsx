@@ -617,7 +617,7 @@ const LoadingIndicator = Component((props: any) => compose(
 const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onDidBlur: (payload: any) => (!payload || !payload.state) && props.navigateBackFromCourseCreation()
+    onWillBlur: (payload: any) => (!payload || !payload.state) && props.navigateBackFromCourseCreation()
   })),
   fromClass)(
   NavigationEvents))
