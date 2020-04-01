@@ -6,7 +6,9 @@ import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking, stopTracking } from 'actions/events'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
+import { isNetworkConnected } from 'selectors/network'
 import { isStartingTracking } from 'selectors/event'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
@@ -41,6 +43,7 @@ const mapStateToProps = (state: any, props: any) => {
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
     isStartingTracking: isStartingTracking(state),
+    isNetworkConnected: isNetworkConnected(state),
   }
 }
 
@@ -50,6 +53,10 @@ const sessionData = {
 }
 
 const closeEntry = (props: any) => {
+  if (!props.isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
   Alert.alert(I18n.t('caption_start_tracking'), I18n.t('text_alert_for_start_tracking'), [
     { text: I18n.t('button_yes'), onPress: () => props.startTracking(props.session) },
     { text: I18n.t('button_no') },
