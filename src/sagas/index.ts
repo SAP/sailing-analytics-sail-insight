@@ -7,6 +7,7 @@ import watchMarks from './InventorySaga'
 import watchPermissions from './permissionsSaga'
 import watchOffline from './OfflineSaga'
 import watchCommunications from './CommunicationsSaga'
+import watchSettings from './SettingsSaga'
 
 export function* safe(effect) {
   try {
@@ -24,6 +25,7 @@ export default function* rootSaga() {
     watchPermissions(),
     watchCheckIn(),
     watchOffline(),
-    watchCommunications()
+    watchCommunications(),
+    watchSettings()
   ])
 }

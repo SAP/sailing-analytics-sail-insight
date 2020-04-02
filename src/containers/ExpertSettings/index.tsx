@@ -23,6 +23,7 @@ import {
   updateServerProxyUrlSetting,
   updateMasterUdpIPSetting,
   updateMasterUdpPortSetting,
+  updateCommunicationSettings,
 } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
@@ -47,6 +48,7 @@ interface Props {
   updateServerProxyUrlSetting: (value: string) => void,
   updateMasterUdpIPSetting: (value: string) => void,
   updateMasterUdpPortSetting: (value: number) => void,
+  updateCommunicationSettings: () => void,
   verboseLogging: boolean,
   mtcpAndCommunication: boolean,
   updateVerboseLoggingSetting: (value: boolean) => void,
@@ -191,6 +193,7 @@ class ExpertSettings extends TextInputForm<Props> {
       await this.props.updateServerProxyUrlSetting(values[expertSettingsForm.FORM_KEY_PROXY_URL])
       await this.props.updateMasterUdpIPSetting(values[expertSettingsForm.FORM_KEY_MASTER_IP])
       await this.props.updateMasterUdpPortSetting(values[expertSettingsForm.FORM_KEY_MASTER_PORT])
+      this.props.updateCommunicationSettings()
     }
     this.props.navigation.goBack()
   }
@@ -227,7 +230,7 @@ const mapStateToProps = (state: any) => {
 export default connect(
   mapStateToProps,
   { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting, updateMtcpAndCommunicationSetting,
-  updateServerProxyUrlSetting, updateMasterUdpIPSetting, updateMasterUdpPortSetting, change },
+  updateServerProxyUrlSetting, updateMasterUdpIPSetting, updateMasterUdpPortSetting, updateCommunicationSettings, change },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,
