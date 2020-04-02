@@ -1,5 +1,7 @@
 import { UPDATE_COMMUNICATION_SETTINGS } from 'actions/settings'
-import { updateSettings } from 'services/CommunicationService'
+import { updateSettings as updateSettingsCommunication } from 'services/CommunicationService'
+import { updateSettings as updateSettingsMtcp } from 'services/MtcpService'
+
 
 import { takeLatest, all, select} from 'redux-saga/effects'
 import { getServerProxyUrlSetting, getMasterUdpIP, getMasterUdpPort } from 'selectors/settings'
@@ -16,7 +18,13 @@ export function* updateCommunicationSettings({payload}: any) {
     serverUdpPort
   }
 
-  updateSettings(settingsCommunication)
+  updateSettingsCommunication(settingsCommunication)
+
+  const settingsMtcp = {
+    serverProxyUrl
+  }
+
+  updateSettingsMtcp(settingsMtcp)
 }
 
 export default function* watchSettings() {
