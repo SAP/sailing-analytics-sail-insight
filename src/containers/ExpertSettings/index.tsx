@@ -9,7 +9,7 @@ import React from 'react'
 import { Alert, Image, View } from 'react-native'
 import BackgroundGeolocation from 'react-native-background-geolocation-android'
 import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form'
+import { Field, reduxForm, change } from 'redux-form'
 import {  getFormFieldValue } from 'selectors/form'
 
 import { button, container, image, text } from 'styles/commons'
@@ -19,7 +19,10 @@ import {
   updateLeaderboardEnabledSetting,
   updateServerUrlSetting,
   updateVerboseLoggingSetting,
-  updateMtcpAndCommunicationSetting
+  updateMtcpAndCommunicationSetting,
+  updateServerProxyUrlSetting,
+  updateMasterUdpIPSetting,
+  updateMasterUdpPortSetting,
 } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
@@ -28,25 +31,86 @@ import {
   getLeaderboardEnabledSetting,
   getServerUrlSetting,
   getVerboseLoggingSetting,
-  getMtcpAndCommunicationSetting
+  getMtcpAndCommunicationSetting,
+  getServerProxyUrlSetting,
+  getMasterUdpIP,
+  getMasterUdpPort,
+  getMasterUdpPorts,
+  IsDefaultServerUrl,
 } from '../../selectors/settings'
 import styles from './styles'
+import { times } from 'ramda'
 
 interface Props {
   formServer?: string,
   updateServerUrlSetting: (value: string) => void,
+  updateServerProxyUrlSetting: (value: string) => void,
+  updateMasterUdpIPSetting: (value: string) => void,
+  updateMasterUdpPortSetting: (value: number) => void,
   verboseLogging: boolean,
   mtcpAndCommunication: boolean,
   updateVerboseLoggingSetting: (value: boolean) => void,
   updateMtcpAndCommunicationSetting: (value: boolean) => void,
   leaderboardEnabled: boolean,
   updateLeaderboardEnabledSetting: (value: boolean) => void,
+  masterUdpPorts: ['', ''],
 }
 
 class ExpertSettings extends TextInputForm<Props> {
 
   public state = {
     emailLoading: false,
+  }
+
+  public handleServerUrlChange = (event: any, value: any) => {
+    if (this.props.masterUdpPorts.length > 1) {
+      const masterUdpPort = IsDefaultServerUrl(value) ? this.props.masterUdpPorts[0] : this.props.masterUdpPorts[1]
+      this.props.change(expertSettingsForm.FORM_KEY_MASTER_PORT, masterUdpPort)
+    }
+  }
+
+  public renderProxySettings()
+  {
+    return (
+      <View>
+        <Field
+          style={styles.textInput}
+          containerStyle={styles.inputContainer}
+          label={I18n.t('text_server_proxy')}
+          name={expertSettingsForm.FORM_KEY_PROXY_URL}
+          component={FormTextInput}
+          validate={[validateRequired]}
+          keyboardType={'default'}
+          returnKeyType="next"
+          inputRef={this.handleInputRef(expertSettingsForm.FORM_KEY_PROXY_URL)}
+          onSubmitEditing={this.handleOnSubmitInput(expertSettingsForm.FORM_KEY_PROXY_URL)}
+            />
+        <Field
+          style={styles.textInput}
+          containerStyle={styles.inputContainer}
+          label={I18n.t('text_server_udp_ip')}
+          name={expertSettingsForm.FORM_KEY_MASTER_IP}
+          component={FormTextInput}
+          validate={[validateRequired]}
+          keyboardType={'default'}
+          returnKeyType="next"
+          inputRef={this.handleInputRef(expertSettingsForm.FORM_KEY_MASTER_IP)}
+          onSubmitEditing={this.handleOnSubmitInput(expertSettingsForm.FORM_KEY_MASTER_IP)}
+          />
+        <Field
+          style={styles.textInput}
+          containerStyle={styles.inputContainer}
+          label={I18n.t('text_server_udp_port')}
+          name={expertSettingsForm.FORM_KEY_MASTER_PORT}
+          component={FormTextInput}
+          validate={[validateRequired]}
+          keyboardType={'numeric'}
+          returnKeyType="next"
+          inputRef={this.handleInputRef(expertSettingsForm.FORM_KEY_MASTER_PORT)}
+          onSubmitEditing={this.handleOnSubmitInput(expertSettingsForm.FORM_KEY_MASTER_PORT)}
+          />
+      </View>
+    )
   }
 
   public render() {
@@ -83,6 +147,7 @@ class ExpertSettings extends TextInputForm<Props> {
               switchValue={this.props.mtcpAndCommunication}
               onSwitchValueChange={this.props.updateMtcpAndCommunicationSetting}
           />
+          {this.props.mtcpAndCommunication && this.renderProxySettings()}
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
           <TextButton
@@ -104,6 +169,7 @@ class ExpertSettings extends TextInputForm<Props> {
             validate={[validateRequired]}
             keyboardType={'default'}
             returnKeyType="next"
+            onChange={this.handleServerUrlChange}
             inputRef={this.handleInputRef(expertSettingsForm.FORM_KEY_SERVER_URL)}
             onSubmitEditing={this.handleOnSubmitInput(expertSettingsForm.FORM_KEY_SERVER_URL)}
           />
@@ -121,6 +187,11 @@ class ExpertSettings extends TextInputForm<Props> {
 
   protected onSubmit = async (values: any) => {
     await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
+    if (this.props.mtcpAndCommunication) {
+      await this.props.updateServerProxyUrlSetting(values[expertSettingsForm.FORM_KEY_PROXY_URL])
+      await this.props.updateMasterUdpIPSetting(values[expertSettingsForm.FORM_KEY_MASTER_IP])
+      await this.props.updateMasterUdpPortSetting(values[expertSettingsForm.FORM_KEY_MASTER_PORT])
+    }
     this.props.navigation.goBack()
   }
 
@@ -142,16 +213,21 @@ const mapStateToProps = (state: any) => {
                                   expertSettingsForm.FORM_KEY_SERVER_URL)(state),
     initialValues: {
       [expertSettingsForm.FORM_KEY_SERVER_URL]: getServerUrlSetting(state),
+      [expertSettingsForm.FORM_KEY_PROXY_URL]: getServerProxyUrlSetting(state),
+      [expertSettingsForm.FORM_KEY_MASTER_IP]: getMasterUdpIP(state),
+      [expertSettingsForm.FORM_KEY_MASTER_PORT]: getMasterUdpPort(state),
     },
     verboseLogging: getVerboseLoggingSetting(state),
     mtcpAndCommunication: getMtcpAndCommunicationSetting(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
+    masterUdpPorts: getMasterUdpPorts(state),
   }
 }
 
 export default connect(
   mapStateToProps,
-  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting, updateMtcpAndCommunicationSetting },
+  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting, updateMtcpAndCommunicationSetting,
+  updateServerProxyUrlSetting, updateMasterUdpIPSetting, updateMasterUdpPortSetting, change },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,
