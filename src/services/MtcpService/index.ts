@@ -1,5 +1,8 @@
-import SailInsigtMTCPNetwork from 'sail-insight-mtcp-network/index'
+import SailInsightMtcpNetwork from 'sail-insight-mtcp-network/index'
+import { isPlatformIOS } from "../../environment";
 
 export const updateSettings = (settings: any) => {
-    SailInsigtMTCPNetwork.configure(settings)
+    if (isPlatformIOS) {
+        SailInsightMtcpNetwork.configure(settings)
+    }
 }

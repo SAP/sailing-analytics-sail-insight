@@ -8,6 +8,8 @@ init()
 export const DEV_MODE = __DEV__
 
 export const isPlatformAndroid: boolean = Platform.OS === 'android'
+export const isPlatformIOS: boolean = Platform.OS === 'ios'
+
 
 export const platformSelect = (android: any, ios: any) => Platform.select({
   ios,
