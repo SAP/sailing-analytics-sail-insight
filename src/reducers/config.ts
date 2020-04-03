@@ -65,7 +65,12 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
+  mtcpAndCommunication: boolean,
   leaderboardEnabled: boolean,
+  proxyUrl: string,
+  masterUdpIP: string,
+  masterUdpPort: string,
+  masterUdpPortDefault: string,
 }
 
 export interface AuthState {
@@ -91,6 +96,7 @@ export interface CheckInState {
   active: any
   isLoadingCheckIn: boolean
   isLoadingSplash: boolean
+  isDeletingMarkBinding: boolean
 }
 
 export interface CourseReducerState {

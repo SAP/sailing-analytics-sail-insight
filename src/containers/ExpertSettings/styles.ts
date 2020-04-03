@@ -10,6 +10,7 @@ export default EStyleSheets.create({
     marginRight: '$largeRelativeSpacing',
     alignSelf: 'stretch',
     flexDirection: 'column',
+    marginBottom: 8
   },
   claim: {
     alignSelf: 'stretch',
@@ -42,4 +43,9 @@ export default EStyleSheets.create({
     fontSize: 18,
     ...withDefaultBoldFont,
   },
+  item: {
+    padding: '$tinySpacing',
+    color: 'white',
+    fontSize: 16
+  }
 })

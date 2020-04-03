@@ -89,6 +89,7 @@ class RegisterCredentials extends TextInputForm<Props> {
               component={FormTextInput}
               keyboardType={'default'}
               returnKeyType="go"
+              autoCapitalize="none"
               onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
               secureTextEntry={true}
               inputRef={this.handleInputRef(registrationForm.FORM_KEY_PASSWORD)}

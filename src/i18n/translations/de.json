@@ -48,7 +48,11 @@
   "text_user_name": "Benutzername",
   "text_email": "E-Mail",
   "text_base_server": "Server",
+  "text_server_proxy": "Proxy",
+  "text_server_udp_ip": "Hauptknoten IP",
+  "text_server_udp_port": "Hauptknoten Port",
   "text_verbose_logging": "Enable verbose background GPS logging",
+  "text_mtcp_and_communication": "Enable Multipath TCP and expedition communication",
   "text_placeholder_your_username": "Benutzername",
   "text_placeholder_your_email": "Deine E-Mail Adresse",
   "text_placeholder_enter_password": "Passwort",
@@ -173,6 +177,7 @@
   "caption_close": "Schließen",
   "caption_confirm": "Bestätigen",
   "caption_qr_scanner": "QR-Code scannen",
+  "caption_delete_mark_binding": "Verknüpfung mit diesem Gerät aufheben",
   "caption_start_tracking": "Starte Tracking",
   "caption_stop_tracking": "Stoppe Tracking",
   "caption_to_event": "Zum Event",
@@ -336,6 +341,7 @@
   "button_no": "Nein",
   "text_entry_open_SAP_Analytics_button": "Sie können die SAP Sailing Analytics erst nach dem Schließen der Teilnehmerliste anzeigen. Bist Du bereit den Zugang zu schließen? Beachte dass keine Teilnehmer nachträglich hinzugefügt werden können.",
   "text_entry_open_when_setting_time": "Die Startzeit kann erst festgelegt werden, wenn die Teilnehmerliste geschlossen wurde. Bist Du bereit den Zugang zu schließen? Beachte dass keine Teilnehmer nachträglich hinzugefügt werden können.",
+  "text_delete_binding_alert": "Bist Du sicher, dass Du die Verknüpfung aufheben möchtest?",
 
   "caption_basics": "Basis",
   "caption_event_creation_date": "Datum",
@@ -370,6 +376,9 @@
   "placeholder_course_creation_new_gate": "Neues Gate",
   "placeholder_course_creation_new_line_short": "NL",
   "placeholder_course_creation_new_gate_short": "NG",
+
+  "text_finish_waypoint_long_name": "Ziel",
+  "text_finish_waypoint_short_name": "Z",
 
   "caption_sap_analytics_header": "SAP Analytics",
 

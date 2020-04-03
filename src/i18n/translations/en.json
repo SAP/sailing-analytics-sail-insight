@@ -48,7 +48,11 @@
   "text_user_name": "User name",
   "text_email": "E-mail",
   "text_base_server": "Server",
+  "text_server_proxy": "Proxy",
+  "text_server_udp_ip": "Master Node IP",
+  "text_server_udp_port": "Master Node Port",
   "text_verbose_logging": "Enable verbose background GPS logging",
+  "text_mtcp_and_communication": "Enable Multipath TCP and expedition communication",
   "text_placeholder_your_username": "User name",
   "text_placeholder_your_email": "Your e-mail address",
   "text_placeholder_enter_password": "Password",
@@ -174,6 +178,7 @@
   "caption_close": "Close",
   "caption_confirm": "Confirm",
   "caption_qr_scanner": "Scan a QR-Code",
+  "caption_delete_mark_binding": "Delete binding with this device",
   "caption_start_tracking": "Start tracking",
   "caption_stop_tracking": "Stop tracking",
   "caption_to_event": "To the event",
@@ -320,7 +325,7 @@
   "caption_course_not_defined": "No course yet",
   "caption_time_not_set": "No start time yet",
   "text_discard_after": "Discard after Races",
-  "caption_discard_after_races": "Discard after race numbers",
+  "caption_discard_after_races": "Discard after race",
   "caption_competitor": "Competitors",
   "caption_join_as_competitor": "Join as competitor",
   "caption_invite_competitors": "Invite competitors",
@@ -337,6 +342,7 @@
   "button_no": "No",
   "text_entry_open_SAP_Analytics_button": "You can only view the SAP Sailing Analytics after the entry list has been closed. Are you ready to close the entry list (note that no competitors can be added afterwards)?",
   "text_entry_open_when_setting_time": "Start time cannot be set until the entry list is closed. Are you ready to close the entry? Note that no competitors can be added afterwards.",
+  "text_delete_binding_alert": "Do you really want to delete the binding?",
 
   "caption_basics": "Basics",
   "caption_event_creation_date": "Date",
@@ -371,6 +377,9 @@
   "placeholder_course_creation_new_gate": "New Gate",
   "placeholder_course_creation_new_line_short": "NL",
   "placeholder_course_creation_new_gate_short": "NG",
+
+  "text_finish_waypoint_long_name": "Finish",
+  "text_finish_waypoint_short_name": "F",
 
   "caption_sap_analytics_header": "SAP Analytics",
 

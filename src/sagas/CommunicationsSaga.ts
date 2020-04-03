@@ -2,6 +2,7 @@ import { UPDATE_START_LINE, UPDATE_SERVER_STATE, UPDATE_START_LINE_FOR_CURRENT_C
   updateStartLine, updateServerValid, updateServerPort, updateServerProtocol, updateServerIP, fetchCommunicationState, updateServerState } from 'actions/communications'
 import { sendStartLine, getServerState, setServerState } from 'services/CommunicationService'
 import { getMarkPositionsForCourse, getServerIP, getServerPort, getStartLine } from 'selectors/communications'
+import { getMtcpAndCommunicationSetting } from "selectors/settings";
 
 import { NetworkInfo } from "react-native-network-info"
 import { takeLatest, all, call, put, select} from 'redux-saga/effects'
@@ -10,14 +11,24 @@ import { Server1Protocol } from 'sail-insight-expedition-communication'
 
 const Server1Port = 8001
 
-function getNetworkPromise()
-{
+function getNetworkPromise() {
   return NetworkInfo.getIPV4Address()
 }
 
-function getServerStatePromise()
-{
+function getServerStatePromise() {
   return getServerState()
+}
+
+function isValidGate(gate: any) {
+  if (gate.length > 1) {
+    if (gate[0] !== undefined && gate[1] !== undefined &&
+      gate[0].lat_deg !== undefined && gate[0].lon_deg !== undefined &&
+      gate[1].lat_deg !== undefined && gate[1].lon_deg !== undefined) {
+        return true
+      }
+  }
+
+  return false
 }
 
 export function* updateStartLineSaga({ payload }: any) {
@@ -69,18 +80,22 @@ export function* setCommunicationStateSage({payload}: any) {
 
 export function* updateStartLineForCurrentCourseSaga({payload}: any){
 
-  const { raceName, regattaName, serverUrl } = payload
-  const api = dataApi(serverUrl)
+  const communicationEnabled = yield select(getMtcpAndCommunicationSetting)
 
-  const course = yield call(api.requestCourse, regattaName, raceName, 'Default')
+  if (communicationEnabled) {
+    const { raceName, regattaName, serverUrl } = payload
+    const api = dataApi(serverUrl)
 
-  // update start line
-  const startLine: any = getMarkPositionsForCourse(course, 'Start')
+    const course = yield call(api.requestCourse, regattaName, raceName, 'Default')
 
-  if (startLine.length > 1) {
-    yield put(updateStartLine({pinLatitude: startLine[0].lat_deg, pinLongitude: startLine[0].lon_deg, boatLatitude: startLine[1].lat_deg, boatLongitude: startLine[1].lon_deg}))
-  } else {
-    yield put(updateStartLine({}))
+    // update start line
+    const startLine: any = getMarkPositionsForCourse(course, 'Start')
+
+    if (isValidGate(startLine)) {
+      yield put(updateStartLine({pinLatitude: startLine[0].lat_deg, pinLongitude: startLine[0].lon_deg, boatLatitude: startLine[1].lat_deg, boatLongitude: startLine[1].lon_deg}))
+    } else {
+      yield put(updateStartLine({}))
+    }
   }
 }
 

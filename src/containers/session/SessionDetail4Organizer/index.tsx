@@ -6,7 +6,9 @@ import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking, stopTracking } from 'actions/events'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
+import { isNetworkConnected } from 'selectors/network'
 import { isStartingTracking } from 'selectors/event'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
@@ -41,6 +43,7 @@ const mapStateToProps = (state: any, props: any) => {
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
     isStartingTracking: isStartingTracking(state),
+    isNetworkConnected: isNetworkConnected(state),
   }
 }
 
@@ -50,6 +53,10 @@ const sessionData = {
 }
 
 const closeEntry = (props: any) => {
+  if (!props.isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
   Alert.alert(I18n.t('caption_start_tracking'), I18n.t('text_alert_for_start_tracking'), [
     { text: I18n.t('button_yes'), onPress: () => props.startTracking(props.session) },
     { text: I18n.t('button_no') },
@@ -88,10 +95,10 @@ export const sessionDetailsCard = Component((props: any) => compose(
 
 export const defineRacesCard = Component((props: any) => compose(
     fold(props),
-    concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
-    view({ style: styles.container2 }),
+    concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
+    view({ style: styles.container3 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '1'),
+    text({ style: styles.headlineTop }, '2'),
     text({ style: styles.headline }, I18n.t('caption_define').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
       props.isTracking || props.isFinished ?
@@ -104,10 +111,10 @@ export const defineRacesCard = Component((props: any) => compose(
 
 export const inviteCompetitorsCard = Component((props: any) => compose(
     fold(props),
-    concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
-    view({ style: styles.container3 }),
+    concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
+    view({ style: styles.container2 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '2'),
+    text({ style: styles.headlineTop }, '1'),
     text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
       props.isTracking || props.isFinished ?
@@ -159,8 +166,8 @@ export default Component((props: any) => compose(
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
     sessionDetailsCard,
-    defineRacesCard,
     inviteCompetitorsCard,
+    defineRacesCard,
     nothingWhenFinished(nothingWhenTracking(closeEntryCard)),
     nothingWhenFinished(nothingWhenEntryIsOpen(endEventCard))
   ]))

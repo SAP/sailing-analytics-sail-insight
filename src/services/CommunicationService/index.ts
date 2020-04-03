@@ -38,3 +38,7 @@ export const sendStartLine = (startLine: any) => {
     }
     
 }
+
+export const updateSettings = (settings: any) => {
+    ExpeditionCommunication.configureCommunication(settings)
+}

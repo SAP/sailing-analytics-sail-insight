@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import { FlatList, Text, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
+import { debounce } from 'lodash'
 import * as Screens from 'navigation/Screens'
 import AccountListItem from 'components/AccountListItem'
 import I18n from 'i18n'
@@ -13,6 +14,7 @@ import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
+import { getMtcpAndCommunicationSetting } from '../../../selectors/settings';
 import styles from './styles'
 
 const EMPTY_VALUE = '-'
@@ -49,18 +51,32 @@ const communicationsItem = (props: any) => ({
   onPress: () => props.navigation.navigate(Screens.Communications),
 })
 
+const debounceNavigation = (waitTime: number, props: any) => ({
+  ...props,
+  navigation: {
+    ...props.navigation,
+    navigate: debounce(props.navigation.navigate, waitTime, { leading: true, trailing: false })
+  }
+})
+
 class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean
   user: User,
+  expeditionCommunicationEnabled: boolean
 }> {
   public render() {
     const { isLoggedIn } = this.props
 
-    const data = [
-      ...(isLoggedIn ? loggedInItems(this.props) : notLoggedInItems(this.props)),
-      settingsItem(this.props),
-      communicationsItem(this.props),
+    const propsWithDebouncedNavigation = debounceNavigation(1000, this.props)
+
+    let data = [
+      ...(isLoggedIn ? loggedInItems(propsWithDebouncedNavigation) : notLoggedInItems(propsWithDebouncedNavigation)),
+      settingsItem(propsWithDebouncedNavigation)
     ]
+
+    if (propsWithDebouncedNavigation.expeditionCommunicationEnabled) {
+      data.push(communicationsItem(propsWithDebouncedNavigation))
+    }
 
     return (
       <View style={[container.main, styles.container]}>
@@ -92,6 +108,7 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 const mapStateToProps = (state: any) => ({
   user: getUserInfo(state) || {},
   isLoggedIn: isLoggedInSelector(state),
+  expeditionCommunicationEnabled: getMtcpAndCommunicationSetting(state)
 })
 
 export default connect(mapStateToProps)(AccountList)

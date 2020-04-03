@@ -1,7 +1,7 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
-import { compose, reduce, concat, mergeDeepLeft, merge, includes } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft, merge, includes, propEq } from 'ramda'
 import { Text } from 'react-native'
 import 'store/init'
 
@@ -11,7 +11,7 @@ import SplashScreen from 'containers/SplashScreen'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import Logger from 'helpers/Logger'
-import SpinnerOverlay from 'react-native-loading-spinner-overlay'	
+import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import * as DeepLinking from 'integrations/DeepLinking'
 import * as LocationService from 'services/LocationService'
 import { initializeApp } from 'actions/appLoading'
@@ -20,12 +20,12 @@ import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { isLoadingCheckIn } from 'selectors/checkIn'
+import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/stack'
 import { AuthContext } from 'navigation/NavigationContext'
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
-import { Component, fold, nothing } from 'components/fp/component'
+import { Component, fold, nothing, recomposeBranch as branch, nothingAsClass } from 'components/fp/component'
 import FirstContact from 'containers/user/FirstContact'
 import Sessions from 'containers/session/Sessions'
 import QRScanner from 'containers/session/QRScanner'
@@ -48,6 +48,7 @@ import ExpertSettings from 'containers/ExpertSettings'
 import Leaderboard from 'containers/session/Leaderboard/Leaderboard'
 import SetWind from 'containers/tracking/SetWind'
 import Tracking from 'containers/tracking/Tracking'
+import MarkTracking from 'containers/tracking/MarkTracking'
 import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import HeaderTitle from 'components/HeaderTitle'
@@ -164,6 +165,13 @@ const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <
 const withLeftHeaderBackButton = mergeDeepLeft({ options: {
   headerLeft: () => <HeaderBackButton onPress={() => navigationContainer.current.goBack()} tintColor="white"	labelVisible={false} />}})
 
+const markTrackingNavigator = Component(props => compose(
+  fold(props),
+  stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
+  reduce(concat, nothing()))([
+  stackScreen(withoutHeader({ name: Screens.MarkTracking, component: MarkTracking.fold })),
+]))
+
 const trackingNavigator = Component(props => compose(
   fold(props),
   stackNavigator({ initialRouteName: Screens.WelcomeTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
@@ -176,6 +184,16 @@ const trackingNavigator = Component(props => compose(
   stackScreen({ name: Screens.SetWind, component: SetWind, options: { title: I18n.t('title_set_wind') } }),
   stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') } })),
 ]))
+
+const TrackingSwitch = connect((state: any) => {
+  return {
+    boundToMark: isBoundToMark(state)
+  }
+})(props => {
+  return props.boundToMark
+    ? markTrackingNavigator.fold(props)
+    : trackingNavigator.fold(props)
+})
 
 const sessionsNavigator = Component(props => compose(
   fold(props),
@@ -262,7 +280,7 @@ const mainTabsNavigator = Component(props => compose(
     })
   }),
   reduce(concat, nothing()))([
-  tabsScreen({ name: Screens.TrackingNavigator, component: trackingNavigator.fold, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
+  tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
   tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold }),
   tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }),
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
@@ -271,7 +289,7 @@ const mainTabsNavigator = Component(props => compose(
 const AppNavigator = Component(props => compose(
   fold(props),
   stackNavigator({
-    initialRouteName: props.isLoggedIn ? Screens.Main : Screens.FirstContact,
+    initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,
     screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
@@ -371,7 +389,8 @@ class AppRoot extends ReactComponent {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
-  isLoadingCheckIn: isLoadingCheckIn(state)
+  isLoadingCheckIn: isLoadingCheckIn(state),
+  shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state)
 })
 
 export default connect(mapStateToProps, {

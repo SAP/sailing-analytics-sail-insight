@@ -59,7 +59,6 @@ function* selectEventSaga({ payload }: any) {
 
   yield put(fetchRegatta(regattaName, secret, serverUrl))
   yield put(fetchRacesTimesForEvent(eventData))
-  yield put(updateCreatingEvent(false))
 
   if (currentUserCanUpdateEvent) {
     yield call(fetchCoursesForCurrrentEvent, { payload: eventData })
@@ -71,6 +70,7 @@ function* selectEventSaga({ payload }: any) {
   } else {
     navigation.navigate(Screens.SessionDetail, { data: eventData })
   }
+  yield put(updateCreatingEvent(false))
   yield put(updateSelectingEvent(false))
 }
 

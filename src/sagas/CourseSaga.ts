@@ -35,8 +35,10 @@ import {
   getSelectedRaceInfo
 } from 'selectors/event'
 import { updateCheckIn } from 'actions/checkIn'
+import { receiveEntities } from 'actions/entities'
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
+import I18n from 'i18n'
 import { PassingInstruction } from 'models/Course'
 
 const renameKeys = curry((keysMap, obj) =>
@@ -59,7 +61,7 @@ const newCourse = () => {
     waypoints: [
       { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Start', controlPointShortName: 'S' },
       { passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
-      { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Finish', controlPointShortName: 'F' }]
+      { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: I18n.t('text_finish_waypoint_long_name'), controlPointShortName: I18n.t('text_finish_waypoint_short_name')}]
   }
 }
 
@@ -140,7 +142,7 @@ const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) 
   course.waypoints))
 
 function* saveCourseFlow() {
-  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName } = yield select(getSelectedRaceInfo)
+  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
   const raceId = getRaceId(regattaName, raceColumnName)
 
@@ -198,10 +200,15 @@ function* saveCourseFlow() {
     reject(isNil))(
     allCourses)
 
-  yield put(updateCheckIn({
-    leaderboardName,
-    markId: markUsedWithCurrentDeviceAsTracker ? markUsedWithCurrentDeviceAsTracker.markId : null
-  }))
+  if (markUsedWithCurrentDeviceAsTracker) {
+    yield put(updateCheckIn({
+      leaderboardName,
+      markId: markUsedWithCurrentDeviceAsTracker.markId
+    }))
+
+    const mark = yield call(api.requestMark, leaderboardName, markUsedWithCurrentDeviceAsTracker.markId, secret)
+    yield put(receiveEntities(mark))
+  }
   yield call(loadMarkProperties)
 }
 
