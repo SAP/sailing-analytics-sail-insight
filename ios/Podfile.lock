@@ -1,18 +1,18 @@
 PODS:
-  - AFNetworking (3.2.1):
-    - AFNetworking/NSURLSession (= 3.2.1)
-    - AFNetworking/Reachability (= 3.2.1)
-    - AFNetworking/Security (= 3.2.1)
-    - AFNetworking/Serialization (= 3.2.1)
-    - AFNetworking/UIKit (= 3.2.1)
-  - AFNetworking/NSURLSession (3.2.1):
+  - AFNetworking (4.0.0):
+    - AFNetworking/NSURLSession (= 4.0.0)
+    - AFNetworking/Reachability (= 4.0.0)
+    - AFNetworking/Security (= 4.0.0)
+    - AFNetworking/Serialization (= 4.0.0)
+    - AFNetworking/UIKit (= 4.0.0)
+  - AFNetworking/NSURLSession (4.0.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (3.2.1)
-  - AFNetworking/Security (3.2.1)
-  - AFNetworking/Serialization (3.2.1)
-  - AFNetworking/UIKit (3.2.1):
+  - AFNetworking/Reachability (4.0.0)
+  - AFNetworking/Security (4.0.0)
+  - AFNetworking/Serialization (4.0.0)
+  - AFNetworking/UIKit (4.0.0):
     - AFNetworking/NSURLSession
   - boost-for-react-native (1.63.0)
   - Branch (0.29.0):
@@ -423,16 +423,16 @@ PODS:
     - React
   - RNPermissions (2.0.9):
     - React
-  - RNScreens (2.0.0-beta.13):
+  - RNScreens (2.4.0):
     - React
   - RNSnackbar (2.2.0):
     - React
   - RNSVG (9.13.6):
     - React
   - RSKImageCropper (2.2.3)
-  - SailInsightExpeditionCommunication (1.1.10):
+  - SailInsightExpeditionCommunication (1.1.17):
     - React
-  - SailInsightMTCPNetwork (1.0.3):
+  - SailInsightMTCPNetwork (1.0.7):
     - React
   - SDWebImage (5.6.1):
     - SDWebImage/Core (= 5.6.1)
@@ -443,7 +443,7 @@ PODS:
   - Yoga (1.14.0)
 
 DEPENDENCIES:
-  - AFNetworking
+  - AFNetworking (~> 4.0)
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -677,7 +677,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  AFNetworking: d9fdf484a3c723ec3c558a41cc5754c7e845ee77
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   Branch: 6e7421e1f3c0adebdf80008a40a74969b2603cf8
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
@@ -757,16 +757,16 @@ SPEC CHECKSUMS:
   RNImageCropPicker: cf129d17e042ce3e96fb9ada967c28f21f977c82
   RNLocalize: a734b53c45e77acd3ffb78b92e63bb4d6cd13257
   RNPermissions: 2f74237e97b08beda01e914301e12524ddddf5b8
-  RNScreens: ba539a5086136eb356e43699cb588a80369763ca
+  RNScreens: b5c0e1b2b04512919e78bd3898e144a157ce2363
   RNSnackbar: 160077964866262ed08cfd33ab4760219ea2aef6
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
-  SailInsightExpeditionCommunication: cb9bb686912aa881907f972be80563d718a97a31
-  SailInsightMTCPNetwork: fac9abae0cc80efb8178a78ece490503866d101b
+  SailInsightExpeditionCommunication: 606b1588f42f4a4d2771d05d390f1ec96029846d
+  SailInsightMTCPNetwork: c344b7f9e06b17a1f1b2333c4c670e6d0c74a19e
   SDWebImage: 7edb9c3ea661e77a66661f7f044de8c1b55d1120
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 6cd263730f620d248ee131e0fbeae9b3df2e9b22
+PODFILE CHECKSUM: b5322fa0f0d3655e6a038769f7304886587bc387
 
 COCOAPODS: 1.9.1
