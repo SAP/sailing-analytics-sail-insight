@@ -101,8 +101,8 @@
     "redux-saga": "^1.0.5",
     "redux-thunk": "2.3.0",
     "reselect": "4.0.0",
-    "sail-insight-expedition-communication": "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#1.1.12",
-    "sail-insight-mtcp-network": "https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#1.0.5",
+    "sail-insight-expedition-communication": "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_Expedition_Communication.git#1.1.17",
+    "sail-insight-mtcp-network": "https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/Larry_Rosenfeld/sail_insight_multipath_tcp.git#1.0.7",
     "string-format": "2.0.0",
     "url-parse": "1.4.3",
     "uuid": "3.3.2"

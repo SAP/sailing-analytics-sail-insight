@@ -67,6 +67,10 @@ export interface SettingsState {
   verboseLogging: boolean,
   mtcpAndCommunication: boolean,
   leaderboardEnabled: boolean,
+  proxyUrl: string,
+  masterUdpIP: string,
+  masterUdpPort: string,
+  masterUdpPortDefault: string,
 }
 
 export interface AuthState {
