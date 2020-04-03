@@ -6,12 +6,15 @@ import {
   updateLeaderboardEnabledSetting,
   updateServerUrlSetting,
   updateVerboseLoggingSetting,
-  updateMtcpAndCommunicationSetting
+  updateMtcpAndCommunicationSetting,
+  updateServerProxyUrlSetting,
+  updateMasterUdpIPSetting,
+  updateMasterUdpPortSetting,
 } from 'actions/settings'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { SettingsState } from 'reducers/config'
 import { removeUserData } from '../actions/auth'
-import { DEFAULT_SERVER_URL } from '../environment/init'
+import { DEFAULT_SERVER_URL, SERVER_PROXY_URL, SERVER_MASTER_UDP_IP, SERVER_MASTER_UDP_PORT, SERVER_MASTER_UDP_PORT_DEFAULT } from '../environment/init'
 
 
 const initialState: SettingsState = {
@@ -21,6 +24,10 @@ const initialState: SettingsState = {
   verboseLogging: false,
   mtcpAndCommunication: false,
   leaderboardEnabled: false,
+  proxyUrl: SERVER_PROXY_URL,
+  masterUdpIP: SERVER_MASTER_UDP_IP,
+  masterUdpPort: SERVER_MASTER_UDP_PORT,
+  masterUdpPortDefault: SERVER_MASTER_UDP_PORT_DEFAULT,
 }
 
 const reducer = handleActions(
@@ -31,6 +38,21 @@ const reducer = handleActions(
     [updateVerboseLoggingSetting as any]: itemUpdateHandler('verboseLogging'),
     [updateMtcpAndCommunicationSetting as any]: itemUpdateHandler('mtcpAndCommunication'),
     [updateLeaderboardEnabledSetting as any]: itemUpdateHandler('leaderboardEnabled'),
+    [updateServerProxyUrlSetting as any]: itemUpdateHandler('proxyUrl'),
+    [updateMasterUdpIPSetting as any]: itemUpdateHandler('masterUdpIP'),
+    [updateMasterUdpPortSetting as any]: (state: any = {}, action?: any) => {
+      if (state.serverUrl && state.serverUrl === DEFAULT_SERVER_URL) {
+        return {
+          ...state,
+          ['masterUdpPortDefault']: action && action.payload,
+        }
+      } else {
+        return {
+          ...state,
+          ['masterUdpPort']: action && action.payload,
+        }
+      }
+    },
     [removeUserData as any]: (state:SettingsState) => ({ ...initialState, serverUrl: state.serverUrl }),
   },
   initialState,
