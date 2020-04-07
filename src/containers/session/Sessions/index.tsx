@@ -7,6 +7,7 @@ import * as Screens from 'navigation/Screens'
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
+import { debounce } from 'lodash'
 
 import { authBasedNewSession } from 'actions/auth'
 import { selectEvent } from 'actions/events'
@@ -35,6 +36,20 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   selectEvent: any,
   eventIdThatsBeingSelected?: string,
 } > {
+  private debouncedButtonClick = debounce(
+    (actionType: string, ...args: any) => {
+      switch (actionType) {
+        case 'SELECT':
+          return this.props.selectEvent(...args)
+        case 'CREATE':
+          return this.props.authBasedNewSession(...args)
+        case 'TRACK':
+          return this.props.startTracking(...args)
+      }
+    },
+    1500,
+    { leading: true, trailing: false }
+  )
 
   constructor(props) {
     super(props)
@@ -57,7 +72,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           style={this.styles.cardsContainer}
           onItemPress={() => {
             this.setState({ swipeableLeftOpenEventId: '' })
-            this.props.selectEvent({ data: item, navigation: this.props.navigation })
+            this.debouncedButtonClick('SELECT', { data: item, navigation: this.props.navigation })
           }}
           session={item}
           loading={isLoading}
@@ -69,7 +84,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
       return (
         <SessionItemDark
           style={this.styles.cardsContainer}
-          onItemPress={() => this.props.startTracking({ data: item, navigation: this.props.navigation })}
+          onItemPress={() => this.debouncedButtonClick('TRACK', { data: item, navigation: this.props.navigation })}
           session={item}
         />
       )
@@ -83,7 +98,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
             style={this.styles.createButton}
-            onPress={() => this.props.authBasedNewSession(this.props.navigation)}>
+            onPress={() => this.debouncedButtonClick('CREATE', this.props.navigation)}>
             <IconText
               source={Images.actions.add}
               iconStyle={this.styles.createButtonIcon}
