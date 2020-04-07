@@ -1,11 +1,13 @@
 import { createAction } from 'redux-actions'
 import { authApi } from 'api'
 import AuthException from 'api/AuthException'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { DispatchType, GetStateType } from 'helpers/types'
 import * as Screens from 'navigation/Screens'
 import { ApiAccessToken, User } from 'models'
 import { mapUserToRes } from 'models/User'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 
 export type RegisterActionType = (username: string, email: string, password: string, name: string) => any
 
@@ -48,6 +50,11 @@ export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
   dispatch(updateCurrentUserInformation(await authApi().user()))
 
 export const authBasedNewSession = (navigation:object) => (dispatch: DispatchType, getState: GetStateType) => {
+  const isNetworkConnected = isNetworkConnectedSelector(getState())
+  if (!isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
   const isLoggedIn = isLoggedInSelector(getState())
   navigation.navigate(isLoggedIn ? Screens.EventCreation : Screens.RegisterCredentials)
 }
