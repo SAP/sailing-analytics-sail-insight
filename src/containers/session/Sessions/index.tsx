@@ -58,19 +58,26 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 
   public state = {
     hideAddButton: false,
+    swipeableLeftOpenEventId: '',
   }
 
   public renderItem = ({ item }: any) => {
     const { eventIdThatsBeingSelected } = this.props
+    const { swipeableLeftOpenEventId } = this.state
     const { eventId } = item
     const isLoading = eventId === eventIdThatsBeingSelected
     if (!this.props.route?.params?.forTracking) {
       return (
         <SessionItem
           style={this.styles.cardsContainer}
-          onItemPress={() => this.debouncedButtonClick('SELECT', { data: item, navigation: this.props.navigation })}
+          onItemPress={() => {
+            this.setState({ swipeableLeftOpenEventId: '' })
+            this.debouncedButtonClick('SELECT', { data: item, navigation: this.props.navigation })
+          }}
           session={item}
           loading={isLoading}
+          swipeableLeftOpenEventId={swipeableLeftOpenEventId}
+          onSwipeableLeftWillOpen={(eventId) => this.setState({ swipeableLeftOpenEventId: eventId })}
         />
       )
     } else {
@@ -105,6 +112,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
             style={this.styles.list}
             data={this.props.sessions}
             renderItem={this.renderItem}
+            extraData={this.state.swipeableLeftOpenEventId}
           />
         </ScrollContentView>
         <View style={this.styles.bottomButton}>

@@ -107,7 +107,7 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object
       update.trackingContext = 'MARK'
     }
     dispatch(updateCheckIn(update))
-    navigation.navigate(Screens.Sessions)
+    navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
 
     if (data.competitorId) {
       const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
