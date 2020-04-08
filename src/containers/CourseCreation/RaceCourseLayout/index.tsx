@@ -1,15 +1,16 @@
 import { __, compose, always, both, path, when, move, length, subtract, curry, of as Rof,
   prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc,
   objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN, apply,
-  propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head, isEmpty, either } from 'ramda'
+  propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head, isEmpty, either, once } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
   recomposeBranch as branch,
   recomposeWithState as withState,
+  recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { Switch, Platform } from 'react-native'
+import { BackHandler, Switch, Platform } from 'react-native'
 import Geolocation from '@react-native-community/geolocation'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
@@ -32,6 +33,7 @@ import TextInput from 'components/TextInput'
 import SwitchSelector from 'react-native-switch-selector'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
+import HeaderBackButton from 'components/HeaderBackButton'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from '@react-navigation/compat'
 import styles from './styles'
@@ -614,10 +616,27 @@ const LoadingIndicator = Component((props: any) => compose(
   view({ style: styles.loadingContainer }))(
   text({ style: styles.loadingText }, I18n.t('caption_course_creator_loading'))))
 
+const withOnNavigationBackPress = withHandlers({
+  onNavigationBackPress: (props: any) => () => {
+    props.navigateBackFromCourseCreation()
+  }
+})
+
 const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onDidBlur: (payload: any) => (!payload || !payload.state) && props.navigateBackFromCourseCreation()
+    onWillBlur: (payload: any) => {
+      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationBackPress)
+    },
+    onWillFocus: (payload: any) => {
+      BackHandler.addEventListener('hardwareBackPress', props.onNavigationBackPress)
+      props.navigation.setOptions({
+        headerLeft: HeaderBackButton({ onPress: once(() => {
+          props.onNavigationBackPress()
+          props.navigation.goBack()
+        })})
+      })
+    }
   })),
   fromClass)(
   NavigationEvents))
@@ -639,6 +658,7 @@ export default Component((props: object) =>
           apply(equals),
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(
           [next, prev]) }),
+    withOnNavigationBackPress,
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true, contentContainerStyle: { flexGrow: 1 } }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,
