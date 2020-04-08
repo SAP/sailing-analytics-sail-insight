@@ -35,6 +35,8 @@ import { $declineColor } from 'styles/colors'
 import IconText from 'components/IconText'
 import Images from '@assets/Images'
 import { isCreatingEvent } from 'selectors/event'
+import { isNetworkConnected } from 'selectors/network'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -51,6 +53,7 @@ const mapStateToProps = (state: any) => ({
     defaultTo({}))(
     getFormSyncErrors(EVENT_CREATION_FORM_NAME)(state)),
   isCreatingEvent: isCreatingEvent(state),
+  isNetworkConnected: isNetworkConnected(state),
 })
 
 const createEvent = (props: any) => async (formValues: any) => {
@@ -58,6 +61,11 @@ const createEvent = (props: any) => async (formValues: any) => {
 
   Keyboard.dismiss()
   props.setApiErrors([])
+
+  if (!props.isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
 
   try {
     await props.createEventActionQueue({ eventData: eventCreationData, navigation: props.navigation }).execute()
