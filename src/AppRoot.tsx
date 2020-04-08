@@ -18,6 +18,7 @@ import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
+import { loadMarkProperties } from 'actions/inventory'
 import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
@@ -282,7 +283,7 @@ const mainTabsNavigator = Component(props => compose(
   reduce(concat, nothing()))([
   tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
   tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold }),
-  tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }),
+  tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold, listeners: { tabPress: () => props.loadMarkProperties() } }),
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
 ]))
 
@@ -298,7 +299,7 @@ const AppNavigator = Component(props => compose(
   stackScreen(withoutHeader({ name: Screens.JoinRegatta, component: JoinRegatta })),
   stackScreen(withoutHeader({ name: Screens.EditCompetitor, component: EditCompetitor })),
   stackScreen(withoutHeaderLeft({ name: Screens.RegisterBoat, component: RegisterBoat, options: { title: I18n.t('title_your_team') } })),
-  stackScreen(withoutHeader({ name: Screens.Main, component: mainTabsNavigator.fold })),
+  stackScreen(withoutHeader({ name: Screens.Main, component: mainTabsNavigator.contramap(merge(props)).fold })),
   stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
     withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
     { name: Screens.QRScanner, component: QRScanner })),
@@ -398,5 +399,6 @@ export default connect(mapStateToProps, {
   updateTrackingStatus,
   handleLocation,
   initLocationUpdates,
-  initializeApp
+  initializeApp,
+  loadMarkProperties
 })(AppRoot)

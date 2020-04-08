@@ -1,18 +1,17 @@
-import { __, always, compose, concat, defaultTo, map, merge, objOf, prop, reduce } from 'ramda'
+import { __, always, compose, concat, defaultTo, map, merge, reduce } from 'ramda'
 
 import {
   Component,
   fold,
   fromClass,
   nothing,
-  recomposeLifecycle as lifeCycle,
   reduxConnect as connect,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { ControlPointClass } from 'models/Course'
 
 import { getMarkProperties } from 'selectors/inventory'
-import { loadMarkProperties, deleteMarkProperties } from 'actions/inventory'
+import { deleteMarkProperties } from 'actions/inventory'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
@@ -22,10 +21,6 @@ import I18n from 'i18n'
 
 const mapStateToProps = (state, props) => ({
   markProperties: getMarkProperties(state)
-})
-
-const withLoadingMarks = lifeCycle({
-  componentDidMount() { this.props.loadMarkProperties() }
 })
 
 const icon = compose(
@@ -98,8 +93,7 @@ const List = Component((props: object) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { loadMarkProperties, deleteMarkProperties }),
-    withLoadingMarks,
+    connect(mapStateToProps, { deleteMarkProperties }),
     scrollView({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),
     concat(CreateNewSelector),
