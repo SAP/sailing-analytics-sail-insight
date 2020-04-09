@@ -61,6 +61,16 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     swipeableLeftOpenEventId: '',
   }
 
+  public componentDidMount() {
+    this._unsubscribeFromBlur = this.props.navigation.addListener('blur', () => {
+      this.setState({ swipeableLeftOpenEventId: '' })
+    })
+  }
+
+  public componentWillUnmount() {
+    this._unsubscribeFromBlur()
+  }
+
   public renderItem = ({ item }: any) => {
     const { eventIdThatsBeingSelected } = this.props
     const { swipeableLeftOpenEventId } = this.state
