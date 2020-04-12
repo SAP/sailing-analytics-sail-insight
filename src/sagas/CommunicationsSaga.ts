@@ -1,7 +1,8 @@
 import {
   FETCH_COMMUNICATION_INFO,
   FETCH_COMMUNICATION_STATE,
-  fetchCommunicationState,
+  fetchCommunicationState, RESET_EXPEDITION_COMMUNICATION_MESSAGES,
+  resetExpeditionCommunicationMessages,
   SET_COMMUNICATION_STATE,
   START_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL,
   UPDATE_SERVER_STATE,
@@ -123,29 +124,40 @@ export function* updateStartLineForCurrentCourseSaga({ payload }: any) {
 }
 
 function* handleExpeditionCommunicationMessages() {
-  const channel = eventChannel(listener => {
-    const handleNewMessage = (newMessage: string) => {
-      listener(newMessage)
+  const channel = eventChannel((listener: any) => {
+    const handleEvent = (event: any) => {
+      listener(event)
     }
 
     const eventEmitter = new NativeEventEmitter(NativeModules.SailInsightExpeditionCommunication)
     eventEmitter.addListener('expedition.communication', (event) => {
-      console.log(event.message)
-      handleNewMessage(event.message)
+      handleEvent(event)
     })
     return () => {
-      eventEmitter.removeListener('expedition.communication', handleNewMessage)
+      eventEmitter.removeListener('expedition.communication', handleEvent)
     }
   })
   while (true) {
-    const expeditionMessage = yield take(channel)
-    yield put(updateExpeditionCommunicationMessages(expeditionMessage))
+    const expeditionEvent = yield take(channel)
+    yield put(updateExpeditionCommunicationMessages(expeditionEvent))
   }
+}
+
+function* resetExpeditionMessages() {
+  yield put(resetExpeditionCommunicationMessages([]))
 }
 
 export function* communicationChannelSaga() {
   try {
     yield call(handleExpeditionCommunicationMessages)
+  } catch (e) {
+    // console.log(e)
+  }
+}
+
+export function* resetCommunicationChannelSaga() {
+  try {
+    yield call(resetExpeditionMessages)
   } catch (e) {
     // console.log(e)
   }
@@ -160,5 +172,6 @@ export default function* watchCommunications() {
     takeLatest(FETCH_COMMUNICATION_STATE, fetchCommunicationStateSaga),
     takeLatest(SET_COMMUNICATION_STATE, setCommunicationStateSage),
     takeLatest(START_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, communicationChannelSaga),
+    takeLatest(RESET_EXPEDITION_COMMUNICATION_MESSAGES, resetCommunicationChannelSaga),
   ])
 }

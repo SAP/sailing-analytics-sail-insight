@@ -1,6 +1,7 @@
 import { handleActions } from 'redux-actions'
 
 import {
+    resetExpeditionCommunicationMessages,
     updateExpeditionCommunicationMessages,
     updateServerIP,
     updateServerPort,
@@ -32,6 +33,7 @@ const reducer = handleActions(
     [updateServerPort as any]: itemUpdateHandler('port'),
     [updateStartLine as any]: itemUpdateHandler('startLine'),
     [updateExpeditionCommunicationMessages as any]: itemAddHandler('expeditionMessages'),
+    [resetExpeditionCommunicationMessages as any]: itemUpdateHandler('expeditionMessages'),
   },
   initialState,
 )

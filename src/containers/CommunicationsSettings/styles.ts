@@ -31,6 +31,12 @@ export default EStyleSheets.create({
     ...withSecondaryHeavyFont,
     flex: 1,
   },
+  red: {
+    color: 'red',
+  },
+  green: {
+    color: 'green',
+  },
   text: {
     color: 'white',
     fontSize: 16,
