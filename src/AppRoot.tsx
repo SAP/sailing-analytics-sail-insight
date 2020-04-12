@@ -39,6 +39,7 @@ import PasswordReset from 'containers/authentication/PasswordReset'
 import MarkInventory from 'containers/Inventory/MarkInventory'
 import AppSettings from 'containers/AppSettings'
 import CommunicationsSettings from 'containers/CommunicationsSettings'
+import OutputConsole from 'containers/OutputConsole'
 import { getSelectedMarkProperties } from 'selectors/course'
 import AccountList from 'containers/user/AccountList'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
@@ -236,8 +237,9 @@ const accountNavigator = Component(props => compose(
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.TeamList, component: TeamList, options: { title: I18n.t('caption_tab_teamlist') } })),
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.AppSettings, component: AppSettings, options: { title: I18n.t('caption_tab_appsettings') } })),
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.Communications, component: CommunicationsSettings, options: { title: I18n.t('caption_tab_communicationssettings') } })),
+  stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.OutputConsole, component: OutputConsole, options: { title: I18n.t('expedition_console') } })),
   stackScreen(compose(withRightModalBackButton, withoutHeaderLeft)({ name: Screens.ExpertSettings, component: ExpertSettings, options: { title: I18n.t('title_expert_settings') } })),
-  stackScreen(compose(withLeftHeaderBackButton, )({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
+  stackScreen(compose(withLeftHeaderBackButton,)({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
     headerTitle: () => <TeamDetailsHeader/>,
     headerRight: () => teamDeleteHeader(route),
   }) })),

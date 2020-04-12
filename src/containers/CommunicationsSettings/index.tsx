@@ -1,17 +1,15 @@
 import React from 'react'
-import { FlatList, View, ViewProps } from 'react-native'
+import { TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import {
   fetchCommunicationInfo,
   setCommunicationState,
-  startExpeditionCommunicationMessagesChannel,
 } from 'actions/communications'
 import EditItemSwitch from 'components/EditItemSwitch'
 import Text from 'components/Text'
 import I18n from 'i18n'
 import {
-  getExpeditionMessages,
   getServerIP,
   getServerPort,
   getServerProtocol,
@@ -19,31 +17,26 @@ import {
   getServerValid,
 } from 'selectors/communications'
 import { container } from 'styles/commons'
+import ScrollContentView from '../../components/ScrollContentView'
+import * as Screens from '../../navigation/Screens'
 import styles from './styles'
 
 class CommunicationSettings extends React.Component<ViewProps & {
   fetchCommunicationInfo: () => void,
   setCommunicationState: (value: boolean) => void,
-  startExpeditionCommunicationMessagesChannel: () => void,
   serverState: boolean,
   serverValid: boolean,
   serverProtocol: string,
   serverIP: string,
   serverPort: string,
-  expeditionMessages: string[],
 }> {
-
-  private flatList: any
 
   constructor(props: any) {
     super(props)
-    this.getFlatListRef = this.getFlatListRef.bind(this)
-    this.scrollToBottom = this.scrollToBottom.bind(this)
   }
 
   public componentWillMount() {
     this.props.fetchCommunicationInfo()
-    this.props.startExpeditionCommunicationMessagesChannel()
   }
 
   public onServerState = (value: boolean) => {
@@ -52,7 +45,7 @@ class CommunicationSettings extends React.Component<ViewProps & {
 
   public render() {
     return (
-        <View style={[container.main]}>
+        <ScrollContentView>
           <View style={[container.main, styles.container]}>
             {this.renderText(I18n.t('text_communications_server').toUpperCase(), '')}
             {this.renderText(I18n.t('text_communications_protocol').toUpperCase(), this.props.serverProtocol)}
@@ -69,9 +62,15 @@ class CommunicationSettings extends React.Component<ViewProps & {
                   onSwitchValueChange={this.onServerState}
               />
             </View>
-            {this.props.serverState && this.renderOutputConsole()}
+            {
+              this.props.serverState ?
+                  (<TouchableOpacity style={[styles.item, styles.itemText]} onPress={() => this.props.navigation.navigate(Screens.OutputConsole)}>
+                    <Text style={styles.title}>{I18n.t('expedition_console').toUpperCase()}</Text>
+                  </TouchableOpacity>) :
+                  null
+            }
           </View>
-        </View>
+        </ScrollContentView>
     )
   }
 
@@ -83,43 +82,6 @@ class CommunicationSettings extends React.Component<ViewProps & {
       </View>
     )
   }
-
-  private renderItem(item: any) {
-    const event = item.item
-    return (
-        <View>
-         <Text style={[styles.title, event.source === 'expedition' ? styles.green : styles.red]}>{event.message}</Text>
-        </View>
-    )
-  }
-
-  private getFlatListRef(component: any) {
-    this.flatList = component
-  }
-
-  private keyExtractor(item: any) {
-    return item.item
-  }
-
-  private scrollToBottom() {
-    if (this.flatList) {
-      this.flatList.scrollToEnd({ animated: true })
-    }
-  }
-
-  private renderOutputConsole() {
-    return  (
-        <View style={styles.textContainerBlack}>
-          <FlatList
-              ref={this.getFlatListRef}
-              data={this.props.expeditionMessages}
-              renderItem={this.renderItem}
-              keyExtractor={this.keyExtractor}
-              onContentSizeChange={this.scrollToBottom}
-          />
-        </View>
-    )
-  }
 }
 
 const mapStateToProps = (state: any) => ({
@@ -128,11 +90,9 @@ const mapStateToProps = (state: any) => ({
   serverProtocol: getServerProtocol(state),
   serverIP: getServerIP()(state),
   serverPort: getServerPort()(state),
-  expeditionMessages: getExpeditionMessages(state),
 })
 
 export default connect(mapStateToProps, {
   fetchCommunicationInfo,
   setCommunicationState,
-  startExpeditionCommunicationMessagesChannel,
 })(CommunicationSettings)

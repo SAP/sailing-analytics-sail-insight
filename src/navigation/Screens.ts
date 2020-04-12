@@ -12,6 +12,7 @@ export const UserProfile = 'UserProfile'
 export const TeamList = 'TeamList'
 export const TeamDetails = 'TeamDetails'
 export const Communications = 'Communications'
+export const OutputConsole = 'OutputConsole'
 
 // sessions
 export const UserSessions = 'UserSessions'

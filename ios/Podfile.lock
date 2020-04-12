@@ -443,7 +443,7 @@ PODS:
   - Yoga (1.14.0)
 
 DEPENDENCIES:
-  - AFNetworking (~> 4.0)
+  - AFNetworking (from `https://github.com/classdojo/AFNetworking.git`)
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -517,7 +517,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AFNetworking
     - boost-for-react-native
     - Branch
     - CocoaLumberjack
@@ -541,6 +540,8 @@ SPEC REPOS:
     - SDWebImageWebPCoder
 
 EXTERNAL SOURCES:
+  AFNetworking:
+    :git: https://github.com/classdojo/AFNetworking.git
   BVLinearGradient:
     :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
@@ -676,8 +677,13 @@ EXTERNAL SOURCES:
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
+CHECKOUT OPTIONS:
+  AFNetworking:
+    :commit: f2f04ddc05f7c8e546fd4afce151fc0f74c97869
+    :git: https://github.com/classdojo/AFNetworking.git
+
 SPEC CHECKSUMS:
-  AFNetworking: d9fdf484a3c723ec3c558a41cc5754c7e845ee77
+  AFNetworking: 600f97dccd86e7f6af64cf1c86d1a2c1bc8d6e77
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   Branch: 6e7421e1f3c0adebdf80008a40a74969b2603cf8
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
@@ -767,6 +773,6 @@ SPEC CHECKSUMS:
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: b5322fa0f0d3655e6a038769f7304886587bc387
+PODFILE CHECKSUM: c54be9d608613ea4f924a1c1c1cbb983ec3e3575
 
 COCOAPODS: 1.9.1
