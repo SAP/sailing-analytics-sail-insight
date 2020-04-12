@@ -9,6 +9,11 @@ export const itemUpdateHandler = (itemKey: string) => (state: any = {}, action: 
   [itemKey]: action && action.payload,
 })
 
+export const itemAddHandler = (itemKey: string) => (state: any = {}, action: Action<any>) => ({
+  ...state,
+  [itemKey]: [...state[itemKey], action && action.payload],
+})
+
 
 const createTimestampHandler = (generateTimeStamp: () => any) => (itemPath: string | string[]) => (state: any = {}) => {
   const newState = {

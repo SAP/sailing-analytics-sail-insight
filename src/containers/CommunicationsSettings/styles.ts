@@ -59,4 +59,11 @@ export default EStyleSheets.create({
     display: 'flex',
     alignItems: 'stretch',
   },
+  textContainerBlack: {
+    height: '40%',
+    padding: 10,
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: 'black',
+  },
 })
