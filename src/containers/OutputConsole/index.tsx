@@ -5,19 +5,17 @@ import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import {
   resetExpeditionCommunicationMessages,
-  startExpeditionCommunicationMessagesChannel,
 } from 'actions/communications'
-import Text from 'components/Text'
 import { __, always, call, compose, identity, inc, last, take } from 'ramda'
 import {
   getExpeditionMessages,
 } from 'selectors/communications'
 import { container } from 'styles/commons'
+import ConsoleItem from '../../components/ConsoleItem'
 import { Component, connectActionSheet, fold, fromClass, reduxConnect } from '../../components/fp/component'
 import { touchableOpacity } from '../../components/fp/react-native'
 import IconText from '../../components/IconText'
-import styles from './styles'
-import { getStore } from '../../store';
+import { getStore } from '../../store'
 
 class OutputConsole extends React.Component<ViewProps & {
   expeditionMessages: any[],
@@ -28,7 +26,7 @@ class OutputConsole extends React.Component<ViewProps & {
   constructor(props: any) {
     super(props)
     this.getFlatListRef = this.getFlatListRef.bind(this)
-    this.scrollToBottom = this.scrollToBottom.bind(this)
+    this.handleContentSizeChange = this.handleContentSizeChange.bind(this)
   }
 
   public render() {
@@ -41,23 +39,26 @@ class OutputConsole extends React.Component<ViewProps & {
 
   private renderItem(item: any) {
     const event = item.item
+    // console.log(`render item - ${JSON.stringify(event)}`)
     return (
-        <View>
-         <Text style={[styles.item, styles.itemText, event.source === 'expedition' ? styles.green : styles.red]}>
-           {event.message}
-         </Text>
-        </View>
-    )
+        <ConsoleItem
+            message={event.message}
+            source={event.source}
+        />)
   }
 
   private getFlatListRef(component: any) {
     this.flatList = component
   }
 
-  private scrollToBottom() {
+  private scrollToBottom(animated: boolean = true) {
     if (this.flatList && this.props.expeditionMessages && this.props.expeditionMessages.length > 0) {
-      this.flatList.scrollToEnd({ animated: true })
+      this.flatList.scrollToEnd({ animated })
     }
+  }
+
+  private handleContentSizeChange() {
+    this.scrollToBottom()
   }
 
   private renderOutputConsole() {
@@ -65,8 +66,9 @@ class OutputConsole extends React.Component<ViewProps & {
         <FlatList
             ref={this.getFlatListRef}
             data={this.props.expeditionMessages}
+            keyExtractor={(item, index) => item.timestamp}
             renderItem={this.renderItem}
-            onContentSizeChange={this.scrollToBottom}
+            onContentSizeChange={this.handleContentSizeChange}
         />
     )
   }

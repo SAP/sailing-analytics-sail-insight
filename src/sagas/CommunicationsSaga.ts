@@ -142,6 +142,8 @@ function* handleExpeditionCommunicationMessages() {
   try {
     while (true) {
       const expeditionEvent = yield take(expeditionCommunicationChannel)
+      const key = 'timestamp'
+      expeditionEvent[key] = Date.now()
       yield put(updateExpeditionCommunicationMessages(expeditionEvent))
     }
   } finally {
