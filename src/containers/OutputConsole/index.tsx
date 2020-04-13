@@ -20,7 +20,6 @@ import styles from './styles'
 import { getStore } from '../../store';
 
 class OutputConsole extends React.Component<ViewProps & {
-  startExpeditionCommunicationMessagesChannel: () => void,
   expeditionMessages: any[],
 }> {
 
@@ -30,11 +29,6 @@ class OutputConsole extends React.Component<ViewProps & {
     super(props)
     this.getFlatListRef = this.getFlatListRef.bind(this)
     this.scrollToBottom = this.scrollToBottom.bind(this)
-  }
-
-  public componentWillMount() {
-    this.props.startExpeditionCommunicationMessagesChannel()
-
   }
 
   public render() {
@@ -118,7 +112,5 @@ export const shareMessages = async () => {
   }
 }
 
-export default connect(mapStateToProps, {
-  startExpeditionCommunicationMessagesChannel,
-})(OutputConsole)
+export default connect(mapStateToProps)(OutputConsole)
 

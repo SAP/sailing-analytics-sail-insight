@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import {
   fetchCommunicationInfo,
   setCommunicationState,
+  startExpeditionCommunicationMessagesChannel,
+  stopExpeditionCommunicationMessagesChannel,
 } from 'actions/communications'
 import EditItemSwitch from 'components/EditItemSwitch'
 import Text from 'components/Text'
@@ -24,6 +26,8 @@ import styles from './styles'
 class CommunicationSettings extends React.Component<ViewProps & {
   fetchCommunicationInfo: () => void,
   setCommunicationState: (value: boolean) => void,
+  startExpeditionCommunicationMessagesChannel: () => void,
+  stopExpeditionCommunicationMessagesChannel: () => void,
   serverState: boolean,
   serverValid: boolean,
   serverProtocol: string,
@@ -41,6 +45,11 @@ class CommunicationSettings extends React.Component<ViewProps & {
 
   public onServerState = (value: boolean) => {
     this.props.setCommunicationState(value)
+    if (value) {
+      this.props.startExpeditionCommunicationMessagesChannel()
+    } else {
+      this.props.stopExpeditionCommunicationMessagesChannel()
+    }
   }
 
   public render() {
@@ -94,4 +103,6 @@ const mapStateToProps = (state: any) => ({
 export default connect(mapStateToProps, {
   fetchCommunicationInfo,
   setCommunicationState,
+  startExpeditionCommunicationMessagesChannel,
+  stopExpeditionCommunicationMessagesChannel,
 })(CommunicationSettings)

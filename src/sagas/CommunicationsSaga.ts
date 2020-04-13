@@ -4,6 +4,7 @@ import {
   RESET_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL,
   SET_COMMUNICATION_STATE,
   START_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL,
+  STOP_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL,
   UPDATE_SERVER_STATE,
   UPDATE_START_LINE,
   UPDATE_START_LINE_FOR_CURRENT_COURSE,
@@ -123,9 +124,9 @@ export function* updateStartLineForCurrentCourseSaga({ payload }: any) {
     }
   }
 }
-
+let expeditionCommunicationChannel: any
 function* handleExpeditionCommunicationMessages() {
-  const channel = eventChannel((listener: any) => {
+  expeditionCommunicationChannel = eventChannel((listener: any) => {
     const handleEvent = (event: any) => {
       listener(event)
     }
@@ -138,9 +139,13 @@ function* handleExpeditionCommunicationMessages() {
       eventEmitter.removeListener('expedition.communication', handleEvent)
     }
   })
-  while (true) {
-    const expeditionEvent = yield take(channel)
-    yield put(updateExpeditionCommunicationMessages(expeditionEvent))
+  try {
+    while (true) {
+      const expeditionEvent = yield take(expeditionCommunicationChannel)
+      yield put(updateExpeditionCommunicationMessages(expeditionEvent))
+    }
+  } finally {
+    expeditionCommunicationChannel.close()
   }
 }
 
@@ -148,7 +153,7 @@ function* resetExpeditionMessages() {
   yield put(resetExpeditionCommunicationMessages())
 }
 
-export function* communicationChannelSaga() {
+function* startCommunicationChannelSaga() {
   try {
     yield call(handleExpeditionCommunicationMessages)
   } catch (e) {
@@ -156,7 +161,13 @@ export function* communicationChannelSaga() {
   }
 }
 
-export function* resetCommunicationChannelSaga() {
+function stopCommunicationChannel() {
+  if (expeditionCommunicationChannel) {
+    expeditionCommunicationChannel.close()
+  }
+}
+
+function* resetCommunicationChannelSaga() {
   try {
     yield call(resetExpeditionMessages)
   } catch (e) {
@@ -172,7 +183,8 @@ export default function* watchCommunications() {
     takeLatest(FETCH_COMMUNICATION_INFO, fetchCommunicationInfoSaga),
     takeLatest(FETCH_COMMUNICATION_STATE, fetchCommunicationStateSaga),
     takeLatest(SET_COMMUNICATION_STATE, setCommunicationStateSage),
-    takeLatest(START_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, communicationChannelSaga),
+    takeLatest(START_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, startCommunicationChannelSaga),
+    takeLatest(STOP_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, stopCommunicationChannel),
     takeLatest(RESET_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, resetCommunicationChannelSaga),
   ])
 }

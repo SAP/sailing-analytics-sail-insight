@@ -45,7 +45,7 @@ target 'sap_sailing_insight' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   #temporary fix for the serverTrust crash
-  pod 'AFNetworking', :git => 'https://github.com/classdojo/AFNetworking.git'
+    pod 'AFNetworking', '~> 4.0'
 
   pod 'SailInsightMTCPNetwork', :path => '../node_modules/sail-insight-mtcp-network'
 
