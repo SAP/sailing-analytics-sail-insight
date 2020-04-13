@@ -66,8 +66,7 @@ class CommunicationSettings extends React.Component<ViewProps & {
               this.props.serverState ?
                   (<TouchableOpacity style={[styles.item, styles.itemText]} onPress={() => this.props.navigation.navigate(Screens.OutputConsole)}>
                     <Text style={styles.title}>{I18n.t('expedition_console').toUpperCase()}</Text>
-                  </TouchableOpacity>) :
-                  null
+                  </TouchableOpacity>) : null
             }
           </View>
         </ScrollContentView>

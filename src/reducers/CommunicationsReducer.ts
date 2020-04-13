@@ -10,7 +10,7 @@ import {
     updateServerValid,
     updateStartLine,
 } from 'actions/communications'
-import { itemAddHandler, itemUpdateHandler } from 'helpers/reducers'
+import { clearArrayHandler, itemAddHandler, itemUpdateHandler } from 'helpers/reducers'
 import { CommunicationsReducerState } from 'reducers/config'
 
 
@@ -33,7 +33,7 @@ const reducer = handleActions(
     [updateServerPort as any]: itemUpdateHandler('port'),
     [updateStartLine as any]: itemUpdateHandler('startLine'),
     [updateExpeditionCommunicationMessages as any]: itemAddHandler('expeditionMessages'),
-    [resetExpeditionCommunicationMessages as any]: itemUpdateHandler('expeditionMessages'),
+    [resetExpeditionCommunicationMessages as any]: clearArrayHandler('expeditionMessages'),
   },
   initialState,
 )

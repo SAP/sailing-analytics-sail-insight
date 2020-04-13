@@ -2,20 +2,25 @@ import React from 'react'
 import { FlatList, Share, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
+import Images from '@assets/Images'
 import {
   resetExpeditionCommunicationMessages,
   startExpeditionCommunicationMessagesChannel,
 } from 'actions/communications'
 import Text from 'components/Text'
+import { __, always, call, compose, identity, inc, last, take } from 'ramda'
 import {
   getExpeditionMessages,
 } from 'selectors/communications'
 import { container } from 'styles/commons'
+import { Component, connectActionSheet, fold, fromClass, reduxConnect } from '../../components/fp/component'
+import { touchableOpacity } from '../../components/fp/react-native'
+import IconText from '../../components/IconText'
 import styles from './styles'
+import { getStore } from '../../store';
 
 class OutputConsole extends React.Component<ViewProps & {
   startExpeditionCommunicationMessagesChannel: () => void,
-  resetExpeditionCommunicationMessages: () => void,
   expeditionMessages: any[],
 }> {
 
@@ -25,12 +30,11 @@ class OutputConsole extends React.Component<ViewProps & {
     super(props)
     this.getFlatListRef = this.getFlatListRef.bind(this)
     this.scrollToBottom = this.scrollToBottom.bind(this)
-    this.onMessagesReset = this.onMessagesReset.bind(this)
-    this.onMessagesShare = this.onMessagesShare.bind(this)
   }
 
   public componentWillMount() {
     this.props.startExpeditionCommunicationMessagesChannel()
+
   }
 
   public render() {
@@ -62,22 +66,6 @@ class OutputConsole extends React.Component<ViewProps & {
     }
   }
 
-  private onMessagesReset() {
-    this.props.resetExpeditionCommunicationMessages()
-  }
-
-  private async onMessagesShare() {
-    const message = this.props.expeditionMessages.map(item => item.message).join('\n\r')
-    try {
-      await Share.share({
-        message,
-      })
-    } catch (error) {
-      // tslint:disable-next-line:no-console
-      console.log(error.message)
-    }
-  }
-
   private renderOutputConsole() {
     return  (
         <FlatList
@@ -94,7 +82,43 @@ const mapStateToProps = (state: any) => ({
   expeditionMessages: getExpeditionMessages(state),
 })
 
+const moreIcon = fromClass(IconText).contramap(always({
+  source: Images.actions.expandMore,
+  iconTintColor: 'white',
+  style: { justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  iconStyle: { width: 25, height: 25 },
+}))
+
+export const MoreButton = Component(props => compose(
+    fold(props),
+    reduxConnect(null, { resetExpeditionCommunicationMessages }),
+    connectActionSheet,
+    touchableOpacity({
+      onPress: props => props.showActionSheetWithOptions({
+        options: ['Reset', 'Share', 'Cancel'],
+        cancelButtonIndex: 2,
+      },                                                 compose(
+          call,
+          last,
+          take(__, [props.resetExpeditionCommunicationMessages, props.shareMessage, identity]),
+          inc)),
+    }))(
+    moreIcon))
+
+export const shareMessages = async () => {
+  const expeditionMessages = getExpeditionMessages(getStore().getState())
+  const messageToShare = expeditionMessages.map(item => item.message).join('\n\r')
+  try {
+    await Share.share({
+      message: messageToShare,
+    })
+  } catch (error) {
+    // tslint:disable-next-line:no-console
+    console.log(error.message)
+  }
+}
+
 export default connect(mapStateToProps, {
   startExpeditionCommunicationMessagesChannel,
-  resetExpeditionCommunicationMessages,
 })(OutputConsole)
+

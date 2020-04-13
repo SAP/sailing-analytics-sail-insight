@@ -1,14 +1,15 @@
 import {
   FETCH_COMMUNICATION_INFO,
   FETCH_COMMUNICATION_STATE,
-  fetchCommunicationState, RESET_EXPEDITION_COMMUNICATION_MESSAGES,
-  resetExpeditionCommunicationMessages,
+  RESET_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL,
   SET_COMMUNICATION_STATE,
   START_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL,
   UPDATE_SERVER_STATE,
   UPDATE_START_LINE,
   UPDATE_START_LINE_FOR_CURRENT_COURSE,
   updateExpeditionCommunicationMessages,
+  resetExpeditionCommunicationMessages,
+  fetchCommunicationState,
   updateServerIP,
   updateServerPort,
   updateServerProtocol,
@@ -144,7 +145,7 @@ function* handleExpeditionCommunicationMessages() {
 }
 
 function* resetExpeditionMessages() {
-  yield put(resetExpeditionCommunicationMessages([]))
+  yield put(resetExpeditionCommunicationMessages())
 }
 
 export function* communicationChannelSaga() {
@@ -172,6 +173,6 @@ export default function* watchCommunications() {
     takeLatest(FETCH_COMMUNICATION_STATE, fetchCommunicationStateSaga),
     takeLatest(SET_COMMUNICATION_STATE, setCommunicationStateSage),
     takeLatest(START_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, communicationChannelSaga),
-    takeLatest(RESET_EXPEDITION_COMMUNICATION_MESSAGES, resetCommunicationChannelSaga),
+    takeLatest(RESET_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, resetCommunicationChannelSaga),
   ])
 }
