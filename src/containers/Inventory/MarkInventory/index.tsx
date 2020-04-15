@@ -6,18 +6,32 @@ import {
   fromClass,
   nothing,
   reduxConnect as connect,
+  recomposeLifecycle as lifeCycle,
+  recomposeWithState as withState
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { ControlPointClass } from 'models/Course'
 
 import { getMarkProperties } from 'selectors/inventory'
-import { deleteMarkProperties } from 'actions/inventory'
+import { deleteMarkProperties, loadMarkProperties } from 'actions/inventory'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import { Alert } from 'react-native'
 import styles from './styles'
 import I18n from 'i18n'
+
+const withReloadingOfMarkProperties = compose(
+  withState('markPropertiesLoaded', 'setMarkPropertiesLoaded', false),
+  lifeCycle({
+    componentDidMount() {
+      this.props.navigation.addListener('focus',
+        () => {
+          !this.props.markPropertiesLoaded && this.props.loadMarkProperties()
+          this.props.setMarkPropertiesLoaded(true)
+        })
+    }
+  }))
 
 const mapStateToProps = (state, props) => ({
   markProperties: getMarkProperties(state)
@@ -93,9 +107,9 @@ const List = Component((props: object) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { deleteMarkProperties }),
+    connect(mapStateToProps, { deleteMarkProperties, loadMarkProperties }),
+    withReloadingOfMarkProperties,
     scrollView({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),
-    concat(CreateNewSelector),
-    concat(List))(
-    nothing()))
+    concat(CreateNewSelector))(
+    List))
