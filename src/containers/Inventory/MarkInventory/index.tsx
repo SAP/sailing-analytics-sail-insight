@@ -21,7 +21,7 @@ import { Alert } from 'react-native'
 import styles from './styles'
 import I18n from 'i18n'
 
-const withReloadingOfMarkProperties = compose(
+const withLoadingOfMarkProperties = compose(
   withState('markPropertiesLoaded', 'setMarkPropertiesLoaded', false),
   lifeCycle({
     componentDidMount() {
@@ -108,7 +108,7 @@ export default Component((props: object) =>
   compose(
     fold(props),
     connect(mapStateToProps, { deleteMarkProperties, loadMarkProperties }),
-    withReloadingOfMarkProperties,
+    withLoadingOfMarkProperties,
     scrollView({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),
     concat(CreateNewSelector))(
