@@ -1,7 +1,9 @@
-import { map, evolve, merge, curry, dissoc, not, has,
+import { any, map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
-  __, head, last, includes, flatten, reject, filter, both } from 'ramda'
+  __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
+  toPairs, values, fromPairs
+} from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe } from './index'
@@ -69,6 +71,33 @@ const courseWithWaypointIds = evolve({
   waypoints: map(w => merge(w, { id: uuidv4() }))
 })
 
+const copyCourse = (courseToCopy: any, latestCourseState: any) => {
+  const mapMarkPropertyIdToMarkConfiguration = compose(
+    fromPairs,
+    map(({ id, markPropertiesId }) => [markPropertiesId, id]),
+    prop('markConfigurations')
+  )(latestCourseState)
+
+  const mapMarkPropertyIdToLatest = compose(
+    fromPairs,
+    map(({ id, markPropertiesId }) => [id, mapMarkPropertyIdToMarkConfiguration[markPropertiesId]]),
+    prop('markConfigurations')
+  )(courseToCopy)
+
+  const waypointsWithLatestIds = compose(
+    map(evolve({
+      markConfigurationIds: map((id) => mapMarkPropertyIdToLatest[id])
+    })),
+    prop('waypoints')
+  )(courseToCopy)
+
+  return {
+    ...courseToCopy,
+    markConfigurations: latestCourseState.markConfigurations,
+    waypoints: waypointsWithLatestIds
+  }
+}
+
 function* selectCourseFlow({ payload }: any) {
   const { race, navigation } = payload
   const { regattaName, serverUrl } = yield select(getSelectedEventInfo)
@@ -90,12 +119,26 @@ function* selectCourseFlow({ payload }: any) {
 
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
-  const isNewCourse = compose(isEmpty, prop('waypoints'))(course)
+  const allCourses = yield select(getAllCoursesForSelectedEvent)
+
+  const isCourseNotCreated = compose(isEmpty, prop('waypoints'))
+  const isNewCourse = isCourseNotCreated(course)
+  const courseToCopyExists = any(compose(not, isCourseNotCreated))(values(allCourses))
 
   let editedCourse
 
   if (!isNewCourse) {
     editedCourse = course
+  } else if (courseToCopyExists) {
+    const courseToCopy = compose(
+      last, // Omit the key
+      last, // Last course
+      sortBy(head), // Sort by key
+      toPairs,
+      reject(isCourseNotCreated),
+    )(allCourses)
+
+    editedCourse = copyCourse(courseToCopy, latestCourseState)
   } else {
     editedCourse = newCourse()
     editedCourse.markConfigurations = latestCourseState.markConfigurations
@@ -105,7 +148,7 @@ function* selectCourseFlow({ payload }: any) {
 
   yield put(editCourse(editedCourse))
 
-  if (isNewCourse) {
+  if (isNewCourse && !courseToCopyExists) {
     const startFinishPin = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Pin'))
     const startFinishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Boat'))
     const windwardMark = yield select(getMarkPropertiesOrMarkForCourseByName('Windward Mark'))
@@ -197,6 +240,7 @@ function* saveCourseFlow() {
       prop('trackingDevices'))),
     flatten,
     map(prop('markConfigurations')),
+    values,
     reject(isNil))(
     allCourses)
 
