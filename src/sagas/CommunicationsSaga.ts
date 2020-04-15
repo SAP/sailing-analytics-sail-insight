@@ -125,7 +125,7 @@ export function* updateStartLineForCurrentCourseSaga({ payload }: any) {
   }
 }
 let expeditionCommunicationChannel: any
-function* handleExpeditionCommunicationMessages() {
+function* handleExpeditionCommunicationMessages(shouldClearPreviousData: boolean) {
   expeditionCommunicationChannel = eventChannel((listener: any) => {
     const handleEvent = (event: any) => {
       listener(event)
@@ -140,6 +140,9 @@ function* handleExpeditionCommunicationMessages() {
     }
   })
   try {
+    if (shouldClearPreviousData) {
+      yield call(resetExpeditionMessages)
+    }
     while (true) {
       const expeditionEvent = yield take(expeditionCommunicationChannel)
       const key = 'timestamp'
@@ -155,11 +158,11 @@ function* resetExpeditionMessages() {
   yield put(resetExpeditionCommunicationMessages())
 }
 
-function* startCommunicationChannelSaga() {
+function* startCommunicationChannelSaga({ payload }: any) {
   try {
-    yield call(handleExpeditionCommunicationMessages)
+    yield call(handleExpeditionCommunicationMessages, payload)
   } catch (e) {
-    // console.log(e)
+    console.log(e)
   }
 }
 

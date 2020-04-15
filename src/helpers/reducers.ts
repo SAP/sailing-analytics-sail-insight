@@ -11,7 +11,7 @@ export const itemUpdateHandler = (itemKey: string) => (state: any = {}, action: 
 
 export const itemAddHandler = (itemKey: string) => (state: any = {}, action: Action<any>) => ({
   ...state,
-  [itemKey]: [...state[itemKey], action && action.payload],
+  [itemKey]: [action && action.payload, ...state[itemKey]],
 })
 
 export const clearArrayHandler = (itemKey: string) => (state: any = {}, action: Action<any>) => ({

@@ -10,7 +10,6 @@ class ConsoleItem extends React.PureComponent<{
 }> {
 
   public render() {
-    console.log(`render item 1- ${JSON.stringify(this.props.message)}`)
     return (
         <View>
           <Text style={[styles.item, styles.itemText, this.props.source === 'expedition' ? styles.green : styles.red]}>

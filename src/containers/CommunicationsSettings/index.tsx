@@ -1,12 +1,10 @@
 import React from 'react'
-import { TouchableOpacity, View, ViewProps } from 'react-native'
+import { View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import {
   fetchCommunicationInfo,
   setCommunicationState,
-  startExpeditionCommunicationMessagesChannel,
-  stopExpeditionCommunicationMessagesChannel,
 } from 'actions/communications'
 import EditItemSwitch from 'components/EditItemSwitch'
 import Text from 'components/Text'
@@ -20,8 +18,8 @@ import {
 } from 'selectors/communications'
 import { container } from 'styles/commons'
 import ScrollContentView from '../../components/ScrollContentView'
-import * as Screens from '../../navigation/Screens'
 import styles from './styles'
+import OutputConsole from '../../components/OutputConsole'
 
 class CommunicationSettings extends React.Component<ViewProps & {
   fetchCommunicationInfo: () => void,
@@ -35,21 +33,12 @@ class CommunicationSettings extends React.Component<ViewProps & {
   serverPort: string,
 }> {
 
-  constructor(props: any) {
-    super(props)
-  }
-
   public componentWillMount() {
     this.props.fetchCommunicationInfo()
   }
 
   public onServerState = (value: boolean) => {
     this.props.setCommunicationState(value)
-    if (value) {
-      this.props.startExpeditionCommunicationMessagesChannel()
-    } else {
-      this.props.stopExpeditionCommunicationMessagesChannel()
-    }
   }
 
   public render() {
@@ -72,10 +61,7 @@ class CommunicationSettings extends React.Component<ViewProps & {
               />
             </View>
             {
-              this.props.serverState ?
-                  (<TouchableOpacity style={[styles.item, styles.itemText]} onPress={() => this.props.navigation.navigate(Screens.OutputConsole)}>
-                    <Text style={styles.title}>{I18n.t('expedition_console').toUpperCase()}</Text>
-                  </TouchableOpacity>) : null
+              this.props.serverState ? (<OutputConsole/>) : null
             }
           </View>
         </ScrollContentView>
@@ -84,10 +70,10 @@ class CommunicationSettings extends React.Component<ViewProps & {
 
   protected renderText = (leftText: string, rightText: string) => {
     return (
-      <View style={[styles.item, styles.itemText]}>
-        <Text style={styles.title}>{leftText}</Text>
-        <Text style={styles.text}>{rightText}</Text>
-      </View>
+        <View style={[styles.item, styles.itemText]}>
+          <Text style={styles.title}>{leftText}</Text>
+          <Text style={styles.text}>{rightText}</Text>
+        </View>
     )
   }
 }
@@ -103,6 +89,4 @@ const mapStateToProps = (state: any) => ({
 export default connect(mapStateToProps, {
   fetchCommunicationInfo,
   setCommunicationState,
-  startExpeditionCommunicationMessagesChannel,
-  stopExpeditionCommunicationMessagesChannel,
 })(CommunicationSettings)

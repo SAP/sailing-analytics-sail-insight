@@ -10,9 +10,9 @@ export default EStyleSheets.create({
     flexDirection: 'row',
   },
   red: {
-    color: 'red',
+    color: 'white',
   },
   green: {
-    color: 'green',
+    color: '#00FF00',
   },
 })
