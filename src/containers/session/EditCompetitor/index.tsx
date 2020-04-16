@@ -13,6 +13,7 @@ import { getDefaultHandicap } from 'models/TeamTemplate'
 import { getCustomScreenParamData, getCustomScreenParamOptions } from 'navigation/utils'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getLastUsedTeam, getUserTeams } from 'selectors/user'
+import { getRegatta } from 'selectors/regatta'
 
 import TextInputForm from 'components/base/TextInputForm'
 import FormTeamPicker from 'components/form/FormTeamPicker'
@@ -40,6 +41,7 @@ interface Props {
   checkInData: CheckIn,
   isLoggedIn: boolean,
   formSailNumber?: string,
+  regatta?: any,
 }
 
 class EditCompetitor extends TextInputForm<Props> {
@@ -52,6 +54,9 @@ class EditCompetitor extends TextInputForm<Props> {
   }
 
   public render() {
+    const { regatta = {} } = this.props
+    const showHandicapInput = regatta?.rankingMetric !== 'ONE_DESIGN'
+
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
         <Field
@@ -142,14 +147,16 @@ class EditCompetitor extends TextInputForm<Props> {
             inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
             {...this.commonProps}
           />
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            style={input.topMargin}
-            label={I18n.t('text_handicap_label')}
-            name={sessionForm.FORM_KEY_HANDICAP}
-            component={FormHandicapInput}
-          />
+          {showHandicapInput &&
+            <Field
+              containerStyle={styles.inputContainer}
+              inputStyle={styles.inputStyle}
+              style={input.topMargin}
+              label={I18n.t('text_handicap_label')}
+              name={sessionForm.FORM_KEY_HANDICAP}
+              component={FormHandicapInput}
+            />
+          }
           <TextButton
             style={[registration.nextButton(), styles.bottomButton]}
             textStyle={button.actionText}
@@ -192,7 +199,9 @@ class EditCompetitor extends TextInputForm<Props> {
 const mapStateToProps = (state: any, props: any) => {
   const userInfo = getUserInfo(state)
   const lastUsedTeam = getLastUsedTeam(state)
+  const checkInData = getCustomScreenParamData(props)
   return {
+    checkInData,
     initialValues: {
       name: userInfo && userInfo.fullName,
       teamName: (lastUsedTeam && lastUsedTeam.name) || I18n.t('text_default_value_team_name'),
@@ -205,10 +214,10 @@ const mapStateToProps = (state: any, props: any) => {
       handicap: (lastUsedTeam && lastUsedTeam.handicap) || getDefaultHandicap(),
     } as CompetitorInfo,
     teams: getUserTeams(state),
-    checkInData: getCustomScreenParamData(props),
     options: getCustomScreenParamOptions(props),
     isLoggedIn: isLoggedIn(state),
     formSailNumber: getFormFieldValue(competitorForm.COMPETITOR_FORM_NAME, sessionForm.FORM_KEY_SAIL_NUMBER)(state),
+    regatta: getRegatta(checkInData.regattaName)(state),
   }
 }
 
