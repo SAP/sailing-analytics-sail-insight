@@ -1,5 +1,5 @@
 import { RootState } from 'reducers/config'
-import { DEFAULT_SERVER_URL } from '../environment/init'
+import { DEFAULT_SERVER_URL, DEFAULT_SERVER_ANY_URL } from '../environment/init'
 
 
 export const getBulkGpsSetting = (state: RootState = {}) =>
@@ -26,29 +26,13 @@ export const getServerProxyUrlSetting = (state: RootState = {}) =>
 export const getMasterUdpIP = (state: RootState = {}) =>
   state.settings && state.settings.masterUdpIP
 
-export const getMasterUdpPort = (state: RootState = {}) => {
-  if (IsDefaultServerUrlSettingUsed(state)) {
-    return state.settings && state.settings.masterUdpPortDefault
-  } else {
-    return state.settings && state.settings.masterUdpPort
-  }
-}
+export const getMasterUdpPort = (state: RootState = {}) => 
+  state.settings && state.settings.masterUdpPort && state.settings.serverUrl &&
+  state.settings.masterUdpPort[state.settings.serverUrl] || state.settings.masterUdpPort[DEFAULT_SERVER_ANY_URL]
 
-export const getMasterUdpPorts = (state: RootState = {}) => {
-    return [
-      state.settings && state.settings.masterUdpPortDefault, 
-      state.settings && state.settings.masterUdpPort 
-    ]
-}
+export const getMasterUdpPorts = (state: RootState = {}) =>
+  state.settings && state.settings.masterUdpPort
 
-export const IsDefaultServerUrlSettingUsed = (state: RootState = {}) => {
-  const serverUrl = getServerUrlSetting(state)
-  if (serverUrl && serverUrl !== DEFAULT_SERVER_URL) {
-    return false
-  }
-  return true
-}
-
-export const IsDefaultServerUrl = (serverUrl: string) => {
-  return serverUrl && serverUrl === DEFAULT_SERVER_URL
+export const getDefaultAnyServerUrl = () => {
+  return DEFAULT_SERVER_ANY_URL
 }
