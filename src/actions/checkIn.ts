@@ -15,6 +15,7 @@ import { spreadableList } from 'helpers/utils'
 
 import { fetchEvent } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
+import { isLoggedIn } from 'selectors/auth'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
@@ -107,7 +108,9 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object
       update.trackingContext = 'MARK'
     }
     dispatch(updateCheckIn(update))
-    navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+    const isLogged = isLoggedIn(getState())
+    isLogged ? navigation.navigate(Screens.TrackingNavigator) :
+      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
 
     if (data.competitorId) {
       const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
