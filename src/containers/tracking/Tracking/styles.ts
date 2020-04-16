@@ -70,11 +70,12 @@ export default EStyleSheets.create({
     justifyContent: 'space-between',
   },
   tagLine: {
-    height: 56,
+    height: 30,
+    width: 120,
     alignSelf: 'flex-end',
     resizeMode: 'contain',
     marginBottom: 20,
-    marginTop: 8,
+    marginTop: 20,
   },
   property: {
     marginTop: '$tinySpacing',
