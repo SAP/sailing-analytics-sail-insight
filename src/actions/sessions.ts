@@ -279,8 +279,8 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
         const isLogged = isLoggedIn(getState())
-        isLogged ? navigation.navigate(Screens.SessionsNavigator) :
-          navigation.navigate(Screens.Main, { screen: Screens.SessionsNavigator })
+        isLogged ? navigation.navigate(Screens.TrackingNavigator) :
+          navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
       }
     } catch (err) {
       Logger.debug(err)
