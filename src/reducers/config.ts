@@ -115,4 +115,5 @@ export interface CommunicationsReducerState {
   state: boolean
   valid: boolean
   startLine: object
+  expeditionMessages: any[]
 }
