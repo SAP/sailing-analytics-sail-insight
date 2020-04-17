@@ -1,6 +1,7 @@
 import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
+import { compose, isNil, map, pick, reject, toPairs } from 'ramda'
 
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
 import * as CheckInService from 'services/CheckInService'
@@ -35,6 +36,38 @@ export const updateDeletingMarkBinding = createAction(UPDATE_DELETING_MARK_BINDI
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 export const updateLoadingCheckInFlag = createAction('UPDATE_LOADING_CHECK_IN_FLAG')
+
+export const updateCheckInAndEventInventory = (checkInData: CheckInUpdate) =>
+  withDataApi(
+    checkInData.serverUrl
+      ? checkInData.serverUrl
+      : { leaderboard: checkInData.leaderboardName }
+  )(async (dataApi, dispatch, getState) => {
+    dispatch(updateCheckIn(checkInData))
+
+    const completeCheckInData = getCheckInByLeaderboardName(
+      checkInData.leaderboardName
+    )(getState())
+    const { eventId, leaderboardName, secret, serverUrl } = completeCheckInData
+    const deviceId = CheckInService.getDeviceId()
+
+    const trackedElements = compose(
+      map(([idType, id]) => ({ deviceId, [idType]: id })),
+      toPairs,
+      reject(isNil),
+      pick(['competitorId', 'markId', 'boatId'])
+    )(completeCheckInData)
+
+    await dataApi.updateEventInventory(eventId, leaderboardName, {
+      trackedElements,
+      regattaSecret: secret,
+      url: serverUrl,
+      isArchived: false
+    })
+
+    // Same return value as updateCheckIn
+    return { payload: checkInData }
+  })
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(
   async (dataApi, dispatch) => {
@@ -106,7 +139,7 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object
     } else if (data.markId) {
       update.trackingContext = 'MARK'
     }
-    dispatch(updateCheckIn(update))
+    await dispatch(updateCheckInAndEventInventory(update))
     navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
 
     if (data.competitorId) {

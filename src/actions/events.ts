@@ -4,7 +4,7 @@ import { CheckIn, Session } from 'models'
 
 import { ActionQueue, fetchAction } from 'helpers/actions'
 
-import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
+import { collectCheckInData, updateCheckInAndEventInventory } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
 import { CreateEventBody } from 'api/endpoints/types'
 import { DispatchType } from 'helpers/types'
@@ -102,7 +102,7 @@ export const createEventActionQueue = ({ eventData, navigation }: any) => (
       collectCheckInData(data),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
-      updateCheckIn(data),
+      updateCheckInAndEventInventory(data),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
       createAction(CREATE_EVENT)({ ...data, navigation }),

@@ -156,23 +156,25 @@ function* setDiscards({ payload }: any) {
 
 function* createEvent(payload: object) {
   const data = payload.payload.payload
+  const { eventId, leaderboardName, secret, serverUrl, numberOfRaces, regattaName } = data
   const navigation = payload.payload.navigation
-  const api = dataApi(data.serverUrl)
+  const api = dataApi(serverUrl)
   const races = compose(
     map(compose(concat('R'), toString)),
     range(1),
     inc)(
-    data.numberOfRaces)
-  const regatta = yield select(getRegatta(data.regattaName))
+    numberOfRaces)
+  const regatta = yield select(getRegatta(regattaName))
 
   console.log('create event', payload)
 
-  yield call(api.updateRegatta, data.regattaName,
-    { controlTrackingFromStartAndFinishTimes: true,
-      useStartTimeInference: false,
-      defaultCourseAreaUuid: regatta.courseAreaId })
+  yield call(api.updateRegatta, regattaName, {
+    controlTrackingFromStartAndFinishTimes: true,
+    useStartTimeInference: false,
+    defaultCourseAreaUuid: regatta.courseAreaId
+  })
   yield all(races.map(race =>
-    call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
+    call(api.denoteRaceForTracking, leaderboardName, race, 'Default')))
   yield put(selectEvent({ data, replaceCurrentScreen: true, navigation }))
 }
 

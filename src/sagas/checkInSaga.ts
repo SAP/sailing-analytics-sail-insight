@@ -5,7 +5,7 @@ import { takeLatest, all, call, put, select } from 'redux-saga/effects'
 
 import { dataApi } from 'api'
 import { receiveEntities } from 'actions/entities'
-import { updateCheckIn, updateDeletingMarkBinding } from 'actions/checkIn'
+import { updateCheckInAndEventInventory, updateDeletingMarkBinding } from 'actions/checkIn'
 import { stopTracking } from 'actions/tracking'
 import { getDeviceId } from 'services/CheckInService'
 import { getMarkBindingCheckIn, getMarkPropertiesIdOfBoundMark } from 'selectors/checkIn'
@@ -46,7 +46,7 @@ function* deleteMarkBinding({ payload }: any) {
       markId: undefined
     }
 
-    yield put(updateCheckIn(updatedCheckIn))
+    yield put(updateCheckInAndEventInventory(updatedCheckIn))
   } catch (err) {
     console.log('Failed to delete mark binding', { err })
     Snackbar.show({
