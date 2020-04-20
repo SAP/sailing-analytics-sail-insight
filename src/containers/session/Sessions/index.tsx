@@ -11,10 +11,11 @@ import { debounce } from 'lodash'
 
 import { authBasedNewSession } from 'actions/auth'
 import { selectEvent } from 'actions/events'
+import { fetchEventList } from 'actions/checkIn'
 import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
-import { getEventIdThatsBeingSelected } from 'selectors/event'
+import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
 
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
@@ -93,8 +94,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 
   public render() {
     return (
-      <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
-        <ScrollContentView style={this.styles.scrollContainer}>
+      <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent', ...this.styles.scrollContainer }}>
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
             style={this.styles.createButton}
@@ -113,8 +113,9 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
             data={this.props.sessions}
             renderItem={this.renderItem}
             extraData={this.state.swipeableLeftOpenEventId}
+            refreshing={this.props.isLoadingEventList}
+            onRefresh={this.props.fetchEventList}
           />
-        </ScrollContentView>
         <View style={this.styles.bottomButton}>
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
@@ -131,6 +132,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 const mapStateToProps = (state: any) => ({
   sessions: getFilteredSessionList(state),
   eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
+  isLoadingEventList: isLoadingEventList(state)
 })
 
-export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)
+export default connect(mapStateToProps, { fetchEventList, selectEvent, startTracking, authBasedNewSession })(Sessions)
