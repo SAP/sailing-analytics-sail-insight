@@ -75,8 +75,13 @@ const createEvent = (props: any) => async (formValues: any) => {
   }
 }
 
+const createEventSubmitFailed = () => {
+  Keyboard.dismiss()
+}
+
 const formSettings = {
   validate,
+  onSubmitFail: createEventSubmitFailed,
   form: EVENT_CREATION_FORM_NAME,
 }
 
