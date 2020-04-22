@@ -17,6 +17,7 @@ import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
 import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
 
+import { NavigationEvents } from '@react-navigation/compat'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
@@ -60,6 +61,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   public state = {
     hideAddButton: false,
     swipeableLeftOpenEventId: '',
+    openedWhenLoading: false,
   }
 
   public renderItem = ({ item }: any) => {
@@ -93,14 +95,26 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public render() {
+    const { openedWhenLoading } = this.state
+    const { isLoadingEventList } = this.props
+
+    const shouldShowLoadingSpinner = openedWhenLoading && isLoadingEventList
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
+        <NavigationEvents
+          onWillFocus={() => isLoadingEventList && this.setState({ openedWhenLoading: true })}
+        />
         <ScrollContentView
           style={this.styles.scrollContainer}
           refreshControl={
             <RefreshControl
-              refreshing={this.props.isLoadingEventList}
-              onRefresh={this.props.fetchEventList}
+              refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
+              onRefresh={() => {
+                if (!shouldShowLoadingSpinner) {
+                  this.setState({ openedWhenLoading: false })
+                  this.props.fetchEventList()
+                }
+              }}
             />
           }
         >
@@ -117,12 +131,17 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
               {I18n.t('session_create_new_event').toUpperCase()}
             </IconText>
           </TouchableOpacity>
-          <FloatingComponentList
-            style={this.styles.list}
-            data={this.props.sessions}
-            renderItem={this.renderItem}
-            extraData={this.state.swipeableLeftOpenEventId}
-          />
+          {shouldShowLoadingSpinner
+            ? <View style={{ flex: 1, justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color="white" />
+              </View>
+            : <FloatingComponentList
+                style={this.styles.list}
+                data={this.props.sessions}
+                renderItem={this.renderItem}
+                extraData={this.state.swipeableLeftOpenEventId}
+              />
+          }
         </ScrollContentView>
         <View style={this.styles.bottomButton}>
           <TextButton
