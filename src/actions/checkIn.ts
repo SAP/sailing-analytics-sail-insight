@@ -26,7 +26,7 @@ import { mapResToCompetitor } from '../models/Competitor'
 import { mapResToRegatta } from '../models/Regatta'
 import { getCompetitor } from '../selectors/competitor'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
-import { getRegatta } from '../selectors/regatta'
+import { getRegatta, getRegattaNumberOfRaces } from '../selectors/regatta'
 import { getUserTeamByNameBoatClassNationalitySailnumber } from '../selectors/user'
 import { getStore } from '../store'
 import { saveTeam } from './user'
@@ -149,7 +149,13 @@ export const fetchEventList = () => async(dispatch, getState) => {
 
   await Promise.all(checkIns.map(async (checkIn) => {
     await dispatch(collectCheckInData(checkIn))
-    return dispatch(updateCheckIn(checkIn))
+    const regatta = getRegatta(checkIn.regattaName)(getState())
+    const numberOfRaces = getRegattaNumberOfRaces(regatta)
+    const checkInWithNumberOfRaces = {
+      ...checkIn,
+      numberOfRaces
+    }
+    return dispatch(updateCheckIn(checkInWithNumberOfRaces))
   }))
 
   dispatch(updateLoadingEventList(false))

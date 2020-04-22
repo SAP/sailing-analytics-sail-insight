@@ -23,7 +23,7 @@ import { all, call, put, select, takeEvery, takeLatest, take } from 'redux-saga/
 import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
-import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
+import { getRegatta, getRegattaNumberOfRaces, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { StackActions } from '@react-navigation/native'
 
@@ -220,12 +220,7 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
   const api = dataApi(payload.serverUrl)
   const entities = yield call(api.requestRegatta, payload.regattaName)
 
-  const numberOfRaces = compose(
-    length,
-    prop('races'),
-    head,
-    path(['entities', 'regatta', payload.regattaName, 'series']))(
-    entities)
+  const numberOfRaces = getRegattaNumberOfRaces(entities.entities.regatta[payload.regattaName])
 
   yield put(updateCheckIn({
     leaderboardName: payload.leaderboardName,
