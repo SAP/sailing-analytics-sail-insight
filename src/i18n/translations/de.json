@@ -201,6 +201,7 @@
   "caption_tab_teamlist": "Teamliste",
   "caption_tab_appsettings": "Einstellungen",
   "caption_tab_communicationssettings": "Kommunikation",
+  "expedition_console": "Konsole",
   "caption_new_session": "Neues Event",
   "caption_new_team": "Neues Team",
   "caption_start": "Start",
@@ -274,6 +275,7 @@
   "error_need_password": "Bitte gebe ein Passwort ein",
   "error_need_email": "Bitte gebe deine E-Mail Adresse ein",
   "error_login_incorrect": "Kombination von Benutzername und Passwort sind falsch",
+  "error_offline_competitor_registration": "Du musst mit dem Internet verbunden sein um die Anmeldung abzuschließen",
 
   "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
   "url_privacy_policy": "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",

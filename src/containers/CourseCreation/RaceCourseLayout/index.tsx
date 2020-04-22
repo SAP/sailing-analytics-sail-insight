@@ -31,6 +31,7 @@ import { coordinatesToString } from 'helpers/utils'
 import * as Screens from 'navigation/Screens'
 import TextInput from 'components/TextInput'
 import SwitchSelector from 'react-native-switch-selector'
+import CheckBox from 'react-native-check-box'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import HeaderBackButton from 'components/HeaderBackButton'
@@ -151,8 +152,8 @@ const GateMarkSelector = Component((props: object) =>
     concat(nothingWhenStartOrFinishGate(
       text(
         {style: [styles.sectionTitle, styles.indentedSectionTitle] },
-        props.selectedWaypoint.passingInstruction === PassingInstruction.Line ? 
-          I18n.t('caption_course_creation_define_line_marks') : 
+        props.selectedWaypoint.passingInstruction === PassingInstruction.Line ?
+          I18n.t('caption_course_creation_define_line_marks') :
           I18n.t('caption_course_creation_define_gate_marks')
       )
     )),
@@ -173,17 +174,10 @@ const SameStartFinish = Component((props: object) =>
     fold(props),
     view({ style: styles.sameStartFinishContainer }),
     reduce(concat, nothing()))([
-    fromClass(Switch).contramap(merge({
-      value: props.sameStartFinish,
-      onValueChange: props.toggleSameStartFinish,
-      ...(
-        Platform.OS === 'android' ? {
-          trackColor: { false: 'gray', true: 'white' },
-          thumbColor: 'white',
-        } : {
-          trackColor: { true: $primaryBackgroundColor, false: $secondaryBackgroundColor },
-          tintColor: $primaryBackgroundColor,
-        })
+    fromClass(CheckBox).contramap(merge({
+      isChecked: props.sameStartFinish,
+      onClick: props.toggleSameStartFinish,
+      checkBoxColor: 'white'
     })),
     text({ style: styles.sameStartFinishText }, I18n.t('text_course_creator_start_and_finish_same'))
   ]))

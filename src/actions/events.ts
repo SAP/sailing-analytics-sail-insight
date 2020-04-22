@@ -1,4 +1,5 @@
 import { createAction } from 'redux-actions'
+import moment from 'moment'
 
 import { CheckIn, Session } from 'models'
 
@@ -65,8 +66,14 @@ const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
 
 const createEvent = (eventData: EventCreationData) => async () => {
   const secret = getSharingUuid()
+
+  const { dateFrom } = eventData
+  const startdate = moment().isSame(dateFrom, 'day') ? moment().toISOString() : dateFrom.toISOString()
+
   const response = await selfTrackingApi().createEvent({
     secret,
+    startdate,
+    enddate:                    eventData.dateTo.toISOString(),
     eventName:                  eventData.name,
     venuename:                  eventData.location,
     ispublic:                   false,
@@ -80,8 +87,6 @@ const createEvent = (eventData: EventCreationData) => async () => {
       eventData.regattaType === RegattaType.OneDesign
         ? eventData.boatClass
         : null,
-    ...(eventData.dateFrom ? { startdate: eventData.dateFrom.toISOString() } : {}),
-    ...(eventData.dateTo   ? { enddate: eventData.dateTo.toISOString() } : {}),
   } as CreateEventBody)
   console.log('create event response', response)
   return eventCreationResponseToCheckIn(response, {

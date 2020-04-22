@@ -26,6 +26,7 @@ import {
   getLeaderboardEnabledSetting,
   getVerboseLoggingSetting,
 } from '../selectors/settings'
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { syncAllFixes } from '../services/GPSFixService'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
 import { updateStartLine, updateStartLineBasedOnCurrentCourse } from 'actions/communications'
@@ -73,7 +74,12 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
     checkInData)
 
   if (eventIsNotBound) {
-    navigation.navigate(Screens.EditCompetitor, { data: checkInData, options: { startTrackingAfter: true } })
+    const isNetworkConnected = isNetworkConnectedSelector(getState())
+    if (isNetworkConnected) {
+      navigation.navigate(Screens.EditCompetitor, { data: checkInData, options: { startTrackingAfter: true } })
+    } else {
+      Alert.alert('', I18n.t('error_offline_competitor_registration'))
+    }
     return
   }
 

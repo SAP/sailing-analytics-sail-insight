@@ -69,8 +69,7 @@ export interface SettingsState {
   leaderboardEnabled: boolean,
   proxyUrl: string,
   masterUdpIP: string,
-  masterUdpPort: string,
-  masterUdpPortDefault: string,
+  masterUdpPort: object,
 }
 
 export interface AuthState {
@@ -115,4 +114,5 @@ export interface CommunicationsReducerState {
   state: boolean
   valid: boolean
   startLine: object
+  expeditionMessages: any[]
 }
