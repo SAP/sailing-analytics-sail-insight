@@ -1,14 +1,16 @@
 import { handleActions } from 'redux-actions'
 
 import {
-  updateServerState,
-  updateServerValid,
-  updateServerProtocol,
-  updateServerIP,
-  updateServerPort,
-  updateStartLine,
+    resetExpeditionCommunicationMessages,
+    updateExpeditionCommunicationMessages,
+    updateServerIP,
+    updateServerPort,
+    updateServerProtocol,
+    updateServerState,
+    updateServerValid,
+    updateStartLine,
 } from 'actions/communications'
-import { itemUpdateHandler } from 'helpers/reducers'
+import { clearArrayHandler, itemAddHandler, itemUpdateHandler } from 'helpers/reducers'
 import { CommunicationsReducerState } from 'reducers/config'
 
 
@@ -19,6 +21,7 @@ const initialState: CommunicationsReducerState = {
   ip: '0.0.0.0',
   port: '0000',
   startLine: {},
+  expeditionMessages: [],
 }
 
 const reducer = handleActions(
@@ -29,6 +32,8 @@ const reducer = handleActions(
     [updateServerIP as any]: itemUpdateHandler('ip'),
     [updateServerPort as any]: itemUpdateHandler('port'),
     [updateStartLine as any]: itemUpdateHandler('startLine'),
+    [updateExpeditionCommunicationMessages as any]: itemAddHandler('expeditionMessages'),
+    [resetExpeditionCommunicationMessages as any]: clearArrayHandler('expeditionMessages'),
   },
   initialState,
 )

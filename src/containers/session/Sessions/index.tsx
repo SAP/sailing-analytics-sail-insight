@@ -40,6 +40,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 } > {
   private debouncedButtonClick = debounce(
     (actionType: string, ...args: any) => {
+      this.setState({ swipeableLeftOpenEventId: '' })
       switch (actionType) {
         case 'SELECT':
           return this.props.selectEvent(...args)
@@ -64,23 +65,31 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     openedWhenLoading: false,
   }
 
+  public componentDidMount() {
+    this._unsubscribeFromBlur = this.props.navigation.addListener('blur', () => {
+      this.setState({ swipeableLeftOpenEventId: '' })
+    })
+  }
+
+  public componentWillUnmount() {
+    this._unsubscribeFromBlur()
+  }
+
   public renderItem = ({ item }: any) => {
     const { eventIdThatsBeingSelected } = this.props
     const { swipeableLeftOpenEventId } = this.state
     const { eventId } = item
     const isLoading = eventId === eventIdThatsBeingSelected
+    const onSwipeableLeftWillOpen = eventId => this.setState({ swipeableLeftOpenEventId: eventId })
     if (!this.props.route?.params?.forTracking) {
       return (
         <SessionItem
           style={this.styles.cardsContainer}
-          onItemPress={() => {
-            this.setState({ swipeableLeftOpenEventId: '' })
-            this.debouncedButtonClick('SELECT', { data: item, navigation: this.props.navigation })
-          }}
+          onItemPress={() => this.debouncedButtonClick('SELECT', { data: item, navigation: this.props.navigation })}
           session={item}
           loading={isLoading}
           swipeableLeftOpenEventId={swipeableLeftOpenEventId}
-          onSwipeableLeftWillOpen={(eventId) => this.setState({ swipeableLeftOpenEventId: eventId })}
+          onSwipeableLeftWillOpen={onSwipeableLeftWillOpen}
         />
       )
     } else {
@@ -89,6 +98,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           style={this.styles.cardsContainer}
           onItemPress={() => this.debouncedButtonClick('TRACK', { data: item, navigation: this.props.navigation })}
           session={item}
+          swipeableLeftOpenEventId={swipeableLeftOpenEventId}
+          onSwipeableLeftWillOpen={onSwipeableLeftWillOpen}
         />
       )
     }

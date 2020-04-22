@@ -19,12 +19,12 @@ import { spreadableList } from 'helpers/utils'
 
 import { fetchEvent, updateLoadingEventList } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
+import { isLoggedIn } from 'selectors/auth'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
 import { mapResToRegatta } from '../models/Regatta'
-import { isLoggedIn } from 'selectors/auth'
 import { getCompetitor } from '../selectors/competitor'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { getRegatta, getRegattaNumberOfRaces } from '../selectors/regatta'
@@ -196,7 +196,9 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object
       update.trackingContext = 'MARK'
     }
     await dispatch(updateCheckInAndEventInventory(update))
-    navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+    const isLogged = isLoggedIn(getState())
+    isLogged ? navigation.navigate(Screens.TrackingNavigator) :
+      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
 
     if (data.competitorId) {
       const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))

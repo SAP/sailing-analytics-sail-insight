@@ -1,4 +1,4 @@
-import { isEmpty, orderBy, values } from 'lodash'
+import { isEmpty, orderBy, reverse, values } from 'lodash'
 import { isNil } from 'ramda'
 import { createSelector } from 'reselect'
 
@@ -80,7 +80,7 @@ export const getSessionList = createSelector(
       return []
     }
     return orderBy(
-      values(activeCheckIns).map(checkIn => buildSession(
+      reverse(values(activeCheckIns).map(checkIn => buildSession(
         checkIn,
         eventEntity,
         leaderboardEntity,
@@ -89,7 +89,7 @@ export const getSessionList = createSelector(
         boatEntity,
         markEntity,
         userInfo,
-      )),
+      ))),
       ['event.startDate'],
       ['desc'],
     )
