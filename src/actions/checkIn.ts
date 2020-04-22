@@ -41,37 +41,40 @@ export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 export const updateLoadingCheckInFlag = createAction('UPDATE_LOADING_CHECK_IN_FLAG')
 
-export const updateCheckInAndEventInventory = (checkInData: CheckInUpdate) =>
-  withDataApi(
-    checkInData.serverUrl
-      ? checkInData.serverUrl
-      : { leaderboard: checkInData.leaderboardName }
-  )(async (dataApi, dispatch, getState) => {
-    dispatch(updateCheckIn(checkInData))
+export const saveCheckInToEventInventory = async (checkInData: any) => {
+  const { eventId, leaderboardName, secret, serverUrl } = checkInData
+  const deviceId = CheckInService.getDeviceId()
+  const api = dataApi()
 
-    const completeCheckInData = getCheckInByLeaderboardName(
-      checkInData.leaderboardName
-    )(getState())
-    const { eventId, leaderboardName, secret, serverUrl } = completeCheckInData
-    const deviceId = CheckInService.getDeviceId()
+  const trackedElements = compose(
+    map(([idType, id]) => ({ deviceId, [idType]: id })),
+    toPairs,
+    reject(isNil),
+    pick(['competitorId', 'markId', 'boatId'])
+  )(checkInData)
 
-    const trackedElements = compose(
-      map(([idType, id]) => ({ deviceId, [idType]: id })),
-      toPairs,
-      reject(isNil),
-      pick(['competitorId', 'markId', 'boatId'])
-    )(completeCheckInData)
-
-    await dataApi.updateEventInventory(eventId, leaderboardName, {
-      trackedElements,
-      regattaSecret: secret,
-      url: serverUrl,
-      isArchived: false
-    })
-
-    // Same return value as updateCheckIn
-    return { payload: checkInData }
+  return api.updateEventInventory(eventId, leaderboardName, {
+    trackedElements,
+    regattaSecret: secret,
+    url: serverUrl,
+    isArchived: false
   })
+}
+
+export const updateCheckInAndEventInventory = (
+  checkInData: CheckInUpdate
+) => async (dispatch, getState) => {
+  dispatch(updateCheckIn(checkInData))
+
+  const completeCheckInData = getCheckInByLeaderboardName(
+    checkInData.leaderboardName
+  )(getState())
+
+  await saveCheckInToEventInventory(completeCheckInData)
+
+  // Same return value as updateCheckIn
+  return { payload: checkInData }
+}
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(
   async (dataApi, dispatch) => {
