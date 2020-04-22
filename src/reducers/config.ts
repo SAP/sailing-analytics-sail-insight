@@ -69,8 +69,7 @@ export interface SettingsState {
   leaderboardEnabled: boolean,
   proxyUrl: string,
   masterUdpIP: string,
-  masterUdpPort: string,
-  masterUdpPortDefault: string,
+  masterUdpPort: object,
 }
 
 export interface AuthState {
