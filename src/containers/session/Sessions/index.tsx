@@ -1,6 +1,6 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { Text, TouchableOpacity, View, ViewProps } from 'react-native'
+import { ActivityIndicator, Text, TouchableOpacity, View, ViewProps, RefreshControl } from 'react-native'
 import { connect } from 'react-redux'
 
 import * as Screens from 'navigation/Screens'
@@ -94,7 +94,16 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 
   public render() {
     return (
-      <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent', ...this.styles.scrollContainer }}>
+      <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
+        <ScrollContentView
+          style={this.styles.scrollContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.props.isLoadingEventList}
+              onRefresh={this.props.fetchEventList}
+            />
+          }
+        >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
             style={this.styles.createButton}
@@ -113,9 +122,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
             data={this.props.sessions}
             renderItem={this.renderItem}
             extraData={this.state.swipeableLeftOpenEventId}
-            refreshing={this.props.isLoadingEventList}
-            onRefresh={this.props.fetchEventList}
           />
+        </ScrollContentView>
         <View style={this.styles.bottomButton}>
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
