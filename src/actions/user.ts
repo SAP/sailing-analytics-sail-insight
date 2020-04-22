@@ -6,6 +6,7 @@ import { DispatchType, GetStateType } from 'helpers/types'
 import { TeamTemplate } from 'models'
 
 import { fetchCurrentUser } from 'actions/auth'
+import { fetchEventList } from 'actions/checkIn'
 import { getNowAsMillis } from '../helpers/date'
 import { saveFile } from '../helpers/files'
 import Logger from '../helpers/Logger'
@@ -132,9 +133,11 @@ export const fetchMissingImages = (teams: any[]) => async (dispatch: DispatchTyp
   await Promise.all(imagePromises)
 }
 
-export const fetchUserInfo = () => async (dispatch: DispatchType) => {
-  const teams = await fetchTeams()
-  dispatch(updateTeams(teams))
-  await dispatch(fetchMissingImages(teams))
-  await dispatch(fetchCurrentUser())
-}
+export const fetchUserInfo = () => (dispatch: DispatchType) => Promise.all([
+  dispatch(fetchCurrentUser()),
+  dispatch(fetchEventList()),
+  fetchTeams().then((teams) => {
+    dispatch(updateTeams(teams))
+    return dispatch(fetchMissingImages(teams))
+  })
+])
