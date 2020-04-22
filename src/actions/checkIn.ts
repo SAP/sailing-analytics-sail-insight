@@ -24,6 +24,7 @@ import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
 import { mapResToRegatta } from '../models/Regatta'
+import { isLoggedIn } from 'selectors/auth'
 import { getCompetitor } from '../selectors/competitor'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { getRegatta, getRegattaNumberOfRaces } from '../selectors/regatta'
@@ -66,11 +67,13 @@ export const updateCheckInAndEventInventory = (
 ) => async (dispatch, getState) => {
   dispatch(updateCheckIn(checkInData))
 
-  const completeCheckInData = getCheckInByLeaderboardName(
-    checkInData.leaderboardName
-  )(getState())
+  if (isLoggedIn(getState())) {
+    const completeCheckInData = getCheckInByLeaderboardName(
+      checkInData.leaderboardName
+    )(getState())
 
-  await saveCheckInToEventInventory(completeCheckInData)
+    await saveCheckInToEventInventory(completeCheckInData)
+  }
 
   // Same return value as updateCheckIn
   return { payload: checkInData }
