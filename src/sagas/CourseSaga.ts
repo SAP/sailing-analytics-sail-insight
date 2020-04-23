@@ -2,7 +2,7 @@ import { any, map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
-  toPairs, values, fromPairs
+  toPairs, values, fromPairs, ifElse, always, findIndex, equals
 } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
@@ -36,6 +36,7 @@ import {
   getSelectedEventInfo,
   getSelectedRaceInfo
 } from 'selectors/event'
+import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { updateCheckIn } from 'actions/checkIn'
 import { receiveEntities } from 'actions/entities'
 import { Alert } from 'react-native'
@@ -98,47 +99,39 @@ const copyCourse = (courseToCopy: any, latestCourseState: any) => {
   }
 }
 
+function* fetchCourseFromServer({ regattaName, race, serverUrl }: any) {
+  const api = dataApi(serverUrl)
+  const latestCourseState = yield call(api.requestCourse, regattaName, race, 'Default')
+
+  yield put(loadCourse({
+    raceId: `${regattaName} - ${race}`,
+    course: latestCourseState
+  }))
+
+  return latestCourseState
+}
+
 function* selectCourseFlow({ payload }: any) {
   const { race, navigation } = payload
   const { regattaName, serverUrl } = yield select(getSelectedEventInfo)
-  const api = dataApi(serverUrl)
 
   navigation.navigate(Screens.RaceCourseLayout)
 
   yield put(updateCourseLoading(true))
   yield put(selectRace(race))
 
-  const latestCourseState = yield call(api.requestCourse, regattaName, race, 'Default')
-
-  yield  put(loadCourse({
-    raceId: `${regattaName} - ${race}`,
-    course: latestCourseState
-  }))
+  const latestCourseState = yield call(fetchCourseFromServer, { regattaName, race, serverUrl })
 
   yield call(loadMarkProperties)
 
   const raceId = getRaceId(regattaName, race)
   const course = yield select(getCourseById(raceId))
-  const allCourses = yield select(getAllCoursesForSelectedEvent)
-
-  const isCourseNotCreated = compose(isEmpty, prop('waypoints'))
-  const isNewCourse = isCourseNotCreated(course)
-  const courseToCopyExists = any(compose(not, isCourseNotCreated))(values(allCourses))
+  const isNewCourse = compose(isEmpty, prop('waypoints'))(course)
 
   let editedCourse
 
   if (!isNewCourse) {
     editedCourse = course
-  } else if (courseToCopyExists) {
-    const courseToCopy = compose(
-      last, // Omit the key
-      last, // Last course
-      sortBy(head), // Sort by key
-      toPairs,
-      reject(isCourseNotCreated),
-    )(allCourses)
-
-    editedCourse = copyCourse(courseToCopy, latestCourseState)
   } else {
     editedCourse = newCourse()
     editedCourse.markConfigurations = latestCourseState.markConfigurations
@@ -148,7 +141,7 @@ function* selectCourseFlow({ payload }: any) {
 
   yield put(editCourse(editedCourse))
 
-  if (isNewCourse && !courseToCopyExists) {
+  if (isNewCourse) {
     const startFinishPin = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Pin'))
     const startFinishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Boat'))
     const windwardMark = yield select(getMarkPropertiesOrMarkForCourseByName('Windward Mark'))
@@ -184,13 +177,9 @@ const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) 
   map(prop('markConfigurationIds')))(
   course.waypoints))
 
-function* saveCourseFlow() {
-  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret } = yield select(getSelectedRaceInfo)
+function* saveCourseToServer({ editedCourse, existingCourse, regattaName, raceColumnName, raceId, fleet, serverUrl }: any) {
   const api = dataApi(serverUrl)
-  const raceId = getRaceId(regattaName, raceColumnName)
 
-  const editedCourse = yield select(getEditedCourse)
-  const existingCourse = yield select(getCourseById(raceId))
   const didEffectivePropertiesChanged = didConfigurationPropertyChangedAcrossCourses(existingCourse, editedCourse, 'effectiveProperties')
   const didLastKnownPositionChanged = didConfigurationPropertyChangedAcrossCourses(existingCourse, editedCourse, 'lastKnownPosition')
   const markConfigurationUsedInEditedCourse = courseWaypointsUseMarkConfiguration(__, editedCourse)
@@ -230,6 +219,52 @@ function* saveCourseFlow() {
     raceId,
     course: courseWithWaypointIds(updatedCourse)
   }))
+}
+
+function* saveCourseFlow() {
+  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret } = yield select(getSelectedRaceInfo)
+  const api = dataApi(serverUrl)
+  const raceId = getRaceId(regattaName, raceColumnName)
+
+  const editedCourse = yield select(getEditedCourse)
+  const existingCourse = yield select(getCourseById(raceId))
+
+  yield call(saveCourseToServer, {
+    editedCourse,
+    existingCourse,
+    regattaName,
+    raceColumnName,
+    raceId,
+    fleet,
+    serverUrl
+  })
+
+  const plannedRaces = yield select(getRegattaPlannedRaces(regattaName))
+
+  const nextRaceColumnName = compose(
+    ifElse(
+      id => id >= 0 && id < plannedRaces.length - 1,
+      id => plannedRaces[id + 1],
+      always(undefined)
+    ),
+    findIndex(__, plannedRaces),
+    equals,
+  )(raceColumnName)
+
+  if (nextRaceColumnName) {
+    const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
+    const nextCourse = copyCourse(editedCourse, latestNextRaceCourseState)
+
+    yield call(saveCourseToServer, {
+      regattaName,
+      fleet,
+      serverUrl,
+      editedCourse: nextCourse,
+      existingCourse: latestNextRaceCourseState,
+      raceColumnName: nextRaceColumnName,
+      raceId: getRaceId(regattaName, nextRaceColumnName),
+    })
+  }
 
   const allCourses = yield select(getAllCoursesForSelectedEvent)
   const markUsedWithCurrentDeviceAsTracker = compose(
