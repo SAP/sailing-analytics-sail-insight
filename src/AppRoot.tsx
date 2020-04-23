@@ -22,7 +22,7 @@ import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
-import { HeaderBackButton } from '@react-navigation/stack'
+import HeaderBackButton from 'components/HeaderBackButton'
 import { AuthContext } from 'navigation/NavigationContext'
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
 import { Component, fold, nothing } from 'components/fp/component'
@@ -163,7 +163,7 @@ const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparent
 const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
 const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
 const withLeftHeaderBackButton = mergeDeepLeft({ options: {
-  headerLeft: () => <HeaderBackButton onPress={() => navigationContainer.current.goBack()} tintColor="white"	labelVisible={false} />}})
+  headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack()}) }})
 
 const markTrackingNavigator = Component(props => compose(
   fold(props),
