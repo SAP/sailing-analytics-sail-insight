@@ -41,24 +41,10 @@ export const fetchEvent = (requestFunction: ((...args: any[]) => void)) =>
     return await dispatch(fetchAction(requestFunction, receiveEvent)(...args))
   }
 
-export const archiveEvent = (session: Session, archived: boolean) => (
-  dispatch: DispatchType,
-) => {
-  const eventId = session.eventId || session.event && session.event.id
-
-  if (!eventId) {
-    return
-  }
-
-  const payload = {
-    id: eventId,
-    data: {
-      archived,
-    },
-  }
-
-  dispatch(updateEvent(payload))
-}
+export const archiveEvent = (session: Session, isArchived: boolean) => updateCheckInAndEventInventory({
+  isArchived,
+  leaderboardName: session.leaderboardName,
+})
 
 const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
   [RegattaType.OneDesign]: 'ONE_DESIGN',
