@@ -285,6 +285,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
     } catch (err) {
       Logger.debug(err)
       Alert.alert(getErrorDisplayMessage(err))
+      throw err
     }
   }
 
