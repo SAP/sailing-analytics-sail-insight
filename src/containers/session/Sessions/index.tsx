@@ -62,7 +62,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   public state = {
     hideAddButton: false,
     swipeableLeftOpenEventId: '',
-    openedWhenLoading: false,
+    openedWhenLoading: true,
   }
 
   public componentDidMount() {
@@ -113,7 +113,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
         <NavigationEvents
-          onWillFocus={() => isLoadingEventList && this.setState({ openedWhenLoading: true })}
+          onWillFocus={() => this.setState({ openedWhenLoading: isLoadingEventList })}
         />
         <ScrollContentView
           style={this.styles.scrollContainer}
