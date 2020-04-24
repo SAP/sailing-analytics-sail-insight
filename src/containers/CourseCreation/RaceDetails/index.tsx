@@ -173,19 +173,8 @@ const raceAnalyticsButton = Component((props: any) =>
         always(props.isTracking),
         () => props.openTrackDetails(props.item, props.navigation),
         async () => {
-          const startTracking = await new Promise(resolve =>
-            Alert.alert('', I18n.t('text_entry_open_SAP_Analytics_button'),
-              [
-                { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
-                { text: I18n.t('caption_close_entry'), onPress: () => resolve(true) }
-              ]
-            )
-          )
-
-          if (startTracking) {
-            await props.startTracking(props.session)
-            props.openTrackDetails(props.item, props.navigation)
-          }
+          await props.startTracking(props.session)
+          props.openTrackDetails(props.item, props.navigation)
         }
       )
     }))(
@@ -202,27 +191,13 @@ const clockIcon = Component((props: any) => compose(
 )
 
 
-const raceTimePickerTouchableHighlight = ({ isNetworkConnected, isTracking, canUpdateCurrentEvent }: any) => fromClass(
+const raceTimePickerTouchableHighlight = ({ isNetworkConnected }: any) => fromClass(
   TouchableHighlight
 ).contramap((props: any) => merge(props, {
   onPress: async (args: any) => {
     if (!isNetworkConnected) {
       showNetworkRequiredSnackbarMessage()
       return
-    }
-    if (!isTracking && canUpdateCurrentEvent) {
-      const continueAnyways = await new Promise(resolve =>
-        Alert.alert(
-          '',
-          I18n.t('text_entry_open_when_setting_time'),
-          [
-            { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
-            { text: I18n.t('caption_close_entry'), onPress: () => resolve(true) }
-          ]
-        )
-      )
-
-      if (!continueAnyways) return
     }
     return props.onPress(args)
   }

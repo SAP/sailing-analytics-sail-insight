@@ -170,7 +170,9 @@ function* createEvent(payload: object) {
   yield call(api.updateRegatta, data.regattaName,
     { controlTrackingFromStartAndFinishTimes: true,
       useStartTimeInference: false,
-      defaultCourseAreaUuid: regatta.courseAreaId })
+      defaultCourseAreaUuid: regatta.courseAreaId,
+      autoRestartTrackingUponCompetitorSetChange: true,
+    })
   yield all(races.map(race =>
     call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
   yield put(selectEvent({ data, replaceCurrentScreen: true, navigation }))
