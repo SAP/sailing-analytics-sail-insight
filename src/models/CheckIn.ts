@@ -86,6 +86,7 @@ export interface CheckInUpdate {
   currentFleet?: string
   trackPrefix?: string
   numberOfRaces?: number
+  isArchived?: boolean
   secret?: string
   trackingContext?: TrackingContext
 }

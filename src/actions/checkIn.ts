@@ -54,17 +54,26 @@ export const saveCheckInToEventInventory = async (checkInData: any) => {
     pick(['competitorId', 'markId', 'boatId'])
   )(checkInData)
 
+  // Defaults to false
+  const isArchived = !!checkInData.isArchived
+
   return api.updateEventInventory(eventId, leaderboardName, {
+    isArchived,
     trackedElements,
     regattaSecret: secret,
     url: serverUrl,
-    isArchived: false
   })
 }
 
 export const updateCheckInAndEventInventory = (
   checkInData: CheckInUpdate
 ) => async (dispatch, getState) => {
+  const isNetworkConnected = isNetworkConnectedSelector(getState())
+  if (!isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
+
   dispatch(updateCheckIn(checkInData))
 
   if (isLoggedIn(getState())) {
@@ -150,7 +159,8 @@ export const fetchEventList = () => async(dispatch, getState) => {
     trackPrefix: always('R'),
     competitorId: getLastTrackedElementOfType('competitorId'),
     boatId: getLastTrackedElementOfType('boatId'),
-    markId: getLastTrackedElementOfType('markId')
+    markId: getLastTrackedElementOfType('markId'),
+    isArchived: prop('isArchived'),
   }))(trackedEvents)
 
   await Promise.all(checkIns.map(async (checkIn) => {
