@@ -4,8 +4,9 @@ import { DELETE_MARK_BINDING } from 'actions/checkIn'
 import { takeLatest, all, call, put, select } from 'redux-saga/effects'
 
 import { dataApi } from 'api'
+import ApiException from 'api/ApiException'
 import { receiveEntities } from 'actions/entities'
-import { updateCheckIn, updateDeletingMarkBinding } from 'actions/checkIn'
+import { updateCheckInAndEventInventory, updateDeletingMarkBinding } from 'actions/checkIn'
 import { stopTracking } from 'actions/tracking'
 import { getDeviceId } from 'services/CheckInService'
 import { getMarkBindingCheckIn, getMarkPropertiesIdOfBoundMark } from 'selectors/checkIn'
@@ -31,7 +32,16 @@ function* deleteMarkBinding({ payload }: any) {
       ...(secret ? { secret } : {}),
     }
 
-    yield call(api.stopDeviceMapping, leaderboardName, deviceMappinpData)
+    try {
+      yield call(api.stopDeviceMapping, leaderboardName, deviceMappinpData)
+    } catch (err) {
+      // We surpress 400 status codes
+      // because it indicates that the mapping does not exist.
+      // In that case we can just ignore it, to not make the user stuck forever in the MarkTracking screen
+      if (!(err instanceof ApiException) || err.status !== 400) {
+        throw err
+      }
+    }
 
     // Remove positioning information from markProperties
     try {
@@ -46,7 +56,7 @@ function* deleteMarkBinding({ payload }: any) {
       markId: undefined
     }
 
-    yield put(updateCheckIn(updatedCheckIn))
+    yield put(updateCheckInAndEventInventory(updatedCheckIn))
   } catch (err) {
     console.log('Failed to delete mark binding', { err })
     Snackbar.show({

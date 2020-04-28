@@ -1,7 +1,9 @@
-import { map, evolve, merge, curry, dissoc, not, has,
+import { any, map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
-  __, head, last, includes, flatten, reject, filter, both } from 'ramda'
+  __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
+  toPairs, values, fromPairs, ifElse, always, findIndex, equals
+} from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe } from './index'
@@ -34,7 +36,8 @@ import {
   getSelectedEventInfo,
   getSelectedRaceInfo
 } from 'selectors/event'
-import { updateCheckIn } from 'actions/checkIn'
+import { getRegattaPlannedRaces } from 'selectors/regatta'
+import { updateCheckInAndEventInventory } from 'actions/checkIn'
 import { receiveEntities } from 'actions/entities'
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
@@ -69,22 +72,55 @@ const courseWithWaypointIds = evolve({
   waypoints: map(w => merge(w, { id: uuidv4() }))
 })
 
+const copyCourse = (courseToCopy: any, latestCourseState: any) => {
+  const mapMarkPropertyIdToMarkConfiguration = compose(
+    fromPairs,
+    map(({ id, markPropertiesId }) => [markPropertiesId, id]),
+    prop('markConfigurations')
+  )(latestCourseState)
+
+  const mapMarkPropertyIdToLatest = compose(
+    fromPairs,
+    map(({ id, markPropertiesId }) => [id, mapMarkPropertyIdToMarkConfiguration[markPropertiesId]]),
+    prop('markConfigurations')
+  )(courseToCopy)
+
+  const waypointsWithLatestIds = compose(
+    map(evolve({
+      markConfigurationIds: map((id) => mapMarkPropertyIdToLatest[id])
+    })),
+    prop('waypoints')
+  )(courseToCopy)
+
+  return {
+    ...courseToCopy,
+    markConfigurations: latestCourseState.markConfigurations,
+    waypoints: waypointsWithLatestIds
+  }
+}
+
+function* fetchCourseFromServer({ regattaName, race, serverUrl }: any) {
+  const api = dataApi(serverUrl)
+  const latestCourseState = yield call(api.requestCourse, regattaName, race, 'Default')
+
+  yield put(loadCourse({
+    raceId: `${regattaName} - ${race}`,
+    course: latestCourseState
+  }))
+
+  return latestCourseState
+}
+
 function* selectCourseFlow({ payload }: any) {
   const { race, navigation } = payload
   const { regattaName, serverUrl } = yield select(getSelectedEventInfo)
-  const api = dataApi(serverUrl)
 
   navigation.navigate(Screens.RaceCourseLayout)
 
   yield put(updateCourseLoading(true))
   yield put(selectRace(race))
 
-  const latestCourseState = yield call(api.requestCourse, regattaName, race, 'Default')
-
-  yield  put(loadCourse({
-    raceId: `${regattaName} - ${race}`,
-    course: latestCourseState
-  }))
+  const latestCourseState = yield call(fetchCourseFromServer, { regattaName, race, serverUrl })
 
   yield call(loadMarkProperties)
 
@@ -141,13 +177,9 @@ const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) 
   map(prop('markConfigurationIds')))(
   course.waypoints))
 
-function* saveCourseFlow() {
-  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret } = yield select(getSelectedRaceInfo)
+function* saveCourseToServer({ editedCourse, existingCourse, regattaName, raceColumnName, raceId, fleet, serverUrl }: any) {
   const api = dataApi(serverUrl)
-  const raceId = getRaceId(regattaName, raceColumnName)
 
-  const editedCourse = yield select(getEditedCourse)
-  const existingCourse = yield select(getCourseById(raceId))
   const didEffectivePropertiesChanged = didConfigurationPropertyChangedAcrossCourses(existingCourse, editedCourse, 'effectiveProperties')
   const didLastKnownPositionChanged = didConfigurationPropertyChangedAcrossCourses(existingCourse, editedCourse, 'lastKnownPosition')
   const markConfigurationUsedInEditedCourse = courseWaypointsUseMarkConfiguration(__, editedCourse)
@@ -187,6 +219,52 @@ function* saveCourseFlow() {
     raceId,
     course: courseWithWaypointIds(updatedCourse)
   }))
+}
+
+function* saveCourseFlow() {
+  const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret } = yield select(getSelectedRaceInfo)
+  const api = dataApi(serverUrl)
+  const raceId = getRaceId(regattaName, raceColumnName)
+
+  const editedCourse = yield select(getEditedCourse)
+  const existingCourse = yield select(getCourseById(raceId))
+
+  yield call(saveCourseToServer, {
+    editedCourse,
+    existingCourse,
+    regattaName,
+    raceColumnName,
+    raceId,
+    fleet,
+    serverUrl
+  })
+
+  const plannedRaces = yield select(getRegattaPlannedRaces(regattaName))
+
+  const nextRaceColumnName = compose(
+    ifElse(
+      id => id >= 0 && id < plannedRaces.length - 1,
+      id => plannedRaces[id + 1],
+      always(undefined)
+    ),
+    findIndex(__, plannedRaces),
+    equals,
+  )(raceColumnName)
+
+  if (nextRaceColumnName) {
+    const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
+    const nextCourse = copyCourse(editedCourse, latestNextRaceCourseState)
+
+    yield call(saveCourseToServer, {
+      regattaName,
+      fleet,
+      serverUrl,
+      editedCourse: nextCourse,
+      existingCourse: latestNextRaceCourseState,
+      raceColumnName: nextRaceColumnName,
+      raceId: getRaceId(regattaName, nextRaceColumnName),
+    })
+  }
 
   const allCourses = yield select(getAllCoursesForSelectedEvent)
   const markUsedWithCurrentDeviceAsTracker = compose(
@@ -197,11 +275,12 @@ function* saveCourseFlow() {
       prop('trackingDevices'))),
     flatten,
     map(prop('markConfigurations')),
+    values,
     reject(isNil))(
     allCourses)
 
   if (markUsedWithCurrentDeviceAsTracker) {
-    yield put(updateCheckIn({
+    yield put(updateCheckInAndEventInventory({
       leaderboardName,
       markId: markUsedWithCurrentDeviceAsTracker.markId
     }))

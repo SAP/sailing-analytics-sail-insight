@@ -94,7 +94,9 @@ const apiEndpoints = (serverUrl: string) => {
     addMarkToRegatta: getUrlV1('/mark/addMarkToRegatta'),
     addMarkFix: getUrlV1('/mark/addMarkFix'),
     addCourseDefinitionToRaceLog: getUrlV1('/mark/addCourseDefinitionToRaceLog'),
-    createCourse: getUrlV1('/courseconfiguration/createCourse/{0}/{1}/{2}')
+    createCourse: getUrlV1('/courseconfiguration/createCourse/{0}/{1}/{2}'),
+    trackedEvents: getUrlV1('/trackedevents'),
+    trackedEvent: getUrlV1('/trackedevents/{0}/{1}'),
   }
 }
 
@@ -189,7 +191,9 @@ export interface DataApi {
   addMarkFix: (body: AddMarkFixBody) => any,
   addCourseDefinitionToRaceLog: (body: AddCourseDefinitionToRaceLogBody) => any,
   createCourse: (regattaName: string, race: string, fleet: string, body: CreateCourseBody) => any,
-  createMarkProperties: (properties: object) => any
+  createMarkProperties: (properties: object) => any,
+  requestEventInventory: (includeArchived: boolean) => any,
+  updateEventInventory: (eventId: string, leaderboardName: string, body: any) => any,
 }
 
 const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
@@ -431,7 +435,21 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         method: HttpMethods.POST,
         bodyType: 'x-www-form-urlencoded'
       }
-    )
+    ),
+    requestEventInventory: (includeArchived = false) => dataRequest(
+      endpoints.trackedEvents({
+        urlParams: { includeArchived }
+      }),
+    ),
+    updateEventInventory: (eventId, leaderboardName, body) => dataRequest(
+      endpoints.trackedEvent({
+        pathParams: [eventId, leaderboardName]
+      }),
+      {
+        body,
+        method: HttpMethods.PUT
+      }
+    ),
   }
 }
 

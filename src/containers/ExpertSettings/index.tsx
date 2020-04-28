@@ -37,10 +37,9 @@ import {
   getMasterUdpIP,
   getMasterUdpPort,
   getMasterUdpPorts,
-  IsDefaultServerUrl,
+  getDefaultAnyServerUrl,
 } from '../../selectors/settings'
 import styles from './styles'
-import { times } from 'ramda'
 
 interface Props {
   formServer?: string,
@@ -55,7 +54,7 @@ interface Props {
   updateMtcpAndCommunicationSetting: (value: boolean) => void,
   leaderboardEnabled: boolean,
   updateLeaderboardEnabledSetting: (value: boolean) => void,
-  masterUdpPorts: ['', ''],
+  masterUdpPorts: any,
 }
 
 class ExpertSettings extends TextInputForm<Props> {
@@ -65,9 +64,10 @@ class ExpertSettings extends TextInputForm<Props> {
   }
 
   public handleServerUrlChange = (event: any, value: any) => {
-    if (this.props.masterUdpPorts.length > 1) {
-      const masterUdpPort = IsDefaultServerUrl(value) ? this.props.masterUdpPorts[0] : this.props.masterUdpPorts[1]
-      this.props.change(expertSettingsForm.FORM_KEY_MASTER_PORT, masterUdpPort)
+    if (this.props.masterUdpPorts[value]) {
+      this.props.change(expertSettingsForm.FORM_KEY_MASTER_PORT, this.props.masterUdpPorts[value])
+    } else {
+      this.props.change(expertSettingsForm.FORM_KEY_MASTER_PORT, this.props.masterUdpPorts[getDefaultAnyServerUrl()])
     }
   }
 

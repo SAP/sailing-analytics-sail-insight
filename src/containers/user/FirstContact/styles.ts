@@ -57,7 +57,7 @@ export default EStyleSheets.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 18,
     ...withSecondaryMediumFont,
   },
   ws_logo: {
