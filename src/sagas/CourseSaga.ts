@@ -37,7 +37,7 @@ import {
   getSelectedRaceInfo
 } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
-import { updateCheckIn } from 'actions/checkIn'
+import { updateCheckInAndEventInventory } from 'actions/checkIn'
 import { receiveEntities } from 'actions/entities'
 import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
@@ -280,7 +280,7 @@ function* saveCourseFlow() {
     allCourses)
 
   if (markUsedWithCurrentDeviceAsTracker) {
-    yield put(updateCheckIn({
+    yield put(updateCheckInAndEventInventory({
       leaderboardName,
       markId: markUsedWithCurrentDeviceAsTracker.markId
     }))

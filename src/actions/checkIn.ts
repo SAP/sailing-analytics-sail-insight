@@ -1,7 +1,10 @@
 import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
+import { always, applySpec, compose, defaultTo, filter, findLast, has, isNil,
+  map, pick, prop, propEq, reject, toPairs } from 'ramda'
 
+import { dataApi } from 'api'
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -9,19 +12,22 @@ import * as Screens from 'navigation/Screens'
 
 import { ActionQueue, fetchEntityAction, withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { spreadableList } from 'helpers/utils'
 
-import { fetchEvent } from 'actions/events'
+import { fetchEvent, updateLoadingEventList } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
+import { isLoggedIn } from 'selectors/auth'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
 import { mapResToRegatta } from '../models/Regatta'
 import { getCompetitor } from '../selectors/competitor'
-import { getRegatta } from '../selectors/regatta'
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
+import { getRegatta, getRegattaNumberOfRaces } from '../selectors/regatta'
 import { getUserTeamByNameBoatClassNationalitySailnumber } from '../selectors/user'
 import { getStore } from '../store'
 import { saveTeam } from './user'
@@ -35,6 +41,43 @@ export const updateDeletingMarkBinding = createAction(UPDATE_DELETING_MARK_BINDI
 export const updateCheckIn = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 export const updateLoadingCheckInFlag = createAction('UPDATE_LOADING_CHECK_IN_FLAG')
+
+export const saveCheckInToEventInventory = async (checkInData: any) => {
+  const { eventId, leaderboardName, secret, serverUrl } = checkInData
+  const deviceId = CheckInService.getDeviceId()
+  const api = dataApi()
+
+  const trackedElements = compose(
+    map(([idType, id]) => ({ deviceId, [idType]: id })),
+    toPairs,
+    reject(isNil),
+    pick(['competitorId', 'markId', 'boatId'])
+  )(checkInData)
+
+  return api.updateEventInventory(eventId, leaderboardName, {
+    trackedElements,
+    regattaSecret: secret,
+    url: serverUrl,
+    isArchived: false
+  })
+}
+
+export const updateCheckInAndEventInventory = (
+  checkInData: CheckInUpdate
+) => async (dispatch, getState) => {
+  dispatch(updateCheckIn(checkInData))
+
+  if (isLoggedIn(getState())) {
+    const completeCheckInData = getCheckInByLeaderboardName(
+      checkInData.leaderboardName
+    )(getState())
+
+    await saveCheckInToEventInventory(completeCheckInData)
+  }
+
+  // Same return value as updateCheckIn
+  return { payload: checkInData }
+}
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(
   async (dataApi, dispatch) => {
@@ -78,6 +121,52 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
   },
 )
 
+export const fetchEventList = () => async(dispatch, getState) => {
+  const isNetworkConnected = isNetworkConnectedSelector(getState())
+  if (!isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
+
+  dispatch(updateLoadingEventList(true))
+
+  const api = dataApi()
+  const { trackedEvents } = await api.requestEventInventory()
+
+  const deviceId = CheckInService.getDeviceId()
+  const getLastTrackedElementOfType = (trackedElementType: string) => compose(
+    prop(trackedElementType),
+    defaultTo({}),
+    findLast(has(trackedElementType)),
+    filter(propEq('deviceId', deviceId)),
+    prop('trackedElements')
+  )
+  const checkIns = map(applySpec({
+    eventId: prop('eventId'),
+    regattaName: prop('leaderboardName'),
+    leaderboardName: prop('leaderboardName'),
+    serverUrl: prop('url'),
+    secret: prop('regattaSecret'),
+    trackPrefix: always('R'),
+    competitorId: getLastTrackedElementOfType('competitorId'),
+    boatId: getLastTrackedElementOfType('boatId'),
+    markId: getLastTrackedElementOfType('markId')
+  }))(trackedEvents)
+
+  await Promise.all(checkIns.map(async (checkIn) => {
+    await dispatch(collectCheckInData(checkIn))
+    const regatta = getRegatta(checkIn.regattaName)(getState())
+    const numberOfRaces = getRegattaNumberOfRaces(regatta)
+    const checkInWithNumberOfRaces = {
+      ...checkIn,
+      numberOfRaces
+    }
+    return dispatch(updateCheckIn(checkInWithNumberOfRaces))
+  }))
+
+  dispatch(updateLoadingEventList(false))
+}
+
 export const fetchCheckIn = (url: string) => async (dispatch: DispatchType) => {
   const data: CheckIn | null = CheckInService.extractData(url)
   if (!data) {
@@ -106,8 +195,10 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object
     } else if (data.markId) {
       update.trackingContext = 'MARK'
     }
-    dispatch(updateCheckIn(update))
-    navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+    await dispatch(updateCheckInAndEventInventory(update))
+    const isLogged = isLoggedIn(getState())
+    isLogged ? navigation.navigate(Screens.TrackingNavigator) :
+      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
 
     if (data.competitorId) {
       const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))

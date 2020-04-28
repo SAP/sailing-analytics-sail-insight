@@ -28,7 +28,7 @@ import { getSharingUuid } from 'helpers/uuid'
 
 import { BRANCH_APP_DOMAIN } from 'environment'
 import querystring from 'query-string'
-import { collectCheckInData, registerDevice, updateCheckIn } from 'actions/checkIn'
+import { collectCheckInData, registerDevice, updateCheckIn, updateCheckInAndEventInventory } from 'actions/checkIn'
 import { startTracking } from 'actions/tracking'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
@@ -220,7 +220,7 @@ export const createUserAttachmentToSession = (
       await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
     }
 
-    dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
+    dispatch(updateCheckInAndEventInventory({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
     if (user) {
       await dispatch(
         saveTeam(
@@ -279,8 +279,8 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
         const isLogged = isLoggedIn(getState())
-        isLogged ? navigation.navigate(Screens.SessionsNavigator) :
-          navigation.navigate(Screens.Main, { screen: Screens.SessionsNavigator })
+        isLogged ? navigation.navigate(Screens.TrackingNavigator) :
+          navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
       }
     } catch (err) {
       Logger.debug(err)
