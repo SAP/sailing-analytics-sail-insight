@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
 import { login } from 'actions/auth'
-import { fetchUserInfo } from 'actions/user'
+import { fetchUserInfo, syncEventList } from 'actions/user'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import I18n from 'i18n'
 import * as Screens from 'navigation/Screens'
@@ -22,6 +22,7 @@ import styles from './styles'
 class Login extends TextInputForm<{
   login: (u: string, p: string) => any,
   fetchUserInfo: () => void,
+  syncEventList: () => void,
 }> {
   public state = {
     username: '',
@@ -56,6 +57,7 @@ class Login extends TextInputForm<{
       this.setState({ isLoading: true })
       await this.props.login(username, password)
       this.props.fetchUserInfo()
+      this.props.syncEventList()
       this.props.navigation.reset({ index: 1, routes: [{ name: Screens.Main }]})
     } catch (err) {
       this.setState({ error: I18n.t('error_login_incorrect') })
@@ -122,4 +124,4 @@ class Login extends TextInputForm<{
   }
 }
 
-export default connect(null, { fetchUserInfo, login })(Login)
+export default connect(null, { fetchUserInfo, login, syncEventList })(Login)

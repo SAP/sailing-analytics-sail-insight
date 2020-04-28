@@ -6,9 +6,11 @@ import { DispatchType, GetStateType } from 'helpers/types'
 import { TeamTemplate } from 'models'
 
 import { fetchCurrentUser } from 'actions/auth'
+import { fetchEventList, saveCheckInToEventInventory } from 'actions/checkIn'
 import { getNowAsMillis } from '../helpers/date'
 import { saveFile } from '../helpers/files'
 import Logger from '../helpers/Logger'
+import { getActiveCheckInEntity } from 'selectors/checkIn'
 import { getUserImages } from '../selectors/user'
 
 
@@ -132,9 +134,24 @@ export const fetchMissingImages = (teams: any[]) => async (dispatch: DispatchTyp
   await Promise.all(imagePromises)
 }
 
-export const fetchUserInfo = () => async (dispatch: DispatchType) => {
-  const teams = await fetchTeams()
-  dispatch(updateTeams(teams))
-  await dispatch(fetchMissingImages(teams))
-  await dispatch(fetchCurrentUser())
+export const syncEventList = () => async (dispatch: DispatchType, getState: GetStateType) => {
+  const checkIns = getActiveCheckInEntity(getState())
+
+  // Have to first let the push to complete
+  // Otherwise, if you joined an event anonymously which you have in your inventory
+  // you may get stale data from the inventory first, before updating it with
+  // saveCheckInToEventInventory calls.
+  await Promise.all(
+    Object.values(checkIns).map(saveCheckInToEventInventory)
+  )
+
+  return dispatch(fetchEventList())
 }
+
+export const fetchUserInfo = () => (dispatch: DispatchType) => Promise.all([
+  dispatch(fetchCurrentUser()),
+  fetchTeams().then((teams) => {
+    dispatch(updateTeams(teams))
+    return dispatch(fetchMissingImages(teams))
+  })
+])

@@ -1,6 +1,6 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { Text, TouchableOpacity, View, ViewProps } from 'react-native'
+import { ActivityIndicator, Text, TouchableOpacity, View, ViewProps, RefreshControl } from 'react-native'
 import { connect } from 'react-redux'
 
 import * as Screens from 'navigation/Screens'
@@ -11,11 +11,13 @@ import { debounce } from 'lodash'
 
 import { authBasedNewSession } from 'actions/auth'
 import { selectEvent } from 'actions/events'
+import { fetchEventList } from 'actions/checkIn'
 import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { getFilteredSessionList } from 'selectors/session'
-import { getEventIdThatsBeingSelected } from 'selectors/event'
+import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
 
+import { NavigationEvents } from '@react-navigation/compat'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
@@ -60,6 +62,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   public state = {
     hideAddButton: false,
     swipeableLeftOpenEventId: '',
+    openedWhenLoading: true,
   }
 
   public componentDidMount() {
@@ -103,9 +106,29 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 
   public render() {
+    const { openedWhenLoading } = this.state
+    const { isLoadingEventList } = this.props
+
+    const shouldShowLoadingSpinner = openedWhenLoading && isLoadingEventList
     return (
       <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
-        <ScrollContentView style={this.styles.scrollContainer}>
+        <NavigationEvents
+          onWillFocus={() => this.setState({ openedWhenLoading: isLoadingEventList })}
+        />
+        <ScrollContentView
+          style={this.styles.scrollContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
+              onRefresh={() => {
+                if (!shouldShowLoadingSpinner) {
+                  this.setState({ openedWhenLoading: false })
+                  this.props.fetchEventList()
+                }
+              }}
+            />
+          }
+        >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
             style={this.styles.createButton}
@@ -119,12 +142,17 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
               {I18n.t('session_create_new_event').toUpperCase()}
             </IconText>
           </TouchableOpacity>
-          <FloatingComponentList
-            style={this.styles.list}
-            data={this.props.sessions}
-            renderItem={this.renderItem}
-            extraData={this.state.swipeableLeftOpenEventId}
-          />
+          {shouldShowLoadingSpinner
+            ? <View style={{ flex: 1, justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color="white" />
+              </View>
+            : <FloatingComponentList
+                style={this.styles.list}
+                data={this.props.sessions}
+                renderItem={this.renderItem}
+                extraData={this.state.swipeableLeftOpenEventId}
+              />
+          }
         </ScrollContentView>
         <View style={this.styles.bottomButton}>
           <TextButton
@@ -142,6 +170,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 const mapStateToProps = (state: any) => ({
   sessions: getFilteredSessionList(state),
   eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
+  isLoadingEventList: isLoadingEventList(state)
 })
 
-export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)
+export default connect(mapStateToProps, { fetchEventList, selectEvent, startTracking, authBasedNewSession })(Sessions)

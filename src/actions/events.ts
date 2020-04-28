@@ -5,7 +5,7 @@ import { CheckIn, Session } from 'models'
 
 import { ActionQueue, fetchAction } from 'helpers/actions'
 
-import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
+import { collectCheckInData, updateCheckInAndEventInventory } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
 import { CreateEventBody } from 'api/endpoints/types'
 import { DispatchType } from 'helpers/types'
@@ -16,6 +16,7 @@ import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
 export const UPDATE_CREATING_EVENT = 'UPDATE_CREATING_EVENT'
+export const UPDATE_LOADING_EVENT_LIST = 'UPDATE_LOADING_EVENT_LIST'
 export const UPDATE_SELECTING_EVENT = 'UPDATE_SELECTING_EVENT'
 export const UPDATE_STARTING_TRACKING = 'UPDATE_STARTING_TRACKING'
 export const SELECT_EVENT = 'SELECT_EVENT'
@@ -107,7 +108,7 @@ export const createEventActionQueue = ({ eventData, navigation }: any) => (
       collectCheckInData(data),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
-      updateCheckIn(data),
+      updateCheckInAndEventInventory(data),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
       createAction(CREATE_EVENT)({ ...data, navigation }),
@@ -139,6 +140,7 @@ export const updateEventSettings = (session: object, data: object) => (dispatch:
 }
 
 export const updateCreatingEvent = createAction(UPDATE_CREATING_EVENT)
+export const updateLoadingEventList = createAction(UPDATE_LOADING_EVENT_LIST)
 export const updateSelectingEvent = createAction(UPDATE_SELECTING_EVENT)
 export const updateStartingTracking = createAction(UPDATE_STARTING_TRACKING)
 export const selectEvent = createAction(SELECT_EVENT)

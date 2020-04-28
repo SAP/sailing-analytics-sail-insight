@@ -89,6 +89,7 @@ export interface EventState {
   isCreatingEvent: boolean
   isSelectingEvent: boolean
   isStartingTracking: boolean
+  isLoadingEventList: boolean
 }
 
 export interface CheckInState {
