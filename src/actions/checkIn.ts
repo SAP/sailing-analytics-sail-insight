@@ -268,7 +268,8 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
   async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
 
-  if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
+  // allow joining an event even when tracking is active
+  /*if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
     Alert.alert(
       I18n.t('text_deep_link_tracking_active_title'),
       I18n.t('text_deep_link_tracking_active_message'),
@@ -277,7 +278,7 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
     )
 
     return
-  }
+  }*/
 
   try {
     dispatch(updateLoadingCheckInFlag(true))
