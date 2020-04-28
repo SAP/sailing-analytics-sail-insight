@@ -1,13 +1,11 @@
 import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
-  prop, isNil, equals, both } from 'ramda'
+  prop, isNil, equals, both, unless, last } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
-import { startTracking, stopTracking } from 'actions/events'
+import { stopTracking } from 'actions/events'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
-import { isNetworkConnected } from 'selectors/network'
-import { isStartingTracking } from 'selectors/event'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { Component, fold, nothing,
   reduxConnect as connect,
@@ -21,10 +19,12 @@ import { container } from 'styles/commons'
 import styles from './styles'
 import { mapStateToSessionDetailsProps } from '../SessionDetail'
 import { qrCode, inviteCompetitorsButton, joinAsCompetitorButton } from '../../session/common'
+import { getRegattaPlannedRaces } from 'selectors/regatta'
+import {getRaceTime} from 'selectors/event';
 
 const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
-const nothingWhenEntryIsOpen = branch(both(propEq('isTracking', false), propEq('isFinished', false)), nothingAsClass)
+const nothingWhenBeforeLastPlannedRaceStartTime = branch(propEq('isBeforeLastPlannedRaceStartTime', true), nothingAsClass)
 const nothingWhenNoBoatClass = branch(compose(equals(''), prop('boatClass')), nothingAsClass)
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
 
@@ -38,29 +38,28 @@ const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClas
 const mapStateToProps = (state: any, props: any) => {
   const sessionData = mapStateToSessionDetailsProps(state, props)
 
+  const lastPlannedRaceTime = compose(
+    unless(isNil, prop('startTimeAsMillis')),
+    unless(isNil, (raceName) => getRaceTime(sessionData.session.leaderboardName, raceName)(state)),
+    last,
+    getRegattaPlannedRaces(sessionData.session.regattaName),
+  )(state)
+
+  const isBeforeLastPlannedRaceStartTime = lastPlannedRaceTime
+    ? Date.now() < lastPlannedRaceTime
+    : true
+
   return {
     ...sessionData,
+    isBeforeLastPlannedRaceStartTime,
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
-    isStartingTracking: isStartingTracking(state),
-    isNetworkConnected: isNetworkConnected(state),
   }
 }
 
 const sessionData = {
   racesAndScoringOnPress: (props: any) => props.navigation.navigate(Screens.RaceDetails, { data: props.session }),
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
-}
-
-const closeEntry = (props: any) => {
-  if (!props.isNetworkConnected) {
-    showNetworkRequiredSnackbarMessage()
-    return
-  }
-  Alert.alert(I18n.t('caption_start_tracking'), I18n.t('text_alert_for_start_tracking'), [
-    { text: I18n.t('button_yes'), onPress: () => props.startTracking(props.session) },
-    { text: I18n.t('button_no') },
-  ])
 }
 
 const endEvent = (props: any) => {
@@ -95,10 +94,9 @@ export const sessionDetailsCard = Component((props: any) => compose(
 
 export const defineRacesCard = Component((props: any) => compose(
     fold(props),
-    concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
-    view({ style: styles.container3 }),
+    concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
+    view({ style: styles.container2 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '2'),
     text({ style: styles.headline }, I18n.t('caption_define').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
       props.isTracking || props.isFinished ?
@@ -111,34 +109,17 @@ export const defineRacesCard = Component((props: any) => compose(
 
 export const inviteCompetitorsCard = Component((props: any) => compose(
     fold(props),
-    concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
-    view({ style: styles.container2 }),
+    concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
+    view({ style: styles.container3 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '1'),
     text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
       props.isTracking || props.isFinished ?
       I18n.t('text_invite_competitors_long_text_running') :
       I18n.t('text_invite_competitors_long_text_planning')),
-    nothingWhenFinished(nothingWhenTracking(inviteCompetitorsButton)),
-    nothingWhenFinished(nothingWhenTracking(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton))),
-    nothingWhenFinished(nothingWhenTracking(qrCode))
-  ]))
-
-export const closeEntryCard = Component((props: any) => compose(
-    fold(props),
-    concat(__, view({ style: styles.containerAngledBorder4 }, nothing())),
-    view({ style: styles.container4 }),
-    reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '3'),
-    text({ style: styles.headline }, I18n.t('caption_close').toUpperCase()),
-    text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_close_entry_long_text')),
-    textButton({
-      onPress: (props: any) => closeEntry(props),
-      style: styles.buttonBig,
-      isLoading: props.isStartingTracking,
-      preserveShapeWhenLoading: true
-    },text({ style: styles.buttonBigContent }, I18n.t('caption_close_entry').toUpperCase()))
+    nothingWhenFinished(inviteCompetitorsButton),
+    nothingWhenFinished(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton)),
+    nothingWhenFinished(qrCode)
   ]))
 
 export const endEventCard = Component((props: any) => compose(
@@ -146,7 +127,6 @@ export const endEventCard = Component((props: any) => compose(
     concat(__, view({ style: styles.containerAngledBorder4 }, nothing())),
     view({ style: styles.container4 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '3'),
     text({ style: styles.headline }, I18n.t('caption_end').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, !props.trackingStopped ? I18n.t('text_end_event_long_text_running') : I18n.t('text_end_event_long_text_finished')),
     nothingWhenFinished(
@@ -158,16 +138,15 @@ export const endEventCard = Component((props: any) => compose(
 
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToProps, { 
-      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta
+    connect(mapStateToProps, {
+      checkOut, stopTracking, collectCheckInData, shareSessionRegatta
     }),
     scrollView({ style: styles.container }),
     nothingIfNoSession,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
     sessionDetailsCard,
-    inviteCompetitorsCard,
     defineRacesCard,
-    nothingWhenFinished(nothingWhenTracking(closeEntryCard)),
-    nothingWhenFinished(nothingWhenEntryIsOpen(endEventCard))
+    inviteCompetitorsCard,
+    nothingWhenFinished(nothingWhenBeforeLastPlannedRaceStartTime(endEventCard))
   ]))
