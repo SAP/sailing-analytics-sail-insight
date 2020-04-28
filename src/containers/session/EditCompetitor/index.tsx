@@ -189,9 +189,8 @@ class EditCompetitor extends TextInputForm<Props> {
       return true
     } catch (err) {
       Logger.debug(err)
-      return false
-    } finally {
       this.setState({ isLoading: false })
+      return false
     }
   }
 }
