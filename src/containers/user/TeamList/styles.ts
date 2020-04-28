@@ -21,5 +21,6 @@ export default EStyleSheets.create({
     paddingRight: '$largeSpacing',
     borderRadius: '$baseBorderRadius',
     backgroundColor: '$primaryButtonColor',
+    justifyContent: 'center',
   },
 })
