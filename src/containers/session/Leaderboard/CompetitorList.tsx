@@ -16,6 +16,7 @@ import styles, { normalRowValueFontSize } from './styles'
 
 class CompetitorList extends React.Component<{
   leaderboard: LeaderboardCompetitorCurrentTrack[]
+  forLeaderboard: boolean
   onCompetitorItemPress?: any
   rankingMetric?: string
   myCompetitorData?: LeaderboardCompetitorCurrentTrack
@@ -27,42 +28,69 @@ class CompetitorList extends React.Component<{
         data={this.props.leaderboard}
         contentContainerStyle={[styles.listContentContainer]}
         renderItem={this.renderItem}
+        nestedScrollEnabled={true}
       />
+    )
+  }
+
+  private renderItemInnerContent = item => {
+    const { forLeaderboard } = this.props
+    const { name, countryCode } = item
+
+    if (forLeaderboard) {
+      const rank = get(item, ['trackedColumn', 'trackedRank'])
+      const { rankingMetric, selectedColumn, myCompetitorData } = this.props
+      return (
+        <>
+          <View style={[styles.textContainer, styles.itemTextContainer]}>
+            <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
+            <Flag
+              style={[styles.flag]}
+              code={countryCode}
+              size={normalRowValueFontSize}
+            />
+            <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
+          </View>
+          <View style={{ flex: 0 }}>
+            <ColumnValue
+              selectedColumn={selectedColumn}
+              competitorData={item}
+              myCompetitorData={myCompetitorData}
+              rankingMetric={rankingMetric}
+              fontSize={normalRowValueFontSize}
+            />
+          </View>
+        </>
+      )
+    }
+
+    return (
+      <View style={[styles.textContainer, styles.itemTextContainer]}>
+        <Flag
+          code={countryCode}
+          size={normalRowValueFontSize}
+        />
+        <View style={styles.itemTextContainer}>
+          <Text style={[styles.nameText, { maxWidth: undefined }]}>{name || EMPTY_VALUE}</Text>
+        </View>
+      </View>
     )
   }
 
   private renderItem = ({
     item,
   }: ListRenderItemInfo<LeaderboardCompetitorCurrentTrack>) => {
-    const { name, countryCode, id } = item
-    const rank = get(item, ['trackedColumn', 'trackedRank'])
-    const { rankingMetric, selectedColumn, myCompetitorData } = this.props
+    const { id } = item
+    const { onCompetitorItemPress } = this.props
 
     return (
       <TouchableHighlight
         style={[styles.listRowButtonContainer]}
-        onPress={this.props.onCompetitorItemPress(id)}
+        onPress={onCompetitorItemPress && onCompetitorItemPress(id)}
       >
         <View style={[styles.listRowContainer]}>
           <View style={[styles.listItemContainer]}>
-            <View style={[styles.textContainer, styles.itemTextContainer]}>
-              <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
-              <Flag
-                style={[styles.flag]}
-                code={countryCode}
-                size={normalRowValueFontSize}
-              />
-              <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
-            </View>
-            <View style={{ flex: 0 }}>
-              <ColumnValue
-                selectedColumn={selectedColumn}
-                competitorData={item}
-                myCompetitorData={myCompetitorData}
-                rankingMetric={rankingMetric}
-                fontSize={normalRowValueFontSize}
-              />
-            </View>
+            {this.renderItemInnerContent(item)}
           </View>
         </View>
       </TouchableHighlight>

@@ -155,6 +155,7 @@ class Leaderboard extends React.Component<{
         <View style={[styles.listContainer]}>
           <CompetitorList
             leaderboard={leaderboard}
+            forLeaderboard={true}
             onCompetitorItemPress={this.onLeaderboardItemPress}
             rankingMetric={rankingMetric}
             myCompetitorData={myCompetitorData}

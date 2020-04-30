@@ -1,20 +1,27 @@
+import React from 'react';
 import Images from '@assets/Images'
 import { Component, contramap, fold, fromClass, nothing,
   recomposeWithHandlers as withHandlers,
   recomposeBranch as branch,
-  nothingAsClass } from 'components/fp/component'
+  recomposeWithState as withState,
+  nothingAsClass,
+} from 'components/fp/component'
 import { forwardingPropsFlatList, iconText, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
 import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { __, always, append, compose, concat, curry,
-  equals, has, head, length, map, merge, objOf,
+  equals, has, head, length, map, merge, mergeLeft, objOf,
   prepend, prop, propEq, range, reduce, reject,
-  remove, split, toString, toUpper, update, when } from 'ramda'
-import { Dimensions } from 'react-native'
+  remove, sortBy, split, toString, toUpper, update, when,
+  isEmpty, defaultTo, path, complement } from 'ramda'
+import { Dimensions, ActivityIndicator } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
 import QRCode from 'react-native-qrcode-svg'
 import styles from './styles'
+import CompetitorList from '../Leaderboard/CompetitorList'
+import { NavigationEvents } from '@react-navigation/compat'
+
 
 const maxNumberOfRaces = 50
 
@@ -168,8 +175,8 @@ export const typeAndBoatClassCard = Component((props: any) => compose(
     text({ style: styles.headline }, I18n.t('caption_regatta_details').toUpperCase()),
     inlineText({ style: styles.text }, [
       text({ style: styles.textLight }, 'Style '),
-      props.boatClass !== '' ? 
-        text({ style: styles.textValue }, I18n.t('caption_one_design').toUpperCase()) 
+      props.boatClass !== '' ?
+        text({ style: styles.textValue }, I18n.t('caption_one_design').toUpperCase())
       : text({ style: styles.textValue }, I18n.t('text_handicap_label').toUpperCase())
     ]),
     props.boatClass !== '' ?
@@ -242,5 +249,84 @@ export const competitorsCard = Component((props: any) =>
       nothingIfCurrentUserIsNotCompetitor(text({ style: styles.textLast }, I18n.t('text_user_is_competitor'))),
       inviteCompetitorsButton,
       nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton),
-      qrCode
+      qrCode,
+      competitorList
     ]))
+
+export const withCompetitorListState = compose(
+  withState('competitorListRefreshInterval', 'setCompetitorListRefreshInterval', 0),
+  withState('competitorListStale', 'setCompetitorListStale', true)
+)
+
+const COMPETITOR_LIST_REFRESH_RATE = 10000
+
+const isCompetitorListEmpty = compose(isEmpty, defaultTo([]), path(['session', 'leaderboard', 'competitors']))
+const isCompetitorListNotEmpty = complement(isCompetitorListEmpty)
+const nothingIfCompetitorListStale = branch(propEq('competitorListStale', true), nothingAsClass)
+const nothingIfCompetitorListNotStale = branch(propEq('competitorListStale', false), nothingAsClass)
+const nothingIfCompetitorListEmpty = branch(isCompetitorListEmpty, nothingAsClass)
+const nothingIfCompetitorListNotEmpty = branch(isCompetitorListNotEmpty, nothingAsClass)
+
+export const competitorListRefreshHandler = Component((props: any) =>
+  compose(
+    fold(props),
+    contramap(
+      merge({
+        onWillFocus: () => {
+          const callback = async () => {
+            await props.fetchLeaderboardV2(props.session.leaderboardName)
+            props.setCompetitorListStale(false)
+          }
+          callback()
+          props.setCompetitorListRefreshInterval(
+            setInterval(callback, COMPETITOR_LIST_REFRESH_RATE),
+          )
+        },
+        onWillBlur: () => {
+          clearInterval(props.competitorListRefreshInterval)
+          props.setCompetitorListStale(true)
+        },
+      }),
+    ),
+    fromClass,
+  )(NavigationEvents),
+)
+
+const competitorListItems = Component((props: any) => compose(
+  fold(props),
+  contramap(mergeLeft({
+    leaderboard: sortBy(prop('name'), props.session.leaderboard.competitors),
+    forLeaderboard: false
+  })),
+  fromClass
+)(CompetitorList))
+
+const loader = fromClass(ActivityIndicator).contramap(always({
+  size: 'small',
+  color: 'white'
+}))
+
+const noCompetitorsText = text(
+  {
+    style: {
+      color: 'white',
+      fontSize: 17,
+      textAlign: 'center',
+      fontFamily: 'SFProDisplay-Light',
+      marginTop: 10,
+    },
+  },
+  'There are currently no registered competitors in the event.',
+)
+
+export const competitorList = Component((props: any) => compose(
+  fold(props),
+  concat(text({ style: styles.headline }, 'Competitor List'.toUpperCase())),
+  view({ style: styles.competitorListContainer }),
+  reduce(concat, nothing())
+)([
+  nothingIfCompetitorListNotStale(loader),
+  nothingIfCompetitorListStale(nothingIfCompetitorListEmpty(competitorListItems)),
+  nothingIfCompetitorListStale(nothingIfCompetitorListNotEmpty(noCompetitorsText)),
+]))
+

@@ -15,8 +15,8 @@ export const clearLeaderboardGaps = createAction('CLEAR_LEADERBOARD_GAPS')
 export const updateLatestTrackedRace = createAction('UPDATE_LATEST_TRACKED_RACE')
 
 export const fetchLeaderboardV2 = (leaderboard: string) =>
-  withDataApi({ leaderboard })(dataApi =>
-    fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard),
+  withDataApi({ leaderboard })((dataApi, dispatch) =>
+    dispatch(fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard)),
   )
 
 export const startLeaderboardUpdates = (checkInData: CheckIn, rankingMetric?: string) =>
