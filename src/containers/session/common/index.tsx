@@ -316,12 +316,12 @@ const noCompetitorsText = text(
       marginTop: 10,
     },
   },
-  'There are currently no registered competitors in the event.',
+  I18n.t('text_competitor_list_empty'),
 )
 
 export const competitorList = Component((props: any) => compose(
   fold(props),
-  concat(text({ style: styles.headline }, 'Competitor List'.toUpperCase())),
+  concat(text({ style: styles.headline }, I18n.t('text_competitor_list').toUpperCase())),
   view({ style: styles.competitorListContainer }),
   reduce(concat, nothing())
 )([
