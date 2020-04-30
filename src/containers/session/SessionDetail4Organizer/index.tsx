@@ -124,7 +124,7 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
     reduce(concat, nothing()))([
     text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
-      props.isTracking || props.isFinished ?
+      props.isFinished ?
       I18n.t('text_invite_competitors_long_text_running') :
       I18n.t('text_invite_competitors_long_text_planning')),
     nothingWhenFinished(inviteCompetitorsButton),
