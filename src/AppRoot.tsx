@@ -1,7 +1,7 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
-import { compose, reduce, concat, mergeDeepLeft, merge, includes, propEq } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft, merge, includes } from 'ramda'
 import { Text } from 'react-native'
 import 'store/init'
 
@@ -22,10 +22,10 @@ import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
-import { HeaderBackButton } from '@react-navigation/stack'
+import HeaderBackButton from 'components/HeaderBackButton'
 import { AuthContext } from 'navigation/NavigationContext'
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
-import { Component, fold, nothing, recomposeBranch as branch, nothingAsClass } from 'components/fp/component'
+import { Component, fold, nothing } from 'components/fp/component'
 import FirstContact from 'containers/user/FirstContact'
 import Sessions from 'containers/session/Sessions'
 import QRScanner from 'containers/session/QRScanner'
@@ -163,7 +163,7 @@ const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparent
 const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
 const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
 const withLeftHeaderBackButton = mergeDeepLeft({ options: {
-  headerLeft: () => <HeaderBackButton onPress={() => navigationContainer.current.goBack()} tintColor="white"	labelVisible={false} />}})
+  headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack()}) }})
 
 const markTrackingNavigator = Component(props => compose(
   fold(props),
@@ -236,7 +236,7 @@ const accountNavigator = Component(props => compose(
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.AppSettings, component: AppSettings, options: { title: I18n.t('caption_tab_appsettings') } })),
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.Communications, component: CommunicationsSettings, options: { title: I18n.t('caption_tab_communicationssettings') } })),
   stackScreen(compose(withRightModalBackButton, withoutHeaderLeft)({ name: Screens.ExpertSettings, component: ExpertSettings, options: { title: I18n.t('title_expert_settings') } })),
-  stackScreen(compose(withLeftHeaderBackButton, )({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
+  stackScreen(compose(withLeftHeaderBackButton,)({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
     headerTitle: () => <TeamDetailsHeader/>,
     headerRight: () => teamDeleteHeader(route),
   }) })),
@@ -277,7 +277,7 @@ const mainTabsNavigator = Component(props => compose(
     screenOptions: ({ route }) => ({
       tabBarIcon: ({ color, focused }) => getTabBarIcon(route, color, focused),
       tabBarLabel: ({ color, focused }) => getTabBarLabel(route, color, focused),
-    })
+    }),
   }),
   reduce(concat, nothing()))([
   tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
@@ -393,10 +393,8 @@ const mapStateToProps = (state: any) => ({
   shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state)
 })
 
-export default connect(mapStateToProps, {
-  performDeepLink,
-  updateTrackingStatus,
-  handleLocation,
-  initLocationUpdates,
-  initializeApp
-})(AppRoot)
+export default connect(
+  mapStateToProps,
+  { performDeepLink, updateTrackingStatus, handleLocation,
+  initLocationUpdates, initializeApp })(
+  AppRoot)

@@ -6,6 +6,7 @@ import {
   startTracking,
   updateEvent,
   updateEventFilters,
+  updateLoadingEventList,
   updateRaceTime,
   updateCreatingEvent,
   updateSelectingEvent,
@@ -24,6 +25,7 @@ const initialState: EventState = {
   isCreatingEvent: false,
   isSelectingEvent: false,
   isStartingTracking: false,
+  isLoadingEventList: false,
 } as EventState
 
 const reducer = handleActions(
@@ -91,6 +93,7 @@ const reducer = handleActions(
     [updateCreatingEvent as any]: itemUpdateHandler('isCreatingEvent'),
     [updateSelectingEvent as any]: itemUpdateHandler('isSelectingEvent'),
     [updateStartingTracking as any]: itemUpdateHandler('isStartingTracking'),
+    [updateLoadingEventList as any]: itemUpdateHandler('isLoadingEventList'),
   },
   initialState,
 )

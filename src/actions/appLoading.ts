@@ -2,7 +2,7 @@ import { DispatchType } from 'helpers/types'
 
 import { checkCurrentAuthSession } from './auth'
 import { handleAppStartDeepLink } from './deepLinking'
-import { updateCreatingEvent, updateSelectingEvent, updateStartingTracking } from './events'
+import { updateCreatingEvent, updateLoadingEventList, updateSelectingEvent, updateStartingTracking } from './events'
 import { updateDeletingMarkBinding, updateLoadingCheckInFlag } from './checkIn'
 import { updateCommunicationSettings } from './settings'
 
@@ -13,6 +13,7 @@ export const initializeApp = (navigation:object) => async (dispatch: DispatchTyp
   dispatch(updateSelectingEvent(false))
   dispatch(updateDeletingMarkBinding(false))
   dispatch(updateStartingTracking(false))
+  dispatch(updateLoadingEventList(false))
   /// reset flags for loading
 
   /// update native modules settings

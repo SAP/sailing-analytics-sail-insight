@@ -1,5 +1,5 @@
 import { any, chain, compose, findLast, isNil, not, path, prop, propEq,
-  values, defaultTo } from 'ramda'
+  values, defaultTo, reject } from 'ramda'
 import { createSelector } from 'reselect'
 import { CheckIn } from 'models'
 import { mapResToEvent } from 'models/Event'
@@ -73,6 +73,7 @@ export const getMarkBindingCheckIn = createSelector(
   getActiveCheckInEntity,
   compose(
     findLast(isMarkBinding),
+    reject(checkIn => !!checkIn.isArchived),
     values,
     defaultTo({})
   )

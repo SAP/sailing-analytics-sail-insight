@@ -1,5 +1,5 @@
-import { isEmpty, orderBy, values } from 'lodash'
-import { isNil } from 'ramda'
+import { isEmpty, orderBy, reverse, values } from 'lodash'
+import { always, compose, isNil, reject, unless } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { CheckIn, Session } from 'models'
@@ -36,7 +36,7 @@ const buildSession = (
   if (isNil(checkIn)) {
     return null
   }
-  
+
   const result: Session = { ...checkIn }
 
   result.event = eventEntity && mapResToEvent(eventEntity[checkIn.eventId])
@@ -80,7 +80,7 @@ export const getSessionList = createSelector(
       return []
     }
     return orderBy(
-      values(activeCheckIns).map(checkIn => buildSession(
+      reverse(values(activeCheckIns).map(checkIn => buildSession(
         checkIn,
         eventEntity,
         leaderboardEntity,
@@ -89,7 +89,7 @@ export const getSessionList = createSelector(
         boatEntity,
         markEntity,
         userInfo,
-      )),
+      ))),
       ['event.startDate'],
       ['desc'],
     )
@@ -136,20 +136,15 @@ export const getFilteredSessionList = createSelector(
   getSessionList,
   getActiveEventFilters,
   (sessions: Session[], filters: EventFilter[]) => {
-    let filteredSessions = sessions
-
-    if (!filters.includes(EventFilter.All)) {
-      filteredSessions = filteredSessions.filter(
-        (session: Session) => session.event ? session.event.archived : false
-      )
-    }
-
-    if (!filters.includes(EventFilter.Archived)) {
-      filteredSessions = filteredSessions.filter(
-        (session: Session) => session.event ? !session.event.archived : true
-      )
-    }
-
-    return filteredSessions
+    return compose(
+      unless(
+        always(filters.includes(EventFilter.Archived)),
+        reject((session: Session) => !!session.isArchived)
+      ),
+      unless(
+        always(filters.includes(EventFilter.All)),
+        reject((session: Session) => !session.isArchived)
+      ),
+    )(sessions)
   },
 )

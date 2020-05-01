@@ -50,6 +50,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
     isLoading: false,
     durationText: EMPTY_DURATION_TEXT,
     buttonText: I18n.t('caption_stop').toUpperCase(),
+    stoppingFailed: false,
   }
 
   public componentDidMount() {
@@ -186,7 +187,21 @@ class Tracking extends React.Component<NavigationScreenProps & {
     this.setState({durationText: durationText(trackingStats.startedAt)})
   }
 
+  protected stopTrackingConfirmationDialog = () => new Promise(resolve =>
+    Alert.alert('', I18n.t('text_tracking_alert_stop_confirmation_message'),
+      [
+        { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
+        { text: I18n.t('button_yes'), onPress: () => resolve(true) }
+      ],
+      { cancelable: true },
+    )
+  )
+
   protected onStopTrackingPress = async () => {
+    if(!this.state.stoppingFailed && !(await this.stopTrackingConfirmationDialog())) {
+      return
+    }
+
     await this.setState({ isLoading: true })
     try {
       timer.clearInterval(this)
@@ -194,7 +209,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
       this.props.navigation.goBack()
     } catch (err) {
       Logger.debug('onStopTrackingPress Error', err)
-      this.setState({ buttonText: I18n.t('caption_resend').toUpperCase() })
+      this.setState({ buttonText: I18n.t('caption_resend').toUpperCase(), stoppingFailed: true })
       Alert.alert(I18n.t('error_tracking_resend_info_title'), I18n.t('error_tracking_resend_info_text'))
     } finally {
       this.setState({ isLoading: false })

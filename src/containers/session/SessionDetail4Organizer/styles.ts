@@ -2,10 +2,11 @@ import { Dimensions } from 'react-native';
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { withSecondaryHeavyFont, withSecondaryLightFont, withSecondaryBoldFont, withTertiaryFont, withDefaultBoldFont } from 'styles/compositions/text';
 
+const $veryLightBlue = '#789BAA'
+
 export default EStyleSheets.create({
   container: {
-    backgroundColor: '$primaryBackgroundColor',
-    paddingTop: '$tinySpacing',
+    backgroundColor: $veryLightBlue,
     width: '100%',
     height: '100%',
   },
@@ -13,6 +14,7 @@ export default EStyleSheets.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     backgroundColor: '$primaryBackgroundColor',
+    paddingTop: '$tinySpacing',
   },
   button: {
     padding: 12,
@@ -88,19 +90,19 @@ export default EStyleSheets.create({
     borderTopColor: '$LightBlue',
     borderBottomWidth: 0,
     borderLeftWidth: Dimensions.get('window').width * 2,
-    borderLeftColor: '#789BAA',
+    borderLeftColor: $veryLightBlue,
     borderStyle: 'solid',
   },
   container4: {
     alignItems: 'center',
-    backgroundColor: '#789BAA',
+    backgroundColor: $veryLightBlue,
     paddingHorizontal: '$smallSpacing',
   },
   containerAngledBorder4: {
     width: Dimensions.get('window').width,
     height: 0,
     borderTopWidth: 40,
-    borderTopColor: '#789BAA',
+    borderTopColor: $veryLightBlue,
     borderBottomWidth: 0,
     borderLeftWidth: Dimensions.get('window').width * 2,
     borderLeftColor: '$primaryBackgroundColor',

@@ -23,7 +23,7 @@ import { all, call, put, select, takeEvery, takeLatest, take } from 'redux-saga/
 import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
-import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
+import { getRegatta, getRegattaNumberOfRaces, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { StackActions } from '@react-navigation/native'
 
@@ -156,23 +156,26 @@ function* setDiscards({ payload }: any) {
 
 function* createEvent(payload: object) {
   const data = payload.payload.payload
+  const { eventId, leaderboardName, secret, serverUrl, numberOfRaces, regattaName } = data
   const navigation = payload.payload.navigation
-  const api = dataApi(data.serverUrl)
+  const api = dataApi(serverUrl)
   const races = compose(
     map(compose(concat('R'), toString)),
     range(1),
     inc)(
-    data.numberOfRaces)
-  const regatta = yield select(getRegatta(data.regattaName))
+    numberOfRaces)
+  const regatta = yield select(getRegatta(regattaName))
 
   console.log('create event', payload)
 
-  yield call(api.updateRegatta, data.regattaName,
-    { controlTrackingFromStartAndFinishTimes: true,
-      useStartTimeInference: false,
-      defaultCourseAreaUuid: regatta.courseAreaId })
+  yield call(api.updateRegatta, regattaName, {
+    controlTrackingFromStartAndFinishTimes: true,
+    useStartTimeInference: false,
+    defaultCourseAreaUuid: regatta.courseAreaId,
+    autoRestartTrackingUponCompetitorSetChange: true,
+  })
   yield all(races.map(race =>
-    call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
+    call(api.denoteRaceForTracking, leaderboardName, race, 'Default')))
   yield put(selectEvent({ data, replaceCurrentScreen: true, navigation }))
 }
 
@@ -218,12 +221,7 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
   const api = dataApi(payload.serverUrl)
   const entities = yield call(api.requestRegatta, payload.regattaName)
 
-  const numberOfRaces = compose(
-    length,
-    prop('races'),
-    head,
-    path(['entities', 'regatta', payload.regattaName, 'series']))(
-    entities)
+  const numberOfRaces = getRegattaNumberOfRaces(entities.entities.regatta[payload.regattaName])
 
   yield put(updateCheckIn({
     leaderboardName: payload.leaderboardName,

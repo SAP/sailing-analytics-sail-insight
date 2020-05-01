@@ -1,6 +1,6 @@
 import { RootState } from 'reducers/config'
-import { compose, find, 
-  prop, defaultTo, propEq, map} from 'ramda'
+import { compose, find,
+  prop, defaultTo, propEq, map } from 'ramda'
 
 export const getServerState = (state: RootState = {}) =>
   state.communications && state.communications.state
@@ -14,7 +14,7 @@ export const getServerPort = () => (state: RootState = {}) =>
 export const getServerProtocol = (state: RootState = {}) =>
   state.communications && state.communications.protocol
 
-export const getServerValid = (state: RootState = {}) => 
+export const getServerValid = (state: RootState = {}) =>
   state.communications && state.communications.valid
 
 export const getStartLine = () => (state: RootState = {}) =>
@@ -33,5 +33,7 @@ export const getMarkPositionsForCourse = (course: any, mark: string) => {
   )
 
   return getMarkPositions(course.waypoints)
-  
 }
+
+export const getExpeditionMessages = (state: RootState = {}) =>
+    state.communications && state.communications.expeditionMessages
