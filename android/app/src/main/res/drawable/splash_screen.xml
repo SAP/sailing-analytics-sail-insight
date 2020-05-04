@@ -3,6 +3,43 @@
 
     <item android:drawable="@color/splash_background"/>
 
-    <item android:drawable="@mipmap/splash_background" />
+    <item android:drawable="@mipmap/splash_map"/>
 
+    <item android:bottom="260dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/splash_app_logo"
+            />
+    </item>
+
+    <item android:bottom="24dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@mipmap/splash_text"
+            />
+    </item>
+
+    <item
+        android:bottom="20dp"
+        android:right="120dp"
+        >
+        <bitmap
+            android:gravity="bottom"
+            android:width="89px"
+            android:height="63px"
+            android:src="@mipmap/splash_ws_logo"
+            />
+    </item>
+
+    <item
+        android:left="120dp"
+        android:bottom="20dp"
+        >
+        <bitmap
+            android:gravity="bottom"
+            android:width="89px"
+            android:height="63px"
+            android:src="@mipmap/splash_sap_logo"
+            />
+    </item>
 </layer-list>
