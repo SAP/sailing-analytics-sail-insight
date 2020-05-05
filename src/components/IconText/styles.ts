@@ -13,6 +13,7 @@ export default EStyleSheet.create({
   },
   baseText: {
     fontSize: '$regularFontSize',
+    flex: 1,
   },
   separator: {
     height: 0,
