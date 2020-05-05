@@ -3,6 +3,7 @@ import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
+import { fetchLeaderboardV2 } from 'actions/leaderboards'
 import { stopTracking } from 'actions/events'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
@@ -10,7 +11,9 @@ import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
-  nothingAsClass
+  nothingAsClass,
+  fromClass,
+  contramap
 } from 'components/fp/component'
 import { iconText, scrollView, text, inlineText, touchableOpacity, view, textButton } from 'components/fp/react-native'
 import I18n from 'i18n'
@@ -18,7 +21,14 @@ import { Alert } from 'react-native'
 import { container } from 'styles/commons'
 import styles from './styles'
 import { mapStateToSessionDetailsProps } from '../SessionDetail'
-import { qrCode, inviteCompetitorsButton, joinAsCompetitorButton } from '../../session/common'
+import {
+  qrCode,
+  inviteCompetitorsButton,
+  joinAsCompetitorButton,
+  competitorList,
+  withCompetitorListState,
+  competitorListRefreshHandler,
+} from '../../session/common'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import {getRaceTime} from 'selectors/event';
 
@@ -114,12 +124,13 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
     reduce(concat, nothing()))([
     text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
-      props.isTracking || props.isFinished ?
+      props.isFinished ?
       I18n.t('text_invite_competitors_long_text_running') :
       I18n.t('text_invite_competitors_long_text_planning')),
     nothingWhenFinished(inviteCompetitorsButton),
     nothingWhenFinished(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton)),
-    nothingWhenFinished(qrCode)
+    nothingWhenFinished(qrCode),
+    competitorList
   ]))
 
 export const endEventCard = Component((props: any) => compose(
@@ -139,12 +150,14 @@ export const endEventCard = Component((props: any) => compose(
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
     connect(mapStateToProps, {
-      checkOut, stopTracking, collectCheckInData, shareSessionRegatta
+      checkOut, stopTracking, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2
     }),
-    scrollView({ style: styles.container }),
+    scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
+    withCompetitorListState,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
+    competitorListRefreshHandler,
     sessionDetailsCard,
     defineRacesCard,
     inviteCompetitorsCard,

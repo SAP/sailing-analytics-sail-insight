@@ -8,6 +8,7 @@ import { DispatchType } from 'helpers/types'
 import { Leaderboard } from 'models'
 import CheckIn from 'models/CheckIn'
 import { getLeaderboardCompetitorCurrentRaceColumn } from 'selectors/leaderboard'
+import { isNetworkConnected } from 'selectors/network'
 import * as LeaderboardService from '../services/LeaderboardService'
 
 export const updateLeaderboardGaps = createAction('UPDATE_LEADERBOARD_GAPS')
@@ -15,8 +16,12 @@ export const clearLeaderboardGaps = createAction('CLEAR_LEADERBOARD_GAPS')
 export const updateLatestTrackedRace = createAction('UPDATE_LATEST_TRACKED_RACE')
 
 export const fetchLeaderboardV2 = (leaderboard: string) =>
-  withDataApi({ leaderboard })(dataApi =>
-    fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard),
+  withDataApi({ leaderboard })((dataApi, dispatch, getState) => {
+    // Ignore the call if offline
+    if (isNetworkConnected(getState())) {
+      return dispatch(fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboard))
+    }
+  }
   )
 
 export const startLeaderboardUpdates = (checkInData: CheckIn, rankingMetric?: string) =>

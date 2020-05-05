@@ -313,6 +313,8 @@
   "text_define_races_long_text_running": "See all the races that you have defined and find the results in the SAP Sailing Analytics.",
   "text_invite_competitors_long_text_planning": "Notify all competitors about your event and let them join the race! Remember to remind the competitors to start tracking before the first race.",
   "text_invite_competitors_long_text_running": "You have already closed entry, thus inviting more competitors is not possible anymore.",
+  "text_competitor_list": "Competitor List",
+  "text_competitor_list_empty": "There are currently no registered competitors in the event.",
   "text_close_entry_long_text": "Please close entry to your event before the first start, so that your competitors can successfully track themselves. Only close when all competitors have joined, closing cannot be undone.",
   "text_end_event_long_text_running": "You must end your event after the last race, so that all statistics can be successfully calculated for you.",
   "text_end_event_long_text_finished": "Your event has been ended.",

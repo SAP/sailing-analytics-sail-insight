@@ -2,14 +2,10 @@ import { difference, find, get, sortBy } from 'lodash'
 import React from 'react'
 import {
   Dimensions,
-  FlatList,
   Image,
-  ListRenderItemInfo,
-  TouchableHighlight,
   View,
   Platform,
 } from 'react-native'
-import Flag from 'react-native-flags'
 import ModalDropdown from 'react-native-modal-dropdown'
 import { connect } from 'react-redux'
 
@@ -19,16 +15,14 @@ import { getTrackedLeaderboard } from 'selectors/leaderboard'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import Text from 'components/Text'
-import TrackingPropertyReverse from 'components/TrackingPropertyReverse'
-import ColumnValue from './ColumnValue'
+import CompetitorList from './CompetitorList'
 import MyColumnValue from './MyColumnValue'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
-import { container } from 'styles/commons'
 import { $smallSpacing } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
-import styles, { normalRowValueFontSize, topRowValueFontSize } from './styles'
+import styles, { topRowValueFontSize } from './styles'
 
 export const EMPTY_VALUE = '-'
 
@@ -159,7 +153,14 @@ class Leaderboard extends React.Component<{
           </View>
         </View>
         <View style={[styles.listContainer]}>
-          <FlatList data={leaderboard} contentContainerStyle={[styles.listContentContainer]} renderItem={this.renderItem} />
+          <CompetitorList
+            leaderboard={leaderboard}
+            forLeaderboard={true}
+            onCompetitorItemPress={this.onLeaderboardItemPress}
+            rankingMetric={rankingMetric}
+            myCompetitorData={myCompetitorData}
+            selectedColumn={selectedColumn}
+          />
         </View>
       </View>
     )
@@ -194,47 +195,6 @@ class Leaderboard extends React.Component<{
 
   private onDropdownSelect = (index: any, value: any) => {
     this.setState({ selectedColumn: value })
-  }
-
-  private renderItem = ({
-    item,
-  }: ListRenderItemInfo<LeaderboardCompetitorCurrentTrack>) => {
-    const { name, countryCode, id } = item
-    const rank = get(item, ['trackedColumn', 'trackedRank'])
-    const { selectedColumn } = this.state
-    const { rankingMetric } = this.props
-
-    const myCompetitorData = this.getCompetitorById(this.props.trackedCheckInCompetitorId)
-
-    return (
-      <TouchableHighlight
-        style={[styles.listRowButtonContainer]}
-        onPress={this.onLeaderboardItemPress(id)}
-      >
-        <View style={[styles.listRowContainer]}>
-          <View style={[styles.listItemContainer]}>
-            <View style={[styles.textContainer, styles.itemTextContainer]}>
-              <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
-              <Flag
-                style={[styles.flag]}
-                code={countryCode}
-                size={normalRowValueFontSize}
-              />
-              <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
-            </View>
-            <View style={{ flex: 0 }}>
-              <ColumnValue
-                selectedColumn={selectedColumn}
-                competitorData={item}
-                myCompetitorData={myCompetitorData}
-                rankingMetric={rankingMetric}
-                fontSize={normalRowValueFontSize}
-              />
-            </View>
-          </View>
-        </View>
-      </TouchableHighlight>
-    )
   }
 }
 

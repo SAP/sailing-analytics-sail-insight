@@ -25,6 +25,7 @@ const discardSelectorPlusContainer = {
 }
 
 export default EStyleSheets.create({
+  test: { color: 'red' },
   button: {
     padding: 12,
     backgroundColor: 'transparent', // '#FAFAFA',
@@ -191,4 +192,8 @@ export default EStyleSheets.create({
   locationIcon: {
     tintColor: 'white',
   },
+  competitorListContainer: {
+    alignSelf: 'stretch',
+    maxHeight: 300,
+  }
 })

@@ -4,6 +4,7 @@ import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { shareSessionRegatta } from 'actions/sessions'
+import { fetchLeaderboardV2 } from 'actions/leaderboards'
 import { Component, connectActionSheet, fold, fromClass, nothing, nothingAsClass,
   recomposeBranch as branch,
   reduxConnect as connect } from 'components/fp/component'
@@ -25,6 +26,9 @@ import {
   racesAndScoringCard,
   sessionDetailsCard,
   typeAndBoatClassCard,
+  competitorList,
+  withCompetitorListState,
+  competitorListRefreshHandler,
 } from '../common'
 import styles from './styles'
 
@@ -98,11 +102,13 @@ export const ShareButton = Component(props => compose(
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta }),
-    scrollView({ style: styles.container }),
+    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2 }),
+    scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
+    withCompetitorListState,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
+      competitorListRefreshHandler,
       sessionDetailsCard,
       typeAndBoatClassCard,
       racesAndScoringCard,
