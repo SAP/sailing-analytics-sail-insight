@@ -20,7 +20,7 @@
     </item>
 
     <item
-        android:bottom="20dp"
+        android:bottom="68dp"
         android:right="120dp"
         >
         <bitmap
@@ -33,7 +33,7 @@
 
     <item
         android:left="120dp"
-        android:bottom="20dp"
+        android:bottom="68dp"
         >
         <bitmap
             android:gravity="bottom"
