@@ -1,7 +1,8 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
-import { compose, reduce, concat, mergeDeepLeft, merge, includes } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft, merge, includes, once,
+  when, always, } from 'ramda'
 import { Text } from 'react-native'
 import 'store/init'
 
@@ -162,8 +163,14 @@ const withoutHeaderLeft = mergeDeepLeft({ options: { headerLeft: () => null } })
 const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparentProps } })
 const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
 const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
-const withLeftHeaderBackButton = mergeDeepLeft({ options: {
-  headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack()}) }})
+const withLeftHeaderBackButton = options =>
+  mergeDeepLeft({
+    options: {
+      headerLeft: HeaderBackButton(
+        { onPress: when(always(options.backOnceClickable), once)(() => navigationContainer.current.goBack()) }
+      ),
+    },
+  })(options)
 
 const markTrackingNavigator = Component(props => compose(
   fold(props),
@@ -180,9 +187,9 @@ const trackingNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
     withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
     { name: Screens.TrackingList, component: Sessions, initialParams: { forTracking: true } })),
-  stackScreen(withoutHeaderLeft({ name: Screens.Tracking, component: Tracking, options: { title: I18n.t('title_tracking') } })),
+  stackScreen(withoutHeaderLeft({ name: Screens.Tracking, component: Tracking, options: { title: I18n.t('title_tracking'), gestureEnabled: false } })),
   stackScreen({ name: Screens.SetWind, component: SetWind, options: { title: I18n.t('title_set_wind') } }),
-  stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') } })),
+  stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') }, backOnceClickable: true })),
 ]))
 
 const TrackingSwitch = connect((state: any) => {
