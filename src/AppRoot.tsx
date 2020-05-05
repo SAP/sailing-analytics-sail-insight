@@ -1,7 +1,8 @@
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
 import { connect } from 'react-redux'
-import { compose, reduce, concat, mergeDeepLeft, merge, includes, once } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft, merge, includes, once,
+  when, always, } from 'ramda'
 import { Text } from 'react-native'
 import 'store/init'
 
@@ -166,9 +167,7 @@ const withLeftHeaderBackButton = options =>
   mergeDeepLeft({
     options: {
       headerLeft: HeaderBackButton(
-        !!options.backOnceClickable
-          ? { onPress: once(() => navigationContainer.current.goBack()) }
-          : { onPress: () => navigationContainer.current.goBack() }
+        { onPress: when(always(options.backOnceClickable), once)(() => navigationContainer.current.goBack()) }
       ),
     },
   })(options)
