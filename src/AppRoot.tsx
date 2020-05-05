@@ -210,7 +210,7 @@ const sessionsNavigator = Component(props => compose(
   stackScreen(withLeftHeaderBackButton({ name: Screens.TrackDetails, component: WebView,
     options: { title: I18n.t('caption_sap_analytics_header') } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.RaceCourseLayout, component: RaceCourseLayout.fold,
-    options: { title: I18n.t('title_race_course') } })),
+    options: { title: I18n.t('title_race_course'), gestureEnabled: false } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.CourseGeolocation,
     component: Geolocation.contramap((props: any) => ({
       ...props,
