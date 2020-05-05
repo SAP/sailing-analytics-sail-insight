@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import { fetchCheckIn, isEventAlreadyJoined } from 'actions/checkIn'
 import Logger from 'helpers/Logger'
+import { showNetworkRequiredAlert } from 'helpers/network'
 import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
 import I18n from 'i18n'
 import { container } from 'styles/commons'
@@ -12,10 +13,12 @@ import styles from './styles'
 import * as Screens from 'navigation/Screens'
 import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
 import { getActiveCheckInEntity } from 'selectors/checkIn'
+import { isNetworkConnected } from 'selectors/network'
 
 class QRScanner extends React.Component<{
   fetchCheckIn: (url: string) => any,
   activeCheckIns: any,
+  isNetworkConnected: boolean
 } > {
   public state = {
     isLoading: false,
@@ -72,6 +75,11 @@ class QRScanner extends React.Component<{
     if (!qr || !qr.data) {
       return
     }
+
+    if (!this.props.isNetworkConnected) {
+      showNetworkRequiredAlert()
+      return
+    }
     return this.collectData(qr.data)
   }
 
@@ -98,7 +106,8 @@ class QRScanner extends React.Component<{
 
 const mapStateToProps = (state: any) => {
   return {
-    activeCheckIns: getActiveCheckInEntity(state) || {}
+    activeCheckIns: getActiveCheckInEntity(state) || {},
+    isNetworkConnected: isNetworkConnected(state),
   }
 }
 
