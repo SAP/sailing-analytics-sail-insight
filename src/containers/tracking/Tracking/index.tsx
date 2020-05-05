@@ -88,7 +88,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
               <View style={{ justifyContent: 'flex-end' }}>
                 <Image
                   style={styles.tagLine}
-                  source={Images.defaults.sap_logo}
+                  source={Images.defaults.sap_logo_insights}
                 />
               </View>
             </TouchableOpacity>

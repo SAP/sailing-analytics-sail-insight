@@ -1,4 +1,5 @@
-import { prop, find, propEq, keys, sortBy, identity, last, compose, values } from 'ramda'
+import { fromPairs, head, defaultTo, filter, isNil, prop, find, not, toPairs,
+  propEq, propSatisfies, keys, sortBy, identity, last, compose, values, map } from 'ramda'
 import { updateLeaderboardTracking, updateLatestTrackedRace } from 'actions/leaderboards'
 import { DataApi } from 'api'
 import { fetchEntityAction } from 'helpers/actions'
@@ -27,17 +28,47 @@ export const backgroundSyncLeaderboard = async (
       payload.entities.leaderboard &&
       values(payload.entities.leaderboard)
     const receivedLeaderboard = receivedLeaderboards[0] as Leaderboard
-    const latestRace = compose(
+    await dispatch(updateLeaderboardTracking(receivedLeaderboard, rankingMetric))
+
+    const latestStartedRace = compose(
       last,
       sortBy(identity),
       keys,
       prop('columns'),
-      find(propEq('id', competitorId)),
       prop('competitors'))(
       receivedLeaderboard)
 
-    await dispatch(updateLatestTrackedRace(latestRace))
-    await dispatch(updateLeaderboardTracking(receivedLeaderboard, rankingMetric))
+    if (latestStartedRace) {
+      await dispatch(updateLatestTrackedRace(latestStartedRace))
+    } else {
+      const trackedRaces = compose(
+        fromPairs,
+        map(trackedRace => ([
+          trackedRace.raceColumnName,
+          compose(
+            prop('trackedRace'),
+            defaultTo({}),
+            head,
+            defaultTo([])
+          )(trackedRace.fleets),
+        ])),
+        defaultTo([]),
+        prop('trackedRacesInfo')
+      )(receivedLeaderboard)
+
+      const isNotNil = compose(not, isNil)
+
+      const firstStartedRace = compose(
+        head, // Just the race name
+        head, // Get the first race by start time
+        sortBy(compose(prop('startTimeMillis'), last)),
+        toPairs,
+        filter(propSatisfies(isNotNil, 'startTimeMillis')),
+        filter(isNotNil)
+      )(trackedRaces)
+
+      await dispatch(updateLatestTrackedRace(firstStartedRace))
+    }
   } catch (err) {
     Logger.debug('Error while executing syncLeaderboard', err)
   }
