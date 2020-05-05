@@ -188,7 +188,7 @@ const trackingNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
     withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
     { name: Screens.TrackingList, component: Sessions, initialParams: { forTracking: true } })),
-  stackScreen(withoutHeaderLeft({ name: Screens.Tracking, component: Tracking, options: { title: I18n.t('title_tracking') } })),
+  stackScreen(withoutHeaderLeft({ name: Screens.Tracking, component: Tracking, options: { title: I18n.t('title_tracking'), gestureEnabled: false } })),
   stackScreen({ name: Screens.SetWind, component: SetWind, options: { title: I18n.t('title_set_wind') } }),
   stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') }, backOnceClickable: true })),
 ]))
