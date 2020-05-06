@@ -5,6 +5,7 @@ import { handleAppStartDeepLink } from './deepLinking'
 import { updateCreatingEvent, updateLoadingEventList, updateSelectingEvent, updateStartingTracking } from './events'
 import { updateDeletingMarkBinding, updateLoadingCheckInFlag } from './checkIn'
 import { updateCommunicationSettings } from './settings'
+import { updateStartLine } from './communications'
 
 export const initializeApp = (navigation:object) => async (dispatch: DispatchType) => {
   /// reset flags for loading
@@ -14,6 +15,7 @@ export const initializeApp = (navigation:object) => async (dispatch: DispatchTyp
   dispatch(updateDeletingMarkBinding(false))
   dispatch(updateStartingTracking(false))
   dispatch(updateLoadingEventList(false))
+  dispatch(updateStartLine({}))
   /// reset flags for loading
 
   /// update native modules settings

@@ -26,6 +26,7 @@ export const getMarkPositionsForCourse = (course: any, mark: string) => {
     map((markConfiguration: any) => markConfiguration.lastKnownPosition),
     defaultTo({}),
     map(id => find(propEq('id', id))(course.markConfigurations)),
+    defaultTo({}),
     prop('markConfigurationIds'),
     defaultTo({}),
     find(propEq('controlPointName', mark)),
