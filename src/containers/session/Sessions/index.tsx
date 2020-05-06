@@ -1,6 +1,6 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { ActivityIndicator, Text, TouchableOpacity, View, ViewProps, RefreshControl } from 'react-native'
+import { ActivityIndicator, Text, TouchableOpacity, View, ViewProps, Platform, RefreshControl } from 'react-native'
 import { connect } from 'react-redux'
 
 import * as Screens from 'navigation/Screens'
@@ -117,17 +117,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
         />
         <ScrollContentView
           style={this.styles.scrollContainer}
-          refreshControl={
-            <RefreshControl
-              refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
-              onRefresh={() => {
-                if (!shouldShowLoadingSpinner) {
-                  this.setState({ openedWhenLoading: false })
-                  this.props.fetchEventList()
-                }
-              }}
-            />
-          }
+          refreshControl={Platform.OS === 'android' && this.renderRefreshControl(shouldShowLoadingSpinner)}
         >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
@@ -151,6 +141,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
                 data={this.props.sessions}
                 renderItem={this.renderItem}
                 extraData={this.state.swipeableLeftOpenEventId}
+                refreshControl={Platform.OS === 'ios' && this.renderRefreshControl(shouldShowLoadingSpinner)}
               />
           }
         </ScrollContentView>
@@ -163,6 +154,23 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           </TextButton>
         </View>
       </View>
+    )
+  }
+
+  private renderRefreshControl(shouldShowLoadingSpinner) {
+    const { isLoadingEventList } = this.props
+
+    return (
+      <RefreshControl
+        refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
+        onRefresh={() => {
+          if (!shouldShowLoadingSpinner) {
+            this.setState({ openedWhenLoading: false })
+            this.props.fetchEventList()
+          }
+        }}
+        tintColor="white"
+      />
     )
   }
 }
