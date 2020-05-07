@@ -20,6 +20,12 @@ export const getServerValid = (state: RootState = {}) =>
 export const getStartLine = () => (state: RootState = {}) =>
   state.communications && state.communications.startLine
 
+export const getStartLinePollingStatus = () => (state: RootState = {}) =>
+  state.communications && state.communications.startLinePolling
+
+export const getStartLineCourse = () => (state: RootState = {}) =>
+  state.communications && state.communications.startLineCourse
+
 export const getMarkPositionsForCourse = (course: any, mark: string) => {
 
   const getMarkPositions = compose(

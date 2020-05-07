@@ -7,7 +7,9 @@ import {
   STOP_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL,
   UPDATE_SERVER_STATE,
   UPDATE_START_LINE,
-  UPDATE_START_LINE_FOR_CURRENT_COURSE,
+  START_UPDATE_START_LINE_FOR_CURRENT_COURSE,
+  STOP_UPDATE_START_LINE_FOR_CURRENT_COURSE,
+  FETCH_START_LINE_FOR_CURRENT_COURSE,
   updateExpeditionCommunicationMessages,
   resetExpeditionCommunicationMessages,
   fetchCommunicationState,
@@ -17,19 +19,23 @@ import {
   updateServerState,
   updateServerValid,
   updateStartLine,
+  fetchStartLineForCurrentCourse,
+  startUpdateStartLineBasedOnCurrentCourse,
+  updateStartLinePollingStatus,
 } from 'actions/communications'
-import { getMarkPositionsForCourse, getServerIP, getServerPort, getStartLine } from 'selectors/communications'
+import { getMarkPositionsForCourse, getServerIP, getServerPort, getStartLine, getStartLinePollingStatus, getStartLineCourse } from 'selectors/communications'
 import { getMtcpAndCommunicationSetting } from 'selectors/settings'
 import { getServerState, sendStartLine, setServerState } from 'services/CommunicationService'
 
 import { NetworkInfo } from 'react-native-network-info'
-import { takeLatest, all, call, put, select, take } from 'redux-saga/effects'
+import { takeLatest, all, call, put, select, take, delay } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { Server1Protocol } from 'sail-insight-expedition-communication'
 import { eventChannel } from 'redux-saga'
 import { NativeEventEmitter, NativeModules } from 'react-native'
 
 const Server1Port = 8001
+const StartLinePollingInterval = 5000
 
 function getNetworkPromise() {
   return NetworkInfo.getIPV4Address()
@@ -95,14 +101,27 @@ export function* setCommunicationStateSage({ payload }: any) {
 
   setServerState(payload, ip, port)
   yield put(updateServerState(payload))
+
+  // start/stop start line updates in case tracking is started before communication module
+  if (payload) {
+    const isPolling = yield select(getStartLinePollingStatus())
+    if (!isPolling) {
+      const startLineCourse = yield select(getStartLineCourse())
+      yield put(startUpdateStartLineBasedOnCurrentCourse(startLineCourse))
+    }
+  } else
+  {
+    yield put(updateStartLinePollingStatus(false))
+  }
+
 }
 
-export function* updateStartLineForCurrentCourseSaga({ payload }: any) {
+export function* fetchStartLineForCurrentCourseSaga() {
 
-  const communicationEnabled = yield select(getMtcpAndCommunicationSetting)
+  const payload = yield select(getStartLineCourse())
+  const { raceName, regattaName, serverUrl } = payload
 
-  if (communicationEnabled) {
-    const { raceName, regattaName, serverUrl } = payload
+  if (raceName  && regattaName && serverUrl) {
     const api = dataApi(serverUrl)
 
     const course = yield call(api.requestCourse, regattaName, raceName, 'Default')
@@ -124,6 +143,37 @@ export function* updateStartLineForCurrentCourseSaga({ payload }: any) {
     }
   }
 }
+
+export function* startUpdateStartLineForCurrentCourseSaga() {
+
+  // reset start line
+  yield put(updateStartLine({}))
+
+  const communicationEnabled = yield select(getMtcpAndCommunicationSetting)
+
+  if (communicationEnabled) {
+
+    let isPolling = yield select(getStartLinePollingStatus())
+    if (!isPolling) {
+      isPolling = true
+      yield put(updateStartLinePollingStatus(true))
+
+      while (true && isPolling)
+      {
+        yield put(fetchStartLineForCurrentCourse())
+        yield delay(StartLinePollingInterval)
+        isPolling = yield select(getStartLinePollingStatus())
+      }
+    }
+  }
+}
+
+export function* stopUpdateStartLineForCurrentCourseSaga() {
+  yield put(updateStartLinePollingStatus(false))
+  yield put(updateStartLine({}))
+}
+
+
 let expeditionCommunicationChannel: any
 function* handleExpeditionCommunicationMessages(shouldClearPreviousData: boolean) {
   expeditionCommunicationChannel = eventChannel((listener: any) => {
@@ -184,7 +234,9 @@ export default function* watchCommunications() {
   yield all([
     takeLatest(UPDATE_START_LINE, updateStartLineSaga),
     takeLatest(UPDATE_SERVER_STATE, updateServerStateSaga),
-    takeLatest(UPDATE_START_LINE_FOR_CURRENT_COURSE, updateStartLineForCurrentCourseSaga),
+    takeLatest(START_UPDATE_START_LINE_FOR_CURRENT_COURSE, startUpdateStartLineForCurrentCourseSaga),
+    takeLatest(STOP_UPDATE_START_LINE_FOR_CURRENT_COURSE, stopUpdateStartLineForCurrentCourseSaga),
+    takeLatest(FETCH_START_LINE_FOR_CURRENT_COURSE, fetchStartLineForCurrentCourseSaga),
     takeLatest(FETCH_COMMUNICATION_INFO, fetchCommunicationInfoSaga),
     takeLatest(FETCH_COMMUNICATION_STATE, fetchCommunicationStateSaga),
     takeLatest(SET_COMMUNICATION_STATE, setCommunicationStateSage),

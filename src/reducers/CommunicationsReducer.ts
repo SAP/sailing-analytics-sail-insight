@@ -9,6 +9,9 @@ import {
     updateServerState,
     updateServerValid,
     updateStartLine,
+    startUpdateStartLineBasedOnCurrentCourse,
+    stopUpdateStartLineBasedOnCurrentCourse,
+    updateStartLinePollingStatus,
 } from 'actions/communications'
 import { clearArrayHandler, itemAddHandler, itemUpdateHandler } from 'helpers/reducers'
 import { CommunicationsReducerState } from 'reducers/config'
@@ -21,6 +24,8 @@ const initialState: CommunicationsReducerState = {
   ip: '0.0.0.0',
   port: '0000',
   startLine: {},
+  startLinePolling: false,
+  startLineCourse: {},
   expeditionMessages: [],
 }
 
@@ -33,6 +38,20 @@ const reducer = handleActions(
     [updateServerPort as any]: itemUpdateHandler('port'),
     [updateStartLine as any]: itemUpdateHandler('startLine'),
     [updateExpeditionCommunicationMessages as any]: itemAddHandler('expeditionMessages'),
+    [startUpdateStartLineBasedOnCurrentCourse as any]: (state: any = initialState, action) => {
+      const payload = action.payload
+      return {
+        ...state,
+        startLineCourse: payload
+      }
+    },
+    [stopUpdateStartLineBasedOnCurrentCourse as any]: (state: any = initialState, action) => {
+      return {
+        ...state,
+        startLineCourse: {}
+      }
+    },
+    [updateStartLinePollingStatus as any]: itemUpdateHandler('startLinePolling'),
     [resetExpeditionCommunicationMessages as any]: clearArrayHandler('expeditionMessages'),
   },
   initialState,
