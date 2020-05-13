@@ -21,6 +21,11 @@ export const openLatestRaceTrackDetails = (navigation: object) => async (dispatc
   const latestRace = { name: getLatestLeaderboardRace(getState()) } as Race
 
   if (latestRace.name) {
-    navigation.navigate(Screens.TrackDetails, { data: { url: raceUrl(checkIn, latestRace) }})
+    navigation.navigate(Screens.TrackDetails, {
+      data: {
+        url: raceUrl(checkIn, latestRace),
+        comingFromTrackingScreen: true,
+      },
+    })
   }
 }
