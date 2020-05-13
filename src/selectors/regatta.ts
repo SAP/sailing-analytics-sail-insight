@@ -13,6 +13,10 @@ export const getSelectedRegatta = (state: any) => state.events.selectedRegatta
 export const getRegattaPlannedRaces = (name: string) => (state: any) => {
   const regatta = getEntityById(state, REGATTA_ENTITY_NAME, name)
 
+  if (!regatta) {
+    return undefined
+  }
+
   return compose(
     flatten,
     map(prop('races')),

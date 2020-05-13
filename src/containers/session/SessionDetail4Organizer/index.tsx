@@ -1,4 +1,4 @@
-import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
+import { __, compose, concat, curry, defaultTo, merge, reduce, toUpper, propEq,
   prop, isNil, equals, both, unless, last } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
@@ -52,7 +52,8 @@ const mapStateToProps = (state: any, props: any) => {
     unless(isNil, prop('startTimeAsMillis')),
     unless(isNil, (raceName) => getRaceTime(sessionData.session.leaderboardName, raceName)(state)),
     last,
-    getRegattaPlannedRaces(sessionData.session.regattaName),
+    defaultTo([]),
+    getRegattaPlannedRaces(sessionData?.session?.regattaName),
   )(state)
 
   const isBeforeLastPlannedRaceStartTime = lastPlannedRaceTime
