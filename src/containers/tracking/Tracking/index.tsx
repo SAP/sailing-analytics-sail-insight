@@ -4,6 +4,7 @@ import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
+import { NavigationEvents } from '@react-navigation/compat'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import { stopTracking, StopTrackingAction } from 'actions/tracking'
@@ -56,13 +57,11 @@ class Tracking extends React.Component<NavigationScreenProps & {
   public componentDidMount() {
     timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 1000)
     KeepAwake.activate()
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton)
   }
 
   public componentWillUnmount() {
     timer.clearInterval(this)
     KeepAwake.deactivate()
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
   }
 
   public render() {
@@ -80,6 +79,10 @@ class Tracking extends React.Component<NavigationScreenProps & {
 
     return (
       <ScrollContentView style={[container.main]}>
+        <NavigationEvents
+          onWillFocus={() => { BackHandler.addEventListener('hardwareBackPress', this.handleBackButton) }}
+          onWillBlur={() => { BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton) }}
+        />
         <ConnectivityIndicator style={styles.connectivity}/>
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={styles.container}>
@@ -173,15 +176,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
     )
   }
 
-  protected handleBackButton = () => {
-    if (this.props.navigation.isFocused()) {
-      return true
-    }
-    else {
-      return false
-    }
-  }
-
+  protected handleBackButton = () => true
   protected handleTimerEvent = () => {
     const {trackingStats} = this.props
     this.setState({durationText: durationText(trackingStats.startedAt)})
