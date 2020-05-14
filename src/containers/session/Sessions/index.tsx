@@ -14,6 +14,7 @@ import { selectEvent } from 'actions/events'
 import { fetchEventList } from 'actions/checkIn'
 import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
+import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { getFilteredSessionList } from 'selectors/session'
 import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
 
@@ -37,6 +38,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   authBasedNewSession: () => void,
   selectEvent: any,
   eventIdThatsBeingSelected?: string,
+  isLoggedIn: boolean,
 } > {
   private debouncedButtonClick = debounce(
     (actionType: string, ...args: any) => {
@@ -117,7 +119,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
         />
         <ScrollContentView
           style={this.styles.scrollContainer}
-          refreshControl={Platform.OS === 'android' && this.renderRefreshControl(shouldShowLoadingSpinner)}
+          refreshControl={this.props.isLoggedIn && Platform.OS === 'android' && this.renderRefreshControl(shouldShowLoadingSpinner)}
         >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
@@ -141,7 +143,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
                 data={this.props.sessions}
                 renderItem={this.renderItem}
                 extraData={this.state.swipeableLeftOpenEventId}
-                refreshControl={Platform.OS === 'ios' && this.renderRefreshControl(shouldShowLoadingSpinner)}
+                refreshControl={this.props.isLoggedIn && Platform.OS === 'ios' && this.renderRefreshControl(shouldShowLoadingSpinner)}
               />
           }
         </ScrollContentView>
@@ -176,6 +178,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 }
 
 const mapStateToProps = (state: any) => ({
+  isLoggedIn: isLoggedInSelector(state),
   sessions: getFilteredSessionList(state),
   eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
   isLoadingEventList: isLoadingEventList(state)
