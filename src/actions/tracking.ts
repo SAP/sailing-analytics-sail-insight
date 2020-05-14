@@ -15,7 +15,7 @@ import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
-import { startLeaderboardUpdates, stopLeaderboardUpdates } from 'actions/leaderboards'
+import { startLeaderboardUpdates, stopLeaderboardUpdates, updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
@@ -87,6 +87,7 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
     dispatch(updateLoadingCheckInFlag(true))
   }
   dispatch(resetTrackingStatistics())
+  dispatch(updateLatestTrackedRace(null))
 
   if (!markTracking) {
     navigation.navigate(Screens.Tracking)
