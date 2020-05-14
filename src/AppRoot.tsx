@@ -65,7 +65,7 @@ import I18n from 'i18n'
 import { $headerTintColor, $primaryTextColor, $secondaryTextColor, $primaryBackgroundColor } from 'styles/colors'
 import { getTabItemTitleTranslation } from 'helpers/texts'
 import IconText from 'components/IconText'
-import { tab, navigation as navigationStyles } from 'styles/commons'
+import { button, tab, navigation as navigationStyles } from 'styles/commons'
 
 const stackNavigatorConfig = {
   mode: 'card',
@@ -243,7 +243,8 @@ const accountNavigator = Component(props => compose(
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.AppSettings, component: AppSettings, options: { title: I18n.t('caption_tab_appsettings') } })),
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.Communications, component: CommunicationsSettings, options: { title: I18n.t('caption_tab_communicationssettings') } })),
   stackScreen(compose(withRightModalBackButton, withoutHeaderLeft)({ name: Screens.ExpertSettings, component: ExpertSettings, options: { title: I18n.t('title_expert_settings') } })),
-  stackScreen(compose(withLeftHeaderBackButton,)({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
+  stackScreen(({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
+    headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
     headerTitle: () => <TeamDetailsHeader/>,
     headerRight: () => teamDeleteHeader(route),
   }) })),
