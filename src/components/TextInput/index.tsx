@@ -176,7 +176,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
   }
 
   protected handleInputBlur = () => {
-    if (this.props.onBlur) { this.props.onBlur(this.state.text) }
+    if (this.props.onBlur) { this.props.onBlur() }
     this.setState({ isFocused: false })
   }
 }
