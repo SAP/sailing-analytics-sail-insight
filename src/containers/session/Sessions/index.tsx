@@ -1,6 +1,6 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { ActivityIndicator, Text, TouchableOpacity, View, ViewProps, Platform, RefreshControl } from 'react-native'
+import { ActivityIndicator, Text, TouchableOpacity, View, ViewProps, Platform, RefreshControl, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 
 import * as Screens from 'navigation/Screens'
@@ -113,13 +113,25 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 
     const shouldShowLoadingSpinner = openedWhenLoading && isLoadingEventList
     return (
-      <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
+      <View style={this.styles.container}>
         <NavigationEvents
           onWillFocus={() => this.setState({ openedWhenLoading: isLoadingEventList })}
         />
-        <ScrollContentView
+        <ScrollView
           style={this.styles.scrollContainer}
-          refreshControl={this.props.isLoggedIn && Platform.OS === 'android' && this.renderRefreshControl(shouldShowLoadingSpinner)}
+          contentContainerStyle={{ flexGrow: 1 }}
+          refreshControl={this.props.isLoggedIn &&
+            <RefreshControl
+              refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
+              onRefresh={() => {
+                if (!shouldShowLoadingSpinner) {
+                  this.setState({ openedWhenLoading: false });
+                  this.props.fetchEventList();
+                }
+              }}
+              tintColor="white"
+            />
+          }
         >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
@@ -135,7 +147,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
             </IconText>
           </TouchableOpacity>
           {shouldShowLoadingSpinner
-            ? <View style={{ flex: 1, justifyContent: 'center'}}>
+            ? <View style={{ flex: 1, justifyContent: 'center' }}>
                 <ActivityIndicator size="large" color="white" />
               </View>
             : <FloatingComponentList
@@ -143,10 +155,9 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
                 data={this.props.sessions}
                 renderItem={this.renderItem}
                 extraData={this.state.swipeableLeftOpenEventId}
-                refreshControl={this.props.isLoggedIn && Platform.OS === 'ios' && this.renderRefreshControl(shouldShowLoadingSpinner)}
               />
           }
-        </ScrollContentView>
+        </ScrollView>
         <View style={this.styles.bottomButton}>
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
@@ -156,23 +167,6 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           </TextButton>
         </View>
       </View>
-    )
-  }
-
-  private renderRefreshControl(shouldShowLoadingSpinner) {
-    const { isLoadingEventList } = this.props
-
-    return (
-      <RefreshControl
-        refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
-        onRefresh={() => {
-          if (!shouldShowLoadingSpinner) {
-            this.setState({ openedWhenLoading: false })
-            this.props.fetchEventList()
-          }
-        }}
-        tintColor="white"
-      />
     )
   }
 }
