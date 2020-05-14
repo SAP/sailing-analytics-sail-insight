@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { BackHandler, View } from 'react-native'
 import { WebView as RNWebView } from 'react-native-webview'
 import { connect } from 'react-redux'
 import { once } from 'ramda'
@@ -29,7 +29,10 @@ class WebView extends React.Component<{
 
     return (
       <View style={container.list}>
-        <NavigationEvents onWillFocus={this.changeBackButton} />
+        <NavigationEvents
+          onWillFocus={this.handleWillFocus}
+          onWillBlur={this.handleWillBlur}
+        />
         <RNWebView
           onLoadStart={this.onLoadStart}
           source={{
@@ -47,17 +50,29 @@ class WebView extends React.Component<{
     this.setState({ url: navState.nativeEvent.url })
   }
 
-  protected changeBackButton = () => {
+  protected goBack = once(() => {
+    if (this.props.comingFromTrackingScreen) {
+      this.props.navigation.goBack()
+      this.props.navigation.navigate(Screens.Tracking)
+    } else {
+      this.props.navigation.goBack()
+    }
+  })
+
+  protected handleHardwareBackButton = () => {
+    this.goBack()
+    return true
+  }
+
+  protected handleWillBlur = () => {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleHardwareBackButton)
+  }
+
+  protected handleWillFocus = () => {
+    BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackButton)
     this.props.navigation.setOptions({
       headerLeft: HeaderBackButton({
-        onPress: once(() => {
-          if (this.props.comingFromTrackingScreen) {
-            this.props.navigation.goBack()
-            this.props.navigation.navigate(Screens.Tracking)
-          } else {
-            this.props.navigation.goBack()
-          }
-        }),
+        onPress: this.goBack,
       }),
     })
   }
