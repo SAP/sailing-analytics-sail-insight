@@ -11,6 +11,7 @@ import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
 import { durationText } from 'helpers/date'
 import Logger from 'helpers/Logger'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { degToCompass } from 'helpers/physics'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
@@ -20,6 +21,7 @@ import { getCompetitor } from 'selectors/competitor'
 import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { getMark } from 'selectors/mark'
+import { isNetworkConnected } from 'selectors/network'
 import { getLeaderboardEnabledSetting } from 'selectors/settings'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
@@ -46,6 +48,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
   trackedContextName?: string,
   trackedRank?: number,
   leaderboardEnabled?: boolean,
+  isNetworkConnected: boolean,
 } > {
   public state = {
     isLoading: false,
@@ -87,7 +90,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={styles.container}>
           <View style={styles.propertyReverseRow}>
-            <TouchableOpacity onPress={() => this.props.openLatestRaceTrackDetails(this.props.navigation)}>
+            <TouchableOpacity onPress={this.handleSapButton}>
               <View style={{ justifyContent: 'flex-end' }}>
                 <Image
                   style={styles.tagLine}
@@ -174,6 +177,14 @@ class Tracking extends React.Component<NavigationScreenProps & {
         </TextButton>
       </ScrollContentView>
     )
+  }
+
+  protected handleSapButton = () => {
+    if (!this.props.isNetworkConnected) {
+      showNetworkRequiredSnackbarMessage()
+    } else {
+      this.props.openLatestRaceTrackDetails(this.props.navigation)
+    }
   }
 
   protected handleBackButton = () => true
@@ -266,6 +277,7 @@ const mapStateToProps = (state: any) => {
     ),
     trackedRank: getTrackedCompetitorLeaderboardRank(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
+    isNetworkConnected: isNetworkConnected(state),
   }
 }
 
