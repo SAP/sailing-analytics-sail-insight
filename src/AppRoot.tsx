@@ -136,7 +136,7 @@ const getTabBarLabel = (route: any, color: any, focused: any) => {
   )
 }
 
-const teamDeleteHeader = (route: any) => (route.params.paramTeamName) && (
+const teamDeleteHeader = (route: any) => (route?.params?.paramTeamName) && (
   <ImageButton
     source={Images.actions.delete}
     style={button.actionIconNavBar}
