@@ -106,7 +106,7 @@ const textInput = Component(props => compose(
     containerStyle: styles.inputContainer,
     inputContainerStyle: styles.inputContainer,
     value: props.value,
-    keyboardType: 'number-pad',
+    keyboardType: 'decimal-pad',
     returnKeyType: 'done'
   })))(
   fromClass(TextInput)))

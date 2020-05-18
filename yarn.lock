@@ -936,10 +936,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.7.1.tgz#ef2104d865de61ad91bba66613e57e689ff4e6a1"
   integrity sha512-/oX/x+EU4xNaqIaC/epVKzO8XghzImPA7l8cLz3USEFmtFiXFjBbTeeIFjjEm/u4/cv38Wi1xMEa10PHIWygRg==
 
-"@react-native-community/cli-debugger-ui@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-3.0.0.tgz#d01d08d1e5ddc1633d82c7d84d48fff07bd39416"
-  integrity sha512-m3X+iWLsK/H7/b7PpbNO33eQayR/+M26la4ZbYe1KRke5Umg4PIWsvg21O8Tw4uJcY8LA5hsP+rBi/syBkBf0g==
+"@react-native-community/cli-debugger-ui@4.7.0", "@react-native-community/cli-debugger-ui@^3.0.0":
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-4.7.0.tgz#4a8689f56b99378b24bbbf0ff6a89869d667f013"
+  integrity sha512-Z/xJ08Wz3J2fKDPrwxtQ44XSHnWsF6dnT0H2AANw63bWjnrR0E3sh8Nk8/oO+j9R7LH8S0+NHJdlniXYtL/bNg==
   dependencies:
     serve-static "^1.13.1"
 
@@ -6430,7 +6430,7 @@ react-native-autocomplete-input@^4.1.0:
   resolved "https://registry.yarnpkg.com/react-native-autocomplete-input/-/react-native-autocomplete-input-4.1.0.tgz#979ece28d891b245ecb967b6d31f1f924445b8ab"
   integrity sha512-Yn4GulZ9F6tde74UUGZHdVFeYWVuL7+EbUZy6kt+QHrzMc5B4OuRop1FT4RyWLpvbySW/vvqYgj9LAmlzkuEqA==
 
-react-native-background-fetch@^3.0.4:
+react-native-background-fetch@^3.0.4, react-native-background-fetch@~3.0.3:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-3.0.4.tgz#0b1e8b282e482343ce7f478ffb94cb72dfde054a"
   integrity sha512-ZUfwFPDvTRK4Tkl59Is9t2L8cekgRIUA1jNAzMjNrH2O9hpPJ3jYGzfp/+ipxlVZIs+Y83KsgNbL3g7R83r6zw==
@@ -6439,18 +6439,9 @@ react-native-background-fetch@^3.0.4:
     plist "^3.0.1"
     xcode "^2.0.0"
 
-react-native-background-fetch@~3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-3.0.3.tgz#ec5fa38aaebdbaa7d3f670de8cdaaa277def4db7"
-  integrity sha512-lO0rUvdFjOXAkV9hEIQcbPa0t3I8lwHvKD5kWS9fTIYAtkLSHC8DIVQI353fPaMgyY05toRS3bcT/T2ZM5jBGw==
-  dependencies:
-    fast-plist "^0.1.2"
-    plist "^3.0.1"
-    xcode "^2.0.0"
-
-"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.6.0":
-  version "3.6.0"
-  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#9e3971eddf10da28e347682a4723c0885a7617be"
+"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.6.2":
+  version "3.6.2"
+  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#4d16e589648bfb366e6d6e0b2a2168c4c2c75ec8"
   dependencies:
     fast-plist "^0.1.2"
     plist "^2.0.1"

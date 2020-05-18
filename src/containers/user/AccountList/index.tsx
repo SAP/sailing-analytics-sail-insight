@@ -46,6 +46,11 @@ const settingsItem = (props: any) => ({
   onPress: () => props.navigation.navigate(Screens.AppSettings),
 })
 
+const supportItem = (props: any) => ({
+  title: I18n.t('caption_support'),
+  onPress: () => props.navigation.navigate(Screens.Support),
+})
+
 const communicationsItem = (props: any) => ({
   title: I18n.t('caption_communications'),
   onPress: () => props.navigation.navigate(Screens.Communications),
@@ -71,7 +76,8 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 
     let data = [
       ...(isLoggedIn ? loggedInItems(propsWithDebouncedNavigation) : notLoggedInItems(propsWithDebouncedNavigation)),
-      settingsItem(propsWithDebouncedNavigation)
+      settingsItem(propsWithDebouncedNavigation),
+      supportItem(propsWithDebouncedNavigation)
     ]
 
     if (propsWithDebouncedNavigation.expeditionCommunicationEnabled) {

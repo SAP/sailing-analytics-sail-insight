@@ -60,6 +60,7 @@ export const backgroundSyncLeaderboard = async (
 
       const firstStartedRace = compose(
         head, // Just the race name
+        defaultTo([]),
         head, // Get the first race by start time
         sortBy(compose(prop('startTimeMillis'), last)),
         toPairs,

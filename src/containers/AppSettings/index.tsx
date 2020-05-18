@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { updateGpsBulkSetting, changeAnalyticsSetting } from 'actions/settings'
 import { getApiServerUrl } from 'api/config'
-import { getAppVersionText, openEmailToContact, openPrivacyPolicy, openTerms } from 'helpers/user'
+import { getAppVersionText, openPrivacyPolicy, openTerms } from 'helpers/user'
 import I18n from 'i18n'
 import { getBulkGpsSetting, getEnableAnalyticsSettings } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
@@ -56,13 +56,6 @@ class AppSettings extends React.Component<ViewProps & {
             </Text>
           </View>
           <View style={styles.textContainer}>
-            <TextButton
-              style={[styles.button]}
-              textStyle={styles.buttonContent}
-              onPress={openEmailToContact}
-            >
-              {I18n.t('caption_feedback_and_questions').toUpperCase()}
-            </TextButton>
             <TextButton
               style={[styles.button]}
               textStyle={styles.buttonContent}

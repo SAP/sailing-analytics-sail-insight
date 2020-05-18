@@ -200,7 +200,7 @@ class ExpertSettings extends TextInputForm<Props> {
 
   protected onLogToEmailSubmit = () => {
     this.setState({ emailLoading: true })
-    BackgroundGeolocation.emailLog('sailinsight@sailtracks.tv').then(() => {
+    BackgroundGeolocation.logger.emailLog('support@sapsailing.com').then(() => {
       Alert.alert(I18n.t('caption_success'))
       this.props.navigation.goBack()
     }).catch(() => {
