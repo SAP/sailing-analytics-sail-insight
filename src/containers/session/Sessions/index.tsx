@@ -175,11 +175,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
                 data={this.props.sessions}
                 renderItem={this.renderItem}
                 extraData={this.state.swipeableLeftOpenEventId}
-<<<<<<< HEAD
                 refreshControl={this.props.isLoggedIn && Platform.OS === 'ios' && this.renderRefreshControl(shouldShowLoadingSpinner)}
                 ListHeaderComponent={this.renderHeader}
-=======
->>>>>>> develop
               />
           }
         </ScrollView>
