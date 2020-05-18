@@ -145,7 +145,8 @@ export const endEventCard = Component((props: any) => compose(
     textButton({
       onPress: (props: any) => endEvent(props),
       style: styles.buttonBig,
-    },text({ style: styles.buttonBigContent }, I18n.t('caption_end_event').toUpperCase())))
+      textStyle: styles.buttonBigContent,
+    },text({}, I18n.t('caption_end_event').toUpperCase())))
   ]))
 
 export default Component((props: any) => compose(
