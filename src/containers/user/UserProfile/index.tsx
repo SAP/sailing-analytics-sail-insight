@@ -123,7 +123,7 @@ class UserProfile extends TextInputForm<Props> {
           { text: I18n.t('caption_ok'),
             onPress: () => {
               this.props.logout()
-              this.props.navigation.navigate(Screens.FirstContact)
+              this.props.navigation.reset({ index: 1, routes: [{ name: Screens.FirstContact }]})
             },
           },
         ],
