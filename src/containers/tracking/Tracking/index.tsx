@@ -46,7 +46,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
-  trackedRank?: number,
+  rank?: number,
   leaderboardEnabled?: boolean,
   isNetworkConnected: boolean,
 } > {
@@ -72,7 +72,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
       trackingStats,
       checkInData,
       trackedContextName,
-      trackedRank,
+      rank,
       leaderboardEnabled,
     } = this.props
 
@@ -105,7 +105,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
                 valueStyle={styles.rankText}
                 iconStyle={styles.rankIcon}
                 title={I18n.t('text_tracking_rank')}
-                value={`${trackedRank || EMPTY_VALUE}`}
+                value={`${rank || EMPTY_VALUE}`}
                 onPress={this.onLeaderboardPress}
               />
             }
@@ -275,7 +275,7 @@ const mapStateToProps = (state: any) => {
       getMark(checkInData.markId)(state),
       'name',
     ),
-    trackedRank: getTrackedCompetitorLeaderboardRank(state),
+    rank: getTrackedCompetitorLeaderboardRank(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
     isNetworkConnected: isNetworkConnected(state),
   }

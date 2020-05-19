@@ -38,7 +38,7 @@ class CompetitorList extends React.Component<{
     const { name, countryCode } = item
 
     if (forLeaderboard) {
-      const rank = get(item, ['trackedColumn', 'trackedRank'])
+      const rank = get(item, ['trackedColumn', 'rank'])
       const { rankingMetric, selectedColumn, myCompetitorData } = this.props
       return (
         <>

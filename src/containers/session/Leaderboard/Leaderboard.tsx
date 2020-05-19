@@ -72,7 +72,7 @@ class Leaderboard extends React.Component<{
     const leaderboard = sortBy(
       this.props.leaderboard,
       (o: LeaderboardCompetitorCurrentTrack) =>
-        o.trackedColumn ? o.trackedColumn.trackedRank : o.rank,
+        o.trackedColumn ? o.trackedColumn.rank : o.rank,
     )
 
     const {
@@ -83,7 +83,7 @@ class Leaderboard extends React.Component<{
 
     const myCompetitorData = this.getCompetitorById(myCompetitorId)
 
-    const rank = get(myCompetitorData, ['trackedColumn', 'trackedRank'])
+    const rank = get(myCompetitorData, ['trackedColumn', 'rank'])
 
     const comparedCompetitorData = selectedCompetitor
       ? this.getCompetitorById(selectedCompetitor)
