@@ -1,6 +1,6 @@
-import { __, always, append, compose, concat, defaultTo,
-  equals, ifElse, isEmpty, isNil, map, merge, not, apply, unapply,
-  objOf, prop, reduce, uncurryN, unless, when, dissocPath, path, addIndex,
+import { __, always, append, compose, concat, cond, defaultTo,
+  equals, isEmpty, isNil, map, merge, not, apply, unapply,
+  objOf, prop, reduce, uncurryN, T, unless, when, dissocPath, path, addIndex,
   gte, allPass
 } from 'ramda'
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
@@ -169,14 +169,14 @@ const raceAnalyticsButton = Component((props: any) =>
     fold(props),
     view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      onPress: ifElse(
-        always(props.isTracking),
-        () => props.openTrackDetails(props.item, props.navigation),
-        async () => {
+      onPress: cond([
+        [always(!props.isNetworkConnected), showNetworkRequiredSnackbarMessage],
+        [always(props.isTracking), () => props.openTrackDetails(props.item, props.navigation)],
+        [T, async () => {
           await props.startTracking(props.session)
           props.openTrackDetails(props.item, props.navigation)
-        }
-      )
+        }]
+      ])
     }))(
     text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
 

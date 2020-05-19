@@ -1,6 +1,7 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { ActivityIndicator, Text, TouchableOpacity, View, ViewProps, Platform, RefreshControl, ScrollView } from 'react-native'
+
+import { ActivityIndicator, Image, Text, TouchableOpacity, View, ViewProps, Platform, RefreshControl, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 
 import * as Screens from 'navigation/Screens'
@@ -15,7 +16,7 @@ import { fetchEventList } from 'actions/checkIn'
 import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { getFilteredSessionList } from 'selectors/session'
+import { getFilteredSessionList, isSessionListEmpty } from 'selectors/session'
 import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
 
 import { NavigationEvents } from '@react-navigation/compat'
@@ -39,6 +40,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   selectEvent: any,
   eventIdThatsBeingSelected?: string,
   isLoggedIn: boolean,
+  showHints: boolean,
 } > {
   private debouncedButtonClick = debounce(
     (actionType: string, ...args: any) => {
@@ -107,6 +109,24 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     }
   }
 
+  public renderHeader = () => {
+    const { showHints } = this.props
+    return showHints ? (
+      <View style={this.styles.hintContainer}>
+        <Image
+          source={
+            I18n.locale.substring(0, 3) === 'de-'
+              ? Images.defaults.background_empty_de
+              : Images.defaults.background_empty
+          }
+          style={this.styles.hintBackgroundImage}
+        />
+      </View>
+    ) : (
+      <View />
+    )
+  }
+
   public render() {
     const { openedWhenLoading } = this.state
     const { isLoadingEventList } = this.props
@@ -172,6 +192,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 }
 
 const mapStateToProps = (state: any) => ({
+  showHints: isSessionListEmpty(state),
   isLoggedIn: isLoggedInSelector(state),
   sessions: getFilteredSessionList(state),
   eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
