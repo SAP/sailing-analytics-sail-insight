@@ -80,10 +80,11 @@ export default (forTracking: boolean) => EStyleSheets.create({
     ...withSecondaryHeavyFont,
   },
   hintContainer: {
-    marginBottom: 30,
+    marginBottom: 85,
+    flex: 1,
+    justifyContent: 'center'
   },
   hintBackgroundImage: {
-    marginTop: 20,
     marginLeft: 'auto',
     marginRight: 'auto',
   }
