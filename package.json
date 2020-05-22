@@ -13,7 +13,6 @@
     "@expo/react-native-action-sheet": "3.4.1",
     "@react-native-community/async-storage": "1.7.1",
     "@react-native-community/eslint-config": "0.0.5",
-    "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/masked-view": "^0.1.6",
     "@react-native-community/netinfo": "4.7.0",
     "@react-native-community/slider": "^2.0.8",
