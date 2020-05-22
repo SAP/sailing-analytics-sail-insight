@@ -2,7 +2,7 @@ import { any, map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
-  toPairs, values, fromPairs, ifElse, always, findIndex, equals
+  toPairs, values, fromPairs, ifElse, always, findIndex, equals, path, pathEq
 } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
@@ -87,7 +87,29 @@ const copyCourse = (courseToCopy: any, latestCourseState: any) => {
 
   const waypointsWithLatestIds = compose(
     map(evolve({
-      markConfigurationIds: map((id) => mapMarkPropertyIdToLatest[id])
+      markConfigurationIds: map((id) => {
+        if (mapMarkPropertyIdToLatest[id]) {
+          return mapMarkPropertyIdToLatest[id]
+        }
+        // The else only happens for newly created marks
+        const markName = compose(
+          path(['effectiveProperties', 'name']),
+          defaultTo({}),
+          find(propEq('id', id)),
+          defaultTo([]),
+          prop('markConfigurations'),
+        )(courseToCopy)
+
+        const latestId = compose(
+          prop('id'),
+          defaultTo({}),
+          find(pathEq(['effectiveProperties', 'name'], markName)),
+          defaultTo([]),
+          prop('markConfigurations')
+        )(latestCourseState)
+
+        return latestId
+      })
     })),
     prop('waypoints')
   )(courseToCopy)
