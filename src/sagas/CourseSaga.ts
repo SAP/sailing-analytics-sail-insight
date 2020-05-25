@@ -2,7 +2,7 @@ import { any, map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
-  toPairs, values, fromPairs, ifElse, always, findIndex, equals, path, pathEq
+  toPairs, values, fromPairs, ifElse, always, findIndex, equals,
 } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
@@ -73,6 +73,7 @@ const courseWithWaypointIds = evolve({
 })
 
 const copyCourse = (courseToCopy: any, latestCourseState: any) => {
+  console.log({ courseToCopy, latestCourseState })
   const mapMarkPropertyIdToMarkConfiguration = compose(
     fromPairs,
     map(({ id, markPropertiesId }) => [markPropertiesId, id]),
@@ -92,20 +93,30 @@ const copyCourse = (courseToCopy: any, latestCourseState: any) => {
           return mapMarkPropertyIdToLatest[id]
         }
         // The else only happens for newly created marks
-        const markName = compose(
-          path(['effectiveProperties', 'name']),
-          defaultTo({}),
-          find(propEq('id', id)),
-          defaultTo([]),
-          prop('markConfigurations'),
+        // Finds the index in the waypoint array for the newly created mark
+        const waypointIndex = compose(
+          findIndex(compose(
+            includes(id),
+            prop('markConfigurationIds')
+          )),
+          prop('waypoints')
         )(courseToCopy)
 
+        // Finds the index in the waypoint mark pair (if it's a gate) for the newly created mark
+        const markGateIndex = compose(
+          findIndex(equals(waypointIndex)),
+          prop('markConfigurationIds'),
+          prop(waypointIndex),
+          prop('waypoints')
+        )(courseToCopy)
+
+        // Based on these two pieces of data finds the newly created mark's
+        // markConfigurationId in the data from the server
         const latestId = compose(
-          prop('id'),
-          defaultTo({}),
-          find(pathEq(['effectiveProperties', 'name'], markName)),
-          defaultTo([]),
-          prop('markConfigurations')
+          prop(markGateIndex),
+          prop('markConfigurationIds'),
+          prop(waypointIndex),
+          prop('waypoints')
         )(latestCourseState)
 
         return latestId
