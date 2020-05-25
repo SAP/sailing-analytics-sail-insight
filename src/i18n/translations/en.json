@@ -371,6 +371,7 @@
   "caption_course_creation_change_device": "Change Tracking Device",
   "caption_course_creation_delete_this_mark": "Delete this Mark from Course",
   "caption_course_creator_ping_position": "Ping Current Position",
+  "caption_course_creator_getting_ping_position": "Getting Current Position...",
   "caption_course_creation_edit_position": "Define Position On Map",
 
   "caption_course_creator_bind_with_tracker": "Bind with Tracker",

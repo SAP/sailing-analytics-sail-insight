@@ -8,8 +8,8 @@ buildscript {
         compileSdkVersion = 28
         targetSdkVersion = 28
         supportLibVersion = "1.0.0"
-        googlePlayServicesVersion = "16.1.0"
-        googlePlayServicesIidVersion = "16.0.1"
+        googlePlayServicesVersion = "17.0.0"
+        googlePlayServicesIidVersion = "17.0.0"
         googlePlayServicesVisionVersion = "17.0.2"
         firebaseVersion = "17.6.0"
         androidXCore = "1.1.0"

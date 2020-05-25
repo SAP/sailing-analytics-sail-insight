@@ -20,7 +20,7 @@ const config: Config = {
     BackgroundGeolocation.DESIRED_ACCURACY_NAVIGATION,
   distanceFilter: 0, // no minimum travel distance before location update to increase accuracy
   disableElasticity: true, // disable auto distanceFilter based on speed to increase accuracy
-  stopOnTerminate: false, // Default: true. Set false to continue tracking after user teminates the app.
+  stopOnTerminate: true, // Default: true. Set false to continue tracking after user teminates the app.
   heartbeatInterval: 1, // in seconds
   disableStopDetection: true,
   stopOnStationary: false,
