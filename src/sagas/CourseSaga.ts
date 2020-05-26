@@ -2,7 +2,7 @@ import { any, map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
-  toPairs, values, fromPairs, ifElse, always, findIndex, equals
+  toPairs, values, fromPairs, ifElse, always, findIndex, equals,
 } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
@@ -72,12 +72,14 @@ const courseWithWaypointIds = evolve({
   waypoints: map(w => merge(w, { id: uuidv4() }))
 })
 
-const copyCourse = (courseToCopy: any, latestCourseState: any) => {
+const copyCourse = (courseToCopy: any, latestCopiedCourseState: any, latestTargetCourseState: any) => {
+  // To copy over to another course we need to use the markConfigurations of
+  // the target course
   const mapMarkPropertyIdToMarkConfiguration = compose(
     fromPairs,
     map(({ id, markPropertiesId }) => [markPropertiesId, id]),
     prop('markConfigurations')
-  )(latestCourseState)
+  )(latestTargetCourseState)
 
   const mapMarkPropertyIdToLatest = compose(
     fromPairs,
@@ -87,14 +89,61 @@ const copyCourse = (courseToCopy: any, latestCourseState: any) => {
 
   const waypointsWithLatestIds = compose(
     map(evolve({
-      markConfigurationIds: map((id) => mapMarkPropertyIdToLatest[id])
+      markConfigurationIds: map((id) => {
+        if (mapMarkPropertyIdToLatest[id]) {
+          return mapMarkPropertyIdToLatest[id]
+        }
+        // The else only happens for newly created marks
+        // Finds the index in the waypoint array for the newly created mark
+        const waypointIndex = compose(
+          findIndex(compose(
+            includes(id),
+            prop('markConfigurationIds')
+          )),
+          prop('waypoints')
+        )(courseToCopy)
+
+        // Finds the index in the waypoint mark pair (if it's a gate) for the newly created mark
+        const markGateIndex = compose(
+          findIndex(equals(id)),
+          prop('markConfigurationIds'),
+          prop(waypointIndex),
+          prop('waypoints')
+        )(courseToCopy)
+
+        // Based on these two pieces of data finds the newly created mark's
+        // markConfigurationId in the created course data from the server.
+        // (If new marks are created the waypoints are not present iin latestTargetCourseState)
+        const copiedMarkConfigurationId = compose(
+          prop(markGateIndex),
+          prop('markConfigurationIds'),
+          prop(waypointIndex),
+          prop('waypoints')
+        )(latestCopiedCourseState)
+
+        // Finds the markPropertyId of the newly created mark
+        const copiedMarkPropertiesId = compose(
+          prop('markPropertiesId'),
+          find(propEq('id', copiedMarkConfigurationId)),
+          prop('markConfigurations')
+        )(latestCopiedCourseState)
+
+        // Gets the markConfigurationId from the target course
+        const latestId = compose(
+          prop('id'),
+          find(propEq('markPropertiesId', copiedMarkPropertiesId)),
+          prop('markConfigurations')
+        )(latestTargetCourseState)
+
+        return latestId
+      })
     })),
     prop('waypoints')
   )(courseToCopy)
 
   return {
     ...courseToCopy,
-    markConfigurations: latestCourseState.markConfigurations,
+    markConfigurations: latestTargetCourseState.markConfigurations,
     waypoints: waypointsWithLatestIds
   }
 }
@@ -219,6 +268,8 @@ function* saveCourseToServer({ editedCourse, existingCourse, regattaName, raceCo
     raceId,
     course: courseWithWaypointIds(updatedCourse)
   }))
+
+  return updatedCourse
 }
 
 function* saveCourseFlow() {
@@ -229,7 +280,7 @@ function* saveCourseFlow() {
   const editedCourse = yield select(getEditedCourse)
   const existingCourse = yield select(getCourseById(raceId))
 
-  yield call(saveCourseToServer, {
+  const updatedCourse = yield call(saveCourseToServer, {
     editedCourse,
     existingCourse,
     regattaName,
@@ -253,7 +304,7 @@ function* saveCourseFlow() {
 
   if (nextRaceColumnName) {
     const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
-    const nextCourse = copyCourse(editedCourse, latestNextRaceCourseState)
+    const nextCourse = copyCourse(editedCourse, updatedCourse, latestNextRaceCourseState)
 
     yield call(saveCourseToServer, {
       regattaName,
