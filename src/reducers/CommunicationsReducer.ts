@@ -3,6 +3,7 @@ import { handleActions } from 'redux-actions'
 import {
     resetExpeditionCommunicationMessages,
     updateExpeditionCommunicationMessages,
+    limitExpeditionCommunicationMessages,
     updateServerIP,
     updateServerPort,
     updateServerProtocol,
@@ -53,6 +54,27 @@ const reducer = handleActions(
     },
     [updateStartLinePollingStatus as any]: itemUpdateHandler('startLinePolling'),
     [resetExpeditionCommunicationMessages as any]: clearArrayHandler('expeditionMessages'),
+    [limitExpeditionCommunicationMessages as any]: (state: any = initialState, action) => {
+
+      const limit = action.payload
+      
+      if (state.expeditionMessages.length >= limit)
+      {
+        const expeditionMessages = [...state.expeditionMessages]
+        expeditionMessages.pop()
+
+        return {
+          ...state,
+          expeditionMessages,
+        }
+      }
+      else
+      {
+        return { 
+          ...state 
+        }
+      }
+    },
   },
   initialState,
 )
