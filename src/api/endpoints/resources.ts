@@ -109,12 +109,14 @@ const requestLeaderboardHandler = (url: (options?: UrlOptions) => string) => (
   leaderboardName: string,
   secret?: string,
   competitorId?: string,
+  showOnlyCompetitorsWithIdsProvided: boolean = false
 ) =>
   dataRequest(
     url({
       pathParams: [leaderboardName],
       urlParams: {
         secret,
+        showOnlyCompetitorsWithIdsProvided,
         showOnlyActiveRacesForCompetitorIds: competitorId,
         raceDetails: 'ALL',
       },
@@ -130,7 +132,12 @@ export interface DataApi {
   requestRaces: (regattaName: string, secret?: string) => any
   requestRace: (regattaName: string, raceName: string, raceId?: string, secret?: string) => any
   requestLeaderboard: (leaderboardName: string, secret?: string) => any
-  requestLeaderboardV2: (leaderboardName: string, secret?: string, competitorId?: string) => any
+  requestLeaderboardV2: (
+    leaderboardName: string,
+    secret?: string,
+    competitorId?: string,
+    showOnlyCompetitorsWithIdsProvided?: boolean,
+  ) => any
   requestEvent: (eventId: string, secret?: string) => any
   requestEventRacestates: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
