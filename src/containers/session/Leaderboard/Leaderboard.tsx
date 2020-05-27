@@ -16,6 +16,7 @@ import { getTrackedLeaderboard } from 'selectors/leaderboard'
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import Text from 'components/Text'
 import CompetitorList from './CompetitorList'
+import LeaderboardFetcher from './LeaderboardFetcher'
 import MyColumnValue from './MyColumnValue'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
@@ -96,6 +97,7 @@ class Leaderboard extends React.Component<{
 
     return (
       <View style={styles.mainContainer}>
+        <LeaderboardFetcher rankOnly={false} />
         <ConnectivityIndicator style={styles.connectivity} />
         <Text style={styles.header}>{'Leaderboard'.toUpperCase()}</Text>
         <View style={styles.container}>

@@ -29,6 +29,7 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
+import LeaderboardFetcher from 'containers/session/Leaderboard/LeaderboardFetcher'
 
 import { button, container } from 'styles/commons'
 import styles from './styles'
@@ -86,6 +87,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
           onWillFocus={() => { BackHandler.addEventListener('hardwareBackPress', this.handleBackButton) }}
           onWillBlur={() => { BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton) }}
         />
+        <LeaderboardFetcher rankOnly />
         <ConnectivityIndicator style={styles.connectivity}/>
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={styles.container}>
