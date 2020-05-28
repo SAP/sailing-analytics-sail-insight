@@ -1,5 +1,5 @@
-import { __, compose, concat, curry, defaultTo, merge, reduce, toUpper, propEq,
-  prop, isNil, equals, both, unless, last } from 'ramda'
+import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
+  prop, isNil, equals } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
@@ -29,11 +29,12 @@ import {
   withCompetitorListState,
   competitorListRefreshHandler,
 } from '../../session/common'
-import { getRegattaPlannedRaces } from 'selectors/regatta'
-import {getRaceTime} from 'selectors/event';
+import { getLastPlannedRaceTime, getRegattaPlannedRaces } from 'selectors/regatta'
+import { getRaceTime } from 'selectors/event'
 
 const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
+// If we change this we need to make sure that the stopTracking function in the EventsSaga sets the tracking end time on the correct race
 const nothingWhenBeforeLastPlannedRaceStartTime = branch(propEq('isBeforeLastPlannedRaceStartTime', true), nothingAsClass)
 const nothingWhenNoBoatClass = branch(compose(equals(''), prop('boatClass')), nothingAsClass)
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
@@ -48,13 +49,7 @@ const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClas
 const mapStateToProps = (state: any, props: any) => {
   const sessionData = mapStateToSessionDetailsProps(state, props)
 
-  const lastPlannedRaceTime = compose(
-    unless(isNil, prop('startTimeAsMillis')),
-    unless(isNil, (raceName) => getRaceTime(sessionData.session.leaderboardName, raceName)(state)),
-    last,
-    defaultTo([]),
-    getRegattaPlannedRaces(sessionData?.session?.regattaName),
-  )(state)
+  const lastPlannedRaceTime = getLastPlannedRaceTime(sessionData?.session?.leaderboardName, sessionData?.session?.regattaName)(state)
 
   const isBeforeLastPlannedRaceStartTime = lastPlannedRaceTime
     ? Date.now() < lastPlannedRaceTime
