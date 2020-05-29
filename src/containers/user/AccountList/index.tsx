@@ -14,7 +14,7 @@ import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
-import { getMtcpAndCommunicationSetting } from '../../../selectors/settings';
+import { getCommunicationSetting } from '../../../selectors/settings';
 import styles from './styles'
 
 const EMPTY_VALUE = '-'
@@ -114,7 +114,7 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 const mapStateToProps = (state: any) => ({
   user: getUserInfo(state) || {},
   isLoggedIn: isLoggedInSelector(state),
-  expeditionCommunicationEnabled: getMtcpAndCommunicationSetting(state)
+  expeditionCommunicationEnabled: getCommunicationSetting(state)
 })
 
 export default connect(mapStateToProps)(AccountList)
