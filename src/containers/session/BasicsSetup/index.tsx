@@ -89,11 +89,20 @@ const formDatePicker = Component((props: any) => compose(
   })))(
   fromClass(DatePicker)))
 
-const startDateInput = reduxFormField({
-  name: FORM_KEY_DATE_FROM,
-  component: formDatePicker.fold,
-  icon: Images.actions.arrowRight,
-})
+const startDateInput = Component((props: any) =>
+  fold(props)(
+    reduxFormField({
+      name: FORM_KEY_DATE_FROM,
+      component: formDatePicker.fold,
+      icon: Images.actions.arrowRight,
+      onChange: (event: any, value: any) => {
+        if (value > props.endDate) {
+          props.change(FORM_KEY_DATE_TO, value)
+        }
+      },
+    }),
+  ),
+)
 
 const endDateInput = reduxFormField({
   name: FORM_KEY_DATE_TO,
