@@ -19,21 +19,11 @@ class LeaderboardFetcher extends React.Component<{
   }
 
   protected onFocus = () => {
-    // console.log(
-    //   `Start leaderboard fetching for ${
-    //     this.props.rankOnly ? 'tracking' : 'leaderboard'
-    //   }`,
-    // )
     this.setState({
       interval: this.props.startPeriodicLeaderboardUpdates(this.props.rankOnly)
     })
   }
   protected onBlur = () => {
-    // console.log(
-    //   `Stop leaderboard fetching for ${
-    //     this.props.rankOnly ? 'tracking' : 'leaderboard'
-    //   }`,
-    // )
     stopPeriodicLeaderboardUpdates(this.state.interval)
     this.setState({ interval: null })
   }
