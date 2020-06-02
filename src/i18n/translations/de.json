@@ -121,6 +121,7 @@
   "text_tracking_alert_already_running_message": "Aktuelle Trackinginformationen vorhanden. Möchtest Du wirklich das Tracking starten?",
   "text_tracking_alert_stop_confirmation_title": "Bitte bestätigen",
   "text_tracking_alert_stop_confirmation_message": "Möchtest Du wirklich das Tracking beenden?",
+  "text_end_event_alert_message": "Willst Du das Event wirklich beenden? Dann werden keine weiteren Trackingdaten empfangen.",
   "text_track_share": "Klicke den folgenden Link und analysiere die Trackingdaten des Events: ",
   "text_setting_gps_bulk": "Der Batteriesparmodus schont den Akku, indem die Positionsdaten nicht sofort, sondern nur alle {{timeInSeconds}} Sekunden verschickt werden. Dadurch wird die Genauigkeit des Trackings nicht beeinflusst. Wird das Tracking in Echtzeit verfolgt, so können Verzögerungen bei der Anzeige auf einem anderem Gerät auftreten sowie bei der Anzeige von Manövern.",
   "text_tag_current_boat": "Aktuell",

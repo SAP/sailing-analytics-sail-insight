@@ -74,7 +74,7 @@ const sessionData = {
 }
 
 const endEvent = (props: any) => {
-  Alert.alert(I18n.t('caption_end_event'), I18n.t('text_tracking_alert_stop_confirmation_message'), [
+  Alert.alert(I18n.t('caption_end_event'), I18n.t('text_end_event_alert_message'), [
     { text: I18n.t('button_yes'), onPress: () => props.stopTracking(props.session) },
     { text: I18n.t('button_no') },
   ])
