@@ -5,7 +5,6 @@ import { PositionFix } from 'models'
 import BackgroundTimer from 'react-native-background-timer'
 import { deleteGPSFixRequests, readGPSFixRequests, writeGPSFixRequest } from 'storage'
 import { BASE_URL_PROPERTY_NAME, GPS_FIX_PROPERTY_NAME } from 'storage/schemas'
-import { updateUnsentGpsFixCount } from '../actions/locationTrackingData'
 import { handleManeuverChange } from '../actions/sessions'
 import Logger from '../helpers/Logger'
 import { DispatchType } from '../helpers/types'
@@ -53,7 +52,6 @@ const transferFixes = async (dispatch: DispatchType, backgroundTransfer: boolean
     // if (backgroundTransfer && !syncIsShuttingDown) {
     //   dispatch(handleManeuverChange(maneuverInfo))
     // }
-    dispatch(updateUnsentGpsFixCount(unsentGpsFixCount()))
   }))
 }
 

@@ -19,7 +19,6 @@ import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
-import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
@@ -350,7 +349,6 @@ class AppRoot extends ReactComponent {
     LocationService.removeStatusListener(this.handleLocationTrackingStatus)
     LocationService.removeLocationListener(this.handleGeolocation)
     LocationService.unregisterEvents()
-    GpsFixService.stopGPSFixUpdates()
   }
 
   public render() {
