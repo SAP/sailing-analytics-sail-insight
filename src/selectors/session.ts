@@ -127,11 +127,6 @@ export const getSession = (leaderboardName: string) => createSelector(
 )
 
 
-export const isSessionListEmpty = createSelector(
-  getSessionList,
-  (checkInList: any[]) => isEmpty(checkInList),
-)
-
 export const getFilteredSessionList = createSelector(
   getSessionList,
   getActiveEventFilters,
@@ -147,4 +142,9 @@ export const getFilteredSessionList = createSelector(
       ),
     )(sessions)
   },
+)
+
+export const isSessionListEmpty = createSelector(
+  getFilteredSessionList,
+  (checkInList: any[]) => isEmpty(checkInList),
 )
