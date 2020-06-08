@@ -15,6 +15,7 @@ import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
+import { isNetworkConnected } from 'selectors/network'
 
 import styles from './styles'
 
@@ -23,6 +24,7 @@ class Login extends TextInputForm<{
   login: (u: string, p: string) => any,
   fetchUserInfo: () => void,
   syncEventList: () => void,
+  isNetworkConnected: boolean
 }> {
   public state = {
     username: '',
@@ -37,6 +39,13 @@ class Login extends TextInputForm<{
 
     // custom validation
     let errorMsg = null
+
+    if(!this.props.isNetworkConnected) {
+      errorMsg = I18n.t('error_network_required_snackbar')
+      this.setState({ error: errorMsg })
+      return
+    }
+
     if (isEmpty(username)) {
       errorMsg = I18n.t('error_need_username')
     }
@@ -123,4 +132,8 @@ class Login extends TextInputForm<{
   }
 }
 
-export default connect(null, { fetchUserInfo, login, syncEventList })(Login)
+const mapStateToProps = (state: any) => ({
+  isNetworkConnected: isNetworkConnected(state),
+})
+
+export default connect(mapStateToProps, { fetchUserInfo, login, syncEventList })(Login)

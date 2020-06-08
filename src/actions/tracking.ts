@@ -28,7 +28,6 @@ import {
   getVerboseLoggingSetting,
 } from '../selectors/settings'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
-import { syncAllFixes } from '../services/GPSFixService'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
 import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCurrentCourse } from 'actions/communications'
 
@@ -44,7 +43,6 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
     if (leaderboardEnabled) {
       await dispatch(stopLeaderboardUpdates())
     }
-    await syncAllFixes(dispatch)
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
       await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
       await dispatch(stopTrack(data.leaderboardName, data.currentTrackName, data.currentFleet))
