@@ -10,8 +10,8 @@ import {
   recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { BackHandler, Switch, Platform } from 'react-native'
-import Geolocation from '@react-native-community/geolocation'
+import { BackHandler } from 'react-native'
+import BackgroundGeolocation from 'react-native-background-geolocation-android'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
@@ -38,8 +38,7 @@ import HeaderBackButton from 'components/HeaderBackButton'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from '@react-navigation/compat'
 import styles from './styles'
-import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue,
-  $secondaryBackgroundColor, $primaryBackgroundColor } from 'styles/colors'
+import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 import { Dimensions } from 'react-native'
 import I18n from 'i18n'
 
@@ -102,6 +101,17 @@ const withSelectedPositionType = withState('selectedPositionType', 'setSelectedP
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
 const withEditingGateName = withState('editingGateName', 'setEditingGateName', false)
 const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
+const withGettingCurrentPingPosition = withState('gettingCurrentPingPosition', 'setGettingCurrentPingPosition', false)
+const withGettingCurrentMapPosition = withState('gettingCurrentMapPosition', 'setGettingCurrentMapPosition', false)
+
+const openGeolocationScreenWithPosition = curry((props, location) => compose(
+  position => props.navigation.navigate(Screens.CourseGeolocation,
+    { data: {
+      selectedMarkConfiguration: props.selectedMarkConfiguration,
+      currentPosition: position,
+      markPosition: props.selectedMarkLocation } }),
+  prop('coords'))(
+  location))
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -202,15 +212,27 @@ const MarkPositionPing = Component((props: object) => compose(
   fold(props),
   touchableOpacity({
     style: styles.pingPositionButton,
-    onPress: (props: object) => Geolocation.getCurrentPosition(compose(
-      position => props.updateMarkConfigurationLocation({
-        id: props.selectedMarkConfiguration,
-        value: position
-      }),
-      pick(['latitude', 'longitude']),
-      prop('coords')))
+    onPress: (props: any) => {
+      props.setGettingCurrentPingPosition(true)
+      BackgroundGeolocation.getCurrentPosition({
+        timeout: 30,
+        maximumAge: 5000,
+        desiredAccuracy: 1,
+        samples: 3,
+        persist: false
+      }).then(compose(
+        position => props.updateMarkConfigurationLocation({
+          id: props.selectedMarkConfiguration,
+          value: position
+        }),
+        pick(['latitude', 'longitude']),
+        prop('coords')))
+    }
   }))(
-  text({ style: [styles.locationText, styles.pingText] }, I18n.t('caption_course_creator_ping_position').toUpperCase())))
+  text({ style: [styles.locationText, styles.pingText] },
+    props.gettingCurrentPingPosition ?
+      I18n.t('caption_course_creator_getting_ping_position').toUpperCase() :
+      I18n.t('caption_course_creator_ping_position').toUpperCase())))
 
 const MarkPositionCoordinates = Component(props => compose(
   fold(props),
@@ -229,13 +251,25 @@ const MarkPositionGeolocation = Component((props: object) =>
     concat(MarkPositionPing),
     touchableOpacity({
       style: styles.editPositionButton,
-      onPress: () => Geolocation.getCurrentPosition(({ coords }) =>
-        props.navigation.navigate(Screens.CourseGeolocation,
-          { data: {
-            selectedMarkConfiguration: props.selectedMarkConfiguration,
-            currentPosition: coords,
-            markPosition: props.selectedMarkLocation } })) }))(
-    text({ style: styles.locationText }, I18n.t('caption_course_creation_edit_position'))))
+      onPress: (props: any) => {
+        if (isEmpty(props.selectedMarkLocation)) {
+          props.setGettingCurrentMapPosition(true)
+          BackgroundGeolocation.getCurrentPosition({
+            timeout: 30,
+            maximumAge: 5000,
+            desiredAccuracy: 10,
+            samples: 1,
+            persist: false
+          })
+          .then(openGeolocationScreenWithPosition(props))
+        } else {
+          openGeolocationScreenWithPosition(props, { coords: props.selectedMarkLocation })
+        }
+      }}))(
+    text({ style: styles.locationText },
+      props.gettingCurrentMapPosition ?
+        I18n.t('caption_course_creator_getting_ping_position').toUpperCase() :
+        I18n.t('caption_course_creation_edit_position'))))
 
 const locationTypes = [
   { value: MarkPositionType.TrackingDevice, label: I18n.t('caption_course_creation_tracker'), customIcon: trackerIcon.fold },
@@ -262,6 +296,8 @@ const PositionSelector = fromClass(SwitchSelector).contramap((props: any) => ({
 const MarkPosition = Component((props: object) =>
   compose(
     fold(props),
+    withGettingCurrentPingPosition,
+    withGettingCurrentMapPosition,
     reduce(concat, nothing()))([
       text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, I18n.t('caption_course_creator_locate')),
       PositionSelector,

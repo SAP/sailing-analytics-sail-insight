@@ -4,12 +4,14 @@ import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
+import { NavigationEvents } from '@react-navigation/compat'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
 import { durationText } from 'helpers/date'
 import Logger from 'helpers/Logger'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { degToCompass } from 'helpers/physics'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
@@ -19,6 +21,7 @@ import { getCompetitor } from 'selectors/competitor'
 import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { getMark } from 'selectors/mark'
+import { isNetworkConnected } from 'selectors/network'
 import { getLeaderboardEnabledSetting } from 'selectors/settings'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
@@ -43,8 +46,9 @@ class Tracking extends React.Component<NavigationScreenProps & {
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
-  trackedRank?: number,
+  rank?: number,
   leaderboardEnabled?: boolean,
+  isNetworkConnected: boolean,
 } > {
   public state = {
     isLoading: false,
@@ -56,13 +60,11 @@ class Tracking extends React.Component<NavigationScreenProps & {
   public componentDidMount() {
     timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 1000)
     KeepAwake.activate()
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton)
   }
 
   public componentWillUnmount() {
     timer.clearInterval(this)
     KeepAwake.deactivate()
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
   }
 
   public render() {
@@ -70,7 +72,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
       trackingStats,
       checkInData,
       trackedContextName,
-      trackedRank,
+      rank,
       leaderboardEnabled,
     } = this.props
 
@@ -80,11 +82,15 @@ class Tracking extends React.Component<NavigationScreenProps & {
 
     return (
       <ScrollContentView style={[container.main]}>
+        <NavigationEvents
+          onWillFocus={() => { BackHandler.addEventListener('hardwareBackPress', this.handleBackButton) }}
+          onWillBlur={() => { BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton) }}
+        />
         <ConnectivityIndicator style={styles.connectivity}/>
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={styles.container}>
           <View style={styles.propertyReverseRow}>
-            <TouchableOpacity onPress={() => this.props.openLatestRaceTrackDetails(this.props.navigation)}>
+            <TouchableOpacity onPress={this.handleSapButton}>
               <View style={{ justifyContent: 'flex-end' }}>
                 <Image
                   style={styles.tagLine}
@@ -99,7 +105,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
                 valueStyle={styles.rankText}
                 iconStyle={styles.rankIcon}
                 title={I18n.t('text_tracking_rank')}
-                value={`${trackedRank || EMPTY_VALUE}`}
+                value={`${rank || EMPTY_VALUE}`}
                 onPress={this.onLeaderboardPress}
               />
             }
@@ -173,15 +179,15 @@ class Tracking extends React.Component<NavigationScreenProps & {
     )
   }
 
-  protected handleBackButton = () => {
-    if (this.props.navigation.isFocused()) {
-      return true
-    }
-    else {
-      return false
+  protected handleSapButton = () => {
+    if (!this.props.isNetworkConnected) {
+      showNetworkRequiredSnackbarMessage()
+    } else {
+      this.props.openLatestRaceTrackDetails(this.props.navigation)
     }
   }
 
+  protected handleBackButton = () => true
   protected handleTimerEvent = () => {
     const {trackingStats} = this.props
     this.setState({durationText: durationText(trackingStats.startedAt)})
@@ -269,8 +275,9 @@ const mapStateToProps = (state: any) => {
       getMark(checkInData.markId)(state),
       'name',
     ),
-    trackedRank: getTrackedCompetitorLeaderboardRank(state),
+    rank: getTrackedCompetitorLeaderboardRank(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
+    isNetworkConnected: isNetworkConnected(state),
   }
 }
 

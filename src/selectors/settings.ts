@@ -14,8 +14,11 @@ export const getServerUrlSetting = (state: RootState = {}) =>
 export const getVerboseLoggingSetting = (state: RootState = {}) =>
   state.settings && state.settings.verboseLogging
 
-export const getMtcpAndCommunicationSetting = (state: RootState = {}) =>
-    state.settings && state.settings.mtcpAndCommunication
+export const getCommunicationSetting = (state: RootState = {}) =>
+  state.settings && state.settings.communicationEnabled
+
+export const getMtcpSetting = (state: RootState = {}) =>
+  state.settings && state.settings.mtcpEnabled
 
 export const getLeaderboardEnabledSetting = (state: RootState = {}) => true
   //state.settings && state.settings.leaderboardEnabled

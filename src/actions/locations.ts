@@ -1,7 +1,6 @@
 import { PositionFix } from 'models'
 import { hasValidPosition } from 'models/PositionFix'
 import * as CheckInService from 'services/CheckInService'
-import * as GpsFixService from 'services/GPSFixService'
 import * as LocationService from 'services/LocationService'
 import LocationTrackingException from 'services/LocationService/LocationTrackingException'
 import { currentTimestampAsText } from 'helpers/date'
@@ -12,8 +11,7 @@ import {
   updateStartedAt,
   updateTrackedRegatta,
   updateTrackingStatistics,
-  updateTrackingStatus,
-  updateUnsentGpsFixCount,
+  updateTrackingStatus
 } from 'actions/locationTrackingData'
 import { checkAndUpdateRaceSettings } from 'actions/sessionConfig'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
@@ -39,7 +37,6 @@ export const startLocationUpdates = (
     await dispatch(updateTrackedRegatta({ leaderboardName, eventId }))
     await LocationService.start(verboseLogging)
     await LocationService.changePace(true)
-    GpsFixService.startPeriodicalGPSFixUpdates(bulkTransfer, dispatch)
     dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
     Logger.debug('Error during startLocationUpdates', err)
@@ -53,7 +50,6 @@ export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
     if (await LocationService.isEnabled()) {
       await LocationService.changePace(false)
       await LocationService.stop()
-      GpsFixService.stopGPSFixUpdates()
       Logger.debug('Location updates stopped.')
     } else {
       Logger.debug('stopLocationUpdates already stopped.')
@@ -75,12 +71,6 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
   if (!hasValidPosition(gpsFix)) {
     throw new LocationTrackingException('gps fix is invalid', gpsFix)
   }
-  const postData = CheckInService.gpsFixPostData([gpsFix])
-  if (!postData) {
-    throw new LocationTrackingException('gpsFix creation failed')
-  }
-  GpsFixService.storeGPSFix(serverUrl, gpsFix)
-  dispatch(updateUnsentGpsFixCount(GpsFixService.unsentGpsFixCount()))
   dispatch(updateTrackingStatistics(gpsFix))
   dispatch(checkAndUpdateRaceSettings(gpsFix))
 }

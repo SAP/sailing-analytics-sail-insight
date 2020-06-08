@@ -15,7 +15,7 @@ import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
-import { startLeaderboardUpdates, stopLeaderboardUpdates } from 'actions/leaderboards'
+import { startLeaderboardUpdates, stopLeaderboardUpdates, updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { updateEventEndTime } from 'actions/sessions'
@@ -27,7 +27,6 @@ import {
   getVerboseLoggingSetting,
 } from '../selectors/settings'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
-import { syncAllFixes } from '../services/GPSFixService'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
 import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCurrentCourse } from 'actions/communications'
 
@@ -43,7 +42,6 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
     if (leaderboardEnabled) {
       await dispatch(stopLeaderboardUpdates())
     }
-    await syncAllFixes(dispatch)
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
       await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
       await dispatch(stopTrack(data.leaderboardName, data.currentTrackName, data.currentFleet))
@@ -87,6 +85,7 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
     dispatch(updateLoadingCheckInFlag(true))
   }
   dispatch(resetTrackingStatistics())
+  dispatch(updateLatestTrackedRace(null))
 
   if (!markTracking) {
     navigation.navigate(Screens.Tracking)

@@ -2,12 +2,15 @@ import BackgroundGeolocation, { Config } from 'react-native-background-geolocati
 
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import { getNowAsMillis, getTimestampAsMillis } from 'helpers/date'
-import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'
 import I18n from '../../i18n'
+import { getAccessToken } from 'selectors/auth'
+import { getDeviceId } from 'selectors/user'
+import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
+import { getStore } from 'store'
+import { getDataApiGenerator } from 'api/config'
 
-const LOG_TAG = '[BG_LOCATION]'
 const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
 // const MOTION_CHANGE_KEY = 'motionchange'
@@ -34,6 +37,8 @@ const config: Config = {
   showsBackgroundLocationIndicator: true,
   stationaryRadius: 1,
   preventSuspend: true,
+  batchSync: true,
+  maxBatchSize: 30,
   // Android:
   allowIdenticalLocations: true,
   locationUpdateInterval: 333,
@@ -45,9 +50,6 @@ const config: Config = {
 }
 
 const locationListeners: any[] = []
-
-const Log = (...args: any[]) => Logger.debug(LOG_TAG, ...args)
-
 
 export const registerEvents = () => {
   // BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
@@ -118,9 +120,21 @@ export const LocationTrackingStatus = {
 }
 
 export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
+  const endpoint = getDataApiGenerator(getTrackedCheckInBaseUrl(getStore().getState()))('/gps_fixes')({})
+
   BackgroundGeolocation.ready(
     {
       ...config,
+      url: endpoint,
+      authorization: {
+        strategy: 'JWT',
+        accessToken: getAccessToken(getStore().getState())
+      },
+      httpRootProperty: 'fixes',
+      locationTemplate: '{"latitude": <%= latitude %>, "longitude": <%= longitude %>, "timestamp-iso": "<%= timestamp %>", "speed": <%= speed %>, "course": <%= heading %>, "accuracy": <%= accuracy %>}',
+      params: {
+        deviceUuid: getDeviceId()
+      },
       ...(!!verboseLogging ? {
         logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
       } : {}),

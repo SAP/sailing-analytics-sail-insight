@@ -3,11 +3,17 @@ import { $DarkBlue } from 'styles/colors'
 import { withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 export default (forTracking: boolean) => EStyleSheets.create({
+  container: {
+    paddingTop: 40,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '$primaryBackgroundColor'
+  },
   scrollContainer: {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '$primaryBackgroundColor',
-    paddingTop: forTracking ? 80 : 40,
+    paddingTop: forTracking ? 40 : 0,
   },
   headLine: {
     color: 'white',
@@ -73,4 +79,13 @@ export default (forTracking: boolean) => EStyleSheets.create({
     fontSize: 24,
     ...withSecondaryHeavyFont,
   },
+  hintContainer: {
+    marginBottom: 85,
+    flex: 1,
+    justifyContent: 'center'
+  },
+  hintBackgroundImage: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  }
 })

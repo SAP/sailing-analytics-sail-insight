@@ -4,6 +4,7 @@ import {
   getSharedDataApiGenerator,
   getDataApiV2Generator,
   getRaceApiGenerator,
+  getSecurityGenerator,
   HttpMethods,
   UrlOptions,
 } from 'api/config'
@@ -50,6 +51,7 @@ const apiEndpoints = (serverUrl: string) => {
   const getSharedUrlV1 = getSharedDataApiGenerator(serverUrl)
   const getUrlV2 = getDataApiV2Generator(serverUrl)
   const getRaceUrl = getRaceApiGenerator(serverUrl)
+  const getSecurityUrl = getSecurityGenerator(serverUrl)
   return {
     regatta: getUrlV1('/regattas'),
     regattaDetails: getUrlV1('/regattas/{0}'),
@@ -87,7 +89,7 @@ const apiEndpoints = (serverUrl: string) => {
     updateLeaderboard: getUrlV1('/leaderboards/{0}/update'),
     putWind: getUrlV1('/wind/putWind'),
     raceLog: getRaceUrl('/racelog'),
-    preferences: getUrlV1('/preferences/{0}'),
+    preferences: getSecurityUrl('/preferences/{0}'),
     boatClasses: getUrlV1('/boatclasses'),
     countryCodes: getUrlV1('/countrycodes'),
     teamImage: getUrlV1('/competitors/{0}/team/image'),

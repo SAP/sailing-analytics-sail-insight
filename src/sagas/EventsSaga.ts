@@ -16,7 +16,7 @@ import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
-import { __, apply, compose, concat, curry, dec, path, prop, length,
+import { __, apply, compose, concat, curry, dec, path, prop, last, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share } from 'react-native'
 import { all, call, put, select, takeEvery, takeLatest, take } from 'redux-saga/effects'
@@ -268,10 +268,21 @@ function* startTracking({ payload }: any) {
 }
 
 function* stopTracking({ payload }: any) {
-  const { serverUrl, leaderboardName } = payload
+  const { serverUrl, leaderboardName, regattaName } = payload
   const api = dataApi(serverUrl)
 
   yield safeApiCall(api.stopTracking, leaderboardName, { fleet: 'Default' })
+
+  // Set end of tracking time for the last race
+  const races = yield select(getRegattaPlannedRaces(regattaName))
+  const lastRace = last(races)
+
+  yield safeApiCall(api.setTrackingTimes, regattaName,
+    {
+      fleet: 'Default',
+      race_column: lastRace,
+      endoftrackingasmillis: moment().valueOf()
+    })
 
   const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
   if (leaderboardData) {

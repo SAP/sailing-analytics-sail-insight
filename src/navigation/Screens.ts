@@ -12,6 +12,8 @@ export const UserProfile = 'UserProfile'
 export const TeamList = 'TeamList'
 export const TeamDetails = 'TeamDetails'
 export const Communications = 'Communications'
+export const Support = 'Support'
+export const ZendeskSupport = 'ZendeskSupport'
 
 // sessions
 export const UserSessions = 'UserSessions'

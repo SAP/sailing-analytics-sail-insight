@@ -18,7 +18,6 @@ import {
   updateTrackingStartTimeUpdateFlag,
   updateTrackingStatistics,
   updateTrackingStatus,
-  updateUnsentGpsFixCount,
   updateValidGpsFixCount,
 } from 'actions/locationTrackingData'
 import { removeUserData } from '../actions/auth'
@@ -48,7 +47,6 @@ const reducer = handleActions(
     [updateTrackingStatus as any]: itemUpdateHandler('status'),
     [updateTrackedLeaderboard as any]: itemUpdateHandler('leaderboardName'),
     [updateTrackedEventId as any]: itemUpdateHandler('eventId'),
-    [updateUnsentGpsFixCount as any]: itemUpdateHandler('unsentGpsFixCount'),
     [updateLastWindCourse as any]: itemUpdateHandler('lastWindCourse'),
     [updateLastWindSpeed as any]: itemUpdateHandler('lastWindSpeedInKnots'),
     [updateStartedAt as any]: itemUpdateHandler('startedAt'),

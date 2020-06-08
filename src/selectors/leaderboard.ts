@@ -48,9 +48,9 @@ export const getTrackedCompetitorLeaderboardRank = createSelector(
     const currentLeaderboardTrack =
       trackedCompetitor &&
       getLeaderboardCompetitorCurrentRaceColumn(trackedCompetitor)
-    const trackedRank = currentLeaderboardTrack && currentLeaderboardTrack.trackedRank
+    const rank = currentLeaderboardTrack && currentLeaderboardTrack.rank
 
-    return trackedRank
+    return rank
   }
 )
 

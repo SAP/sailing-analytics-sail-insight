@@ -19,7 +19,6 @@ import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
-import * as GpsFixService from './services/GPSFixService'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { NavigationContainer } from '@react-navigation/native'
@@ -39,6 +38,8 @@ import PasswordReset from 'containers/authentication/PasswordReset'
 import MarkInventory from 'containers/Inventory/MarkInventory'
 import AppSettings from 'containers/AppSettings'
 import CommunicationsSettings from 'containers/CommunicationsSettings'
+import Support from 'containers/Support'
+import ZendeskSupport from 'containers/ZendeskSupport'
 import { getSelectedMarkProperties } from 'selectors/course'
 import AccountList from 'containers/user/AccountList'
 import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
@@ -134,7 +135,7 @@ const getTabBarLabel = (route: any, color: any, focused: any) => {
   )
 }
 
-const teamDeleteHeader = (route: any) => (route.params.paramTeamName) && (
+const teamDeleteHeader = (route: any) => (route?.params?.paramTeamName) && (
   <ImageButton
     source={Images.actions.delete}
     style={button.actionIconNavBar}
@@ -242,7 +243,12 @@ const accountNavigator = Component(props => compose(
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.TeamList, component: TeamList, options: { title: I18n.t('caption_tab_teamlist') } })),
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.AppSettings, component: AppSettings, options: { title: I18n.t('caption_tab_appsettings') } })),
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.Communications, component: CommunicationsSettings, options: { title: I18n.t('caption_tab_communicationssettings') } })),
+  stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.Support, component: Support.fold, options: { title: I18n.t('caption_tab_support') } })),
   stackScreen(compose(withRightModalBackButton, withoutHeaderLeft)({ name: Screens.ExpertSettings, component: ExpertSettings, options: { title: I18n.t('title_expert_settings') } })),
+  stackScreen({ name: Screens.ZendeskSupport, component: ZendeskSupport, options: ({ route }) => ({
+    headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
+    title: route?.params?.data?.supportType === 'FAQ' ? I18n.t('caption_faq') : I18n.t('caption_known_issues')
+  }) }),
   stackScreen(({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
     headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
     headerTitle: () => <TeamDetailsHeader/>,
@@ -343,7 +349,6 @@ class AppRoot extends ReactComponent {
     LocationService.removeStatusListener(this.handleLocationTrackingStatus)
     LocationService.removeLocationListener(this.handleGeolocation)
     LocationService.unregisterEvents()
-    GpsFixService.stopGPSFixUpdates()
   }
 
   public render() {

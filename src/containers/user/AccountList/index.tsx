@@ -14,7 +14,7 @@ import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
-import { getMtcpAndCommunicationSetting } from '../../../selectors/settings';
+import { getCommunicationSetting } from '../../../selectors/settings';
 import styles from './styles'
 
 const EMPTY_VALUE = '-'
@@ -46,6 +46,11 @@ const settingsItem = (props: any) => ({
   onPress: () => props.navigation.navigate(Screens.AppSettings),
 })
 
+const supportItem = (props: any) => ({
+  title: I18n.t('caption_support'),
+  onPress: () => props.navigation.navigate(Screens.Support),
+})
+
 const communicationsItem = (props: any) => ({
   title: I18n.t('caption_communications'),
   onPress: () => props.navigation.navigate(Screens.Communications),
@@ -71,7 +76,8 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 
     let data = [
       ...(isLoggedIn ? loggedInItems(propsWithDebouncedNavigation) : notLoggedInItems(propsWithDebouncedNavigation)),
-      settingsItem(propsWithDebouncedNavigation)
+      settingsItem(propsWithDebouncedNavigation),
+      supportItem(propsWithDebouncedNavigation)
     ]
 
     if (propsWithDebouncedNavigation.expeditionCommunicationEnabled) {
@@ -108,7 +114,7 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 const mapStateToProps = (state: any) => ({
   user: getUserInfo(state) || {},
   isLoggedIn: isLoggedInSelector(state),
-  expeditionCommunicationEnabled: getMtcpAndCommunicationSetting(state)
+  expeditionCommunicationEnabled: getCommunicationSetting(state)
 })
 
 export default connect(mapStateToProps)(AccountList)

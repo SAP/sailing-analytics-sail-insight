@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native'
+import { Dimensions, PixelRatio } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { $tinySpacing, $smallSpacing } from 'styles/dimensions'
@@ -7,6 +7,7 @@ import { withSecondaryLightFont, withSecondaryHeavyFont, withDefaultBoldFont } f
 const windowHeight = Dimensions.get('window').height
 const skipAndroid = true
 const topMargin = windowHeight * 0.057
+const smallScreen = PixelRatio.getPixelSizeForLayoutSize(windowHeight) < 1930
 
 
 export default EStyleSheets.create({
@@ -17,7 +18,8 @@ export default EStyleSheets.create({
   },
   measurementContainer: {
     backgroundColor: 'white',
-    padding: '$tinySpacing',
+    paddingHorizontal: '$tinySpacing',
+    paddingVertical: smallScreen ? 1 : '$tinySpacing',
     width: '100%',
 
   },
@@ -47,21 +49,21 @@ export default EStyleSheets.create({
   },
   rankText: {
     color: '$Orange',
-    fontSize: 60,
+    fontSize: smallScreen ? 40 : 60,
     ...withSecondaryHeavyFont,
   },
   connectivity: {
     marginTop: getStatusBarHeight(skipAndroid),
   },
   stopButton: {
-    marginTop: 24,
+    marginTop: smallScreen ? 12 : 24,
     marginBottom: 24,
   },
   informationItem: {
     padding: '$tinySpacing',
   },
   propertyRow: {
-    marginTop: '$smallSpacing',
+    marginTop: smallScreen ? '$tinySpacing' : '$smallSpacing',
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -78,7 +80,7 @@ export default EStyleSheets.create({
     marginTop: 20,
   },
   property: {
-    marginTop: '$tinySpacing',
+    marginTop: smallScreen ? 0 : '$tinySpacing'
   },
   propertyBottom: {
     marginBottom: '$tinySpacing',
