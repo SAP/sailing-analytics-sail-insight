@@ -35,6 +35,7 @@ export interface TextInputProps {
   containerStyle?: ViewStyle
   highlight?: boolean
   hideTopPlaceholder: boolean
+  onBlurWithoutText: boolean
 }
 
 class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInputProps> {
@@ -68,6 +69,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
       style,
       containerStyle,
       highlight,
+      onBlurWithoutText,
       ...additionalProps
     } = this.props
 
@@ -176,7 +178,13 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
   }
 
   protected handleInputBlur = () => {
-    if (this.props.onBlur) { this.props.onBlur() }
+    if (this.props.onBlur) { 
+      if (this.props.onBlurWithoutText) {
+        this.props.onBlur()
+      } else {
+        this.props.onBlur(this.state.text)
+      } 
+    }
     this.setState({ isFocused: false })
   }
 }
