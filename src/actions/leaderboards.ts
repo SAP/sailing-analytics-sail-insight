@@ -17,6 +17,7 @@ import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 export const updateLeaderboardGaps = createAction('UPDATE_LEADERBOARD_GAPS')
 export const clearLeaderboardGaps = createAction('CLEAR_LEADERBOARD_GAPS')
 export const updateLatestTrackedRace = createAction('UPDATE_LATEST_TRACKED_RACE')
+export const updateLeaderboardStale = createAction('UPDATE_LEADERBOARD_STALE')
 
 export const fetchLeaderboardV2 = (leaderboard: string) =>
   withDataApi({ leaderboard })((dataApi, dispatch, getState) => {
@@ -122,14 +123,16 @@ const syncLeaderboard = (rankOnly: boolean) => async (dispatch: DispatchType, ge
 const DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS = 5000
 
 export const startPeriodicLeaderboardUpdates = (rankOnly: boolean) => (dispatch: DispatchType) => {
+  dispatch(updateLeaderboardStale(true))
   dispatch(clearLeaderboardGaps())
   const callback = () => dispatch(syncLeaderboard(rankOnly))
   const interval = setInterval(callback, DEFAULT_UPDATE_TIME_INTERVAL_IN_MILLIS)
   // So that the period doesn't have to pass for the first fetch of the data
-  setImmediate(callback)
+  setImmediate(() => callback().finally(() => dispatch(updateLeaderboardStale(false))))
   return interval
 }
-export const stopPeriodicLeaderboardUpdates = (interval?: any) => {
+export const stopPeriodicLeaderboardUpdates = (interval?: any) => (dispatch: DispatchType) => {
+  dispatch(updateLeaderboardStale(true))
   if (interval) {
     clearInterval(interval)
   }

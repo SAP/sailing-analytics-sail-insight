@@ -24,12 +24,12 @@ class LeaderboardFetcher extends React.Component<{
     })
   }
   protected onBlur = () => {
-    stopPeriodicLeaderboardUpdates(this.state.interval)
+    this.props.stopPeriodicLeaderboardUpdates(this.state.interval)
     this.setState({ interval: null })
   }
 }
 
 export default connect(
   () => ({}),
-  { startPeriodicLeaderboardUpdates },
+  { startPeriodicLeaderboardUpdates, stopPeriodicLeaderboardUpdates },
 )(LeaderboardFetcher)

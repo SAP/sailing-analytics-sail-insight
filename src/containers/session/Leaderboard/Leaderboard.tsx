@@ -1,6 +1,7 @@
 import { difference, find, get, sortBy } from 'lodash'
 import React from 'react'
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   View,
@@ -11,7 +12,7 @@ import { connect } from 'react-redux'
 
 import I18n from 'i18n'
 import { getTrackedCheckInCompetitorId } from 'selectors/checkIn'
-import { getTrackedLeaderboard } from 'selectors/leaderboard'
+import { getTrackedLeaderboard, isLeaderboardStale } from 'selectors/leaderboard'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import Text from 'components/Text'
@@ -69,6 +70,7 @@ class Leaderboard extends React.Component<{
     const {
       trackedCheckInCompetitorId: myCompetitorId,
       rankingMetric,
+      isLeaderboardStale
     } = this.props
     const leaderboard = sortBy(
       this.props.leaderboard,
@@ -154,16 +156,24 @@ class Leaderboard extends React.Component<{
             </View>
           </View>
         </View>
-        <View style={[styles.listContainer]}>
-          <CompetitorList
-            leaderboard={leaderboard}
-            forLeaderboard={true}
-            onCompetitorItemPress={this.onLeaderboardItemPress}
-            rankingMetric={rankingMetric}
-            myCompetitorData={myCompetitorData}
-            selectedColumn={selectedColumn}
-          />
-        </View>
+        {
+          isLeaderboardStale ? (
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <ActivityIndicator size="large" color="white" />
+            </View>
+          ) : (
+            <View style={[styles.listContainer]}>
+              <CompetitorList
+                leaderboard={leaderboard}
+                forLeaderboard={true}
+                onCompetitorItemPress={this.onLeaderboardItemPress}
+                rankingMetric={rankingMetric}
+                myCompetitorData={myCompetitorData}
+                selectedColumn={selectedColumn}
+              />
+            </View>
+          )
+        }
       </View>
     )
   }
@@ -205,6 +215,7 @@ const mapStateToProps = (state: any) => {
     trackedCheckInCompetitorId: getTrackedCheckInCompetitorId(state),
     leaderboard: getTrackedLeaderboard(state) || [],
     rankingMetric: getTrackedRegattaRankingMetric(state),
+    isLeaderboardStale: isLeaderboardStale(state),
   }
 }
 
