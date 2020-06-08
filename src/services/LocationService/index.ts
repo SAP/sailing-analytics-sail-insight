@@ -2,16 +2,15 @@ import BackgroundGeolocation, { Config } from 'react-native-background-geolocati
 
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import { getNowAsMillis, getTimestampAsMillis } from 'helpers/date'
-import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'
 import I18n from '../../i18n'
 import { getAccessToken } from 'selectors/auth'
 import { getDeviceId } from 'selectors/user'
+import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getStore } from 'store'
-import { getApiServerUrl, getDataApiGenerator } from 'api/config'
+import { getDataApiGenerator } from 'api/config'
 
-const LOG_TAG = '[BG_LOCATION]'
 const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
 // const MOTION_CHANGE_KEY = 'motionchange'
@@ -51,9 +50,6 @@ const config: Config = {
 }
 
 const locationListeners: any[] = []
-
-const Log = (...args: any[]) => Logger.debug(LOG_TAG, ...args)
-
 
 export const registerEvents = () => {
   // BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
@@ -124,10 +120,12 @@ export const LocationTrackingStatus = {
 }
 
 export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
+  const endpoint = getDataApiGenerator(getTrackedCheckInBaseUrl(getStore().getState()))('/gps_fixes')({})
+
   BackgroundGeolocation.ready(
     {
       ...config,
-      url: getDataApiGenerator(getApiServerUrl())('/gps_fixes')({}),
+      url: endpoint,
       authorization: {
         strategy: 'JWT',
         accessToken: getAccessToken(getStore().getState())
