@@ -3,7 +3,6 @@ import { handleActions } from 'redux-actions'
 import {
     resetExpeditionCommunicationMessages,
     updateExpeditionCommunicationMessages,
-    limitExpeditionCommunicationMessages,
     updateServerIP,
     updateServerPort,
     updateServerProtocol,
@@ -14,7 +13,7 @@ import {
     stopUpdateStartLineBasedOnCurrentCourse,
     updateStartLinePollingStatus,
 } from 'actions/communications'
-import { clearArrayHandler, itemAddHandler, itemUpdateHandler } from 'helpers/reducers'
+import { clearArrayHandler, itemUpdateHandler } from 'helpers/reducers'
 import { CommunicationsReducerState } from 'reducers/config'
 
 
@@ -28,6 +27,7 @@ const initialState: CommunicationsReducerState = {
   startLinePolling: false,
   startLineCourse: {},
   expeditionMessages: [],
+  expeditionMessagesLimit: 500,
 }
 
 const reducer = handleActions(
@@ -38,7 +38,25 @@ const reducer = handleActions(
     [updateServerIP as any]: itemUpdateHandler('ip'),
     [updateServerPort as any]: itemUpdateHandler('port'),
     [updateStartLine as any]: itemUpdateHandler('startLine'),
-    [updateExpeditionCommunicationMessages as any]: itemAddHandler('expeditionMessages'),
+    [updateExpeditionCommunicationMessages as any]: (state: any = initialState, action) => {
+      if (state.expeditionMessages.length >= state.expeditionMessagesLimit)
+      {
+        const expeditionMessages = [...state.expeditionMessages]
+        expeditionMessages.pop()
+
+        return {
+          ...state,
+          expeditionMessages: [action && action.payload, ...expeditionMessages],
+        }
+      }
+      else
+      {
+        return {
+          ...state,
+          expeditionMessages: [action && action.payload, ...state['expeditionMessages']],
+        }
+      }
+    },
     [startUpdateStartLineBasedOnCurrentCourse as any]: (state: any = initialState, action) => {
       const payload = action.payload
       return {
@@ -54,27 +72,6 @@ const reducer = handleActions(
     },
     [updateStartLinePollingStatus as any]: itemUpdateHandler('startLinePolling'),
     [resetExpeditionCommunicationMessages as any]: clearArrayHandler('expeditionMessages'),
-    [limitExpeditionCommunicationMessages as any]: (state: any = initialState, action) => {
-
-      const limit = action.payload
-      
-      if (state.expeditionMessages.length >= limit)
-      {
-        const expeditionMessages = [...state.expeditionMessages]
-        expeditionMessages.pop()
-
-        return {
-          ...state,
-          expeditionMessages,
-        }
-      }
-      else
-      {
-        return { 
-          ...state 
-        }
-      }
-    },
   },
   initialState,
 )

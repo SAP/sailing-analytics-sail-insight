@@ -76,7 +76,7 @@ class OutputConsole extends React.Component<OutputConsoleProps, OutputConsoleSta
     )
   }
 
-  private onShare() {
+  private onShare = () => {
     const message = this.props.expeditionMessages.map(item => item.message).join('\n\r')
     try {
       Share.share({
@@ -87,11 +87,11 @@ class OutputConsole extends React.Component<OutputConsoleProps, OutputConsoleSta
     }
   }
 
-  private onReset() {
+  private onReset = () => {
     this.props.resetExpeditionCommunicationMessages()
   }
 
-  private onPauseResume() {
+  private onPauseResume = () => {
     if (this.state.isRunning) {
       this.props.stopExpeditionCommunicationMessagesChannel()
     } else {

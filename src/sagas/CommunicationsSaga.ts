@@ -12,7 +12,6 @@ import {
   FETCH_START_LINE_FOR_CURRENT_COURSE,
   updateExpeditionCommunicationMessages,
   resetExpeditionCommunicationMessages,
-  limitExpeditionCommunicationMessages,
   fetchCommunicationState,
   updateServerIP,
   updateServerPort,
@@ -38,7 +37,6 @@ import { NativeEventEmitter, NativeModules } from 'react-native'
 const Server1Port = 8001
 const StartLinePollingInterval = 5000
 const CommunicationChannelPollingInterval = 200
-const CommunicationChannelLimit = 500
 
 function getNetworkPromise() {
   return NetworkInfo.getIPV4Address()
@@ -202,7 +200,6 @@ function* handleExpeditionCommunicationMessages(shouldClearPreviousData: boolean
       expeditionEvent[key] = Date.now()
       yield delay(CommunicationChannelPollingInterval)
       yield put(updateExpeditionCommunicationMessages(expeditionEvent))
-      yield put(limitExpeditionCommunicationMessages(CommunicationChannelLimit))
     }
   } finally {
     expeditionCommunicationChannel.close()
