@@ -100,19 +100,6 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   return body
 }
 
-const gpsFixPostItem = (fix: PositionFix) => fix && ({
-  [GPSFixBodyKeys.Latitude]: fix.latitude,
-  [GPSFixBodyKeys.Longitude]: fix.longitude,
-  [GPSFixBodyKeys.Timestamp]: fix.timeMillis,
-  [GPSFixBodyKeys.Course]: fix.bearingInDeg || 0,
-  [GPSFixBodyKeys.Speed]: (fix.speedInKnots || 0) * 0.51444444444,
-})
-
-export const gpsFixPostData = (fixes: PositionFix[]) => fixes && ({
-  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueId()),
-  [GPSFixBodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
-})
-
 export const eventUrl = (checkInData: any) =>
   checkInData &&
   `${checkInData.serverUrl}/gwt/Home.html?navigationTab=Regattas#EventPlace:eventId=${checkInData.eventId}`

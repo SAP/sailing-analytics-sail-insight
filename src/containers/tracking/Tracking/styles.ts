@@ -7,7 +7,7 @@ import { withSecondaryLightFont, withSecondaryHeavyFont, withDefaultBoldFont } f
 const windowHeight = Dimensions.get('window').height
 const skipAndroid = true
 const topMargin = windowHeight * 0.057
-const smallScreen = PixelRatio.getPixelSizeForLayoutSize(windowHeight) < 1400
+const smallScreen = PixelRatio.getPixelSizeForLayoutSize(windowHeight) < 1930
 
 
 export default EStyleSheets.create({
@@ -49,14 +49,14 @@ export default EStyleSheets.create({
   },
   rankText: {
     color: '$Orange',
-    fontSize: 60,
+    fontSize: smallScreen ? 40 : 60,
     ...withSecondaryHeavyFont,
   },
   connectivity: {
     marginTop: getStatusBarHeight(skipAndroid),
   },
   stopButton: {
-    marginTop: 24,
+    marginTop: smallScreen ? 12 : 24,
     marginBottom: 24,
   },
   informationItem: {

@@ -1,8 +1,9 @@
-import { compose, flatten, head, length, map, prop } from 'ramda'
+import { compose, defaultTo, flatten, head, isNil, last, length, map, prop, unless } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { REGATTA_ENTITY_NAME } from 'api/schemas'
 import { getTrackedCheckInRegattaName } from 'selectors/checkIn'
+import { getRaceTime } from 'selectors/event'
 import { getEntities, getEntityById } from './entity'
 
 
@@ -41,3 +42,11 @@ export const getRegattaNumberOfRaces = compose(
   prop('series')
 )
 
+export const getLastPlannedRaceTime = (leaderboardName, regattaName) =>
+  state => compose(
+    unless(isNil, prop('startTimeAsMillis')),
+    unless(isNil, raceName => getRaceTime(leaderboardName, raceName)(state)),
+    last,
+    defaultTo([]),
+    getRegattaPlannedRaces(regattaName),
+  )(state)

@@ -25,7 +25,7 @@ import {
   updateStartLinePollingStatus,
 } from 'actions/communications'
 import { getMarkPositionsForCourse, getServerIP, getServerPort, getStartLine, getStartLinePollingStatus, getStartLineCourse } from 'selectors/communications'
-import { getMtcpAndCommunicationSetting } from 'selectors/settings'
+import { getCommunicationSetting } from 'selectors/settings'
 import { getServerState, sendStartLine, setServerState } from 'services/CommunicationService'
 
 import { NetworkInfo } from 'react-native-network-info'
@@ -152,7 +152,7 @@ export function* startUpdateStartLineForCurrentCourseSaga() {
   // reset start line
   yield put(updateStartLine({}))
 
-  const communicationEnabled = yield select(getMtcpAndCommunicationSetting)
+  const communicationEnabled = yield select(getCommunicationSetting)
 
   if (communicationEnabled) {
 

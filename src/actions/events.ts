@@ -7,6 +7,7 @@ import { ActionQueue, fetchAction } from 'helpers/actions'
 
 import { collectCheckInData, updateCheckInAndEventInventory } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
+import { getApiServerUrl } from 'api/config'
 import { CreateEventBody } from 'api/endpoints/types'
 import { DispatchType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
@@ -60,6 +61,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
   const response = await selfTrackingApi().createEvent({
     secret,
     startdate,
+    baseurl:                    getApiServerUrl(),
     enddate:                    eventData.dateTo.toISOString(),
     eventName:                  eventData.name,
     venuename:                  eventData.location,
