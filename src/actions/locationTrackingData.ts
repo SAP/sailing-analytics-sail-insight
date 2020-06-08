@@ -6,7 +6,6 @@ export const updateTrackedLeaderboard = createAction('UPDATE_TRACKED_LEADERBOARD
 export const updateTrackedEventId = createAction('UPDATE_TRACKED_EVENT_ID')
 export const removeTrackedRegatta = createAction('REMOVE_TRACKED_REGATTA')
 export const updateTrackedRegatta = createAction('UPDATE_TRACKED_REGATTA')
-export const updateUnsentGpsFixCount = createAction('UPDATE_UNSENT_GPS_FIX_COUNT')
 export const updateTrackingStatistics = createAction('UPDATE_TRACKING_STATISTICS')
 export const resetTrackingStatistics = createAction('RESET_TRACKING_STATISTICS')
 export const updateLocationAccuracy = createAction('UPDATE_LOCATION_ACCURACY')

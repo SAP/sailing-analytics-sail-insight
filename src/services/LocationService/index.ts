@@ -6,6 +6,10 @@ import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'
 import I18n from '../../i18n'
+import { getAccessToken } from 'selectors/auth'
+import { getDeviceId } from 'selectors/user'
+import { getStore } from 'store'
+import { getApiServerUrl, getDataApiGenerator } from 'api/config'
 
 const LOG_TAG = '[BG_LOCATION]'
 const HEARTBEAT_KEY = 'heartbeat'
@@ -34,6 +38,8 @@ const config: Config = {
   showsBackgroundLocationIndicator: true,
   stationaryRadius: 1,
   preventSuspend: true,
+  batchSync: true,
+  maxBatchSize: 30,
   // Android:
   allowIdenticalLocations: true,
   locationUpdateInterval: 333,
@@ -121,6 +127,16 @@ export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, re
   BackgroundGeolocation.ready(
     {
       ...config,
+      url: getDataApiGenerator(getApiServerUrl())('/gps_fixes')({}),
+      authorization: {
+        strategy: 'JWT',
+        accessToken: getAccessToken(getStore().getState())
+      },
+      httpRootProperty: 'fixes',
+      locationTemplate: '{"latitude": <%= latitude %>, "longitude": <%= longitude %>, "timestamp-iso": "<%= timestamp %>", "speed": <%= speed %>, "course": <%= heading %>, "accuracy": <%= accuracy %>}',
+      params: {
+        deviceUuid: getDeviceId()
+      },
       ...(!!verboseLogging ? {
         logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
       } : {}),

@@ -8,7 +8,6 @@ import { getAppVersionText, openPrivacyPolicy, openTerms } from 'helpers/user'
 import I18n from 'i18n'
 import { getBulkGpsSetting, getEnableAnalyticsSettings } from 'selectors/settings'
 import { getDeviceId } from 'services/CheckInService'
-import { BULK_UPDATE_TIME_INTERVAL_IN_MILLIS } from 'services/GPSFixService'
 import * as Screens from 'navigation/Screens'
 import EditItemSwitch from 'components/EditItemSwitch'
 import ScrollContentView from 'components/ScrollContentView'
@@ -16,8 +15,6 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import { container } from 'styles/commons'
 import Logger from '../../helpers/Logger'
-import { readGPSFixRequestDuplicates, readGPSFixRequests } from '../../storage'
-import { GPS_FIX_PROPERTY_NAME } from '../../storage/schemas'
 import styles from './styles'
 
 class AppSettings extends React.Component<ViewProps & {
@@ -51,9 +48,9 @@ class AppSettings extends React.Component<ViewProps & {
               switchValue={this.props.bulkGpsSetting}
               onSwitchValueChange={this.props.updateGpsBulkSetting}
             />
-            <Text style={styles.item}>
+            {/* <Text style={styles.item}>
               {I18n.t('text_setting_gps_bulk', { timeInSeconds: BULK_UPDATE_TIME_INTERVAL_IN_MILLIS / 1000 })}
-            </Text>
+            </Text> */}
           </View>
           <View style={styles.textContainer}>
             <TextButton
@@ -78,23 +75,23 @@ class AppSettings extends React.Component<ViewProps & {
   }
 
   protected showDeveloperDialog = () => {
-    const mainServerUrl = getApiServerUrl()
-    const numberOfunsentGPSFixes = readGPSFixRequests().length
-    const numberOfGPSFixes = readGPSFixRequestDuplicates().length
-    // tslint:disable-next-line
-    const message = `Main server url:\n${mainServerUrl}\n\nGPS-Fixes of last tracking:\nNumber of unsent gps fixes=${numberOfunsentGPSFixes}\nNumber of gps fixes=${numberOfGPSFixes}`
-    Alert.alert(
-      'Development Options',
-      message,
-      [
-        {
-          text: 'Export all GPS fixes', onPress: async () => {
-            this.exportGpsFixes()
-          },
-        },
-      ],
-      { cancelable: true },
-    )
+    // const mainServerUrl = getApiServerUrl()
+    // const numberOfunsentGPSFixes = readGPSFixRequests().length
+    // const numberOfGPSFixes = readGPSFixRequestDuplicates().length
+    // // tslint:disable-next-line
+    // const message = `Main server url:\n${mainServerUrl}\n\nGPS-Fixes of last tracking:\nNumber of unsent gps fixes=${numberOfunsentGPSFixes}\nNumber of gps fixes=${numberOfGPSFixes}`
+    // Alert.alert(
+    //   'Development Options',
+    //   message,
+    //   [
+    //     {
+    //       text: 'Export all GPS fixes', onPress: async () => {
+    //         this.exportGpsFixes()
+    //       },
+    //     },
+    //   ],
+    //   { cancelable: true },
+    // )
   }
 
   protected handleExpertSettings = () => {
@@ -107,18 +104,18 @@ class AppSettings extends React.Component<ViewProps & {
   }
 
   protected exportGpsFixes = () => {
-    const fixRequests = readGPSFixRequestDuplicates()
-    const data: any[] = []
+    // const fixRequests = readGPSFixRequestDuplicates()
+    // const data: any[] = []
 
-    fixRequests.forEach((fixRequest: any) => {
-      data.push(fixRequest[GPS_FIX_PROPERTY_NAME])
-    })
+    // fixRequests.forEach((fixRequest: any) => {
+    //   data.push(fixRequest[GPS_FIX_PROPERTY_NAME])
+    // })
 
-    const myObjStr = JSON.stringify(data, undefined, 2)
+    // const myObjStr = JSON.stringify(data, undefined, 2)
 
-    Share.share({ title: 'GPS-Fixes', message: myObjStr.toString() })
-      .then(result => Logger.debug(result))
-      .catch(errorMsg => Logger.debug(errorMsg))
+    // Share.share({ title: 'GPS-Fixes', message: myObjStr.toString() })
+    //   .then(result => Logger.debug(result))
+    //   .catch(errorMsg => Logger.debug(errorMsg))
   }
 
   protected renderVersionNumber = () => {
