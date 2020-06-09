@@ -4,7 +4,6 @@ import android.app.Application;
 import androidx.multidex.MultiDexApplication;
 
 import com.facebook.react.ReactApplication;
-import io.realm.react.RealmReactPackage;
 import com.horcrux.svg.SvgPackage;
 
 import io.branch.referral.Branch;
