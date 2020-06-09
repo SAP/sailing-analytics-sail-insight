@@ -15,7 +15,7 @@ import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
-import { startLeaderboardUpdates, stopLeaderboardUpdates, updateLatestTrackedRace } from 'actions/leaderboards'
+import { updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { updateTrackedRegatta } from 'actions/locationTrackingData'
 import { fetchRegattaAndRaces } from 'actions/regattas'
@@ -24,7 +24,6 @@ import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import {
   getBulkGpsSetting,
-  getLeaderboardEnabledSetting,
   getVerboseLoggingSetting,
 } from '../selectors/settings'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
@@ -39,10 +38,6 @@ export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboar
       return
     }
     await dispatch(stopLocationUpdates())
-    const leaderboardEnabled = getLeaderboardEnabledSetting(getState())
-    if (leaderboardEnabled) {
-      await dispatch(stopLeaderboardUpdates())
-    }
     if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
       await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
       await dispatch(stopTrack(data.leaderboardName, data.currentTrackName, data.currentFleet))
