@@ -7,12 +7,10 @@ import { connect } from 'react-redux'
 import { NavigationEvents } from '@react-navigation/compat'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
-import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
 import { durationText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
-import { degToCompass } from 'helpers/physics'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { getBoat } from 'selectors/boat'
@@ -41,7 +39,7 @@ const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
 
 class Tracking extends React.Component<NavigationScreenProps & {
-  stopTracking: StopTrackingAction,
+  stopTracking: any,
   openLatestRaceTrackDetails: any,
   trackingStats: LocationStats,
   checkInData: CheckIn,
@@ -141,20 +139,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
               />
             </View>
             <View
-              style={styles.rightPropertyContainer}
-            >
-              {
-                !checkInData.isSelfTracking ? null :
-                <TrackingProperty
-                  style={[styles.measurementContainer, styles.propertyBottom]}
-                  titleStyle={styles.measurementTitle}
-                  valueStyle={styles.measurementValue}
-                  iconStyle={styles.windIcon}
-                  title={I18n.t('text_tracking_wind')}
-                  onPress={this.onSetWindPress}
-                  {...this.createWindProps()}
-                />
-              }
+              style={styles.rightPropertyContainer}>
               <TrackingProperty
                 style={[styles.measurementContainer]}
                 titleStyle={styles.measurementTitle}
@@ -171,8 +156,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
           style={[button.actionFullWidth, container.largeHorizontalMargin, styles.stopButton]}
           textStyle={button.trackingActionText}
           onPress={this.onStopTrackingPress}
-          isLoading={this.state.isLoading}
-        >
+          isLoading={this.state.isLoading}>
           {this.state.buttonText}
         </TextButton>
       </ScrollContentView>
@@ -204,7 +188,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
   )
 
   protected onStopTrackingPress = async () => {
-    if(!this.state.stoppingFailed && !(await this.stopTrackingConfirmationDialog())) {
+    if (!(await this.stopTrackingConfirmationDialog())) {
       return
     }
 
@@ -215,8 +199,6 @@ class Tracking extends React.Component<NavigationScreenProps & {
       this.props.navigation.goBack()
     } catch (err) {
       Logger.debug('onStopTrackingPress Error', err)
-      this.setState({ buttonText: I18n.t('caption_resend').toUpperCase(), stoppingFailed: true })
-      Alert.alert(I18n.t('error_tracking_resend_info_title'), I18n.t('error_tracking_resend_info_text'))
     } finally {
       this.setState({ isLoading: false })
       Toast.show(I18n.t('text_info_event_finished'), {
@@ -249,17 +231,6 @@ class Tracking extends React.Component<NavigationScreenProps & {
       speedInKnots: trackingStats.lastWindSpeedInKnots,
       directionInDeg: trackingStats.lastWindDirection,
     } })
-  }
-
-  protected createWindProps() {
-    const { trackingStats } = this.props
-    if (!trackingStats || !trackingStats.lastWindDirection || !trackingStats.lastWindSpeedInKnots) {
-      return { value: I18n.t('caption_set_wind').toUpperCase() }
-    }
-    return {
-      value: `${degToCompass(trackingStats.lastWindDirection)} ${Math.round(trackingStats.lastWindSpeedInKnots)}`,
-      unit: I18n.t('text_tracking_unit_knots'),
-    }
   }
 }
 
