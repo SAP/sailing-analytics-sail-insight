@@ -266,8 +266,6 @@
   "error_field_invalid_password": "Das Passwort muss mindestens fünf Zeichen enthalten.",
   "error_regatta_access_forbidden": "Du hast leider keinen Zugriff auf diese Regatta.",
   "error_field_invalid_sessionname": "Der Event-Name darf folgende Zeichen nicht enthalten: /, \", ;, ?, [, ]",
-  "error_tracking_resend_info_title" : "Tracking übertragen",
-  "error_tracking_resend_info_text" : "Dein Tracking wurde gestoppt, jedoch konnten nicht alle Daten übertragen werden.\nBitte versuche es erneut.",
   "error_load_nationalities": "Nationalitäten konnten nicht geladen werden",
   "error_load_boat_classes": "Bootsklassen konnten nicht geladen werden",
   "error_start_date_after_end_date": "Das Startdatum muss vor dem Enddatum liegen.",
