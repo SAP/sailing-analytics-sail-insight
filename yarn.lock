@@ -5968,7 +5968,7 @@ react-native-autocomplete-input@^4.1.0:
   resolved "https://registry.yarnpkg.com/react-native-autocomplete-input/-/react-native-autocomplete-input-4.1.0.tgz#979ece28d891b245ecb967b6d31f1f924445b8ab"
   integrity sha512-Yn4GulZ9F6tde74UUGZHdVFeYWVuL7+EbUZy6kt+QHrzMc5B4OuRop1FT4RyWLpvbySW/vvqYgj9LAmlzkuEqA==
 
-react-native-background-fetch@^3.0.4, react-native-background-fetch@~3.0.3:
+react-native-background-fetch@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-3.0.4.tgz#0b1e8b282e482343ce7f478ffb94cb72dfde054a"
   integrity sha512-ZUfwFPDvTRK4Tkl59Is9t2L8cekgRIUA1jNAzMjNrH2O9hpPJ3jYGzfp/+ipxlVZIs+Y83KsgNbL3g7R83r6zw==
@@ -5977,9 +5977,18 @@ react-native-background-fetch@^3.0.4, react-native-background-fetch@~3.0.3:
     plist "^3.0.1"
     xcode "^2.0.0"
 
-"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.6.2":
-  version "3.6.2"
-  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#4d16e589648bfb366e6d6e0b2a2168c4c2c75ec8"
+react-native-background-fetch@~3.0.3:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-3.0.6.tgz#0123722caa92bcbe4bb191bd37f2d5b0d3e65f2d"
+  integrity sha512-F3C/uHC6PHcyPLEB5iQeX4bU41x1CcjFKYf7P54rTSuYG9BlV3z0oyhzbCkWxCCabMl9yzFozuqpUMKybMGD4w==
+  dependencies:
+    fast-plist "^0.1.2"
+    plist "^3.0.1"
+    xcode "^2.0.0"
+
+"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.6.1":
+  version "3.6.1"
+  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#70cb5bd9d9a296d5c0a7e0b57707e1de4223bd09"
   dependencies:
     fast-plist "^0.1.2"
     plist "^2.0.1"
