@@ -19,6 +19,7 @@ import { createEventActionQueue, updateCreatingEvent } from 'actions/events'
 import {
   EVENT_CREATION_FORM_NAME,
   eventCreationDataFromFormValues,
+  FORM_KEY_DATE_TO,
   FORM_KEY_REGATTA_TYPE,
   FORM_KEY_NUMBER_OF_RACES,
   generateInitialValues,
@@ -47,6 +48,7 @@ const mapStateToProps = (state: any) => ({
   defaultValues: generateDefaultValues(),
   maxNumberOfDiscards: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_NUMBER_OF_RACES)(state) + 1,
   regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state),
+  endDate: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_DATE_TO)(state),
   formErrors: compose(
     values,
     when(always(equals(hasSubmitFailed(EVENT_CREATION_FORM_NAME)(state), false)), always({})),
@@ -129,9 +131,9 @@ const createButton = Component(
     view({ style: { backgroundColor: $LightBlue }}),
   )(
   textButton({
-    style: styles.createButton, 
-    textStyle: styles.createButtonText,  
-    onPress: props.handleSubmit(createEvent(props)), 
+    style: styles.createButton,
+    textStyle: styles.createButtonText,
+    onPress: props.handleSubmit(createEvent(props)),
     isLoading: props.isCreatingEvent},
     text({}, I18n.t('caption_create'))))
 )

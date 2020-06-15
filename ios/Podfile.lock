@@ -74,9 +74,6 @@ PODS:
     - boost-for-react-native
     - DoubleConversion
     - glog
-  - GCDWebServer (3.5.4):
-    - GCDWebServer/Core (= 3.5.4)
-  - GCDWebServer/Core (3.5.4)
   - glog (0.3.5)
   - GoogleAppMeasurement (6.1.6):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
@@ -320,8 +317,6 @@ PODS:
     - React
   - react-native-camera/RN (3.16.0):
     - React
-  - react-native-geolocation (2.0.2):
-    - React
   - react-native-keep-awake (3.1.0):
     - React
   - react-native-maps (0.26.1):
@@ -373,12 +368,9 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
     - ReactCommon/jscallinvoker (= 0.61.5)
-  - RealmJS (3.6.3):
-    - GCDWebServer
-    - React
   - RNBackgroundFetch (3.0.4):
     - React
-  - RNBackgroundGeolocation (3.6.0):
+  - RNBackgroundGeolocation (3.6.2):
     - CocoaLumberjack (~> 3.5.1)
     - React
   - RNCAsyncStorage (1.7.1):
@@ -472,7 +464,6 @@ DEPENDENCIES:
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-branch (from `../node_modules/react-native-branch`)
   - react-native-camera (from `../node_modules/react-native-camera`)
-  - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -492,7 +483,6 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RealmJS (from `../node_modules/realm`)
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation-android`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
@@ -529,7 +519,6 @@ SPEC REPOS:
     - FirebaseCoreDiagnostics
     - FirebaseCoreDiagnosticsInterop
     - FirebaseInstanceID
-    - GCDWebServer
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
@@ -593,8 +582,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-branch"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
-  react-native-geolocation:
-    :path: "../node_modules/@react-native-community/geolocation"
   react-native-keep-awake:
     :path: "../node_modules/react-native-keep-awake"
   react-native-maps:
@@ -631,8 +618,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
-  RealmJS:
-    :path: "../node_modules/realm"
   RNBackgroundFetch:
     :path: "../node_modules/react-native-background-fetch"
   RNBackgroundGeolocation:
@@ -694,7 +679,6 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnosticsInterop: 296e2c5f5314500a850ad0b83e9e7c10b011a850
   FirebaseInstanceID: ebd2ea79ee38db0cb5f5167b17a0d387e1cc7b6e
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
-  GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   GoogleAppMeasurement: dfe55efa543e899d906309eaaac6ca26d249862f
   GoogleDataTransport: b29a21d813e906014ca16c00897827e40e4a24ab
@@ -722,7 +706,6 @@ SPEC CHECKSUMS:
   react-native-background-timer: 1b6e6b4e10f1b74c367a1fdc3c72b67c619b222b
   react-native-branch: cc611a2d0e7e6c7c4cafebc8e59065b89c38002b
   react-native-camera: 705c7e9412436957b4dc894a1af61f43830787e2
-  react-native-geolocation: c956aeb136625c23e0dce0467664af2c437888c9
   react-native-keep-awake: ff10b454b539786007df59fce87abbb7cd4634e3
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
@@ -741,9 +724,8 @@ SPEC CHECKSUMS:
   React-RCTText: 9ccc88273e9a3aacff5094d2175a605efa854dbe
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
-  RealmJS: c19d60dbe21606dade0f6217f4dd0d1fb8bb4e3a
   RNBackgroundFetch: 388cf1595934d22fed275b8db9b48a28bb4eb7b6
-  RNBackgroundGeolocation: 14b8af45dda3e51d7ba046f71cd8ef397aefec1a
+  RNBackgroundGeolocation: 358576b4b65b64947d7836e492fa983997bca295
   RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
   RNCMaskedView: a88953beefbd347a29072d9eba90e42945fe291e
   RNDeviceInfo: 9b5790f85eb03e12de682a97618031a215c7f386
@@ -767,6 +749,6 @@ SPEC CHECKSUMS:
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 9657c6b0dc8301e8bb2495637d2ed24a4e770462
+PODFILE CHECKSUM: 18b8b62bb4a68086000939c8289f53e425d9ee28
 
 COCOAPODS: 1.9.1

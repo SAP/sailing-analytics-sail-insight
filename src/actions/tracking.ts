@@ -18,8 +18,7 @@ import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
 import { startLeaderboardUpdates, stopLeaderboardUpdates, updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { fetchRegattaAndRaces } from 'actions/regattas'
-import { updateEventEndTime } from 'actions/sessions'
-import { createNewTrack, setRaceEndTime, setRaceStartTime, startTrack, stopTrack } from 'actions/tracks'
+import { createNewTrack, setRaceStartTime, startTrack } from 'actions/tracks'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import {
   getBulkGpsSetting,
@@ -27,36 +26,19 @@ import {
   getVerboseLoggingSetting,
 } from '../selectors/settings'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
-import { syncAllFixes } from '../services/GPSFixService'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
 import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCurrentCourse } from 'actions/communications'
 
-
-export type StopTrackingAction = (data?: CheckIn) => any
-export const stopTracking: StopTrackingAction = data => withDataApi({ leaderboard: data && data.regattaName })(
-  async (dataApi, dispatch, getState) => {
-    if (!data) {
-      return
-    }
+export const stopTracking = () => async (dispatch: DispatchType, getState: GetStateType) => {
     await dispatch(stopLocationUpdates())
     const leaderboardEnabled = getLeaderboardEnabledSetting(getState())
     if (leaderboardEnabled) {
       await dispatch(stopLeaderboardUpdates())
     }
-    await syncAllFixes(dispatch)
-    if (data.isSelfTracking && data.currentTrackName && data.currentFleet) {
-      await dataApi.createAutoCourse(data.leaderboardName, data.currentTrackName, data.currentFleet)
-      await dispatch(stopTrack(data.leaderboardName, data.currentTrackName, data.currentFleet))
-      await dispatch(setRaceEndTime(data.leaderboardName, data.currentTrackName, data.currentFleet))
-      await dispatch(updateEventEndTime(data.leaderboardName, data.eventId))
-    }
-    dispatch(fetchRegattaAndRaces(data.regattaName, data.secret))
     dispatch(removeTrackedRegatta())
-
     // stop updating start line start line
     dispatch(stopUpdateStartLineBasedOnCurrentCourse())
-  },
-)
+  }
 
 export const startTracking = ({ data, navigation, markTracking = false }: any) => async (
   dispatch: DispatchType,

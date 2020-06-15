@@ -4,7 +4,7 @@ import { checkCurrentAuthSession } from './auth'
 import { handleAppStartDeepLink } from './deepLinking'
 import { updateCreatingEvent, updateLoadingEventList, updateSelectingEvent, updateStartingTracking } from './events'
 import { updateDeletingMarkBinding, updateLoadingCheckInFlag } from './checkIn'
-import { updateCommunicationSettings } from './settings'
+import { updateCommunicationSettings, updateMtcpSettings } from './settings'
 import { updateStartLine, stopUpdateStartLineBasedOnCurrentCourse } from './communications'
 
 export const initializeApp = (navigation:object) => async (dispatch: DispatchType) => {
@@ -21,6 +21,7 @@ export const initializeApp = (navigation:object) => async (dispatch: DispatchTyp
 
   /// update native modules settings
   dispatch(updateCommunicationSettings())
+  dispatch(updateMtcpSettings())
   /// update native modules settings
 
   await dispatch(checkCurrentAuthSession())

@@ -19,11 +19,13 @@ import {
   updateLeaderboardEnabledSetting,
   updateServerUrlSetting,
   updateVerboseLoggingSetting,
-  updateMtcpAndCommunicationSetting,
+  updateCommunicationEnabledSetting,
+  updateMtcpEnabledSetting,
   updateServerProxyUrlSetting,
   updateMasterUdpIPSetting,
   updateMasterUdpPortSetting,
   updateCommunicationSettings,
+  updateMtcpSettings,
 } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
@@ -32,7 +34,8 @@ import {
   getLeaderboardEnabledSetting,
   getServerUrlSetting,
   getVerboseLoggingSetting,
-  getMtcpAndCommunicationSetting,
+  getCommunicationSetting,
+  getMtcpSetting,
   getServerProxyUrlSetting,
   getMasterUdpIP,
   getMasterUdpPort,
@@ -48,10 +51,13 @@ interface Props {
   updateMasterUdpIPSetting: (value: string) => void,
   updateMasterUdpPortSetting: (value: number) => void,
   updateCommunicationSettings: () => void,
+  updateMtcpSettings: () => void,
   verboseLogging: boolean,
-  mtcpAndCommunication: boolean,
+  communicationSetting: boolean,
+  mtcpSetting: boolean,
   updateVerboseLoggingSetting: (value: boolean) => void,
-  updateMtcpAndCommunicationSetting: (value: boolean) => void,
+  updateCommunicationEnabledSetting: (value: boolean) => void,
+  updateMtcpEnabledSetting: (value: boolean) => void,
   leaderboardEnabled: boolean,
   updateLeaderboardEnabledSetting: (value: boolean) => void,
   masterUdpPorts: any,
@@ -142,14 +148,22 @@ class ExpertSettings extends TextInputForm<Props> {
             switchValue={this.props.verboseLogging}
             onSwitchValueChange={this.props.updateVerboseLoggingSetting}
           />
+          {false && 
           <EditItemSwitch
               style={styles.item}
               titleStyle={{ color: 'white' }}
-              title={I18n.t('text_mtcp_and_communication')}
-              switchValue={this.props.mtcpAndCommunication}
-              onSwitchValueChange={this.props.updateMtcpAndCommunicationSetting}
+              title={I18n.t('text_mtcp_setting')}
+              switchValue={this.props.mtcpSetting}
+              onSwitchValueChange={this.props.updateMtcpEnabledSetting}
+          />}
+          <EditItemSwitch
+              style={styles.item}
+              titleStyle={{ color: 'white' }}
+              title={I18n.t('text_communication_setting')}
+              switchValue={this.props.communicationSetting}
+              onSwitchValueChange={this.props.updateCommunicationEnabledSetting}
           />
-          {this.props.mtcpAndCommunication && this.renderProxySettings()}
+          {this.props.communicationSetting && this.renderProxySettings()}
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
           <TextButton
@@ -189,11 +203,16 @@ class ExpertSettings extends TextInputForm<Props> {
 
   protected onSubmit = async (values: any) => {
     await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
-    if (this.props.mtcpAndCommunication) {
+    if (this.props.communicationSetting || this.props.mtcpSetting) {
       await this.props.updateServerProxyUrlSetting(values[expertSettingsForm.FORM_KEY_PROXY_URL])
+    }
+    if (this.props.communicationSetting) {
       await this.props.updateMasterUdpIPSetting(values[expertSettingsForm.FORM_KEY_MASTER_IP])
       await this.props.updateMasterUdpPortSetting(values[expertSettingsForm.FORM_KEY_MASTER_PORT])
       this.props.updateCommunicationSettings()
+    }
+    if (this.props.mtcpSetting) {
+      this.props.updateMtcpSettings()
     }
     this.props.navigation.goBack()
   }
@@ -221,7 +240,8 @@ const mapStateToProps = (state: any) => {
       [expertSettingsForm.FORM_KEY_MASTER_PORT]: getMasterUdpPort(state),
     },
     verboseLogging: getVerboseLoggingSetting(state),
-    mtcpAndCommunication: getMtcpAndCommunicationSetting(state),
+    communicationSetting: getCommunicationSetting(state),
+    mtcpSetting: getMtcpSetting(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
     masterUdpPorts: getMasterUdpPorts(state),
   }
@@ -229,8 +249,8 @@ const mapStateToProps = (state: any) => {
 
 export default connect(
   mapStateToProps,
-  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting, updateMtcpAndCommunicationSetting,
-  updateServerProxyUrlSetting, updateMasterUdpIPSetting, updateMasterUdpPortSetting, updateCommunicationSettings, change },
+  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting, updateCommunicationEnabledSetting, updateMtcpEnabledSetting,
+  updateServerProxyUrlSetting, updateMasterUdpIPSetting, updateMasterUdpPortSetting, updateCommunicationSettings, updateMtcpSettings, change },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,

@@ -109,9 +109,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     }
   }
 
-  public renderHeader = () => {
-    const { showHints } = this.props
-    return showHints ? (
+  public renderHint = () => {
+    return (
       <View style={this.styles.hintContainer}>
         <Image
           source={
@@ -122,14 +121,12 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           style={this.styles.hintBackgroundImage}
         />
       </View>
-    ) : (
-      <View />
     )
   }
 
   public render() {
     const { openedWhenLoading } = this.state
-    const { isLoadingEventList } = this.props
+    const { isLoadingEventList, showHints } = this.props
 
     const shouldShowLoadingSpinner = openedWhenLoading && isLoadingEventList
     return (
@@ -170,7 +167,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
             ? <View style={{ flex: 1, justifyContent: 'center' }}>
                 <ActivityIndicator size="large" color="white" />
               </View>
-            : <FloatingComponentList
+            : showHints ? this.renderHint() :<FloatingComponentList
                 style={this.styles.list}
                 data={this.props.sessions}
                 renderItem={this.renderItem}
