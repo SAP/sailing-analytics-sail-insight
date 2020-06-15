@@ -8,12 +8,12 @@ import Logger from 'helpers/Logger'
 import { showNetworkRequiredAlert } from 'helpers/network'
 import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
 import I18n from 'i18n'
-import { container } from 'styles/commons'
-import styles from './styles'
 import * as Screens from 'navigation/Screens'
 import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
 import { getActiveCheckInEntity } from 'selectors/checkIn'
 import { isNetworkConnected } from 'selectors/network'
+
+import styles from './styles'
 
 class QRScanner extends React.Component<{
   fetchCheckIn: (url: string) => any,
@@ -85,7 +85,7 @@ class QRScanner extends React.Component<{
 
   public render() {
     return (
-      <View style={container.main}>
+      <View style={styles.container}>
         <QRCodeScanner
           cameraStyle={styles.camera}
           markerStyle={styles.marker}

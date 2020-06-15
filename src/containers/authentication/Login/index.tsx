@@ -1,24 +1,28 @@
 import { isEmpty } from 'lodash'
 import React from 'react'
-import { Image, TouchableOpacity, View } from 'react-native'
+import { Image, TouchableOpacity, View, ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
+import LinearGradient from 'react-native-linear-gradient';
 
-import Images from '@assets/Images'
 import { login } from 'actions/auth'
 import { fetchUserInfo, syncEventList } from 'actions/user'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
-import I18n from 'i18n'
 import * as Screens from 'navigation/Screens'
 import { PasswordReset } from 'navigation/Screens'
-import TextInputForm from 'components/base/TextInputForm'
+import { isNetworkConnected } from 'selectors/network'
+
+import I18n from 'i18n'
+
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
-import { isNetworkConnected } from 'selectors/network'
+import TextInputForm from 'components/base/TextInputForm'
 
+import Images from '../../../../assets/Images'
 import styles from './styles'
-
+import { text, form, button } from 'styles/commons'
+import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 class Login extends TextInputForm<{
   login: (u: string, p: string) => any,
@@ -31,6 +35,8 @@ class Login extends TextInputForm<{
     password: '',
     isLoading: false,
     error: null,
+    usernameError: null,
+    passwordError: null,
   }
 
   public onSubmit = async () => {
@@ -39,6 +45,8 @@ class Login extends TextInputForm<{
 
     // custom validation
     let errorMsg = null
+    let usernameError = null
+    let passwordError = null
 
     if(!this.props.isNetworkConnected) {
       errorMsg = I18n.t('error_network_required_snackbar')
@@ -47,10 +55,12 @@ class Login extends TextInputForm<{
     }
 
     if (isEmpty(username)) {
-      errorMsg = I18n.t('error_need_username')
+      usernameError = I18n.t('error_need_username')
+      errorMsg = usernameError
     }
     if (isEmpty(password)) {
-      const errMsg = I18n.t('error_need_password')
+      passwordError = I18n.t('error_need_password')
+      const errMsg = passwordError
       if (errorMsg != null) {
         errorMsg = `${errorMsg}\n${errMsg}`
       } else {
@@ -58,7 +68,7 @@ class Login extends TextInputForm<{
       }
     }
     if (errorMsg != null) {
-      this.setState({ error: errorMsg })
+      this.setState({ error: errorMsg, usernameError, passwordError })
       return
     }
 
@@ -69,7 +79,8 @@ class Login extends TextInputForm<{
       this.props.syncEventList()
       this.props.navigation.reset({ index: 1, routes: [{ name: Screens.Main }]})
     } catch (err) {
-      this.setState({ error: I18n.t('error_login_incorrect') })
+      passwordError = I18n.t('error_login_incorrect')
+      this.setState({ error: passwordError, usernameError, passwordError })
       this.setState({ isLoading: false })
     }
   }
@@ -78,16 +89,18 @@ class Login extends TextInputForm<{
   public onPasswordChange = (newValue: string) => this.setState({ password: newValue })
 
   public render() {
-    const { error, isLoading } = this.state
+    const { error, isLoading, usernameError, passwordError } = this.state
     return (
-      <View style={{ width: '100%', height: '100%' }}>
-        <ScrollContentView style={styles.scrollContainer}>
-          <View style={styles.textContainer}>
-            <Text style={styles.claim}>{I18n.t('text_login').toUpperCase()}</Text>
-          </View>
-          <View style={styles.inputField}>
-            <TextInput
+      <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
+        <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.35 }}>
+          <ScrollContentView style={styles.container}>
+            <View style={styles.contentContainer}>
+              <Text style={[text.h1, styles.h1]}>
+                {I18n.t('text_login')}
+              </Text>
+              <TextInput
                 value={this.state.username}
+                error={usernameError}
                 onChangeText={this.onUsernameChange}
                 containerStyle={styles.inputContainer}
                 inputStyle={styles.inputStyle}
@@ -97,8 +110,9 @@ class Login extends TextInputForm<{
                 autoCapitalize="none"
                 onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_PASSWORD)}
                 inputRef={this.handleInputRef(FORM_KEY_USERNAME)}/>
-            <TextInput
+              <TextInput
                 value={this.state.password}
+                error={passwordError}
                 onChangeText={this.onPasswordChange}
                 style={styles.password}
                 containerStyle={styles.inputContainer}
@@ -110,24 +124,23 @@ class Login extends TextInputForm<{
                 onSubmitEditing={this.onSubmit}
                 secureTextEntry={true}
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}/>
-            <TouchableOpacity style={styles.forgotPassword} onPress={() => this.props.navigation.navigate(PasswordReset)}>
-              <Text style={styles.forgotPwText}>
-                {I18n.t('caption_forgot_password')}
-              </Text>
-            </TouchableOpacity>
-            {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>}
-          </View>
-          <View style={styles.bottomButtonField}>
-            <TextButton
-                style={styles.loginButton}
-                textStyle={styles.loginButtonText}
-                onPress={this.onSubmit}
-                isLoading={isLoading}>
-              {I18n.t('caption_login').toUpperCase()}
-            </TextButton>
-          </View>
-        </ScrollContentView>
-      </View>
+              {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}
+              <TextButton
+                  style={[button.primary, button.fullWidth, styles.loginButton]}
+                  textStyle={button.primaryText}
+                  onPress={this.onSubmit}
+                  isLoading={isLoading}>
+                {I18n.t('caption_login').toUpperCase()}
+              </TextButton>
+              <TouchableOpacity style={[text.text, styles.forgotPasswordLink]} onPress={() => this.props.navigation.navigate(PasswordReset)}>
+                <Text style={[text.text]}>
+                  {I18n.t('caption_forgot_password')} {'›'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollContentView>
+        </LinearGradient>
+      </ImageBackground>
     )
   }
 }

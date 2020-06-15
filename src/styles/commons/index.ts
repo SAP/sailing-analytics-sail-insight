@@ -1,4 +1,5 @@
 export { default as container } from './container'
+export { default as form } from './form'
 export { default as button } from './button'
 export { default as navigation } from './navigation'
 export { default as text } from './text'

@@ -164,14 +164,23 @@ const withoutHeaderLeft = mergeDeepLeft({ options: { headerLeft: () => null } })
 const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparentProps } })
 const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
 const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
-const withLeftHeaderBackButton = options =>
-  mergeDeepLeft({
-    options: {
-      headerLeft: HeaderBackButton(
-        { onPress: when(always(options.backOnceClickable), once)(() => navigationContainer.current.goBack()) }
-      ),
-    },
-  })(options)
+
+// Left header back button (Chevron only)
+const withLeftHeaderBackButton = (options) => mergeDeepLeft({
+  options: {
+    headerLeft: HeaderBackButton({
+      labelVisible: false,
+      onPress: when(always(options.backOnceClickable), once)(() => navigationContainer.current.goBack())
+    })
+  }
+})(options)
+
+// Left header close button (X only)
+const withLeftHeaderCloseButton = (options) => mergeDeepLeft({
+  options: {
+    headerLeft: () => <ModalBackButton type="icon" iconColor={$headerTintColor} />
+  },
+})(options)
 
 const markTrackingNavigator = Component(props => compose(
   fold(props),
@@ -305,24 +314,26 @@ const AppNavigator = Component(props => compose(
   stackNavigator({
     initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,
-    screenOptions: screenWithHeaderOptions }),
-  reduce(concat, nothing()))([
+    screenOptions: screenWithHeaderOptions
+  }),
+  reduce(concat, nothing())
+)([
   stackScreen(withoutHeader({ name: Screens.Splash, component: SplashScreen })),
   stackScreen(withoutHeader({ name: Screens.FirstContact, component: FirstContact })),
   stackScreen(withoutHeader({ name: Screens.JoinRegatta, component: JoinRegatta })),
   stackScreen(withoutHeader({ name: Screens.EditCompetitor, component: EditCompetitor })),
   stackScreen(withoutHeaderLeft({ name: Screens.RegisterBoat, component: RegisterBoat, options: { title: I18n.t('title_your_team') } })),
   stackScreen(withoutHeader({ name: Screens.Main, component: mainTabsNavigator.fold })),
-  stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
-    withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
-    { name: Screens.QRScanner, component: QRScanner })),
-  stackScreen(compose(withoutHeaderLeft, withTransparentHeader, withRightModalBackButton, withoutTitle)({
+  stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withGradientHeaderBackground, withoutTitle)({
+    name: Screens.QRScanner, component: QRScanner 
+  })),
+  stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({
     name: Screens.LoginFromSplash, component: Login
   })),
-  stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withGradientHeaderBackground, withLeftHeaderBackButton)({
+  stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withLeftHeaderBackButton)({
     name: Screens.Login, component: Login
   })),
-  stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withoutHeaderLeft, withGradientHeaderBackground, withRightModalBackButton)({
+  stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withLeftHeaderBackButton)({
     name: Screens.RegisterCredentials, component: RegisterCredentials
   })),
   stackScreen(compose(withoutTitle, withTransparentHeader, withGradientHeaderBackground, withLeftHeaderBackButton)({

@@ -1,49 +1,50 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { withSecondaryHeavyItalicFont } from 'styles/compositions/text'
 
-
 export default EStyleSheets.create({
-  $sideMargin: 24,
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: 'transparent',
-  },
-  textContainer: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    flexGrow: 2,
-    display: 'flex',
-    paddingBottom: 130,
-    alignItems: 'center',
-  },
-  app_logo: {
-    height: 155,
-    width: 213,
-    marginBottom: 20,
-  },
-  subtitle: {
-    color: '#FFFFFF',
-    fontSize: 20,
-    ...withSecondaryHeavyItalicFont,
-  },
-  logoContainer: {
-    flexGrow: 0,
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    marginBottom: 20,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ws_logo: {
-    marginRight: 16,
-    height: 63,
-    width: 89,
-  },
-  sap_logo: {
-    marginLeft: 16,
-    height: 63,
-    width: 89,
-  },
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'transparent',
+        justifyContent: 'space-between',
+        height: '100%',
+        width: '100%'
+    },
+    contentContainer: {
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: '$siGutter',
+        marginTop: '$siStatusBarHeight',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    sponsorLogoContainer: {
+        flexGrow: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: '$siGutter',
+        marginBottom: '$siBaseSpacing * 6',
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    appLogo: {
+        width: '80%',
+        height: '62%',
+        marginBottom: '$siBaseSpacing * 3'
+    },
+    subtitle: {
+        color: '#FFFFFF',
+        fontSize: 20,
+        ...withSecondaryHeavyItalicFont,
+    },
+    wsLogo: {
+        marginRight: '$siGutter'
+    },
+    sapLogo: {
+        marginHorizontal: '$siGutter / 2'
+    },
+    syrfLogo: {
+        marginLeft: '$siGutter'
+    }
 })

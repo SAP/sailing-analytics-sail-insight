@@ -16,6 +16,7 @@
   "title_event_details": "Event Overview",
   "title_race_details": "Race Overview",
   "title_race_course": "Race Course",
+  "title_create_account": "Create Account",
 
   "text_more_information_at": "More information at",
   "text_device_id": "Device id",
@@ -304,7 +305,7 @@
   "text_registration_part2": "so that we can optimally support you in managing and tracking your events",
   "text_name": "Name",
   "text_placeholder_email": "E-mail address",
-  "text_login_already_account": "Login. I already have an account.",
+  "text_login_already_account": "Login. I already have an account",
   "text_passwort_reset_title_info" : "Please enter your user name or e-mail address to get a passwort reset via e-mail",
   "session_create_new_event" : "Create a new event",
   "title_tracking" : "Tracking",

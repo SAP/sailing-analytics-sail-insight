@@ -45,7 +45,7 @@ class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps 
     const { isLoggedIn, user } = this.props
 
     return (
-      <ImageBackground source={Images.defaults.background_map} style={{ width: '100%', height: '100%' }}>
+      <ImageBackground source={Images.defaults.map3} style={{ width: '100%', height: '100%' }}>
         <View style={[container.main, styles.container]}>
           <View style={styles.textContainer}>
             <Text style={styles.title}>
