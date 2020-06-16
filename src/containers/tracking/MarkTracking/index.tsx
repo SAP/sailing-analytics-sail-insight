@@ -133,9 +133,7 @@ const trackingButton = Component((props: any) =>
         try {
           await props.stopTracking(props.checkIn)
           props.setIsTracking(false)
-        } catch (err) {
-          Alert.alert(I18n.t('error_tracking_resend_info_title'), I18n.t('error_tracking_resend_info_text'))
-        }
+        } catch (err) {}
       } else {
         try {
           await props.startTracking({ data: props.checkIn, navigation: props.navigation, markTracking: true })
