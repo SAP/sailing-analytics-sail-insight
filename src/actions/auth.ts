@@ -9,7 +9,7 @@ import { mapUserToRes } from 'models/User'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 
-export type RegisterActionType = (username: string, email: string, password: string, name: string) => any
+export type RegisterActionType = (username: string, email: string, password: string, name?: string) => any
 
 export const updateToken = createAction('UPDATE_TOKEN')
 export const updateCurrentUserInformation = createAction('UPDATE_CURRENT_USER_INFORMATION')

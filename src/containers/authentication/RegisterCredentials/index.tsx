@@ -141,7 +141,7 @@ class RegisterCredentials extends TextInputForm<Props> {
       passwordError = validatePassword(values[registrationForm.FORM_KEY_PASSWORD])
     }
     errorMsg = this.concatMsg(errorMsg, passwordError)
-    
+
     // email check
     if (isEmpty(values[registrationForm.FORM_KEY_EMAIL])) {
       emailError = I18n.t('error_need_email')
@@ -162,7 +162,6 @@ class RegisterCredentials extends TextInputForm<Props> {
         values[registrationForm.FORM_KEY_USERNAME],
         values[registrationForm.FORM_KEY_PASSWORD],
         values[registrationForm.FORM_KEY_EMAIL],
-        values[registrationForm.FORM_KEY_NAME], // TODO: name no longer available
       )
       this.loggedIn = true
       this.props.navigation.navigate(Screens.RegisterBoat)
