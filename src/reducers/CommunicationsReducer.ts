@@ -16,6 +16,8 @@ import {
 import { clearArrayHandler, itemUpdateHandler } from 'helpers/reducers'
 import { CommunicationsReducerState } from 'reducers/config'
 
+import { compose } from 'recompose'
+import { lt, when, dropLast, insert, length } from 'ramda'
 
 const initialState: CommunicationsReducerState = {
   state: false,
@@ -39,22 +41,15 @@ const reducer = handleActions(
     [updateServerPort as any]: itemUpdateHandler('port'),
     [updateStartLine as any]: itemUpdateHandler('startLine'),
     [updateExpeditionCommunicationMessages as any]: (state: any = initialState, action) => {
-      if (state.expeditionMessages.length >= state.expeditionMessagesLimit)
-      {
-        const expeditionMessages = [...state.expeditionMessages]
-        expeditionMessages.pop()
-
-        return {
-          ...state,
-          expeditionMessages: [action && action.payload, ...expeditionMessages],
-        }
-      }
-      else
-      {
-        return {
-          ...state,
-          expeditionMessages: [action && action.payload, ...state['expeditionMessages']],
-        }
+      console.log('state', state, state.expeditionMessages.length)
+      const exceedsLimit = compose(lt(state.expeditionMessagesLimit), length)
+      const expeditionMessages = compose(
+        when(exceedsLimit, dropLast(1)),
+        insert(0, action.payload))(
+        state.expeditionMessages)
+      return {
+        ...state,
+        expeditionMessages
       }
     },
     [startUpdateStartLineBasedOnCurrentCourse as any]: (state: any = initialState, action) => {
