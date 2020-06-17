@@ -41,7 +41,6 @@ const reducer = handleActions(
     [updateServerPort as any]: itemUpdateHandler('port'),
     [updateStartLine as any]: itemUpdateHandler('startLine'),
     [updateExpeditionCommunicationMessages as any]: (state: any = initialState, action) => {
-      console.log('state', state, state.expeditionMessages.length)
       const exceedsLimit = compose(lt(state.expeditionMessagesLimit), length)
       const expeditionMessages = compose(
         when(exceedsLimit, dropLast(1)),
