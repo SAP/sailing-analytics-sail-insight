@@ -66,10 +66,6 @@ const nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent = branch(
   ]),
   nothingAsClass
 )
-const nothingIfCantUpdateAndNotTracking = branch(
-  (props: any) => !props.canUpdateCurrentEvent && !props.isTracking,
-  nothingAsClass
-)
 
 const nothingIfRaceTimeNotSet = branch(
   compose(
@@ -256,7 +252,6 @@ const raceItem = Component((props: object) =>
     concat(__,
       compose(
         nothingIfRaceTimeNotSet,
-        nothingIfCantUpdateAndNotTracking,
         nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent
       )(raceAnalyticsButton)
     ),
