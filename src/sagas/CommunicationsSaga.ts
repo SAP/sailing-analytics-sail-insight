@@ -36,6 +36,7 @@ import { NativeEventEmitter, NativeModules } from 'react-native'
 
 const Server1Port = 8001
 const StartLinePollingInterval = 5000
+const CommunicationChannelPollingInterval = 200
 
 function getNetworkPromise() {
   return NetworkInfo.getIPV4Address()
@@ -197,6 +198,7 @@ function* handleExpeditionCommunicationMessages(shouldClearPreviousData: boolean
       const expeditionEvent = yield take(expeditionCommunicationChannel)
       const key = 'timestamp'
       expeditionEvent[key] = Date.now()
+      yield delay(CommunicationChannelPollingInterval)
       yield put(updateExpeditionCommunicationMessages(expeditionEvent))
     }
   } finally {
