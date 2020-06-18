@@ -52,8 +52,8 @@ export default EStyleSheets.create({
     marginLeft: 0,
   },
   coordinatesContainer: {
-    paddingTop: 10,
-    paddingBottom: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
     paddingLeft: 10,
     paddingRight: 10,
     marginBottom: 10,

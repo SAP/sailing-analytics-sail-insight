@@ -10,9 +10,11 @@ import {
   contramap,
   fold,
   fromClass,
+  nothingAsClass,
   nothing,
   reduxConnect as connect,
-  recomposeWithState as withState
+  recomposeWithState as withState,
+  recomposeBranch as branch
 } from 'components/fp/component'
 
 import { getMarkPositionsExceptCurrent } from 'selectors/course'
@@ -26,6 +28,27 @@ import { Switch, Platform } from 'react-native'
 import { NavigationEvents } from '@react-navigation/compat'
 import { dd2ddm, ddm2dd } from 'helpers/utils'
 import { $Orange, $primaryBackgroundColor, $secondaryBackgroundColor } from 'styles/colors'
+
+const hasNoPadding = propEq('mapOffset', 0)
+const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
+
+// get height of coordinates input
+// use calculated height (half input height + half marker icon height + bottom spacing) to offset marker icon on map so that it looks centered
+// in the remaining space
+// use calculated height to add map padding to show marker on right coordinates
+const onCoordinatesLayout = (props: any, { nativeEvent }: any = {}) => {
+  if (
+    !nativeEvent ||
+    !nativeEvent.layout ||
+    !nativeEvent.layout.height === undefined ||
+    nativeEvent.layout.x === undefined
+  ) {
+    return
+  }
+  const heightInput = nativeEvent.layout.height + nativeEvent.layout.x
+  const offset = heightInput / 2 + 53 + 26.5
+  props.setMapOffset(offset)
+}
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -66,10 +89,11 @@ const defaultProps = (props) => ({
 
 const withRegion = withState('region', 'setRegion', prop('region'))
 const withInitialRender = withState('initialRender', 'setInitialRender', true)
+const withMapOffset = withState('mapOffset', 'setMapOffset', 0)
 
 const centeredMarker = Component(props => compose(
   fold(props),
-  view({ style: styles.markerContainer }))(
+  view({ style: [styles.markerContainer, { paddingTop: props.mapOffset }] }))(
   markerIcon))
 
 const Map = Component((props: any) => compose(
@@ -79,6 +103,7 @@ const Map = Component((props: any) => compose(
     fromClass(MapView).contramap(always({
       ...(props.initialRender && { region: props.region }),
       style: styles.map,
+      mapPadding: {top: props.mapOffset, right: 0, bottom: 0, left: 0},
       mapType: 'satellite',
       children: map(marker.fold, props.otherMarksPositions),
       onRegionChange: region => {
@@ -203,15 +228,21 @@ const longitudeInput = coordinatesInput.contramap(props => merge({
     pick(['latitude', 'longitude']))(props.region),
   switchLabels: ['W', 'E'] }, props))
 
+const coordinatesContainer = Component((props: any) => compose(
+    fold(props),
+    view({ style: styles.coordinatesModalContainer, onLayout: (nativeEvent: any) => onCoordinatesLayout(props, nativeEvent) }),
+    reduce(concat, nothing()))([
+      longitudeInput,  
+      latitudeInput
+    ]))
+
 export default Component((props: object) =>
   compose(
     fold(defaultProps(props)),
     connect(mapStateToProps, { updateMarkConfigurationLocation }),
     withInitialRender,
     withRegion,
+    withMapOffset,
     concat(navigationBackHandler),
-    concat(Map),
-    view({ style: styles.coordinatesModalContainer }),
-    reduce(concat, nothing()))([
-    latitudeInput,
-    longitudeInput]))
+    concat(nothingWhenNoPadding(Map)),
+    )(coordinatesContainer))
