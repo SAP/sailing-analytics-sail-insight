@@ -119,4 +119,5 @@ export interface CommunicationsReducerState {
   startLinePolling: boolean
   startLineCourse: object
   expeditionMessages: any[]
+  expeditionMessagesLimit: number
 }

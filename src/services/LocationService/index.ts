@@ -25,7 +25,7 @@ const config: Config = {
   disableElasticity: true, // disable auto distanceFilter based on speed to increase accuracy
   stopOnTerminate: true, // Default: true. Set false to continue tracking after user teminates the app.
   heartbeatInterval: 1, // in seconds
-  disableStopDetection: true,
+  disableStopDetection: false,
   stopOnStationary: false,
   // debug
   debug: false,

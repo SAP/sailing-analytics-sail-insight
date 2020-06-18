@@ -4,6 +4,7 @@ import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { shareSessionRegatta } from 'actions/sessions'
+import { startTracking } from 'actions/tracking'
 import { fetchLeaderboardV2 } from 'actions/leaderboards'
 import { Component, connectActionSheet, fold, fromClass, nothing, nothingAsClass,
   recomposeBranch as branch,
@@ -60,10 +61,13 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
     secret
   })
   const checkinUrl = `${serverUrl}/tracking/checkin?${checkInPath}`
+  const isBeforeEventStartTime =
+    (session?.event?.startDate || new Date(0)) > Date.now()
 
   return {
     session,
     checkIn,
+    isBeforeEventStartTime,
     qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
     name: session.regattaName,
     startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate),
@@ -102,7 +106,7 @@ export const ShareButton = Component(props => compose(
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2 }),
+    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2, startTracking }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
     withCompetitorListState,

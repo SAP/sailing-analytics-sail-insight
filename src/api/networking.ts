@@ -97,6 +97,7 @@ export const request = async (
     method,
     timeout,
     headers: await getHeaders(url, method, body, bodyType, signer),
+    credentials: 'omit',
     ...data,
   }
   let response
