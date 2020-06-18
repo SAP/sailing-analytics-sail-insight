@@ -1,5 +1,6 @@
 import { fromPairs, head, defaultTo, filter, isNil, prop, find, not, toPairs,
-  propEq, propSatisfies, keys, sortBy, identity, last, compose, values, map } from 'ramda'
+  propEq, propSatisfies, keys, sortBy, identity, last, compose, values, map,
+  reverse, gt } from 'ramda'
 import { updateLeaderboardTracking, updateLatestTrackedRace } from 'actions/leaderboards'
 import { DataApi } from 'api'
 import { fetchEntityAction } from 'helpers/actions'
@@ -30,46 +31,50 @@ export const backgroundSyncLeaderboard = async (
     const receivedLeaderboard = receivedLeaderboards[0] as Leaderboard
     await dispatch(updateLeaderboardTracking(receivedLeaderboard, rankingMetric))
 
-    const latestStartedRace = compose(
-      last,
-      sortBy(identity),
-      keys,
-      prop('columns'),
-      prop('competitors'))(
-      receivedLeaderboard)
+    const trackedRaces = compose(
+      fromPairs,
+      map(trackedRace => ([
+        trackedRace.raceColumnName,
+        compose(
+          prop('trackedRace'),
+          defaultTo({}),
+          head,
+          defaultTo([])
+        )(trackedRace.fleets),
+      ])),
+      defaultTo([]),
+      prop('trackedRacesInfo')
+    )(receivedLeaderboard)
 
-    if (latestStartedRace) {
-      await dispatch(updateLatestTrackedRace(latestStartedRace))
-    } else {
-      const trackedRaces = compose(
-        fromPairs,
-        map(trackedRace => ([
-          trackedRace.raceColumnName,
-          compose(
-            prop('trackedRace'),
-            defaultTo({}),
-            head,
-            defaultTo([])
-          )(trackedRace.fleets),
-        ])),
-        defaultTo([]),
-        prop('trackedRacesInfo')
-      )(receivedLeaderboard)
+    const isNotNil = compose(not, isNil)
 
-      const isNotNil = compose(not, isNil)
+    const fourMinutesInMillis = 1000 * 60 * 4
+    const hasRaceStarted = propSatisfies(gt(new Date().valueOf() - fourMinutesInMillis), 'startTimeMillis')
 
-      const firstStartedRace = compose(
-        head, // Just the race name
-        defaultTo([]),
-        head, // Get the first race by start time
-        sortBy(compose(prop('startTimeMillis'), last)),
-        toPairs,
-        filter(propSatisfies(isNotNil, 'startTimeMillis')),
-        filter(isNotNil)
-      )(trackedRaces)
+    const firstStartedRace = compose(
+      head, // Just the race name
+      defaultTo([]),
+      head, // Get the first race by start time
+      sortBy(compose(prop('startTimeMillis'), last)),
+      toPairs,
+      filter(propSatisfies(isNotNil, 'startTimeMillis')),
+      filter(isNotNil)
+    )(trackedRaces)
 
-      await dispatch(updateLatestTrackedRace(firstStartedRace))
-    }
+    const latestTrackedRace = compose(
+      head, // Just the race name
+      defaultTo([]),
+      head, // Get the last race (that already started) by start time
+      reverse,
+      sortBy(compose(prop('startTimeMillis'), last)),
+      toPairs,
+      defaultTo({}),
+      filter(hasRaceStarted),
+      filter(propSatisfies(isNotNil, 'startTimeMillis')),
+      filter(isNotNil)
+    )(trackedRaces)
+
+    await dispatch(updateLatestTrackedRace(latestTrackedRace || firstStartedRace))
   } catch (err) {
     Logger.debug('Error while executing syncLeaderboard', err)
   }
