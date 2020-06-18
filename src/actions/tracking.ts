@@ -4,25 +4,23 @@ import { Alert } from 'react-native'
 
 import { AddRaceColumnResponseData } from 'api/endpoints/types'
 import I18n from 'i18n'
-import { CheckIn, CheckInUpdate } from 'models'
+import { CheckInUpdate } from 'models'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
 import * as Screens from 'navigation/Screens'
-import { withDataApi } from 'helpers/actions'
 import { getNowAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
-import { startLeaderboardUpdates, stopLeaderboardUpdates, updateLatestTrackedRace } from 'actions/leaderboards'
+import { updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
+import { updateTrackedRegatta } from 'actions/locationTrackingData'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { createNewTrack, setRaceStartTime, startTrack } from 'actions/tracks'
-import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import {
   getBulkGpsSetting,
-  getLeaderboardEnabledSetting,
   getVerboseLoggingSetting,
 } from '../selectors/settings'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
@@ -31,10 +29,6 @@ import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCur
 
 export const stopTracking = () => async (dispatch: DispatchType, getState: GetStateType) => {
     await dispatch(stopLocationUpdates())
-    const leaderboardEnabled = getLeaderboardEnabledSetting(getState())
-    if (leaderboardEnabled) {
-      await dispatch(stopLeaderboardUpdates())
-    }
     dispatch(removeTrackedRegatta())
     // stop updating start line start line
     dispatch(stopUpdateStartLineBasedOnCurrentCourse())
@@ -70,6 +64,10 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
   }
   dispatch(resetTrackingStatistics())
   dispatch(updateLatestTrackedRace(null))
+  dispatch(updateTrackedRegatta({
+    leaderboardName: checkInData.leaderboardName,
+    eventId: checkInData.eventId,
+  }))
 
   if (!markTracking) {
     navigation.navigate(Screens.Tracking)
@@ -128,12 +126,6 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
       }
     }
     dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId, verboseLogging))
-
-    const leaderboardEnabled = getLeaderboardEnabledSetting(getState())
-    if (leaderboardEnabled) {
-      const rankingMetric: string | undefined = getTrackedRegattaRankingMetric(getState())
-      dispatch(startLeaderboardUpdates(checkInData, rankingMetric))
-    }
   } catch (err) {
     throw err
   } finally {
