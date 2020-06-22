@@ -54,7 +54,9 @@ class RegisterCredentials extends TextInputForm<Props> {
           <ScrollContentView style={styles.container}>
             <View style={styles.contentContainer}>
               <Text style={[text.h1, styles.h1]}>
-                {I18n.t('title_create_account')}
+                {I18n.t('title_create_account_01')}
+                <Text style={text.yellow}>{I18n.t('title_create_account_02')}</Text>
+                {I18n.t('title_create_account_03')}
               </Text>
               <View style={form.formSegment1}>
                 <Field

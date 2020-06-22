@@ -117,5 +117,10 @@ export default EStyleSheet.create({
         ...$siMediumFontStack,
     }, isPlatformAndroid ? {} : {
         letterSpacing: sanFranciscoSpacing(15),
-    })
+    }),
+
+    yellow: {
+        color: '$siSapYellow'
+    }
+
 })

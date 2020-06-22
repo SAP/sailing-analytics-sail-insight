@@ -68,7 +68,9 @@ class RegisterBoat extends TextInputForm<Props> {
           <ScrollContentView style={styles.container}>
           <View style={styles.contentContainer}>
               <Text style={[text.h1, styles.h1]}>
-                {I18n.t('title_add_boat')}
+                {I18n.t('title_add_boat_01')}
+                <Text style={text.yellow}>{I18n.t('title_add_boat_02')}</Text>
+                {I18n.t('title_add_boat_03')}
               </Text>
               <Text style={[text.mediumText, styles.introText]}>You can edit this boat or add more at any time by going to the account tab</Text>
               {/* TODO translate */}
