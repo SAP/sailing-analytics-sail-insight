@@ -56,6 +56,7 @@
   "text_communication_setting": "Expeditionskommunikation aktivieren",
   "text_mtcp_setting": "Multipath TCP aktivieren",
   "text_placeholder_your_username": "Benutzername",
+  "text_placeholder_your_username_or_email": "Benutzername oder E-Mail Adresse",
   "text_placeholder_your_email": "Deine E-Mail Adresse",
   "text_placeholder_enter_password": "Passwort",
   "text_registration_create_account": "Erstelle ein Account mit einem eindeutigen Nutzernamen und deiner E-Mail-Adresse",

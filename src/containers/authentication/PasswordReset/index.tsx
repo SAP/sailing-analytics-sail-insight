@@ -74,37 +74,14 @@ class PasswordReset extends TextInputForm<{
               </Text>
               <View style={form.formSegment1}>
                 <TextInput
-                  containerStyle={styles.inputContainer}
-                  inputStyle={styles.inputStyle}
                   value={this.state.username}
                   onChangeText={this.onUsernameChange}
-                  placeholder={I18n.t('text_placeholder_your_username')}
+                  placeholder={I18n.t('text_placeholder_your_username_or_email')}
                   keyboardType={'default'}
                   returnKeyType="go"
                   autoCapitalize="none"
                   onSubmitEditing={this.onSubmit}
                   inputRef={this.handleInputRef(FORM_KEY_USERNAME)} />
-              </View>
-              <View style={form.formDivider}>
-                <View style={form.formDividerLine}></View>
-                <Text style={form.formDividerText}>
-                  {I18n.t('text_passwort_reset_or').toUpperCase()}
-                </Text>
-                <View style={form.formDividerLine}></View>
-              </View>
-              <View style={form.formSegment3}>
-                <TextInput
-                  containerStyle={styles.inputContainer}
-                  inputStyle={styles.inputStyle}
-                  value={this.state.email}
-                  onChangeText={this.onEmailChange}
-                  style={styles.email}
-                  placeholder={I18n.t('text_placeholder_email')}
-                  keyboardType={'default'}
-                  returnKeyType="go"
-                  autoCapitalize="none"
-                  onSubmitEditing={this.onSubmit}
-                  inputRef={this.handleInputRef(FORM_KEY_EMAIL)} />
               </View>
               <View style={form.lastFormSegment}>
                 {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}
