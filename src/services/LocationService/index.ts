@@ -10,6 +10,7 @@ import { getDeviceId } from 'selectors/user'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getStore } from 'store'
 import { getDataApiGenerator } from 'api/config'
+import { keepServerAlive } from 'services/CommunicationService'
 
 const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
@@ -59,6 +60,8 @@ export const registerEvents = () => {
   BackgroundGeolocation.on(LOCATION_KEY, async (location: any) => {
     // Log('Location:', location)
     await handleGeolocation(location)
+
+    keepServerAlive();
   })
 
   BackgroundGeolocation.on(HEARTBEAT_KEY, async (params: any) => {
