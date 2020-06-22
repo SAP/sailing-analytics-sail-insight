@@ -164,7 +164,7 @@ class RegisterCredentials extends TextInputForm<Props> {
         values[registrationForm.FORM_KEY_EMAIL],
       )
       this.loggedIn = true
-      this.props.navigation.navigate(Screens.RegisterBoat)
+      this.props.navigation.navigate(Screens.RegisterBoatAfterRegistration)
       this.props.destroy()
     } catch (err) {
       const errorMessage = getErrorDisplayMessage(err)

@@ -236,7 +236,7 @@ export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object
     }
   }
   if (!data.competitorId && !data.markId && !data.boatId) {
-    navigation.navigate(Screens.EditCompetitor, { data })
+    navigation.navigate(Screens.RegisterBoat, { data })
   }
 }
 
