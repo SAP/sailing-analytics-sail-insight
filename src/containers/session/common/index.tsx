@@ -230,7 +230,7 @@ export const inviteCompetitorsButton = Component(props => compose(
 export const joinAsCompetitorButton = Component(props => compose(
   fold(props),
   styledButton({
-    // TODO: Handle missing screen, provide a quick way to choose boat/competitor
+    // TODO: redirect to Screens.JoinRegatta instead
     onPress: (props: any) => props.navigation.navigate(Screens.EditCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
   }),
   text({ style: styles.buttonContent }))(
