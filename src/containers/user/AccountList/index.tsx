@@ -89,7 +89,7 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
         <View style={{ flex: 1, position: 'relative' }}>
           <Image source={Images.account.account_placeholder} resizeMode="cover" style={styles.backendImage} />
           <Image source={Images.account.account_gradient} resizeMode="stretch" style={styles.gradient} />
-          <Image source={Images.defaults.sap_logo} style={styles.sap_logo} />
+          <Image source={Images.defaults.poweredBySAP} style={styles.sap_logo} />
           <Text style={styles.headline}>{I18n.t('title_your_account').toUpperCase()}</Text>
         </View>
         <View style={{ width: '100%' , marginTop: 'auto' }}>
