@@ -1,25 +1,36 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
-
 export default EStyleSheets.create({
-  bottomContainer: {
-    paddingTop: '$smallSpacing',
-    paddingBottom: 37,
-    paddingLeft: '$smallSpacing',
-    paddingRight: '$smallSpacing',
-  },
-  bottomButton: {
-    marginLeft: '$smallSpacing',
-    marginRight: '$smallSpacing',
-  },
-  inputContainer: {
-    backgroundColor: 'transparent',
-  },
-  inputStyle: {
-    borderBottomColor: '#FFFFFF',
-    borderBottomWidth: 1,
-  },
-  closeButton: {
-    tintColor: 'white',
-  },
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'transparent',
+        height: '100%',
+        width: '100%',
+    },
+    scrollContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '$siTransparent',
+    },
+    contentContainer: {
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        marginTop: '$siStatusBarHeight',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    h1: {
+        paddingHorizontal: '$siGutter',
+        marginTop: 168
+    },
+    introText: {
+        paddingHorizontal: '$siGutter',
+        marginTop: '$siBaseSpacing * -2',
+        marginBottom: '$siBaseSpacing'
+    },
+    addBoatButton: {
+        marginTop: '$siBaseSpacing * 2',
+    }
 })

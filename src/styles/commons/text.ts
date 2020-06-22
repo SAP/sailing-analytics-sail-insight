@@ -69,7 +69,20 @@ export default EStyleSheet.create({
     }, isPlatformAndroid ? {} : {
         letterSpacing: sanFranciscoSpacing(18),
     }),
-    
+
+    h2: Object.assign({
+        color: '$siWhite',
+        fontSize: 28,
+        lineHeight: 32,
+        paddingBottom: '$siBaseSpacing * 4',
+        textAlign: 'left',
+        alignSelf: 'flex-start',
+        // ...$addDebuggingBorder,
+        ...$siBoldFontStack,
+    }, isPlatformAndroid ? {} : {
+        letterSpacing: sanFranciscoSpacing(28),
+    }),
+
     caption: Object.assign({
         color: '$siWhite',
         fontSize: 11,
@@ -92,5 +105,17 @@ export default EStyleSheet.create({
         ...$siMediumFontStack,
     }, isPlatformAndroid ? {} : {
         letterSpacing: sanFranciscoSpacing(13),
+    }),
+
+    mediumText: Object.assign({
+        color: '$siWhite',
+        fontSize: 15,
+        lineHeight: 20,
+        paddingBottom: '$siBaseSpacing',
+        textAlign: 'left',
+        alignSelf: 'flex-start',
+        ...$siMediumFontStack,
+    }, isPlatformAndroid ? {} : {
+        letterSpacing: sanFranciscoSpacing(15),
     })
 })

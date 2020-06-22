@@ -167,24 +167,24 @@ export default EStyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 9,
+        zIndex: 100
     },
     formDividerLine: {
         backgroundColor: addOpacity($siWhite, 0.2),
         height: 1,
-        marginBottom: 18,
         width: '18%',
     },
-    formDividerText: Object.assign({
-        color: addOpacity($siWhite, 0.2),
-        top: -9,
+    formDividerText: {
+        top: 1,
         height: 18,
+        marginHorizontal: 4
+    },
+    formDividerButtonText: Object.assign({
+        color: addOpacity($siWhite, 0.2),
         fontSize: 13,
         lineHeight: 16,
-        marginHorizontal: 4,
         ...$siBoldFontStack,
     }, isPlatformAndroid ? {} : {
         letterSpacing: sanFranciscoSpacing(13),
     })
-
 })

@@ -1,39 +1,50 @@
 import React, { ChangeEvent } from 'react'
-import { KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View } from 'react-native'
+import { KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View, ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, Fields, reduxForm } from 'redux-form'
+import LinearGradient from 'react-native-linear-gradient'
 
 import { registerCompetitorAndDevice } from 'actions/sessions'
+
 import * as competitorForm from 'forms/competitor'
 import * as sessionForm from 'forms/session'
+import { validateRequired } from 'forms/validators'
+
 import Logger from 'helpers/Logger'
-import I18n from 'i18n'
+
 import { CheckIn, CompetitorInfo, TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
+
+import { getDeviceCountryIOC } from '../../../services/CheckInService'
+
 import { getCustomScreenParamData, getCustomScreenParamOptions } from 'navigation/utils'
-import { getUserInfo, isLoggedIn } from 'selectors/auth'
+
 import { getLastUsedTeam, getUserTeams } from 'selectors/user'
 import { getRegatta } from 'selectors/regatta'
+import { getUserInfo, isLoggedIn } from 'selectors/auth'
+import { getFormFieldValue } from '../../../selectors/form'
 
-import TextInputForm from 'components/base/TextInputForm'
+import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormHandicapInput from '../../../components/form/FormHandicapInput'
+import FormImagePicker from '../../../components/form/FormImagePicker'
+import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
 import FormTeamPicker from 'components/form/FormTeamPicker'
 import FormTextInput from 'components/form/FormTextInput'
 import ImageButton from 'components/ImageButton'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import { validateRequired } from 'forms/validators'
-import { button, container, input, text } from 'styles/commons'
-import { registration } from 'styles/components'
-import { $extraSpacingScrollContent } from 'styles/dimensions'
-import Images from '../../../../assets/Images'
-import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
-import FormHandicapInput from '../../../components/form/FormHandicapInput'
-import FormImagePicker from '../../../components/form/FormImagePicker'
-import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
-import { getFormFieldValue } from '../../../selectors/form'
-import { getDeviceCountryIOC } from '../../../services/CheckInService'
+import TextInputForm from 'components/base/TextInputForm'
+
+import I18n from 'i18n'
+
+import Images from '@assets/Images'
 import styles from './styles'
+import { text, form, button, image, container } from 'styles/commons'
+import { $siDarkBlue, $siTransparent } from 'styles/colors';
+
+import { $extraSpacingScrollContent } from 'styles/dimensions'
+import { registration } from 'styles/components'
 
 interface Props {
   teams: TeamTemplate[]
@@ -46,11 +57,16 @@ interface Props {
 
 class EditCompetitor extends TextInputForm<Props> {
 
-  public state = { isLoading: false }
+  public state = { isLoading: false, showMore: false }
 
   private commonProps = {
     keyboardType: 'default' as KeyboardType,
     returnKeyType: 'next' as ReturnKeyType
+  }
+
+  private toggleShowMore(e: Event) {
+    e.preventDefault();
+    this.setState({ showMore: !this.state.showMore })
   }
 
   public render() {
@@ -58,120 +74,69 @@ class EditCompetitor extends TextInputForm<Props> {
     const showHandicapInput = regatta?.rankingMetric !== 'ONE_DESIGN'
 
     return (
-      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-        <Field
-          name={sessionForm.FORM_KEY_TEAM_IMAGE}
-          component={FormImagePicker}
-          placeholder={Images.header.team}
-        />
-        <View style={[container.stretchContent, container.mediumHorizontalMargin]}>
-          <Text style={registration.claim()}>
-            <Text>{I18n.t('text_edit_competitor_claim_01')}</Text>
-            <Text style={text.claimHighlighted}>{I18n.t('text_edit_competitor_claim_02')}</Text>
-          </Text>
-        </View>
-        <View style={styles.bottomContainer}>
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            style={input.topMargin}
-            label={I18n.t('text_your_name')}
-            name={sessionForm.FORM_KEY_NAME}
-            component={FormTextInput}
-            onSubmitEditing={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_NAME)}
-          />
-          <Fields
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            style={input.topMargin}
-            label={I18n.t('text_team')}
-            names={[
-              sessionForm.FORM_KEY_TEAM_NAME,
-              sessionForm.FORM_KEY_BOAT_NAME,
-              sessionForm.FORM_KEY_BOAT_CLASS,
-              sessionForm.FORM_KEY_SAIL_NUMBER,
-              sessionForm.FORM_KEY_NATIONALITY,
-              sessionForm.FORM_KEY_BOAT_ID,
-              sessionForm.FORM_KEY_TEAM_IMAGE,
-              sessionForm.FORM_KEY_HANDICAP,
-            ]}
-            component={FormTeamPicker}
-            teams={this.props.teams}
-            isLoggedIn={this.props.isLoggedIn}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_TEAM_NAME)}
-            {...this.commonProps}
-          />
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            style={input.topMargin}
-            label={I18n.t('text_placeholder_boat_class')}
-            name={sessionForm.FORM_KEY_BOAT_CLASS}
-            component={FormBoatClassInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_NATIONALITY)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
-            {...this.commonProps}
-          />
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            style={input.topMargin}
-            label={I18n.t('text_nationality')}
-            name={sessionForm.FORM_KEY_NATIONALITY}
-            component={FormNationalityPicker}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_NATIONALITY)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            style={input.topMargin}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={sessionForm.FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
-            onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_NAME)}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
-            {...this.commonProps}
-          />
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            style={input.topMargin}
-            label={I18n.t('text_placeholder_boat_name')}
-            name={sessionForm.FORM_KEY_BOAT_NAME}
-            component={FormTextInput}
-            inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
-            {...this.commonProps}
-          />
-          {showHandicapInput &&
-            <Field
-              containerStyle={styles.inputContainer}
-              inputStyle={styles.inputStyle}
-              style={input.topMargin}
-              label={I18n.t('text_handicap_label')}
-              name={sessionForm.FORM_KEY_HANDICAP}
-              component={FormHandicapInput}
-            />
-          }
-          <TextButton
-            style={[registration.nextButton(), styles.bottomButton]}
-            textStyle={button.actionText}
-            onPress={this.props.handleSubmit(this.onSubmit)}
-            isLoading={this.state.isLoading}
-          >
-            {I18n.t('caption_accept')}
-          </TextButton>
-        </View>
-        <ImageButton
-            style={[button.closeButton, styles.closeButton]}
-            source={Images.actions.close}
-            onPress={this.props.navigation.goBack}
-        />
-      </ScrollContentView>
+      <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
+        <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.35 }}>
+          <ScrollContentView style={styles.container}>
+            <View style={styles.contentContainer}>
+              <Text style={[text.h1, styles.h1]}>
+                {I18n.t('title_add_boat')}
+              </Text>
+              <Text style={[text.mediumText, styles.introText]}>You can edit this boat or add more at any time by going to the account tab</Text>
+              {/* TODO translate */}
+              <View style={form.formSegment1}>
+                <Field // TODO required
+                  hint={I18n.t('text_hint_competitor_name')}
+                  label={I18n.t('text_placeholder_competitor_name')}
+                  name={sessionForm.FORM_KEY_BOAT_NAME} // TODO: is this the correct string
+                  component={FormTextInput}
+                  onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_SAIL_NUMBER)}
+                  inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_NAME)}
+                  {...Object.assign({}, this.commonProps, { textContentType:'name', autoCompleteType:'name' }) } />
+                <Field // TODO required
+                  label={I18n.t('text_placeholder_sail_number')}
+                  name={sessionForm.FORM_KEY_SAIL_NUMBER}
+                  component={FormTextInput}
+                  onSubmitEditing={this.handleOnSubmitInput(sessionForm.FORM_KEY_BOAT_CLASS)}
+                  inputRef={this.handleInputRef(sessionForm.FORM_KEY_SAIL_NUMBER)}
+                  {...this.commonProps} />
+                <Field // TODO required
+                  label={I18n.t('text_placeholder_boat_class')}
+                  name={sessionForm.FORM_KEY_BOAT_CLASS}
+                  component={FormBoatClassInput}
+                  inputRef={this.handleInputRef(sessionForm.FORM_KEY_BOAT_CLASS)}
+                  {...Object.assign({}, this.commonProps, { autoCorrect:false }) } />
+                   
+              </View>
+              <View style={form.formDivider}>
+                <View style={form.formDividerLine}></View>
+                <View style={form.formDividerText}>
+                  <TextButton textStyle={form.formDividerButtonText} onPress={this.toggleShowMore.bind(this)}>
+                    {I18n.t('text_more').toUpperCase()}
+                  </TextButton>
+                </View>
+                <View style={form.formDividerLine}></View>
+              </View>
+              { this.state.showMore &&
+                <View style={form.formSegment2}>
+                  <Field
+                    label={I18n.t('text_handicap_label')}
+                    name={sessionForm.FORM_KEY_HANDICAP}
+                    component={FormHandicapInput} />
+                </View>
+              }
+              <View style={form.lastFormSegment}>
+                <TextButton
+                  style={[button.primary, button.fullWidth, styles.addBoatButton]}
+                  textStyle={button.primaryText}
+                  onPress={this.props.handleSubmit(this.onSubmit)}
+                  isLoading={this.state.isLoading}>
+                    {I18n.t('caption_add_boat').toUpperCase()}
+                </TextButton>
+              </View>
+            </View>
+          </ScrollContentView>
+        </LinearGradient>
+      </ImageBackground>
     )
   }
 

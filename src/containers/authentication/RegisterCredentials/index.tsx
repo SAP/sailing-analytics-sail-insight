@@ -167,7 +167,8 @@ class RegisterCredentials extends TextInputForm<Props> {
       this.props.navigation.navigate(Screens.RegisterBoat)
       this.props.destroy()
     } catch (err) {
-      this.setState({ error: getErrorDisplayMessage(err) })
+      const errorMessage = getErrorDisplayMessage(err)
+      this.setState({ error: errorMessage, usernameError: errorMessage })
     } finally {
       this.setState({ isLoading: false })
     }

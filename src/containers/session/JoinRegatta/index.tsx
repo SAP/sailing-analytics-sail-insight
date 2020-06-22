@@ -1,33 +1,40 @@
 import React from 'react'
-import { Alert, View } from 'react-native'
+import { Alert, View, ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
+import LinearGradient from 'react-native-linear-gradient'
 
-import Images from '@assets/Images'
-import I18n from 'i18n'
-import { button, container, image, text } from 'styles/commons'
-import styles from './styles'
 import { checkIn } from 'actions/checkIn'
-import { dateTimeText } from 'helpers/date'
-import { getErrorDisplayMessage } from 'helpers/texts'
-import { openEmailToContact } from 'helpers/user'
+
 import { CheckIn } from 'models'
+
 import { getCustomScreenParamData } from 'navigation/utils'
+
 import { getBoat } from 'selectors/boat'
 import { getCompetitor } from 'selectors/competitor'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
 import { getMark } from 'selectors/mark'
+
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
-import { registration } from 'styles/components'
+
+import { dateRangeText } from 'helpers/date'
+import { getErrorDisplayMessage } from 'helpers/texts'
+import { openEmailToContact } from 'helpers/user'
 
 import EulaLink from 'components/EulaLink'
 import IconText from 'components/IconText'
 import Image from 'components/Image'
-import ImageButton from 'components/ImageButton'
 import ScrollContentView from 'components/ScrollContentView'
 import TrackingContext from 'components/session/TrackingContext'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
+
+import I18n from 'i18n'
+
+import Images from '@assets/Images'
+import styles from './styles'
+import { text, button, image } from 'styles/commons'
+import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 class JoinRegatta extends React.Component<{
   checkInData: CheckIn,
@@ -88,65 +95,72 @@ class JoinRegatta extends React.Component<{
     this.getTrackingContext()
 
     return (
-      <ScrollContentView style={{ backgroundColor: '#1D3F4E' }}>
-        <View style={container.stretchContent}>
-          <Image style={image.headerLarge} source={eventImageUrl || Images.header.sailors}/>
-          {logoImageUrl && <Image style={[image.logoAbsoluteLeft, styles.logo]} source={logoImageUrl}/>}
-          <View style={styles.textContainer}>
-            <Text style={[text.propertyValue, styles.timeText]}>{dateTimeText(event.startDate)}</Text>
-            <Text style={[registration.claim(), styles.textClaim]}>
-              {title}
-            </Text>
-            {
-              event.venue &&
-              event.venue.name &&
-              event.venue.name !== 'default' &&
-              <IconText
-                style={styles.location}
-                iconStyle={styles.locationIcon}
-                textStyle={[text.propertyValue, { color: '#FFFFFF' }]}
-                source={Images.info.location}
-                alignment="horizontal"
-              >
-                {event.venue && event.venue.name}
-              </IconText>
-            }
+      <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
+        <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.65 }}>
+          <ScrollContentView style={styles.container}>
+            <View style={styles.contentContainer}>
+              <View style={[image.siHeaderLarge, styles.header]}>
+                <Image style={styles.eventImage} source={eventImageUrl || Images.header.sailors} />
+                <Image style={[styles.poweredByLogo]} source={Images.defaults.poweredBySAP}/>
+              </View>
+              <View style={styles.textContainer}>
+                {logoImageUrl && <Image style={[image.siLogoAbsoluteLeft, styles.logo]} source={logoImageUrl}/>}
+                <View style={[styles.headingBlock, (logoImageUrl ? styles.indentHeadingBlock : undefined) ]}>
+                  <View style={styles.dateAndLocation}>
+                    <Text style={[text.text]}>{dateRangeText(event.startDate, event.endDate)}</Text>
+                    {
+                      event.venue &&
+                      event.venue.name &&
+                      event.venue.name !== 'default' &&
+                      <IconText
+                        style={styles.location}
+                        iconStyle={styles.locationIcon}
+                        textStyle={[text.text, styles.locationText]}
+                        source={Images.info.location}
+                        alignment="horizontal"
+                      >
+                        {event.venue && event.venue.name}
+                      </IconText>
+                    }
+                  </View>
+                  <Text style={[text.h2]}>{title}</Text>
+                </View>
+              </View>
+              <View style={styles.textContainer}>
+                { true && // TODO if user is logged in and has one boat
+                  <Text style={text.text}>Boat Selector bit goes here</Text>
+                }
+                { true && // TODO if user is logged in and has multiple boats
+                  <Text style={text.text}>Boat Selector bit goes here</Text>
+                }
+                <View style={[styles.eulaField]}>
+                  <EulaLink mode="JOIN" />
+                </View>
+                <TextButton
+                  style={[button.primary, button.fullWidth, styles.joinButton]}
+                  textStyle={button.primaryText}
+                  onPress={this.onJoinPress}
+                  isLoading={this.state.isLoading}>
+                    {this.state.buttonText.toUpperCase()}
+                </TextButton>
+                <TextButton
+                  textStyle={text.text}
+                  onPress={openEmailToContact}>
+                    {I18n.t('caption_need_help')}
+                </TextButton>
+              </View>
+            </View>
             <TrackingContext
-              textStyle={{ color: '#FFFFFF' }}
-              session={{
-                trackingContext: this.state.trackingContext,
-                competitor,
-                boat,
-                mark
-              }}
-            />
-          </View>
-        </View>
-        <View style={styles.bottomButtonField}>
-          <EulaLink mode="JOIN"/>
-          <TextButton
-            style={styles.joinButton}
-            textStyle={styles.joinButtonText}
-            onPress={this.onJoinPress}
-            isLoading={this.state.isLoading}
-          >
-            {this.state.buttonText}
-          </TextButton>
-          <TextButton
-            style={registration.lowerButton()}
-            textStyle={styles.textButtonTextWhite}
-            onPress={openEmailToContact}
-          >
-            {I18n.t('caption_need_help')}
-          </TextButton>
-        </View>
-        <ImageButton
-            style={button.closeButton}
-            imageStyle={{ tintColor: '#FFFFFF' }}
-            source={Images.actions.close}
-            onPress={() => this.props.navigation.goBack()}
-        />
-      </ScrollContentView>
+                textStyle={{ color: '#FFFFFF' }}
+                session={{
+                  trackingContext: this.state.trackingContext,
+                  competitor,
+                  boat,
+                  mark
+                }}/>
+          </ScrollContentView>
+        </LinearGradient>
+      </ImageBackground>
     )
   }
 }

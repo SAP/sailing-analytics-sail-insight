@@ -1,7 +1,7 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
 
 export default EStyleSheets.create({
-      container: {
+    container: {
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'transparent',

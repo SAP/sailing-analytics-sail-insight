@@ -320,8 +320,15 @@ const AppNavigator = Component(props => compose(
 )([
   stackScreen(withoutHeader({ name: Screens.Splash, component: SplashScreen })),
   stackScreen(withoutHeader({ name: Screens.FirstContact, component: FirstContact })),
-  stackScreen(withoutHeader({ name: Screens.JoinRegatta, component: JoinRegatta })),
-  stackScreen(withoutHeader({ name: Screens.EditCompetitor, component: EditCompetitor })),
+  stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withoutTitle)({
+    name: Screens.JoinRegatta, component: JoinRegatta
+  })),
+  stackScreen(compose(withTransparentHeader, withoutTitle)({
+    name: Screens.EditCompetitor, component: EditCompetitor,
+    options: {
+      headerLeft: () => <Button title={I18n.t('caption_skip')} color={$siWhite} onPress={() => navigationContainer.current.navigate(Screens.Main)} />
+    }
+  })),
   stackScreen(withoutHeaderLeft({ name: Screens.RegisterBoat, component: RegisterBoat, options: { title: I18n.t('title_your_team') } })),
   stackScreen(withoutHeader({ name: Screens.Main, component: mainTabsNavigator.fold })),
   stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withGradientHeaderBackground, withoutTitle)({
