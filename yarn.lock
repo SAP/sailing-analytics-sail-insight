@@ -6813,9 +6813,9 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-"sail-insight-expedition-communication@https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-expedition-communication.git#1.1.21":
+"sail-insight-expedition-communication@https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-expedition-communication.git#1.1.22":
   version "1.1.20"
-  resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-expedition-communication.git#e1913a17143a6737b2e5a7f6d5e4be334249ffcc"
+  resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-expedition-communication.git#819a54f3e60fda376a53c8bbf7d0b13111572f98"
 
 "sail-insight-mtcp-network@https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-multipath-tcp.git#1.0.7":
   version "1.0.7"
