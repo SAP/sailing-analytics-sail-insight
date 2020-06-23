@@ -1,4 +1,5 @@
 import ExpeditionCommunication, { Server1 } from 'sail-insight-expedition-communication'
+import { Platform } from 'react-native'
 
 const fixDigits = 7
 
@@ -46,6 +47,12 @@ export const sendStartLine = (startLine: any) => {
 
 export const updateSettings = (settings: any) => {
     ExpeditionCommunication.configureCommunication(settings)
+}
+
+export const keepServerAlive = () => {
+    if (Platform.OS === 'ios') {
+        ExpeditionCommunication.keepServerAlive(Server1)
+    }
 }
 
 const getChecksum = (text: String) => {
