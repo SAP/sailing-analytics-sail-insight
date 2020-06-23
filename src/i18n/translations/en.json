@@ -315,7 +315,7 @@
   "text_name": "Name",
   "text_placeholder_email": "E-mail address",
   "text_login_already_account": "Login. I already have an account",
-  "text_passwort_reset_title_info" : "Please enter your user name or e-mail address to get a passwort reset via e-mail",
+  "text_passwort_reset_title_info" : "Please enter your user name or e-mail address to get a password reset via e-mail",
   "session_create_new_event" : "Create a new event",
   "title_tracking" : "Tracking",
   "text_place_QR_code": "Please place the QR code in front of your camera",

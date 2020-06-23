@@ -43,8 +43,13 @@ export const logout = () => (dispatch: DispatchType) => {
   dispatch(removeUserData())
 }
 
-export const requestPasswordReset = (username: string, email: string) =>
-   authApi().requestPasswordReset(username, email)
+export const requestPasswordReset = (usernameOrEmail: string) => {
+  if (usernameOrEmail.includes('@')) {
+    return authApi().requestPasswordReset('', usernameOrEmail)
+  }
+
+  return authApi().requestPasswordReset(usernameOrEmail, '')
+}
 
 export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
   dispatch(updateCurrentUserInformation(await authApi().user()))

@@ -10,7 +10,6 @@ import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
 import TextInputForm from 'components/base/TextInputForm'
 
-import { FORM_KEY_EMAIL, FORM_KEY_USERNAME } from 'forms/registration'
 import { requestPasswordReset } from '../../../actions/auth'
 
 import I18n from 'i18n'
@@ -21,24 +20,23 @@ import { text, form, button } from 'styles/commons'
 import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 class PasswordReset extends TextInputForm<{
-  requestPasswordReset: (u: string, e: string) => any,
+  requestPasswordReset: (uoe: string) => any,
 }> {
   public state = {
-    username: '',
-    email: '',
+    usernameOrEmail: '',
     isLoading: false,
     error: null,
   }
 
   public onSubmit = async () => {
     this.setState({ error: null })
-    const { username, email } = this.state
-    if (isEmpty(username) && isEmpty(email)) {
+    const { usernameOrEmail } = this.state
+    if (isEmpty(usernameOrEmail)) {
       return
     }
     try {
       this.setState({ isLoading: true })
-      await this.props.requestPasswordReset(username, email)
+      await this.props.requestPasswordReset(usernameOrEmail)
     } catch (err) {
       // do not show any indication for error.
       // this.setState({ error: getErrorDisplayMessage(err) })
@@ -59,8 +57,7 @@ class PasswordReset extends TextInputForm<{
     }
   }
 
-  public onUsernameChange = (newValue: string) => this.setState({ username: newValue })
-  public onEmailChange = (newValue: string) => this.setState({ email: newValue })
+  public onUsernameOrEmailChange = (newValue: string) => this.setState({ usernameOrEmail: newValue })
 
   public render() {
     const { error, isLoading } = this.state
@@ -74,14 +71,14 @@ class PasswordReset extends TextInputForm<{
               </Text>
               <View style={form.formSegment1}>
                 <TextInput
-                  value={this.state.username}
-                  onChangeText={this.onUsernameChange}
+                  value={this.state.usernameOrEmail}
+                  onChangeText={this.onUsernameOrEmailChange}
                   placeholder={I18n.t('text_placeholder_your_username_or_email')}
                   keyboardType={'default'}
                   returnKeyType="go"
                   autoCapitalize="none"
                   onSubmitEditing={this.onSubmit}
-                  inputRef={this.handleInputRef(FORM_KEY_USERNAME)} />
+                />
               </View>
               <View style={form.lastFormSegment}>
                 {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}
