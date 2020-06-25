@@ -97,7 +97,8 @@ const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editin
 const nothingWhenNoShowMarkProperties = branch(compose(equals(false), prop('showMarkProperties')), nothingAsClass)
 const nothingWhenShowMarkProperties = branch(compose(equals(true), prop('showMarkProperties')), nothingAsClass)
 
-const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
+const updateSelectedPositionType = (props: any) => { props.setSelectedPositionType(isEmpty(props.selectedMarkLocation) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation) }
+const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', (props: any) => { return isEmpty(props.selectedMarkLocation) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation })
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
 const withEditingGateName = withState('editingGateName', 'setEditingGateName', false)
 const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
@@ -149,7 +150,10 @@ const GateMarkSelectorItem = Component((props: object) =>
     concat(__, nothingWhenNotSelected(arrowUp({ size: 35, iconStyle: { width: 37, height: 24 } }))),
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
-      onPress: (props: any) => props.selectMarkConfiguration(props.markConfigurationId) }),
+      onPress: (props: any) => {
+        props.selectMarkConfiguration(props.markConfigurationId) 
+        updateSelectedPositionType(props)} 
+      }),
     text({ style: styles.gateMarkSelectorText }),
     defaultTo(''),
     prop('shortName'),
@@ -607,9 +611,14 @@ const WaypointsList = Component(props => {
         'M60.367 40.158L43.555.5H.755l16.826 39.658-16.826 39.8h42.8z'
       const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 37}, 47)`
       const textAnchor = isStart || isFinish ? 'start' : 'middle'
-      const onPressOut = () => waypoint.isAdd ?
-        props.addWaypoint({ index, id: uuidv4() }) :
-        props.selectWaypoint(waypoint.id)
+      const onPressOut = () => {
+        if (waypoint.isAdd) {
+          props.addWaypoint({ index, id: uuidv4() })
+        } else {
+          props.selectWaypoint(waypoint.id)
+          updateSelectedPositionType(props)
+        }
+      }
 
       return compose(
         svgGroup({

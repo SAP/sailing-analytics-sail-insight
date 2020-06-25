@@ -105,11 +105,6 @@ export const createEvent = (session: TrackingSession, isPublic?: boolean) => asy
   )
 }
 
-export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
-  withDataApi({ leaderboard: leaderboardName })(
-    dataApi => dataApi.updateEvent(eventId, { enddateasmillis: getNowAsMillis() }),
-  )
-
 const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   const { handicapType = getDefaultHandicapType(), handicapValue = null } = competitorInfo.handicap || {}
 

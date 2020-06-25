@@ -277,8 +277,6 @@
   "error_field_invalid_password": "Password must be minimum 5 characters.",
   "error_regatta_access_forbidden": "You do not have permission to access this regatta.",
   "error_field_invalid_sessionname": "The event name cannot contain the following characters: /, \", ;, ?, [, ]",
-  "error_tracking_resend_info_title" : "Transfer Tracking",
-  "error_tracking_resend_info_text" : "Your tracking has been stopped, but not all data could be transmitted to the server.\nPlease try again.",
   "error_load_nationalities": "Could not load nationalities",
   "error_load_boat_classes": "Could not load boat classes",
   "error_start_date_after_end_date": "Start date needs to be before the end date.",

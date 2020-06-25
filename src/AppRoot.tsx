@@ -303,14 +303,12 @@ const accountNavigator = Component(props => compose(
   }) })),
 ]))
 
-const trackingTabPress = (props: any) => {
+const preventTabPressBackAction = (navigatorScreen, toPrevent, toGoBack) => (props: any) => {
   const { navigation, route, preventDefault } = props
   const selectedTab = route.state?.routes[route.state?.index]
 
-  if (selectedTab && selectedTab.name === Screens.TrackingNavigator) {
+  if (selectedTab && selectedTab.name === navigatorScreen) {
     const selectedTrackingStack = selectedTab.state?.routes[selectedTab.state?.index].name
-    const toPrevent = [Screens.Tracking, Screens.SetWind, Screens.Leaderboard]
-    const toGoBack = [Screens.SetWind, Screens.Leaderboard]
 
     if (includes(selectedTrackingStack, toPrevent))
       preventDefault()
@@ -318,6 +316,18 @@ const trackingTabPress = (props: any) => {
       navigation.goBack()
   }
 }
+
+const trackingTabPress = preventTabPressBackAction(
+  Screens.TrackingNavigator,
+  [Screens.Tracking, Screens.SetWind, Screens.Leaderboard],
+  [Screens.SetWind, Screens.Leaderboard]
+)
+
+const eventTabPress  = preventTabPressBackAction(
+  Screens.SessionsNavigator,
+  [Screens.RaceCourseLayout],
+  []
+)
 
 const mainTabsNavigator = Component(props => compose(
   fold(props),
@@ -342,7 +352,7 @@ const mainTabsNavigator = Component(props => compose(
   }),
   reduce(concat, nothing()))([
   tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
-  tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold }),
+  tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold, listeners: { tabPress: event => eventTabPress(merge(props, event)) } }),
   tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }),
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
 ]))

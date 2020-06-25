@@ -5977,7 +5977,7 @@ react-native-background-fetch@^3.0.4:
     plist "^3.0.1"
     xcode "^2.0.0"
 
-react-native-background-fetch@~3.0.3:
+react-native-background-fetch@~3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-3.0.6.tgz#0123722caa92bcbe4bb191bd37f2d5b0d3e65f2d"
   integrity sha512-F3C/uHC6PHcyPLEB5iQeX4bU41x1CcjFKYf7P54rTSuYG9BlV3z0oyhzbCkWxCCabMl9yzFozuqpUMKybMGD4w==
@@ -5986,13 +5986,13 @@ react-native-background-fetch@~3.0.3:
     plist "^3.0.1"
     xcode "^2.0.0"
 
-"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.6.1":
-  version "3.6.1"
-  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#70cb5bd9d9a296d5c0a7e0b57707e1de4223bd09"
+"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.7.0":
+  version "3.7.0"
+  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#64b58ff358a03e722187d37cdda277e933dc08b6"
   dependencies:
     fast-plist "^0.1.2"
     plist "^2.0.1"
-    react-native-background-fetch "~3.0.3"
+    react-native-background-fetch "~3.0.6"
     xcode "^0.9.1"
 
 react-native-background-timer@2.1.1:
@@ -6130,10 +6130,10 @@ react-native-localize@^1.3.3:
   resolved "https://registry.yarnpkg.com/react-native-localize/-/react-native-localize-1.3.3.tgz#3e29520b4c7907227729326dfbf2f2643a07495a"
   integrity sha512-lpKx/iqDKQ7dC58fb/vGGERLT4ZYfk+H2AXMg6aaVkgv8eEIgApQAzB2Oaotx7FIM/RopJponUFyJ4PMIHi4Rw==
 
-react-native-maps@0.26.1:
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.26.1.tgz#6ec316259b38d259c8974448d894bd7a23101da4"
-  integrity sha512-p4VTB8YB5ZmOmDRCUpoHZkm05amZwhIo04AJMBbB9+JAR2PNNfpo0vceoWX0Mag4wnePkdzPomeWMplr/wimTg==
+react-native-maps@0.27.1:
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.27.1.tgz#2f10cd417bb2fd938c9e015b1c9b6d9b1a44b97f"
+  integrity sha512-HygBkZBecTnIVRYrSiLRAvu4OmXOYso/A7c6Cy73HkOh9CgGV8Ap5eBea24tvmFGptjj5Hg8AJ94/YbmWK1Okw==
 
 react-native-masked-text@1.9.1:
   version "1.9.1"
@@ -6818,9 +6818,9 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-"sail-insight-expedition-communication@https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-expedition-communication.git#1.1.21":
+"sail-insight-expedition-communication@https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-expedition-communication.git#1.1.22":
   version "1.1.20"
-  resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-expedition-communication.git#e1913a17143a6737b2e5a7f6d5e4be334249ffcc"
+  resolved "https://1ee768e7d499e6dc94ca41e9d385d0d14854cfff:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-expedition-communication.git#819a54f3e60fda376a53c8bbf7d0b13111572f98"
 
 "sail-insight-mtcp-network@https://d8bc13a7ec38ac9c697948a438e8a26e58c0bef7:x-oauth-basic@gitea.scopicsoftware.com/larry-rosenfeld/sail-insight-multipath-tcp.git#1.0.7":
   version "1.0.7"

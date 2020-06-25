@@ -14,6 +14,7 @@ export const STOP_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL = 'STOP_EXPEDITION_C
 export const UPDATE_EXPEDITION_COMMUNICATION_MESSAGES = 'UPDATE_EXPEDITION_COMMUNICATION_MESSAGES'
 export const RESET_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL = 'RESET_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL'
 export const RESET_EXPEDITION_COMMUNICATION_MESSAGES = 'RESET_EXPEDITION_COMMUNICATION_MESSAGES'
+export const KEEP_COMMUNICATION_ALIVE = 'KEEP_COMMUNICATION_ALIVE'
 
 export const updateServerState    = createAction(UPDATE_SERVER_STATE)
 export const updateServerValid = createAction('COMMUNICATIONS_UPDATE_VALID')
@@ -32,4 +33,5 @@ export const startExpeditionCommunicationMessagesChannel = createAction(START_EX
 export const stopExpeditionCommunicationMessagesChannel = createAction(STOP_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL)
 export const updateExpeditionCommunicationMessages = createAction(UPDATE_EXPEDITION_COMMUNICATION_MESSAGES)
 export const resetExpeditionCommunicationMessages = createAction(RESET_EXPEDITION_COMMUNICATION_MESSAGES)
+export const keepCommunicationAlive = createAction(KEEP_COMMUNICATION_ALIVE)
 

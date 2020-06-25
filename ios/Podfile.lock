@@ -319,7 +319,7 @@ PODS:
     - React
   - react-native-keep-awake (3.1.0):
     - React
-  - react-native-maps (0.26.1):
+  - react-native-maps (0.27.1):
     - React
   - react-native-netinfo (4.7.0):
     - React
@@ -370,7 +370,7 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.5)
   - RNBackgroundFetch (3.0.4):
     - React
-  - RNBackgroundGeolocation (3.6.2):
+  - RNBackgroundGeolocation (3.7.0):
     - CocoaLumberjack (~> 3.5.1)
     - React
   - RNCAsyncStorage (1.7.1):
@@ -707,7 +707,7 @@ SPEC CHECKSUMS:
   react-native-branch: cc611a2d0e7e6c7c4cafebc8e59065b89c38002b
   react-native-camera: 705c7e9412436957b4dc894a1af61f43830787e2
   react-native-keep-awake: ff10b454b539786007df59fce87abbb7cd4634e3
-  react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
+  react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
@@ -725,7 +725,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNBackgroundFetch: 388cf1595934d22fed275b8db9b48a28bb4eb7b6
-  RNBackgroundGeolocation: 358576b4b65b64947d7836e492fa983997bca295
+  RNBackgroundGeolocation: ccfbbcb9b67f05c5372c48d9d3db9a819861ef5b
   RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
   RNCMaskedView: a88953beefbd347a29072d9eba90e42945fe291e
   RNDeviceInfo: 9b5790f85eb03e12de682a97618031a215c7f386
