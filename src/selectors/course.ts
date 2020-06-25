@@ -2,10 +2,11 @@ import { prop, propEq, propOr, find, compose, path, defaultTo,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
   apply, map, take, move, evolve, dissoc, not, flatten, reject, __,
   curry,reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr,
-  fromPairs
+  fromPairs, mergeWithKey
 } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
+import { toHashedString } from 'helpers/utils'
 
 import {
   CourseState,
@@ -82,6 +83,8 @@ export const getMarkPositionByMarkConfiguration = markConfigurationId => createS
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
+const concatTrackingDevices = (key, l, r) => key == 'trackingDevices' ? concat(l, r) : r
+
 export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
   compose(
@@ -90,6 +93,15 @@ export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => c
       compose(isNil, prop('trackingDeviceMappedToMillis')))),
     defaultTo([]),
     prop('trackingDevices'),
+    // In case of a mark properties object, tracker is found on the currentTrackingDeviceId
+    // property instead of having a trackingDevices array. This fuses currentTrackingDeviceId
+    // into trackingDevices so the information is correctly displayed in the visual components
+    when(prop('currentTrackingDeviceId'), v => mergeWithKey(concatTrackingDevices, {
+      trackingDevices: [{
+        trackingDeviceType: 'smartphoneUUID',
+        trackingDeviceHash: toHashedString(v.currentTrackingDeviceId.id)
+      }]
+    }, v)),
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
