@@ -39,8 +39,6 @@ class OutputConsole extends React.Component<OutputConsoleProps, OutputConsoleSta
     this.onShare = this.onShare.bind(this)
     this.onPauseResume = this.onPauseResume.bind(this)
 
-    console.log('componentDidMount')
-
     this.props.startExpeditionCommunicationMessagesChannel(false)
   }
 

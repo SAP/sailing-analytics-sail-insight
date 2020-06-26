@@ -82,4 +82,3 @@ export const initLocationUpdates = () => async (dispatch: DispatchType) => {
   LocationService.LocationTrackingStatus.STOPPED
   dispatch(updateTrackingStatus(status))
 }
-

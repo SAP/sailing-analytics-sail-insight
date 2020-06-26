@@ -28,6 +28,7 @@ const config: Config = {
   heartbeatInterval: 1, // in seconds
   disableStopDetection: true,
   stopOnStationary: false,
+  foregroundService: true,
   // debug
   debug: false,
   // debug: __DEV__,

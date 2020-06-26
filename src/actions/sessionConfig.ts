@@ -5,7 +5,7 @@ import { AutoCourseUpdateState, DispatchType } from 'helpers/types'
 import { PositionFix } from 'models'
 import { hasValidPositionAndCourse } from 'models/PositionFix'
 
-import { updateStartAutoCourseStatus, updateTrackingStartTimeUpdateFlag, updateValidGpsFixCount } from 'actions/locationTrackingData'
+import { updateStartAutoCourseStatus, updateTrackingStartTimeUpdateFlag } from 'actions/locationTrackingData'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getStartAutoCourseUpdateStatus, getValidGpsFixCount, wasTrackingStartTimeUpdated } from 'selectors/location'
 
@@ -59,7 +59,6 @@ const checkAndUpdateAutoCourse = (gpsFix: PositionFix) => withDataApi({ fromTrac
 
   if (hasValidPositionAndCourse(gpsFix)) {
     validGpsFixCount = validGpsFixCount + 1
-    dispatch(updateValidGpsFixCount(validGpsFixCount))
   }
 
   const checkIn = getTrackedCheckIn(state)
