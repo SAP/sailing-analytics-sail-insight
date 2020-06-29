@@ -38,7 +38,6 @@ import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 class JoinRegatta extends React.Component<{
   checkInData: CheckIn,
-  alreadyJoined: boolean
   leaderboard?: any,
   event?: any,
   competitor?: any,
@@ -56,7 +55,7 @@ class JoinRegatta extends React.Component<{
   public onJoinPress = async () => {
     await this.setState({ isLoading: true })
     try {
-      await this.props.checkIn(this.props.checkInData, this.props.alreadyJoined, this.props.navigation)
+      await this.props.checkIn(this.props.checkInData, this.props.navigation)
     } catch (err) {
       Alert.alert(getErrorDisplayMessage(err))
     } finally {
@@ -165,17 +164,11 @@ class JoinRegatta extends React.Component<{
   }
 }
 
-interface ScreenParamProps {
-  checkInData: CheckIn
-  alreadyJoined: boolean
-}
-
 const mapStateToProps = (state: any, props: any) => {
-  const { checkInData, alreadyJoined }: ScreenParamProps = getCustomScreenParamData(props) || {}
+  const checkInData = getCustomScreenParamData(props)
 
   return {
     checkInData,
-    alreadyJoined,
     event: getEvent(checkInData.eventId)(state),
     leaderboard: getLeaderboard(checkInData.leaderboardName)(state),
     competitor: getCompetitor(checkInData.competitorId)(state),

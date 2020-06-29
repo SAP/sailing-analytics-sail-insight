@@ -20,7 +20,7 @@ import { spreadableList } from 'helpers/utils'
 import { fetchEvent, updateLoadingEventList } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { isLoggedIn } from 'selectors/auth'
-import { getActiveCheckInEntity, getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
@@ -185,11 +185,7 @@ export const fetchCheckIn = (url: string) => async (dispatch: DispatchType) => {
   return await dispatch(collectCheckInData(data))
 }
 
-export const isEventAlreadyJoined = ({ eventId }: CheckIn, activeCheckIns: any) =>
-  Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
-
-
-export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const checkIn = (data: CheckIn, navigation: object) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!data) {
     throw new CheckInException('data is missing')
   }
@@ -283,9 +279,7 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
-    const activeCheckIns = getActiveCheckInEntity(getState()) || {}
-    const alreadyJoined = isEventAlreadyJoined(sessionCheckIn, activeCheckIns)
-    navigation.navigate(Screens.JoinRegatta, { data: { checkInData: sessionCheckIn, alreadyJoined } })
+    navigation.navigate(Screens.JoinRegatta, { data: sessionCheckIn })
   } catch (err) {
     Logger.debug(err)
     error = err
