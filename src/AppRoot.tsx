@@ -184,7 +184,7 @@ const markTrackingNavigator = Component(props => compose(
 const trackingNavigator = Component(props => compose(
   fold(props),
   stackNavigator({
-    initialRouteName: LocationService.LocationTrackingStatus.RUNNING ? Screens.Tracking : Screens.WelcomeTracking,
+    initialRouteName: props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ? Screens.Tracking : Screens.WelcomeTracking,
     ...stackNavigatorConfig,
     screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
