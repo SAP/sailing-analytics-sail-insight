@@ -161,6 +161,12 @@ export default EStyleSheet.create({
     formTextInputAssitiveTextError: {
         ...formInputAssitiveTextError
     },
+    formSelectLabel: {
+        ...formLabel
+    },
+    formSelectInput: {
+        ...formInput
+    },
     formDivider: {
         height: 0,
         backgroundColor: '$siTransparent',

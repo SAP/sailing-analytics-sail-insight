@@ -38,7 +38,7 @@ import I18n from 'i18n'
 
 import Images from '@assets/Images'
 import styles from './styles'
-import { text, button, image } from 'styles/commons'
+import { text, button, image, form } from 'styles/commons'
 import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 export enum JoinRegattaActionType {
@@ -191,21 +191,19 @@ class JoinRegatta extends React.Component<{
                 { boats.length > 1 &&
                   <>
                     <Text style={text.text}>Pick the boat you will be sailing with.</Text>
+                    <Text style={form.formSelectLabel}>Boat Class</Text>
                     <RNPickerSelect
                         items={boatPickerItems}
                         value={selectedBoatIndex}
                         Icon={() => {
-                          return <Chevron size={1.5} color="white" />;
+                          return <Chevron size={1.2} color="white" />; // Could this be done in form.ts common styling?
                         }}
                         onValueChange={this.onBoatPickerSelect}
                         useNativeAndroidPickerStyle={false}
                         style={{
-                          // TODO: Styling
-                          // inputIOS: styles.inputIOS,
-                          // inputAndroid: styles.inputAndroid,
-                          // underline: styles.underline,
-                          inputIOS: { color: 'white' },
-                          inputAndroid: { color: 'white' },
+                          iconContainer: { right: 4, top: 8 },
+                          inputIOS: { ...form.formSelectInput },
+                          inputAndroid: { ...form.formSelectInput },
                         }}
                     />
                   </>
