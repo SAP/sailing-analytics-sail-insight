@@ -21,7 +21,7 @@ const EMPTY_VALUE = '-'
 
 const loggedInItems = (props: any) => [
   {
-    title: props.user.fullName || EMPTY_VALUE,
+    title: props.user.username || EMPTY_VALUE,
     subtitle: props.user.email || EMPTY_VALUE,
     big: true,
     onPress: () => props.navigation.navigate(Screens.UserProfile),
