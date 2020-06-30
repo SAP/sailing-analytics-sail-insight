@@ -38,9 +38,6 @@ import Images from '@assets/Images'
 import styles from './styles'
 import { form,  button } from 'styles/commons'
 import { $siDarkBlue, $siTransparent } from 'styles/colors';
-// import { button, container } from 'styles/commons'
-// import { registration } from 'styles/components'
-// import { $extraSpacingScrollContent } from 'styles/dimensions'
 
 interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
   team: TeamTemplate
