@@ -180,14 +180,14 @@ class JoinRegatta extends React.Component<{
               <View style={styles.textContainer}>
                 { boats.length === 1 &&
                   <>
-                    <Text style={text.text}>You will join this race with <Text style={text.yellow}>{firstBoat.name}</Text>.</Text>
-                    <Text style={text.text}>Visit the <Text style={text.yellow} onPress={this.gotoAccountPage}>account settings</Text> to edit this boat or create a new one.</Text>
+                    <Text style={text.text}>{I18n.t('text_join_with_boat_01')}<Text style={text.yellow}>{firstBoat.name}</Text>{I18n.t('text_join_with_boat_02')}</Text>
+                    <Text style={text.text}>{I18n.t('text_join_with_boat_explainer_01')}<Text style={text.yellow} onPress={this.gotoAccountPage}>{I18n.t('text_join_with_boat_explainer_02')}</Text>{I18n.t('text_join_with_boat_explainer_03')}</Text>
                   </>
                 }
                 { boats.length > 1 &&
                   <>
-                    <Text style={text.text}>Pick the boat you will be sailing with.</Text>
-                    <Text style={form.formSelectLabel}>Boat Class</Text>
+                    <Text style={[text.text, styles.pickText]}>{I18n.t('text_join_with_boat_choose')}</Text>
+                    <Text style={form.formSelectLabel}>{I18n.t('text_join_with_boat_select_label')}</Text>
                     <RNPickerSelect
                         items={boatPickerItems}
                         value={selectedBoatIndex}

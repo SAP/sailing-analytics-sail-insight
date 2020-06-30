@@ -181,6 +181,14 @@
   "text_session_filter_invited": "Events I was invited to",
   "text_session_filter_archived": "Archived events",
 
+  "text_join_with_boat_01": "You will join this race with ",
+  "text_join_with_boat_02": ".",
+  "text_join_with_boat_explainer_01": "Visit the ",
+  "text_join_with_boat_explainer_02": "account settings",
+  "text_join_with_boat_explainer_03": " to edit this boat or create a new one.",
+  "text_join_with_boat_choose": "Pick the boat you will be sailing with:",
+  "text_join_with_boat_select_label": "Boat ",
+
   "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
   "user_profile_alert_label" : "Logout",
 

@@ -179,6 +179,14 @@
   "text_session_filter_invited": "Events zu denen ich eingeladen wurde",
   "text_session_filter_archived": "Archivierte Events",
 
+  "text_join_with_boat_01": "Du wirst diesem Event mit dem Boot ",
+  "text_join_with_boat_02": " beitreten.",
+  "text_join_with_boat_explainer_01": "Besuche die ",
+  "text_join_with_boat_explainer_02": "Einstellungen",
+  "text_join_with_boat_explainer_03": ", um dieses Boot zu bearbeiten oder ein Neues zu erstellen.",
+  "text_join_with_boat_choose": "Wähle das Boot mit dem Du segelst:",
+  "text_join_with_boat_select_label": "Boot ",
+
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",
 

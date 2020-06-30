@@ -65,7 +65,9 @@ export default EStyleSheets.create({
         marginBottom: '$siBaseSpacing * 2'
     },
     eulaField: {
-        marginTop: '$siBaseSpacing',
+        marginTop: '$siBaseSpacing * 2',
+    },
+    pickText: {
+        marginBottom: '$siBaseSpacing',
     }
-
 })
