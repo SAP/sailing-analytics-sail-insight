@@ -52,7 +52,7 @@ export const hasHandicapChanged = (oldHandicap?: Handicap, newHandicap?: Handica
 
 export default interface TeamTemplate {
   name: string,
-  nationality: string,
+  nationality?: string,
   boatName?: string,
   sailNumber: string
   boatClass: string

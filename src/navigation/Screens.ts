@@ -34,6 +34,8 @@ export const CheckIn = 'CheckIn'
 export const CheckInNavigator = 'CheckInNavigator'
 export const QRScanner = 'QRScanner'
 export const JoinRegatta = 'JoinRegatta'
+export const JoinRegattaForTracking = 'JoinRegattaForTracking'
+export const JoinRegattaAsCompetitor = 'JoinRegattaAsCompetitor'
 
 // tabs
 export const MainTabs = 'MainTabs'

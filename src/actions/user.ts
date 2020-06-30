@@ -47,6 +47,8 @@ export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch:
   }
   await selfTrackingApi().updatePreference(TEAMS_PREFERENCE_KEY, newTeams)
   dispatch(updateTeams(newTeams))
+
+  return teamWithImage
 }
 
 export type updateTeamImageAction = (teamName: string, imageData?: any) => any

@@ -50,7 +50,7 @@ import EventCreation from 'containers/session/EventCreation'
 import ExpertSettings from 'containers/ExpertSettings'
 import FirstContact from 'containers/user/FirstContact'
 import Geolocation from 'containers/CourseCreation/Geolocation'
-import JoinRegatta from 'containers/session/JoinRegatta'
+import JoinRegatta, { JoinRegattaActionType } from 'containers/session/JoinRegatta'
 import Leaderboard from 'containers/session/Leaderboard/Leaderboard'
 import Login from 'containers/authentication/Login'
 import MarkInventory from 'containers/Inventory/MarkInventory'
@@ -357,6 +357,8 @@ const mainTabsNavigator = Component(props => compose(
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
 ]))
 
+const joinRegattaScreenMixins = compose(withLeftHeaderCloseButton, withTransparentHeader, withoutTitle)
+
 const AppNavigator = Component(props => compose(
   fold(props),
   stackNavigator({
@@ -368,8 +370,14 @@ const AppNavigator = Component(props => compose(
 )([
   stackScreen(withoutHeader({ name: Screens.Splash, component: SplashScreen })),
   stackScreen(withoutHeader({ name: Screens.FirstContact, component: FirstContact })),
-  stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withoutTitle)({
-    name: Screens.JoinRegatta, component: JoinRegatta
+  stackScreen(joinRegattaScreenMixins({
+    name: Screens.JoinRegatta, component: JoinRegatta, initialParams: { actionType: JoinRegattaActionType.JoinEvent }
+  })),
+  stackScreen(joinRegattaScreenMixins({
+    name: Screens.JoinRegattaForTracking, component: JoinRegatta, initialParams: { actionType: JoinRegattaActionType.Track }
+  })),
+  stackScreen(joinRegattaScreenMixins({
+    name: Screens.JoinRegattaAsCompetitor, component: JoinRegatta, initialParams: { actionType: JoinRegattaActionType.JoinAsCompetitor }
   })),
   stackScreen(compose(withTransparentHeader, withoutTitle)({
     name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
@@ -382,7 +390,7 @@ const AppNavigator = Component(props => compose(
   })),
   stackScreen(withoutHeader({ name: Screens.Main, component: mainTabsNavigator.fold })),
   stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withGradientHeaderBackground, withoutTitle)({
-    name: Screens.QRScanner, component: QRScanner 
+    name: Screens.QRScanner, component: QRScanner
   })),
   stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({
     name: Screens.LoginFromSplash, component: Login

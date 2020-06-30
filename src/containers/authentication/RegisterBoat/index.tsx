@@ -10,10 +10,7 @@ import {
   FORM_KEY_BOAT_CLASS,
   FORM_KEY_BOAT_NAME,
   FORM_KEY_HANDICAP,
-  FORM_KEY_IMAGE,
-  FORM_KEY_NATIONALITY,
   FORM_KEY_SAIL_NUMBER,
-  FORM_KEY_TEAM_NAME,
   TEAM_FORM_NAME,
 } from 'forms/team'
 import { validateRequired } from 'forms/validators'
@@ -26,6 +23,7 @@ import { TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
 
 import * as Screens from 'navigation/Screens'
+import { getScreenParamsFromProps } from 'navigation/utils'
 
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
 import FormHandicapInput from '../../../components/form/FormHandicapInput'
@@ -45,6 +43,7 @@ import { $siDarkBlue, $siTransparent } from 'styles/colors';
 interface Props {
   saveTeam: SaveTeamAction,
   formSailNumber?: string,
+  actionAfterSubmit?: any,
 }
 
 class RegisterBoat extends TextInputForm<Props> {
@@ -78,7 +77,7 @@ class RegisterBoat extends TextInputForm<Props> {
                 <Field
                   hint={I18n.t('text_hint_competitor_name')}
                   label={I18n.t('text_placeholder_competitor_name')}
-                  name={FORM_KEY_BOAT_NAME} // TODO: is this the correct string
+                  name={FORM_KEY_BOAT_NAME}
                   component={FormTextInput}
                   onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
                   inputRef={this.handleInputRef(FORM_KEY_BOAT_NAME)}
@@ -148,16 +147,18 @@ class RegisterBoat extends TextInputForm<Props> {
   protected onSubmit = async (values: any) => {
     try {
       this.setState({ isLoading: true, error: null })
-      await this.props.saveTeam({
-        name: values[FORM_KEY_TEAM_NAME],
-        boatName: values[FORM_KEY_BOAT_NAME],
-        nationality: values[FORM_KEY_NATIONALITY],
+      const createdBoat = await this.props.saveTeam({
+        name: values[FORM_KEY_BOAT_NAME],
         boatClass: values[FORM_KEY_BOAT_CLASS],
         sailNumber: values[FORM_KEY_SAIL_NUMBER],
-        imageData: values[FORM_KEY_IMAGE],
         handicap: values[FORM_KEY_HANDICAP],
       } as TeamTemplate)
-      this.props.navigation.navigate(Screens.Main)
+
+      if (this.props.actionAfterSubmit) {
+        await this.props.actionAfterSubmit(createdBoat)
+      } else {
+        this.props.navigation.navigate(Screens.Main)
+      }
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
     } finally {
@@ -166,7 +167,8 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: any, props: any) => ({
+  actionAfterSubmit: getScreenParamsFromProps(props)?.actionAfterSubmit,
   formSailNumber: getFormFieldValue(TEAM_FORM_NAME, FORM_KEY_SAIL_NUMBER)(state),
   initialValues: {
     [FORM_KEY_HANDICAP]: getDefaultHandicap(),
