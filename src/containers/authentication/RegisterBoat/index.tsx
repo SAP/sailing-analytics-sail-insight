@@ -71,8 +71,7 @@ class RegisterBoat extends TextInputForm<Props> {
                 <Text style={text.yellow}>{I18n.t('title_add_boat_02')}</Text>
                 {I18n.t('title_add_boat_03')}
               </Text>
-              <Text style={[text.mediumText, styles.introText]}>You can edit this boat or add more at any time by going to the account tab</Text>
-              {/* TODO translate */}
+              <Text style={[text.mediumText, styles.introText]}>{I18n.t('text_add_boat_explainer')}</Text>
               <View style={form.formSegment1}>
                 <Field
                   hint={I18n.t('text_hint_competitor_name')}

@@ -186,6 +186,7 @@
   "text_join_with_boat_explainer_03": ", um dieses Boot zu bearbeiten oder ein Neues zu erstellen.",
   "text_join_with_boat_choose": "Wähle das Boot mit dem Du segelst:",
   "text_join_with_boat_select_label": "Boot ",
+  "text_add_boat_explainer": "Besuche die Einstellungen, um dieses Boot zu bearbeiten oder ein Neues zu erstellen.",
 
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",
