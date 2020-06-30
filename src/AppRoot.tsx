@@ -103,7 +103,7 @@ const stackNavigatorConfig = {
 }
 
 const screenWithHeaderOptions = {
-  headerTitleStyle: navigationStyles.headerTitle,
+  headerTitleStyle: navigationStyles.heading,
   headerTintColor: $headerTintColor,
   headerStyle: {
     backgroundColor: $primaryBackgroundColor,
@@ -174,7 +174,7 @@ const teamDeleteHeader = (route: any) => (route?.params?.paramTeamName) && (
 
 const TeamDetailsHeader = connect(
   (state: any) => ({ text: getFormTeamName(state) }))(
-  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')}/>)
+  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')} />)
 
 const MarkLocationHeader = connect(
   (state: any) => {
@@ -296,11 +296,15 @@ const accountNavigator = Component(props => compose(
     headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
     title: route?.params?.data?.supportType === 'FAQ' ? I18n.t('caption_faq') : I18n.t('caption_known_issues')
   }) }),
-  stackScreen(({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
-    headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
-    headerTitle: () => <TeamDetailsHeader/>,
-    headerRight: () => teamDeleteHeader(route),
-  }) })),
+  stackScreen(({
+    name: Screens.TeamDetails,
+    component: TeamDetails,
+    options: ({ route }) => ({
+      headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
+      headerTitle: () => <TeamDetailsHeader/>,
+      headerRight: () => teamDeleteHeader(route),
+    })
+  })),
 ]))
 
 const preventTabPressBackAction = (navigatorScreen, toPrevent, toGoBack) => (props: any) => {

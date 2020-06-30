@@ -18,7 +18,7 @@ import Images from '@assets/Images'
 import Text from 'components/Text'
 
 import { $siErrorRed, $siWhite } from 'styles/colors'
-import { text, form } from 'styles/commons'
+import { form } from 'styles/commons'
 import { addOpacity } from 'helpers/color'
 
 

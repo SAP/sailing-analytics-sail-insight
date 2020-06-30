@@ -57,6 +57,12 @@ export default EStyleSheets.create({
   // Keep these around for now
   ...oldImageStyles,
 
+  siHeaderMediumLarge: {
+    width: '100%',
+    resizeMode: 'cover',
+    height: Dimensions.get('window').height * 0.30
+  },
+
   siHeaderLarge: {
     width: '100%',
     resizeMode: 'cover',
@@ -75,6 +81,12 @@ export default EStyleSheets.create({
     marginLeft: '$siBaseSpacing * 2',
     marginTop: '$siBaseSpacing * 2'
   },
-
-
+  siAbsoluteLowerRight: {
+    resizeMode: 'contain',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    marginRight: '$siBaseSpacing * 2',
+    marginBottom: '$siBaseSpacing * 2',
+  }
 })

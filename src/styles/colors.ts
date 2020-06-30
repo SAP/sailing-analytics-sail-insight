@@ -1,4 +1,5 @@
 import { Platform } from 'react-native'
+import { addOpacity } from 'helpers/color'
 
 export const $primaryBackgroundColor = '#1D3F4E'
 export const $secondaryBackgroundColor = '#EEEEEE'
@@ -45,6 +46,8 @@ export const $siErrorRed = $siSapYellow
 
 export const $siBlack = '#000000'
 export const $siWhite = '#ffffff'
+export const $siPlaceholderBackgroundColor = addOpacity($siDarkerBlue, 0.8) // '#008FD31A'
+
 
 export const $siShadow = Platform.select({
     ios: {

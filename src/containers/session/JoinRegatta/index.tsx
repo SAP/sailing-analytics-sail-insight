@@ -187,21 +187,24 @@ class JoinRegatta extends React.Component<{
                 { boats.length > 1 &&
                   <>
                     <Text style={[text.text, styles.pickText]}>{I18n.t('text_join_with_boat_choose')}</Text>
-                    <Text style={form.formSelectLabel}>{I18n.t('text_join_with_boat_select_label')}</Text>
-                    <RNPickerSelect
-                        items={boatPickerItems}
-                        value={selectedBoatIndex}
-                        Icon={() => {
-                          return <Chevron size={1.2} color="white" />; // Could this be done in form.ts common styling?
-                        }}
-                        onValueChange={this.onBoatPickerSelect}
-                        useNativeAndroidPickerStyle={false}
-                        style={{
-                          iconContainer: { right: 4, top: 8 },
-                          inputIOS: { ...form.formSelectInput },
-                          inputAndroid: { ...form.formSelectInput },
-                        }}
-                    />
+                    <View style={[form.formSelectInputWrapper]}>
+                      <View style={[form.formSelectInputAndLabelContainer]}>
+                        <Text style={form.formSelectLabel}>{I18n.t('text_join_with_boat_select_label')}</Text>
+                        <RNPickerSelect
+                            items={boatPickerItems}
+                            value={selectedBoatIndex}
+                            Icon={() => {
+                              return <Chevron size={1.2} color="white" />; // Could this be done in form.ts common styling?
+                            }}
+                            onValueChange={this.onBoatPickerSelect}
+                            useNativeAndroidPickerStyle={false}
+                            style={{
+                              iconContainer: { right: 4, top: 8 },
+                              inputIOS: { ...form.formSelectInput },
+                              inputAndroid: { ...form.formSelectInput },
+                            }} />
+                      </View>
+                    </View>
                   </>
                 }
                 <View style={[styles.eulaField]}>

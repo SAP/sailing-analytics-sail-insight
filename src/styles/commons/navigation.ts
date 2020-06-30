@@ -1,30 +1,49 @@
-import { isPlatformAndroid } from 'environment'
-import { Dimensions } from 'react-native'
+import { sanFranciscoSpacing } from 'react-native-typography'
 
-import { $defaultFontFamily, $titleFontSize } from 'styles/fonts'
+import { isPlatformAndroid } from 'environment'
+
+import { $siRegularFontStack, $siSemiboldFontStack } from 'styles/fonts'
 
 import EStyleSheet from 'react-native-extended-stylesheet'
 
-
-const screen = Dimensions.get('window')
-const headerTitleStyleProps = isPlatformAndroid ?
-  { /* flexGrow: 1 */ } :
-  { /* width: screen.width */ }
-
 export default EStyleSheet.create({
-  headerTitle: {
-    color: '#fff', // quickfix to set dyn. title in teamdetails to white
-    textAlign: 'center',
-    alignSelf: 'center',
-    fontFamily: $defaultFontFamily,
-    fontSize: $titleFontSize,
-    fontWeight: '500',
-    ...headerTitleStyleProps,
-  },
-  headerTitleSmall: {
-    textAlign: 'center',
-    alignSelf: 'center',
-    ...headerTitleStyleProps,
-    fontSize: '$regularLargeFontSize',
-  },
+    container: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        alignSelf: 'center',
+        paddingRight: 32,
+        paddingLeft: 32,
+    },
+    heading: Object.assign({
+        color: '$siWhite', // quickfix to set dyn. title in teamdetails to white
+        textAlign: 'center',
+        alignSelf: 'center',
+        ...$siSemiboldFontStack,
+        fontSize: 17,
+        lineHeight: 16,
+    }, isPlatformAndroid ? {} : {
+        letterSpacing: sanFranciscoSpacing(17),
+    }),
+    headingSmall: Object.assign({
+        color: '$siWhite',
+        textAlign: 'center',
+        alignSelf: 'center',
+        ...$siSemiboldFontStack,
+        fontSize: 14,
+        lineHeight: 16,
+    }, isPlatformAndroid ? {} : {
+        letterSpacing: sanFranciscoSpacing(14),
+    }),
+    subHeading: Object.assign({
+        color: '$siWhite',
+        textAlign: 'center',
+        alignSelf: 'center',
+        ...$siRegularFontStack,
+        fontSize: 11,
+        lineHeight: 16,
+    }, isPlatformAndroid ? {} : {
+        letterSpacing: sanFranciscoSpacing(11),
+    })
 })

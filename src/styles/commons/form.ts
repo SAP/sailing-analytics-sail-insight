@@ -21,14 +21,14 @@ const formInputWrapper = {
 const formInputAndLabelAndToogleButtonContainer = {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'stretch',
-    height: 52,
+    alignItems: 'stretch'
 }
 const formInputAndLabelContainer = {
     width: '100%',
     flexDirection: 'column',
     justifyContent: 'flex-end',
     alignItems: 'stretch',
+    height: 52
 }
 const formLabel = Object.assign({
     height: 16,
@@ -161,11 +161,26 @@ export default EStyleSheet.create({
     formTextInputAssitiveTextError: {
         ...formInputAssitiveTextError
     },
+    formSelectInputWrapper: {
+        ...formInputWrapper
+    },
+    formSelectInputAndLabelContainer: {
+        ...formInputAndLabelContainer
+    },
     formSelectLabel: {
         ...formLabel
     },
+    formSelectErrorLabel: {
+        ...formErrorLabel
+    },
     formSelectInput: {
         ...formInput
+    },
+    formSelectInputAssitiveText: {
+        ...formInputAssitiveText
+    },
+    formSelectInputAssitiveTextError: {
+        ...formInputAssitiveTextError
     },
     formDivider: {
         height: 0,

@@ -22,11 +22,29 @@ export const $titleFontSize = 20
  * v2.x Styles
  */
 
+// Thin ( Auto changeover for Text/Display)
+export const $siThinFontStack = isPlatformAndroid ? {
+    fontFamily: 'System', // Roboto
+    ...robotoWeights.thin
+} : {
+    fontFamily: 'System', // San Francisco
+    ...sanFranciscoWeights.thin
+}
 
-// Semibold ( Auto changeover for Text/Display)
+
+// Regular ( Auto changeover for Text/Display)
+export const $siRegularFontStack = isPlatformAndroid ? {
+    fontFamily: 'System', // Roboto
+    ...robotoWeights.regular
+} : {
+    fontFamily: 'System', // San Francisco
+    ...sanFranciscoWeights.regular
+}
+
+// Medium ( Auto changeover for Text/Display)
 export const $siMediumFontStack = isPlatformAndroid ? {
     fontFamily: 'System', // Roboto
-    ...robotoWeights.medium // Use medium instead
+    ...robotoWeights.medium
 } : {
     fontFamily: 'System', // San Francisco
     ...sanFranciscoWeights.medium
@@ -44,7 +62,7 @@ export const $siSemiboldFontStack = isPlatformAndroid ? {
 // Bold ( Auto changeover for Text/Display)
 export const $siBoldFontStack = isPlatformAndroid ? {
     fontFamily: 'System', // Roboto
-    ...robotoWeights.bold // Use medium instead
+    ...robotoWeights.bold
 } : {
     fontFamily: 'System', // San Francisco
     ...sanFranciscoWeights.bold
@@ -53,7 +71,7 @@ export const $siBoldFontStack = isPlatformAndroid ? {
 // Heavy ( Auto changeover for Text/Display)
 export const $siHeavyFontStack = isPlatformAndroid ? {
     fontFamily: 'System', // Roboto
-    ...robotoWeights.bold
+    ...robotoWeights.bold // Use bold instead
 } : {
     fontFamily: 'System', // San Francisco
     ...sanFranciscoWeights.heavy

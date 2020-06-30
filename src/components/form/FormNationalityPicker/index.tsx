@@ -1,20 +1,24 @@
-import { getErrorDisplayMessage } from 'helpers/texts'
-import { isEmpty, orderBy } from 'lodash'
 import React from 'react'
 import { Alert, TextInputProps as RNTextInputProps, View, ViewProps } from 'react-native'
-import RNPickerSelect from 'react-native-picker-select'
 import { Chevron } from 'react-native-shapes'
 import { WrappedFieldProps } from 'redux-form'
+import RNPickerSelect from 'react-native-picker-select'
+import { isEmpty, orderBy } from 'lodash'
+
 import { selfTrackingApi } from '../../../api'
+
+import { getErrorDisplayMessage } from 'helpers/texts'
+
 import { CountryCodeBody } from '../../../api/endpoints/types'
 
 import Text from 'components/Text'
 import { TextInputProps } from 'components/TextInput'
 
-import { text } from 'styles/commons'
-import I18n from '../../../i18n'
-import { $importantHighlightColor } from '../../../styles/colors'
-import styles from './styles'
+import I18n from 'i18n'
+
+import { $siErrorRed, $siWhite } from 'styles/colors'
+import { text, form } from 'styles/commons'
+import { addOpacity } from 'helpers/color'
 
 interface State {
   countryList: any,
@@ -71,44 +75,33 @@ class FormNationalityPicker extends React.Component<ViewProps & RNTextInputProps
 
     const showTopPlaceholder = placeholder && (!isEmpty(stateText))
     const assistiveText = error && showError ? error : undefined
-    const isHighlighted = (error && showError) || highlight
-    const highlightStyle = isHighlighted ? text.error : undefined
+
     return (
-      <View style={style}>
-        <View style={[styles.container, containerStyle]}>
-            <View
-              style={[
-                styles.inputContainer,
-                showTopPlaceholder ? styles.containerWithTitle : styles.containerNoTitle,
-              ]}
-            >
-              {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
-              <RNPickerSelect
-                  placeholder={{
-                    label: I18n.t('text_placeholder_nationality'),
-                    value: null,
-                  }}
-                  items={this.state.countryList}
-                  value={stateText}
-                  Icon={() => {
-                    return <Chevron size={1.5} color="white" />;
-                  }}
-                  onValueChange={this.onValueChange}
-                  placeholderTextColor={isHighlighted ? $importantHighlightColor : 'white'}
-                  useNativeAndroidPickerStyle={false}
-                  style={{
-                    inputIOS: styles.inputIOS,
-                    inputAndroid: styles.inputAndroid,
-                    underline: styles.underline,
-                  }}
-                  {...additionalProps}
-              />
-            </View>
+      <View style={[form.formSelectInputWrapper]}>
+          <View style={[form.formSelectInputAndLabelContainer]}>
+            {showTopPlaceholder && <Text style={[form.formSelectLabel, (error ? form.formSelectErrorLabel : undefined)]}>{placeholder}</Text>}
+            <RNPickerSelect
+                placeholder={{
+                  label: I18n.t('text_placeholder_nationality'),
+                  value: null,
+                }}
+                items={this.state.countryList}
+                value={stateText}
+                Icon={() => {
+                  return <Chevron size={1.2} color="white" />;
+                }}
+                onValueChange={this.onValueChange}
+                placeholderTextColor={(error ? $siErrorRed : addOpacity($siWhite, 0.8))}
+                useNativeAndroidPickerStyle={false}
+                style={{
+                  iconContainer: { right: 4, top: 8 },
+                  inputIOS: { ...form.formSelectInput },
+                  inputAndroid: { ...form.formSelectInput },
+                }}
+                {...additionalProps}
+            />
           </View>
-          {
-            assistiveText &&
-            <Text style={[text.assistiveText, highlightStyle]}>{assistiveText}</Text>
-          }
+          { assistiveText && <Text style={[form.formSelectInputAssitiveText, (error ? form.formSelectInputAssitiveTextError : undefined)]}>{assistiveText}</Text> }
       </View>
     )
   }
