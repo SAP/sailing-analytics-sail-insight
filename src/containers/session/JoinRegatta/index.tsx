@@ -180,12 +180,8 @@ class JoinRegatta extends React.Component<{
               <View style={styles.textContainer}>
                 { boats.length === 1 &&
                   <>
-                    <Text style={text.text}>
-                      You will join this race with <Text style={text.yellow}>{firstBoat.name}</Text>.
-                    </Text>
-                    <Text style={text.text}>
-                      Visit the <Text style={text.yellow}>account settings</Text> to edit this boat or create a new one.
-                    </Text>
+                    <Text style={text.text}>You will join this race with <Text style={text.yellow}>{firstBoat.name}</Text>.</Text>
+                    <Text style={text.text}>Visit the <Text style={text.yellow} onPress={this.gotoAccountPage}>account settings</Text> to edit this boat or create a new one.</Text>
                   </>
                 }
                 { boats.length > 1 &&
@@ -237,6 +233,9 @@ class JoinRegatta extends React.Component<{
         </LinearGradient>
       </ImageBackground>
     )
+  }
+  private gotoAccountPage = () => {
+    return this.props.navigation.navigate(Screens.Account)
   }
 
   private onBoatPickerSelect = (selectedBoatIndex: any) => {
