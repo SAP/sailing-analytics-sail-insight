@@ -59,6 +59,7 @@ const apiEndpoints = (serverUrl: string) => {
     regattaRaceTimes: getUrlV1('/regattas/{0}/races/{1}/times'),
     regattaRaceManeuvers: getUrlV1('/regattas/{0}/races/{1}/maneuvers'),
     regattaTrackingDevices: getUrlV1('/regattas/{0}/tracking_devices'),
+    regattaCompetitors: getUrlV1('/regattas/{0}/competitors'),
     course: getUrlV1('/courseconfiguration/getFromCourse/{0}/{1}/{2}'),
     raceTime: getUrlV1('/leaderboards/{0}/starttime'),
     addRaceColumns: getUrlV1('/regattas/{0}/addracecolumns'),
@@ -133,6 +134,7 @@ export interface DataApi {
   updateRegatta: (regattaName: string, body: object, secret?: string) => any
   requestRaces: (regattaName: string, secret?: string) => any
   requestRace: (regattaName: string, raceName: string, raceId?: string, secret?: string) => any
+  requestRegattaCompetitors: (regattaName: string) => any
   requestLeaderboard: (leaderboardName: string, secret?: string) => any
   requestLeaderboardV2: (
     leaderboardName: string,
@@ -234,6 +236,9 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         dataSchema: raceSchema,
         dataProcessor: raceId ? ((data: any) => data && { ...data, id: raceId }) : undefined,
       },
+    ),
+    requestRegattaCompetitors: regattaName => dataRequest(
+        endpoints.regattaCompetitors({ pathParams: [regattaName] }),
     ),
     requestLeaderboard: requestLeaderboardHandler(endpoints.leaderboard),
     requestLeaderboardV2: requestLeaderboardHandler(endpoints.leaderboardV2),

@@ -283,7 +283,7 @@ export const withCompetitorListState = compose(
 
 const COMPETITOR_LIST_REFRESH_RATE = 10000
 
-const isCompetitorListEmpty = compose(isEmpty, defaultTo([]), path(['session', 'leaderboard', 'competitors']))
+const isCompetitorListEmpty = compose(isEmpty, defaultTo([]), prop('competitorList'))
 const isCompetitorListNotEmpty = complement(isCompetitorListEmpty)
 const nothingIfCompetitorListStale = branch(propEq('competitorListStale', true), nothingAsClass)
 const nothingIfCompetitorListNotStale = branch(propEq('competitorListStale', false), nothingAsClass)
@@ -297,7 +297,8 @@ export const competitorListRefreshHandler = Component((props: any) =>
       merge({
         onWillFocus: () => {
           const callback = async () => {
-            await props.fetchLeaderboardV2(props.session.leaderboardName)
+            const { leaderboardName, regattaName } = props.session
+            await props.fetchRegattaCompetitors(regattaName, leaderboardName)
             props.setCompetitorListStale(false)
           }
           callback()
@@ -318,8 +319,9 @@ export const competitorListRefreshHandler = Component((props: any) =>
 const competitorListItems = Component((props: any) => compose(
   fold(props),
   contramap(mergeLeft({
-    leaderboard: sortBy(prop('name'), props.session.leaderboard.competitors),
-    forLeaderboard: false
+    leaderboard: sortBy(prop('name'), props.competitorList),
+    forLeaderboard: false,
+    showHandicapValues: props.boatClass === '', // Handicap regatta check
   })),
   fromClass
 )(CompetitorList))

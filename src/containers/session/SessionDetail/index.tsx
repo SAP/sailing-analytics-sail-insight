@@ -5,7 +5,7 @@ import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking } from 'actions/tracking'
-import { fetchLeaderboardV2 } from 'actions/leaderboards'
+import { fetchRegattaCompetitors } from 'actions/regattas'
 import { Component, connectActionSheet, fold, fromClass, nothing, nothingAsClass,
   recomposeBranch as branch,
   reduxConnect as connect } from 'components/fp/component'
@@ -18,7 +18,7 @@ import I18n from 'i18n'
 import { getCustomScreenParamData } from 'navigation/utils'
 import querystring from 'query-string'
 import { canUpdateCurrentEvent } from 'selectors/permissions'
-import { getRegattaPlannedRaces } from 'selectors/regatta'
+import { getRegattaCompetitorList, getRegattaPlannedRaces } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
 import { currentUserIsCompetitorForEvent, getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { container } from 'styles/commons'
@@ -64,10 +64,13 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
   const isBeforeEventStartTime =
     (session?.event?.startDate || new Date(0)) > Date.now()
 
+  const competitorListData = getRegattaCompetitorList(session.regattaName)(state)
+
   return {
     session,
     checkIn,
     isBeforeEventStartTime,
+    competitorList : competitorListData,
     qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
     name: session.regattaName,
     startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate),
@@ -106,7 +109,7 @@ export const ShareButton = Component(props => compose(
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2, startTracking }),
+    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta, startTracking, fetchRegattaCompetitors }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
     withCompetitorListState,

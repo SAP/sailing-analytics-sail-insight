@@ -100,6 +100,9 @@ export default EStyleSheets.create({
     fontSize: topRowValueFontSize,
     ...withSecondaryHeavyFont,
   },
+  handicapValueText: {
+    fontSize: 14,
+  },
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -21,6 +21,7 @@ class CompetitorList extends React.Component<{
   rankingMetric?: string
   myCompetitorData?: LeaderboardCompetitorCurrentTrack
   selectedColumn?: ColumnValueType
+  showHandicapValues?: boolean
 }> {
   public render() {
     return (
@@ -64,16 +65,28 @@ class CompetitorList extends React.Component<{
       )
     }
 
+    const { showHandicapValues = false } = this.props
+    const { timeOnTimeFactor } = item
+
     return (
-      <View style={[styles.textContainer, styles.itemTextContainer]}>
-        <Flag
-          code={countryCode}
-          size={normalRowValueFontSize}
-        />
-        <View style={styles.itemTextContainer}>
-          <Text style={[styles.nameText, { maxWidth: undefined }]}>{name || EMPTY_VALUE}</Text>
+      <>
+        <View style={[styles.textContainer, styles.itemTextContainer]}>
+          <Flag
+            code={countryCode}
+            size={normalRowValueFontSize}
+          />
+          <View style={styles.itemTextContainer}>
+            <Text style={[styles.nameText, { maxWidth: undefined }]}>{name || EMPTY_VALUE}</Text>
+          </View>
         </View>
-      </View>
+        {showHandicapValues &&
+          <View style={[styles.textContainer, { flex: 0 }]}>
+            <Text style={[styles.gapText, styles.handicapValueText]}>
+              {timeOnTimeFactor ? timeOnTimeFactor.toFixed(1) : ''}
+            </Text>
+          </View>
+        }
+      </>
     )
   }
 
