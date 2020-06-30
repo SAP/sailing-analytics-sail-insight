@@ -47,7 +47,7 @@ export default EStyleSheet.create({
     h1: Object.assign({
         color: '$siWhite',
         fontSize: 34,
-        lineHeight: 36,
+        lineHeight: 40,
         paddingBottom: '$siBaseSpacing * 4',
         textAlign: 'left',
         alignSelf: 'flex-start',

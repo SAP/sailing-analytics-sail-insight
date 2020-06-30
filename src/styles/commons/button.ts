@@ -142,11 +142,19 @@ export default EStyleSheet.create({
     secondary: {
         ...defaultButton,
         backgroundColor: '$siTransparent',
-        borderColor: '#ffffff',
+        borderColor: '$siWhite',
         borderWidth: 1,
     },
     secondaryText: {
         ...defaultButtonText
+    },
+    secondaryInverted: {
+      ...defaultButton,
+      backgroundColor: '$siWhite',
+    },
+    secondaryTextInverted: {
+      ...defaultButtonText,
+      color: '$siDarkerBlue'
     }
 })
   

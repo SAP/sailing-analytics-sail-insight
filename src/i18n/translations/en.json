@@ -327,7 +327,7 @@
   "title_tracking" : "Tracking",
   "text_place_QR_code": "Please place the QR code in front of your camera",
   "text_welcome_logged_in": "Welcome\n{{name}}!",
-  "text_welcome": "Welcome!",
+  "text_welcome": "Welcome to \nSail Insight",
   "text_tracking_headline": "FOR WHICH EVENT\nDO YOU WANT TO TRACK?",
   "text_info_event_finished": "You can access your track via the event list.",
   "text_define_races": "Define Races",
