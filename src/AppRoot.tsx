@@ -77,7 +77,7 @@ import ZendeskSupport from 'containers/ZendeskSupport'
 // Styling & Images
 import Images from '@assets/Images'
 import { button, tab, navigation as navigationStyles } from 'styles/commons'
-import { $headerTintColor, $primaryTextColor, $secondaryTextColor, $primaryBackgroundColor, $siSapYellow, $siWhite } from 'styles/colors'
+import { $headerTintColor, $primaryTextColor, $secondaryTextColor, $siWhite, $siDarkBlue, $siDarkerBlue } from 'styles/colors'
 
 // Logging
 import Logger from 'helpers/Logger'
@@ -104,11 +104,14 @@ const stackNavigatorConfig = {
 
 const screenWithHeaderOptions = {
   headerTitleStyle: navigationStyles.heading,
-  headerTintColor: $headerTintColor,
+  headerTintColor: $siWhite,
   headerStyle: {
-    backgroundColor: $primaryBackgroundColor,
+    backgroundColor: $siDarkBlue,
+    borderBottomWidth: 0,
+    elevation: 0,
+    shadowColor: $siDarkerBlue
   },
-  headerTitleAlign: 'center',
+  headerTitleAlign: 'center'
 }
 
 const navHeaderTransparentProps = {
@@ -116,8 +119,8 @@ const navHeaderTransparentProps = {
   headerStyle: {
     backgroundColor: 'transparent',
     borderBottomWidth: 0,
-    elevation: 0,
-  },
+    elevation: 0
+  }
 }
 
 const getTabBarIcon = (route: any, tintColor: any, focused: any) => {

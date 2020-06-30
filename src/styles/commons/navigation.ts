@@ -14,7 +14,7 @@ export default EStyleSheet.create({
         textAlignVertical: 'center',
         alignSelf: 'center',
         paddingRight: 32,
-        paddingLeft: 32,
+        paddingLeft: 32
     },
     heading: Object.assign({
         color: '$siWhite', // quickfix to set dyn. title in teamdetails to white
@@ -22,7 +22,7 @@ export default EStyleSheet.create({
         alignSelf: 'center',
         ...$siSemiboldFontStack,
         fontSize: 17,
-        lineHeight: 16,
+        lineHeight: 20,
     }, isPlatformAndroid ? {} : {
         letterSpacing: sanFranciscoSpacing(17),
     }),
