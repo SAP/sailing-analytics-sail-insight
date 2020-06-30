@@ -379,10 +379,10 @@ const AppNavigator = Component(props => compose(
   stackScreen(joinRegattaScreenMixins({
     name: Screens.JoinRegattaAsCompetitor, component: JoinRegatta, initialParams: { actionType: JoinRegattaActionType.JoinAsCompetitor }
   })),
-  stackScreen(compose(withTransparentHeader, withoutTitle)({
+  stackScreen(compose(withTransparentHeader, withoutTitle, withoutHeaderLeft)({
     name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
     options: {
-      headerLeft: () => <Button title={I18n.t('caption_skip')} color={$siWhite} onPress={() => navigationContainer.current.navigate(Screens.Main)} />
+      headerRight: () => <Button title={I18n.t('caption_skip')} color={$siWhite} onPress={() => navigationContainer.current.navigate(Screens.Main)} />
     }
   })),
   stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({
