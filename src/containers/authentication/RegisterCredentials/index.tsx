@@ -162,8 +162,8 @@ class RegisterCredentials extends TextInputForm<Props> {
       this.setState({ isLoading: true })
       await this.props.register(
         values[registrationForm.FORM_KEY_USERNAME],
-        values[registrationForm.FORM_KEY_PASSWORD],
         values[registrationForm.FORM_KEY_EMAIL],
+        values[registrationForm.FORM_KEY_PASSWORD],
       )
       this.loggedIn = true
       this.props.navigation.navigate(Screens.RegisterBoatAfterRegistration)
