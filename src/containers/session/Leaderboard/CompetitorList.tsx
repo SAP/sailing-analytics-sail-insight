@@ -66,13 +66,13 @@ class CompetitorList extends React.Component<{
     }
 
     const { showHandicapValues = false } = this.props
-    const { timeOnTimeFactor } = item
+    const { timeOnTimeFactor, nationalityISO2 } = item
 
     return (
       <>
         <View style={[styles.textContainer, styles.itemTextContainer]}>
           <Flag
-            code={countryCode}
+            code={countryCode || nationalityISO2}
             size={normalRowValueFontSize}
           />
           <View style={styles.itemTextContainer}>
