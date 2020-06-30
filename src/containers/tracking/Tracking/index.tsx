@@ -199,7 +199,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
     try {
       timer.clearInterval(this)
       await this.props.stopTracking(this.props.checkInData)
-      this.props.navigation.goBack()
+      this.props.navigation.navigate(Screens.WelcomeTracking)
     } catch (err) {
       Logger.debug('onStopTrackingPress Error', err)
     } finally {

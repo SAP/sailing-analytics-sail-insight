@@ -80,7 +80,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
         ? eventData.boatClass
         : null,
   } as CreateEventBody)
-  console.log('create event response', response)
+
   return eventCreationResponseToCheckIn(response, {
     secret,
     trackPrefix: 'R',

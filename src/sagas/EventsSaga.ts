@@ -170,8 +170,6 @@ function* createEvent(payload: object) {
     numberOfRaces)
   const regatta = yield select(getRegatta(regattaName))
 
-  console.log('create event', payload)
-
   yield call(api.updateRegatta, regattaName, {
     controlTrackingFromStartAndFinishTimes: true,
     useStartTimeInference: false,
