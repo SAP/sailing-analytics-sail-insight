@@ -3,6 +3,7 @@ import { KeyboardType, NativeSyntheticEvent, TextInputChangeEventData, View, Ima
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import LinearGradient from 'react-native-linear-gradient'
+import { compose, when, isEmpty, always, unless, includes, __, trim } from 'ramda'
 
 import { saveTeam, SaveTeamAction } from 'actions/user'
 
@@ -15,6 +16,7 @@ import {
 } from 'forms/team'
 import { validateRequired } from 'forms/validators'
 
+import { selfTrackingApi } from 'api'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
 
@@ -156,10 +158,26 @@ class RegisterBoat extends TextInputForm<Props> {
 
     try {
       this.setState({ isLoading: true, error: null })
+
+      const sailNumber = values[FORM_KEY_SAIL_NUMBER]
+      let countryList = []
+      try {
+        const countryCodeResponse = await selfTrackingApi().requestCountryCodes()
+        countryList = countryCodeResponse.map(o => o.threeLetterIocCode).filter(o => !!o)
+      } catch (err) {}
+      console.log({ countryList })
+      const nationality = compose(
+        when(always(isEmpty(countryList)), always(undefined)),
+        unless(includes(__, countryList), always(undefined)),
+        s => s.substring(0, 3),
+        trim
+      )(sailNumber)
+
       const createdBoat = await this.props.saveTeam({
+        sailNumber,
+        nationality,
         name: values[FORM_KEY_BOAT_NAME],
         boatClass: values[FORM_KEY_BOAT_CLASS],
-        sailNumber: values[FORM_KEY_SAIL_NUMBER],
         handicap: values[FORM_KEY_HANDICAP],
       } as TeamTemplate)
 
