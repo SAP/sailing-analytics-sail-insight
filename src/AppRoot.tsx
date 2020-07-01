@@ -29,6 +29,7 @@ import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 
 // Selectors
+import { getLocationTrackingStatus } from 'selectors/location'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { getSelectedMarkProperties } from 'selectors/course'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
@@ -233,7 +234,10 @@ const markTrackingNavigator = Component(props => compose(
 
 const trackingNavigator = Component(props => compose(
   fold(props),
-  stackNavigator({ initialRouteName: Screens.WelcomeTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
+  stackNavigator({
+    initialRouteName: props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ? Screens.Tracking : Screens.WelcomeTracking,
+    ...stackNavigatorConfig,
+    screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.WelcomeTracking, component: WelcomeTracking })),
   stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
@@ -244,11 +248,10 @@ const trackingNavigator = Component(props => compose(
   stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') }, backOnceClickable: true })),
 ]))
 
-const TrackingSwitch = connect((state: any) => {
-  return {
-    boundToMark: isBoundToMark(state)
-  }
-})(props => {
+const TrackingSwitch = connect((state: any) => ({
+    boundToMark: isBoundToMark(state),
+    locationTrackingStatus: getLocationTrackingStatus(state)
+}))(props => {
   return props.boundToMark
     ? markTrackingNavigator.fold(props)
     : trackingNavigator.fold(props)

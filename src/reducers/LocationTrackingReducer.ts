@@ -12,13 +12,10 @@ import {
   updateLastWindSpeed,
   updateStartAutoCourseStatus,
   updateStartedAt,
-  updateTrackedEventId,
-  updateTrackedLeaderboard,
   updateTrackedRegatta,
   updateTrackingStartTimeUpdateFlag,
   updateTrackingStatistics,
   updateTrackingStatus,
-  updateValidGpsFixCount,
 } from 'actions/locationTrackingData'
 import { removeUserData } from '../actions/auth'
 
@@ -45,13 +42,10 @@ const initialState: LocationTrackingState = {
 const reducer = handleActions(
   {
     [updateTrackingStatus as any]: itemUpdateHandler('status'),
-    [updateTrackedLeaderboard as any]: itemUpdateHandler('leaderboardName'),
-    [updateTrackedEventId as any]: itemUpdateHandler('eventId'),
     [updateLastWindCourse as any]: itemUpdateHandler('lastWindCourse'),
     [updateLastWindSpeed as any]: itemUpdateHandler('lastWindSpeedInKnots'),
     [updateStartedAt as any]: itemUpdateHandler('startedAt'),
     [updateTrackingStartTimeUpdateFlag as any]: itemUpdateHandler('wasTrackingStartTimeUpdated'),
-    [updateValidGpsFixCount as any]: itemUpdateHandler('validGpsFixCount'),
     [updateStartAutoCourseStatus as any]: itemUpdateHandler('startAutoCourseUpdateStatus'),
     [updateTrackedRegatta as any]: (state: any = {}, action: any) =>
       !action || !action.payload ?
