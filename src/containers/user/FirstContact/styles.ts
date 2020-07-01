@@ -18,6 +18,18 @@ export default EStyleSheets.create({
         display: 'flex',
         flexDirection: 'column'
     },
+    appLogo: {
+        width: '80%',
+        flexGrow: 8,
+        marginBottom: '$siBaseSpacing * 3'
+    },
+    buttonContainer: {
+        flexGrow: 5,
+        alignSelf: 'stretch',
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column'
+    },
     sponsorLogoContainer: {
         flexGrow: 0,
         alignItems: 'center',
@@ -26,11 +38,6 @@ export default EStyleSheets.create({
         marginBottom: '$siBaseSpacing * 6',
         display: 'flex',
         flexDirection: 'row',
-    },
-    appLogo: {
-        width: '80%', 
-        height: '62%',
-        marginBottom: '$siBaseSpacing * 3'
     },
     wsLogo: {
         marginRight: '$siGutter'

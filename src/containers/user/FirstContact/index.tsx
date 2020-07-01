@@ -26,24 +26,26 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
           <View style={[styles.container]}>
             <View style={styles.contentContainer}>
               <Image source={Images.defaults.app_logo} style={styles.appLogo} resizeMode="contain"/>
-              <TextButton
-                style={[button.primary]}
-                textStyle={button.primaryText}
-                onPress={() => this.props.navigation.navigate(RegisterCredentials)}>
-                {I18n.t('caption_register').toUpperCase()}
-              </TextButton>
-              <TextButton
-                style={[button.secondary]}
-                textStyle={button.secondaryText}
-                onPress={() => this.props.navigation.navigate(QRScanner)}>
-                {I18n.t('caption_qr_scanner').toUpperCase()}
-              </TextButton>
-              <TextButton
-                style={[button.secondary]}
-                textStyle={button.secondaryText}
-                onPress={() => this.props.navigation.navigate(LoginFromSplash)}>
-                {I18n.t('text_login').toUpperCase()}
-              </TextButton>
+              <View style={styles.buttonContainer}>
+                <TextButton
+                  style={[button.primary]}
+                  textStyle={button.primaryText}
+                  onPress={() => this.props.navigation.navigate(RegisterCredentials)}>
+                  {I18n.t('caption_register').toUpperCase()}
+                </TextButton>
+                <TextButton
+                  style={[button.secondary]}
+                  textStyle={button.secondaryText}
+                  onPress={() => this.props.navigation.navigate(QRScanner)}>
+                  {I18n.t('caption_qr_scanner').toUpperCase()}
+                </TextButton>
+                <TextButton
+                  style={[button.secondary]}
+                  textStyle={button.secondaryText}
+                  onPress={() => this.props.navigation.navigate(LoginFromSplash)}>
+                  {I18n.t('text_login').toUpperCase()}
+                </TextButton>
+              </View>
             </View>
             <View style={styles.sponsorLogoContainer}>
               <Image source={Images.defaults.ws_logo} style={styles.wsLogo} resizeMode="stretch"/>
