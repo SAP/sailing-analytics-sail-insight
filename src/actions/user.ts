@@ -10,6 +10,7 @@ import { fetchEventList, saveCheckInToEventInventory } from 'actions/checkIn'
 import { getNowAsMillis } from '../helpers/date'
 import { saveFile } from '../helpers/files'
 import Logger from '../helpers/Logger'
+import { isLoggedIn } from 'selectors/auth'
 import { getActiveCheckInEntity } from 'selectors/checkIn'
 import { getUserImages } from '../selectors/user'
 
@@ -27,8 +28,14 @@ export type SaveTeamAction = (
   options?: {replaceTeamName?: string, updateLastUsed?: boolean},
 ) => any
 
-export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch: DispatchType) => {
-  const teams = await fetchTeams()
+export const saveTeam: SaveTeamAction = (team, options = {}) => async (
+  dispatch: DispatchType,
+  getState: GetStateType,
+) => {
+  if (!isLoggedIn(getState())) {
+    return team
+  }
+
   const { updateLastUsed, replaceTeamName } = options
 
   if (updateLastUsed) {
@@ -40,6 +47,7 @@ export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch:
     imageUuid: await dispatch(uploadImage(team.imageData)),
   }
 
+  const teams = await fetchTeams()
   // TODO Key should be replaces by unique key
   const newTeams = {
     ...(replaceTeamName ? omit(teams, replaceTeamName) : teams),
@@ -47,6 +55,8 @@ export const saveTeam: SaveTeamAction = (team, options = {}) => async (dispatch:
   }
   await selfTrackingApi().updatePreference(TEAMS_PREFERENCE_KEY, newTeams)
   dispatch(updateTeams(newTeams))
+
+  return teamWithImage
 }
 
 export type updateTeamImageAction = (teamName: string, imageData?: any) => any

@@ -1,29 +1,24 @@
-import { isEmpty } from 'lodash'
 import React, { ChangeEvent } from 'react'
-import {
-  Alert, KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View, ViewProps,
-} from 'react-native'
+import { Alert, KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View, ViewProps, ImageBackground } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
+import LinearGradient from 'react-native-linear-gradient'
+import { isEmpty } from 'lodash'
 
-import Images from '@assets/Images'
-import {
-  deleteTeam,
-  DeleteTeamAction,
-  saveTeam,
-  SaveTeamAction,
-  updateTeamImage,
-  updateTeamImageAction,
-} from 'actions/user'
+import { deleteTeam, DeleteTeamAction, saveTeam, SaveTeamAction, updateTeamImage, updateTeamImageAction } from 'actions/user'
+
 import * as teamForm from 'forms/team'
 import { ComparisonValidatorViewProps, validateNameExists, validateRequired } from 'forms/validators'
+
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
-import I18n from 'i18n'
+
 import { TeamTemplate } from 'models'
 import { getDefaultHandicap, Handicap, hasHandicapChanged } from 'models/TeamTemplate'
+
 import { getCustomScreenParamData } from 'navigation/utils'
+
 import { getFormFieldValue } from 'selectors/form'
 import { getUserTeamNames } from 'selectors/user'
 
@@ -33,15 +28,16 @@ import FormImagePicker from 'components/form/FormImagePicker'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import TextButton from 'components/TextButton'
-
-import { button, container } from 'styles/commons'
-import { registration } from 'styles/components'
-import { $extraSpacingScrollContent } from 'styles/dimensions'
 import FormBoatClassInput from '../../components/form/FormBoatClassInput'
 import FormNationalityPicker from '../../components/form/FormNationalityPicker'
 import FormSailNumberInput from '../../components/form/FormSailNumberInput'
 
+import I18n from 'i18n'
+
+import Images from '@assets/Images'
 import styles from './styles'
+import { form,  button } from 'styles/commons'
+import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorViewProps {
   team: TeamTemplate
@@ -82,99 +78,81 @@ class TeamDetails extends TextInputForm<Props> {
     const isSaveDisabled = !canSave
 
     return (
-      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-        <View style={container.stretchContent}>
-          <Field
-            name={teamForm.FORM_KEY_IMAGE}
-            component={FormImagePicker}
-            placeholder={Images.header.team}
-            onChange={this.onImageChange}
-          />
-        </View>
-        <View style={styles.bottomContainer}>
-          <Field
-            style={styles.topInput}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_placeholder_team_name')}
-            name={teamForm.FORM_KEY_TEAM_NAME}
-            component={FormTextInput}
-            inputRef={this.handleInputRef(teamForm.FORM_KEY_TEAM_NAME)}
-            onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_CLASS)}
-            {...this.commonProps}
-            validate={[validateRequired, validateNameExists]}
-          />
-          <Field
-            style={styles.topInput}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_placeholder_boat_class')}
-            name={teamForm.FORM_KEY_BOAT_CLASS}
-            component={FormBoatClassInput}
-            inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_CLASS)}
-            onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_NATIONALITY)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            style={styles.topInput}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_nationality')}
-            name={teamForm.FORM_KEY_NATIONALITY}
-            component={FormNationalityPicker}
-            inputRef={this.handleInputRef(teamForm.FORM_KEY_NATIONALITY)}
-            onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_SAIL_NUMBER)}
-            onChange={this.handleNationalityChanged}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            style={styles.topInput}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={teamForm.FORM_KEY_SAIL_NUMBER}
-            component={FormSailNumberInput}
-            inputRef={this.handleInputRef(teamForm.FORM_KEY_SAIL_NUMBER)}
-            onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_NAME)}
-            onSelectTeam={(team: any) => {
-              this.props.change(teamForm.FORM_KEY_BOAT_CLASS, team.boatClass || '')
-              this.props.change(teamForm.FORM_KEY_BOAT_NAME, team.boatName || '')
-              this.props.change(teamForm.FORM_KEY_NATIONALITY, team.nationality || '')
-            }}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            style={styles.topInput}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_placeholder_boat_name')}
-            name={teamForm.FORM_KEY_BOAT_NAME}
-            component={FormTextInput}
-            inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_NAME)}
-            {...this.commonProps}
-          />
-          <Field
-            style={styles.topInput}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_handicap_label')}
-            name={teamForm.FORM_KEY_HANDICAP}
-            component={FormHandicapInput}
-          />
-          <TextButton
-            style={[registration.nextButton(), styles.bottomButton]}
-            textStyle={button.actionText}
-            onPress={this.props.handleSubmit(this.onSavePress)}
-            isLoading={this.state.isLoading}
-            disabled={isSaveDisabled}
-          >
-            {I18n.t('caption_save').toUpperCase()}
-          </TextButton>
-        </View>
-      </ScrollContentView>
+      <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
+        <ScrollContentView style={styles.container}>
+          <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0.0, y: 0.36 }}>
+            <View style={styles.contentContainer}>
+              <Field
+                name={teamForm.FORM_KEY_IMAGE}
+                component={FormImagePicker}
+                placeholder={Images.header.team}
+                onChange={this.onImageChange}/>
+              <View style={form.formSegment1}>
+                <Field
+                  hint={I18n.t('text_hint_competitor_name')}
+                  label={I18n.t('text_placeholder_competitor_name')}
+                  name={teamForm.FORM_KEY_TEAM_NAME}
+                  component={FormTextInput}
+                  inputRef={this.handleInputRef(teamForm.FORM_KEY_TEAM_NAME)}
+                  onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_CLASS)}
+                  {...this.commonProps}
+                  validate={[validateRequired, validateNameExists]} />
+                <Field
+                  label={I18n.t('text_placeholder_boat_class')}
+                  name={teamForm.FORM_KEY_BOAT_CLASS}
+                  component={FormBoatClassInput}
+                  inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_CLASS)}
+                  onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_NATIONALITY)}
+                  validate={[validateRequired]}
+                  {...this.commonProps} />
+                <Field
+                  label={I18n.t('text_nationality')}
+                  name={teamForm.FORM_KEY_NATIONALITY}
+                  component={FormNationalityPicker}
+                  inputRef={this.handleInputRef(teamForm.FORM_KEY_NATIONALITY)}
+                  onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_SAIL_NUMBER)}
+                  onChange={this.handleNationalityChanged}
+                  {...this.commonProps} />
+                <Field
+                  label={I18n.t('text_placeholder_sail_number')}
+                  name={teamForm.FORM_KEY_SAIL_NUMBER}
+                  component={FormSailNumberInput}
+                  inputRef={this.handleInputRef(teamForm.FORM_KEY_SAIL_NUMBER)}
+                  onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_NAME)}
+                  onSelectTeam={(team: any) => {
+                    this.props.change(teamForm.FORM_KEY_BOAT_CLASS, team.boatClass || '')
+                    this.props.change(teamForm.FORM_KEY_BOAT_NAME, team.boatName || '')
+                    this.props.change(teamForm.FORM_KEY_NATIONALITY, team.nationality || '')
+                  }}
+                  validate={[validateRequired]}
+                  {...this.commonProps} />
+                <Field
+                  label={I18n.t('text_placeholder_boat_name')}
+                  name={teamForm.FORM_KEY_BOAT_NAME}
+                  component={FormTextInput}
+                  inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_NAME)}
+                  {...this.commonProps} />
+              </View>
+              <View style={form.formSegment2}>
+                <Field
+                  label={I18n.t('text_handicap_label')}
+                  name={teamForm.FORM_KEY_HANDICAP}
+                  component={FormHandicapInput} />
+              </View>
+              <View style={form.lastFormSegment}>
+                <TextButton
+                  style={[button.primary, button.fullWidth, styles.saveButton]}
+                  textStyle={button.primaryText}
+                  onPress={this.props.handleSubmit(this.onSavePress)}
+                  isLoading={this.state.isLoading}
+                  disabled={isSaveDisabled}>
+                    {I18n.t('caption_save').toUpperCase()}
+                </TextButton>
+              </View>
+            </View>
+          </LinearGradient>
+        </ScrollContentView>
+      </ImageBackground>
     )
   }
 
@@ -235,7 +213,7 @@ class TeamDetails extends TextInputForm<Props> {
   private formIsSaveable() {
     const { formTeamName, formSailNumber, formNationality, formBoatClass } = this.props
 
-    return !isEmpty(formTeamName) && !isEmpty(formSailNumber) && !isEmpty(formNationality) && !isEmpty(formBoatClass)
+    return !isEmpty(formTeamName) && !isEmpty(formSailNumber) && !isEmpty(formBoatClass)
   }
 
   private formHasChanges() {

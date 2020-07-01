@@ -1,49 +1,64 @@
 import React, { ChangeEvent } from 'react'
-import { KeyboardType, NativeSyntheticEvent, TextInputChangeEventData, View } from 'react-native'
+import { KeyboardType, NativeSyntheticEvent, TextInputChangeEventData, View, ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
+import LinearGradient from 'react-native-linear-gradient'
+import { compose, when, isEmpty, always, unless, includes, __, trim } from 'ramda'
 
 import { saveTeam, SaveTeamAction } from 'actions/user'
+
 import {
   FORM_KEY_BOAT_CLASS,
   FORM_KEY_BOAT_NAME,
   FORM_KEY_HANDICAP,
-  FORM_KEY_IMAGE,
-  FORM_KEY_NATIONALITY,
   FORM_KEY_SAIL_NUMBER,
-  FORM_KEY_TEAM_NAME,
   TEAM_FORM_NAME,
 } from 'forms/team'
 import { validateRequired } from 'forms/validators'
+
+import { selfTrackingApi } from 'api'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
-import I18n from 'i18n'
+
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
+import { getFormFieldValue } from '../../../selectors/form'
+
 import { TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
+
 import * as Screens from 'navigation/Screens'
-import TextInputForm from 'components/base/TextInputForm'
+import { getScreenParamsFromProps } from 'navigation/utils'
+
+import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
+import FormHandicapInput from '../../../components/form/FormHandicapInput'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
-import { button, container, text } from 'styles/commons'
-import { registration } from 'styles/components'
-import { $extraSpacingScrollContent } from 'styles/dimensions'
-import Images from '../../../../assets/Images'
-import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
-import FormHandicapInput from '../../../components/form/FormHandicapInput'
-import FormImagePicker from '../../../components/form/FormImagePicker'
-import FormNationalityPicker from '../../../components/form/FormNationalityPicker'
-import { getFormFieldValue } from '../../../selectors/form'
+import TextInputForm from 'components/base/TextInputForm'
+
+import I18n from 'i18n'
+
+import Images from '@assets/Images'
 import styles from './styles'
+import { text, form, button } from 'styles/commons'
+import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 interface Props {
   saveTeam: SaveTeamAction,
+  isNetworkConnected: boolean,
   formSailNumber?: string,
+  actionAfterSubmit?: any,
 }
 
 class RegisterBoat extends TextInputForm<Props> {
 
-  public state = { error: null, isLoading: false }
+  public state = { error: null, isLoading: false, showMore: false }
+
+  private toggleShowMore(e: Event) {
+    e.preventDefault();
+    this.setState({ showMore: !this.state.showMore })
+  }
 
   private commonProps = {
     keyboardType: 'default' as KeyboardType,
@@ -52,109 +67,79 @@ class RegisterBoat extends TextInputForm<Props> {
   public render() {
     const { error, isLoading } = this.state
     return (
-      <ScrollContentView extraHeight={$extraSpacingScrollContent}>
-        <Field
-          name={FORM_KEY_IMAGE}
-          component={FormImagePicker}
-          placeholder={Images.header.team}
-        />
-        <View style={[container.stretchContent, container.largeHorizontalMargin]}>
-          <Text style={registration.claim()}>
-            <Text>{I18n.t('text_register_boat_claim_01')}</Text>
-            <Text style={text.claimHighlighted}>{I18n.t('text_register_boat_claim_02')}</Text>
-          </Text>
-        </View>
-        <View style={styles.bottomContainer}>
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_placeholder_team_name')}
-            name={FORM_KEY_TEAM_NAME}
-            component={FormTextInput}
-            returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_CLASS)}
-            inputRef={this.handleInputRef(FORM_KEY_TEAM_NAME)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            style={styles.inputMargin}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_placeholder_boat_class')}
-            name={FORM_KEY_BOAT_CLASS}
-            component={FormBoatClassInput}
-            returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_NATIONALITY)}
-            hint={I18n.t('text_registration_boat_class_hint')}
-            inputRef={this.handleInputRef(FORM_KEY_BOAT_CLASS)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_nationality')}
-            name={FORM_KEY_NATIONALITY}
-            component={FormNationalityPicker}
-            returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
-            inputRef={this.handleInputRef(FORM_KEY_NATIONALITY)}
-            onChange={this.handleNationalityChanged}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            style={styles.inputMargin}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_placeholder_sail_number')}
-            name={FORM_KEY_SAIL_NUMBER}
-            component={FormTextInput}
-            returnKeyType="next"
-            onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_NAME)}
-            hint={I18n.t('text_registration_sail_number_hint')}
-            inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
-            validate={[validateRequired]}
-            {...this.commonProps}
-          />
-          <Field
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_placeholder_boat_name')}
-            name={FORM_KEY_BOAT_NAME}
-            component={FormTextInput}
-            returnKeyType="go"
-            onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
-            inputRef={this.handleInputRef(FORM_KEY_BOAT_NAME)}
-            {...this.commonProps}
-          />
-          <Field
-            style={styles.inputMargin}
-            containerStyle={styles.inputContainer}
-            inputStyle={styles.inputStyle}
-            label={I18n.t('text_handicap_label')}
-            name={FORM_KEY_HANDICAP}
-            component={FormHandicapInput}
-          />
-          {error && <Text style={registration.errorText()}>{error}</Text>}
-          <TextButton
-            style={[registration.nextButton(), styles.bottomButton]}
-            textStyle={button.actionText}
-            onPress={this.props.handleSubmit(this.onSubmit)}
-            isLoading={isLoading}
-          >
-            {I18n.t('caption_add_boat')}
-          </TextButton>
-          <TextButton
-            style={registration.lowerButton()}
-            textStyle={button.textButtonSecondaryText}
-            onPress={() => this.props.navigation.navigate(Screens.Main)}
-          >
-            {I18n.t('caption_skip')}
-          </TextButton>
-        </View>
-      </ScrollContentView >
+      <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
+        <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.65 }}>
+          <ScrollContentView style={styles.container}>
+          <View style={styles.contentContainer}>
+              <Text style={[text.h1, styles.h1]}>
+                {I18n.t('title_add_boat_01')}
+                <Text style={text.yellow}>{I18n.t('title_add_boat_02')}</Text>
+                {I18n.t('title_add_boat_03')}
+              </Text>
+              <Text style={[text.mediumText, styles.introText]}>{I18n.t('text_add_boat_explainer')}</Text>
+              <View style={form.formSegment1}>
+                <Field
+                  hint={I18n.t('text_hint_competitor_name')}
+                  label={I18n.t('text_placeholder_competitor_name')}
+                  name={FORM_KEY_BOAT_NAME}
+                  component={FormTextInput}
+                  onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_SAIL_NUMBER)}
+                  inputRef={this.handleInputRef(FORM_KEY_BOAT_NAME)}
+                  validate={[validateRequired]}
+                  returnKeyType="next"
+                  textContentType="name"
+                  autoCompleteType="name"
+                  {...this.commonProps} />
+                <Field
+                  label={I18n.t('text_placeholder_sail_number')}
+                  name={FORM_KEY_SAIL_NUMBER}
+                  component={FormTextInput}
+                  onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_BOAT_CLASS)}
+                  inputRef={this.handleInputRef(FORM_KEY_SAIL_NUMBER)}
+                  validate={[validateRequired]}
+                  returnKeyType="next"
+                  {...this.commonProps} />
+                <Field
+                  label={I18n.t('text_placeholder_boat_class')}
+                  name={FORM_KEY_BOAT_CLASS}
+                  component={FormBoatClassInput}
+                  inputRef={this.handleInputRef(FORM_KEY_BOAT_CLASS)}
+                  validate={[validateRequired]}
+                  autoCorrect={false}
+                  {...this.commonProps} />
+              </View>
+              { !this.state.showMore &&
+                <View style={form.formDivider}>
+                  <View style={form.formDividerLine}></View>
+                  <View style={form.formDividerText}>
+                    <TextButton textStyle={form.formDividerButtonText} onPress={this.toggleShowMore.bind(this)}>
+                      {I18n.t('text_more').toUpperCase()}
+                    </TextButton>
+                  </View>
+                  <View style={form.formDividerLine}></View>
+                </View>
+              }
+              { this.state.showMore &&
+                <View style={form.formSegment2}>
+                  <Field
+                    label={I18n.t('text_handicap_label')}
+                    name={FORM_KEY_HANDICAP}
+                    component={FormHandicapInput} />
+                </View>
+              }
+              <View style={form.lastFormSegment}>
+                <TextButton
+                  style={[button.primary, button.fullWidth, styles.addBoatButton]}
+                  textStyle={button.primaryText}
+                  onPress={this.props.handleSubmit(this.onSubmit)}
+                  isLoading={this.state.isLoading}>
+                    {I18n.t('caption_add_boat').toUpperCase()}
+                </TextButton>
+              </View>
+            </View>
+          </ScrollContentView>
+        </LinearGradient>
+      </ImageBackground>
     )
   }
 
@@ -166,18 +151,41 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 
   protected onSubmit = async (values: any) => {
+    if (!this.props.isNetworkConnected) {
+      showNetworkRequiredSnackbarMessage()
+      return
+    }
+
     try {
       this.setState({ isLoading: true, error: null })
-      await this.props.saveTeam({
-        name: values[FORM_KEY_TEAM_NAME],
-        boatName: values[FORM_KEY_BOAT_NAME],
-        nationality: values[FORM_KEY_NATIONALITY],
+
+      const sailNumber = values[FORM_KEY_SAIL_NUMBER]
+      let countryList = []
+      try {
+        const countryCodeResponse = await selfTrackingApi().requestCountryCodes()
+        countryList = countryCodeResponse.map(o => o.threeLetterIocCode).filter(o => !!o)
+      } catch (err) {}
+      console.log({ countryList })
+      const nationality = compose(
+        when(always(isEmpty(countryList)), always(undefined)),
+        unless(includes(__, countryList), always(undefined)),
+        s => s.substring(0, 3),
+        trim
+      )(sailNumber)
+
+      const createdBoat = await this.props.saveTeam({
+        sailNumber,
+        nationality,
+        name: values[FORM_KEY_BOAT_NAME],
         boatClass: values[FORM_KEY_BOAT_CLASS],
-        sailNumber: values[FORM_KEY_SAIL_NUMBER],
-        imageData: values[FORM_KEY_IMAGE],
         handicap: values[FORM_KEY_HANDICAP],
       } as TeamTemplate)
-      this.props.navigation.navigate(Screens.Main)
+
+      if (this.props.actionAfterSubmit) {
+        await this.props.actionAfterSubmit(createdBoat)
+      } else {
+        this.props.navigation.navigate(Screens.Main)
+      }
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
     } finally {
@@ -186,7 +194,9 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 }
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: any, props: any) => ({
+  actionAfterSubmit: getScreenParamsFromProps(props)?.actionAfterSubmit,
+  isNetworkConnected: isNetworkConnectedSelector(state),
   formSailNumber: getFormFieldValue(TEAM_FORM_NAME, FORM_KEY_SAIL_NUMBER)(state),
   initialValues: {
     [FORM_KEY_HANDICAP]: getDefaultHandicap(),

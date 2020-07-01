@@ -3,43 +3,44 @@
 
     <item android:drawable="@color/splash_background"/>
 
-    <item android:drawable="@mipmap/splash_map"/>
+    <item android:drawable="@mipmap/splash"/>
 
-    <item android:bottom="260dp">
+    <item android:bottom="100dp">
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/splash_app_logo"
-            />
-    </item>
-
-    <item android:bottom="24dp">
-        <bitmap
-            android:gravity="center"
-            android:src="@mipmap/splash_text"
+            android:src="@mipmap/logo_claim_combination"
             />
     </item>
 
     <item
-        android:bottom="68dp"
-        android:right="120dp"
+        android:bottom="69dp"
+        android:right="160dp"
         >
         <bitmap
             android:gravity="bottom"
             android:width="89px"
             android:height="63px"
-            android:src="@mipmap/splash_ws_logo"
+            android:src="@mipmap/ws_logo_home"
             />
     </item>
-
     <item
-        android:left="120dp"
-        android:bottom="68dp"
+        android:bottom="70dp"
         >
         <bitmap
             android:gravity="bottom"
             android:width="89px"
             android:height="63px"
-            android:src="@mipmap/splash_sap_logo"
+            android:src="@mipmap/sap_logo_home"
+            />
+    </item>
+    <item
+        android:left="160dp"
+        android:bottom="68dp">
+        <bitmap
+            android:gravity="bottom"
+            android:width="89px"
+            android:height="63px"
+            android:src="@mipmap/syrf_logo_home"
             />
     </item>
 </layer-list>
