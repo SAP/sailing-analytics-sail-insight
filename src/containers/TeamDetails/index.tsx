@@ -112,7 +112,6 @@ class TeamDetails extends TextInputForm<Props> {
                   inputRef={this.handleInputRef(teamForm.FORM_KEY_NATIONALITY)}
                   onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_SAIL_NUMBER)}
                   onChange={this.handleNationalityChanged}
-                  validate={[validateRequired]}
                   {...this.commonProps} />
                 <Field
                   label={I18n.t('text_placeholder_sail_number')}
@@ -214,7 +213,7 @@ class TeamDetails extends TextInputForm<Props> {
   private formIsSaveable() {
     const { formTeamName, formSailNumber, formNationality, formBoatClass } = this.props
 
-    return !isEmpty(formTeamName) && !isEmpty(formSailNumber) && !isEmpty(formNationality) && !isEmpty(formBoatClass)
+    return !isEmpty(formTeamName) && !isEmpty(formSailNumber) && !isEmpty(formBoatClass)
   }
 
   private formHasChanges() {
