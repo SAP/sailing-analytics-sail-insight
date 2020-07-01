@@ -1,4 +1,5 @@
 import React from 'react'
+import { always, cond, prop, T } from 'ramda'
 import { Alert, View, ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient'
@@ -62,8 +63,6 @@ class JoinRegatta extends React.Component<{
 
   public state = {
     isLoading: false,
-    trackingContext: undefined,
-    buttonText: I18n.t('caption_join_race'),
     selectedBoatIndex: 0
   }
 
@@ -89,7 +88,8 @@ class JoinRegatta extends React.Component<{
 
       switch (actionType) {
         case JoinRegattaActionType.JoinEvent:
-          // await this.props.checkIn(this.props.checkInData, this.props.navigation)
+          const deviceRegistered = await this.props.checkIn(this.props.checkInData, this.props.navigation)
+          if (!deviceRegistered) { await handleRegistration() }
           break
         case JoinRegattaActionType.Track:
           await handleRegistration({ startTrackingAfter: true })
@@ -106,23 +106,9 @@ class JoinRegatta extends React.Component<{
     }
   }
 
-  public getTrackingContext() {
-    const { checkInData } = this.props
-
-    if (checkInData.competitorId) {
-      this.state.trackingContext = 'COMPETITOR'
-      this.state.buttonText = I18n.t('caption_join_race_as_competitor')
-    } else if (checkInData.boatId) {
-      this.state.trackingContext = 'BOAT'
-      this.state.buttonText = I18n.t('caption_join_race_as_boat')
-    } else if (checkInData.markId) {
-      this.state.trackingContext = 'MARK'
-      this.state.buttonText = I18n.t('caption_join_race_as_mark')
-    }
-  }
-
   public render() {
     const {
+      checkInData,
       boats = [],
       event = {},
       leaderboard = {},
@@ -137,7 +123,21 @@ class JoinRegatta extends React.Component<{
     let title = leaderboard.displayName || leaderboard.name
     title = event.name && event.name !== title ? `${title}\n(${event.name})` : title
 
-    this.getTrackingContext()
+    const trackingContext = cond([
+      [prop('competitorId'), always('COMPETITOR')],
+      [prop('boatId'), always('BOAT')],
+      [prop('markId'), always('MARK')],
+      [T, always(undefined)],
+    ])(checkInData)
+
+    const buttonText = cond([
+      [prop('competitorId'), always(I18n.t('caption_join_race_as_competitor'))],
+      [prop('boatId'), always(I18n.t('caption_join_race_as_boat'))],
+      [prop('markId'), always(I18n.t('caption_join_race_as_mark'))],
+      [T, always(I18n.t('caption_join_race'))],
+    ])(checkInData)
+
+    const trackingContextUndefined = trackingContext === undefined
 
     const firstBoat = boats.length !== 0 && boats[0]
     const boatPickerItems = boats.map((boat, index) => ({
@@ -178,13 +178,13 @@ class JoinRegatta extends React.Component<{
                 </View>
               </View>
               <View style={styles.textContainer}>
-                { boats.length === 1 &&
+                { (trackingContextUndefined && boats.length === 1) &&
                   <>
                     <Text style={text.text}>{I18n.t('text_join_with_boat_01')}<Text style={text.yellow}>{firstBoat.name}</Text>{I18n.t('text_join_with_boat_02')}</Text>
                     <Text style={text.text}>{I18n.t('text_join_with_boat_explainer_01')}<Text style={text.yellow} onPress={this.gotoAccountPage}>{I18n.t('text_join_with_boat_explainer_02')}</Text>{I18n.t('text_join_with_boat_explainer_03')}</Text>
                   </>
                 }
-                { boats.length > 1 &&
+                { (trackingContextUndefined && boats.length > 1) &&
                   <>
                     <Text style={[text.text, styles.pickText]}>{I18n.t('text_join_with_boat_choose')}</Text>
                     <View style={[form.formSelectInputWrapper]}>
@@ -215,7 +215,7 @@ class JoinRegatta extends React.Component<{
                   textStyle={button.primaryText}
                   onPress={this.onJoinPress}
                   isLoading={this.state.isLoading}>
-                    {this.state.buttonText.toUpperCase()}
+                    {buttonText.toUpperCase()}
                 </TextButton>
                 <TextButton
                   textStyle={text.text}
@@ -227,7 +227,7 @@ class JoinRegatta extends React.Component<{
             <TrackingContext
                 textStyle={{ color: '#FFFFFF' }}
                 session={{
-                  trackingContext: this.state.trackingContext,
+                  trackingContext,
                   competitor,
                   boat,
                   mark

@@ -191,49 +191,50 @@ export const checkIn = (data: CheckIn, navigation: object) => async (dispatch: D
   }
   dispatch(updateCheckIn(data))
 
-  if (data.competitorId || data.markId || data.boatId) {
-    await dispatch(registerDevice(data.leaderboardName))
-    const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
-    if (data.competitorId) {
-      update.trackingContext = 'COMPETITOR'
-    } else if (data.boatId) {
-      update.trackingContext = 'BOAT'
-    } else if (data.markId) {
-      update.trackingContext = 'MARK'
-    }
-    await dispatch(updateCheckInAndEventInventory(update))
-    const isLogged = isLoggedIn(getState())
-    isLogged ? navigation.navigate(Screens.TrackingNavigator) :
-      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+  if (!data.competitorId && !data.markId && !data.boatId) {
+    return false
+  }
 
-    if (data.competitorId) {
-      const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
-      const regatta = mapResToRegatta(getRegatta(data.regattaName)(getStore().getState()))
+  await dispatch(registerDevice(data.leaderboardName))
+  const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
+  if (data.competitorId) {
+    update.trackingContext = 'COMPETITOR'
+  } else if (data.boatId) {
+    update.trackingContext = 'BOAT'
+  } else if (data.markId) {
+    update.trackingContext = 'MARK'
+  }
+  await dispatch(updateCheckInAndEventInventory(update))
+  const isLogged = isLoggedIn(getState())
+  isLogged ? navigation.navigate(Screens.TrackingNavigator) :
+    navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
 
-      if (competitor && competitor.name && competitor.nationality && competitor.sailId &&
-        regatta && regatta.boatClass) {
-        // find team by name, boatClass, nationality and sailNumber
-        const existingTeam = getUserTeamByNameBoatClassNationalitySailnumber(competitor.name,
-                                                                             regatta.boatClass,
-                                                                             competitor.nationality,
-                                                                             competitor.sailId)(getStore().getState())
-        if (!existingTeam) {
-          const team = {
-            name: competitor.name,
-            nationality: competitor.nationality,
-            sailNumber: competitor.sailId,
-            boatClass: regatta.boatClass,
-          } as TeamTemplate
-          dispatch(saveTeam(team))
-        } else {
-          // TODO Attach competitor image to session
-        }
+  if (data.competitorId) {
+    const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
+    const regatta = mapResToRegatta(getRegatta(data.regattaName)(getStore().getState()))
+
+    if (competitor && competitor.name && competitor.nationality && competitor.sailId &&
+      regatta && regatta.boatClass) {
+      // find team by name, boatClass, nationality and sailNumber
+      const existingTeam = getUserTeamByNameBoatClassNationalitySailnumber(competitor.name,
+                                                                           regatta.boatClass,
+                                                                           competitor.nationality,
+                                                                           competitor.sailId)(getStore().getState())
+      if (!existingTeam) {
+        const team = {
+          name: competitor.name,
+          nationality: competitor.nationality,
+          sailNumber: competitor.sailId,
+          boatClass: regatta.boatClass,
+        } as TeamTemplate
+        dispatch(saveTeam(team))
+      } else {
+        // TODO Attach competitor image to session
       }
     }
   }
-  if (!data.competitorId && !data.markId && !data.boatId) {
-    navigation.navigate(Screens.RegisterBoat, { data })
-  }
+
+  return true
 }
 
 export const registerDevice = (leaderboardName: string, data?: Object) => withDataApi({ leaderboard: leaderboardName })(
