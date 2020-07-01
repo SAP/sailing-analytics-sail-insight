@@ -183,7 +183,9 @@ export default EStyleSheet.create({
         ...formInputAssitiveTextError
     },
     formDivider: {
-        height: 0,
+        height: 40,
+        marginTop: -20,
+        marginBottom: -20,
         backgroundColor: '$siTransparent',
         flexDirection: 'row',
         alignItems: 'center',

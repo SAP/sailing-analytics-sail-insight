@@ -103,15 +103,17 @@ class RegisterBoat extends TextInputForm<Props> {
                   autoCorrect={false}
                   {...this.commonProps} />
               </View>
-              <View style={form.formDivider}>
-                <View style={form.formDividerLine}></View>
-                <View style={form.formDividerText}>
-                  <TextButton textStyle={form.formDividerButtonText} onPress={this.toggleShowMore.bind(this)}>
-                    {I18n.t('text_more').toUpperCase()}
-                  </TextButton>
+              { !this.state.showMore &&
+                <View style={form.formDivider}>
+                  <View style={form.formDividerLine}></View>
+                  <View style={form.formDividerText}>
+                    <TextButton textStyle={form.formDividerButtonText} onPress={this.toggleShowMore.bind(this)}>
+                      {I18n.t('text_more').toUpperCase()}
+                    </TextButton>
+                  </View>
+                  <View style={form.formDividerLine}></View>
                 </View>
-                <View style={form.formDividerLine}></View>
-              </View>
+              }
               { this.state.showMore &&
                 <View style={form.formSegment2}>
                   <Field
