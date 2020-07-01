@@ -6,7 +6,7 @@ import IconText from 'components/IconText'
 import { Session } from 'models'
 
 import { text } from 'styles/commons'
-import styles from './styles'
+import { $siWhite } from 'styles/colors'
 
 
 class TrackingContext extends React.Component<ViewProps & {
@@ -46,12 +46,10 @@ class TrackingContext extends React.Component<ViewProps & {
 
     return (
       <IconText
-        style={styles.infoItem}
         source={this.state.infoImage}
-        iconTintColor="#FFFFFF"
+        iconTintColor={$siWhite}
         alignment="horizontal"
-        textStyle={[text.propertyValue, { color: '#FFFFFF' }]}
-      >
+        iconStyle={{ top: -4 }}>
         {this.state.infoText}
       </IconText>
     )

@@ -187,6 +187,14 @@ class JoinRegatta extends React.Component<{
                 </View>
               </View>
               <View style={styles.textContainer}>
+                <TrackingContext
+                  textStyle={text.caption}
+                  session={{
+                    trackingContext,
+                    competitor,
+                    boat,
+                    mark
+                  }}/>
                 { (trackingContextUndefined && boats.length === 1) &&
                   <>
                     <Text style={text.text}>{I18n.t('text_join_with_boat_01')}<Text style={text.yellow}>{firstBoat.name}</Text>{I18n.t('text_join_with_boat_02')}</Text>
@@ -233,14 +241,6 @@ class JoinRegatta extends React.Component<{
                 </TextButton>
               </View>
             </View>
-            <TrackingContext
-                textStyle={{ color: '#FFFFFF' }}
-                session={{
-                  trackingContext,
-                  competitor,
-                  boat,
-                  mark
-                }}/>
           </ScrollContentView>
         </LinearGradient>
       </ImageBackground>
