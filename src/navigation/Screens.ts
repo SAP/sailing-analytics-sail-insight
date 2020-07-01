@@ -1,4 +1,3 @@
-export const Splash = 'Splash'
 export const App = 'App'
 export const Main = 'Main'
 export const Tracks = 'Tracks'

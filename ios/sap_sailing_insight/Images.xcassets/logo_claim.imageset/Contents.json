@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "splash.png",
+      "filename" : "logo_claim_combination.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "splash@2x.png",
+      "filename" : "logo_claim_combination@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "splash@3x.png",
+      "filename" : "logo_claim_combination@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -1,5 +1,5 @@
 import React, { Component as ReactComponent } from 'react'
-import { Text, Button } from 'react-native'
+import { Text } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
@@ -16,7 +16,6 @@ import { getFormTeamName } from 'selectors/boat'
 // Components
 import GradientNavigationBar from 'components/GradientNavigationBar'
 import ModalBackButton from 'components/ModalBackButton'
-import SplashScreen from 'containers/SplashScreen'
 
 // Navigation?
 import * as Screens from 'navigation/Screens'
@@ -379,7 +378,6 @@ const AppNavigator = Component(props => compose(
   }),
   reduce(concat, nothing())
 )([
-  stackScreen(withoutHeader({ name: Screens.Splash, component: SplashScreen })),
   stackScreen(withoutHeader({ name: Screens.FirstContact, component: FirstContact })),
   stackScreen(joinRegattaScreenMixins({
     name: Screens.JoinRegatta, component: JoinRegatta, initialParams: { actionType: JoinRegattaActionType.JoinEvent }
