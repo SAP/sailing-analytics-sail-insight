@@ -18,11 +18,13 @@ import { getCompetitor } from 'selectors/competitor'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
 import { getMark } from 'selectors/mark'
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { getUserTeams } from 'selectors/user'
 
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
 
 import { dateRangeText } from 'helpers/date'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { openEmailToContact } from 'helpers/user'
 import * as Screens from 'navigation/Screens'
@@ -51,6 +53,7 @@ export enum JoinRegattaActionType {
 class JoinRegatta extends React.Component<{
   checkInData: CheckIn,
   actionType: any,
+  isNetworkConnected: boolean,
   leaderboard?: any,
   event?: any,
   competitor?: any,
@@ -67,7 +70,13 @@ class JoinRegatta extends React.Component<{
   }
 
   public onJoinPress = async () => {
-    const { actionType, boats } = this.props
+    const { actionType, boats, isNetworkConnected } = this.props
+
+    if (!isNetworkConnected) {
+      showNetworkRequiredSnackbarMessage()
+      return
+    }
+
     const { selectedBoatIndex } = this.state
     const selectedBoat = boats.length > 0 && boats[selectedBoatIndex]
     await this.setState({ isLoading: true })
@@ -253,6 +262,7 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     actionType,
     checkInData,
+    isNetworkConnected: isNetworkConnectedSelector(state),
     event: getEvent(checkInData.eventId)(state),
     leaderboard: getLeaderboard(checkInData.leaderboardName)(state),
     competitor: getCompetitor(checkInData.competitorId)(state),

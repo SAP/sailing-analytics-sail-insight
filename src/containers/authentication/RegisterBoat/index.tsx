@@ -15,8 +15,10 @@ import {
 } from 'forms/team'
 import { validateRequired } from 'forms/validators'
 
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
 
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { getFormFieldValue } from '../../../selectors/form'
 
 import { TeamTemplate } from 'models'
@@ -42,6 +44,7 @@ import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 interface Props {
   saveTeam: SaveTeamAction,
+  isNetworkConnected: boolean,
   formSailNumber?: string,
   actionAfterSubmit?: any,
 }
@@ -146,6 +149,11 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 
   protected onSubmit = async (values: any) => {
+    if (!this.props.isNetworkConnected) {
+      showNetworkRequiredSnackbarMessage()
+      return
+    }
+
     try {
       this.setState({ isLoading: true, error: null })
       const createdBoat = await this.props.saveTeam({
@@ -170,6 +178,7 @@ class RegisterBoat extends TextInputForm<Props> {
 
 const mapStateToProps = (state: any, props: any) => ({
   actionAfterSubmit: getScreenParamsFromProps(props)?.actionAfterSubmit,
+  isNetworkConnected: isNetworkConnectedSelector(state),
   formSailNumber: getFormFieldValue(TEAM_FORM_NAME, FORM_KEY_SAIL_NUMBER)(state),
   initialValues: {
     [FORM_KEY_HANDICAP]: getDefaultHandicap(),
