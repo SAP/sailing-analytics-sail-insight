@@ -40,6 +40,7 @@ import HeaderBackButton from 'components/HeaderBackButton'
 import HeaderTitle from 'components/HeaderTitle'
 import IconText from 'components/IconText'
 import ImageButton from 'components/ImageButton'
+import TextButton from 'components/TextButton'
 import WebView from 'components/WebView'
 
 // Containers (Also components, but more like pages, single-use)
@@ -77,7 +78,7 @@ import ZendeskSupport from 'containers/ZendeskSupport'
 // Styling & Images
 import Images from '@assets/Images'
 import { button, tab, navigation as navigationStyles } from 'styles/commons'
-import { $headerTintColor, $primaryTextColor, $secondaryTextColor, $siWhite, $siDarkBlue, $siDarkerBlue } from 'styles/colors'
+import { $headerTintColor, $primaryTextColor, $secondaryTextColor, $siWhite, $siDarkBlue, $siDarkerBlue, $siTransparent } from 'styles/colors'
 
 // Logging
 import Logger from 'helpers/Logger'
@@ -389,7 +390,7 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withoutTitle, withoutHeaderLeft)({
     name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
     options: {
-      headerRight: () => <Button title={I18n.t('caption_skip')} color={$siWhite} onPress={() => navigationContainer.current.navigate(Screens.Main)} />
+      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigationContainer.current.navigate(Screens.Main)}>{I18n.t('caption_skip')}</TextButton>
     }
   })),
   stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({

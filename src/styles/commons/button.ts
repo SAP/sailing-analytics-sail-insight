@@ -3,7 +3,7 @@ import { sanFranciscoSpacing } from 'react-native-typography'
 
 import { isPlatformAndroid } from 'environment'
 
-import { $siHeavyFontStack } from 'styles/fonts'
+import { $siHeavyFontStack, $siSemiboldFontStack } from 'styles/fonts'
 import { withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 const oldButtonStyles = {
@@ -149,12 +149,23 @@ export default EStyleSheet.create({
         ...defaultButtonText
     },
     secondaryInverted: {
-      ...defaultButton,
-      backgroundColor: '$siWhite',
+        ...defaultButton,
+        backgroundColor: '$siWhite',
     },
     secondaryTextInverted: {
-      ...defaultButtonText,
-      color: '$siDarkerBlue'
-    }
+        ...defaultButtonText,
+        color: '$siDarkerBlue'
+    },
+
+    // Icons, header buttons etc.
+    headerTextButton: Object.assign({
+        color: '$siWhite',
+        ...$siSemiboldFontStack,
+        fontSize: 17,
+        lineHeight:20,
+        paddingHorizontal: 16
+    }, isPlatformAndroid ? {} : {
+        letterSpacing: sanFranciscoSpacing(17),
+    })
 })
   
