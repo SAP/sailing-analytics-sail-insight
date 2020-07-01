@@ -12,7 +12,8 @@ export default EStyleSheet.create({
         resizeMode: 'contain'
     },
     baseText: {
-      ...text.text
+      ...text.text,
+      color: '$siWhite'
     },
     separator: {
         height: 0,

@@ -188,7 +188,6 @@ class JoinRegatta extends React.Component<{
               </View>
               <View style={styles.textContainer}>
                 <TrackingContext
-                  textStyle={text.caption}
                   session={{
                     trackingContext,
                     competitor,

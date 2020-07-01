@@ -48,8 +48,7 @@ class TrackingContext extends React.Component<ViewProps & {
       <IconText
         source={this.state.infoImage}
         iconTintColor={$siWhite}
-        alignment="horizontal"
-        iconStyle={{ top: -4 }}>
+        alignment="horizontal">
         {this.state.infoText}
       </IconText>
     )
