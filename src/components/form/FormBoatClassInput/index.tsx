@@ -143,7 +143,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       style={style}
       inputStyle={styles.input}
       placeholder={label}
-      hideTopPlaceholder={true}
+      hideTopPlaceholder={false}
       defaultValue={query}
       error={showError ? error : undefined}
       onChangeText={this.handleChangeText}

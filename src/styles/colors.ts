@@ -1,3 +1,6 @@
+import { Platform } from 'react-native'
+import { addOpacity } from 'helpers/color'
+
 export const $primaryBackgroundColor = '#1D3F4E'
 export const $secondaryBackgroundColor = '#EEEEEE'
 export const $placeholderBackgroundColor = '#FFFFFF1A' // '#008FD31A'
@@ -26,3 +29,34 @@ export const $LightBlue  = '#4B7B90'
 
 export const $Orange = '#F0AB00'
 export const $delimiterColor = '#E2E2E2'
+
+/**
+ * v2.x Styles
+ */
+
+export const $siTransparent = 'transparent'
+
+export const $siMediumBlue = '#476987'
+export const $siDarkBlue = '#123748'
+export const $siDarkerBlue = '#113242'
+
+export const $siSapYellow = '#f0ab00'
+
+export const $siErrorRed = $siSapYellow
+
+export const $siBlack = '#000000'
+export const $siWhite = '#ffffff'
+export const $siPlaceholderBackgroundColor = addOpacity($siDarkerBlue, 0.8) // '#008FD31A'
+
+
+export const $siShadow = Platform.select({
+    ios: {
+        shadowColor: $siBlack,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1
+    },
+    android: {
+        elevation: 1
+    }
+})

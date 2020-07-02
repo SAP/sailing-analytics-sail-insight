@@ -1,72 +1,102 @@
-import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import React, { Component as ReactComponent } from 'react'
-import { connect } from 'react-redux'
-import { compose, reduce, concat, mergeDeepLeft, merge, includes, once,
-  when, always, } from 'ramda'
 import { Text } from 'react-native'
+import { connect } from 'react-redux'
+import { NavigationContainer } from '@react-navigation/native'
+import { ActionSheetProvider } from '@expo/react-native-action-sheet'
+import SpinnerOverlay from 'react-native-loading-spinner-overlay'
+
+import { compose, reduce, concat, mergeDeepLeft, merge, includes, once, when, always } from 'ramda'
+
+// Store
 import 'store/init'
 
+// Selectors
+import { getFormTeamName } from 'selectors/boat'
+
+// Components
 import GradientNavigationBar from 'components/GradientNavigationBar'
 import ModalBackButton from 'components/ModalBackButton'
-import SplashScreen from 'containers/SplashScreen'
+
+// Navigation?
 import * as Screens from 'navigation/Screens'
-import Images from '@assets/Images'
-import Logger from 'helpers/Logger'
-import SpinnerOverlay from 'react-native-loading-spinner-overlay'
-import * as DeepLinking from 'integrations/DeepLinking'
-import * as LocationService from 'services/LocationService'
+import { AuthContext } from 'navigation/NavigationContext'
+
+// Actions
 import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation, initLocationUpdates } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
-import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+
+// Selectors
+import { getLocationTrackingStatus } from 'selectors/location'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
-import { NavigationContainer } from '@react-navigation/native'
-import HeaderBackButton from 'components/HeaderBackButton'
-import { AuthContext } from 'navigation/NavigationContext'
+import { getSelectedMarkProperties } from 'selectors/course'
+import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+
+// Components
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
 import { Component, fold, nothing } from 'components/fp/component'
-import FirstContact from 'containers/user/FirstContact'
-import Sessions from 'containers/session/Sessions'
-import QRScanner from 'containers/session/QRScanner'
-import JoinRegatta from 'containers/session/JoinRegatta'
-import EditCompetitor from 'containers/session/EditCompetitor'
-import TeamDetails from 'containers/TeamDetails'
-import Login from 'containers/authentication/Login'
-import RegisterCredentials from 'containers/authentication/RegisterCredentials'
-import PasswordReset from 'containers/authentication/PasswordReset'
-import MarkInventory from 'containers/Inventory/MarkInventory'
+import HeaderBackButton from 'components/HeaderBackButton'
+import HeaderTitle from 'components/HeaderTitle'
+import IconText from 'components/IconText'
+import ImageButton from 'components/ImageButton'
+import TextButton from 'components/TextButton'
+import WebView from 'components/WebView'
+
+// Containers (Also components, but more like pages, single-use)
+import AccountList from 'containers/user/AccountList'
 import AppSettings from 'containers/AppSettings'
 import CommunicationsSettings from 'containers/CommunicationsSettings'
-import Support from 'containers/Support'
-import ZendeskSupport from 'containers/ZendeskSupport'
-import { getSelectedMarkProperties } from 'selectors/course'
-import AccountList from 'containers/user/AccountList'
-import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
-import Geolocation from 'containers/CourseCreation/Geolocation'
-import TeamList from 'containers/user/TeamList'
 import EventCreation from 'containers/session/EventCreation'
 import ExpertSettings from 'containers/ExpertSettings'
+import FirstContact from 'containers/user/FirstContact'
+import Geolocation from 'containers/CourseCreation/Geolocation'
+import JoinRegatta, { JoinRegattaActionType } from 'containers/session/JoinRegatta'
 import Leaderboard from 'containers/session/Leaderboard/Leaderboard'
-import SetWind from 'containers/tracking/SetWind'
-import Tracking from 'containers/tracking/Tracking'
+import Login from 'containers/authentication/Login'
+import MarkInventory from 'containers/Inventory/MarkInventory'
 import MarkTracking from 'containers/tracking/MarkTracking'
-import WelcomeTracking from 'containers/tracking/WelcomeTracking'
-import RaceDetails from 'containers/CourseCreation/RaceDetails'
-import HeaderTitle from 'components/HeaderTitle'
+import PasswordReset from 'containers/authentication/PasswordReset'
+import QRScanner from 'containers/session/QRScanner'
 import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
-import { getFormTeamName } from 'selectors/boat'
+import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import RegisterBoat from 'containers/authentication/RegisterBoat'
-import UserProfile from 'containers/user/UserProfile'
-import ImageButton from 'components/ImageButton'
-import WebView from 'components/WebView'
-import SessionDetail4Organizer from 'containers/session/SessionDetail4Organizer'
+import RegisterCredentials from 'containers/authentication/RegisterCredentials'
 import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
-import I18n from 'i18n'
-import { $headerTintColor, $primaryTextColor, $secondaryTextColor, $primaryBackgroundColor } from 'styles/colors'
-import { getTabItemTitleTranslation } from 'helpers/texts'
-import IconText from 'components/IconText'
+import SessionDetail4Organizer from 'containers/session/SessionDetail4Organizer'
+import Sessions from 'containers/session/Sessions'
+import SetWind from 'containers/tracking/SetWind'
+import Support from 'containers/Support'
+import TeamDetails from 'containers/TeamDetails'
+import TeamList from 'containers/user/TeamList'
+import TrackerBinding from 'containers/CourseCreation/TrackerBinding'
+import Tracking from 'containers/tracking/Tracking'
+import UserProfile from 'containers/user/UserProfile'
+import WelcomeTracking from 'containers/tracking/WelcomeTracking'
+import ZendeskSupport from 'containers/ZendeskSupport'
+
+// Styling & Images
+import Images from '@assets/Images'
 import { button, tab, navigation as navigationStyles } from 'styles/commons'
+import { $headerTintColor, $primaryTextColor, $secondaryTextColor, $siWhite, $siDarkBlue, $siDarkerBlue, $siTransparent } from 'styles/colors'
+
+// Logging
+import Logger from 'helpers/Logger'
+
+// Internationalisation
+import I18n from 'i18n'
+import { getTabItemTitleTranslation } from 'helpers/texts'
+
+// Deep Linking
+import * as DeepLinking from 'integrations/DeepLinking'
+
+// Location Service
+import * as LocationService from 'services/LocationService'
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 const stackNavigatorConfig = {
   mode: 'card',
@@ -74,12 +104,15 @@ const stackNavigatorConfig = {
 }
 
 const screenWithHeaderOptions = {
-  headerTitleStyle: navigationStyles.headerTitle,
-  headerTintColor: $headerTintColor,
+  headerTitleStyle: navigationStyles.heading,
+  headerTintColor: $siWhite,
   headerStyle: {
-    backgroundColor: $primaryBackgroundColor,
+    backgroundColor: $siDarkBlue,
+    borderBottomWidth: 0,
+    elevation: 0,
+    shadowColor: $siDarkerBlue
   },
-  headerTitleAlign: 'center',
+  headerTitleAlign: 'center'
 }
 
 const navHeaderTransparentProps = {
@@ -87,8 +120,8 @@ const navHeaderTransparentProps = {
   headerStyle: {
     backgroundColor: 'transparent',
     borderBottomWidth: 0,
-    elevation: 0,
-  },
+    elevation: 0
+  }
 }
 
 const getTabBarIcon = (route: any, tintColor: any, focused: any) => {
@@ -145,7 +178,7 @@ const teamDeleteHeader = (route: any) => (route?.params?.paramTeamName) && (
 
 const TeamDetailsHeader = connect(
   (state: any) => ({ text: getFormTeamName(state) }))(
-  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')}/>)
+  (props: any) => <HeaderTitle firstLine={props.text || I18n.t('title_your_team')} />)
 
 const MarkLocationHeader = connect(
   (state: any) => {
@@ -157,6 +190,11 @@ const MarkLocationHeader = connect(
 
 const navigationContainer = React.createRef()
 
+
+// ----------------------------------------------------------------------------
+// Navigation Modifiers -------------------------------------------------------
+// ----------------------------------------------------------------------------
+
 const withoutHeader = mergeDeepLeft({ options: { headerShown: false } })
 const withoutTitle = mergeDeepLeft({ options: { title: '' }})
 const withoutHeaderTitle = mergeDeepLeft({ options: { headerTitle: () => null }})
@@ -164,14 +202,27 @@ const withoutHeaderLeft = mergeDeepLeft({ options: { headerLeft: () => null } })
 const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparentProps } })
 const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
 const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
-const withLeftHeaderBackButton = options =>
-  mergeDeepLeft({
-    options: {
-      headerLeft: HeaderBackButton(
-        { onPress: when(always(options.backOnceClickable), once)(() => navigationContainer.current.goBack()) }
-      ),
-    },
-  })(options)
+
+// Left header back button (Chevron only)
+const withLeftHeaderBackButton = (options) => mergeDeepLeft({
+  options: {
+    headerLeft: HeaderBackButton({
+      labelVisible: false,
+      onPress: when(always(options.backOnceClickable), once)(() => navigationContainer.current.goBack())
+    })
+  }
+})(options)
+
+// Left header close button (X only)
+const withLeftHeaderCloseButton = (options) => mergeDeepLeft({
+  options: {
+    headerLeft: () => <ModalBackButton type="icon" iconColor={$headerTintColor} />
+  },
+})(options)
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 const markTrackingNavigator = Component(props => compose(
   fold(props),
@@ -182,7 +233,10 @@ const markTrackingNavigator = Component(props => compose(
 
 const trackingNavigator = Component(props => compose(
   fold(props),
-  stackNavigator({ initialRouteName: Screens.WelcomeTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
+  stackNavigator({
+    initialRouteName: props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ? Screens.Tracking : Screens.WelcomeTracking,
+    ...stackNavigatorConfig,
+    screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.WelcomeTracking, component: WelcomeTracking })),
   stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
@@ -193,11 +247,10 @@ const trackingNavigator = Component(props => compose(
   stackScreen(withLeftHeaderBackButton({ name: Screens.Leaderboard, component: Leaderboard, options: { title: I18n.t('title_leaderboard') }, backOnceClickable: true })),
 ]))
 
-const TrackingSwitch = connect((state: any) => {
-  return {
-    boundToMark: isBoundToMark(state)
-  }
-})(props => {
+const TrackingSwitch = connect((state: any) => ({
+    boundToMark: isBoundToMark(state),
+    locationTrackingStatus: getLocationTrackingStatus(state)
+}))(props => {
   return props.boundToMark
     ? markTrackingNavigator.fold(props)
     : trackingNavigator.fold(props)
@@ -249,11 +302,15 @@ const accountNavigator = Component(props => compose(
     headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
     title: route?.params?.data?.supportType === 'FAQ' ? I18n.t('caption_faq') : I18n.t('caption_known_issues')
   }) }),
-  stackScreen(({ name: Screens.TeamDetails, component: TeamDetails, options: ({ route }) => ({
-    headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
-    headerTitle: () => <TeamDetailsHeader/>,
-    headerRight: () => teamDeleteHeader(route),
-  }) })),
+  stackScreen(({
+    name: Screens.TeamDetails,
+    component: TeamDetails,
+    options: ({ route }) => ({
+      headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
+      headerTitle: () => <TeamDetailsHeader/>,
+      headerRight: () => teamDeleteHeader(route),
+    })
+  })),
 ]))
 
 const preventTabPressBackAction = (navigatorScreen, toPrevent, toGoBack) => (props: any) => {
@@ -310,29 +367,47 @@ const mainTabsNavigator = Component(props => compose(
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
 ]))
 
+const joinRegattaScreenMixins = compose(withLeftHeaderCloseButton, withTransparentHeader, withoutTitle)
+
 const AppNavigator = Component(props => compose(
   fold(props),
   stackNavigator({
     initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,
-    screenOptions: screenWithHeaderOptions }),
-  reduce(concat, nothing()))([
-  stackScreen(withoutHeader({ name: Screens.Splash, component: SplashScreen })),
+    screenOptions: screenWithHeaderOptions
+  }),
+  reduce(concat, nothing())
+)([
   stackScreen(withoutHeader({ name: Screens.FirstContact, component: FirstContact })),
-  stackScreen(withoutHeader({ name: Screens.JoinRegatta, component: JoinRegatta })),
-  stackScreen(withoutHeader({ name: Screens.EditCompetitor, component: EditCompetitor })),
-  stackScreen(withoutHeaderLeft({ name: Screens.RegisterBoat, component: RegisterBoat, options: { title: I18n.t('title_your_team') } })),
+  stackScreen(joinRegattaScreenMixins({
+    name: Screens.JoinRegatta, component: JoinRegatta, initialParams: { actionType: JoinRegattaActionType.JoinEvent }
+  })),
+  stackScreen(joinRegattaScreenMixins({
+    name: Screens.JoinRegattaForTracking, component: JoinRegatta, initialParams: { actionType: JoinRegattaActionType.Track }
+  })),
+  stackScreen(joinRegattaScreenMixins({
+    name: Screens.JoinRegattaAsCompetitor, component: JoinRegatta, initialParams: { actionType: JoinRegattaActionType.JoinAsCompetitor }
+  })),
+  stackScreen(compose(withTransparentHeader, withoutTitle, withoutHeaderLeft)({
+    name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
+    options: {
+      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigationContainer.current.navigate(Screens.Main)}>{I18n.t('caption_skip')}</TextButton>
+    }
+  })),
+  stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({
+    name: Screens.RegisterBoat, component: RegisterBoat
+  })),
   stackScreen(withoutHeader({ name: Screens.Main, component: mainTabsNavigator.fold })),
-  stackScreen(compose(withTransparentHeader, withGradientHeaderBackground,
-    withRightModalBackButton, withoutHeaderLeft, withoutTitle)(
-    { name: Screens.QRScanner, component: QRScanner })),
-  stackScreen(compose(withoutHeaderLeft, withTransparentHeader, withRightModalBackButton, withoutTitle)({
+  stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withGradientHeaderBackground, withoutTitle)({
+    name: Screens.QRScanner, component: QRScanner
+  })),
+  stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({
     name: Screens.LoginFromSplash, component: Login
   })),
-  stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withGradientHeaderBackground, withLeftHeaderBackButton)({
+  stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withLeftHeaderBackButton)({
     name: Screens.Login, component: Login
   })),
-  stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withoutHeaderLeft, withGradientHeaderBackground, withRightModalBackButton)({
+  stackScreen(compose(withTransparentHeader, withoutHeaderTitle, withLeftHeaderBackButton)({
     name: Screens.RegisterCredentials, component: RegisterCredentials
   })),
   stackScreen(compose(withoutTitle, withTransparentHeader, withGradientHeaderBackground, withLeftHeaderBackButton)({
