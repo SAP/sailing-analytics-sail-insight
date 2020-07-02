@@ -14,7 +14,8 @@ import {
   nothing,
   reduxConnect as connect,
   recomposeWithState as withState,
-  recomposeBranch as branch
+  recomposeBranch as branch,
+  recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 
 import { getMarkPositionsExceptCurrent } from 'selectors/course'
@@ -24,13 +25,38 @@ import TextInput from 'components/TextInput'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import styles from './styles'
-import { Switch, Platform } from 'react-native'
+import { Switch, Platform, Alert } from 'react-native'
 import { NavigationEvents } from '@react-navigation/compat'
 import { dd2ddm, ddm2dd } from 'helpers/utils'
 import { $Orange, $primaryBackgroundColor, $secondaryBackgroundColor } from 'styles/colors'
+import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
+import I18n from 'i18n'
 
 const hasNoPadding = propEq('mapOffset', 0)
 const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
+
+const withNavigationHandlers = withHandlers({
+  onNavigationCancelPress: (props: any) => () => {
+    const coordinatesChanged = !equals(
+      pick(['latitude', 'longitude'], props.region),
+      markPositionToMapPosition(pick(['latitude_deg', 'longitude_deg'], props.markPosition))
+      )
+    if (coordinatesChanged) {
+      Alert.alert(I18n.t('caption_leave'), '',
+      [ { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
+      { text: I18n.t('button_no'), onPress: () => {} }])
+    } else {
+      props.navigation.goBack()
+    }
+  },
+  onNavigationSavePress: (props: any) => () => {
+    props.updateMarkConfigurationLocation({
+      id: props.selectedMarkConfiguration,
+      value: pick(['latitude', 'longitude'], props.region)
+    })
+    props.navigation.goBack()
+  }
+})
 
 // get height of coordinates input
 // use calculated height (half input height + half marker icon height + bottom spacing) to offset marker icon on map so that it looks centered
@@ -115,10 +141,20 @@ const Map = Component((props: any) => compose(
 const navigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onDidBlur: (payload: any) => (!payload || !payload.state) && props.updateMarkConfigurationLocation({
-      id: props.selectedMarkConfiguration,
-      value: pick(['latitude', 'longitude'], props.region)
-    })
+    onWillFocus: (payload: any) => {
+      props.navigation.setOptions({
+        headerRight: HeaderSaveTextButton({
+          onPress: () => {
+            props.onNavigationSavePress()
+          }
+        }),
+        headerLeft: HeaderCancelTextButton({
+          onPress: () => {
+            props.onNavigationCancelPress()
+          }
+        })
+      })
+    }
   })),
   fromClass)(
   NavigationEvents))
@@ -243,6 +279,7 @@ export default Component((props: object) =>
     withInitialRender,
     withRegion,
     withMapOffset,
+    withNavigationHandlers,
     concat(navigationBackHandler),
     concat(nothingWhenNoPadding(Map)),
     )(coordinatesContainer))
