@@ -1,7 +1,7 @@
 import { __, compose, concat, reduce, merge, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
   defaultTo, pick, head, tap, of, flatten, init, nth, map, last, negate,
-  equals, reject, all } from 'ramda'
+  equals, reject, all, not } from 'ramda'
 
 import MapView, { Marker } from 'react-native-maps'
 
@@ -37,10 +37,17 @@ const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
 
 const withNavigationHandlers = withHandlers({
   onNavigationCancelPress: (props: any) => () => {
-    const coordinatesChanged = !equals(
-      pick(['latitude', 'longitude'], props.region),
-      markPositionToMapPosition(pick(['latitude_deg', 'longitude_deg'], props.markPosition))
-      )
+
+    // truncate to 7 significant digits
+    // same coordinates may differ after region is set resulting in incorrect alert shown
+    const coordinatesChanged = compose(
+      not,
+      equals(compose(map((coord: any) => coord.toFixed(7)), pick(['latitude', 'longitude']))(props.region)),
+      map((coord: any) => coord.toFixed(7)),
+      markPositionToMapPosition,
+      pick(['latitude_deg', 'longitude_deg'])
+      )(props.markPosition)
+
     if (coordinatesChanged) {
       Alert.alert(I18n.t('caption_leave'), '',
       [ { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
