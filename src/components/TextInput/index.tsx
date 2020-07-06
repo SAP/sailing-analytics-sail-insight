@@ -125,7 +125,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
                 style={form.formTextInputToggleButton}
                 onPress={this.entrySecuredToggled}>
                 <Image
-                  style={[(isFocused ? form.formTextInputToggleButtonIconFocused : form.formTextInputToggleButtonIcon), form.showPasswordIcon]}
+                  style={[(isFocused ? form.formTextInputToggleButtonIconFocused : form.formTextInputToggleButtonIcon), form.visibilityIcon]}
                   source={isEntrySecured ? Images.actions.visibility : Images.actions.visibilityOff}
                 />
               </TouchableOpacity>
