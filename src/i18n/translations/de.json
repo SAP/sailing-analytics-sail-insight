@@ -268,6 +268,7 @@
   "caption_create": "ERSTELLEN",
   "caption_invalid_qr_code_missing_mark": "Um den QR code zu generieren muss der Kurs gespeichert werden.\n(Tip: Pfeil oben links zwei mal drücken).",
   "caption_scan_qr_code_for_mark_binding": "Scannen Sie diesen QR-Code mit einem anderen Gerät oder verwenden Sie dieses Gerät als Tracker",
+  "caption_leave": "Bist du sicher?",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",
