@@ -24,12 +24,12 @@ import { all, call, put, select, takeEvery, takeLatest, take, delay } from 'redu
 import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo, isPollingEvent } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
-import { getAppState } from 'selectors/appState'
+import { isAppActive } from 'selectors/appState'
 import { getRegatta, getRegattaNumberOfRaces, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { StackActions } from '@react-navigation/native'
 
-const EventPollingInterval = 5000
+const EventPollingInterval = 15000
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -300,7 +300,7 @@ function* handleSelectedEventPolling() {
 
     while (true && isPolling)
     {
-      const isForeground = yield select(getAppState())
+      const isForeground = yield select(isAppActive())
       if (isForeground) {
         const eventData = yield select(getSelectedEventInfo)
         const { regattaName, secret, serverUrl } = eventData

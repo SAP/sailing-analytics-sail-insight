@@ -7,15 +7,10 @@ let appStateChannel: any
 
 function* handleAppStateChange() {
   appStateChannel = eventChannel((listener: any) => {
-    const handleEvent = (event: any) => {
-      listener(event)
-    }
-
-    AppState.addEventListener('change', (event) => {
-      handleEvent(event)
-    })
+    AppState.addEventListener('change', listener)
+    
     return () => {
-      AppState.removeEventListener('change', handleEvent)
+      AppState.removeEventListener('change', listener)
     }
   })
   try {

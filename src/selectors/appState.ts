@@ -1,4 +1,4 @@
 import { RootState } from 'reducers/config'
 
-export const getAppState = () => (state: RootState = {}) =>
+export const isAppActive = () => (state: RootState = {}) =>
   state.appState && state.appState.active
