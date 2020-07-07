@@ -1,15 +1,16 @@
 import React from 'react'
 import { Image, TouchableOpacity } from 'react-native'
-
-import Images from '@assets/Images'
-import I18n from 'i18n'
-import TextButton from 'components/TextButton'
-
-import { button } from 'styles/commons'
-import styles from './styles'
 import { useNavigation } from '@react-navigation/native'
 
-export default props => {
+import I18n from 'i18n'
+
+import TextButton from 'components/TextButton'
+
+import Images from '@assets/Images'
+
+import styles from './styles'
+
+export default (props) => {
   const navigation = useNavigation()
 
   const {
@@ -26,7 +27,7 @@ export default props => {
   return type === 'text' ?
     <TextButton
       style={[styles.back, style]}
-      textStyle={button.modalBack}
+      // textStyle={button.modalBack}
       onPress={onPress || navigation.goBack}
       {...extraProps}>
       {children || I18n.t('caption_cancel')}
@@ -35,7 +36,7 @@ export default props => {
       style={[styles.back, dropShadow ? styles.elevation : undefined, style]}
       onPress={onPress || navigation.goBack}>
       <Image
-        style={[button.actionIconNavBar, iconColor && { tintColor: iconColor }]}
+        style={[iconColor && { tintColor: iconColor }]}
         source={icon || Images.actions.close}/>
     </TouchableOpacity>
 }

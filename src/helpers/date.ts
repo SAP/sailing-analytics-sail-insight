@@ -93,6 +93,33 @@ export const dateTimeText = (dateValue: string | number | Date) => {
   return moment(dateValue).locale(supportedLocale).format(`${dateFormat} - ${timeFormat}`)
 }
 
+/**
+ * Returns a hypenated string from one or two date values
+ */
+export const dateRangeText = (dateValue1: string | number | Date, dateValue2?: string | number | Date): string => {
+  const supportedLocale = getSupportedLocale(I18n.locale)
+
+  const moment1 =  moment(dateValue1).locale(supportedLocale)
+  const moment2 = dateValue2 ? moment(dateValue1).locale(supportedLocale) : null
+  
+  // No date2 or the same day
+  if (moment2 == null || moment1.isSame(moment2, 'day')) {
+    return moment1.format('D. MMMM YYYY')
+
+  // Same month
+  } else if (moment1.isSame(moment2, 'month')) {
+    return moment1.format('D') + '–'+ moment2.format('D. MMMM YYYY') // EN Dash
+
+  // Same year
+  } else if (moment1.isSame(moment2, 'year')) {
+    return moment1.format('D. MMMM') + ' – '+ moment2.format('D. MMMM YYYY') // EN Dash + thin spaces
+
+  // Not the same year
+  } else {
+    return moment1.format('D. MMMM YYYY') + ' – '+ moment2.format('D. MMMM YYYY') // EN Dash + thin spaces
+  }
+}
+
 export const dateShortText = (dateValue: string | number | Date) => {
   const supportedLocale = getSupportedLocale(I18n.locale)
   return moment(dateValue).locale(supportedLocale).format('DD.MM.YYYY')

@@ -149,19 +149,18 @@ export const createUserAttachmentToSession = (
     const user = getUserInfo(getState())
     if (
       !competitorInfo.boatClass ||
-      !competitorInfo.sailNumber ||
-      !competitorInfo.nationality
+      !competitorInfo.sailNumber
     ) {
-      throw new SessionException('user/nationality/boat data missing.')
+      throw new SessionException('user/boat data missing.')
     }
     const baseValues = {
-      competitorName: competitorInfo.teamName || competitorInfo.name,
+      competitorName: competitorInfo.name,
       competitorEmail: user && user.email,
       nationalityIOC: competitorInfo.nationality,
     }
 
     const serverUrl = getServerUrl(regattaName)(getState())
-    const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
+    const userBoat = getUserBoatByBoatName(competitorInfo.name)(getState())
     let boatId = get(userBoat, ['id', serverUrl])
     let competitorId = get(userBoat, ['competitorId', serverUrl])
 
@@ -220,8 +219,7 @@ export const createUserAttachmentToSession = (
       await dispatch(
         saveTeam(
           {
-            name: competitorInfo.teamName,
-            boatName: competitorInfo.boatName,
+            name: competitorInfo.name,
             boatClass: competitorInfo.boatClass,
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
@@ -243,20 +241,6 @@ export const createUserAttachmentToSession = (
     }
   },
 )
-
-export type CreateSessionCreationQueueAction = (session: TrackingSession, options?: {isPublic?: boolean}) => any
-export const createSessionCreationQueue: CreateSessionCreationQueueAction = (session, options) =>
-  (dispatch: DispatchType) => ActionQueue.create(
-    dispatch,
-    [
-      createEvent(session, options && options.isPublic),
-      ActionQueue.createItemUsingPreviousResult((data: CheckIn) => collectCheckInData(data)),
-      ActionQueue.createItemUsingPreviousResult((data: CheckIn) => updateCheckIn(data)),
-      // Important: TrackingSession is given as CompetitorInfo
-      createUserAttachmentToSession(session.name, session),
-      registerDevice(session.name),
-    ],
-  )
 
 export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {

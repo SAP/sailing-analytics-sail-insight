@@ -52,7 +52,7 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
   if (eventIsNotBound) {
     const isNetworkConnected = isNetworkConnectedSelector(getState())
     if (isNetworkConnected) {
-      navigation.navigate(Screens.EditCompetitor, { data: checkInData, options: { startTrackingAfter: true } })
+      navigation.navigate(Screens.JoinRegattaForTracking, { data: checkInData })
     } else {
       Alert.alert('', I18n.t('error_offline_competitor_registration'))
     }

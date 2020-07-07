@@ -9,7 +9,7 @@ import { mapUserToRes } from 'models/User'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 
-export type RegisterActionType = (username: string, email: string, password: string, name: string) => any
+export type RegisterActionType = (username: string, email: string, password: string, name?: string) => any
 
 export const updateToken = createAction('UPDATE_TOKEN')
 export const updateCurrentUserInformation = createAction('UPDATE_CURRENT_USER_INFORMATION')
@@ -43,8 +43,13 @@ export const logout = () => (dispatch: DispatchType) => {
   dispatch(removeUserData())
 }
 
-export const requestPasswordReset = (username: string, email: string) =>
-   authApi().requestPasswordReset(username, email)
+export const requestPasswordReset = (usernameOrEmail: string) => {
+  if (usernameOrEmail.includes('@')) {
+    return authApi().requestPasswordReset('', usernameOrEmail)
+  }
+
+  return authApi().requestPasswordReset(usernameOrEmail, '')
+}
 
 export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
   dispatch(updateCurrentUserInformation(await authApi().user()))

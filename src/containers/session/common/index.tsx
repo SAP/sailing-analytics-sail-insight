@@ -231,7 +231,7 @@ export const inviteCompetitorsButton = Component(props => compose(
 export const joinAsCompetitorButton = Component(props => compose(
   fold(props),
   styledButton({
-    onPress: (props: any) => props.navigation.navigate(Screens.EditCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
+    onPress: (props: any) => props.navigation.navigate(Screens.JoinRegattaAsCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
   }),
   text({ style: styles.buttonContent }))(
   I18n.t('caption_join_as_competitor').toUpperCase()))
