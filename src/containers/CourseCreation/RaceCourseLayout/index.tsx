@@ -10,7 +10,7 @@ import {
   recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { BackHandler } from 'react-native'
+import { BackHandler, Alert } from 'react-native'
 import BackgroundGeolocation from 'react-native-background-geolocation-android'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
@@ -24,7 +24,8 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
-  isDefaultWaypointSelection } from 'selectors/course'
+  isDefaultWaypointSelection, 
+  hasEditedCourseChanged} from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { getHashedDeviceId } from 'selectors/user'
 import { coordinatesToString } from 'helpers/utils'
@@ -34,7 +35,7 @@ import SwitchSelector from 'react-native-switch-selector'
 import CheckBox from 'react-native-check-box'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
-import HeaderBackButton from 'components/HeaderBackButton'
+import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from '@react-navigation/compat'
 import styles from './styles'
@@ -64,7 +65,8 @@ const mapStateToProps = (state: any) => ifElse(
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
     marksAndMarkPropertiesOptions: getFilteredMarkPropertiesAndMarksOptionsForCourse(state),
-    sameStartFinish: hasSameStartFinish(state)
+    sameStartFinish: hasSameStartFinish(state),
+    hasCourseChanged: hasEditedCourseChanged(state)
   }))
 
 const isLoading = propEq('loading', true)
@@ -656,8 +658,18 @@ const LoadingIndicator = Component((props: any) => compose(
   text({ style: styles.loadingText }, I18n.t('caption_course_creator_loading'))))
 
 const withOnNavigationBackPress = withHandlers({
-  onNavigationBackPress: (props: any) => () => {
+  onNavigationCancelPress: (props: any) => () => {
+    if (props.hasCourseChanged) {
+      Alert.alert(I18n.t('caption_leave'), '',
+      [ { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
+      { text: I18n.t('button_no'), onPress: () => {} }])
+    } else {
+      props.navigation.goBack()
+    }
+  },
+  onNavigationSavePress: (props: any) => () => {
     props.navigateBackFromCourseCreation()
+    props.navigation.goBack()
   }
 })
 
@@ -665,15 +677,21 @@ const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
     onWillBlur: (payload: any) => {
-      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationBackPress)
+      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationCancelPress)
     },
     onWillFocus: (payload: any) => {
-      BackHandler.addEventListener('hardwareBackPress', props.onNavigationBackPress)
+      BackHandler.addEventListener('hardwareBackPress', props.onNavigationCancelPress)
       props.navigation.setOptions({
-        headerLeft: HeaderBackButton({ onPress: once(() => {
-          props.onNavigationBackPress()
-          props.navigation.goBack()
-        })})
+        headerRight: HeaderSaveTextButton({
+          onPress: () => {
+            props.onNavigationSavePress()
+          }
+        }),
+        headerLeft: HeaderCancelTextButton({
+          onPress: () => {
+            props.onNavigationCancelPress()
+          }
+        })
       })
     }
   })),
