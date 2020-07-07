@@ -4,7 +4,6 @@ import { sanFranciscoSpacing } from 'react-native-typography'
 import { isPlatformAndroid } from 'environment'
 
 import { $siMediumBlue, $siWhite } from 'styles/colors'
-import { $addDebuggingBorder } from 'styles/dimensions'
 import { $siMediumFontStack, $siBoldFontStack } from 'styles/fonts'
 
 import { addOpacity } from 'helpers/color'
@@ -151,7 +150,7 @@ export default EStyleSheet.create({
     formTextInputToggleButtonIconFocused: {
         ...formInputToggleButtonIconFocused
     },
-    showPasswordIcon: { },
+    visibilityIcon: { },
     formTextInputAssitiveText: {
         ...formInputAssitiveText
     },

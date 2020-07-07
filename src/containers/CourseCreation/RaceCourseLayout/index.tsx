@@ -30,7 +30,7 @@ import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inv
 import { getHashedDeviceId } from 'selectors/user'
 import { coordinatesToString } from 'helpers/utils'
 import * as Screens from 'navigation/Screens'
-import TextInput from 'components/TextInput'
+import TextInputDeprecated from 'components/TextInputDeprecated'
 import SwitchSelector from 'react-native-switch-selector'
 import CheckBox from 'react-native-check-box'
 import Images from '@assets/Images'
@@ -367,7 +367,7 @@ const CreateNewSelector = Component((props: object) =>
 const TextInputWithLabel = Component((props: any) => compose(
   fold(props),
   view({ style: props.isShort ? { flexBasis: 10 } : { flexBasis: 50 }}),
-  concat(__, fromClass(TextInput)),
+  concat(__, fromClass(TextInputDeprecated)),
   text({ style: styles.textInputLabel, numberOfLines: 1 }))(
   props.inputLabel))
 

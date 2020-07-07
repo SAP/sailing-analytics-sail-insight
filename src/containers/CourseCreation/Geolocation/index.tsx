@@ -21,7 +21,7 @@ import {
 import { getMarkPositionsExceptCurrent } from 'selectors/course'
 import { updateMarkConfigurationLocation } from 'actions/courses'
 import { view, text } from 'components/fp/react-native'
-import TextInput from 'components/TextInput'
+import TextInputDeprecated from 'components/TextInputDeprecated'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import styles from './styles'
@@ -177,7 +177,7 @@ const textInput = Component(props => compose(
     keyboardType: 'decimal-pad',
     returnKeyType: 'done'
   })))(
-  fromClass(TextInput)))
+  fromClass(TextInputDeprecated)))
 
 const switchSelector = Component(props => compose(
   fold(props),
