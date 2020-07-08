@@ -42,10 +42,11 @@ const withNavigationHandlers = withHandlers({
     // same coordinates may differ after region is set resulting in incorrect alert shown
     const coordinatesChanged = compose(
       not,
-      equals(compose(map((coord: any) => coord.toFixed(7)), pick(['latitude', 'longitude']))(props.region)),
-      map((coord: any) => coord.toFixed(7)),
+      equals(compose(map((coord: any) => coord && coord.toFixed(7)), pick(['latitude', 'longitude']), defaultTo({}))(props.region)),
+      map((coord: any) => coord && coord.toFixed(7)),
       markPositionToMapPosition,
-      pick(['latitude_deg', 'longitude_deg'])
+      pick(['latitude_deg', 'longitude_deg']),
+      defaultTo({})
       )(props.markPosition)
 
     if (coordinatesChanged) {
