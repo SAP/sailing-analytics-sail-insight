@@ -35,6 +35,9 @@ import I18n from 'i18n'
 const hasNoPadding = propEq('mapOffset', 0)
 const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
 
+const trimCoordinates = (coordinate: any) => 
+  coordinate.toFixed(7)
+
 const withNavigationHandlers = withHandlers({
   onNavigationCancelPress: (props: any) => () => {
 
@@ -42,8 +45,9 @@ const withNavigationHandlers = withHandlers({
     // same coordinates may differ after region is set resulting in incorrect alert shown
     const coordinatesChanged = compose(
       not,
-      equals(compose(map((coord: any) => coord && coord.toFixed(7)), pick(['latitude', 'longitude']), defaultTo({}))(props.region)),
-      map((coord: any) => coord && coord.toFixed(7)),
+      equals(compose(map(trimCoordinates), reject(isNil), pick(['latitude', 'longitude']), defaultTo({}))(props.region)),
+      map(trimCoordinates),
+      reject(isNil),
       markPositionToMapPosition,
       pick(['latitude_deg', 'longitude_deg']),
       defaultTo({})
