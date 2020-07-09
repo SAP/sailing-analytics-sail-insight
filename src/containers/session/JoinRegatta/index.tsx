@@ -197,7 +197,7 @@ class JoinRegatta extends React.Component<{
                 { (trackingContextUndefined && boats.length === 1) &&
                   <>
                     <Text style={text.text}>{I18n.t('text_join_with_boat_01')}<Text style={text.yellow}>{firstBoat.name}</Text>{I18n.t('text_join_with_boat_02')}</Text>
-                    <Text style={text.text}>{I18n.t('text_join_with_boat_explainer_01')}<Text style={text.yellow} onPress={this.gotoAccountPage}>{I18n.t('text_join_with_boat_explainer_02')}</Text>{I18n.t('text_join_with_boat_explainer_03')}</Text>
+                    <Text style={text.text}>{I18n.t('text_join_with_boat_explainer_01')}{I18n.t('text_join_with_boat_explainer_02')}{I18n.t('text_join_with_boat_explainer_03')}</Text>
                   </>
                 }
                 { (trackingContextUndefined && boats.length > 1) &&
