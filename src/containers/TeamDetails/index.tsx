@@ -1,3 +1,4 @@
+import { compose, defaultTo, pick, prop } from 'ramda'
 import React, { ChangeEvent } from 'react'
 import { Alert, KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View, ViewProps, ImageBackground } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
@@ -194,10 +195,23 @@ class TeamDetails extends TextInputForm<Props> {
   protected onSavePress = async (values: any) => {
     try {
       this.setState({ isLoading: true })
-      const team = teamForm.teamFromFormValues(values)
-      if (!team) {
+      const teamFromFormValues = teamForm.teamFromFormValues(values)
+      if (!teamFromFormValues) {
         return false
       }
+
+      const initialTeamPreservedValues = compose(
+        pick(['id', 'competitorId', 'lastUsed']),
+        defaultTo({}),
+        prop('team')
+      )(this.props)
+
+      // Preserve some values from the initial team
+      const team = {
+        ...initialTeamPreservedValues,
+        ...teamFromFormValues
+      }
+
       await this.props.saveTeam(team, { replaceTeamName: this.props.paramTeamName })
       this.props.navigation.goBack()
       return true
