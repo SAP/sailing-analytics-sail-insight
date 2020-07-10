@@ -7,6 +7,7 @@ import { Field, reduxForm } from 'redux-form'
 import LinearGradient from 'react-native-linear-gradient'
 import { isEmpty } from 'lodash'
 
+import { updateCompetitor } from 'actions/sessions'
 import { deleteTeam, DeleteTeamAction, saveTeam, SaveTeamAction, updateTeamImage, updateTeamImageAction } from 'actions/user'
 
 import * as teamForm from 'forms/team'
@@ -212,6 +213,7 @@ class TeamDetails extends TextInputForm<Props> {
         ...teamFromFormValues
       }
 
+      await updateCompetitor(team)
       await this.props.saveTeam(team, { replaceTeamName: this.props.paramTeamName })
       this.props.navigation.goBack()
       return true
