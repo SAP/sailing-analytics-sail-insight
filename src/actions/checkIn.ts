@@ -20,7 +20,7 @@ import { spreadableList } from 'helpers/utils'
 import { fetchEvent, updateLoadingEventList } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { isLoggedIn } from 'selectors/auth'
-import { getActiveCheckInEntity, getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
@@ -185,59 +185,56 @@ export const fetchCheckIn = (url: string) => async (dispatch: DispatchType) => {
   return await dispatch(collectCheckInData(data))
 }
 
-export const isEventAlreadyJoined = ({ eventId }: CheckIn, activeCheckIns: any) =>
-  Object.values(activeCheckIns).map((item: any) => item.eventId).includes(eventId)
-
-
-export const checkIn = (data: CheckIn, alreadyJoined: boolean, navigation:object) => async (dispatch: DispatchType, getState: GetStateType) => {
+export const checkIn = (data: CheckIn, navigation: object) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!data) {
     throw new CheckInException('data is missing')
   }
   dispatch(updateCheckIn(data))
 
-  if (data.competitorId || data.markId || data.boatId) {
-    await dispatch(registerDevice(data.leaderboardName))
-    const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
-    if (data.competitorId) {
-      update.trackingContext = 'COMPETITOR'
-    } else if (data.boatId) {
-      update.trackingContext = 'BOAT'
-    } else if (data.markId) {
-      update.trackingContext = 'MARK'
-    }
-    await dispatch(updateCheckInAndEventInventory(update))
-    const isLogged = isLoggedIn(getState())
-    isLogged ? navigation.navigate(Screens.TrackingNavigator) :
-      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+  if (!data.competitorId && !data.markId && !data.boatId) {
+    return false
+  }
 
-    if (data.competitorId) {
-      const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
-      const regatta = mapResToRegatta(getRegatta(data.regattaName)(getStore().getState()))
+  await dispatch(registerDevice(data.leaderboardName))
+  const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
+  if (data.competitorId) {
+    update.trackingContext = 'COMPETITOR'
+  } else if (data.boatId) {
+    update.trackingContext = 'BOAT'
+  } else if (data.markId) {
+    update.trackingContext = 'MARK'
+  }
+  await dispatch(updateCheckInAndEventInventory(update))
+  const isLogged = isLoggedIn(getState())
+  isLogged ? navigation.navigate(Screens.TrackingNavigator) :
+    navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
 
-      if (competitor && competitor.name && competitor.nationality && competitor.sailId &&
-        regatta && regatta.boatClass) {
-        // find team by name, boatClass, nationality and sailNumber
-        const existingTeam = getUserTeamByNameBoatClassNationalitySailnumber(competitor.name,
-                                                                             regatta.boatClass,
-                                                                             competitor.nationality,
-                                                                             competitor.sailId)(getStore().getState())
-        if (!existingTeam) {
-          const team = {
-            name: competitor.name,
-            nationality: competitor.nationality,
-            sailNumber: competitor.sailId,
-            boatClass: regatta.boatClass,
-          } as TeamTemplate
-          dispatch(saveTeam(team))
-        } else {
-          // TODO Attach competitor image to session
-        }
+  if (data.competitorId) {
+    const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getStore().getState()))
+    const regatta = mapResToRegatta(getRegatta(data.regattaName)(getStore().getState()))
+
+    if (competitor && competitor.name && competitor.nationality && competitor.sailId &&
+      regatta && regatta.boatClass) {
+      // find team by name, boatClass, nationality and sailNumber
+      const existingTeam = getUserTeamByNameBoatClassNationalitySailnumber(competitor.name,
+                                                                           regatta.boatClass,
+                                                                           competitor.nationality,
+                                                                           competitor.sailId)(getStore().getState())
+      if (!existingTeam) {
+        const team = {
+          name: competitor.name,
+          nationality: competitor.nationality,
+          sailNumber: competitor.sailId,
+          boatClass: regatta.boatClass,
+        } as TeamTemplate
+        dispatch(saveTeam(team))
+      } else {
+        // TODO Attach competitor image to session
       }
     }
   }
-  if (!data.competitorId && !data.markId && !data.boatId) {
-    navigation.navigate(Screens.EditCompetitor, { data })
-  }
+
+  return true
 }
 
 export const registerDevice = (leaderboardName: string, data?: Object) => withDataApi({ leaderboard: leaderboardName })(
@@ -283,9 +280,7 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
-    const activeCheckIns = getActiveCheckInEntity(getState()) || {}
-    const alreadyJoined = isEventAlreadyJoined(sessionCheckIn, activeCheckIns)
-    navigation.navigate(Screens.JoinRegatta, { data: { checkInData: sessionCheckIn, alreadyJoined } })
+    navigation.navigate(Screens.JoinRegatta, { data: sessionCheckIn })
   } catch (err) {
     Logger.debug(err)
     error = err

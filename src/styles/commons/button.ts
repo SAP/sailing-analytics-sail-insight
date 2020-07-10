@@ -1,7 +1,12 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
+import { sanFranciscoSpacing } from 'react-native-typography'
+
+import { isPlatformAndroid } from 'environment'
+
+import { $siHeavyFontStack, $siSemiboldFontStack } from 'styles/fonts'
 import { withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
-export default EStyleSheet.create({
+const oldButtonStyles = {
   $textButtonTextColor: '$primaryButtonColor',
   $textButtonTextFontSize: '$largeFontSize',
   $actionIconSizeAddition: '$microSpacing*2',
@@ -93,5 +98,74 @@ export default EStyleSheet.create({
     tintColor:   '$secondaryButtonColor',
     marginRight: '$smallSpacing',
     marginTop:   '$baseSpacing',
-  },
+  }
+}
+
+const defaultButton = {
+    width: '80%',
+    height: '$siBaseSpacing * 7',
+    marginBottom: '$siBaseSpacing',
+    borderRadius: '$siBorderRadius'
+}
+
+const defaultButtonText = Object.assign({
+    color: '$siWhite',
+    fontSize: 24,
+    paddingHorizontal: '$siGutter / 2',
+    ...$siHeavyFontStack,
+}, isPlatformAndroid ? {} : {
+    letterSpacing: sanFranciscoSpacing(24),
 })
+
+export default EStyleSheet.create({
+
+    // Keep these around for now
+    ...oldButtonStyles,
+
+    // Width modifiers
+    fullWidth: {
+        ...defaultButton,
+        width: '100%',
+    },
+    shrinkWrapped: {
+        ...defaultButton
+    },
+
+    // Importance
+    primary: {
+        ...defaultButton,
+        backgroundColor: '$siSapYellow'
+    },
+    primaryText: { 
+        ...defaultButtonText
+    },
+    secondary: {
+        ...defaultButton,
+        backgroundColor: '$siTransparent',
+        borderColor: '$siWhite',
+        borderWidth: 1,
+    },
+    secondaryText: {
+        ...defaultButtonText
+    },
+    secondaryInverted: {
+        ...defaultButton,
+        backgroundColor: '$siWhite',
+    },
+    secondaryTextInverted: {
+        ...defaultButtonText,
+        color: '$siDarkerBlue'
+    },
+
+    // Icons, header buttons etc.
+    headerTextButton: Object.assign({
+        color: '$siWhite',
+        ...$siSemiboldFontStack,
+        fontSize: 17,
+        lineHeight:20,
+        paddingHorizontal: 16
+    }, isPlatformAndroid ? {} : {
+        letterSpacing: sanFranciscoSpacing(17),
+    })
+})
+  

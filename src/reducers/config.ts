@@ -21,6 +21,7 @@ export interface RootState {
   markInventory?: any,
   permissions?: any,
   communications?: any | CommunicationsReducerState,
+  appState?: any | AppReducerState,
 }
 
 
@@ -91,6 +92,7 @@ export interface EventState {
   isSelectingEvent: boolean
   isStartingTracking: boolean
   isLoadingEventList: boolean
+  isPollingEvent: boolean
 }
 
 export interface CheckInState {
@@ -120,4 +122,8 @@ export interface CommunicationsReducerState {
   startLineCourse: object
   expeditionMessages: any[]
   expeditionMessagesLimit: number
+}
+
+export interface AppReducerState {
+  active: boolean
 }
