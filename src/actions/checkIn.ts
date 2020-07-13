@@ -1,7 +1,7 @@
 import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
-import { always, applySpec, compose, defaultTo, filter, findLast, has, isNil,
+import { always, applySpec, compose, concat, defaultTo, filter, findLast, has, isNil,
   map, pick, prop, propEq, reject, toPairs } from 'ramda'
 
 import { dataApi } from 'api'
@@ -10,7 +10,7 @@ import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
 import * as Screens from 'navigation/Screens'
 
-import { ActionQueue, fetchEntityAction, withDataApi } from 'helpers/actions'
+import { fetchEntityAction, withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
@@ -47,11 +47,17 @@ export const saveCheckInToEventInventory = async (checkInData: any) => {
   const deviceId = CheckInService.getDeviceId()
   const api = dataApi()
 
-  const trackedElements = compose(
+  const thisDeviceTrackedElements = compose(
     map(([idType, id]) => ({ deviceId, [idType]: id })),
     toPairs,
     reject(isNil),
     pick(['competitorId', 'markId', 'boatId'])
+  )(checkInData)
+
+  const trackedElements = compose(
+    concat(thisDeviceTrackedElements),
+    defaultTo([]),
+    prop('trackedElements')
   )(checkInData)
 
   // Defaults to false
@@ -104,27 +110,39 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
       regattaName,
       serverUrl,
       secret,
+      trackedElements = []
     } = checkInData
 
-    const queue = ActionQueue.create(dispatch, [
-      ...spreadableList(eventId, fetchEvent(dataApi.requestEvent)(eventId, secret)),
-      fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName, secret),
-      fetchRegatta(regattaName, secret, serverUrl),
-      fetchAllRaces(regattaName, secret, serverUrl),
-      ...spreadableList(competitorId, ActionQueue.createItem(
-        fetchEntityAction(dataApi.requestCompetitor)(leaderboardName, competitorId, secret),
-        { ignoreException: true },
-      )),
-      ...spreadableList(markId, ActionQueue.createItem(
-        fetchEntityAction(dataApi.requestMark)(leaderboardName, markId, secret),
-        { ignoreException: true },
-      )),
-      ...spreadableList(boatId, ActionQueue.createItem(
-        fetchEntityAction(dataApi.requestBoat)(leaderboardName, boatId, secret),
-        { ignoreException: true },
-      )),
+    const fetchBoundObject = objectId => {
+      const action = async (id, apiMethod) => {
+        try {
+          return await dispatch(fetchEntityAction(apiMethod)(leaderboardName, id, secret))
+        } catch (err) {} // ignore exceptions like in the actionQueue
+      }
+
+      if (objectId.competitorId) {
+        return action(objectId.competitorId, dataApi.requestCompetitor)
+      }
+      if (objectId.markId) {
+        return action(objectId.markId, dataApi.requestMark)
+      }
+      if (objectId.boatId) {
+        return action(objectId.boatId, dataApi.requestBoat)
+      }
+    }
+
+    const fetchTrackedElementsObjects = trackedElements.map(fetchBoundObject)
+
+    await Promise.all([
+      ...spreadableList(eventId, dispatch(fetchEvent(dataApi.requestEvent)(eventId, secret))),
+      dispatch(fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName, secret)),
+      dispatch(fetchRegatta(regattaName, secret, serverUrl)),
+      dispatch(fetchAllRaces(regattaName, secret, serverUrl)),
+      fetchBoundObject({ competitorId }),
+      fetchBoundObject({ boatId }),
+      fetchBoundObject({ markId }),
+      ...fetchTrackedElementsObjects
     ])
-    await queue.execute()
 
     return checkInData
   },
@@ -150,6 +168,12 @@ export const fetchEventList = () => async(dispatch, getState) => {
     filter(propEq('deviceId', deviceId)),
     prop('trackedElements')
   )
+
+  const getTrackedElementsFromDifferentDevices = compose(
+    reject(propEq('deviceId', deviceId)),
+    prop('trackedElements')
+  )
+
   const checkIns = map(applySpec({
     eventId: prop('eventId'),
     regattaName: prop('leaderboardName'),
@@ -161,6 +185,7 @@ export const fetchEventList = () => async(dispatch, getState) => {
     boatId: getLastTrackedElementOfType('boatId'),
     markId: getLastTrackedElementOfType('markId'),
     isArchived: prop('isArchived'),
+    trackedElements: getTrackedElementsFromDifferentDevices,
   }))(trackedEvents)
 
   await Promise.all(checkIns.map(async (checkIn) => {
