@@ -212,7 +212,6 @@ export const createUserAttachmentToSession = (
           throw err
         }
         else {
-          console.log('err: ', err)
           if (err.status && err.status === 403 &&
             err.data && typeof err.data === 'string' && err.data.startsWith('Device is already registered')) {
             // allow already joined race from the same device
