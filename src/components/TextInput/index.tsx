@@ -1,4 +1,3 @@
-import { flatten } from 'ramda'
 import { get, isEmpty } from 'lodash'
 import React from 'react'
 import {
@@ -95,22 +94,23 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
     const showEntrySecuredToggle = secureTextEntry && !!stateText && stateText !== ''
     const showTopPlaceholder = !hideTopPlaceholder && placeholder && (!isEmpty(additionalProps.value) || isFocused)
     const assistiveText = error || hint
+    const editable = additionalProps.editable === undefined || additionalProps.editable === true
 
     return (
       <View style={[form.formTextInputWrapper]}>
         <TouchableWithoutFeedback onPress={this.onContainerPress}>
           <View style={[form.formTextInputAndLabelAndToogleButtonContainer]}>
             <View style={[form.formTextInputAndLabelContainer]}>
-              {showTopPlaceholder && <Text style={[(isFocused ? form.formTextLabelFocused : form.formTextLabel), (error ? form.formTextErrorLabel : undefined)]}>{placeholder}</Text>}
+              {showTopPlaceholder && <Text style={[(isFocused ? form.formTextLabelFocused : form.formTextLabel), (editable === false ? form.formTextLabelDisabled : undefined), (error ? form.formTextErrorLabel : undefined)]}>{placeholder}</Text>}
               <ComponentType
-                style={flatten([(isFocused ? form.formTextInputFocused : form.formTextInput), heightStyle])}
+                style={Object.assign({}, (isFocused ? form.formTextInputFocused : form.formTextInput), (editable === false ? form.formTextInputDisabled : undefined), heightStyle)}
                 onContentSizeChange={this.contentSizeChanged}
                 onChangeText={this.onChangeText}
                 ref={this.handleInputRef}
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && isEntrySecured}
-                placeholderTextColor={[error ? $siErrorRed : addOpacity($siWhite, 0.8)]}
+                placeholderTextColor={Object.assign({ color: addOpacity($siWhite, 0.8)}, (editable === false ? { color: addOpacity($siWhite, 0.5) } : undefined), (error ? { color: $siErrorRed } : undefined)).color}
                 placeholder={isFocused ? null : placeholder}
                 {...additionalProps}
                 {...maskTypeProps}
@@ -120,14 +120,22 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
               />
             </View>
             {
+              editable === false &&
+              <View
+                style={form.formTextInputIconButton}>
+                <Image
+                  style={[form.formTextInputIconButtonIcon, form.lockIcon]}
+                  source={Images.actions.lock} />
+              </View>
+            }
+            {
               showEntrySecuredToggle &&
               <TouchableOpacity
-                style={form.formTextInputToggleButton}
+                style={form.formTextInputIconButton}
                 onPress={this.entrySecuredToggled}>
                 <Image
-                  style={[(isFocused ? form.formTextInputToggleButtonIconFocused : form.formTextInputToggleButtonIcon), form.visibilityIcon]}
-                  source={isEntrySecured ? Images.actions.visibility : Images.actions.visibilityOff}
-                />
+                  style={[(isFocused ? form.formTextInputIconButtonIconFocused : form.formTextInputIconButtonIcon), form.visibilityIcon]}
+                  source={isEntrySecured ? Images.actions.visibility : Images.actions.visibilityOff} />
               </TouchableOpacity>
             }
           </View>
