@@ -104,3 +104,4 @@ const createCurrentEventRacesStatusSelector = (status: string) => createSelector
 
 export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusSelector('TRACKING')
 export const isCurrentLeaderboardFinished = createCurrentEventRacesStatusSelector('FINISHED')
+export const isLeaderboardStale = (state: any) => state.leaderboardTracking.isLeaderboardStale

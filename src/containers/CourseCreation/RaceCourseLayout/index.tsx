@@ -10,7 +10,7 @@ import {
   recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { BackHandler } from 'react-native'
+import { BackHandler, Alert } from 'react-native'
 import BackgroundGeolocation from 'react-native-background-geolocation-android'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
@@ -24,17 +24,18 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
-  isDefaultWaypointSelection } from 'selectors/course'
+  isDefaultWaypointSelection, 
+  hasEditedCourseChanged} from 'selectors/course'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { getHashedDeviceId } from 'selectors/user'
 import { coordinatesToString } from 'helpers/utils'
 import * as Screens from 'navigation/Screens'
-import TextInput from 'components/TextInput'
+import TextInputDeprecated from 'components/TextInputDeprecated'
 import SwitchSelector from 'react-native-switch-selector'
 import CheckBox from 'react-native-check-box'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
-import HeaderBackButton from 'components/HeaderBackButton'
+import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from '@react-navigation/compat'
 import styles from './styles'
@@ -64,7 +65,8 @@ const mapStateToProps = (state: any) => ifElse(
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
     marksAndMarkPropertiesOptions: getFilteredMarkPropertiesAndMarksOptionsForCourse(state),
-    sameStartFinish: hasSameStartFinish(state)
+    sameStartFinish: hasSameStartFinish(state),
+    hasCourseChanged: hasEditedCourseChanged(state)
   }))
 
 const isLoading = propEq('loading', true)
@@ -97,7 +99,8 @@ const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editin
 const nothingWhenNoShowMarkProperties = branch(compose(equals(false), prop('showMarkProperties')), nothingAsClass)
 const nothingWhenShowMarkProperties = branch(compose(equals(true), prop('showMarkProperties')), nothingAsClass)
 
-const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
+const updateSelectedPositionType = (props: any) => { props.setSelectedPositionType(isEmpty(props.selectedMarkLocation) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation) }
+const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', (props: any) => { return isEmpty(props.selectedMarkLocation) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation })
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
 const withEditingGateName = withState('editingGateName', 'setEditingGateName', false)
 const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
@@ -149,7 +152,10 @@ const GateMarkSelectorItem = Component((props: object) =>
     concat(__, nothingWhenNotSelected(arrowUp({ size: 35, iconStyle: { width: 37, height: 24 } }))),
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
-      onPress: (props: any) => props.selectMarkConfiguration(props.markConfigurationId) }),
+      onPress: (props: any) => {
+        props.selectMarkConfiguration(props.markConfigurationId) 
+        updateSelectedPositionType(props)} 
+      }),
     text({ style: styles.gateMarkSelectorText }),
     defaultTo(''),
     prop('shortName'),
@@ -361,7 +367,7 @@ const CreateNewSelector = Component((props: object) =>
 const TextInputWithLabel = Component((props: any) => compose(
   fold(props),
   view({ style: props.isShort ? { flexBasis: 10 } : { flexBasis: 50 }}),
-  concat(__, fromClass(TextInput)),
+  concat(__, fromClass(TextInputDeprecated)),
   text({ style: styles.textInputLabel, numberOfLines: 1 }))(
   props.inputLabel))
 
@@ -607,9 +613,14 @@ const WaypointsList = Component(props => {
         'M60.367 40.158L43.555.5H.755l16.826 39.658-16.826 39.8h42.8z'
       const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 37}, 47)`
       const textAnchor = isStart || isFinish ? 'start' : 'middle'
-      const onPressOut = () => waypoint.isAdd ?
-        props.addWaypoint({ index, id: uuidv4() }) :
-        props.selectWaypoint(waypoint.id)
+      const onPressOut = () => {
+        if (waypoint.isAdd) {
+          props.addWaypoint({ index, id: uuidv4() })
+        } else {
+          props.selectWaypoint(waypoint.id)
+          updateSelectedPositionType(props)
+        }
+      }
 
       return compose(
         svgGroup({
@@ -647,8 +658,18 @@ const LoadingIndicator = Component((props: any) => compose(
   text({ style: styles.loadingText }, I18n.t('caption_course_creator_loading'))))
 
 const withOnNavigationBackPress = withHandlers({
-  onNavigationBackPress: (props: any) => () => {
+  onNavigationCancelPress: (props: any) => () => {
+    if (props.hasCourseChanged) {
+      Alert.alert(I18n.t('caption_leave'), '',
+      [ { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
+      { text: I18n.t('button_no'), onPress: () => {} }])
+    } else {
+      props.navigation.goBack()
+    }
+  },
+  onNavigationSavePress: (props: any) => () => {
     props.navigateBackFromCourseCreation()
+    props.navigation.goBack()
   }
 })
 
@@ -656,15 +677,21 @@ const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
     onWillBlur: (payload: any) => {
-      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationBackPress)
+      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationCancelPress)
     },
     onWillFocus: (payload: any) => {
-      BackHandler.addEventListener('hardwareBackPress', props.onNavigationBackPress)
+      BackHandler.addEventListener('hardwareBackPress', props.onNavigationCancelPress)
       props.navigation.setOptions({
-        headerLeft: HeaderBackButton({ onPress: once(() => {
-          props.onNavigationBackPress()
-          props.navigation.goBack()
-        })})
+        headerRight: HeaderSaveTextButton({
+          onPress: () => {
+            props.onNavigationSavePress()
+          }
+        }),
+        headerLeft: HeaderCancelTextButton({
+          onPress: () => {
+            props.onNavigationCancelPress()
+          }
+        })
       })
     }
   })),

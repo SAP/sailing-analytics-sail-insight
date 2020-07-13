@@ -50,3 +50,6 @@ export const isStartingTracking = (state: any) =>
 
 export const isLoadingEventList = (state: any) =>
   !!(state.events && state.events.isLoadingEventList)
+
+export const isPollingEvent = () => (state: any) =>
+  !!(state.events && state.events.isPollingEvent)

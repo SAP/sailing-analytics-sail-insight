@@ -11,15 +11,10 @@ npm install -g react-native-cli
 ````
 
 5. Install nvm (https://github.com/creationix/nvm)
-6. use node version from .nvmrc file
-- realm which is used to store pending GPS-Fixes needs nodejs 10.14.1 to work properly at currently used version realm 2.21.0
-```
-nvm use
-```
 
 **Android**
 
-7. make sure the Android SDK and Android Studio is properly installed 
+6. make sure the Android SDK and Android Studio is properly installed 
 - if you have problems with AndroidX import than run:
 ```
 npx jetify -r
@@ -27,17 +22,17 @@ npx jetify -r
 
 **iOS**
 
-8. make sure XCode and XCode command line tools are properly installed
-9. install cocoapods (https://guides.cocoapods.org/using/getting-started.html)
+7. make sure XCode and XCode command line tools are properly installed
+8. install cocoapods (https://guides.cocoapods.org/using/getting-started.html)
 ```
 $ sudo gem install cocoapods
 ```
-10. install cocoapods
+9. install cocoapods
 ````
 cd ios
 pod install  
 ````
-11.  install node modules
+10.  install node modules
 ````
 yarn install
 ```` 

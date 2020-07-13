@@ -3,7 +3,7 @@ import EStyleSheets from 'react-native-extended-stylesheet'
 
 const windowHeight = Dimensions.get('window').height
 
-export default EStyleSheets.create({
+const oldImageStyles = {
   $tagLineHeight: 56,
   $tagLineRatio: 3.318,
   $logoSize: 80,
@@ -50,4 +50,43 @@ export default EStyleSheets.create({
     marginRight: 15,
     marginBottom: 12,
   },
+}
+
+export default EStyleSheets.create({
+
+  // Keep these around for now
+  ...oldImageStyles,
+
+  siHeaderMediumLarge: {
+    width: '100%',
+    resizeMode: 'cover',
+    height: Dimensions.get('window').height * 0.30
+  },
+
+  siHeaderLarge: {
+    width: '100%',
+    resizeMode: 'cover',
+    height: Dimensions.get('window').height * 0.39
+  },
+
+  $siLogoSize: 80,
+
+  siLogoAbsoluteLeft: {
+    width: '$siLogoSize',
+    height: '$siLogoSize',
+    resizeMode: 'contain',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    marginLeft: '$siBaseSpacing * 2',
+    marginTop: '$siBaseSpacing * 2'
+  },
+  siAbsoluteLowerRight: {
+    resizeMode: 'contain',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    marginRight: '$siBaseSpacing * 2',
+    marginBottom: '$siBaseSpacing * 2',
+  }
 })

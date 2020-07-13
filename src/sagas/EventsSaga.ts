@@ -4,8 +4,9 @@ import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
   OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
+  START_POLLING_SELECTED_EVENT, STOP_POLLING_SELECTED_EVENT,
   SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent,
-  updateSelectingEvent, updateStartingTracking } from 'actions/events'
+  updateSelectingEvent, updateStartingTracking, updateEventPollingStatus } from 'actions/events'
 import { fetchRegatta } from 'actions/regattas'
 import * as Screens from 'navigation/Screens'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
@@ -19,13 +20,16 @@ import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share } from 'react-native'
-import { all, call, put, select, takeEvery, takeLatest, take } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
-import { getSelectedEventInfo } from 'selectors/event'
+import { getSelectedEventInfo, isPollingEvent } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
+import { isAppActive } from 'selectors/appState'
 import { getRegatta, getRegattaNumberOfRaces, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { StackActions } from '@react-navigation/native'
+
+const EventPollingInterval = 15000
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -166,8 +170,6 @@ function* createEvent(payload: object) {
     numberOfRaces)
   const regatta = yield select(getRegatta(regattaName))
 
-  console.log('create event', payload)
-
   yield call(api.updateRegatta, regattaName, {
     controlTrackingFromStartAndFinishTimes: true,
     useStartTimeInference: false,
@@ -290,6 +292,36 @@ function* stopTracking({ payload }: any) {
   }
 }
 
+function* handleSelectedEventPolling() {
+  let isPolling = yield select(isPollingEvent())
+  if (!isPolling) {
+    isPolling = true
+    yield put(updateEventPollingStatus(true))
+
+    while (true && isPolling)
+    {
+      const isForeground = yield select(isAppActive())
+      if (isForeground) {
+        const eventData = yield select(getSelectedEventInfo)
+        const { regattaName, secret, serverUrl } = eventData
+        yield put(fetchRegatta(regattaName, secret, serverUrl))
+        yield put(fetchRacesTimesForEvent(eventData))
+      }
+
+      yield delay(EventPollingInterval)
+      isPolling = yield select(isPollingEvent())
+    }
+  }
+}
+
+function* startPollingSelectedEvent() {
+  yield call(handleSelectedEventPolling)
+}
+
+function* stopPollingSelectedEvent() {
+  yield put(updateEventPollingStatus(false))
+}
+
 export default function* watchEvents() {
     yield takeLatest(SELECT_EVENT, selectEventSaga)
     yield takeLatest(FETCH_RACES_TIMES_FOR_EVENT, fetchRacesTimesForCurrentEvent)
@@ -303,4 +335,6 @@ export default function* watchEvents() {
     yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
     yield takeLatest(START_TRACKING, startTracking)
     yield takeLatest(STOP_TRACKING, stopTracking)
+    yield takeLatest(START_POLLING_SELECTED_EVENT, startPollingSelectedEvent)
+    yield takeLatest(STOP_POLLING_SELECTED_EVENT, stopPollingSelectedEvent)
 }

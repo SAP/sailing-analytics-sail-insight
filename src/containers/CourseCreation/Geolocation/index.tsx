@@ -1,7 +1,7 @@
 import { __, compose, concat, reduce, merge, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
   defaultTo, pick, head, tap, of, flatten, init, nth, map, last, negate,
-  equals, reject, all } from 'ramda'
+  equals, reject, all, not } from 'ramda'
 
 import MapView, { Marker } from 'react-native-maps'
 
@@ -10,22 +10,83 @@ import {
   contramap,
   fold,
   fromClass,
+  nothingAsClass,
   nothing,
   reduxConnect as connect,
-  recomposeWithState as withState
+  recomposeWithState as withState,
+  recomposeBranch as branch,
+  recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 
 import { getMarkPositionsExceptCurrent } from 'selectors/course'
 import { updateMarkConfigurationLocation } from 'actions/courses'
 import { view, text } from 'components/fp/react-native'
-import TextInput from 'components/TextInput'
+import TextInputDeprecated from 'components/TextInputDeprecated'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import styles from './styles'
-import { Switch, Platform } from 'react-native'
+import { Switch, Platform, Alert } from 'react-native'
 import { NavigationEvents } from '@react-navigation/compat'
 import { dd2ddm, ddm2dd } from 'helpers/utils'
 import { $Orange, $primaryBackgroundColor, $secondaryBackgroundColor } from 'styles/colors'
+import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
+import I18n from 'i18n'
+
+const hasNoPadding = propEq('mapOffset', 0)
+const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
+
+const trimCoordinates = (coordinate: any) => 
+  coordinate.toFixed(7)
+
+const withNavigationHandlers = withHandlers({
+  onNavigationCancelPress: (props: any) => () => {
+
+    // truncate to 7 significant digits
+    // same coordinates may differ after region is set resulting in incorrect alert shown
+    const coordinatesChanged = compose(
+      not,
+      equals(compose(map(trimCoordinates), reject(isNil), pick(['latitude', 'longitude']), defaultTo({}))(props.region)),
+      map(trimCoordinates),
+      reject(isNil),
+      markPositionToMapPosition,
+      pick(['latitude_deg', 'longitude_deg']),
+      defaultTo({})
+      )(props.markPosition)
+
+    if (coordinatesChanged) {
+      Alert.alert(I18n.t('caption_leave'), '',
+      [ { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
+      { text: I18n.t('button_no'), onPress: () => {} }])
+    } else {
+      props.navigation.goBack()
+    }
+  },
+  onNavigationSavePress: (props: any) => () => {
+    props.updateMarkConfigurationLocation({
+      id: props.selectedMarkConfiguration,
+      value: pick(['latitude', 'longitude'], props.region)
+    })
+    props.navigation.goBack()
+  }
+})
+
+// get height of coordinates input
+// use calculated height (half input height + half marker icon height + bottom spacing) to offset marker icon on map so that it looks centered
+// in the remaining space
+// use calculated height to add map padding to show marker on right coordinates
+const onCoordinatesLayout = (props: any, { nativeEvent }: any = {}) => {
+  if (
+    !nativeEvent ||
+    !nativeEvent.layout ||
+    !nativeEvent.layout.height === undefined ||
+    nativeEvent.layout.x === undefined
+  ) {
+    return
+  }
+  const heightInput = nativeEvent.layout.height + nativeEvent.layout.x
+  const offset = heightInput / 2 + 53 + 26.5
+  props.setMapOffset(offset)
+}
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -66,10 +127,11 @@ const defaultProps = (props) => ({
 
 const withRegion = withState('region', 'setRegion', prop('region'))
 const withInitialRender = withState('initialRender', 'setInitialRender', true)
+const withMapOffset = withState('mapOffset', 'setMapOffset', 0)
 
 const centeredMarker = Component(props => compose(
   fold(props),
-  view({ style: styles.markerContainer }))(
+  view({ style: [styles.markerContainer, { paddingTop: props.mapOffset }] }))(
   markerIcon))
 
 const Map = Component((props: any) => compose(
@@ -79,6 +141,7 @@ const Map = Component((props: any) => compose(
     fromClass(MapView).contramap(always({
       ...(props.initialRender && { region: props.region }),
       style: styles.map,
+      mapPadding: {top: props.mapOffset, right: 0, bottom: 0, left: 0},
       mapType: 'satellite',
       children: map(marker.fold, props.otherMarksPositions),
       onRegionChange: region => {
@@ -90,10 +153,20 @@ const Map = Component((props: any) => compose(
 const navigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: (payload: any) => (!payload || !payload.state) && props.updateMarkConfigurationLocation({
-      id: props.selectedMarkConfiguration,
-      value: pick(['latitude', 'longitude'], props.region)
-    })
+    onWillFocus: (payload: any) => {
+      props.navigation.setOptions({
+        headerRight: HeaderSaveTextButton({
+          onPress: () => {
+            props.onNavigationSavePress()
+          }
+        }),
+        headerLeft: HeaderCancelTextButton({
+          onPress: () => {
+            props.onNavigationCancelPress()
+          }
+        })
+      })
+    }
   })),
   fromClass)(
   NavigationEvents))
@@ -109,7 +182,7 @@ const textInput = Component(props => compose(
     keyboardType: 'decimal-pad',
     returnKeyType: 'done'
   })))(
-  fromClass(TextInput)))
+  fromClass(TextInputDeprecated)))
 
 const switchSelector = Component(props => compose(
   fold(props),
@@ -203,15 +276,22 @@ const longitudeInput = coordinatesInput.contramap(props => merge({
     pick(['latitude', 'longitude']))(props.region),
   switchLabels: ['W', 'E'] }, props))
 
+const coordinatesContainer = Component((props: any) => compose(
+    fold(props),
+    view({ style: styles.coordinatesModalContainer, onLayout: (nativeEvent: any) => onCoordinatesLayout(props, nativeEvent) }),
+    reduce(concat, nothing()))([
+      longitudeInput,  
+      latitudeInput
+    ]))
+
 export default Component((props: object) =>
   compose(
     fold(defaultProps(props)),
     connect(mapStateToProps, { updateMarkConfigurationLocation }),
     withInitialRender,
     withRegion,
+    withMapOffset,
+    withNavigationHandlers,
     concat(navigationBackHandler),
-    concat(Map),
-    view({ style: styles.coordinatesModalContainer }),
-    reduce(concat, nothing()))([
-    latitudeInput,
-    longitudeInput]))
+    concat(nothingWhenNoPadding(Map)),
+    )(coordinatesContainer))

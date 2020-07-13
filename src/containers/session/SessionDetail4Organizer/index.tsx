@@ -5,6 +5,7 @@ import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { fetchLeaderboardV2 } from 'actions/leaderboards'
 import { stopTracking } from 'actions/events'
+import { startTracking } from 'actions/tracking'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
@@ -28,6 +29,7 @@ import {
   competitorList,
   withCompetitorListState,
   competitorListRefreshHandler,
+  startTrackingButton
 } from '../../session/common'
 import { getLastPlannedRaceTime, getRegattaPlannedRaces } from 'selectors/regatta'
 import { getRaceTime } from 'selectors/event'
@@ -54,6 +56,9 @@ const mapStateToProps = (state: any, props: any) => {
   const isBeforeLastPlannedRaceStartTime = lastPlannedRaceTime
     ? Date.now() < lastPlannedRaceTime
     : true
+
+  const isBeforeEventStartTime =
+    (sessionData.session?.event?.startDate || new Date(0)) > Date.now()
 
   return {
     ...sessionData,
@@ -125,6 +130,7 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
       I18n.t('text_invite_competitors_long_text_planning')),
     nothingWhenFinished(inviteCompetitorsButton),
     nothingWhenFinished(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton)),
+    startTrackingButton,
     nothingWhenFinished(qrCode),
     competitorList
   ]))
@@ -144,10 +150,11 @@ export const endEventCard = Component((props: any) => compose(
     },text({}, I18n.t('caption_end_event').toUpperCase())))
   ]))
 
+
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
     connect(mapStateToProps, {
-      checkOut, stopTracking, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2
+      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2
     }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
@@ -158,5 +165,5 @@ export default Component((props: any) => compose(
     sessionDetailsCard,
     defineRacesCard,
     inviteCompetitorsCard,
-    nothingWhenFinished(nothingWhenBeforeLastPlannedRaceStartTime(endEventCard))
+    nothingWhenFinished(nothingWhenBeforeLastPlannedRaceStartTime(endEventCard)),
   ]))

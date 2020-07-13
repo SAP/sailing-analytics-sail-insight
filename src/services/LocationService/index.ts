@@ -10,6 +10,7 @@ import { getDeviceId } from 'selectors/user'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getStore } from 'store'
 import { getDataApiGenerator } from 'api/config'
+import { keepCommunicationAlive } from 'actions/communications'
 
 const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
@@ -27,6 +28,7 @@ const config: Config = {
   heartbeatInterval: 1, // in seconds
   disableStopDetection: true,
   stopOnStationary: false,
+  foregroundService: true,
   // debug
   debug: false,
   // debug: __DEV__,
@@ -59,6 +61,8 @@ export const registerEvents = () => {
   BackgroundGeolocation.on(LOCATION_KEY, async (location: any) => {
     // Log('Location:', location)
     await handleGeolocation(location)
+
+    keepCommunicationAlive()
   })
 
   BackgroundGeolocation.on(HEARTBEAT_KEY, async (params: any) => {

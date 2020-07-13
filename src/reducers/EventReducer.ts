@@ -11,6 +11,7 @@ import {
   updateCreatingEvent,
   updateSelectingEvent,
   updateStartingTracking,
+  updateEventPollingStatus,
 } from "actions/events";
 import { EventFilter } from 'models/EventFilter'
 import { path } from 'ramda'
@@ -26,6 +27,7 @@ const initialState: EventState = {
   isSelectingEvent: false,
   isStartingTracking: false,
   isLoadingEventList: false,
+  isPollingEvent: false,
 } as EventState
 
 const reducer = handleActions(
@@ -94,6 +96,7 @@ const reducer = handleActions(
     [updateSelectingEvent as any]: itemUpdateHandler('isSelectingEvent'),
     [updateStartingTracking as any]: itemUpdateHandler('isStartingTracking'),
     [updateLoadingEventList as any]: itemUpdateHandler('isLoadingEventList'),
+    [updateEventPollingStatus as any]: itemUpdateHandler('isPollingEvent'),
   },
   initialState,
 )

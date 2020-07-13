@@ -1,4 +1,3 @@
-import { flatten } from 'ramda'
 import { get, isEmpty } from 'lodash'
 import React from 'react'
 import {
@@ -11,15 +10,15 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native'
-import {  TextInputMask } from 'react-native-masked-text'
+import { TextInputMask } from 'react-native-masked-text'
 
 import Images from '@assets/Images'
 
 import Text from 'components/Text'
 
-import { $importantHighlightColor, $secondaryTextColor } from 'styles/colors'
-import { text } from 'styles/commons'
-import styles, { DEFAULT_BAR_HEIGHT } from './styles'
+import { $siErrorRed, $siWhite } from 'styles/colors'
+import { form } from 'styles/commons'
+import { addOpacity } from 'helpers/color'
 
 
 export interface TextInputProps {
@@ -35,12 +34,13 @@ export interface TextInputProps {
   containerStyle?: ViewStyle
   highlight?: boolean
   hideTopPlaceholder: boolean
+  onBlurWithoutText: boolean
 }
 
 class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInputProps> {
 
   public state = {
-    text: this.props.value || '',
+    text: this.props.value || '',
     height: 0,
     isEntrySecured: true,
     isFocused: false,
@@ -68,10 +68,14 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
       style,
       containerStyle,
       highlight,
+      onBlurWithoutText,
+      editable = true,
       ...additionalProps
     } = this.props
 
     const { height, isFocused, text: stateText, isEntrySecured } = this.state
+
+    const DEFAULT_BAR_HEIGHT = 30
 
     const heightStyle = autoGrow && {
       height: Math.max(
@@ -91,33 +95,24 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
     const showEntrySecuredToggle = secureTextEntry && !!stateText && stateText !== ''
     const showTopPlaceholder = !hideTopPlaceholder && placeholder && (!isEmpty(additionalProps.value) || isFocused)
     const assistiveText = error || hint
-    const isHighlighted = error || highlight
-    const highlightStyle = isHighlighted ? text.error : undefined
-    
+
     return (
-      <View style={style}>
-        <TouchableWithoutFeedback
-          onPress={this.onContainerPress}
-        >
-          <View style={[styles.container, containerStyle]}>
-            <View
-              style={[
-                showTopPlaceholder ? styles.containerWithTitle : styles.containerNoTitle,
-                styles.inputContainer,
-                additionalProps.inputContainerStyle
-              ]}
-            >
-              {showTopPlaceholder && <Text style={[styles.title, highlightStyle]}>{placeholder}</Text>}
+      <View style={[form.formTextInputWrapper]}>
+        <TouchableWithoutFeedback onPress={this.onContainerPress}>
+          <View style={[form.formTextInputAndLabelAndToogleButtonContainer]}>
+            <View style={[form.formTextInputAndLabelContainer]}>
+              {showTopPlaceholder && <Text style={[(isFocused ? form.formTextLabelFocused : form.formTextLabel), (editable === false ? form.formTextLabelDisabled : undefined), (error ? form.formTextErrorLabel : undefined)]}>{placeholder}</Text>}
               <ComponentType
-                style={flatten([styles.input, heightStyle, additionalProps.inputStyle])}
+                style={Object.assign({}, (isFocused ? form.formTextInputFocused : form.formTextInput), (editable === false ? form.formTextInputDisabled : undefined), heightStyle)}
                 onContentSizeChange={this.contentSizeChanged}
                 onChangeText={this.onChangeText}
                 ref={this.handleInputRef}
                 underlineColorAndroid="transparent"
                 multiline={multiline || autoGrow}
                 secureTextEntry={secureTextEntry && isEntrySecured}
-                placeholderTextColor={isHighlighted ? $importantHighlightColor : containerStyle && containerStyle.backgroundColor == 'transparent' ? $secondaryTextColor : '#000000'}
+                placeholderTextColor={Object.assign({ color: addOpacity($siWhite, 0.8)}, (editable === false ? { color: addOpacity($siWhite, 0.5) } : undefined), (error ? { color: $siErrorRed } : undefined)).color}
                 placeholder={isFocused ? null : placeholder}
+                editable={editable}
                 {...additionalProps}
                 {...maskTypeProps}
                 value={stateText}
@@ -126,22 +121,28 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
               />
             </View>
             {
+              editable === false &&
+              <View
+                style={form.formTextInputIconButton}>
+                <Image
+                  style={[form.formTextInputIconButtonIcon, form.lockIcon]}
+                  source={Images.actions.lock} />
+              </View>
+            }
+            {
               showEntrySecuredToggle &&
               <TouchableOpacity
-                style={styles.securedToggleBtn}
-                onPress={this.entrySecuredToggled}
-              >
+                style={form.formTextInputIconButton}
+                onPress={this.entrySecuredToggled}>
                 <Image
-                  style={styles.visibilityIcon}
-                  source={isEntrySecured ? Images.actions.visibility : Images.actions.visibilityOff}
-                />
+                  style={[(isFocused ? form.formTextInputIconButtonIconFocused : form.formTextInputIconButtonIcon), form.visibilityIcon]}
+                  source={isEntrySecured ? Images.actions.visibility : Images.actions.visibilityOff} />
               </TouchableOpacity>
             }
           </View>
         </TouchableWithoutFeedback>
-        {assistiveText && <Text style={[text.assistiveText, highlightStyle]}>{assistiveText}</Text>}
+        {assistiveText && <Text style={[(isFocused ? form.formTextInputAssitiveTextFocused : form.formTextInputAssitiveText), (error ? form.formTextInputAssitiveTextError : undefined)]}>{assistiveText}</Text>}
       </View>
-
     )
   }
 
@@ -155,7 +156,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
 
   protected handleInputRef = (ref: any) => {
     const { maskType, inputRef } = this.props
-    this.input = maskType ? get(ref, 'refs.$input-text') || ref : ref
+    this.input = maskType ? get(ref, 'refs.$input-text') || ref : ref
     return inputRef && inputRef(this.input)
   }
 
@@ -176,7 +177,13 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
   }
 
   protected handleInputBlur = () => {
-    if (this.props.onBlur) { this.props.onBlur(this.state.text) }
+    if (this.props.onBlur) {
+      if (this.props.onBlurWithoutText) {
+        this.props.onBlur()
+      } else {
+        this.props.onBlur(this.state.text)
+      }
+    }
     this.setState({ isFocused: false })
   }
 }

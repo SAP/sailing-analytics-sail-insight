@@ -1,20 +1,13 @@
-import { Platform } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
 
+import { $siShadow } from 'styles/colors'
 
 export default EStyleSheets.create({
   back: {
-    padding: '$tinySpacing',
+    paddingHorizontal: '$siGutter',
+    paddingVertical: '$siBaseSpacing',
   },
-  elevation: Platform.select({
-    ios: {
-      shadowColor: '#000',
-      shadowOffset: { width: 1, height: 1 },
-      shadowOpacity: 0.8,
-      shadowRadius: 1,
-    },
-    android: {
-      elevation: 1,
-    },
-  }),
+  elevation: {
+    ...$siShadow
+  }
 })

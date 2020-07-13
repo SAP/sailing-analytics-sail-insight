@@ -18,7 +18,6 @@ import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 
 
 export const startLocationUpdates = (
-  bulkTransfer: boolean,
   leaderboardName: string,
   eventId?: string,
   verboseLogging?: boolean,
@@ -82,4 +81,3 @@ export const initLocationUpdates = () => async (dispatch: DispatchType) => {
   LocationService.LocationTrackingStatus.STOPPED
   dispatch(updateTrackingStatus(status))
 }
-

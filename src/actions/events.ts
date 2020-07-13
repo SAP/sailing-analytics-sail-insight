@@ -19,6 +19,9 @@ export const CREATE_EVENT = 'CREATE_EVENT'
 export const UPDATE_CREATING_EVENT = 'UPDATE_CREATING_EVENT'
 export const UPDATE_LOADING_EVENT_LIST = 'UPDATE_LOADING_EVENT_LIST'
 export const UPDATE_SELECTING_EVENT = 'UPDATE_SELECTING_EVENT'
+export const START_POLLING_SELECTED_EVENT = 'START_POLLING_SELECTED_EVENT'
+export const STOP_POLLING_SELECTED_EVENT = 'STOP_POLLING_SELECTED_EVENT'
+export const UPDATE_EVENT_POLLING_STATUS = 'UPDATE_EVENT_POLLING_STATUS'
 export const UPDATE_STARTING_TRACKING = 'UPDATE_STARTING_TRACKING'
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
@@ -77,7 +80,7 @@ const createEvent = (eventData: EventCreationData) => async () => {
         ? eventData.boatClass
         : null,
   } as CreateEventBody)
-  console.log('create event response', response)
+
   return eventCreationResponseToCheckIn(response, {
     secret,
     trackPrefix: 'R',
@@ -130,6 +133,9 @@ export const updateEventSettings = (session: object, data: object) => (dispatch:
 export const updateCreatingEvent = createAction(UPDATE_CREATING_EVENT)
 export const updateLoadingEventList = createAction(UPDATE_LOADING_EVENT_LIST)
 export const updateSelectingEvent = createAction(UPDATE_SELECTING_EVENT)
+export const startPollingSelectedEvent = createAction(START_POLLING_SELECTED_EVENT)
+export const stopPollingSelectedEvent = createAction(STOP_POLLING_SELECTED_EVENT)
+export const updateEventPollingStatus = createAction(UPDATE_EVENT_POLLING_STATUS)
 export const updateStartingTracking = createAction(UPDATE_STARTING_TRACKING)
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)

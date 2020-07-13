@@ -10,6 +10,7 @@ import {
   START_UPDATE_START_LINE_FOR_CURRENT_COURSE,
   STOP_UPDATE_START_LINE_FOR_CURRENT_COURSE,
   FETCH_START_LINE_FOR_CURRENT_COURSE,
+  KEEP_COMMUNICATION_ALIVE,
   updateExpeditionCommunicationMessages,
   resetExpeditionCommunicationMessages,
   fetchCommunicationState,
@@ -25,7 +26,7 @@ import {
 } from 'actions/communications'
 import { getMarkPositionsForCourse, getServerIP, getServerPort, getStartLine, getStartLinePollingStatus, getStartLineCourse } from 'selectors/communications'
 import { getCommunicationSetting } from 'selectors/settings'
-import { getServerState, sendStartLine, setServerState } from 'services/CommunicationService'
+import { getServerState, sendStartLine, setServerState, keepServerAlive } from 'services/CommunicationService'
 
 import { NetworkInfo } from 'react-native-network-info'
 import { takeLatest, all, call, put, select, take, delay } from 'redux-saga/effects'
@@ -36,6 +37,7 @@ import { NativeEventEmitter, NativeModules } from 'react-native'
 
 const Server1Port = 8001
 const StartLinePollingInterval = 5000
+const CommunicationChannelPollingInterval = 200
 
 function getNetworkPromise() {
   return NetworkInfo.getIPV4Address()
@@ -197,6 +199,7 @@ function* handleExpeditionCommunicationMessages(shouldClearPreviousData: boolean
       const expeditionEvent = yield take(expeditionCommunicationChannel)
       const key = 'timestamp'
       expeditionEvent[key] = Date.now()
+      yield delay(CommunicationChannelPollingInterval)
       yield put(updateExpeditionCommunicationMessages(expeditionEvent))
     }
   } finally {
@@ -230,6 +233,14 @@ function* resetCommunicationChannelSaga() {
   }
 }
 
+function *keepCommunicationAliveSaga() {
+  const communicationEnabled = yield select(getCommunicationSetting)
+
+  if (communicationEnabled) {
+    keepServerAlive()
+  }
+}
+
 export default function* watchCommunications() {
   yield all([
     takeLatest(UPDATE_START_LINE, updateStartLineSaga),
@@ -243,5 +254,6 @@ export default function* watchCommunications() {
     takeLatest(START_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, startCommunicationChannelSaga),
     takeLatest(STOP_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, stopCommunicationChannel),
     takeLatest(RESET_EXPEDITION_COMMUNICATION_MESSAGES_CHANNEL, resetCommunicationChannelSaga),
+    takeLatest(KEEP_COMMUNICATION_ALIVE, keepCommunicationAliveSaga),
   ])
 }

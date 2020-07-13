@@ -9,9 +9,8 @@ import Images from '@assets/Images'
 import Image from 'components/Image'
 import ImagePickerButton from 'components/ImagePickerButton'
 
-import { $placeholderBackgroundColor } from 'styles/colors'
 import { image } from 'styles/commons'
-import Logger from '../../../helpers/Logger'
+import { $siPlaceholderBackgroundColor } from 'styles/colors'
 
 class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
   placeholder?: any,
@@ -27,27 +26,24 @@ class FormImagePicker extends React.Component<ViewProps & WrappedFieldProps & {
     } = this.props
     // source from image picker
     const imageValue = get(input, 'value.path')
-    const placeholderStyle = !imageValue ? { backgroundColor: $placeholderBackgroundColor } : undefined
+    const placeholderStyle = !imageValue ? { backgroundColor: $siPlaceholderBackgroundColor } : undefined
 
     if (disabled) {
       return (
         <Image
-          style={[image.headerMediumLarge, placeholderStyle]}
-          source={imageValue || placeholder}
-        />
+          style={[image.siHeaderMediumLarge, placeholderStyle]}
+          source={imageValue || placeholder} />
       )
     }
 
     return (
       <Image
-        style={[image.headerMediumLarge, placeholderStyle]}
-        source={imageValue || placeholder}
-      >
-        <ImagePickerButton
-          style={[image.absoluteLowerRight]}
-          source={Images.actions.pickImage}
-          onImage={this.handleImage}
-        />
+        style={[image.siHeaderMediumLarge, placeholderStyle]}
+        source={imageValue || placeholder}>
+          <ImagePickerButton
+            style={[image.siAbsoluteLowerRight]}
+            source={Images.actions.pickImage}
+            onImage={this.handleImage} />
       </Image>
     )
   }

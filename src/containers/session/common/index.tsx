@@ -6,11 +6,11 @@ import { Component, contramap, fold, fromClass, nothing,
   recomposeWithState as withState,
   nothingAsClass,
 } from 'components/fp/component'
-import { forwardingPropsFlatList, iconText, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
+import { forwardingPropsFlatList, iconText, inlineText, text, textButton, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
 import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
-import { __, always, append, compose, concat, curry,
+import { __, always, anyPass, append, compose, concat, curry,
   equals, has, head, length, map, merge, mergeLeft, objOf,
   prepend, prop, propEq, range, reduce, reject,
   remove, sortBy, split, toString, toUpper, update, when,
@@ -21,6 +21,7 @@ import QRCode from 'react-native-qrcode-svg'
 import styles from './styles'
 import CompetitorList from '../Leaderboard/CompetitorList'
 import { NavigationEvents } from '@react-navigation/compat'
+import * as LocationService from 'services/LocationService'
 
 
 const maxNumberOfRaces = 50
@@ -230,13 +231,34 @@ export const inviteCompetitorsButton = Component(props => compose(
 export const joinAsCompetitorButton = Component(props => compose(
   fold(props),
   styledButton({
-    onPress: (props: any) => props.navigation.navigate(Screens.EditCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
+    onPress: (props: any) => props.navigation.navigate(Screens.JoinRegattaAsCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
   }),
   text({ style: styles.buttonContent }))(
   I18n.t('caption_join_as_competitor').toUpperCase()))
 
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
 const nothingIfCurrentUserIsNotCompetitor = branch(propEq('currentUserIsCompetitorForEvent', false), nothingAsClass)
+
+const nothingIfShouldntShowStartTracking = branch(
+  anyPass([propEq('isFinished', true), propEq('isBeforeEventStartTime', true)]),
+  nothingAsClass,
+)
+
+export const startTrackingButton = Component((props: any) => compose(
+  fold(props),
+  nothingIfShouldntShowStartTracking,
+  textButton({
+    onPress: async (props: any) => {
+      if (!await LocationService.isEnabled()) {
+        props.startTracking({ data: props.checkIn, navigation: props.navigation })
+      } else {
+        props.navigation.navigate(Screens.Tracking)
+      }
+    },
+    style: [styles.button, styles.trackingButton],
+    textStyle: styles.buttonContent,
+  })
+)(text({}, I18n.t('caption_start_tracking').toUpperCase())))
 
 export const competitorsCard = Component((props: any) =>
   compose(
@@ -249,6 +271,7 @@ export const competitorsCard = Component((props: any) =>
       nothingIfCurrentUserIsNotCompetitor(text({ style: styles.textLast }, I18n.t('text_user_is_competitor'))),
       inviteCompetitorsButton,
       nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton),
+      startTrackingButton,
       qrCode,
       competitorList
     ]))

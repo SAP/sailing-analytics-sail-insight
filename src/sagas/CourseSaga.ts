@@ -31,7 +31,7 @@ import { getHashedDeviceId } from 'selectors/user'
 import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
 import { getCourseById, getEditedCourse, hasSameStartFinish,
   hasEditedCourseChanged, getSelectedMarkConfiguration,
-  getMarkConfigurationById, getAllCoursesForSelectedEvent } from 'selectors/course'
+  getMarkConfigurationById } from 'selectors/course'
 import {
   getSelectedEventInfo,
   getSelectedRaceInfo
@@ -317,7 +317,6 @@ function* saveCourseFlow() {
     })
   }
 
-  const allCourses = yield select(getAllCoursesForSelectedEvent)
   const markUsedWithCurrentDeviceAsTracker = compose(
     head,
     filter(compose(find(both(
@@ -326,9 +325,8 @@ function* saveCourseFlow() {
       prop('trackingDevices'))),
     flatten,
     map(prop('markConfigurations')),
-    values,
     reject(isNil))(
-    allCourses)
+    [updatedCourse])
 
   if (markUsedWithCurrentDeviceAsTracker) {
     yield put(updateCheckInAndEventInventory({
@@ -415,26 +413,17 @@ function* toggleSameStartFinish() {
   }
 }
 
-const showSaveCourseAlert = () => new Promise((resolve, reject) =>
-  Alert.alert('Would you like to save the course?', '',
-    [ { text: 'Don\'t save', onPress: () => resolve(false) },
-      { text: 'Save', onPress: () => resolve(true) }]))
-
 function* navigateBackFromCourseCreation() {
   const hasChanged = yield select(hasEditedCourseChanged)
 
   if (!hasChanged) return
 
-  const save = yield call(showSaveCourseAlert)
+  yield call(saveCourseFlow)
 
-  if (save) {
-    yield call(saveCourseFlow)
-
-    Snackbar.show({
-      title: 'Course successfully saved',
-      duration: Snackbar.LENGTH_LONG
-    })
-  }
+  Snackbar.show({
+    title: 'Course successfully saved',
+    duration: Snackbar.LENGTH_LONG
+  })
 }
 
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {

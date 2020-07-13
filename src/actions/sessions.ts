@@ -1,7 +1,7 @@
 import { find, get, head, includes, orderBy } from 'lodash'
 import { Alert } from 'react-native'
 
-import { authApi, selfTrackingApi } from 'api'
+import { authApi, dataApi, selfTrackingApi } from 'api'
 import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
 import { ManeuverChangeItem } from 'api/endpoints/types'
@@ -105,11 +105,6 @@ export const createEvent = (session: TrackingSession, isPublic?: boolean) => asy
   )
 }
 
-export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
-  withDataApi({ leaderboard: leaderboardName })(
-    dataApi => dataApi.updateEvent(eventId, { enddateasmillis: getNowAsMillis() }),
-  )
-
 const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   const { handicapType = getDefaultHandicapType(), handicapValue = null } = competitorInfo.handicap || {}
 
@@ -120,6 +115,21 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   const timeOnTimeFactor = 100 / handicapValue
 
   return timeOnTimeFactor
+}
+
+export const updateCompetitor = (competitor: any) => {
+  const { competitorId = {} } = competitor
+
+  const updatePromise = Promise.all(Object.entries(competitorId).map(([serverUrl, id]: any) => {
+    const api = dataApi(serverUrl)
+    return api.updateCompetitor(id, {
+      name: competitor.name,
+      nationality: competitor.nationality,
+      timeOnTimeFactor: getTimeOnTimeFactor(competitor)
+    })
+  }))
+
+  return updatePromise
 }
 
 const allowReadAccessToCompetitorAndBoat = (serverUrl: string, competitorId: string, boatId: string) => {
@@ -154,19 +164,18 @@ export const createUserAttachmentToSession = (
     const user = getUserInfo(getState())
     if (
       !competitorInfo.boatClass ||
-      !competitorInfo.sailNumber ||
-      !competitorInfo.nationality
+      !competitorInfo.sailNumber
     ) {
-      throw new SessionException('user/nationality/boat data missing.')
+      throw new SessionException('user/boat data missing.')
     }
     const baseValues = {
-      competitorName: competitorInfo.teamName || competitorInfo.name,
+      competitorName: competitorInfo.name,
       competitorEmail: user && user.email,
       nationalityIOC: competitorInfo.nationality,
     }
 
     const serverUrl = getServerUrl(regattaName)(getState())
-    const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
+    const userBoat = getUserBoatByBoatName(competitorInfo.name)(getState())
     let boatId = get(userBoat, ['id', serverUrl])
     let competitorId = get(userBoat, ['competitorId', serverUrl])
 
@@ -239,8 +248,7 @@ export const createUserAttachmentToSession = (
       await dispatch(
         saveTeam(
           {
-            name: competitorInfo.teamName,
-            boatName: competitorInfo.boatName,
+            name: competitorInfo.name,
             boatClass: competitorInfo.boatClass,
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
@@ -262,20 +270,6 @@ export const createUserAttachmentToSession = (
     }
   },
 )
-
-export type CreateSessionCreationQueueAction = (session: TrackingSession, options?: {isPublic?: boolean}) => any
-export const createSessionCreationQueue: CreateSessionCreationQueueAction = (session, options) =>
-  (dispatch: DispatchType) => ActionQueue.create(
-    dispatch,
-    [
-      createEvent(session, options && options.isPublic),
-      ActionQueue.createItemUsingPreviousResult((data: CheckIn) => collectCheckInData(data)),
-      ActionQueue.createItemUsingPreviousResult((data: CheckIn) => updateCheckIn(data)),
-      // Important: TrackingSession is given as CompetitorInfo
-      createUserAttachmentToSession(session.name, session),
-      registerDevice(session.name),
-    ],
-  )
 
 export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {

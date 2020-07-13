@@ -1,26 +1,27 @@
-import EStyleSheet from 'react-native-extended-stylesheet'
+import EStyleSheets from 'react-native-extended-stylesheet'
 
-
-export default EStyleSheet.create({
-  bottomContainer: {
-    paddingTop: '$smallSpacing',
-    paddingBottom: 37,
-    paddingLeft: '$smallSpacing',
-    paddingRight: '$smallSpacing',
-  },
-  topInput: {
-    marginTop: '$smallSpacing',
-    marginBottom: '$tinySpacing',
-  },
-  inputStyle: {
-    borderBottomColor: '#FFFFFF',
-    borderBottomWidth: 1,
-  },
-  inputContainer: {
-    backgroundColor: 'transparent',
-  },
-  bottomButton: {
-    marginLeft: '$smallSpacing',
-    marginRight: '$smallSpacing',
-  },
+export default EStyleSheets.create({
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'transparent',
+        height: '100%',
+        width: '100%',
+    },
+    scrollContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '$siTransparent',
+    },
+    contentContainer: {
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    saveButton: {
+        marginTop: '$siBaseSpacing * 2',
+        marginBottom: '$siBaseSpacing * 2'
+    }
 })

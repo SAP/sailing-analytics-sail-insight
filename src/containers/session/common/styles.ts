@@ -42,6 +42,10 @@ export default EStyleSheets.create({
     fontSize: 18,
     ...withDefaultBoldFont,
   },
+  trackingButton: {
+    backgroundColor: '$Orange',
+    borderColor: '$Orange',
+  },
   container1: {
     backgroundColor: '$primaryBackgroundColor',
     paddingHorizontal: '$smallSpacing',

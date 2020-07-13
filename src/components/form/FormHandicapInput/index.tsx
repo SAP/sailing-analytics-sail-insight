@@ -59,6 +59,7 @@ class FormHandicapInput extends React.Component<
         <FormTextInput
           {...this.getHandicapValueProps()}
           keyboardType="numeric"
+          onBlurWithoutText={true}
         />
       </View>
     )

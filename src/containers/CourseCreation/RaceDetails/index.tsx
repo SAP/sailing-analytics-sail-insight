@@ -6,7 +6,8 @@ import { __, always, append, compose, concat, cond, defaultTo,
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
-import { selectRace, setRaceTime, startTracking, setDiscards, updateEventSettings } from 'actions/events'
+import { selectRace, setRaceTime, startTracking, setDiscards, updateEventSettings, startPollingSelectedEvent, stopPollingSelectedEvent } from 'actions/events'
+import { registerAppStateListeners, unregisterAppStateListeners } from 'actions/appState'
 import { openTrackDetails } from 'actions/navigation'
 import {
   Component,
@@ -16,6 +17,7 @@ import {
   nothingAsClass,
   recomposeBranch as branch,
   recomposeMapProps as mapProps,
+  recomposeLifecycle as lifeCycle,
   reduxConnect as connect,
 } from 'components/fp/component'
 import { forwardingPropsFlatList, text, touchableOpacity, view } from 'components/fp/react-native'
@@ -66,10 +68,6 @@ const nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent = branch(
   ]),
   nothingAsClass
 )
-const nothingIfCantUpdateAndNotTracking = branch(
-  (props: any) => !props.canUpdateCurrentEvent && !props.isTracking,
-  nothingAsClass
-)
 
 const nothingIfRaceTimeNotSet = branch(
   compose(
@@ -79,6 +77,25 @@ const nothingIfRaceTimeNotSet = branch(
   ),
   nothingAsClass
 )
+
+const withPollingOfEvent = compose(
+  lifeCycle({
+    componentDidMount() {
+      // add only for competitor screen
+      if (!this.props.canUpdateCurrentEvent) {
+        this.props.navigation.addListener('focus',
+          () => {
+            this.props.registerAppStateListeners()
+            this.props.startPollingSelectedEvent()
+          })
+        this.props.navigation.addListener('blur',
+          () => {
+            this.props.unregisterAppStateListeners()
+            this.props.stopPollingSelectedEvent()
+          })
+      }
+    }
+  }))
 
 const mapStateToProps = (state: any, props: any) => {
   const eventData = getSelectedEventInfo(state)
@@ -256,7 +273,6 @@ const raceItem = Component((props: object) =>
     concat(__,
       compose(
         nothingIfRaceTimeNotSet,
-        nothingIfCantUpdateAndNotTracking,
         nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent
       )(raceAnalyticsButton)
     ),
@@ -319,10 +335,13 @@ export default Component((props: Object) =>
     fold(props),
     connect(mapStateToProps, {
       selectCourse, selectRace, setRaceTime, startTracking,
-      updateEventSettings, openTrackDetails, setDiscards }, null,
+      updateEventSettings, openTrackDetails, setDiscards,
+      startPollingSelectedEvent, stopPollingSelectedEvent,
+      registerAppStateListeners, unregisterAppStateListeners }, null,
       { areStatePropsEqual: compose(
         apply(equals),
         unapply(map(dissocPath(['session', 'leaderboard'])))) }),
+    withPollingOfEvent,
     nothingIfNoSession,
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))
