@@ -1,3 +1,4 @@
+import { compose, defaultTo, pick, prop } from 'ramda'
 import React, { ChangeEvent } from 'react'
 import { Alert, KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View, ViewProps, ImageBackground } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
@@ -6,6 +7,7 @@ import { Field, reduxForm } from 'redux-form'
 import LinearGradient from 'react-native-linear-gradient'
 import { isEmpty } from 'lodash'
 
+import { updateCompetitor } from 'actions/sessions'
 import { deleteTeam, DeleteTeamAction, saveTeam, SaveTeamAction, updateTeamImage, updateTeamImageAction } from 'actions/user'
 
 import * as teamForm from 'forms/team'
@@ -198,10 +200,24 @@ class TeamDetails extends TextInputForm<Props> {
   protected onSavePress = async (values: any) => {
     try {
       this.setState({ isLoading: true })
-      const team = teamForm.teamFromFormValues(values)
-      if (!team) {
+      const teamFromFormValues = teamForm.teamFromFormValues(values)
+      if (!teamFromFormValues) {
         return false
       }
+
+      const initialTeamPreservedValues = compose(
+        pick(['id', 'competitorId', 'lastUsed']),
+        defaultTo({}),
+        prop('team')
+      )(this.props)
+
+      // Preserve some values from the initial team
+      const team = {
+        ...initialTeamPreservedValues,
+        ...teamFromFormValues
+      }
+
+      await updateCompetitor(team)
       await this.props.saveTeam(team, { replaceTeamName: this.props.paramTeamName })
       this.props.navigation.goBack()
       return true

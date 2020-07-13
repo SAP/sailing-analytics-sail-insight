@@ -1,7 +1,7 @@
 import { find, get, head, includes, orderBy } from 'lodash'
 import { Alert } from 'react-native'
 
-import { authApi, selfTrackingApi } from 'api'
+import { authApi, dataApi, selfTrackingApi } from 'api'
 import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
 import { ManeuverChangeItem } from 'api/endpoints/types'
@@ -115,6 +115,21 @@ const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
   const timeOnTimeFactor = 100 / handicapValue
 
   return timeOnTimeFactor
+}
+
+export const updateCompetitor = (competitor: any) => {
+  const { competitorId = {} } = competitor
+
+  const updatePromise = Promise.all(Object.entries(competitorId).map(([serverUrl, id]: any) => {
+    const api = dataApi(serverUrl)
+    return api.updateCompetitor(id, {
+      name: competitor.name,
+      nationality: competitor.nationality,
+      timeOnTimeFactor: getTimeOnTimeFactor(competitor)
+    })
+  }))
+
+  return updatePromise
 }
 
 const allowReadAccessToCompetitorAndBoat = (serverUrl: string, competitorId: string, boatId: string) => {
