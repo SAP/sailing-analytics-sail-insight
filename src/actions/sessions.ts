@@ -204,17 +204,31 @@ export const createUserAttachmentToSession = (
     // or if the registration of the existing one to the regatta failed
     let newCompetitorWithBoat
     if (!registrationSuccess) {
-      newCompetitorWithBoat = await dataApi.createAndAddCompetitor(regattaName, {
-        ...baseValues,
-        boatclass: competitorInfo.boatClass,
-        sailid: competitorInfo.sailNumber,
-        timeontimefactor: getTimeOnTimeFactor(competitorInfo),
-        ...(secret ? { secret } : {}),
-        ...(secret ? { deviceUuid: getDeviceId() } : {}),
-      })
+      try {
+        newCompetitorWithBoat = await dataApi.createAndAddCompetitor(regattaName, {
+          ...baseValues,
+          boatclass: competitorInfo.boatClass,
+          sailid: competitorInfo.sailNumber,
+          timeontimefactor: getTimeOnTimeFactor(competitorInfo),
+          ...(secret ? { secret } : {}),
+          ...(secret ? { deviceUuid: getDeviceId() } : {}),
+        })
 
-      competitorId = newCompetitorWithBoat.id
-      boatId = newCompetitorWithBoat.boat.id
+        competitorId = newCompetitorWithBoat.id
+        boatId = newCompetitorWithBoat.boat.id
+      } catch (err) {
+        if (!(err instanceof ApiException)) {
+          throw err
+        }
+        else {
+          if (err.status && err.status === 403 &&
+            err.data && typeof err.data === 'string' && err.data.startsWith('Device is already registered')) {
+            // allow already joined race from the same device
+          } else {
+            throw err
+          }
+        }
+      }
     }
 
     if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
