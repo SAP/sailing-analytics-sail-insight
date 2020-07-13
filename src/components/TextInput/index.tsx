@@ -69,6 +69,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
       containerStyle,
       highlight,
       onBlurWithoutText,
+      editable = true,
       ...additionalProps
     } = this.props
 
@@ -94,7 +95,6 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
     const showEntrySecuredToggle = secureTextEntry && !!stateText && stateText !== ''
     const showTopPlaceholder = !hideTopPlaceholder && placeholder && (!isEmpty(additionalProps.value) || isFocused)
     const assistiveText = error || hint
-    const editable = additionalProps.editable === undefined || additionalProps.editable === true
 
     return (
       <View style={[form.formTextInputWrapper]}>
@@ -112,6 +112,7 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
                 secureTextEntry={secureTextEntry && isEntrySecured}
                 placeholderTextColor={Object.assign({ color: addOpacity($siWhite, 0.8)}, (editable === false ? { color: addOpacity($siWhite, 0.5) } : undefined), (error ? { color: $siErrorRed } : undefined)).color}
                 placeholder={isFocused ? null : placeholder}
+                editable={editable}
                 {...additionalProps}
                 {...maskTypeProps}
                 value={stateText}

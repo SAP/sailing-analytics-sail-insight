@@ -76,6 +76,7 @@ class TeamDetails extends TextInputForm<Props> {
   public render() {
     const canSave = this.formIsSaveable() && this.formHasChanges()
     const isSaveDisabled = !canSave
+    const isEditingExistingBoat = this.props.team !== undefined
 
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
@@ -104,6 +105,7 @@ class TeamDetails extends TextInputForm<Props> {
                   inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_CLASS)}
                   onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_NATIONALITY)}
                   validate={[validateRequired]}
+                  editable={!isEditingExistingBoat}
                   {...this.commonProps} />
                 <Field
                   label={I18n.t('text_nationality')}
@@ -125,12 +127,14 @@ class TeamDetails extends TextInputForm<Props> {
                     this.props.change(teamForm.FORM_KEY_NATIONALITY, team.nationality || '')
                   }}
                   validate={[validateRequired]}
+                  editable={!isEditingExistingBoat}
                   {...this.commonProps} />
                 <Field
                   label={I18n.t('text_placeholder_boat_name')}
                   name={teamForm.FORM_KEY_BOAT_NAME}
                   component={FormTextInput}
                   inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_NAME)}
+                  editable={!isEditingExistingBoat}
                   {...this.commonProps} />
               </View>
               <View style={form.formSegment2}>
