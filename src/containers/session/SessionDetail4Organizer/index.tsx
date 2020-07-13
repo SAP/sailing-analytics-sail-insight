@@ -40,6 +40,7 @@ const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
 const nothingWhenBeforeLastPlannedRaceStartTime = branch(propEq('isBeforeLastPlannedRaceStartTime', true), nothingAsClass)
 const nothingWhenNoBoatClass = branch(compose(equals(''), prop('boatClass')), nothingAsClass)
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
+const nothingIfCurrentUserIsNotACompetitor = branch(propEq('currentUserIsCompetitorForEvent', false), nothingAsClass)
 
 const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
   fold(props),
@@ -130,7 +131,7 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
       I18n.t('text_invite_competitors_long_text_planning')),
     nothingWhenFinished(inviteCompetitorsButton),
     nothingWhenFinished(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton)),
-    startTrackingButton,
+    nothingIfCurrentUserIsNotACompetitor(startTrackingButton),
     nothingWhenFinished(qrCode),
     competitorList
   ]))
