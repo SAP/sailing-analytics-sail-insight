@@ -16,7 +16,7 @@ import {
   recomposeLifecycle as lifecycle,
   recomposeWithState as withState,
 } from 'components/fp/component'
-import { button, icon, image, text, textButton, touchableOpacity, view } from 'components/fp/react-native'
+import { button, icon, image, text, textButton, view } from 'components/fp/react-native'
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import { button as buttonStyles, container } from 'styles/commons'
 import { deleteMarkBinding } from 'actions/checkIn'
@@ -25,6 +25,7 @@ import { getMarkBindingCheckIn, getNameOfBoundMark, isDeletingMarkBinding } from
 import { getLocationStats } from 'selectors/location'
 import * as LocationService from 'services/LocationService'
 import { getUnknownErrorMessage } from 'helpers/texts'
+import { NavigationEvents } from '@react-navigation/compat'
 
 import styles, { deleteBindingColor, headerImageBackgroundColor } from './styles'
 
@@ -36,15 +37,7 @@ const mapStateToProps = (state: any) => ({
 })
 
 const nothingIfNotTracking = branch(compose(not, prop('isTracking')), nothingAsClass)
-
-const withIsTracking = compose(
-  withState('isTracking', 'setIsTracking', false),
-  lifecycle({
-    componentDidMount() {
-      LocationService.isEnabled().then(locationEnabled => this.props.setIsTracking(locationEnabled))
-    }
-  })
-)
+const withIsTracking = withState('isTracking', 'setIsTracking', false)
 
 const withKeepAwake = lifecycle({
   componentDidMount() {
@@ -136,7 +129,7 @@ const trackingButton = Component((props: any) =>
         } catch (err) {}
       } else {
         try {
-          await props.startTracking({ data: props.checkIn, navigation: props.navigation, markTracking: true })
+          await props.startTracking({ data: props.checkIn, navigation: props.navigation, useLoadingSpinner: false })
           props.setIsTracking(true)
         } catch (err) {
           Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
@@ -153,8 +146,12 @@ const connectivityIndicator = Component((props:any) => compose(
   fold(props),
   contramap(always({
     style: styles.connectivity
-  }))
-)(fromClass(ConnectivityIndicator)))
+  })))(
+  fromClass(ConnectivityIndicator)))
+
+const navigationHandler = fromClass(NavigationEvents).contramap(props => ({
+  onWillFocus: () => LocationService.isEnabled().then(props.setIsTracking)
+}))
 
 export default Component((props:any) => compose(
   fold(props),
@@ -165,6 +162,7 @@ export default Component((props:any) => compose(
   view({ style: styles.container }),
   reduce(concat, nothing())
 )([
+  navigationHandler,
   connectivityIndicator,
   markImage,
   informationDisplay,
