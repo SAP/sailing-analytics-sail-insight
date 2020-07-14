@@ -1,7 +1,7 @@
 import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
-import { always, applySpec, compose, concat, defaultTo, filter, findLast, has, isNil,
+import { always, applySpec, compose, concat, defaultTo, filter, findLast, has, head, isNil,
   map, pick, prop, propEq, reject, toPairs } from 'ramda'
 
 import { dataApi } from 'api'
@@ -15,7 +15,7 @@ import Logger from 'helpers/Logger'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
-import { spreadableList } from 'helpers/utils'
+import { alertPromise, spreadableList } from 'helpers/utils'
 
 import { fetchEvent, updateLoadingEventList } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
@@ -25,8 +25,10 @@ import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
 import { mapResToRegatta } from '../models/Regatta'
+import { getBoat } from '../selectors/boat'
 import { getCompetitor } from '../selectors/competitor'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
+import { getMark } from '../selectors/mark'
 import { getRegatta, getRegattaNumberOfRaces } from '../selectors/regatta'
 import { getUserTeamByNameBoatClassNationalitySailnumber } from '../selectors/user'
 import { getStore } from '../store'
@@ -92,6 +94,64 @@ export const updateCheckInAndEventInventory = (
 
   // Same return value as updateCheckIn
   return { payload: checkInData }
+}
+
+const checkInObjectToText = (checkInData: any) => (_, getState) => {
+  const constructString = (objectType: string, selector: any) => {
+    const obj = selector(getState())
+    const { name } = obj || {}
+    if (name) return `the ${objectType} "${name}"`
+    return `a ${objectType}`
+  }
+
+  const { competitorId, markId, boatId } = checkInData
+
+  if (competitorId) {
+    return constructString('competitor', getCompetitor(competitorId))
+  }
+
+  if (markId) {
+    return constructString('mark', getMark(markId))
+  }
+
+  if (boatId) {
+    return constructString('boat', getBoat(boatId))
+  }
+}
+
+export const reuseBindingFromOtherDevice = (
+  checkInData: CheckIn,
+  showAlert: boolean,
+) => async (dispatch, getState) => {
+  const { trackedElements = [], leaderboardName, secret, serverUrl } = checkInData
+  if (trackedElements.length === 0) return
+  const binding = head(trackedElements)
+
+  if (showAlert) {
+    const checkInText = dispatch(checkInObjectToText(binding))
+    const message = `You have already bound another device to ${checkInText} with the same account, do you want to rebind this device to it?`
+    const cancelled = !(await alertPromise('', message, I18n.t('button_yes')))
+    if (cancelled) return
+  }
+
+  const api = dataApi(serverUrl)
+
+  // Unbind the other devices
+  await Promise.all(trackedElements.map(({ deviceId, ...objectId }) => {
+    const body = CheckInService.checkoutDeviceMappingData({
+      ...objectId,
+      secret
+    }, deviceId)
+    return api.stopDeviceMapping(leaderboardName, body)
+  }))
+
+  // Bind the current device
+  const { deviceId, ...objectId } = binding
+  await api.startDeviceMapping(
+    leaderboardName,
+    CheckInService.checkInDeviceMappingData({ ...objectId, secret }),
+  )
+  await dispatch(updateCheckInAndEventInventory({ ...objectId, leaderboardName, trackedElements: [] } as CheckInUpdate))
 }
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(

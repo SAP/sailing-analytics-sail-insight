@@ -12,7 +12,7 @@ import * as Screens from 'navigation/Screens'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
 import { fetchPermissionsForEvent } from 'actions/permissions'
-import { updateCheckIn } from 'actions/checkIn'
+import { updateCheckIn, reuseBindingFromOtherDevice } from 'actions/checkIn'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import I18n from 'i18n'
@@ -20,7 +20,7 @@ import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share } from 'react-native'
-import { all, call, put, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
+import { all, call, put, putResolve, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo, isPollingEvent } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
@@ -61,8 +61,7 @@ function* selectEventSaga({ payload }: any) {
   const currentUserCanUpdateEvent = yield select(canUpdateEvent(eventData.eventId))
   const { regattaName, secret, serverUrl } = eventData
 
-  yield put(fetchRegatta(regattaName, secret, serverUrl))
-  yield put(fetchRacesTimesForEvent(eventData))
+  yield putResolve(reuseBindingFromOtherDevice(eventData, true))
 
   if (currentUserCanUpdateEvent) {
     yield call(fetchCoursesForCurrrentEvent, { payload: eventData })
