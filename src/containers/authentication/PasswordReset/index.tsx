@@ -26,16 +26,20 @@ class PasswordReset extends TextInputForm<{
     usernameOrEmail: '',
     isLoading: false,
     error: null,
+    usernameError: null,
   }
 
   public onSubmit = async () => {
+    var usernameError = null
     this.setState({ error: null })
     const { usernameOrEmail } = this.state
     if (isEmpty(usernameOrEmail)) {
+      usernameError = I18n.t('error_need_email_or_username')
+      this.setState({usernameError: usernameError})
       return
     }
     try {
-      this.setState({ isLoading: true })
+      this.setState({ isLoading: true, usernameError })
       await this.props.requestPasswordReset(usernameOrEmail)
     } catch (err) {
       // do not show any indication for error.
@@ -60,7 +64,7 @@ class PasswordReset extends TextInputForm<{
   public onUsernameOrEmailChange = (newValue: string) => this.setState({ usernameOrEmail: newValue })
 
   public render() {
-    const { error, isLoading } = this.state
+    const { usernameError, isLoading } = this.state
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
         <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.35 }}>
@@ -72,6 +76,7 @@ class PasswordReset extends TextInputForm<{
               <View style={form.formSegment1}>
                 <TextInput
                   value={this.state.usernameOrEmail}
+                  error={usernameError}
                   onChangeText={this.onUsernameOrEmailChange}
                   placeholder={I18n.t('text_placeholder_your_username_or_email')}
                   keyboardType={'default'}
