@@ -106,6 +106,8 @@ export const reuseBindingFromOtherDevice = (
   checkInData: CheckIn,
   showAlert: boolean,
 ) => async (dispatch, getState) => {
+  if (!isNetworkConnectedSelector(getState())) return
+
   const { trackedElements = [], leaderboardName, secret, serverUrl } = checkInData
   if (trackedElements.length === 0) return
   const binding = head(trackedElements)
