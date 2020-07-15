@@ -30,7 +30,8 @@ class PasswordReset extends TextInputForm<{
   }
 
   public onSubmit = async () => {
-    var usernameError = null
+    let usernameError = null
+    
     this.setState({ error: null })
     const { usernameOrEmail } = this.state
     if (isEmpty(usernameOrEmail)) {
