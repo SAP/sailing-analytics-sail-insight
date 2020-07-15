@@ -40,9 +40,15 @@ export const UPDATE_DELETING_MARK_BINDING = 'UPDATE_DELETING_MARK_BINDING'
 export const deleteMarkBinding = createAction(DELETE_MARK_BINDING)
 export const updateDeletingMarkBinding = createAction(UPDATE_DELETING_MARK_BINDING)
 
-export const updateCheckIn = createAction('UPDATE_CHECK_IN')
+export const updateCheckInAction = createAction('UPDATE_CHECK_IN')
 export const removeCheckIn = createAction('REMOVE_CHECK_IN')
 export const updateLoadingCheckInFlag = createAction('UPDATE_LOADING_CHECK_IN_FLAG')
+
+export const updateCheckIn = (checkIn: any) => async (dispatch, getState) =>
+  dispatch(updateCheckInAction({
+    joinedAnonymously: !isLoggedIn(getState()),
+    ...checkIn
+  }))
 
 export const saveCheckInToEventInventory = async (checkInData: any) => {
   const { eventId, leaderboardName, secret, serverUrl } = checkInData
