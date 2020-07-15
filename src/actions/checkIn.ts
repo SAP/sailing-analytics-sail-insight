@@ -125,7 +125,11 @@ export const reuseBindingFromOtherDevice = (
       ...objectId,
       secret
     }, deviceId)
-    return api.stopDeviceMapping(leaderboardName, body)
+    // Ignore exceptions.
+    // Getting 400s might indicate the mapping does not exist which would be safe to ignore.
+    // But to avoid main functionalities (starting to track for example) not working,
+    // because of an unexpected error thrown here when unbinding devices, we ignore exceptions.
+    return api.stopDeviceMapping(leaderboardName, body).catch(err => {})
   }))
 
   // Bind the current device
