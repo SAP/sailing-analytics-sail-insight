@@ -20,7 +20,7 @@ import { alertPromise, spreadableList } from 'helpers/utils'
 import { fetchEvent, updateLoadingEventList } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { isLoggedIn } from 'selectors/auth'
-import { getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { checkInObjectToText, getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { mapResToCompetitor } from '../models/Competitor'
@@ -96,29 +96,6 @@ export const updateCheckInAndEventInventory = (
   return { payload: checkInData }
 }
 
-const checkInObjectToText = (checkInData: any) => (_, getState) => {
-  const constructString = (objectType: string, selector: any) => {
-    const obj = selector(getState())
-    const { name } = obj || {}
-    if (name) return `the ${objectType} "${name}"`
-    return `a ${objectType}`
-  }
-
-  const { competitorId, markId, boatId } = checkInData
-
-  if (competitorId) {
-    return constructString('competitor', getCompetitor(competitorId))
-  }
-
-  if (markId) {
-    return constructString('mark', getMark(markId))
-  }
-
-  if (boatId) {
-    return constructString('boat', getBoat(boatId))
-  }
-}
-
 export const reuseBindingFromOtherDevice = (
   checkInData: CheckIn,
   showAlert: boolean,
@@ -128,7 +105,7 @@ export const reuseBindingFromOtherDevice = (
   const binding = head(trackedElements)
 
   if (showAlert) {
-    const checkInText = dispatch(checkInObjectToText(binding))
+    const checkInText = checkInObjectToText(binding)(getState())
     const message = `You have already bound another device to ${checkInText} with the same account, do you want to rebind this device to it?`
     const cancelled = !(await alertPromise('', message, I18n.t('button_yes')))
     if (cancelled) return
