@@ -255,7 +255,10 @@ class JoinRegatta extends React.Component<{
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const checkInData = getCustomScreenParamData(props)
+  const checkInData = {
+    isArchived: false,
+    ...getCustomScreenParamData(props),
+  }
   const actionType = getScreenParamsFromProps(props).actionType
 
   return {
