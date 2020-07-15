@@ -2,11 +2,11 @@ import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 import { always, applySpec, compose, defaultTo, filter, findLast, has, isNil,
-  map, pick, prop, propEq, reject, toPairs, not, is, either, both } from 'ramda'
+  map, pick, prop, propEq, reject, toPairs, is, cond, anyPass, T, F } from 'ramda'
 
 import { dataApi } from 'api'
 import ApiException from 'api/ApiException'
-import { STATUS_INTERVAL_ERROR, STATUS_NOT_FOUND } from 'api/constants'
+import { STATUS_INTERNAL_ERROR, STATUS_NOT_FOUND } from 'api/constants'
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -169,17 +169,15 @@ export const fetchEventList = () => async(dispatch, getState) => {
     try {
       await dispatch(collectCheckInData(checkIn))
     } catch (error) {
-      const isUnknownError = compose(
-        either(compose(not, is(ApiException)),
-        both(
-          compose(not, propEq('status', STATUS_INTERVAL_ERROR)), 
-          compose(not, propEq('status', STATUS_NOT_FOUND))
-          )
-        ))
-      if (isUnknownError(error)) {
+      const isKnownError = cond([
+        [anyPass([is(ApiException), propEq('status', STATUS_INTERNAL_ERROR), propEq('status', STATUS_NOT_FOUND)]), T],
+        [T, F]
+      ])
+      if (isKnownError(error)) {
+        return
+      } else {
         throw error
       }
-      return
     }
     const regatta = getRegatta(checkIn.regattaName)(getState())
     const numberOfRaces = getRegattaNumberOfRaces(regatta)
