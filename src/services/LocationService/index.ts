@@ -27,6 +27,7 @@ const config: Config = {
   stopOnTerminate: true, // Default: true. Set false to continue tracking after user teminates the app.
   heartbeatInterval: 1, // in seconds
   disableStopDetection: true,
+  pausesLocationUpdatesAutomatically: false,
   stopOnStationary: false,
   foregroundService: true,
   // debug
