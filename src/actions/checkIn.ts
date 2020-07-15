@@ -169,10 +169,7 @@ export const fetchEventList = () => async(dispatch, getState) => {
     try {
       await dispatch(collectCheckInData(checkIn))
     } catch (error) {
-      const isKnownError = cond([
-        [anyPass([is(ApiException), propEq('status', STATUS_INTERNAL_ERROR), propEq('status', STATUS_NOT_FOUND)]), T],
-        [T, F]
-      ])
+      const isKnownError = anyPass([is(ApiException), propEq('status', STATUS_INTERNAL_ERROR), propEq('status', STATUS_NOT_FOUND)])
       if (isKnownError(error)) {
         return
       } else {
