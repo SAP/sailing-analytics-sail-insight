@@ -9,7 +9,9 @@ import { competitorSchema } from 'api/schemas'
 import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
-import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
+import { CheckIn, CheckInUpdate, CompetitorInfo, TeamTemplate, TrackingSession } from 'models'
+import { mapResToCompetitor } from 'models/Competitor'
+import { mapResToRegatta } from 'models/Regatta'
 import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
@@ -19,6 +21,7 @@ import { addUserPrefix } from 'services/SessionService'
 import SessionException from 'services/SessionService/SessionException'
 
 import { ActionQueue, withDataApi } from 'helpers/actions'
+import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { getNowAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
@@ -36,8 +39,10 @@ import { selectEvent } from 'actions/events'
 import { saveTeam } from 'actions/user'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
+import { getCompetitor } from '../selectors/competitor'
 import { getLocationTrackingStatus } from 'selectors/location'
-import { getUserBoatByBoatName } from 'selectors/user'
+import { getUserBoatByBoatName, getUserTeamByNameBoatClassNationalitySailnumber } from 'selectors/user'
+import { getRegatta } from '../selectors/regatta'
 
 export const shareSession = (checkIn: CheckIn) => async () => {
   if (!checkIn || !checkIn.leaderboardName || !checkIn.eventId || !checkIn.secret) {
@@ -271,12 +276,56 @@ export const createUserAttachmentToSession = (
   },
 )
 
+const useBindingFromCheckInLink = (data: CheckIn) => async (dispatch: DispatchType, getState: GetStateType) => {
+  await dispatch(registerDevice(data.leaderboardName))
+  const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
+  await dispatch(updateCheckInAndEventInventory(update))
+
+  if (data.competitorId) {
+    const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getState()))
+    const regatta = mapResToRegatta(getRegatta(data.regattaName)(getState()))
+
+    if (competitor && competitor.name && competitor.nationality && competitor.sailId &&
+      regatta && regatta.boatClass) {
+      // find team by name, boatClass, nationality and sailNumber
+      const existingTeam = getUserTeamByNameBoatClassNationalitySailnumber(competitor.name,
+                                                                           regatta.boatClass,
+                                                                           competitor.nationality,
+                                                                           competitor.sailId)(getState())
+      if (!existingTeam) {
+        const team = {
+          name: competitor.name,
+          nationality: competitor.nationality,
+          sailNumber: competitor.sailId,
+          boatClass: regatta.boatClass,
+        } as TeamTemplate
+        dispatch(saveTeam(team))
+      } else {
+        // TODO Attach competitor image to session
+      }
+    }
+  }
+}
+
 export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {
     if (!data) {
       throw new CheckInException('data is missing')
     }
     await dispatch(updateCheckIn(data))
+
+    const navigateToTracking = () => {
+      const isLogged = isLoggedIn(getState())
+      isLogged ? navigation.navigate(Screens.TrackingNavigator) :
+        navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+    }
+
+    if (doesCheckInContainBinding(data)) {
+      await dispatch(useBindingFromCheckInLink(data))
+      navigateToTracking()
+      return
+    }
+
     try {
       await dispatch(createUserAttachmentToSession(data.leaderboardName, competitorValues, data.secret))
 
@@ -286,9 +335,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
-        const isLogged = isLoggedIn(getState())
-        isLogged ? navigation.navigate(Screens.TrackingNavigator) :
-          navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+        navigateToTracking()
       }
     } catch (err) {
       Logger.debug(err)

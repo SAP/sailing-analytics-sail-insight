@@ -15,7 +15,6 @@ import { getEventPreviewImageUrl } from 'services/SessionService'
 import IconText from 'components/IconText'
 import Image from 'components/Image'
 import ImageButton from 'components/ImageButton'
-import TrackingContext from 'components/session/TrackingContext'
 import Text from 'components/Text'
 import ActivityIndicator from 'components/ActivityIndicator'
 

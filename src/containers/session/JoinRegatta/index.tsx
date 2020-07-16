@@ -6,7 +6,6 @@ import LinearGradient from 'react-native-linear-gradient'
 import RNPickerSelect from 'react-native-picker-select'
 import { Chevron } from 'react-native-shapes'
 
-import { checkIn } from 'actions/checkIn'
 import { registerCompetitorAndDevice } from 'actions/sessions'
 
 import { CheckIn } from 'models'
@@ -23,6 +22,7 @@ import { getUserTeams } from 'selectors/user'
 
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
 
+import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { dateRangeText } from 'helpers/date'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
@@ -60,7 +60,6 @@ class JoinRegatta extends React.Component<{
   boat?: any,
   mark?: any,
   boats?: any,
-  checkIn: (c: CheckIn, navigation:object) => any,
   registerCompetitorAndDevice: any
 } > {
 
@@ -89,7 +88,7 @@ class JoinRegatta extends React.Component<{
           this.props.navigation
         )
 
-        if (boats.length === 0) {
+        if (!doesCheckInContainBinding(this.props.checkInData) && boats.length === 0) {
           return this.props.navigation.navigate(Screens.RegisterBoat, { actionAfterSubmit: action })
         }
         return action(selectedBoat)
@@ -97,8 +96,7 @@ class JoinRegatta extends React.Component<{
 
       switch (actionType) {
         case JoinRegattaActionType.JoinEvent:
-          const deviceRegistered = await this.props.checkIn(this.props.checkInData, this.props.navigation)
-          if (!deviceRegistered) { await handleRegistration() }
+          await handleRegistration()
           break
         case JoinRegattaActionType.Track:
           await handleRegistration({ startTrackingAfter: true })
@@ -271,5 +269,5 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-export default connect(mapStateToProps, { checkIn, registerCompetitorAndDevice })(JoinRegatta)
+export default connect(mapStateToProps, { registerCompetitorAndDevice })(JoinRegatta)
 
