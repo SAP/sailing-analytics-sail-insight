@@ -45,8 +45,13 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     return
   }
 
-  await dispatch(reuseBindingFromOtherDevice(checkInData, false))
-  checkInData = getCheckInByLeaderboardName(checkInData.leaderboardName)(getState())
+  try {
+    await dispatch(reuseBindingFromOtherDevice(checkInData, false))
+    checkInData = getCheckInByLeaderboardName(checkInData.leaderboardName)(getState())
+  } catch (err) {
+    // Ignore errors to not crash start tracking if the reuse of bindings doesn't work
+    console.log('An error occured when trying to reuse competitor bindings from other devices', { err })
+  }
 
   const markTracking = checkInData.markId
   const eventIsNotBound = compose(
