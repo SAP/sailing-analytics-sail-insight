@@ -43,6 +43,10 @@ const formLabelFocused = {
     ...formLabel,
     color: addOpacity($siWhite, 0.8),
 }
+const formLabelDisabled = {
+    ...formLabel,
+    color: addOpacity($siWhite, 0.3),
+}
 const formErrorLabel = {
     ...formLabel,
     color: '$siErrorRed'
@@ -54,7 +58,7 @@ const formInput = Object.assign({
     paddingHorizontal: 0, // remove Android default padding
     borderBottomColor: addOpacity($siWhite, 0.2),
     borderBottomWidth: 1,
-    color: '$siWhite',
+    color: addOpacity($siWhite, 0.8), // Not applied to placeholder: Done directlly via placeholderTextColor
     fontSize: 17,
     ...$siBoldFontStack,
 }, isPlatformAndroid ? {} : {
@@ -62,7 +66,13 @@ const formInput = Object.assign({
 })
 const formInputFocused = {
     ...formInput,
+    color: '$siWhite', // Not applied to placeholder: Done directlly via placeholderTextColor
     borderBottomColor: '$siWhite',
+}
+const formInputDisabled = {
+    ...formInput,
+    color: addOpacity($siWhite, 0.5),
+    borderBottomColor: addOpacity($siWhite, 0.1),
 }
 const formInputToggleButton = {
     position:'absolute',
@@ -72,14 +82,14 @@ const formInputToggleButton = {
     alignItems: 'center',
     paddingTop: 24,
 }
-const formInputToggleButtonIcon = {
+const formInputIconButtonIcon = {
     width: '$defaultIconSize',
     height: '$defaultIconSize',
     resizeMode: 'contain',
-    tintColor: addOpacity($siWhite, 0.2),
+    tintColor: addOpacity($siWhite, 0.3),
 }
-const formInputToggleButtonIconFocused = {
-    ...formInputToggleButtonIcon,
+const formInputiconButtonIconFocused = {
+    ...formInputIconButtonIcon,
     tintColor: $siWhite
 }
 const formInputAssitiveText = Object.assign({
@@ -132,6 +142,9 @@ export default EStyleSheet.create({
     formTextLabelFocused: {
         ...formLabelFocused
     },
+    formTextLabelDisabled: {
+        ...formLabelDisabled
+    },
     formTextErrorLabel: {
         ...formErrorLabel
     },
@@ -141,16 +154,20 @@ export default EStyleSheet.create({
     formTextInputFocused: {
         ...formInputFocused
     },
-    formTextInputToggleButton: {
+    formTextInputDisabled: {
+        ...formInputDisabled
+    },
+    formTextInputIconButton: {
         ...formInputToggleButton
     },
-    formTextInputToggleButtonIcon: {
-        ...formInputToggleButtonIcon
+    formTextInputIconButtonIcon: {
+        ...formInputIconButtonIcon
     },
-    formTextInputToggleButtonIconFocused: {
-        ...formInputToggleButtonIconFocused
+    formTextInputIconButtonIconFocused: {
+        ...formInputiconButtonIconFocused
     },
     visibilityIcon: { },
+    lockIcon: { },
     formTextInputAssitiveText: {
         ...formInputAssitiveText
     },

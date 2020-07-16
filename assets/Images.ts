@@ -28,6 +28,7 @@ export default {
     penEdit: require('./img/icons/icon-pen-edit.png'),
     visibility: require('./img/icons/icon-visibility.png'),
     visibilityOff: require('./img/icons/icon-visibility-off.png'),
+    lock: require('./img/icons/lock.fill.bold.png'),
     help: require('./img/icons/icon-help.png'),
     close: require('./img/icons/icon-cross.png'),
     closeCircled: require('./img/new_icons/delete_icon_circle.png'),
