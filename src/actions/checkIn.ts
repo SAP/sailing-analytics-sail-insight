@@ -2,7 +2,7 @@ import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 import { always, applySpec, compose, concat, defaultTo, filter, findLast, has, head, isNil,
-  map, pick, prop, propEq, reject, toPairs } from 'ramda'
+  map, partition, pick, prop, propEq, reject, toPairs } from 'ramda'
 
 import { dataApi } from 'api'
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
@@ -109,8 +109,12 @@ export const reuseBindingFromOtherDevice = (
   if (!isNetworkConnectedSelector(getState())) return
 
   const { trackedElements = [], leaderboardName, secret, serverUrl } = checkInData
-  if (trackedElements.length === 0) return
-  const binding = head(trackedElements)
+  const [competitorBindings, otherBindings] = partition(
+    prop('competitorId')
+  )(trackedElements)
+
+  if (competitorBindings.length === 0) return
+  const binding = head(competitorBindings)
 
   if (showAlert) {
     const checkInText = checkInObjectToText(binding)(getState())
@@ -122,7 +126,7 @@ export const reuseBindingFromOtherDevice = (
   const api = dataApi(serverUrl)
 
   // Unbind the other devices
-  await Promise.all(trackedElements.map(({ deviceId, ...objectId }) => {
+  await Promise.all(competitorBindings.map(({ deviceId, ...objectId }) => {
     const body = CheckInService.checkoutDeviceMappingData({
       ...objectId,
       secret
@@ -140,7 +144,7 @@ export const reuseBindingFromOtherDevice = (
     leaderboardName,
     CheckInService.checkInDeviceMappingData({ ...objectId, secret }),
   )
-  await dispatch(updateCheckInAndEventInventory({ ...objectId, leaderboardName, trackedElements: [] } as CheckInUpdate))
+  await dispatch(updateCheckInAndEventInventory({ ...objectId, leaderboardName, trackedElements: otherBindings } as CheckInUpdate))
 }
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(
