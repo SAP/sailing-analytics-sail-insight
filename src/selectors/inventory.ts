@@ -54,12 +54,14 @@ export const getFilteredMarkPropertiesAndMarksOptionsForCourse = createSelector(
   getMarkPropertiesAndMarksOptionsForCourse,
   hasSameStartFinish,
   (marksOrMarkProperties, hasSameStartFinish) =>
-    reject(compose(
-      when(always(not(hasSameStartFinish)), includes(__, ['Start/Finish Pin', 'Start/Finish Boat'])),
-      when(always(hasSameStartFinish), includes(__, ['Start Pin', 'Start Boat', 'Finish Pin', 'Finish Boat'])),
-      prop('name'),
-      when(has('effectiveProperties'), prop('effectiveProperties'))),
-    marksOrMarkProperties))
+    compose(
+      reject(compose(
+        when(always(not(hasSameStartFinish)), includes(__, ['Start/Finish Pin', 'Start/Finish Boat'])),
+        when(always(hasSameStartFinish), includes(__, ['Start Pin', 'Start Boat', 'Finish Pin', 'Finish Boat'])),
+        prop('name'),
+        when(has('effectiveProperties'), prop('effectiveProperties')))),
+      sortBy(combinedNames))
+    (marksOrMarkProperties))
 
 export const getMarkPropertiesOrMarkForCourseByName = name => createSelector(
   getMarkPropertiesAndMarksOptionsForCourse,
