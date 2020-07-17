@@ -2,9 +2,11 @@ import I18n from 'i18n'
 import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 import { always, applySpec, compose, defaultTo, filter, findLast, has, isNil,
-  map, pick, prop, propEq, reject, toPairs } from 'ramda'
+  map, pick, prop, propEq, reject, toPairs, is, cond, anyPass, T, F } from 'ramda'
 
 import { dataApi } from 'api'
+import ApiException from 'api/ApiException'
+import { STATUS_INTERNAL_ERROR, STATUS_NOT_FOUND } from 'api/constants'
 import { CheckIn, CheckInUpdate, TeamTemplate } from 'models'
 import * as CheckInService from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -164,7 +166,16 @@ export const fetchEventList = () => async(dispatch, getState) => {
   }))(trackedEvents)
 
   await Promise.all(checkIns.map(async (checkIn) => {
-    await dispatch(collectCheckInData(checkIn))
+    try {
+      await dispatch(collectCheckInData(checkIn))
+    } catch (error) {
+      const isKnownError = anyPass([is(ApiException), propEq('status', STATUS_INTERNAL_ERROR), propEq('status', STATUS_NOT_FOUND)])
+      if (isKnownError(error)) {
+        return
+      } else {
+        throw error
+      }
+    }
     const regatta = getRegatta(checkIn.regattaName)(getState())
     const numberOfRaces = getRegattaNumberOfRaces(regatta)
     const checkInWithNumberOfRaces = {

@@ -348,9 +348,7 @@ const mainTabsNavigator = Component(props => compose(
     tabBarOptions: {
       activeTintColor: $primaryTextColor,
       inactiveTintColor: $secondaryTextColor,
-      style: {
-        backgroundColor: '#123748',
-      },
+      style: tab.bottomTabBar,
       showLabel: true,
       showIcon: true,
       keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,
