@@ -150,32 +150,39 @@ export const preventDuplicateCompetitorBindings = (checkIn: any, selectedBoat: a
 ) => {
   const { leaderboardName, serverUrl, secret } = checkIn
   const currentCheckIn = getCheckInByLeaderboardName(checkIn.leaderboardName)(getState())
-  const { competitorId: currentCompetitorId } = currentCheckIn
+  const { trackedElements = [], competitorId: currentCompetitorId } = currentCheckIn
+  const currentCompetitorIdOnAnotherDevice = findLast(prop('competitorId'))(trackedElements)
 
   // No conflict because there is no current competitor binding
-  if (!currentCompetitorId) { return true }
+  if (!currentCompetitorId && !currentCompetitorIdOnAnotherDevice) { return true }
 
-  // If joining with the same competitor as already registered, go back to avoid duplicate bindings
-  // to the same competitor
+  // If joining with the same competitor as already registered on the same device,
+  // go back to avoid duplicate bindings to the same competitor
   const selectedBoatCompetitorId = (selectedBoat?.competitorId || {})[serverUrl]
   if (
-    checkIn.competitorId === currentCompetitorId ||
-    selectedBoatCompetitorId === currentCompetitorId
+    currentCompetitorId &&
+    (checkIn.competitorId === currentCompetitorId ||
+      selectedBoatCompetitorId === currentCompetitorId)
   ) {
     return false
   }
 
-  const checkInText = checkInObjectToText(currentCheckIn)(getState())
-  const message = `You have already bound this device to ${checkInText} in this event, do you want to overwrite that binding?`
+  const bindingToRemove = currentCompetitorIdOnAnotherDevice ?? {
+    competitorId: currentCompetitorId,
+    deviceId: CheckInService.getDeviceId()
+  }
+  const checkInText = checkInObjectToText(bindingToRemove)(getState())
+  const message = `You have already bound this account to ${checkInText} in this event, do you want to overwrite that binding?`
   const overwrite = await alertPromise('', message, I18n.t('button_yes'))
   if (!overwrite) return false
 
 
   const api = dataApi(serverUrl)
+  const { deviceId } = bindingToRemove
   const body = CheckInService.checkoutDeviceMappingData({
-    competitorId: currentCompetitorId,
+    ...bindingToRemove,
     secret
-  })
+  }, deviceId)
   await api.stopDeviceMapping(leaderboardName, body).catch(err => {})
 
   return true
