@@ -144,6 +144,43 @@ export const reuseBindingFromOtherDevice = (
   await dispatch(updateCheckInAndEventInventory({ ...objectId, leaderboardName, trackedElements: otherBindings } as CheckInUpdate))
 }
 
+export const preventDuplicateCompetitorBindings = (checkIn: any, selectedBoat: any) => async (
+  dispatch,
+  getState,
+) => {
+  const { leaderboardName, serverUrl, secret } = checkIn
+  const currentCheckIn = getCheckInByLeaderboardName(checkIn.leaderboardName)(getState())
+  const { competitorId: currentCompetitorId } = currentCheckIn
+
+  // No conflict because there is no current competitor binding
+  if (!currentCompetitorId) { return true }
+
+  // If joining with the same competitor as already registered, go back to avoid duplicate bindings
+  // to the same competitor
+  const selectedBoatCompetitorId = (selectedBoat?.competitorId || {})[serverUrl]
+  if (
+    checkIn.competitorId === currentCompetitorId ||
+    selectedBoatCompetitorId === currentCompetitorId
+  ) {
+    return false
+  }
+
+  const checkInText = checkInObjectToText(currentCheckIn)(getState())
+  const message = `You have already bound this device to ${checkInText} in this event, do you want to overwrite that binding?`
+  const overwrite = await alertPromise('', message, I18n.t('button_yes'))
+  if (!overwrite) return false
+
+
+  const api = dataApi(serverUrl)
+  const body = CheckInService.checkoutDeviceMappingData({
+    competitorId: currentCompetitorId,
+    secret
+  })
+  await api.stopDeviceMapping(leaderboardName, body).catch(err => {})
+
+  return true
+}
+
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(
   async (dataApi, dispatch) => {
     if (!checkInData) {

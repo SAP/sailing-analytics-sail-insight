@@ -7,6 +7,7 @@ import RNPickerSelect from 'react-native-picker-select'
 import { Chevron } from 'react-native-shapes'
 
 import { registerCompetitorAndDevice } from 'actions/sessions'
+import { preventDuplicateCompetitorBindings } from 'actions/checkIn'
 
 import { CheckIn } from 'models'
 
@@ -61,6 +62,7 @@ class JoinRegatta extends React.Component<{
   mark?: any,
   boats?: any,
   registerCompetitorAndDevice: any
+  preventDuplicateCompetitorBindings: any
 } > {
 
   public state = {
@@ -69,7 +71,7 @@ class JoinRegatta extends React.Component<{
   }
 
   public onJoinPress = async () => {
-    const { actionType, boats, isNetworkConnected } = this.props
+    const { actionType, boats, checkInData, isNetworkConnected } = this.props
 
     if (!isNetworkConnected) {
       showNetworkRequiredSnackbarMessage()
@@ -77,18 +79,32 @@ class JoinRegatta extends React.Component<{
     }
 
     const { selectedBoatIndex } = this.state
-    const selectedBoat = boats.length > 0 && boats[selectedBoatIndex]
+    const checkInContainsBinding = doesCheckInContainBinding(checkInData)
+    // The checkInContainsBinding condition is to make sure that the selectedBoat is falsy
+    // when binding to the object specified in the checkIn
+    const selectedBoat = checkInContainsBinding
+      ? undefined
+      : boats.length > 0 && boats[selectedBoatIndex]
+
+    const continueJoining = await this.props.preventDuplicateCompetitorBindings(
+      checkInData, selectedBoat
+    )
+    if (!continueJoining) {
+      this.props.navigation.goBack()
+      return
+    }
+
     await this.setState({ isLoading: true })
     try {
       const handleRegistration = (options = {}) => {
         const action = boat => this.props.registerCompetitorAndDevice(
-          this.props.checkInData,
+          checkInData,
           boat,
           options,
           this.props.navigation
         )
 
-        if (!doesCheckInContainBinding(this.props.checkInData) && boats.length === 0) {
+        if (!checkInContainsBinding && boats.length === 0) {
           return this.props.navigation.navigate(Screens.RegisterBoat, { actionAfterSubmit: action })
         }
         return action(selectedBoat)
@@ -269,5 +285,8 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-export default connect(mapStateToProps, { registerCompetitorAndDevice })(JoinRegatta)
+export default connect(
+  mapStateToProps,
+  { preventDuplicateCompetitorBindings, registerCompetitorAndDevice },
+)(JoinRegatta)
 
