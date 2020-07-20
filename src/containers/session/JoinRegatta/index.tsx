@@ -6,6 +6,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import RNPickerSelect from 'react-native-picker-select'
 import { Chevron } from 'react-native-shapes'
 
+import { archiveEvent } from 'actions/events'
 import { registerCompetitorAndDevice } from 'actions/sessions'
 import { preventDuplicateCompetitorBindings } from 'actions/checkIn'
 
@@ -89,13 +90,16 @@ class JoinRegatta extends React.Component<{
     const continueJoining = await this.props.preventDuplicateCompetitorBindings(
       checkInData, selectedBoat
     )
-    if (!continueJoining) {
-      this.props.navigation.goBack()
-      return
-    }
 
-    await this.setState({ isLoading: true })
+    this.setState({ isLoading: true })
+
     try {
+      if (!continueJoining) {
+        await this.props.archiveEvent(checkInData, false)
+        this.props.navigation.goBack()
+        return
+      }
+
       const handleRegistration = (options = {}) => {
         const action = boat => this.props.registerCompetitorAndDevice(
           checkInData,
@@ -287,6 +291,6 @@ const mapStateToProps = (state: any, props: any) => {
 
 export default connect(
   mapStateToProps,
-  { preventDuplicateCompetitorBindings, registerCompetitorAndDevice },
+  { archiveEvent, preventDuplicateCompetitorBindings, registerCompetitorAndDevice },
 )(JoinRegatta)
 
