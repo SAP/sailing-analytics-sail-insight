@@ -150,6 +150,8 @@ export const preventDuplicateCompetitorBindings = (checkIn: any, selectedBoat: a
 ) => {
   const { leaderboardName, serverUrl, secret } = checkIn
   const currentCheckIn = getCheckInByLeaderboardName(checkIn.leaderboardName)(getState())
+  if (!currentCheckIn) return true
+
   const { trackedElements = [], competitorId: currentCompetitorId } = currentCheckIn
   const currentCompetitorIdOnAnotherDevice = findLast(prop('competitorId'))(trackedElements)
 
