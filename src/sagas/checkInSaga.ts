@@ -8,8 +8,38 @@ import ApiException from 'api/ApiException'
 import { receiveEntities } from 'actions/entities'
 import { updateCheckInAndEventInventory, updateDeletingMarkBinding } from 'actions/checkIn'
 import { stopTracking } from 'actions/tracking'
-import { getDeviceId } from 'services/CheckInService'
-import { getMarkBindingCheckIn, getMarkPropertiesIdOfBoundMark } from 'selectors/checkIn'
+import { checkoutDeviceMappingData, getDeviceId } from 'services/CheckInService'
+import { getCheckInsByMarkPropertiesId, getMarkBindingCheckIn, getMarkPropertiesIdOfBoundMark } from 'selectors/checkIn'
+
+function* unbindMark(checkIn: any) {
+  const { leaderboardName, markId, secret, serverUrl } = checkIn
+  const api = dataApi(serverUrl)
+
+  try {
+    yield call(
+      api.stopDeviceMapping,
+      leaderboardName,
+      checkoutDeviceMappingData({
+        markId,
+        secret,
+      }),
+    )
+  } catch (err) {
+    // We surpress 400 status codes
+    // because it indicates that the mapping does not exist.
+    // In that case we can just ignore it, to not make the user stuck forever in the MarkTracking screen
+    if (!(err instanceof ApiException) || err.status !== 400) {
+      throw err
+    }
+  }
+
+  const updatedCheckIn = {
+    leaderboardName,
+    markId: undefined
+  }
+
+  yield put(updateCheckInAndEventInventory(updatedCheckIn))
+}
 
 // Stop tracking and remove binding and set the checkIn markid to null
 function* deleteMarkBinding({ payload }: any) {
@@ -25,23 +55,11 @@ function* deleteMarkBinding({ payload }: any) {
 
   const api = dataApi(serverUrl)
   try {
-    const deviceMappinpData = {
-      markId,
-      deviceUuid: getDeviceId(),
-      toMillis: new Date().getTime(),
-      ...(secret ? { secret } : {}),
-    }
+    const checkInsToUpdate = markPropertiesId
+      ? yield select(getCheckInsByMarkPropertiesId(markPropertiesId))
+      : [checkIn] // If the markPropertiesId is missing, just remove this binding
 
-    try {
-      yield call(api.stopDeviceMapping, leaderboardName, deviceMappinpData)
-    } catch (err) {
-      // We surpress 400 status codes
-      // because it indicates that the mapping does not exist.
-      // In that case we can just ignore it, to not make the user stuck forever in the MarkTracking screen
-      if (!(err instanceof ApiException) || err.status !== 400) {
-        throw err
-      }
-    }
+    yield all(checkInsToUpdate.map(checkIn => call(unbindMark, checkIn)))
 
     // Remove positioning information from markProperties
     try {
@@ -50,13 +68,6 @@ function* deleteMarkBinding({ payload }: any) {
     // Everyone who is not the owner of the markProperties to be edited will get an
     // error because of missing permissions, which we can ignore.
     } catch (err) {}
-
-    const updatedCheckIn = {
-      leaderboardName,
-      markId: undefined
-    }
-
-    yield put(updateCheckInAndEventInventory(updatedCheckIn))
   } catch (err) {
     console.log('Failed to delete mark binding', { err })
     Snackbar.show({
