@@ -23,11 +23,13 @@ import { fetchEvent, updateLoadingEventList } from 'actions/events'
 import { fetchAllRaces, fetchRegatta } from 'actions/regattas'
 import { isLoggedIn } from 'selectors/auth'
 import { checkInObjectToText, getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { getMarkDeviceTrackingByMarkConfiguration } from 'selectors/course'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { LocationTrackingStatus } from 'services/LocationService'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { getMark } from '../selectors/mark'
 import { getRegatta, getRegattaNumberOfRaces } from '../selectors/regatta'
+import { getHashedDeviceId } from 'selectors/user'
 import { getStore } from '../store'
 import { saveTeam } from './user'
 
@@ -188,6 +190,16 @@ export const preventDuplicateCompetitorBindings = (checkIn: any, selectedBoat: a
   await api.stopDeviceMapping(leaderboardName, body).catch(err => {})
 
   return true
+}
+
+export const warnAboutMultipleBindingsToTheSameMark = (markConfiguration: any) => async (dispatch, getState) => {
+  const markDeviceTracking: any = getMarkDeviceTrackingByMarkConfiguration(markConfiguration)(getState())
+  if (!markDeviceTracking || !markDeviceTracking.trackingDeviceHash) return true
+  const differentDeviceBound = markDeviceTracking.trackingDeviceHash !== getHashedDeviceId()
+  if (!differentDeviceBound) return false
+
+  const message = 'There\'s already another device bound to this mark. Do you want to continue with the binding?'
+  return await alertPromise('', message, I18n.t('button_yes'))
 }
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(

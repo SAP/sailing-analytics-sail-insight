@@ -14,6 +14,7 @@ import {
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import styles from './styles'
 import { Dimensions } from 'react-native'
+import { warnAboutMultipleBindingsToTheSameMark } from 'actions/checkIn'
 import { updateMarkConfigurationWithCurrentDeviceAsTracker, fetchAndUpdateMarkConfigurationDeviceTracking } from 'actions/courses'
 import { getDeviceId } from 'selectors/user'
 import { getSelectedEventInfo } from 'selectors/event'
@@ -67,11 +68,19 @@ const trackingQRCode = Component(props => compose(
 const useThisDeviceButton = Component(props => compose(
   fold(props),
   touchableOpacity({
-    onPress: () => {
-      props.updateMarkConfigurationWithCurrentDeviceAsTracker({
-        id: props.selectedMarkConfiguration,
-        deviceId: getDeviceId()
-      })
+    onPress: async () => {
+      const continueBinding = await props.warnAboutMultipleBindingsToTheSameMark(
+        props.selectedMarkConfiguration,
+      )
+
+      if (continueBinding) {
+        console.log('This gets executed')
+        props.updateMarkConfigurationWithCurrentDeviceAsTracker({
+          id: props.selectedMarkConfiguration,
+          deviceId: getDeviceId()
+        })
+      }
+
       props.navigation.goBack()
     },
     style: styles.useThisDeviceButton,
@@ -93,7 +102,9 @@ export default Component((props: object) =>
     fold(props),
     connect(mapStateToProps, {
       updateMarkConfigurationWithCurrentDeviceAsTracker,
-      fetchAndUpdateMarkConfigurationDeviceTracking }),
+      fetchAndUpdateMarkConfigurationDeviceTracking,
+      warnAboutMultipleBindingsToTheSameMark,
+    }),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
     NavigationBackHandler,
