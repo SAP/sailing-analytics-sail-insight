@@ -25,10 +25,10 @@ function* unbindMark(checkIn: any) {
       }),
     )
   } catch (err) {
-    // We surpress 400 status codes
-    // because it indicates that the mapping does not exist.
-    // In that case we can just ignore it, to not make the user stuck forever in the MarkTracking screen
-    if (!(err instanceof ApiException) || err.status !== 400) {
+    // 400 status codes indicate that the mapping does not exist.
+    // 403 status codes also sometimes occur for some reason when removing bindings
+    // We ignore all errors here to not make the user stuck forever in the MarkTracking screen
+    if (!(err instanceof ApiException)) {
       throw err
     }
   }
