@@ -280,8 +280,8 @@ const coordinatesContainer = Component((props: any) => compose(
     fold(props),
     view({ style: styles.coordinatesModalContainer, onLayout: (nativeEvent: any) => onCoordinatesLayout(props, nativeEvent) }),
     reduce(concat, nothing()))([
-      longitudeInput,  
-      latitudeInput
+      latitudeInput,
+      longitudeInput  
     ]))
 
 export default Component((props: object) =>
