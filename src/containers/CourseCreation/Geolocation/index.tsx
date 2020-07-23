@@ -179,8 +179,9 @@ const textInput = Component(props => compose(
     containerStyle: styles.inputContainer,
     inputContainerStyle: styles.inputContainer,
     value: props.value,
-    keyboardType: 'decimal-pad',
-    returnKeyType: 'done'
+    keyboardType: props.decimal ? 'decimal-pad' : 'number-pad',
+    returnKeyType: 'done',
+    selectionColor: 'white'
   })))(
   fromClass(TextInputDeprecated)))
 
@@ -208,6 +209,7 @@ const coordinatesInput = Component((props: any) => compose(
     view({ style: styles.coordinatesControlContainer }),
     reduce(concat, nothing()))([
       textInput.contramap(merge({
+        decimal: false,
         value: defaultTo('', props.degrees),
         inputStyle: { width: 70 },
         onBlur: value => {
@@ -219,6 +221,7 @@ const coordinatesInput = Component((props: any) => compose(
         maxLength: 3 })),
       text({ style: styles.symbolText }, '°'),
       textInput.contramap(merge({
+        decimal: true,
         value: defaultTo('', props.minutes),
         inputStyle: { width: 115 },
         onBlur: value => {
