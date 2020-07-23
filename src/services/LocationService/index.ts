@@ -19,6 +19,7 @@ const LOCATION_KEY = 'location'
 
 const config: Config = {
   reset: true,
+  activityType: BackgroundGeolocation.ACTIVITY_TYPE_OTHER_NAVIGATION,
   desiredAccuracy: isPlatformAndroid ?
     BackgroundGeolocation.DESIRED_ACCURACY_HIGH :
     BackgroundGeolocation.DESIRED_ACCURACY_NAVIGATION,
