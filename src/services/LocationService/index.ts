@@ -24,28 +24,23 @@ const config: Config = {
   desiredAccuracy: isPlatformAndroid ?
     BackgroundGeolocation.DESIRED_ACCURACY_HIGH :
     BackgroundGeolocation.DESIRED_ACCURACY_NAVIGATION,
-  distanceFilter: 0, // no minimum travel distance before location update to increase accuracy
-  disableElasticity: true, // disable auto distanceFilter based on speed to increase accuracy
+  distanceFilter: 0,
+  disableElasticity: true,
   stopOnTerminate: false,
   isMoving: true,
-  heartbeatInterval: 1, // in seconds
+  heartbeatInterval: 1,
   disableStopDetection: true,
   pausesLocationUpdatesAutomatically: false,
   stopOnStationary: false,
   foregroundService: true,
-  // debug
   debug: false,
-  // debug: __DEV__,
-  logLevel: BackgroundGeolocation.LOG_LEVEL_WARNING,
   logMaxDays: 2,
-  // iOS:
   locationAuthorizationRequest: 'Always',
   showsBackgroundLocationIndicator: true,
   stationaryRadius: 1,
   preventSuspend: true,
   batchSync: true,
   maxBatchSize: 30,
-  // Android:
   allowIdenticalLocations: true,
   locationUpdateInterval: 333,
   fastestLocationUpdateInterval: 333,
