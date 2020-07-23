@@ -5,7 +5,9 @@ import { handleAppStartDeepLink } from './deepLinking'
 import { updateCreatingEvent, updateLoadingEventList, updateSelectingEvent, updateStartingTracking, updateEventPollingStatus } from './events'
 import { updateDeletingMarkBinding, updateLoadingCheckInFlag } from './checkIn'
 import { updateCommunicationSettings, updateMtcpSettings } from './settings'
+import { initLocationUpdates } from './locations'
 import { updateStartLine, stopUpdateStartLineBasedOnCurrentCourse } from './communications'
+import * as LocationService from 'services/LocationService'
 
 export const initializeApp = (navigation:object) => async (dispatch: DispatchType) => {
   /// reset flags for loading
@@ -27,4 +29,7 @@ export const initializeApp = (navigation:object) => async (dispatch: DispatchTyp
 
   await dispatch(checkCurrentAuthSession())
   await dispatch(handleAppStartDeepLink(navigation))
+
+  LocationService.ready().then(() =>
+    dispatch(initLocationUpdates()))
 }

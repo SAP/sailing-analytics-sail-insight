@@ -15,13 +15,13 @@ import {
 } from 'actions/locationTrackingData'
 import { checkAndUpdateRaceSettings } from 'actions/sessionConfig'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
-
+import { getVerboseLoggingSetting } from 'selectors/settings'
+import { getDataApiGenerator } from 'api/config'
 
 export const startLocationUpdates = (
   leaderboardName: string,
-  eventId?: string,
-  verboseLogging?: boolean,
-) => async (dispatch: DispatchType) => {
+  eventId?: string
+) => async (dispatch: DispatchType, getState: GetStateType) => {
 
   try {
     if (await LocationService.isEnabled()) {
@@ -34,7 +34,13 @@ export const startLocationUpdates = (
 
   try {
     await dispatch(updateTrackedRegatta({ leaderboardName, eventId }))
-    await LocationService.start(verboseLogging)
+
+    const url = getDataApiGenerator(getTrackedCheckInBaseUrl(getState()))('/gps_fixes')({})
+    const verboseLogging = getVerboseLoggingSetting(getState())
+
+    await LocationService.setConfig({ url })
+    await LocationService.setVerboseLogging(verboseLogging)
+    await LocationService.start()
     await LocationService.changePace(true)
     dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {

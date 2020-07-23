@@ -423,11 +423,7 @@ class AppRoot extends ReactComponent {
     LocationService.addStatusListener(this.handleLocationTrackingStatus)
     LocationService.addLocationListener(this.handleGeolocation)
     LocationService.registerEvents()
-    LocationService.ready().then(() => {
-      console.log('location service ready, starting location updates')
-      this.props.initLocationUpdates()
-    })
-    
+
     this.props.initializeApp(navigationContainer.current)
   }
 

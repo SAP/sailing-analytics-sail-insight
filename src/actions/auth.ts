@@ -3,6 +3,7 @@ import { authApi } from 'api'
 import AuthException from 'api/AuthException'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { DispatchType, GetStateType } from 'helpers/types'
+import * as LocationService from 'services/LocationService'
 import * as Screens from 'navigation/Screens'
 import { ApiAccessToken, User } from 'models'
 import { mapUserToRes } from 'models/User'
@@ -20,6 +21,7 @@ const handleAccessToken = (dataPromise?: Promise<ApiAccessToken>) => async (disp
   const data = await dataPromise
   await dispatch(updateToken(data && data.accessToken))
   await dispatch(fetchCurrentUser())
+  await LocationService.setAccessToken(data?.accessToken || '')
 }
 
 export const checkCurrentAuthSession = () => async (dispatch: DispatchType) => {

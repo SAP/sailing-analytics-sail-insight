@@ -8,6 +8,7 @@ import I18n from '../../i18n'
 import { getAccessToken } from 'selectors/auth'
 import { getDeviceId } from 'selectors/user'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
+import { getVerboseLoggingSetting } from 'selectors/settings'
 import { getStore } from 'store'
 import { getDataApiGenerator } from 'api/config'
 import { keepCommunicationAlive } from 'actions/communications'
@@ -126,31 +127,47 @@ export const LocationTrackingStatus = {
   STOPPED: 'STOPPED',
 }
 
-export const ready = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
-  const endpoint = getDataApiGenerator(getTrackedCheckInBaseUrl(getStore().getState()))('/gps_fixes')({})
+export const ready = () => new Promise<any>((resolve, reject) => {
+  const state = getStore().getState()
+  const url = getDataApiGenerator(getTrackedCheckInBaseUrl(state))('/gps_fixes')({})
+  const token = getAccessToken(state)
+  const verboseLogging = getVerboseLoggingSetting(state)
 
-  BackgroundGeolocation.ready(
+  return BackgroundGeolocation.ready(
     {
       ...config,
-      url: endpoint,
+      url,
       authorization: {
         strategy: 'JWT',
-        accessToken: getAccessToken(getStore().getState())
+        accessToken: token
       },
       httpRootProperty: 'fixes',
       locationTemplate: '{"latitude": <%= latitude %>, "longitude": <%= longitude %>, "timestamp-iso": "<%= timestamp %>", "speed": <%= speed %>, "course": <%= heading %>, "accuracy": <%= accuracy %>}',
       params: {
         deviceUuid: getDeviceId()
       },
-      ...(!!verboseLogging ? {
-        logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      } : {}),
+      logLevel: verboseLogging ? BackgroundGeolocation.LOG_LEVEL_VERBOSE : BackgroundGeolocation.LOG_LEVEL_OFF
     })
 })
 
-export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
-  BackgroundGeolocation.start(resolve, reject)
-})
+export const setConfig = (config: any) =>
+  BackgroundGeolocation.setConfig(config)
+
+export const setAccessToken = (token: string) =>
+  BackgroundGeolocation.setConfig({
+    authorization: {
+      strategy: 'JWT',
+      accessToken: token
+    },
+  })
+
+export const setVerboseLogging = (verboseLogging: boolean) =>
+  BackgroundGeolocation.setConfig({
+    logLevel: verboseLogging ? BackgroundGeolocation.LOG_LEVEL_VERBOSE : BackgroundGeolocation.LOG_LEVEL_OFF
+  })
+
+export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) =>
+  BackgroundGeolocation.start(resolve, reject))
 
 export const stop = () => new Promise<any>((resolve, reject) => BackgroundGeolocation.stop(resolve, reject))
 
