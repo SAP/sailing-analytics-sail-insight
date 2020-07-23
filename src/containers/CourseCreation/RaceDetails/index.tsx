@@ -1,7 +1,7 @@
 import { __, always, append, compose, concat, cond, defaultTo,
   equals, isEmpty, isNil, map, merge, not, apply, unapply,
   objOf, prop, reduce, uncurryN, T, unless, when, dissocPath, path, addIndex,
-  gte, allPass
+  gte, allPass, propEq
 } from 'ramda'
 import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import Images from '@assets/Images'
@@ -49,6 +49,8 @@ const getRaceStartTime = compose(
   prop('startTimeAsMillis'),
   defaultTo({}),
   prop('raceTime'))
+
+const nothingIfNoCourseDefined = branch(compose(propEq('courseDefined', false), prop('item')), nothingAsClass)
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 
@@ -164,6 +166,13 @@ const arrowRight = icon({
   iconTintColor: arrowColor
 })
 
+const editIcon = icon({ 
+  source: Images.actions.penEdit, 
+  iconStyle: styles.iconStyle,
+  style: styles.editIconContainerStyle,
+  iconTintColor: arrowColor
+})
+
 const defineLayoutButton = Component((props: any) =>
   compose(
     fold(props),
@@ -178,7 +187,8 @@ const defineLayoutButton = Component((props: any) =>
       text({ style: styles.defineCourseText },
         props.item.courseDefined ? props.item.sequenceDisplay :
         !props.canUpdateCurrentEvent ? I18n.t('caption_course_not_defined'):
-        I18n.t('caption_define_course'))
+        I18n.t('caption_define_course')),
+      nothingIfNoCourseDefined(editIcon)
     ]))
 
 const raceAnalyticsButton = Component((props: any) =>
