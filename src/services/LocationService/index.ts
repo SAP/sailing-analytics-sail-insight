@@ -125,7 +125,7 @@ export const LocationTrackingStatus = {
   STOPPED: 'STOPPED',
 }
 
-export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
+export const ready = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
   const endpoint = getDataApiGenerator(getTrackedCheckInBaseUrl(getStore().getState()))('/gps_fixes')({})
 
   BackgroundGeolocation.ready(
@@ -144,15 +144,11 @@ export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, re
       ...(!!verboseLogging ? {
         logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
       } : {}),
-    },
-    (state: any) => {
-      if (!state.enabled) {
-        return BackgroundGeolocation.start(resolve, reject)
-      }
-      return reject(state)
-    },
-    reject,
-  )
+    })
+})
+
+export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
+  BackgroundGeolocation.start(resolve, reject)
 })
 
 export const stop = () => new Promise<any>((resolve, reject) => BackgroundGeolocation.stop(resolve, reject))
