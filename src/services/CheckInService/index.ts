@@ -80,7 +80,7 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
   return body
 }
 
-export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
+export const checkoutDeviceMappingData = (checkInData: CheckIn, deviceId = getDeviceId()) => {
   if (!checkInData) {
     return null
   }
@@ -91,7 +91,7 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   } = checkInData
 
   const body = {
-    [CheckInBodyKeys.DeviceUUID]: getDeviceId(),
+    [CheckInBodyKeys.DeviceUUID]: deviceId,
     [CheckInBodyKeys.ToMillis]: new Date().getTime(),
     ...(boatId ? { [CheckInBodyKeys.BoatId]: boatId } : {}),
     ...(competitorId ? { [CheckInBodyKeys.CompetitorId]: competitorId } : {}),
