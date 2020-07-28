@@ -29,7 +29,8 @@ import {
   competitorList,
   withCompetitorListState,
   competitorListRefreshHandler,
-  startTrackingButton
+  startTrackingButton,
+  shareEventButton,
 } from '../../session/common'
 import { getLastPlannedRaceTime, getRegattaPlannedRaces } from 'selectors/regatta'
 import { getRaceTime } from 'selectors/event'
@@ -131,6 +132,7 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
       I18n.t('text_invite_competitors_long_text_planning')),
     nothingWhenFinished(inviteCompetitorsButton),
     nothingWhenFinished(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton)),
+    shareEventButton,
     nothingIfCurrentUserIsNotACompetitor(startTrackingButton),
     nothingWhenFinished(qrCode),
     competitorList

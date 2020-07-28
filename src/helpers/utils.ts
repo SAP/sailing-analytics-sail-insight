@@ -20,6 +20,24 @@ export const notImplementedYetAlert = () => {
   Alert.alert(I18n.t('text_not_implemented_yet'))
 }
 
+export const alertPromise = (
+  title: string,
+  message: string | undefined,
+  confirmText: string,
+  cancelText: string = I18n.t('caption_cancel'),
+) =>
+  new Promise(resolve => {
+    Alert.alert(
+      title,
+      message,
+      [
+        { text: cancelText, style: 'cancel', onPress: () => resolve(false) },
+        { text: confirmText, onPress: () => resolve(true) },
+      ],
+      { cancelable: false },
+    )
+  })
+
 export const listKeyExtractor = (item: any, index: number) => `${JSON.stringify(item)}${index}`
 
 

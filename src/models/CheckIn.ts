@@ -88,6 +88,7 @@ export interface CheckInUpdate {
   isArchived?: boolean
   secret?: string
   trackingContext?: TrackingContext
+  trackedElements?: any
 }
 
 export default interface CheckIn extends CheckInUpdate {

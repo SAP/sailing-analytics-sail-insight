@@ -3,6 +3,11 @@ import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
   $tabFontFamily: '$defaultFontFamily',
+  bottomTabBar: {
+    backgroundColor: '#123748',
+    paddingBottom: 0,
+    height: 50,
+  },
   bottomTabItemText: {
     fontFamily: '$tabFontFamily',
     fontSize: '$regularFontSize',
