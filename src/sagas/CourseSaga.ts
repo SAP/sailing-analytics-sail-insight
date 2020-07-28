@@ -62,9 +62,15 @@ const newCourse = () => {
       { id: windwardMarkId }
     ],
     waypoints: [
-      { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: 'Start', controlPointShortName: 'S' },
+      { passingInstruction: PassingInstruction.Line,
+        markConfigurationIds: [startPinId, startBoatId],
+        controlPointName: 'Start',
+        controlPointShortName: 'S' },
       { passingInstruction: 'Port', markConfigurationIds: [windwardMarkId] },
-      { passingInstruction: 'Gate', markConfigurationIds: [startPinId, startBoatId], controlPointName: I18n.t('text_finish_waypoint_long_name'), controlPointShortName: I18n.t('text_finish_waypoint_short_name')}]
+      { passingInstruction: PassingInstruction.Line,
+        markConfigurationIds: [startPinId, startBoatId],
+        controlPointName: I18n.t('text_finish_waypoint_long_name'),
+        controlPointShortName: I18n.t('text_finish_waypoint_short_name')}]
   }
 }
 
@@ -382,7 +388,7 @@ function* toggleSameStartFinish() {
     yield put(changeWaypointToNewLine({
       id: finishWaypointId,
       markConfigurationIds: newFinishMarkConfigurations,
-      passingInstruction: PassingInstruction.Gate,
+      passingInstruction: PassingInstruction.Line,
       controlPointName: 'Finish',
       controlPointShortName: 'F'
     }))
