@@ -93,7 +93,7 @@ export default EStyleSheets.create({
 
   editIconContainerStyle: {
     paddingTop: 5,
-    marginLeft: 5
+    marginLeft: 10
   },
 
   clockIconContainerStyle: {
