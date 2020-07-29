@@ -134,7 +134,9 @@ export const hasEditedCourseChanged = createSelector(
   getEditedCourse,
   (selectedCourse, editedCourse) => compose(
     not,
-    equals(evolve({ waypoints: map(dissoc('id')) }, selectedCourse)),
+    equals(compose(
+      dissoc('shortName'),
+      evolve({ waypoints: map(dissoc('id')) }))(selectedCourse)),
     evolve({ waypoints: map(dissoc('id')) }))(
     editedCourse))
 
