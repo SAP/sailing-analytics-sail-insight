@@ -160,6 +160,10 @@ export const preventDuplicateCompetitorBindings = (checkIn: any, selectedBoat: a
   // No conflict because there is no current competitor binding
   if (!currentCompetitorId && !currentCompetitorIdOnAnotherDevice) { return true }
 
+  const anonymous = !isLoggedIn(getState())
+  // Don't allow an anoymous user to try to join the same race again
+  if (currentCompetitorId && anonymous) { return false }
+
   // If joining with the same competitor as already registered on the same device,
   // go back to avoid duplicate bindings to the same competitor
   const selectedBoatCompetitorId = (selectedBoat?.competitorId || {})[serverUrl]

@@ -7,7 +7,7 @@ import RNPickerSelect from 'react-native-picker-select'
 import { Chevron } from 'react-native-shapes'
 
 import { archiveEvent } from 'actions/events'
-import { registerCompetitorAndDevice } from 'actions/sessions'
+import { navigateToTracking, registerCompetitorAndDevice } from 'actions/sessions'
 import { preventDuplicateCompetitorBindings } from 'actions/checkIn'
 
 import { CheckIn } from 'models'
@@ -64,6 +64,7 @@ class JoinRegatta extends React.Component<{
   boats?: any,
   registerCompetitorAndDevice: any
   preventDuplicateCompetitorBindings: any
+  navigateToTracking: any
 } > {
 
   public state = {
@@ -96,7 +97,7 @@ class JoinRegatta extends React.Component<{
     try {
       if (!continueJoining) {
         await this.props.archiveEvent(checkInData, false)
-        this.props.navigation.goBack()
+        this.props.navigateToTracking(this.props.navigation)
         return
       }
 
@@ -291,6 +292,6 @@ const mapStateToProps = (state: any, props: any) => {
 
 export default connect(
   mapStateToProps,
-  { archiveEvent, preventDuplicateCompetitorBindings, registerCompetitorAndDevice },
+  { archiveEvent, navigateToTracking, preventDuplicateCompetitorBindings, registerCompetitorAndDevice },
 )(JoinRegatta)
 

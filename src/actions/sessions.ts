@@ -307,6 +307,16 @@ const useBindingFromCheckInLink = (data: CheckIn) => async (dispatch: DispatchTy
   }
 }
 
+export const navigateToTracking = (navigation: any) => (
+  dispatch: any,
+  getState: any,
+) => {
+  const isLogged = isLoggedIn(getState())
+  return isLogged
+    ? navigation.navigate(Screens.TrackingNavigator)
+    : navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+}
+
 export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {
     if (!data) {
@@ -314,15 +324,9 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
     }
     await dispatch(updateCheckIn(data))
 
-    const navigateToTracking = () => {
-      const isLogged = isLoggedIn(getState())
-      isLogged ? navigation.navigate(Screens.TrackingNavigator) :
-        navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
-    }
-
     if (doesCheckInContainBinding(data)) {
       await dispatch(useBindingFromCheckInLink(data))
-      navigateToTracking()
+      dispatch(navigateToTracking(navigation))
       return
     }
 
@@ -335,7 +339,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
-        navigateToTracking()
+        dispatch(navigateToTracking(navigation))
       }
     } catch (err) {
       Logger.debug(err)
