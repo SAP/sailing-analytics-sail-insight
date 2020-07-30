@@ -1,4 +1,4 @@
-import { compose, defaultTo, flatten, head, isNil, last, length, map, path, prop, unless, values } from 'ramda'
+import { compose, defaultTo, find, flatten, head, isNil, last, length, map, path, prop, propEq, unless, values } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { REGATTA_COMPETITORS_ENTITY_NAME, REGATTA_ENTITY_NAME } from 'api/schemas'
@@ -14,6 +14,12 @@ export const getRegattaCompetitorList = (name: string) => (state: any) => {
   const competitorsEntity = path(['entities', REGATTA_COMPETITORS_ENTITY_NAME, name])(state)
   return competitorsEntity ? values(competitorsEntity) : []
 }
+
+export const getRegattaCompetitor = (
+  regattaName: string,
+  competitorId: string,
+) => (state: any) =>
+  find(propEq('id', competitorId))(getRegattaCompetitorList(regattaName)(state))
 
 export const getSelectedRegatta = (state: any) => state.events.selectedRegatta
 export const getRegattaPlannedRaces = (name: string) => (state: any) => {

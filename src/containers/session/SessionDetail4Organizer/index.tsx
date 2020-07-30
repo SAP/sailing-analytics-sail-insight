@@ -67,6 +67,7 @@ const mapStateToProps = (state: any, props: any) => {
     isBeforeLastPlannedRaceStartTime,
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
+    isEventOrganizer: true
   }
 }
 

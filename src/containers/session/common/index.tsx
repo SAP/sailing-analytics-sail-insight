@@ -15,7 +15,7 @@ import { __, always, anyPass, append, compose, concat, curry,
   equals, has, head, length, map, merge, mergeLeft, objOf,
   prepend, prop, propEq, range, reduce, reject,
   remove, sortBy, split, toString, toUpper, update, when,
-  isEmpty, defaultTo, path, complement, 
+  isEmpty, defaultTo, path, complement,
   call, last, inc, take, identity } from 'ramda'
 import { Dimensions, ActivityIndicator } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
@@ -325,6 +325,10 @@ const competitorListItems = Component((props: any) => compose(
     leaderboard: sortBy(prop('name'), props.competitorList),
     forLeaderboard: false,
     showHandicapValues: props.boatClass === '', // Handicap regatta check
+    onCompetitorItemPress: props.isEventOrganizer &&
+      (competitorId => props.navigation.navigate(Screens.EditCompetitor, {
+        data: { competitorId, session: props.session }
+      }))
   })),
   fromClass
 )(CompetitorList))

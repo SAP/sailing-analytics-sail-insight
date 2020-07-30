@@ -82,7 +82,7 @@ class CompetitorList extends React.Component<{
         {showHandicapValues &&
           <View style={[styles.textContainer, { flex: 0 }]}>
             <Text style={[styles.gapText, styles.handicapValueText]}>
-              {timeOnTimeFactor ? timeOnTimeFactor.toFixed(1) : ''}
+              {timeOnTimeFactor !== undefined ? timeOnTimeFactor.toFixed(2) : ''}
             </Text>
           </View>
         }
@@ -99,7 +99,7 @@ class CompetitorList extends React.Component<{
     return (
       <TouchableHighlight
         style={[styles.listRowButtonContainer]}
-        onPress={onCompetitorItemPress && onCompetitorItemPress(id)}
+        onPress={onCompetitorItemPress && (() => onCompetitorItemPress(id))}
       >
         <View style={[styles.listRowContainer]}>
           <View style={[styles.listItemContainer]}>

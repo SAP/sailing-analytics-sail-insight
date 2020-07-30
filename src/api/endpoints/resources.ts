@@ -68,6 +68,7 @@ const apiEndpoints = (serverUrl: string) => {
     createAndAddCompetitor: getUrlV1('/regattas/{0}/competitors/createandadd'),
     createAndAddCompetitorWithBoat: getUrlV1('/regattas/{0}/competitors/createandaddwithboat'),
     registerCompetitorToRegatta: getUrlV1('/regattas/{0}/competitors/{1}/add'),
+    updateToTHandicap: getUrlV1('/regattas/{0}/competitors/{1}/updateToTHandicap'),
     leaderboard: getUrlV1('/leaderboards/{0}'),
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
@@ -173,6 +174,7 @@ export interface DataApi {
     data?: CompetitorWithBoatBody,
   ) => Promise<CompetitorResponseData>
   registerCompetitorToRegatta: (regattaName: string, competitorId: string, secret?: string) => any
+  updateToTHandicap: (regattaName: string, competitorId: string, timeOnTimeFactor: number) => any
   sendWindFix: (
     regattaName: string,
     raceName: string,
@@ -361,6 +363,10 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     ),
     registerCompetitorToRegatta: (regattaName, competitorId, secret) => request(
       endpoints.registerCompetitorToRegatta({ pathParams: [regattaName, competitorId], urlParams: { secret } }),
+      { method: HttpMethods.POST },
+    ),
+    updateToTHandicap: (regattaName, competitorId, timeOnTimeFactor) => request(
+      endpoints.updateToTHandicap({ pathParams: [regattaName, competitorId], urlParams: { timeOnTimeFactor } }),
       { method: HttpMethods.POST },
     ),
     sendWindFix: (regattaName, raceName, windFix, sourceId, sourceType = 'WEB') => request(

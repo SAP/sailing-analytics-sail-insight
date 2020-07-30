@@ -71,6 +71,7 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
     racesButtonLabel: canUpdateCurrentEvent(state) ?
       I18n.t('text_define_races').toUpperCase() :
       I18n.t('text_see_racing_scoring').toUpperCase(),
+    isEventOrganizer: false
   }
 }
 

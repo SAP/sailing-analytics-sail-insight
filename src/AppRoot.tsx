@@ -47,6 +47,7 @@ import WebView from 'components/WebView'
 import AccountList from 'containers/user/AccountList'
 import AppSettings from 'containers/AppSettings'
 import CommunicationsSettings from 'containers/CommunicationsSettings'
+import EditCompetitor from 'containers/session/EditCompetitor'
 import EventCreation from 'containers/session/EventCreation'
 import ExpertSettings from 'containers/ExpertSettings'
 import FirstContact from 'containers/user/FirstContact'
@@ -286,6 +287,7 @@ const sessionsNavigator = Component(props => compose(
       selectedMarkConfiguration: props.route.params.data.selectedMarkConfiguration,
     })).fold,
     options: { title: I18n.t('caption_course_creator_bind_with_tracker') } })),
+    stackScreen(withLeftHeaderBackButton({ name: Screens.EditCompetitor, component: EditCompetitor.fold }))
 ]))
 
 const accountNavigator = Component(props => compose(
