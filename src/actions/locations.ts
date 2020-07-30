@@ -18,7 +18,6 @@ import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 
 
 export const startLocationUpdates = (
-  bulkTransfer: boolean,
   leaderboardName: string,
   eventId?: string,
   verboseLogging?: boolean,

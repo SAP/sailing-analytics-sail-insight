@@ -1,3 +1,4 @@
+import { compose, defaultTo, pick, prop } from 'ramda'
 import React, { ChangeEvent } from 'react'
 import { Alert, KeyboardType, NativeSyntheticEvent, ReturnKeyType, TextInputChangeEventData, View, ViewProps, ImageBackground } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
@@ -6,6 +7,7 @@ import { Field, reduxForm } from 'redux-form'
 import LinearGradient from 'react-native-linear-gradient'
 import { isEmpty } from 'lodash'
 
+import { updateCompetitor } from 'actions/sessions'
 import { deleteTeam, DeleteTeamAction, saveTeam, SaveTeamAction, updateTeamImage, updateTeamImageAction } from 'actions/user'
 
 import * as teamForm from 'forms/team'
@@ -76,6 +78,7 @@ class TeamDetails extends TextInputForm<Props> {
   public render() {
     const canSave = this.formIsSaveable() && this.formHasChanges()
     const isSaveDisabled = !canSave
+    const isEditingExistingBoat = this.props.team !== undefined
 
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
@@ -104,6 +107,7 @@ class TeamDetails extends TextInputForm<Props> {
                   inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_CLASS)}
                   onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_NATIONALITY)}
                   validate={[validateRequired]}
+                  editable={!isEditingExistingBoat}
                   {...this.commonProps} />
                 <Field
                   label={I18n.t('text_nationality')}
@@ -125,12 +129,14 @@ class TeamDetails extends TextInputForm<Props> {
                     this.props.change(teamForm.FORM_KEY_NATIONALITY, team.nationality || '')
                   }}
                   validate={[validateRequired]}
+                  editable={!isEditingExistingBoat}
                   {...this.commonProps} />
                 <Field
                   label={I18n.t('text_placeholder_boat_name')}
                   name={teamForm.FORM_KEY_BOAT_NAME}
                   component={FormTextInput}
                   inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_NAME)}
+                  editable={!isEditingExistingBoat}
                   {...this.commonProps} />
               </View>
               <View style={form.formSegment2}>
@@ -194,10 +200,24 @@ class TeamDetails extends TextInputForm<Props> {
   protected onSavePress = async (values: any) => {
     try {
       this.setState({ isLoading: true })
-      const team = teamForm.teamFromFormValues(values)
-      if (!team) {
+      const teamFromFormValues = teamForm.teamFromFormValues(values)
+      if (!teamFromFormValues) {
         return false
       }
+
+      const initialTeamPreservedValues = compose(
+        pick(['id', 'competitorId', 'lastUsed']),
+        defaultTo({}),
+        prop('team')
+      )(this.props)
+
+      // Preserve some values from the initial team
+      const team = {
+        ...initialTeamPreservedValues,
+        ...teamFromFormValues
+      }
+
+      await updateCompetitor(team)
       await this.props.saveTeam(team, { replaceTeamName: this.props.paramTeamName })
       this.props.navigation.goBack()
       return true

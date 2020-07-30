@@ -62,7 +62,7 @@ import RaceCourseLayout from 'containers/CourseCreation/RaceCourseLayout'
 import RaceDetails from 'containers/CourseCreation/RaceDetails'
 import RegisterBoat from 'containers/authentication/RegisterBoat'
 import RegisterCredentials from 'containers/authentication/RegisterCredentials'
-import SessionDetail, { ShareButton } from 'containers/session/SessionDetail'
+import SessionDetail from 'containers/session/SessionDetail'
 import SessionDetail4Organizer from 'containers/session/SessionDetail4Organizer'
 import Sessions from 'containers/session/Sessions'
 import SetWind from 'containers/tracking/SetWind'
@@ -74,6 +74,7 @@ import Tracking from 'containers/tracking/Tracking'
 import UserProfile from 'containers/user/UserProfile'
 import WelcomeTracking from 'containers/tracking/WelcomeTracking'
 import ZendeskSupport from 'containers/ZendeskSupport'
+import { ShareButton } from 'containers/session/common'
 
 // Styling & Images
 import Images from '@assets/Images'
@@ -348,9 +349,7 @@ const mainTabsNavigator = Component(props => compose(
     tabBarOptions: {
       activeTintColor: $primaryTextColor,
       inactiveTintColor: $secondaryTextColor,
-      style: {
-        backgroundColor: '#123748',
-      },
+      style: tab.bottomTabBar,
       showLabel: true,
       showIcon: true,
       keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,

@@ -13,7 +13,7 @@ import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
-import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
+import { reuseBindingFromOtherDevice, updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
 import { updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { updateTrackedRegatta } from 'actions/locationTrackingData'
@@ -34,15 +34,26 @@ export const stopTracking = () => async (dispatch: DispatchType, getState: GetSt
     dispatch(stopUpdateStartLineBasedOnCurrentCourse())
   }
 
-export const startTracking = ({ data, navigation, markTracking = false }: any) => async (
+export const startTracking = ({ data, navigation, useLoadingSpinner = true }: any) => async (
   dispatch: DispatchType,
   getState: GetStateType,
 ) => {
-  const checkInData = isString(data) ? getCheckInByLeaderboardName(data)(getState()) : data
+  let checkInData = isString(data) ? getCheckInByLeaderboardName(data)(getState()) : data
+
   if (!checkInData) {
     Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
     return
   }
+
+  try {
+    await dispatch(reuseBindingFromOtherDevice(checkInData, false))
+    checkInData = getCheckInByLeaderboardName(checkInData.leaderboardName)(getState())
+  } catch (err) {
+    // Ignore errors to not crash start tracking if the reuse of bindings doesn't work
+    console.log('An error occured when trying to reuse competitor bindings from other devices', { err })
+  }
+
+  const markTracking = checkInData.markId
   const eventIsNotBound = compose(
     all(isNil),
     values,
@@ -59,7 +70,7 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
     return
   }
 
-  if (!markTracking) {
+  if (useLoadingSpinner) {
     dispatch(updateLoadingCheckInFlag(true))
   }
   dispatch(resetTrackingStatistics())
@@ -69,63 +80,48 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
     eventId: checkInData.eventId,
   }))
 
-  if (!markTracking) {
+  const verboseLogging = getVerboseLoggingSetting(getState())
+
+  await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId, verboseLogging))
+
+  if (markTracking) {
+    navigation.navigate(Screens.TrackingNavigator, { screen: Screens.MarkTracking })
+  } else {
     navigation.navigate(Screens.Tracking)
   }
+
   let showAlertRaceNotStarted = false
 
   try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
   catch (e) {}
 
   try {
-    const shouldCreateTrack = checkInData.isSelfTracking
-    const bulkTransfer = getBulkGpsSetting(getState())
-    const verboseLogging = getVerboseLoggingSetting(getState())
-    let newTrack
+    const races = getRaces(checkInData.leaderboardName)(getState())
+    const now = getNowAsMillis()
+    const activeRaces = races
+      .filter(race => race.trackingStartDate < now)
+      .filter(race => race.trackingEndDate > now || race.trackingEndDate === null)
 
-    if (shouldCreateTrack && checkInData.trackPrefix) {
-      const result: AddRaceColumnResponseData[] = await dispatch(createNewTrack(checkInData.leaderboardName, checkInData.trackPrefix))
-      newTrack = head(result)
-      if (newTrack) {
-        await dispatch(startTrack(checkInData.leaderboardName, newTrack.racename, newTrack.seriesname))
-      }
+    if (activeRaces.length === 0) {
+      showAlertRaceNotStarted = true
     } else {
-      const races = getRaces(checkInData.leaderboardName)(getState())
-      const now = getNowAsMillis()
-      const activeRaces = races
-        .filter(race => race.trackingStartDate < now)
-        .filter(race => race.trackingEndDate > now || race.trackingEndDate === null)
+      const latestActiveRace = maxBy(activeRaces, 'trackingStartDate')
+      const latestTrackName = latestActiveRace && latestActiveRace.columnName
 
-      if (activeRaces.length === 0) {
-        showAlertRaceNotStarted = true
-      } else {
-        const latestActiveRace = maxBy(activeRaces, 'trackingStartDate')
-        const latestTrackName = latestActiveRace && latestActiveRace.columnName
-
-        if (latestTrackName) {
-          dispatch(
-            updateCheckIn({
-              leaderboardName: checkInData.leaderboardName,
-              currentTrackName: latestTrackName
-            } as CheckInUpdate),
-          )
-          checkInData.currentTrackName = latestTrackName
-        }
-
-        // start updating starting line
-        let fetchData = {regattaName: data.regattaName, raceName: latestActiveRace?.name, serverUrl: data.serverUrl}
-        dispatch(startUpdateStartLineBasedOnCurrentCourse(fetchData))
+      if (latestTrackName) {
+        dispatch(
+          updateCheckIn({
+            leaderboardName: checkInData.leaderboardName,
+            currentTrackName: latestTrackName
+          } as CheckInUpdate),
+        )
+        checkInData.currentTrackName = latestTrackName
       }
+
+      // start updating starting line
+      let fetchData = {regattaName: data.regattaName, raceName: latestActiveRace?.name, serverUrl: data.serverUrl}
+      dispatch(startUpdateStartLineBasedOnCurrentCourse(fetchData))
     }
-    const trackName = (newTrack && newTrack.racename) || checkInData.currentTrackName
-    if (checkInData.isSelfTracking && trackName && checkInData.currentFleet) {
-      try {
-        await dispatch(setRaceStartTime(checkInData.leaderboardName, trackName, checkInData.currentFleet))
-      } catch (err) {
-        Logger.debug(err)
-      }
-    }
-    dispatch(startLocationUpdates(bulkTransfer, checkInData.leaderboardName, checkInData.eventId, verboseLogging))
   } catch (err) {
     throw err
   } finally {
@@ -136,8 +132,7 @@ export const startTracking = ({ data, navigation, markTracking = false }: any) =
       setTimeout(async () => Alert.alert(
           I18n.t('caption_race_not_started_yet'),
           I18n.t('text_race_not_started_yet'),
-        ),
-                 800)
+        ), 800)
     }
   }
 }

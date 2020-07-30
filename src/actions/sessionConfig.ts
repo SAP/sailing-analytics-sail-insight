@@ -29,7 +29,6 @@ const checkAndUpdateTrackingStartTime = (gpsFix: PositionFix) => withDataApi({ f
     !hasValidPositionAndCourse(gpsFix) ||
     alreadyUpdated ||
     !checkIn ||
-    !checkIn.isSelfTracking ||
     !checkIn.currentTrackName ||
     !checkIn.currentFleet
   ) {
@@ -67,7 +66,6 @@ const checkAndUpdateAutoCourse = (gpsFix: PositionFix) => withDataApi({ fromTrac
     updateStatus !== 'MISSING' ||
     validGpsFixCount < AUTOCOURSE_FIX_LIMIT ||
     !checkIn ||
-    !checkIn.isSelfTracking ||
     !checkIn.currentTrackName ||
     !checkIn.currentFleet
   ) {

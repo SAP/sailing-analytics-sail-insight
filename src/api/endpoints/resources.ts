@@ -145,6 +145,7 @@ export interface DataApi {
   requestEvent: (eventId: string, secret?: string) => any
   requestEventRacestates: (eventId: string, secret?: string) => any
   requestCompetitor: (leaderboardName: string, competitorId: string, secret?: string) => any
+  updateCompetitor: (competitorId: string, body: any) => any
   requestMarkProperties: ApiFunction,
   requestMarkProperty: (id: string) => any,
   updateMarkPropertyPositioning: (id: string, deviceUuid?: string, latDeg?: number, lonDeg?: number) => any,
@@ -249,6 +250,13 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     requestCompetitor: (leaderboardName, competitorId, secret) => dataRequest(
         endpoints.competitors({ pathParams: [competitorId], urlParams: { leaderboardName, secret } }),
         { dataSchema: competitorSchema },
+    ),
+    updateCompetitor: (competitorId, body) => dataRequest(
+      endpoints.competitors({ pathParams: [competitorId] }),
+      {
+        body,
+        method: HttpMethods.PUT
+      },
     ),
     requestMarkProperties: () => dataRequest(endpoints.markProperties(), { dataSchema: [markPropertiesSchema] }),
     requestMarkProperty: (id: string) => dataRequest(endpoints.markProperty({ pathParams: [id]}),

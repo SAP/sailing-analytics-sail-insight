@@ -1,17 +1,14 @@
-import { __, always, call, compose, concat, identity, inc,
-  last, merge, reduce, take, isNil, prop } from 'ramda'
-import Images from '@assets/Images'
+import { __, always, compose, concat,
+  merge, reduce, isNil, prop } from 'ramda'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
-import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking } from 'actions/tracking'
 import { fetchRegattaCompetitors } from 'actions/regattas'
-import { Component, connectActionSheet, fold, fromClass, nothing, nothingAsClass,
+import { Component, fold, nothing, nothingAsClass,
   recomposeBranch as branch,
   reduxConnect as connect } from 'components/fp/component'
-import { scrollView, touchableOpacity, view } from 'components/fp/react-native'
+import { scrollView, view } from 'components/fp/react-native'
 import * as Screens from 'navigation/Screens'
-import IconText from 'components/IconText'
 import { BRANCH_APP_DOMAIN } from 'environment'
 import { dateFromToText } from 'helpers/date'
 import I18n from 'i18n'
@@ -32,13 +29,6 @@ import {
   competitorListRefreshHandler,
 } from '../common'
 import styles from './styles'
-
-const shareIcon = fromClass(IconText).contramap(always({
-  source: Images.actions.share,
-  iconTintColor: 'white',
-  style: { justifyContent: 'center', alignItems: 'center', marginRight: 15 },
-  iconStyle: { width: 25, height: 25 }
-}))
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 
@@ -88,23 +78,6 @@ const sessionData = {
   racesAndScoringOnPress: (props: any) => props.navigation.navigate(Screens.RaceDetails, { data: props.session }),
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
-
-export const ShareButton = Component(props => compose(
-  fold(props),
-  connect(null, { openSAPAnalyticsEvent, openEventLeaderboard }),
-  connectActionSheet,
-  touchableOpacity({
-    onPress: props => props.showActionSheetWithOptions({
-      options: ['Share SAP Analytics Link', 'Visit Overall Leaderboard', 'Cancel'],
-      cancelButtonIndex: 2,
-    },
-    compose(
-      call,
-      last,
-      take(__, [props.openSAPAnalyticsEvent, props.openEventLeaderboard, identity]),
-      inc))
-  }))(
-  shareIcon))
 
 export default Component((props: any) =>
   compose(
