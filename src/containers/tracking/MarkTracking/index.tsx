@@ -22,10 +22,8 @@ import { button as buttonStyles, container } from 'styles/commons'
 import { deleteMarkBinding } from 'actions/checkIn'
 import { startTracking, stopTracking } from 'actions/tracking'
 import { getMarkBindingCheckIn, getNameOfBoundMark, isDeletingMarkBinding } from 'selectors/checkIn'
-import { getLocationStats } from 'selectors/location'
-import * as LocationService from 'services/LocationService'
+import { getLocationStats, getLocationTrackingStatus } from 'selectors/location'
 import { getUnknownErrorMessage } from 'helpers/texts'
-import { NavigationEvents } from '@react-navigation/compat'
 
 import styles, { deleteBindingColor, headerImageBackgroundColor } from './styles'
 
@@ -33,11 +31,11 @@ const mapStateToProps = (state: any) => ({
   markName: getNameOfBoundMark(state),
   checkIn: getMarkBindingCheckIn(state),
   trackingStats: getLocationStats(state) || {},
-  isDeletingMarkBinding: isDeletingMarkBinding(state)
+  isDeletingMarkBinding: isDeletingMarkBinding(state),
+  isTracking: getLocationTrackingStatus(state) === 'RUNNING'
 })
 
 const nothingIfNotTracking = branch(compose(not, prop('isTracking')), nothingAsClass)
-const withIsTracking = withState('isTracking', 'setIsTracking', false)
 
 const withKeepAwake = lifecycle({
   componentDidMount() {
@@ -125,12 +123,10 @@ const trackingButton = Component((props: any) =>
       if (props.isTracking) {
         try {
           await props.stopTracking(props.checkIn)
-          props.setIsTracking(false)
         } catch (err) {}
       } else {
         try {
           await props.startTracking({ data: props.checkIn, navigation: props.navigation, useLoadingSpinner: false })
-          props.setIsTracking(true)
         } catch (err) {
           Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
         }
@@ -149,20 +145,14 @@ const connectivityIndicator = Component((props:any) => compose(
   })))(
   fromClass(ConnectivityIndicator)))
 
-const navigationHandler = fromClass(NavigationEvents).contramap(props => ({
-  onWillFocus: () => LocationService.isEnabled().then(props.setIsTracking)
-}))
-
 export default Component((props:any) => compose(
   fold(props),
-  withIsTracking,
   withIsLoading,
   withKeepAwake,
   connect(mapStateToProps, { deleteMarkBinding, startTracking, stopTracking }),
   view({ style: styles.container }),
   reduce(concat, nothing())
 )([
-  navigationHandler,
   connectivityIndicator,
   markImage,
   informationDisplay,
