@@ -1,9 +1,10 @@
 import React from 'react';
 import Images from '@assets/Images'
-import { Component, contramap, fold, fromClass, nothing,
+import { Component, contramap, fold, fromClass, nothing, connectActionSheet,
   recomposeWithHandlers as withHandlers,
   recomposeBranch as branch,
   recomposeWithState as withState,
+  reduxConnect as connect,
   nothingAsClass,
 } from 'components/fp/component'
 import { forwardingPropsFlatList, iconText, inlineText, text, textButton, touchableOpacity, view } from 'components/fp/react-native'
@@ -14,7 +15,8 @@ import { __, always, anyPass, append, compose, concat, curry,
   equals, has, head, length, map, merge, mergeLeft, objOf,
   prepend, prop, propEq, range, reduce, reject,
   remove, sortBy, split, toString, toUpper, update, when,
-  isEmpty, defaultTo, path, complement } from 'ramda'
+  isEmpty, defaultTo, path, complement, 
+  call, last, inc, take, identity } from 'ramda'
 import { Dimensions, ActivityIndicator } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
 import QRCode from 'react-native-qrcode-svg'
@@ -22,7 +24,7 @@ import styles from './styles'
 import CompetitorList from '../Leaderboard/CompetitorList'
 import { NavigationEvents } from '@react-navigation/compat'
 import * as LocationService from 'services/LocationService'
-
+import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 
 const maxNumberOfRaces = 50
 
@@ -271,6 +273,7 @@ export const competitorsCard = Component((props: any) =>
       nothingIfCurrentUserIsNotCompetitor(text({ style: styles.textLast }, I18n.t('text_user_is_competitor'))),
       inviteCompetitorsButton,
       nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton),
+      shareEventButton,
       startTrackingButton,
       qrCode,
       competitorList
@@ -352,4 +355,41 @@ export const competitorList = Component((props: any) => compose(
   nothingIfCompetitorListStale(nothingIfCompetitorListEmpty(competitorListItems)),
   nothingIfCompetitorListStale(nothingIfCompetitorListNotEmpty(noCompetitorsText)),
 ]))
+
+const shareIcon = fromClass(IconText).contramap(always({
+  source: Images.actions.share,
+  iconTintColor: 'white',
+  style: { justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  iconStyle: { width: 25, height: 25 }
+}))
+
+const shareActionSheet = curry((Comp: any) => Component(props => compose(
+  fold(props),
+  connect(null, { openSAPAnalyticsEvent, openEventLeaderboard }),
+  connectActionSheet,
+  touchableOpacity({
+    onPress: props => props.showActionSheetWithOptions({
+      options: ['Share SAP Analytics Link', 'Visit Overall Leaderboard', 'Cancel'],
+      cancelButtonIndex: 2,
+    },
+    compose(
+      call,
+      last,
+      take(__, [props.openSAPAnalyticsEvent, props.openEventLeaderboard, identity]),
+      inc))
+  }))(Comp)))
+
+export const ShareButton = Component((props: any) => compose(
+  fold(props),
+  shareActionSheet)(
+  shareIcon))
+
+export const shareEventButton = Component((props:any) => compose(
+  fold(props),
+  shareActionSheet,
+  text({ style: [styles.buttonContent, styles.button] }))
+  (I18n.t('caption_share_event').toUpperCase())
+)
+
+
 

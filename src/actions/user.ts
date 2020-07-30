@@ -152,7 +152,9 @@ export const syncEventList = () => async (dispatch: DispatchType, getState: GetS
   // you may get stale data from the inventory first, before updating it with
   // saveCheckInToEventInventory calls.
   await Promise.all(
-    Object.values(checkIns).map(saveCheckInToEventInventory)
+    Object.values(checkIns).filter(
+      ({ joinedAnonymously }: any) => !!joinedAnonymously
+    ).map(saveCheckInToEventInventory)
   )
 
   return dispatch(fetchEventList())
