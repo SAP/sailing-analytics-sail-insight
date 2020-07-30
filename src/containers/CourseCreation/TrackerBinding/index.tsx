@@ -14,7 +14,6 @@ import {
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import styles from './styles'
 import { Dimensions } from 'react-native'
-import { warnAboutMultipleBindingsToTheSameMark } from 'actions/checkIn'
 import { updateMarkConfigurationWithCurrentDeviceAsTracker, fetchAndUpdateMarkConfigurationDeviceTracking } from 'actions/courses'
 import { getDeviceId } from 'selectors/user'
 import { getSelectedEventInfo } from 'selectors/event'
@@ -69,17 +68,13 @@ const useThisDeviceButton = Component(props => compose(
   fold(props),
   touchableOpacity({
     onPress: async () => {
-      const continueBinding = await props.warnAboutMultipleBindingsToTheSameMark(
-        props.selectedMarkConfiguration,
-      )
-
-      if (continueBinding) {
-        console.log('This gets executed')
-        props.updateMarkConfigurationWithCurrentDeviceAsTracker({
-          id: props.selectedMarkConfiguration,
-          deviceId: getDeviceId()
-        })
-      }
+      // const continueBinding = await props.warnAboutMultipleBindingsToTheSameMark(
+      //   props.selectedMarkConfiguration,
+      // )
+      props.updateMarkConfigurationWithCurrentDeviceAsTracker({
+        id: props.selectedMarkConfiguration,
+        deviceId: getDeviceId()
+      })
 
       props.navigation.goBack()
     },
@@ -103,7 +98,6 @@ export default Component((props: object) =>
     connect(mapStateToProps, {
       updateMarkConfigurationWithCurrentDeviceAsTracker,
       fetchAndUpdateMarkConfigurationDeviceTracking,
-      warnAboutMultipleBindingsToTheSameMark,
     }),
     view({ style: styles.container }),
     reduce(concat, nothing()))([

@@ -8,7 +8,6 @@ import { Chevron } from 'react-native-shapes'
 
 import { archiveEvent } from 'actions/events'
 import { navigateToTracking, registerCompetitorAndDevice } from 'actions/sessions'
-import { preventDuplicateCompetitorBindings } from 'actions/checkIn'
 
 import { CheckIn } from 'models'
 
@@ -63,7 +62,6 @@ class JoinRegatta extends React.Component<{
   mark?: any,
   boats?: any,
   registerCompetitorAndDevice: any
-  preventDuplicateCompetitorBindings: any
   navigateToTracking: any
 } > {
 
@@ -88,18 +86,18 @@ class JoinRegatta extends React.Component<{
       ? undefined
       : boats.length > 0 && boats[selectedBoatIndex]
 
-    const continueJoining = await this.props.preventDuplicateCompetitorBindings(
-      checkInData, selectedBoat
-    )
+    // const continueJoining = await this.props.preventDuplicateCompetitorBindings(
+    //   checkInData, selectedBoat
+    // )
 
     this.setState({ isLoading: true })
 
     try {
-      if (!continueJoining) {
-        await this.props.archiveEvent(checkInData, false)
-        this.props.navigateToTracking(this.props.navigation)
-        return
-      }
+      // if (!continueJoining) {
+      //   await this.props.archiveEvent(checkInData, false)
+      //   this.props.navigateToTracking(this.props.navigation)
+      //   return
+      // }
 
       const handleRegistration = (options = {}) => {
         const action = boat => this.props.registerCompetitorAndDevice(
@@ -292,6 +290,6 @@ const mapStateToProps = (state: any, props: any) => {
 
 export default connect(
   mapStateToProps,
-  { archiveEvent, navigateToTracking, preventDuplicateCompetitorBindings, registerCompetitorAndDevice },
+  { archiveEvent, navigateToTracking, registerCompetitorAndDevice },
 )(JoinRegatta)
 
