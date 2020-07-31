@@ -89,17 +89,27 @@ class FormHandicapInput extends React.Component<
       input: { value: inputValue , onChange },
     } = this.props
 
-    const { handicapType = getDefaultHandicapType() } = inputValue
+    const { handicapType = getDefaultHandicapType(),
+            handicapTypeOriginal,
+            handicapValueOriginal
+          } = inputValue
 
     const handicapTypeOnChange = (value: any) =>
+    {
+      const useOriginalValues = value === handicapTypeOriginal && handicapValueOriginal !== null && handicapValueOriginal !== undefined
       onChange({
         handicapType: value,
-        handicapValue: this.convertHandicapValue(
+        handicapValue: useOriginalValues ? 
+          handicapValueOriginal : 
+          this.convertHandicapValue(
           handicapType,
           value,
           inputValue.handicapValue,
         ),
+        handicapTypeOriginal,
+        handicapValueOriginal
       })
+    }
 
     return {
       value: handicapType,
@@ -120,6 +130,8 @@ class FormHandicapInput extends React.Component<
       onChange({
         handicapType: inputValue.handicapType,
         handicapValue: numericValue,
+        handicapValueOriginal: numericValue,
+        handicapTypeOriginal: inputValue.handicapType
       })
     }
 

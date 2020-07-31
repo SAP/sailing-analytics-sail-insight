@@ -224,6 +224,7 @@ class JoinRegatta extends React.Component<{
                       <View style={[form.formSelectInputAndLabelContainer]}>
                         <Text style={form.formSelectLabel}>{I18n.t('text_join_with_boat_select_label')}</Text>
                         <RNPickerSelect
+                            placeholder = {{}}
                             items={boatPickerItems}
                             value={selectedBoatIndex}
                             Icon={() => {
@@ -272,7 +273,10 @@ class JoinRegatta extends React.Component<{
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const checkInData = getCustomScreenParamData(props)
+  const checkInData = {
+    isArchived: false,
+    ...getCustomScreenParamData(props),
+  }
   const actionType = getScreenParamsFromProps(props).actionType
 
   return {

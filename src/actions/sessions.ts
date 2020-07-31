@@ -20,7 +20,7 @@ import * as LocationService from 'services/LocationService'
 import { addUserPrefix } from 'services/SessionService'
 import SessionException from 'services/SessionService/SessionException'
 
-import { ActionQueue, withDataApi } from 'helpers/actions'
+import { withDataApi } from 'helpers/actions'
 import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { getNowAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
@@ -31,7 +31,7 @@ import { getSharingUuid } from 'helpers/uuid'
 
 import { BRANCH_APP_DOMAIN } from 'environment'
 import querystring from 'query-string'
-import { collectCheckInData, registerDevice, updateCheckIn, updateCheckInAndEventInventory } from 'actions/checkIn'
+import { registerDevice, updateCheckIn, updateCheckInAndEventInventory } from 'actions/checkIn'
 import { startTracking } from 'actions/tracking'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
@@ -43,6 +43,7 @@ import { getCompetitor } from '../selectors/competitor'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { getUserBoatByBoatName, getUserTeamByNameBoatClassNationalitySailnumber } from 'selectors/user'
 import { getRegatta } from '../selectors/regatta'
+import { getApiServerUrl } from 'api/config'
 
 export const shareSession = (checkIn: CheckIn) => async () => {
   if (!checkIn || !checkIn.leaderboardName || !checkIn.eventId || !checkIn.secret) {
@@ -183,6 +184,7 @@ export const createUserAttachmentToSession = (
     const userBoat = getUserBoatByBoatName(competitorInfo.name)(getState())
     let boatId = get(userBoat, ['id', serverUrl])
     let competitorId = get(userBoat, ['competitorId', serverUrl])
+    const isSameServer = getApiServerUrl() === serverUrl
 
     let registrationSuccess = false
     if (boatId && competitorId) {
@@ -244,7 +246,9 @@ export const createUserAttachmentToSession = (
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
     }
 
-    if (user && boatId && competitorId) {
+    // ownership request for competitor and boat
+    // add competitor id, boat it to server only if event is on the current logged in server
+    if (user && boatId && competitorId && isSameServer) {
       await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
     }
 
