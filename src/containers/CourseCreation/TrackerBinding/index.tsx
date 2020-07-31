@@ -67,11 +67,15 @@ const trackingQRCode = Component(props => compose(
 const useThisDeviceButton = Component(props => compose(
   fold(props),
   touchableOpacity({
-    onPress: () => {
+    onPress: async () => {
+      // const continueBinding = await props.warnAboutMultipleBindingsToTheSameMark(
+      //   props.selectedMarkConfiguration,
+      // )
       props.updateMarkConfigurationWithCurrentDeviceAsTracker({
         id: props.selectedMarkConfiguration,
         deviceId: getDeviceId()
       })
+
       props.navigation.goBack()
     },
     style: styles.useThisDeviceButton,
@@ -93,7 +97,8 @@ export default Component((props: object) =>
     fold(props),
     connect(mapStateToProps, {
       updateMarkConfigurationWithCurrentDeviceAsTracker,
-      fetchAndUpdateMarkConfigurationDeviceTracking }),
+      fetchAndUpdateMarkConfigurationDeviceTracking,
+    }),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
     NavigationBackHandler,

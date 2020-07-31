@@ -165,7 +165,6 @@ class RegisterBoat extends TextInputForm<Props> {
         const countryCodeResponse = await selfTrackingApi().requestCountryCodes()
         countryList = countryCodeResponse.map(o => o.threeLetterIocCode).filter(o => !!o)
       } catch (err) {}
-      console.log({ countryList })
       const nationality = compose(
         when(always(isEmpty(countryList)), always(undefined)),
         unless(includes(__, countryList), always(undefined)),

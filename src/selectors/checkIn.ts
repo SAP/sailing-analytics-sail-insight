@@ -114,6 +114,18 @@ export const getMarkPropertiesIdOfBoundMark = createSelector(
   )
 )
 
+export const getCheckInsByMarkPropertiesId = (markPropertiesId: string) => createSelector(
+  getActiveCheckInEntity,
+  getMarkEntity,
+  (checkIns = {}, marks = {}) => Object.values(checkIns).filter(({ markId }) => {
+    if (!markId) return false
+    const mark = prop(markId)(marks)
+    const originatingMarkPropertiesId = prop('originatingMarkPropertiesId')(mark || {})
+    if (!originatingMarkPropertiesId) return false
+    return originatingMarkPropertiesId === markPropertiesId
+  })
+)
+
 export const isLoadingCheckIn = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingCheckIn
 export const isLoadingSplash = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingSplash
 export const isDeletingMarkBinding = (state: RootState = {}) => state.checkIn && state.checkIn.isDeletingMarkBinding
