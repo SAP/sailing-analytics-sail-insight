@@ -20,6 +20,8 @@ import { button, form } from 'styles/commons'
 import styles from './styles'
 import { convertHandicapValue, Handicap, HandicapTypes } from 'models/TeamTemplate'
 import { dataApi } from 'api'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { isNetworkConnected } from 'selectors/network'
 
 const FORM_KEY_FORM_NAME = 'editCompetitor'
 const FORM_KEY_HANDICAP = 'handicap'
@@ -38,6 +40,7 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     session,
     competitorId,
+    isNetworkConnected: isNetworkConnected(state),
     initialValues: {
       [FORM_KEY_DISPLAY_NAME]: displayName,
       [FORM_KEY_HANDICAP]: handicap
@@ -48,6 +51,11 @@ const mapStateToProps = (state: any, props: any) => {
 const withIsLoading = withState('isLoading', 'setIsLoading', false)
 
 const updateCompetitorValues = props => async (values: any) => {
+  if (!props.isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
+
   const { competitorId } = props
   const { serverUrl, regattaName } = props.session
   const api = dataApi(serverUrl)
