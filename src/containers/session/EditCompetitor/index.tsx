@@ -104,7 +104,7 @@ export default Component(
     view({ style: styles.container }),
     view({ style: form.formSegment }),
     reduce(concat, nothing()))([
-      displayNameInput,
+      // displayNameInput,
       handicapInput,
       saveButton,
     ]))
