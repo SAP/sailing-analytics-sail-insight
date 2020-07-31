@@ -324,7 +324,7 @@ const competitorListItems = Component((props: any) => compose(
   contramap(mergeLeft({
     leaderboard: sortBy(prop('name'), props.competitorList),
     forLeaderboard: false,
-    showHandicapValues: props.boatClass === '', // Handicap regatta check
+    showHandicapValues: props.isEventOrganizer && props.boatClass === '', // Handicap regatta check
     onCompetitorItemPress: props.isEventOrganizer && props.boatClass === '' &&
       (competitorId => props.navigation.navigate(Screens.EditCompetitor, {
         data: { competitorId, session: props.session }

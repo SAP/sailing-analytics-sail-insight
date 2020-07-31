@@ -102,6 +102,7 @@ export default EStyleSheets.create({
   },
   handicapValueText: {
     fontSize: 14,
+    color: '#686868'
   },
   textContainer: {
     flexDirection: 'row',
