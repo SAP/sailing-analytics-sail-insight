@@ -303,6 +303,7 @@
   "error_offline_competitor_registration": "Du musst mit dem Internet verbunden sein um die Anmeldung abzuschließen",
   "error_network_required_alert": "Bitte überprüfe die Internetverbindung und dann wiederhole den Vorgang. Sollte der Fehler weiter bestehen kontaktiere bitte support@sapsailing.com",
   "error_network_required_snackbar": "Network connection required to perform this action",
+  "error_field_invalid_handicap": "Handicap kann nicht 0 sein.",
 
   "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
   "url_privacy_policy": "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",
