@@ -207,6 +207,7 @@ class JoinRegatta extends React.Component<{
                       <View style={[form.formSelectInputAndLabelContainer]}>
                         <Text style={form.formSelectLabel}>{I18n.t('text_join_with_boat_select_label')}</Text>
                         <RNPickerSelect
+                            placeholder = {{}}
                             items={boatPickerItems}
                             value={selectedBoatIndex}
                             Icon={() => {
