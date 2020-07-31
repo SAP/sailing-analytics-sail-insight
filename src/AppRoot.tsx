@@ -287,7 +287,8 @@ const sessionsNavigator = Component(props => compose(
       selectedMarkConfiguration: props.route.params.data.selectedMarkConfiguration,
     })).fold,
     options: { title: I18n.t('caption_course_creator_bind_with_tracker') } })),
-    stackScreen(withLeftHeaderBackButton({ name: Screens.EditCompetitor, component: EditCompetitor.fold }))
+    stackScreen(withLeftHeaderBackButton({ name: Screens.EditCompetitor, component: EditCompetitor.fold,
+      options: { title: I18n.t('title_edit_competitor') } }))
 ]))
 
 const accountNavigator = Component(props => compose(
