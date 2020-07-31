@@ -38,6 +38,7 @@ import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getLocationTrackingStatus } from 'selectors/location'
 import { getUserBoatByBoatName } from 'selectors/user'
+import { getApiServerUrl } from 'api/config'
 
 export const shareSession = (checkIn: CheckIn) => async () => {
   if (!checkIn || !checkIn.leaderboardName || !checkIn.eventId || !checkIn.secret) {
@@ -178,6 +179,7 @@ export const createUserAttachmentToSession = (
     const userBoat = getUserBoatByBoatName(competitorInfo.name)(getState())
     let boatId = get(userBoat, ['id', serverUrl])
     let competitorId = get(userBoat, ['competitorId', serverUrl])
+    const isSameServer = getApiServerUrl() === serverUrl
 
     let registrationSuccess = false
     if (boatId && competitorId) {
@@ -239,7 +241,9 @@ export const createUserAttachmentToSession = (
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
     }
 
-    if (user && boatId && competitorId) {
+    // ownership request for competitor and boat
+    // add competitor id, boat it to server only if event is on the current logged in server
+    if (user && boatId && competitorId && isSameServer) {
       await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
     }
 
