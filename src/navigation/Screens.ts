@@ -22,6 +22,7 @@ export const EditSession = 'EditSession'
 export const NewSession = 'NewSession'
 export const FilterSessions = 'FilterSessions'
 export const EventCreation = 'EventCreation'
+export const EditCompetitor = 'EditCompetitor'
 
 export const RaceDetails = 'RaceDetails'
 export const RaceCourseLayout = 'RaceCourseLayout'
