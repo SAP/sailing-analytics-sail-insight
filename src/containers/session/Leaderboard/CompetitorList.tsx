@@ -21,6 +21,7 @@ class CompetitorList extends React.Component<{
   rankingMetric?: string
   myCompetitorData?: LeaderboardCompetitorCurrentTrack
   selectedColumn?: ColumnValueType
+  showHandicapValues?: boolean
 }> {
   public render() {
     return (
@@ -64,16 +65,28 @@ class CompetitorList extends React.Component<{
       )
     }
 
+    const { showHandicapValues = false } = this.props
+    const { timeOnTimeFactor, nationalityISO2 } = item
+
     return (
-      <View style={[styles.textContainer, styles.itemTextContainer]}>
-        <Flag
-          code={countryCode}
-          size={normalRowValueFontSize}
-        />
-        <View style={styles.itemTextContainer}>
-          <Text style={[styles.nameText, { maxWidth: undefined }]}>{name || EMPTY_VALUE}</Text>
+      <>
+        <View style={[styles.textContainer, styles.itemTextContainer]}>
+          <Flag
+            code={countryCode || nationalityISO2}
+            size={normalRowValueFontSize}
+          />
+          <View style={styles.itemTextContainer}>
+            <Text style={[styles.nameText, { maxWidth: undefined }]}>{name || EMPTY_VALUE}</Text>
+          </View>
         </View>
-      </View>
+        {showHandicapValues &&
+          <View style={[styles.textContainer, { flex: 0 }]}>
+            <Text style={[styles.gapText, styles.handicapValueText]}>
+              {timeOnTimeFactor !== undefined ? timeOnTimeFactor.toFixed(2) : ''}
+            </Text>
+          </View>
+        }
+      </>
     )
   }
 
@@ -86,7 +99,7 @@ class CompetitorList extends React.Component<{
     return (
       <TouchableHighlight
         style={[styles.listRowButtonContainer]}
-        onPress={onCompetitorItemPress && onCompetitorItemPress(id)}
+        onPress={onCompetitorItemPress && (() => onCompetitorItemPress(id))}
       >
         <View style={[styles.listRowContainer]}>
           <View style={[styles.listItemContainer]}>

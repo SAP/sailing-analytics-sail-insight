@@ -10,6 +10,7 @@ export const MARK_PROPERTIES_ENTITY_NAME = 'markProperties'
 export const EVENT_ENTITY_NAME = 'event'
 export const RACE_ENTITY_NAME = 'race'
 export const REGATTA_ENTITY_NAME = 'regatta'
+export const REGATTA_COMPETITORS_ENTITY_NAME = 'regattaCompetitors'
 
 export const eventSchema = new schema.Entity(
   EVENT_ENTITY_NAME,

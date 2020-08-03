@@ -49,6 +49,24 @@ export const hasHandicapChanged = (oldHandicap?: Handicap, newHandicap?: Handica
       (newHandicap.handicapValue !== undefined &&
         newHandicap.handicapType !== oldHandicap.handicapType)))
 
+export const convertHandicapValue = (
+  fromType: HandicapTypes,
+  toType: HandicapTypes,
+  value?: string,
+) => {
+  if (!value) {
+    return value
+  }
+
+  const handicapValueFloat = parseFloat(value.replace(',', '.'))
+  if (fromType === HandicapTypes.Yardstick && toType === HandicapTypes.TimeOnTime ||
+      fromType === HandicapTypes.TimeOnTime && toType === HandicapTypes.Yardstick) {
+    return (+(100 / handicapValueFloat).toFixed(1)).toString()
+  }
+
+  return value
+}
+
 
 export default interface TeamTemplate {
   name: string,

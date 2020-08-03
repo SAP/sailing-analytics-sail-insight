@@ -110,6 +110,7 @@ const formInputAssitiveTextError = {
 }
 
 export default EStyleSheet.create({
+    formSegment,
     formSegment1: Object.assign({
         backgroundColor: addOpacity($siMediumBlue, 0.16),
         ...formSegment

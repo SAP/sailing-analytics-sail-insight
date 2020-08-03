@@ -3,7 +3,7 @@ import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
-import { fetchLeaderboardV2 } from 'actions/leaderboards'
+import { fetchRegattaCompetitors } from 'actions/regattas'
 import { stopTracking } from 'actions/events'
 import { startTracking } from 'actions/tracking'
 import * as Screens from 'navigation/Screens'
@@ -67,6 +67,7 @@ const mapStateToProps = (state: any, props: any) => {
     isBeforeLastPlannedRaceStartTime,
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
+    isEventOrganizer: true
   }
 }
 
@@ -157,7 +158,7 @@ export const endEventCard = Component((props: any) => compose(
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
     connect(mapStateToProps, {
-      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2
+      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors
     }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
