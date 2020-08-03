@@ -40,6 +40,7 @@ const mapStateToProps = (state: any, props: any) => {
   return {
     session,
     competitorId,
+    displayName,
     isNetworkConnected: isNetworkConnected(state),
     initialValues: {
       [FORM_KEY_DISPLAY_NAME]: displayName,
@@ -75,6 +76,11 @@ const updateCompetitorValues = props => async (values: any) => {
   props.setIsLoading(false)
   props.navigation.goBack()
 }
+
+const competitorName = Component((props: any) => compose(
+  fold(props),
+  text({ style: styles.competitorName })
+)(props.displayName || ''))
 
 const displayNameInput = Component((props: any) => compose(
   fold(props))(
@@ -112,6 +118,7 @@ export default Component(
     view({ style: styles.container }),
     view({ style: form.formSegment }),
     reduce(concat, nothing()))([
+      competitorName,
       // displayNameInput,
       handicapInput,
       saveButton,
