@@ -10,7 +10,7 @@ import {
   recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { BackHandler, Alert } from 'react-native'
+import { BackHandler, Alert, Keyboard } from 'react-native'
 import BackgroundGeolocation from 'react-native-background-geolocation-android'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
@@ -505,7 +505,7 @@ const ShortAndLongName = Component((props: object) =>
       view({ style: index === 1 ? { marginLeft: 30 } : { flex: 1, flexBasis: 1 }}),
       compose(TextInputWithLabel.contramap, merge),
       merge({
-        maxLength: index === 1 ? 5 : 100,
+        maxLength: index === 1 ? 4 : 100,
         inputStyle: styles.textInput,
         inputContainerStyle: styles.textInputContainer,
         containerStyle: styles.textInputInputContainer }))(data)))(
@@ -572,7 +572,7 @@ const WaypointEditForm = Component((props: any) =>
 
 const WaypointsList = Component(props => {
   const startWidth = 115
-  const waypointWidth = 43
+  const waypointWidth = 60
   const windowWidth = Dimensions.get('window').width
   let finishWidth = 175
   let svgWidth = startWidth + (props.course.waypoints.length - 1) * waypointWidth + finishWidth
@@ -610,9 +610,10 @@ const WaypointsList = Component(props => {
       const pathData =
         isStart ? 'M132.736 40.158L115.924.5H.5v79.462h115.424z' :
         isFinish ? `M${finishWidth}.372.5H.755l16.936 39.926L.755 80h${finishWidth}.617z` :
-        'M60.367 40.158L43.555.5H.755l16.826 39.658-16.826 39.8h42.8z'
+        'M77 40.158 L60 .5 H.755 l17 39.658 l-17 39.8 h60 z'
       const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 37}, 47)`
       const textAnchor = isStart || isFinish ? 'start' : 'middle'
+      const x = isStart || isFinish ? 0 : 17/2
       const onPressOut = () => {
         if (waypoint.isAdd) {
           props.addWaypoint({ index, id: uuidv4() })
@@ -635,7 +636,7 @@ const WaypointsList = Component(props => {
         ifElse(
           always(waypoint.isAdd),
           always(svgPath.contramap(always({
-            d: 'M34.026 52.098v-10.5h-10.5v-3h10.5v-10.5h3v10.5h10.5v3h-10.5v10.5z',
+            d: 'M42.526 52.098 v-10.5 h-10.5 v-3 h10.5 v-10.5 h3 v10.5 h10.5 v3h -10.5 v10.5 z',
             fill: '#fff'
           }))),
           svgText({
@@ -643,6 +644,7 @@ const WaypointsList = Component(props => {
             fill: '#fff',
             fontSize: 18,
             textAnchor,
+            x,
             fontFamily: 'SFProDisplay-Bold',
             letterSpacing: '.016em'
           })))(
@@ -668,8 +670,12 @@ const withOnNavigationBackPress = withHandlers({
     }
   },
   onNavigationSavePress: (props: any) => () => {
-    props.navigateBackFromCourseCreation()
-    props.navigation.goBack()
+    const handleSave = () => {
+      props.navigateBackFromCourseCreation()
+      props.navigation.goBack()
+    }
+    Keyboard.dismiss()
+    setTimeout(() => handleSave(), 50)
   }
 })
 

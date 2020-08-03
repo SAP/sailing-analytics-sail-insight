@@ -1,9 +1,12 @@
+import { receiveEntities } from 'actions/entities'
 import { fetchEntityAction, withDataApi } from 'helpers/actions'
 import { DispatchType } from 'helpers/types'
 import { Race } from 'models'
 
-import { getRaces } from 'selectors/race'
+import { REGATTA_COMPETITORS_ENTITY_NAME } from 'api/schemas'
 
+import { isNetworkConnected } from 'selectors/network'
+import { getRaces } from 'selectors/race'
 
 export const fetchRegatta = (regattaName: string, secret?: string, forcedServerUrl?: string) =>
   withDataApi(forcedServerUrl || { secret, leaderboard: regattaName })(async (dataApi, dispatch) => {
@@ -57,3 +60,13 @@ export const fetchRegattaRaceManeuvers = (race: Race, competitorId?: string) => 
     )
   },
 )
+
+export const fetchRegattaCompetitors = (regattaName: string, leaderboard: string) =>
+  withDataApi({ leaderboard })(async (dataApi, dispatch, getState) => {
+    // Ignore the call if offline
+    if (isNetworkConnected(getState())) {
+      const data = await dataApi.requestRegattaCompetitors(regattaName)
+      dispatch(receiveEntities({ entities: { [REGATTA_COMPETITORS_ENTITY_NAME]: { [regattaName]: data } } }))
+    }
+  }
+  )
