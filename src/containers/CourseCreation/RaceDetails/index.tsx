@@ -166,12 +166,15 @@ const arrowRight = icon({
   iconTintColor: arrowColor
 })
 
-const editIcon = icon({ 
-  source: Images.actions.penEdit, 
-  iconStyle: styles.iconStyle,
-  style: styles.editIconContainerStyle,
-  iconTintColor: arrowColor
-})
+const editIcon = Component((props: any) => compose(
+  fold(props),
+  view({style: styles.editIconContainerStyle})
+  )(icon({ 
+    source: Images.actions.penEdit, 
+    iconStyle: styles.iconEditStyle,
+    iconTintColor: arrowColor
+  }))
+)
 
 const defineLayoutButton = Component((props: any) =>
   compose(
