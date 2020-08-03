@@ -164,7 +164,16 @@ const navigationBackHandler = Component((props: any) => compose(
           onPress: () => {
             props.onNavigationCancelPress()
           }
-        })
+        }),
+        headerLeftContainerStyle: {
+          flex: 0.15,
+        },
+        headerRightContainerStyle: {
+          flex: 0.15
+        },
+        headerTitleContainerStyle: {
+          flex: 0.7,
+        }
       })
     }
   })),
