@@ -10,7 +10,7 @@ import {
   recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { BackHandler, Alert } from 'react-native'
+import { BackHandler, Alert, Keyboard } from 'react-native'
 import BackgroundGeolocation from 'react-native-background-geolocation-android'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
@@ -668,8 +668,12 @@ const withOnNavigationBackPress = withHandlers({
     }
   },
   onNavigationSavePress: (props: any) => () => {
-    props.navigateBackFromCourseCreation()
-    props.navigation.goBack()
+    const handleSave = () => {
+      props.navigateBackFromCourseCreation()
+      props.navigation.goBack()
+    }
+    Keyboard.dismiss()
+    setTimeout(() => handleSave(), 50)
   }
 })
 
