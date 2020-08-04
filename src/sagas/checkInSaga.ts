@@ -71,7 +71,7 @@ function* deleteMarkBinding({ payload }: any) {
   } catch (err) {
     console.log('Failed to delete mark binding', { err })
     Snackbar.show({
-      title: I18n.t('error_unknown'),
+      text: I18n.t('error_unknown'),
       duration: Snackbar.LENGTH_SHORT
     })
   }
