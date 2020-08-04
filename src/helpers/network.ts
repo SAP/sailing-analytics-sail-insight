@@ -4,7 +4,7 @@ import Snackbar from 'react-native-snackbar'
 
 export const showNetworkRequiredSnackbarMessage = () =>
   Snackbar.show({
-    title: I18n.t('error_network_required_snackbar'),
+    text: I18n.t('error_network_required_snackbar'),
     duration: Snackbar.LENGTH_LONG,
   })
 
