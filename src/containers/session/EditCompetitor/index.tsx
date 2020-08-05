@@ -18,7 +18,7 @@ import FormTextInput from 'components/form/FormTextInput'
 import FormHandicapInput from 'components/form/FormHandicapInput'
 import { button, form } from 'styles/commons'
 import styles from './styles'
-import { convertHandicapValue, Handicap, HandicapTypes } from 'models/TeamTemplate'
+import { Handicap, HandicapTypes, getTimeOnTimeFactor } from 'models/TeamTemplate'
 import { dataApi } from 'api'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { isNetworkConnected } from 'selectors/network'
@@ -62,9 +62,12 @@ const updateCompetitorValues = props => async (values: any) => {
   const api = dataApi(serverUrl)
   props.setIsLoading(true)
 
-  const { handicap: { handicapValue, handicapType } } = values
+  const { handicap } = values
+  const handicapType = handicap.handicapTypeRaw !== undefined ? handicap.handicapTypeRaw : handicap.handicapType
+  const handicapValue = handicap.handicapValueRaw !== undefined ? handicap.handicapValueRaw : handicap.handicapValue
+
   const ToTFactor = handicapType === HandicapTypes.Yardstick
-    ? Number(convertHandicapValue(HandicapTypes.Yardstick, HandicapTypes.TimeOnTime, handicapValue))
+    ? Number(getTimeOnTimeFactor({handicapType, handicapValue}))
     : Number(handicapValue)
   let handicapPromise
   if (!isNaN(ToTFactor)) {

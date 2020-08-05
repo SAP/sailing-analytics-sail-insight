@@ -17,7 +17,7 @@ import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
 
 import { TeamTemplate } from 'models'
-import { getDefaultHandicap, Handicap, hasHandicapChanged } from 'models/TeamTemplate'
+import { getDefaultHandicap, Handicap, hasHandicapChanged, HandicapTypes } from 'models/TeamTemplate'
 
 import { getCustomScreenParamData } from 'navigation/utils'
 
@@ -200,7 +200,17 @@ class TeamDetails extends TextInputForm<Props> {
   protected onSavePress = async (values: any) => {
     try {
       this.setState({ isLoading: true })
-      const teamFromFormValues = teamForm.teamFromFormValues(values)
+
+      // use raw values when present
+      const { handicap } = values
+      const handicapType = handicap.handicapTypeRaw !== undefined ? handicap.handicapTypeRaw : handicap.handicapType
+      const handicapValue = handicap.handicapValueRaw !== undefined ? handicap.handicapValueRaw : handicap.handicapValue
+      const valuesRaw = { 
+        ...values,
+        handicap : { handicapType, handicapValue}
+      }
+
+      const teamFromFormValues = teamForm.teamFromFormValues(valuesRaw)
       if (!teamFromFormValues) {
         return false
       }

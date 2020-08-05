@@ -67,6 +67,18 @@ export const convertHandicapValue = (
   return value
 }
 
+export const getTimeOnTimeFactor = (handicap?: Handicap) => {
+  const { handicapType = getDefaultHandicapType(), handicapValue = null } = handicap || {}
+
+  if (!handicapType || !handicapValue) return undefined
+
+  if (handicapType === HandicapTypes.TimeOnTime) return handicapValue
+
+  const timeOnTimeFactor = 100 / handicapValue
+
+  return timeOnTimeFactor
+}
+
 
 export default interface TeamTemplate {
   name: string,
