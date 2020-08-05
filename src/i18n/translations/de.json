@@ -188,6 +188,8 @@
   "text_join_with_boat_choose": "Wähle das Boot mit dem Du segelst:",
   "text_join_with_boat_select_label": "Boot ",
   "text_add_boat_explainer": "Besuche die Einstellungen, um dieses Boot zu bearbeiten oder ein Neues zu erstellen.",
+  "text_link_copied_to_clipboard": "Link in die Zwischenablage kopiert",
+  "text_course_saved": "Kurs erfolgreich gespeichert",
 
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",
@@ -201,6 +203,8 @@
   "caption_delete_mark_binding": "Verknüpfung mit diesem Gerät aufheben",
   "caption_start_tracking": "Starte Tracking",
   "caption_stop_tracking": "Tracking Beenden",
+  "caption_edit_results": "Ergebnisse editieren",
+  "caption_copy_edit_results_to_clipboard": "Kopieren Editier-Link",
   "caption_to_event": "Zum Event",
   "caption_to_leaderboard": "Zum Leaderboard",
   "caption_done": "Fertig",
@@ -304,6 +308,7 @@
   "error_offline_competitor_registration": "Du musst mit dem Internet verbunden sein um die Anmeldung abzuschließen",
   "error_network_required_alert": "Bitte überprüfe die Internetverbindung und dann wiederhole den Vorgang. Sollte der Fehler weiter bestehen kontaktiere bitte support@sapsailing.com",
   "error_network_required_snackbar": "Network connection required to perform this action",
+  "error_field_invalid_handicap": "Handicap kann nicht 0 sein.",
 
   "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
   "url_privacy_policy": "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",

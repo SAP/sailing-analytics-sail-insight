@@ -13,7 +13,8 @@ export default EStyleSheet.create({
     },
     baseText: {
       ...text.text,
-      color: '$siWhite'
+      color: '$siWhite',
+      flexShrink: 1
     },
     separator: {
         height: 0,

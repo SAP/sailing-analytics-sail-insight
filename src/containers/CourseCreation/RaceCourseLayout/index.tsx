@@ -671,8 +671,7 @@ const withOnNavigationBackPress = withHandlers({
   },
   onNavigationSavePress: (props: any) => () => {
     const handleSave = () => {
-      props.navigateBackFromCourseCreation()
-      props.navigation.goBack()
+      props.navigateBackFromCourseCreation({ navigation: props.navigation })
     }
     Keyboard.dismiss()
     setTimeout(() => handleSave(), 50)

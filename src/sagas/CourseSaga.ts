@@ -28,6 +28,7 @@ import { selectRace } from 'actions/events'
 import * as Screens from 'navigation/Screens'
 import { loadMarkProperties } from 'sagas/InventorySaga'
 import { getHashedDeviceId } from 'selectors/user'
+import { isNetworkConnected } from 'selectors/network'
 import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
 import { getCourseById, getEditedCourse, hasSameStartFinish,
   hasEditedCourseChanged, getSelectedMarkConfiguration,
@@ -39,10 +40,10 @@ import {
 import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { updateCheckInAndEventInventory } from 'actions/checkIn'
 import { receiveEntities } from 'actions/entities'
-import { Alert } from 'react-native'
 import Snackbar from 'react-native-snackbar'
 import I18n from 'i18n'
 import { PassingInstruction } from 'models/Course'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
@@ -278,13 +279,21 @@ function* saveCourseToServer({ editedCourse, existingCourse, regattaName, raceCo
   return updatedCourse
 }
 
-function* saveCourseFlow() {
+function* saveCourseFlow({ navigation }: any) {
   const { serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret } = yield select(getSelectedRaceInfo)
   const api = dataApi(serverUrl)
   const raceId = getRaceId(regattaName, raceColumnName)
 
   const editedCourse = yield select(getEditedCourse)
   const existingCourse = yield select(getCourseById(raceId))
+  const isConnected = yield select(isNetworkConnected)
+
+  if (!isConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
+
+  navigation.goBack()
 
   const updatedCourse = yield call(saveCourseToServer, {
     editedCourse,
@@ -343,6 +352,10 @@ function* saveCourseFlow() {
     const mark = yield call(api.requestMark, leaderboardName, markUsedWithCurrentDeviceAsTracker.markId, secret)
     yield put(receiveEntities(mark))
   }
+  Snackbar.show({
+    text: I18n.t('text_course_saved'),
+    duration: Snackbar.LENGTH_LONG
+  })
   yield call(loadMarkProperties)
 }
 
@@ -419,17 +432,15 @@ function* toggleSameStartFinish() {
   }
 }
 
-function* navigateBackFromCourseCreation() {
+function* navigateBackFromCourseCreation({ payload }: any) {
   const hasChanged = yield select(hasEditedCourseChanged)
 
-  if (!hasChanged) return
+  if (!hasChanged) {
+    payload.navigation.goBack()
+    return
+  }
 
-  yield call(saveCourseFlow)
-
-  Snackbar.show({
-    title: 'Course successfully saved',
-    duration: Snackbar.LENGTH_LONG
-  })
+  yield call(saveCourseFlow, { navigation: payload.navigation })
 }
 
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {

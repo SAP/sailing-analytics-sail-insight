@@ -14,7 +14,7 @@ import {
   FORM_KEY_SAIL_NUMBER,
   TEAM_FORM_NAME,
 } from 'forms/team'
-import { validateRequired } from 'forms/validators'
+import { validateRequired, validateHandicap } from 'forms/validators'
 
 import { selfTrackingApi } from 'api'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
@@ -124,7 +124,8 @@ class RegisterBoat extends TextInputForm<Props> {
                   <Field
                     label={I18n.t('text_handicap_label')}
                     name={FORM_KEY_HANDICAP}
-                    component={FormHandicapInput} />
+                    component={FormHandicapInput}
+                    validate={[validateHandicap]} />
                 </View>
               }
               <View style={form.lastFormSegment}>
