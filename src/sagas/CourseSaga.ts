@@ -353,7 +353,7 @@ function* saveCourseFlow({ navigation }: any) {
     yield put(receiveEntities(mark))
   }
   Snackbar.show({
-    text: 'Course successfully saved',
+    text: I18n.t('text_course_saved'),
     duration: Snackbar.LENGTH_LONG
   })
   yield call(loadMarkProperties)

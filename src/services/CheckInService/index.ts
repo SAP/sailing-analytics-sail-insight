@@ -115,6 +115,9 @@ export const raceUrl = (session: CheckIn, race: Race) =>
   // tslint:disable-next-line max-line-length
   `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${encodeURIComponent(session.leaderboardName)}&raceName=${encodeURIComponent(race.name)}&leaderboardName=${encodeURIComponent(session.leaderboardName)}&eventId=${encodeURIComponent(session.eventId)}&mode=FULL_ANALYSIS`
 
+export const editResultsUrl = (session: CheckIn) =>
+  session && `${session.serverUrl}/gwt/LeaderboardEditing.html?name=${encodeURIComponent(session.leaderboardName)}`
+
 export const eventCreationResponseToCheckIn = (
   response: CreateEventResponseData,
   additionalProperties?: CheckInUpdate,
