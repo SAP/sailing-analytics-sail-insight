@@ -272,6 +272,8 @@ const sessionsNavigator = Component(props => compose(
     options: { title: I18n.t('title_race_details') } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.TrackDetails, component: WebView,
     options: { title: I18n.t('caption_sap_analytics_header') } })),
+  stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults, component: WebView,
+    options: { title: I18n.t('caption_sap_analytics_header') } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.RaceCourseLayout, component: RaceCourseLayout.fold,
     options: { title: I18n.t('title_race_course'), gestureEnabled: false } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.CourseGeolocation,
