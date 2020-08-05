@@ -5,7 +5,7 @@ import SwitchSelector from 'react-native-switch-selector'
 import { WrappedFieldProps } from 'redux-form'
 
 import FormTextInput from 'components/form/FormTextInput'
-import { convertHandicapValue, getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
+import { convertHandicapValue, getDefaultHandicapType, HandicapTypes, getAllowedHandicapValue } from 'models/TeamTemplate'
 
 import styles from './styles'
 import { $primaryActiveColor, $primaryBackgroundColor } from 'styles/colors'
@@ -86,12 +86,12 @@ class FormHandicapInput extends React.Component<
       onChange({
         handicapType: value,
         handicapValue: hasRawValues && value === handicapTypeRaw ?
-          handicapValueRaw :
-          convertHandicapValue(
+          getAllowedHandicapValue(value, handicapValueRaw) :
+          getAllowedHandicapValue(value, convertHandicapValue(
           handicapType,
           value,
-          inputValue.handicapValue,
-        ),
+          hasRawValues && handicapType === handicapTypeRaw ? handicapValueRaw : inputValue.handicapValue,
+        )),
         handicapTypeRaw: hasRawValues ? handicapTypeRaw : handicapType,
         handicapValueRaw: hasRawValues ? handicapValueRaw : inputValue.handicapValue
       })
@@ -115,8 +115,8 @@ class FormHandicapInput extends React.Component<
         value === '' ? undefined : value.replace(/[^0-9,.]/g, '')
       onChange({
         handicapType: inputValue.handicapType,
-        handicapValue: numericValue,
-        handicapValueRaw: numericValue,
+        handicapValue: getAllowedHandicapValue(inputValue.handicapType, numericValue),
+        handicapValueRaw: getAllowedHandicapValue(inputValue.handicapType, numericValue),
         handicapTypeRaw: inputValue.handicapType
       })
     }
@@ -124,7 +124,7 @@ class FormHandicapInput extends React.Component<
     return {
       ...this.props,
       input: {
-        value: handicapValue,
+        value: getAllowedHandicapValue(inputValue.handicapType, handicapValue),
         onChange: handicapValueOnChange,
         ...restInputProps,
       },
