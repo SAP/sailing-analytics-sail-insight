@@ -1,7 +1,7 @@
 import { __, compose, always, both, path, when, move, length, subtract, curry, of as Rof,
-  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc,
-  objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN, apply,
-  propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head, isEmpty, either, once } from 'ramda'
+  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc, reject,
+  objOf, isNil, not, equals, pick, ifElse, insert, complement, uncurryN, apply,
+  propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head, isEmpty, either } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
@@ -485,12 +485,20 @@ compose(
   prop('item'))(
   props))
 
+const marksAndMarkPropertiesWithoutTheOtherGateSideMark = (props: any) => {
+  const otherSideId = compose(
+    head,
+    reject(equals(props.selectedMarkConfiguration)))(
+    props.selectedWaypoint.markConfigurationIds)
+  return reject(propEq('id', otherSideId), props.marksAndMarkPropertiesOptions)
+}
+
 const MarksOrMarkPropertiesOptionsList = Component((props: object) => compose(
     fold(props),
     scrollView({ style: styles.markPropertiesListContainer, nestedScrollEnabled: true, flexGrow: 0 }))(
     forwardingPropsFlatList.contramap((props: any) =>
       merge({
-        data: props.marksAndMarkPropertiesOptions,
+        data: marksAndMarkPropertiesWithoutTheOtherGateSideMark(props),
         renderItem: MarksOrMarkPropertiesOptionsListItem.fold
       }, props))))
 
