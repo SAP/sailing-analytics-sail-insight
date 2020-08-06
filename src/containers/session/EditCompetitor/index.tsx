@@ -22,6 +22,7 @@ import { Handicap, HandicapTypes, getTimeOnTimeFactor } from 'models/TeamTemplat
 import { dataApi } from 'api'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { isNetworkConnected } from 'selectors/network'
+import { validateHandicap } from 'forms/validators'
 
 const FORM_KEY_FORM_NAME = 'editCompetitor'
 const FORM_KEY_HANDICAP = 'handicap'
@@ -101,6 +102,7 @@ const handicapInput = Component((props: any) => compose(
     label: I18n.t('text_handicap_label'),
     name: FORM_KEY_HANDICAP,
     component: FormHandicapInput,
+    validate: validateHandicap
 })))
 
 const saveButton = Component((props: any) => fold(props)(textButton({

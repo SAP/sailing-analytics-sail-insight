@@ -1,4 +1,4 @@
-import { compose, not, prop, defaultTo, equals, replace } from 'ramda'
+import { compose, not, prop, defaultTo, equals, replace, either } from 'ramda'
 
 export const ApiBodyKeys = {
   Name: 'name',
@@ -51,11 +51,11 @@ export const hasHandicapChanged = (oldHandicap?: Handicap, newHandicap?: Handica
       (newHandicap.handicapValue !== undefined &&
         newHandicap.handicapType !== oldHandicap.handicapType)))
 
-// fails if handicalValue is defined and 0
+// fails if handicalValue is defined and 0 or Infinity
 // replace , with . for float conversion
 export const isHandicapValid = (handicap: Handicap) => compose(
   not,
-  equals(0),
+  either(equals(0), equals(Infinity)),
   parseFloat,
   replace(/,/g, '.'),
   defaultTo("1"),
