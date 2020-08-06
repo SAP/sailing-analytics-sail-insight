@@ -175,7 +175,7 @@ class RegisterBoat extends TextInputForm<Props> {
 
       const handicap = values[FORM_KEY_HANDICAP]
       const handicapType = handicap.handicapTypeRaw !== undefined ? handicap.handicapTypeRaw : handicap.handicapType
-      const handicapValue = handicap.handicapValueRaw !== undefined ? handicap.handicapValueRaw : handicap.handicapValue
+      const handicapValue = handicap.handicapValueRaw !== undefined ? Number(handicap.handicapValueRaw) : Number(handicap.handicapValue)
 
       const createdBoat = await this.props.saveTeam({
         sailNumber,

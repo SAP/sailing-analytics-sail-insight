@@ -205,7 +205,7 @@ class TeamDetails extends TextInputForm<Props> {
       // use raw values when present
       const { handicap } = values
       const handicapType = handicap.handicapTypeRaw !== undefined ? handicap.handicapTypeRaw : handicap.handicapType
-      const handicapValue = handicap.handicapValueRaw !== undefined ? handicap.handicapValueRaw : handicap.handicapValue
+      const handicapValue = handicap.handicapValueRaw !== undefined ? Number(handicap.handicapValueRaw) : Number(handicap.handicapValue)
       const valuesRaw = { 
         ...values,
         handicap : { handicapType, handicapValue}
