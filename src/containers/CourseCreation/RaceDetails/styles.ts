@@ -97,7 +97,6 @@ export default EStyleSheets.create({
   },
 
   editIconContainerStyle: {
-    marginTop: 5,
     marginLeft: 10,
     justifyContent: 'center',
   },
