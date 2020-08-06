@@ -1,15 +1,13 @@
-import { head, isString, maxBy } from 'lodash'
+import { isString, maxBy } from 'lodash'
 import { compose, all, pick, isNil, values } from 'ramda'
 import { Alert } from 'react-native'
 
-import { AddRaceColumnResponseData } from 'api/endpoints/types'
 import I18n from 'i18n'
 import { CheckInUpdate } from 'models'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
 import * as Screens from 'navigation/Screens'
 import { getNowAsMillis } from 'helpers/date'
-import Logger from 'helpers/Logger'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
@@ -18,11 +16,6 @@ import { updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { updateTrackedRegatta } from 'actions/locationTrackingData'
 import { fetchRegattaAndRaces } from 'actions/regattas'
-import { createNewTrack, setRaceStartTime, startTrack } from 'actions/tracks'
-import {
-  getBulkGpsSetting,
-  getVerboseLoggingSetting,
-} from '../selectors/settings'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
 import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCurrentCourse } from 'actions/communications'
@@ -80,9 +73,7 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     eventId: checkInData.eventId,
   }))
 
-  const verboseLogging = getVerboseLoggingSetting(getState())
-
-  await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId, verboseLogging))
+  await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId))
 
   if (markTracking) {
     navigation.navigate(Screens.TrackingNavigator, { screen: Screens.MarkTracking })
