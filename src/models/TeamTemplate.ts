@@ -1,4 +1,4 @@
-import { compose, not, prop, defaultTo, equals, replace, either } from 'ramda'
+import { compose, not, prop, defaultTo, equals, replace, either, isNil, is, when } from 'ramda'
 
 export const ApiBodyKeys = {
   Name: 'name',
@@ -58,6 +58,7 @@ export const isHandicapValid = (handicap: Handicap) => compose(
   either(equals(0), equals(Infinity)),
   parseFloat,
   replace(/,/g, '.'),
+  when(compose(not, is(String)), toString),
   defaultTo("1"),
   prop('handicapValue'),
   defaultTo({}))
@@ -66,37 +67,41 @@ export const isHandicapValid = (handicap: Handicap) => compose(
 export const convertHandicapValue = (
   fromType: HandicapTypes,
   toType: HandicapTypes,
-  value?: string,
+  value?: any,
 ) => {
-  if (!value) {
+  if (isNil(value)) {
     return value
   }
 
-  const handicapValueFloat = parseFloat(value.replace(',', '.'))
+  const handicapValueFloat = parseFloat(value.toString().replace(',', '.'))
   if (fromType === HandicapTypes.Yardstick && toType === HandicapTypes.TimeOnTime ||
       fromType === HandicapTypes.TimeOnTime && toType === HandicapTypes.Yardstick) {
     return (+(100 / handicapValueFloat)).toString()
   }
 
-  return value
+  return value.toString()
 }
 
 // values for Yardstick should not have digits
 // values for ToT should have 3 digits max
-export const isAllowedHandicapValue = (type: HandicapTypes, value?: string) => {
-  if (!value) {
+export const isAllowedHandicapValue = (type: HandicapTypes, value?: any) => {
+  if (isNil(value)) {
     return true
   }
-  const indexDecimal = value.indexOf('.')
-  let numberOfDigits = indexDecimal >= 0 ? value.length - 1 - indexDecimal : 0
+  const indexDecimal = value.toString().indexOf('.')
+  let numberOfDigits = indexDecimal >= 0 ? value.toString().length - 1 - indexDecimal : 0
 
   const digits = type === HandicapTypes.Yardstick ? 0 : 3
   return numberOfDigits <= digits
 }
 
-export const getAllowedHandicapValue = (type: HandicapTypes, value?: string) => {
-  if (!value || isAllowedHandicapValue(type, value)) {
+export const getAllowedHandicapValue = (type: HandicapTypes, value?: any) => {
+  if (isNil(value)) {
     return value
+  }
+
+  if (isAllowedHandicapValue(type, value)) {
+    return value.toString()
   }
 
   const handicapValueFloat = parseFloat(value)
