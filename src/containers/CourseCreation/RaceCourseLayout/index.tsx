@@ -488,8 +488,10 @@ compose(
 const marksAndMarkPropertiesWithoutTheOtherGateSideMark = (props: any) => {
   const otherSideId = compose(
     head,
-    reject(equals(props.selectedMarkConfiguration)))(
-    props.selectedWaypoint.markConfigurationIds)
+    reject(equals(props.selectedMarkConfiguration)),
+    defaultTo([]),
+    prop('markConfigurationIds'))(
+    props.selectedWaypoint)
   return reject(propEq('id', otherSideId), props.marksAndMarkPropertiesOptions)
 }
 
