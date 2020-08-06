@@ -80,7 +80,7 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
   return body
 }
 
-export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
+export const checkoutDeviceMappingData = (checkInData: CheckIn, deviceId = getDeviceId()) => {
   if (!checkInData) {
     return null
   }
@@ -91,7 +91,7 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   } = checkInData
 
   const body = {
-    [CheckInBodyKeys.DeviceUUID]: getDeviceId(),
+    [CheckInBodyKeys.DeviceUUID]: deviceId,
     [CheckInBodyKeys.ToMillis]: new Date().getTime(),
     ...(boatId ? { [CheckInBodyKeys.BoatId]: boatId } : {}),
     ...(competitorId ? { [CheckInBodyKeys.CompetitorId]: competitorId } : {}),
@@ -114,6 +114,9 @@ export const raceUrl = (session: CheckIn, race: Race) =>
   race.name &&
   // tslint:disable-next-line max-line-length
   `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${encodeURIComponent(session.leaderboardName)}&raceName=${encodeURIComponent(race.name)}&leaderboardName=${encodeURIComponent(session.leaderboardName)}&eventId=${encodeURIComponent(session.eventId)}&mode=FULL_ANALYSIS`
+
+export const editResultsUrl = (session: CheckIn) =>
+  session && `${session.serverUrl}/gwt/LeaderboardEditing.html?name=${encodeURIComponent(session.leaderboardName)}`
 
 export const eventCreationResponseToCheckIn = (
   response: CreateEventResponseData,

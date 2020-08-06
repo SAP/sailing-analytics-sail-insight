@@ -1,3 +1,5 @@
+import { compose, not, prop, defaultTo, equals, replace } from 'ramda'
+
 export const ApiBodyKeys = {
   Name: 'name',
   Nationality: 'nationality',
@@ -48,6 +50,36 @@ export const hasHandicapChanged = (oldHandicap?: Handicap, newHandicap?: Handica
     (newHandicap.handicapValue !== oldHandicap.handicapValue ||
       (newHandicap.handicapValue !== undefined &&
         newHandicap.handicapType !== oldHandicap.handicapType)))
+
+// fails if handicalValue is defined and 0
+// replace , with . for float conversion
+export const isHandicapValid = (handicap: Handicap) => compose(
+  not,
+  equals(0),
+  parseFloat,
+  replace(/,/g, '.'),
+  defaultTo("1"),
+  prop('handicapValue'),
+  defaultTo({}))
+  (handicap)
+
+export const convertHandicapValue = (
+  fromType: HandicapTypes,
+  toType: HandicapTypes,
+  value?: string,
+) => {
+  if (!value) {
+    return value
+  }
+
+  const handicapValueFloat = parseFloat(value.replace(',', '.'))
+  if (fromType === HandicapTypes.Yardstick && toType === HandicapTypes.TimeOnTime ||
+      fromType === HandicapTypes.TimeOnTime && toType === HandicapTypes.Yardstick) {
+    return (+(100 / handicapValueFloat).toFixed(1)).toString()
+  }
+
+  return value
+}
 
 
 export default interface TeamTemplate {

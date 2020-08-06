@@ -3,18 +3,16 @@ import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
-import { fetchLeaderboardV2 } from 'actions/leaderboards'
+import { fetchRegattaCompetitors } from 'actions/regattas'
 import { stopTracking } from 'actions/events'
 import { startTracking } from 'actions/tracking'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
-import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { editResultsUrl } from 'services/CheckInService'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
-  nothingAsClass,
-  fromClass,
-  contramap
+  nothingAsClass
 } from 'components/fp/component'
 import { iconText, scrollView, text, inlineText, touchableOpacity, view, textButton } from 'components/fp/react-native'
 import I18n from 'i18n'
@@ -32,10 +30,10 @@ import {
   startTrackingButton,
   shareEventButton,
 } from '../../session/common'
-import { getLastPlannedRaceTime, getRegattaPlannedRaces } from 'selectors/regatta'
-import { getRaceTime } from 'selectors/event'
+import { getLastPlannedRaceTime } from 'selectors/regatta'
+import Clipboard from '@react-native-community/clipboard'
+import Snackbar from 'react-native-snackbar'
 
-const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
 // If we change this we need to make sure that the stopTracking function in the EventsSaga sets the tracking end time on the correct race
 const nothingWhenBeforeLastPlannedRaceStartTime = branch(propEq('isBeforeLastPlannedRaceStartTime', true), nothingAsClass)
@@ -67,6 +65,7 @@ const mapStateToProps = (state: any, props: any) => {
     isBeforeLastPlannedRaceStartTime,
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
+    isEventOrganizer: true
   }
 }
 
@@ -120,6 +119,30 @@ export const defineRacesCard = Component((props: any) => compose(
     },text({ style: styles.buttonContent }, toUpper(props.racesButtonLabel)))
   ]))
 
+const editResultsButton = Component((props: any) => compose(
+  fold(props),
+  textButton({
+    onPress: async (props: any) => {
+      props.navigation.navigate(Screens.EditResults, { data: { url: editResultsUrl(props.session) } })
+    },
+    style: [styles.button],
+    textStyle: styles.buttonContent,
+  }))(text({}, I18n.t('caption_edit_results').toUpperCase())))
+
+const copyEditLinkToClipboardButton = Component((props: any) => compose(
+  fold(props),
+  textButton({
+  onPress: async (props: any) => {
+    Clipboard.setString(editResultsUrl(props.session))
+    Snackbar.show({
+      text: I18n.t('text_link_copied_to_clipboard'),
+      duration: Snackbar.LENGTH_SHORT
+    })
+  },
+  style: [styles.button],
+  textStyle: styles.buttonContent }))(
+  text({}, I18n.t('caption_copy_edit_results_to_clipboard').toUpperCase())))
+
 export const inviteCompetitorsCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
@@ -135,7 +158,9 @@ export const inviteCompetitorsCard = Component((props: any) => compose(
     shareEventButton,
     nothingIfCurrentUserIsNotACompetitor(startTrackingButton),
     nothingWhenFinished(qrCode),
-    competitorList
+    competitorList,
+    editResultsButton,
+    copyEditLinkToClipboardButton
   ]))
 
 export const endEventCard = Component((props: any) => compose(
@@ -157,7 +182,7 @@ export const endEventCard = Component((props: any) => compose(
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
     connect(mapStateToProps, {
-      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchLeaderboardV2
+      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors
     }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,

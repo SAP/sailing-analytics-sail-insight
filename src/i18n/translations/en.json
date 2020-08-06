@@ -22,6 +22,7 @@
   "title_add_boat_01": "Add ",
   "title_add_boat_02": "Boat",
   "title_add_boat_03": "",
+  "title_edit_competitor": "Edit competitor",
 
   "text_more": "More",
   "text_more_information_at": "More information at",
@@ -189,6 +190,8 @@
   "text_join_with_boat_choose": "Pick the boat you will be sailing with:",
   "text_join_with_boat_select_label": "Boat ",
   "text_add_boat_explainer": "You can edit this boat or add more at any time by going to the account tab.",
+  "text_link_copied_to_clipboard": "Link copied to clipboard",
+  "text_course_saved": "Course successfully saved",
 
   "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
   "user_profile_alert_label" : "Logout",
@@ -202,6 +205,8 @@
   "caption_delete_mark_binding": "Delete binding with this device",
   "caption_start_tracking": "Start tracking",
   "caption_stop_tracking": "Stop tracking",
+  "caption_edit_results": "Edit results",
+  "caption_copy_edit_results_to_clipboard": "Copy Edit Link",
   "caption_to_event": "To the event",
   "caption_to_leaderboard": "To the leaderboard",
   "caption_done": "Done",
@@ -305,6 +310,7 @@
   "error_offline_competitor_registration": "You need to connect to the internet to complete your registration in order to start tracking",
   "error_network_required_alert": "Please make sure your device is connected to the internet and then try again. If the error persists, please contact support@sapsailing.com",
   "error_network_required_snackbar": "Network connection required to perform this action",
+  "error_field_invalid_handicap": "Handicap can not be 0.",
 
   "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
   "url_privacy_policy": "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",

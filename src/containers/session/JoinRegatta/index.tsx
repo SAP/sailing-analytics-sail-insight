@@ -6,8 +6,8 @@ import LinearGradient from 'react-native-linear-gradient'
 import RNPickerSelect from 'react-native-picker-select'
 import { Chevron } from 'react-native-shapes'
 
-import { checkIn } from 'actions/checkIn'
-import { registerCompetitorAndDevice } from 'actions/sessions'
+import { archiveEvent } from 'actions/events'
+import { navigateToTracking, registerCompetitorAndDevice } from 'actions/sessions'
 
 import { CheckIn } from 'models'
 
@@ -23,6 +23,7 @@ import { getUserTeams } from 'selectors/user'
 
 import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionService'
 
+import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { dateRangeText } from 'helpers/date'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
@@ -60,8 +61,8 @@ class JoinRegatta extends React.Component<{
   boat?: any,
   mark?: any,
   boats?: any,
-  checkIn: (c: CheckIn, navigation:object) => any,
   registerCompetitorAndDevice: any
+  navigateToTracking: any
 } > {
 
   public state = {
@@ -70,7 +71,7 @@ class JoinRegatta extends React.Component<{
   }
 
   public onJoinPress = async () => {
-    const { actionType, boats, isNetworkConnected } = this.props
+    const { actionType, boats, checkInData, isNetworkConnected } = this.props
 
     if (!isNetworkConnected) {
       showNetworkRequiredSnackbarMessage()
@@ -78,18 +79,35 @@ class JoinRegatta extends React.Component<{
     }
 
     const { selectedBoatIndex } = this.state
-    const selectedBoat = boats.length > 0 && boats[selectedBoatIndex]
-    await this.setState({ isLoading: true })
+    const checkInContainsBinding = doesCheckInContainBinding(checkInData)
+    // The checkInContainsBinding condition is to make sure that the selectedBoat is falsy
+    // when binding to the object specified in the checkIn
+    const selectedBoat = checkInContainsBinding
+      ? undefined
+      : boats.length > 0 && boats[selectedBoatIndex]
+
+    // const continueJoining = await this.props.preventDuplicateCompetitorBindings(
+    //   checkInData, selectedBoat
+    // )
+
+    this.setState({ isLoading: true })
+
     try {
+      // if (!continueJoining) {
+      //   await this.props.archiveEvent(checkInData, false)
+      //   this.props.navigateToTracking(this.props.navigation)
+      //   return
+      // }
+
       const handleRegistration = (options = {}) => {
         const action = boat => this.props.registerCompetitorAndDevice(
-          this.props.checkInData,
+          checkInData,
           boat,
           options,
           this.props.navigation
         )
 
-        if (boats.length === 0) {
+        if (!checkInContainsBinding && boats.length === 0) {
           return this.props.navigation.navigate(Screens.RegisterBoat, { actionAfterSubmit: action })
         }
         return action(selectedBoat)
@@ -97,8 +115,7 @@ class JoinRegatta extends React.Component<{
 
       switch (actionType) {
         case JoinRegattaActionType.JoinEvent:
-          const deviceRegistered = await this.props.checkIn(this.props.checkInData, this.props.navigation)
-          if (!deviceRegistered) { await handleRegistration() }
+          await handleRegistration()
           break
         case JoinRegattaActionType.Track:
           await handleRegistration({ startTrackingAfter: true })
@@ -207,6 +224,7 @@ class JoinRegatta extends React.Component<{
                       <View style={[form.formSelectInputAndLabelContainer]}>
                         <Text style={form.formSelectLabel}>{I18n.t('text_join_with_boat_select_label')}</Text>
                         <RNPickerSelect
+                            placeholder = {{}}
                             items={boatPickerItems}
                             value={selectedBoatIndex}
                             Icon={() => {
@@ -255,7 +273,10 @@ class JoinRegatta extends React.Component<{
 }
 
 const mapStateToProps = (state: any, props: any) => {
-  const checkInData = getCustomScreenParamData(props)
+  const checkInData = {
+    isArchived: false,
+    ...getCustomScreenParamData(props),
+  }
   const actionType = getScreenParamsFromProps(props).actionType
 
   return {
@@ -271,5 +292,8 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-export default connect(mapStateToProps, { checkIn, registerCompetitorAndDevice })(JoinRegatta)
+export default connect(
+  mapStateToProps,
+  { archiveEvent, navigateToTracking, registerCompetitorAndDevice },
+)(JoinRegatta)
 

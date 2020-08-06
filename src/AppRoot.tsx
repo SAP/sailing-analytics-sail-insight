@@ -47,6 +47,7 @@ import WebView from 'components/WebView'
 import AccountList from 'containers/user/AccountList'
 import AppSettings from 'containers/AppSettings'
 import CommunicationsSettings from 'containers/CommunicationsSettings'
+import EditCompetitor from 'containers/session/EditCompetitor'
 import EventCreation from 'containers/session/EventCreation'
 import ExpertSettings from 'containers/ExpertSettings'
 import FirstContact from 'containers/user/FirstContact'
@@ -271,6 +272,8 @@ const sessionsNavigator = Component(props => compose(
     options: { title: I18n.t('title_race_details') } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.TrackDetails, component: WebView,
     options: { title: I18n.t('caption_sap_analytics_header') } })),
+  stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults, component: WebView,
+    options: { title: I18n.t('caption_sap_analytics_header') } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.RaceCourseLayout, component: RaceCourseLayout.fold,
     options: { title: I18n.t('title_race_course'), gestureEnabled: false } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.CourseGeolocation,
@@ -286,6 +289,8 @@ const sessionsNavigator = Component(props => compose(
       selectedMarkConfiguration: props.route.params.data.selectedMarkConfiguration,
     })).fold,
     options: { title: I18n.t('caption_course_creator_bind_with_tracker') } })),
+    stackScreen(withLeftHeaderBackButton({ name: Screens.EditCompetitor, component: EditCompetitor.fold,
+      options: { title: I18n.t('title_edit_competitor') } }))
 ]))
 
 const accountNavigator = Component(props => compose(

@@ -1,5 +1,7 @@
 import { includes, isString } from 'lodash'
 import { defaultTo } from 'ramda'
+import { isHandicapValid } from 'models/TeamTemplate'
+
 import I18n from 'i18n'
 
 // tslint:disable-next-line max-line-length
@@ -41,3 +43,6 @@ export const validateNameExists = (value: string, cxt: any, viewProps: Compariso
      I18n.t('error_field_already_exists') :
      undefined
 }
+
+export const validateHandicap = (value: any) =>
+  isHandicapValid(value) ? undefined : I18n.t('error_field_invalid_handicap')

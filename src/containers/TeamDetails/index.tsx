@@ -11,7 +11,7 @@ import { updateCompetitor } from 'actions/sessions'
 import { deleteTeam, DeleteTeamAction, saveTeam, SaveTeamAction, updateTeamImage, updateTeamImageAction } from 'actions/user'
 
 import * as teamForm from 'forms/team'
-import { ComparisonValidatorViewProps, validateNameExists, validateRequired } from 'forms/validators'
+import { ComparisonValidatorViewProps, validateNameExists, validateRequired, validateHandicap } from 'forms/validators'
 
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
@@ -143,7 +143,8 @@ class TeamDetails extends TextInputForm<Props> {
                 <Field
                   label={I18n.t('text_handicap_label')}
                   name={teamForm.FORM_KEY_HANDICAP}
-                  component={FormHandicapInput} />
+                  component={FormHandicapInput}
+                  validate={[validateHandicap]} />
               </View>
               <View style={form.lastFormSegment}>
                 <TextButton
