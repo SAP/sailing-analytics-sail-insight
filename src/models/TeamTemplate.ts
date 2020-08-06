@@ -75,10 +75,48 @@ export const convertHandicapValue = (
   const handicapValueFloat = parseFloat(value.replace(',', '.'))
   if (fromType === HandicapTypes.Yardstick && toType === HandicapTypes.TimeOnTime ||
       fromType === HandicapTypes.TimeOnTime && toType === HandicapTypes.Yardstick) {
-    return (+(100 / handicapValueFloat).toFixed(1)).toString()
+    return (+(100 / handicapValueFloat)).toString()
   }
 
   return value
+}
+
+// values for Yardstick should not have digits
+// values for ToT should have 3 digits max
+export const isAllowedHandicapValue = (type: HandicapTypes, value?: string) => {
+  if (!value) {
+    return true
+  }
+  const indexDecimal = value.indexOf('.')
+  let numberOfDigits = indexDecimal >= 0 ? value.length - 1 - indexDecimal : 0
+
+  const digits = type === HandicapTypes.Yardstick ? 0 : 3
+  return numberOfDigits <= digits
+}
+
+export const getAllowedHandicapValue = (type: HandicapTypes, value?: string) => {
+  if (!value || isAllowedHandicapValue(type, value)) {
+    return value
+  }
+
+  const handicapValueFloat = parseFloat(value)
+  if (type === HandicapTypes.Yardstick) {
+    return Math.floor(handicapValueFloat).toString()
+  } else {
+    return (Math.floor(handicapValueFloat * 1000) / 1000).toString()
+  }
+}
+
+export const getTimeOnTimeFactor = (handicap?: Handicap) => {
+  const { handicapType = getDefaultHandicapType(), handicapValue = null } = handicap || {}
+
+  if (!handicapType || !handicapValue) return undefined
+
+  if (handicapType === HandicapTypes.TimeOnTime) return handicapValue
+
+  const timeOnTimeFactor = 100 / handicapValue
+
+  return timeOnTimeFactor
 }
 
 

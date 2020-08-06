@@ -12,7 +12,7 @@ import { createSharingData, SharingData, showShareSheet } from 'integrations/Dee
 import { CheckIn, CheckInUpdate, CompetitorInfo, TeamTemplate, TrackingSession } from 'models'
 import { mapResToCompetitor } from 'models/Competitor'
 import { mapResToRegatta } from 'models/Regatta'
-import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
+import { getDefaultHandicapType, HandicapTypes, getTimeOnTimeFactor } from 'models/TeamTemplate'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -111,18 +111,6 @@ export const createEvent = (session: TrackingSession, isPublic?: boolean) => asy
   )
 }
 
-const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
-  const { handicapType = getDefaultHandicapType(), handicapValue = null } = competitorInfo.handicap || {}
-
-  if (!handicapType || !handicapValue) return undefined
-
-  if (handicapType === HandicapTypes.TimeOnTime) return handicapValue
-
-  const timeOnTimeFactor = 100 / handicapValue
-
-  return timeOnTimeFactor
-}
-
 export const updateCompetitor = (competitor: any) => {
   const { competitorId = {} } = competitor
 
@@ -131,7 +119,7 @@ export const updateCompetitor = (competitor: any) => {
     return api.updateCompetitor(id, {
       name: competitor.name,
       nationality: competitor.nationality,
-      timeOnTimeFactor: getTimeOnTimeFactor(competitor)
+      timeOnTimeFactor: getTimeOnTimeFactor(competitor.handicap)
     })
   }))
 
@@ -216,7 +204,7 @@ export const createUserAttachmentToSession = (
           ...baseValues,
           boatclass: competitorInfo.boatClass,
           sailid: competitorInfo.sailNumber,
-          timeontimefactor: getTimeOnTimeFactor(competitorInfo),
+          timeontimefactor: getTimeOnTimeFactor(competitorInfo.handicap),
           ...(secret ? { secret } : {}),
           ...(secret ? { deviceUuid: getDeviceId() } : {}),
         })
