@@ -4,7 +4,6 @@ import { sanFranciscoSpacing } from 'react-native-typography'
 import { isPlatformAndroid } from 'environment'
 
 import { $siMediumFontStack, $siBoldFontStack } from 'styles/fonts'
-import { $addDebuggingBorder } from 'styles/dimensions'
 
 const oldTextStyles = {
     propertyName: {

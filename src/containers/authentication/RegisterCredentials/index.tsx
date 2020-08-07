@@ -107,7 +107,7 @@ class RegisterCredentials extends TextInputForm<Props> {
                   isLoading={isLoading}>
                     {I18n.t('caption_register').toUpperCase()}
                 </TextButton>
-                <Text onPress={() => this.props.navigation.navigate(Screens.Login)} style={text.text}>
+                <Text onPress={() => this.props.navigation.navigate(Screens.Login)} style={text.mediumText}>
                   {I18n.t('text_login_already_account')} {'›'}
                 </Text>
                 {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}

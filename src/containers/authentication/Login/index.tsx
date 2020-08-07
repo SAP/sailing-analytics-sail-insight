@@ -132,8 +132,8 @@ class Login extends TextInputForm<{
                   isLoading={isLoading}>
                 {I18n.t('caption_login').toUpperCase()}
               </TextButton>
-              <TouchableOpacity style={[text.text, styles.forgotPasswordLink]} onPress={() => this.props.navigation.navigate(PasswordReset)}>
-                <Text style={[text.text]}>
+              <TouchableOpacity style={[text.mediumText, styles.forgotPasswordLink]} onPress={() => this.props.navigation.navigate(PasswordReset)}>
+                <Text style={[text.mediumText]}>
                   {I18n.t('caption_forgot_password')} {'›'}
                 </Text>
               </TouchableOpacity>
