@@ -125,7 +125,7 @@ export const request = async (
       )
     } else {
       when(responseHasFatalError, async (response: any) => {
-        const error = await response.text()
+        const error = await response.clone().text()
         crashlytics().setAttribute('status', response.status.toString())
         crashlytics().setAttribute('url', response.url)
         crashlytics().recordError(new Error(error))
