@@ -190,7 +190,7 @@ export const createUserAttachmentToSession = (
         if (registrationSuccess) {
           await dispatch(registerDevice(regattaName, {
             competitorId,
-            // WIP: Adjust the device mapping to cover one day prior to the moment
+            // Adjust the device mapping to cover one day prior to the moment
             // of joining an event to allow single tracks coverage in the event.
             [CheckInBodyKeys.FromMillis]: moment(new Date()).subtract(1, 'days').valueOf()
           }))
