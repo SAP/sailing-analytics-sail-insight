@@ -1,8 +1,5 @@
 import { PositionFix } from 'models'
-import { hasValidPosition } from 'models/PositionFix'
-import * as CheckInService from 'services/CheckInService'
 import * as LocationService from 'services/LocationService'
-import LocationTrackingException from 'services/LocationService/LocationTrackingException'
 import { currentTimestampAsText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'
@@ -13,9 +10,9 @@ import {
   updateTrackingStatistics,
   updateTrackingStatus
 } from 'actions/locationTrackingData'
-import { checkAndUpdateRaceSettings } from 'actions/sessionConfig'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getVerboseLoggingSetting } from 'selectors/settings'
+import { getTrackedEventId } from 'selectors/location'
 import { getDataApiGenerator } from 'api/config'
 
 export const startLocationUpdates = (
@@ -38,7 +35,9 @@ export const startLocationUpdates = (
     const url = getDataApiGenerator(getTrackedCheckInBaseUrl(getState()))('/gps_fixes')({})
     const verboseLogging = getVerboseLoggingSetting(getState())
 
-    await LocationService.setConfig({ url })
+    // Restore stopOnTerminate=false that might have been set to true
+    // when tracking locally (eg: for course creator)
+    await LocationService.setConfig({ url, stopOnTerminate: false })
     await LocationService.setVerboseLogging(verboseLogging)
     await LocationService.start()
     await LocationService.changePace(true)
@@ -64,20 +63,37 @@ export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
   }
 }
 
+// A tracking mode where gps fixes are not sent to the server.
+// Used inside course creator to get instant ping locations.
+export const startLocalLocationUpdates = () => async () => {
+  if (await LocationService.isEnabled()) {
+    return
+  }
+
+  // For the course creator, we want tracking to stop when the
+  // app is closed.
+  await LocationService.setConfig({ stopOnTerminate: true })
+  await LocationService.start()
+  await LocationService.changePace(true)
+}
+
+export const stopLocalLocationUpdates = () => async (dispatch: DispatchType, getState: GetStateType) => {
+  const isTrackingIntoEvent = getTrackedEventId(getState())
+
+  if (isTrackingIntoEvent) {
+    return
+  }
+
+  await LocationService.stop()
+  await LocationService.changePace(false)
+}
+
 export const handleLocation = (gpsFix: PositionFix) => async (dispatch: DispatchType, getState: GetStateType) => {
   if (!gpsFix) {
     return
   }
-  const state = getState()
-  const serverUrl = getTrackedCheckInBaseUrl(state)
-  if (!serverUrl) {
-    throw new LocationTrackingException('[LOCATION] missing event baseUrl')
-  }
-  if (!hasValidPosition(gpsFix)) {
-    throw new LocationTrackingException('gps fix is invalid', gpsFix)
-  }
+
   dispatch(updateTrackingStatistics(gpsFix))
-  dispatch(checkAndUpdateRaceSettings(gpsFix))
 }
 
 export const initLocationUpdates = () => async (dispatch: DispatchType) => {

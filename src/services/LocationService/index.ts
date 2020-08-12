@@ -122,7 +122,7 @@ export const LocationTrackingStatus = {
   STOPPED: 'STOPPED',
 }
 
-export const ready = () => new Promise<any>((resolve, reject) => {
+export const ready = () => {
   const state = getStore().getState()
   const url = getDataApiGenerator(getTrackedCheckInBaseUrl(state))('/gps_fixes')({})
   const token = getAccessToken(state)
@@ -143,7 +143,7 @@ export const ready = () => new Promise<any>((resolve, reject) => {
       },
       logLevel: verboseLogging ? BackgroundGeolocation.LOG_LEVEL_VERBOSE : BackgroundGeolocation.LOG_LEVEL_OFF
     })
-})
+}
 
 export const setConfig = (config: any) =>
   BackgroundGeolocation.setConfig(config)
