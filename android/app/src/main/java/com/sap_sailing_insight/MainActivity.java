@@ -1,6 +1,7 @@
 package com.sap_sailing_insight;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 
 import com.facebook.react.ReactActivity;
 
@@ -30,6 +31,14 @@ public class MainActivity extends ReactActivity {
     @Override
     public void onNewIntent(Intent intent) {
         setIntent(intent);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Intent intent = new Intent("onConfigurationChanged");
+        intent.putExtra("newConfig", newConfig);
+        this.sendBroadcast(intent);
     }
 
     @Override
