@@ -1,9 +1,10 @@
 import React, { Component as ReactComponent } from 'react'
-import { Text } from 'react-native'
+import { Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
+import ScreenOrientation, { PORTRAIT, LANDSCAPE } from 'react-native-orientation-locker/ScreenOrientation'
 
 import { compose, reduce, concat, mergeDeepLeft, merge, includes, once, when, always } from 'ramda'
 
@@ -272,8 +273,6 @@ const sessionsNavigator = Component(props => compose(
     options: { title: I18n.t('title_race_details') } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.TrackDetails, component: WebView,
     options: { title: I18n.t('caption_sap_analytics_header') } })),
-  stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults, component: WebView,
-    options: { title: I18n.t('caption_sap_analytics_header') } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.RaceCourseLayout, component: RaceCourseLayout.fold,
     options: { title: I18n.t('title_race_course'), gestureEnabled: false } })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.CourseGeolocation,
@@ -416,7 +415,14 @@ const AppNavigator = Component(props => compose(
   })),
   stackScreen(compose(withoutTitle, withTransparentHeader, withGradientHeaderBackground, withLeftHeaderBackButton)({
     name: Screens.PasswordReset, component: PasswordReset
-  }))
+  })),
+  stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults,
+    component: props => [
+      <WebView {...props}/>,
+      Platform.select({
+        android: <ScreenOrientation orientation={LANDSCAPE}/>,
+        ios: null })],
+    options: { title: I18n.t('caption_sap_analytics_header') } }))
 ]))
 
 class AppRoot extends ReactComponent {
@@ -446,6 +452,7 @@ class AppRoot extends ReactComponent {
       <ActionSheetProvider>
         <AuthContext.Provider value = {{ isLoggedIn }}>
           <NavigationContainer ref={navigationContainer}>
+            <ScreenOrientation orientation={PORTRAIT}/>
             { AppNavigator.fold(this.props) }
             <SpinnerOverlay visible={isLoadingCheckIn} cancelable={false}/>
           </NavigationContainer>
