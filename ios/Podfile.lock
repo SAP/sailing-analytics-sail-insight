@@ -325,6 +325,8 @@ PODS:
     - React
   - react-native-network-info (5.2.1):
     - React
+  - react-native-orientation-locker (1.2.0):
+    - React
   - react-native-safe-area-context (0.7.3):
     - React
   - react-native-slider (2.0.8):
@@ -374,6 +376,8 @@ PODS:
     - CocoaLumberjack (~> 3.5.1)
     - React
   - RNCAsyncStorage (1.7.1):
+    - React
+  - RNCClipboard (1.2.3):
     - React
   - RNCMaskedView (0.1.6):
     - React
@@ -468,6 +472,7 @@ DEPENDENCIES:
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-network-info (from `../node_modules/react-native-network-info`)
+  - react-native-orientation-locker (from `../node_modules/react-native-orientation-locker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-version-number (from `../node_modules/react-native-version-number`)
@@ -486,6 +491,7 @@ DEPENDENCIES:
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation-android`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
@@ -590,6 +596,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-network-info:
     :path: "../node_modules/react-native-network-info"
+  react-native-orientation-locker:
+    :path: "../node_modules/react-native-orientation-locker"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
@@ -624,6 +632,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-geolocation-android"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-community/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNDeviceInfo:
@@ -710,6 +720,7 @@ SPEC CHECKSUMS:
   react-native-maps: f4b89da81626ad7f151a8bfcb79733295d31ce5c
   react-native-netinfo: ddaca8bbb9e6e914b1a23787ccb879bc642931c9
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
+  react-native-orientation-locker: 47aaa55d59bfc1613804dc22f159e6bb1cca5f30
   react-native-safe-area-context: e200d4433aba6b7e60b52da5f37af11f7a0b0392
   react-native-slider: 3a1cfd00c9c31068251b536822f7192e8d1d6b6f
   react-native-version-number: b415bbec6a13f2df62bf978e85bc0d699462f37f
@@ -727,6 +738,7 @@ SPEC CHECKSUMS:
   RNBackgroundFetch: 388cf1595934d22fed275b8db9b48a28bb4eb7b6
   RNBackgroundGeolocation: ccfbbcb9b67f05c5372c48d9d3db9a819861ef5b
   RNCAsyncStorage: 44395cb9c7c1523104c2b499eb426ef7aff82bca
+  RNCClipboard: 48eaf27bea3de7c9a265529725434268d47a2ee9
   RNCMaskedView: a88953beefbd347a29072d9eba90e42945fe291e
   RNDeviceInfo: 9b5790f85eb03e12de682a97618031a215c7f386
   RNFastImage: 4e3cd0485ffce7304537e3efc05f99cdc9808107

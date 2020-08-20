@@ -1,5 +1,5 @@
 import React, { Component as ReactComponent } from 'react'
-import { Text } from 'react-native'
+import { Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
@@ -416,9 +416,13 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withoutTitle, withTransparentHeader, withGradientHeaderBackground, withLeftHeaderBackButton)({
     name: Screens.PasswordReset, component: PasswordReset
   })),
-  stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults, component: WebView,
-    options: { title: I18n.t('caption_sap_analytics_header'),
-      headerRight: () => <ScreenOrientation orientation={LANDSCAPE}/> } }))
+  stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults,
+    component: props => [
+      <WebView {...props}/>,
+      Platform.select({
+        android: <ScreenOrientation orientation={LANDSCAPE}/>,
+        ios: null })],
+    options: { title: I18n.t('caption_sap_analytics_header') } }))
 ]))
 
 class AppRoot extends ReactComponent {
