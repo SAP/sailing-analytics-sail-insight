@@ -9,6 +9,7 @@ import { getAccessToken } from 'selectors/auth'
 import { getDeviceId } from 'selectors/user'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getVerboseLoggingSetting } from 'selectors/settings'
+import { getBulkGpsSetting } from 'selectors/settings'
 import { getStore } from 'store'
 import { getDataApiGenerator } from 'api/config'
 import { keepCommunicationAlive } from 'actions/communications'
@@ -122,16 +123,23 @@ export const LocationTrackingStatus = {
   STOPPED: 'STOPPED',
 }
 
+export const GpsFixesThreshold = {
+  NORMAL: 0,
+  BATTERY_OPTIMIZED: 30
+}
+
 export const ready = () => new Promise<any>((resolve, reject) => {
   const state = getStore().getState()
   const url = getDataApiGenerator(getTrackedCheckInBaseUrl(state))('/gps_fixes')({})
   const token = getAccessToken(state)
   const verboseLogging = getVerboseLoggingSetting(state)
+  const bulkSending = getBulkGpsSetting(state)
 
   return BackgroundGeolocation.ready(
     {
       ...config,
       url,
+      autoSyncThreshold: bulkSending ? GpsFixesThreshold.BATTERY_OPTIMIZED : GpsFixesThreshold.NORMAL,
       authorization: {
         strategy: 'JWT',
         accessToken: token
