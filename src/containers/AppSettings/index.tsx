@@ -1,9 +1,8 @@
 import React from 'react'
-import { Alert, Share, TouchableWithoutFeedback, View, ViewProps } from 'react-native'
+import { TouchableWithoutFeedback, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
-import { updateGpsBulkSetting, changeAnalyticsSetting } from 'actions/settings'
-import { getApiServerUrl } from 'api/config'
+import { changeGpsBulkSetting, changeAnalyticsSetting } from 'actions/settings'
 import { getAppVersionText, openPrivacyPolicy, openTerms } from 'helpers/user'
 import I18n from 'i18n'
 import { getBulkGpsSetting, getEnableAnalyticsSettings } from 'selectors/settings'
@@ -14,11 +13,10 @@ import ScrollContentView from 'components/ScrollContentView'
 import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import { container } from 'styles/commons'
-import Logger from '../../helpers/Logger'
 import styles from './styles'
 
 class AppSettings extends React.Component<ViewProps & {
-  updateGpsBulkSetting: (value: boolean) => void,
+  changeGpsBulkSetting: (value: boolean) => void,
   bulkGpsSetting: boolean,
   enableAnalytics: boolean,
   changeAnalyticsSetting: (value: boolean) => void,
@@ -46,7 +44,7 @@ class AppSettings extends React.Component<ViewProps & {
               titleStyle={styles.title}
               title={I18n.t('caption_setting_bulk_gps')}
               switchValue={this.props.bulkGpsSetting}
-              onSwitchValueChange={this.props.updateGpsBulkSetting}
+              onSwitchValueChange={this.props.changeGpsBulkSetting}
             />
           </View>
           <View style={styles.textContainer}>
@@ -108,4 +106,6 @@ const mapStateToProps = (state: any) => ({
   enableAnalytics: getEnableAnalyticsSettings(state)
 })
 
-export default connect(mapStateToProps, { updateGpsBulkSetting, changeAnalyticsSetting })(AppSettings)
+export default connect(
+  mapStateToProps, { changeGpsBulkSetting, changeAnalyticsSetting })(
+  AppSettings)

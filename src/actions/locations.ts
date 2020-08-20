@@ -17,6 +17,7 @@ import { checkAndUpdateRaceSettings } from 'actions/sessionConfig'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getVerboseLoggingSetting } from 'selectors/settings'
 import { getDataApiGenerator } from 'api/config'
+import { getBulkGpsSetting } from 'selectors/settings'
 
 export const startLocationUpdates = (
   leaderboardName: string,
@@ -35,10 +36,17 @@ export const startLocationUpdates = (
   try {
     await dispatch(updateTrackedRegatta({ leaderboardName, eventId }))
 
-    const url = getDataApiGenerator(getTrackedCheckInBaseUrl(getState()))('/gps_fixes')({})
-    const verboseLogging = getVerboseLoggingSetting(getState())
+    const state = getState()
+    const url = getDataApiGenerator(getTrackedCheckInBaseUrl(state))('/gps_fixes')({})
+    const bulkSending = getBulkGpsSetting(state)
+    const verboseLogging = getVerboseLoggingSetting(state)
 
-    await LocationService.setConfig({ url })
+    await LocationService.setConfig({
+      url,
+      autoSyncThreshold: bulkSending ?
+        LocationService.GpsFixesThreshold.BATTERY_OPTIMIZED :
+        LocationService.GpsFixesThreshold.NORMAL
+    })
     await LocationService.setVerboseLogging(verboseLogging)
     await LocationService.start()
     await LocationService.changePace(true)
