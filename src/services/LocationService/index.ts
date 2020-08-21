@@ -128,7 +128,7 @@ export const GpsFixesThreshold = {
   BATTERY_OPTIMIZED: 30
 }
 
-export const ready = () => new Promise<any>((resolve, reject) => {
+export const ready = () => {
   const state = getStore().getState()
   const url = getDataApiGenerator(getTrackedCheckInBaseUrl(state))('/gps_fixes')({})
   const token = getAccessToken(state)
