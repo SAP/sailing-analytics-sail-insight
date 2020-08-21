@@ -1,6 +1,6 @@
 import { find, get, head, includes, orderBy } from 'lodash'
 import { Alert } from 'react-native'
-
+import moment from 'moment/min/moment-with-locales'
 import { authApi, dataApi, selfTrackingApi } from 'api'
 import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
@@ -32,6 +32,8 @@ import { getSharingUuid } from 'helpers/uuid'
 import { BRANCH_APP_DOMAIN } from 'environment'
 import querystring from 'query-string'
 import { registerDevice, updateCheckIn, updateCheckInAndEventInventory } from 'actions/checkIn'
+import { ApiBodyKeys as CheckInBodyKeys } from 'models/CheckIn'
+
 import { startTracking } from 'actions/tracking'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
@@ -186,7 +188,12 @@ export const createUserAttachmentToSession = (
         registrationSuccess = registrationResponse.status === 200
 
         if (registrationSuccess) {
-          await dispatch(registerDevice(regattaName, { competitorId }))
+          await dispatch(registerDevice(regattaName, {
+            competitorId,
+            // Adjust the device mapping to cover one day prior to the moment
+            // of joining an event to allow single tracks coverage in the event.
+            [CheckInBodyKeys.FromMillis]: moment(new Date()).subtract(1, 'days').valueOf()
+          }))
         }
       } catch (err) {
         if (!(err instanceof ApiException)) {
