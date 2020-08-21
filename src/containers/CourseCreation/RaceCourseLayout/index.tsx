@@ -11,9 +11,9 @@ import {
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
 import { BackHandler, Alert, Keyboard } from 'react-native'
-import BackgroundGeolocation from 'react-native-background-geolocation-android'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
+import { getStore } from 'store'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName,
@@ -21,11 +21,13 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   updateMarkConfigurationLocation, assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew,
   navigateBackFromCourseCreation } from 'actions/courses'
+import { startLocalLocationUpdates, stopLocalLocationUpdates } from 'actions/locations'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
   isDefaultWaypointSelection, 
   hasEditedCourseChanged} from 'selectors/course'
+import { getLocationStats } from 'selectors/location'
 import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
 import { getHashedDeviceId } from 'selectors/user'
 import { coordinatesToString } from 'helpers/utils'
@@ -104,8 +106,6 @@ const withSelectedPositionType = withState('selectedPositionType', 'setSelectedP
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
 const withEditingGateName = withState('editingGateName', 'setEditingGateName', false)
 const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
-const withGettingCurrentPingPosition = withState('gettingCurrentPingPosition', 'setGettingCurrentPingPosition', false)
-const withGettingCurrentMapPosition = withState('gettingCurrentMapPosition', 'setGettingCurrentMapPosition', false)
 
 const openGeolocationScreenWithPosition = curry((props, location) => compose(
   position => props.navigation.navigate(Screens.CourseGeolocation,
@@ -219,26 +219,16 @@ const MarkPositionPing = Component((props: object) => compose(
   touchableOpacity({
     style: styles.pingPositionButton,
     onPress: (props: any) => {
-      props.setGettingCurrentPingPosition(true)
-      BackgroundGeolocation.getCurrentPosition({
-        timeout: 30,
-        maximumAge: 5000,
-        desiredAccuracy: 1,
-        samples: 3,
-        persist: false
-      }).then(compose(
-        position => props.updateMarkConfigurationLocation({
-          id: props.selectedMarkConfiguration,
-          value: position
-        }),
-        pick(['latitude', 'longitude']),
-        prop('coords')))
+      const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
+
+      props.updateMarkConfigurationLocation({
+        id: props.selectedMarkConfiguration,
+        value: { latitude: lastLatitude, longitude: lastLongitude }
+      })
     }
   }))(
   text({ style: [styles.locationText, styles.pingText] },
-    props.gettingCurrentPingPosition ?
-      I18n.t('caption_course_creator_getting_ping_position').toUpperCase() :
-      I18n.t('caption_course_creator_ping_position').toUpperCase())))
+  I18n.t('caption_course_creator_ping_position').toUpperCase())))
 
 const MarkPositionCoordinates = Component(props => compose(
   fold(props),
@@ -259,23 +249,16 @@ const MarkPositionGeolocation = Component((props: object) =>
       style: styles.editPositionButton,
       onPress: (props: any) => {
         if (isEmpty(props.selectedMarkLocation)) {
-          props.setGettingCurrentMapPosition(true)
-          BackgroundGeolocation.getCurrentPosition({
-            timeout: 30,
-            maximumAge: 5000,
-            desiredAccuracy: 10,
-            samples: 1,
-            persist: false
-          })
-          .then(openGeolocationScreenWithPosition(props))
+          const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
+
+          openGeolocationScreenWithPosition(props,
+            { coords: { latitude: lastLatitude, longitude: lastLongitude }})
         } else {
           openGeolocationScreenWithPosition(props, { coords: props.selectedMarkLocation })
         }
       }}))(
     text({ style: styles.locationText },
-      props.gettingCurrentMapPosition ?
-        I18n.t('caption_course_creator_getting_ping_position').toUpperCase() :
-        I18n.t('caption_course_creation_edit_position'))))
+    I18n.t('caption_course_creation_edit_position'))))
 
 const locationTypes = [
   { value: MarkPositionType.TrackingDevice, label: I18n.t('caption_course_creation_tracker'), customIcon: trackerIcon.fold },
@@ -302,8 +285,6 @@ const PositionSelector = fromClass(SwitchSelector).contramap((props: any) => ({
 const MarkPosition = Component((props: object) =>
   compose(
     fold(props),
-    withGettingCurrentPingPosition,
-    withGettingCurrentMapPosition,
     reduce(concat, nothing()))([
       text({ style: [styles.sectionTitle, styles.indentedSectionTitle] }, I18n.t('caption_course_creator_locate')),
       PositionSelector,
@@ -581,6 +562,8 @@ const WaypointEditForm = Component((props: any) =>
   ]))
 
 const WaypointsList = Component(props => {
+  console.log('redrawing waypoints list')
+
   const startWidth = 115
   const waypointWidth = 60
   const windowWidth = Dimensions.get('window').width
@@ -693,6 +676,7 @@ const NavigationBackHandler = Component((props: any) => compose(
   contramap(merge({
     onWillBlur: (payload: any) => {
       BackHandler.removeEventListener('hardwareBackPress', props.onNavigationCancelPress)
+      props.stopLocalLocationUpdates()
     },
     onWillFocus: (payload: any) => {
       BackHandler.addEventListener('hardwareBackPress', props.onNavigationCancelPress)
@@ -708,6 +692,7 @@ const NavigationBackHandler = Component((props: any) => compose(
           }
         })
       })
+      props.startLocalLocationUpdates()
     }
   })),
   fromClass)(
@@ -725,7 +710,8 @@ export default Component((props: object) =>
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
       assignMarkOrMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
-      changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation }, null,
+      changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation,
+      startLocalLocationUpdates, stopLocalLocationUpdates }, null,
       { areStatePropsEqual: (next, prev) => compose(
           apply(equals),
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(

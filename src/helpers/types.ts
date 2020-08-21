@@ -12,4 +12,3 @@ export type RenderRowType = (
   rowID: string | number,
   highlightRow?: boolean,
 ) => React.ReactElement<any>
-export type AutoCourseUpdateState = 'MISSING' | 'IN_PROGRESS' | 'DONE'

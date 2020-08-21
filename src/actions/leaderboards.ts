@@ -61,6 +61,11 @@ const updateLeaderboardTracking = (
 
 const syncLeaderboard = (rankOnly: boolean) => async (dispatch: DispatchType, getState: GetStateType) => {
   const checkIn = getTrackedCheckIn(getState())
+
+  if (!checkIn) {
+    return
+  }
+
   const { leaderboardName, secret, competitorId, serverUrl } = checkIn
   const api = dataApi(serverUrl)
 
