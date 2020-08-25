@@ -6,7 +6,8 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import ScreenOrientation, { PORTRAIT, LANDSCAPE } from 'react-native-orientation-locker/ScreenOrientation'
 
-import { compose, reduce, concat, mergeDeepLeft, merge, includes, once, when, always } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft, merge,
+  includes, once, when, always, reject, isNil } from 'ramda'
 
 // Store
 import 'store/init'
@@ -33,10 +34,11 @@ import { getLocationTrackingStatus } from 'selectors/location'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { getSelectedMarkProperties } from 'selectors/course'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+import { hasMarkProperties } from 'selectors/inventory'
 
 // Components
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
-import { Component, fold, nothing } from 'components/fp/component'
+import { Component, fold, nothing, recomposeBranch as branch } from 'components/fp/component'
 import HeaderBackButton from 'components/HeaderBackButton'
 import HeaderTitle from 'components/HeaderTitle'
 import IconText from 'components/IconText'
@@ -363,10 +365,13 @@ const mainTabsNavigator = Component(props => compose(
       tabBarLabel: ({ color, focused }) => getTabBarLabel(route, color, focused),
     }),
   }),
-  reduce(concat, nothing()))([
+  reduce(concat, nothing()),
+  reject(isNil))([
   tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
   tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold, listeners: { tabPress: event => eventTabPress(merge(props, event)) } }),
-  tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }),
+  // Recompose branch utility cannot be used here since react-navigation expects
+  // direct children for a navigator to be Screen components.
+  props.userHasMarkProperties ? tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }) : null,
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
 ]))
 
@@ -400,7 +405,10 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({
     name: Screens.RegisterBoat, component: RegisterBoat
   })),
-  stackScreen(withoutHeader({ name: Screens.Main, component: mainTabsNavigator.fold })),
+  stackScreen(withoutHeader({
+    name: Screens.Main,
+    component: mainTabsNavigator.contramap(merge({ userHasMarkProperties: props.userHasMarkProperties })).fold
+  })),
   stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withGradientHeaderBackground, withoutTitle)({
     name: Screens.QRScanner, component: QRScanner
   })),
@@ -499,7 +507,8 @@ class AppRoot extends ReactComponent {
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
   isLoadingCheckIn: isLoadingCheckIn(state),
-  shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state)
+  shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state),
+  userHasMarkProperties: hasMarkProperties(state)
 })
 
 export default connect(
