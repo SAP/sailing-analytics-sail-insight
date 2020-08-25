@@ -38,7 +38,7 @@ import { hasMarkProperties } from 'selectors/inventory'
 
 // Components
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
-import { Component, fold, nothing, recomposeBranch as branch } from 'components/fp/component'
+import { Component, fold, nothing } from 'components/fp/component'
 import HeaderBackButton from 'components/HeaderBackButton'
 import HeaderTitle from 'components/HeaderTitle'
 import IconText from 'components/IconText'
