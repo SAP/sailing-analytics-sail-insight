@@ -74,7 +74,6 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "index.js",
     bundleInDebug: true,
     enableHermes: true
 ]
@@ -246,6 +245,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime:2.1.0"
     implementation "androidx.fragment:fragment:1.1.0"
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     implementation 'com.android.installreferrer:installreferrer:1.1'
 
     if (enableHermes) {
@@ -254,6 +254,17 @@ dependencies {
         releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {
         implementation jscFlavor
+    }
+
+    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
+      exclude group:'com.facebook.fbjni'
+    }
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+        exclude group:'com.facebook.flipper'
+        exclude group:'com.squareup.okhttp3', module:'okhttp'
+    }
+    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
+        exclude group:'com.facebook.flipper'
     }
 
     implementation "com.facebook.react:react-native:+"
