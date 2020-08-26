@@ -6,6 +6,7 @@
  */
 
 #import "AppDelegate.h"
+#import "Orientation.h"
 
 #import <React/RCTBridge.h>
 #import <RNBranch/RNBranch.h>
@@ -81,6 +82,10 @@
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *restorableObjects))restorationHandler {
   return [RNBranch continueUserActivity:userActivity];
+}
+
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+  return [Orientation getOrientation];
 }
 
 @end

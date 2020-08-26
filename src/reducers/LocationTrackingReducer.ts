@@ -10,10 +10,8 @@ import {
   removeTrackedRegatta, resetTrackingStatistics,
   updateLastWindCourse,
   updateLastWindSpeed,
-  updateStartAutoCourseStatus,
   updateStartedAt,
   updateTrackedRegatta,
-  updateTrackingStartTimeUpdateFlag,
   updateTrackingStatistics,
   updateTrackingStatus,
 } from 'actions/locationTrackingData'
@@ -33,10 +31,7 @@ const initialState: LocationTrackingState = {
   lastLatitude: null,
   lastLongitude: null,
   lastWindCourse: null,
-  lastWindSpeedInKnots: null,
-  wasTrackingStartTimeUpdated: false,
-  startAutoCourseUpdateStatus: 'MISSING',
-  validGpsFixCount: 0,
+  lastWindSpeedInKnots: null
 }
 
 const reducer = handleActions(
@@ -45,8 +40,6 @@ const reducer = handleActions(
     [updateLastWindCourse as any]: itemUpdateHandler('lastWindCourse'),
     [updateLastWindSpeed as any]: itemUpdateHandler('lastWindSpeedInKnots'),
     [updateStartedAt as any]: itemUpdateHandler('startedAt'),
-    [updateTrackingStartTimeUpdateFlag as any]: itemUpdateHandler('wasTrackingStartTimeUpdated'),
-    [updateStartAutoCourseStatus as any]: itemUpdateHandler('startAutoCourseUpdateStatus'),
     [updateTrackedRegatta as any]: (state: any = {}, action: any) =>
       !action || !action.payload ?
         state :

@@ -1,4 +1,3 @@
-import { AutoCourseUpdateState } from 'helpers/types'
 import {
   CourseStateMap,
   SelectedCourseState,
@@ -39,9 +38,6 @@ export interface LocationTrackingState {
   lastLongitude: number | null
   lastWindCourse: number | null
   lastWindSpeedInKnots: number | null
-  wasTrackingStartTimeUpdated: boolean
-  validGpsFixCount: number
-  startAutoCourseUpdateStatus: AutoCourseUpdateState
 }
 
 export interface CompetitorGap {

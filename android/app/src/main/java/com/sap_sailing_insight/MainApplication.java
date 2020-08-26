@@ -15,6 +15,8 @@ import com.facebook.react.PackageList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.wonday.orientation.OrientationActivityLifecycle;
+
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -47,5 +49,6 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     Branch.getAutoInstance(this);
+    registerActivityLifecycleCallbacks(OrientationActivityLifecycle.getInstance());
   }
 }
