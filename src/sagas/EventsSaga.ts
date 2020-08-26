@@ -22,7 +22,7 @@ import { __, apply, compose, concat, curry, dec, path, prop, last, length,
 import { Share, Alert } from 'react-native'
 import { all, call, put, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
-import { getSelectedEventInfo, isPollingEvent, getSelectEventEndDate, getEventIdThatsBeingSelected } from 'selectors/event'
+import { getSelectedEventInfo, isPollingEvent, getSelectedEventEndDate, getSelectedEventStartDate, getEventIdThatsBeingSelected } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
 import { isAppActive } from 'selectors/appState'
 import { getRegatta, getRegattaNumberOfRaces, getRegattaPlannedRaces } from 'selectors/regatta'
@@ -119,10 +119,13 @@ function* setRaceTime({ payload }: any) {
   const { race, raceTime, value } = payload
   const date = moment(value).valueOf()
   const { leaderboardName, serverUrl, regattaName, eventId } = yield select(getSelectedEventInfo)
-  const eventEndDate = yield select(getSelectEventEndDate)
+  const eventEndDate = yield select(getSelectedEventEndDate)
+  const eventStartDate = yield select(getSelectedEventStartDate)
   const api = dataApi(serverUrl)
 
-  if (eventEndDate < date) {
+  if (eventEndDate < date || 
+    eventStartDate > date) 
+  {
     // wait to make sure time picker is dismissed
     yield delay(500)
     const proceed = yield call(eventConfirmationAlert)
@@ -130,9 +133,16 @@ function* setRaceTime({ payload }: any) {
       return
     }
 
-    // update event end time
-    yield put(updateEvent({id: eventId, data: { endDate: date }}))
-    yield safeApiCall(api.updateEvent(eventId, { enddateasmillis: date }))
+    if (eventEndDate < date) {
+      // update event end time
+      yield put(updateEvent({id: eventId, data: { endDate: date }}))
+      yield safeApiCall(api.updateEvent(eventId, { enddateasmillis: date }))
+    } else {
+      // update event start time
+      yield put(updateEvent({id: eventId, data: { startDate: date }}))
+      yield safeApiCall(api.updateEvent(eventId, { startdateasmillis: date }))
+    }
+
   }
 
   yield put(updateRaceTime({

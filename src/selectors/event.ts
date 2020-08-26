@@ -22,13 +22,24 @@ export const getSelectedEventInfo = createSelector(
     (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
       selectedEvent && find(propEq('eventId', selectedEvent), activeCheckIns))
 
-export const getSelectEventEndDate = createSelector(
+export const getSelectedEventEndDate = createSelector(
   (state: any): any[] => values(state.events.all),
   (state: any): string | undefined => state.events.selectedEvent,
   (allEvents, selectedEvent) => 
     selectedEvent && 
     compose(
       prop('endDate'),
+      find(propEq('id', selectedEvent))
+    )(allEvents)
+)
+
+export const getSelectedEventStartDate = createSelector(
+  (state: any): any[] => values(state.events.all),
+  (state: any): string | undefined => state.events.selectedEvent,
+  (allEvents, selectedEvent) => 
+    selectedEvent && 
+    compose(
+      prop('startDate'),
       find(propEq('id', selectedEvent))
     )(allEvents)
 )
