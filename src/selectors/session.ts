@@ -1,5 +1,5 @@
 import { isEmpty, orderBy, reverse, values } from 'lodash'
-import { always, compose, isNil, reject, unless } from 'ramda'
+import { always, compose, isNil, reject, unless, when } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { CheckIn, Session } from 'models'
@@ -18,7 +18,7 @@ import { getBoatEntity } from './boat'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from './checkIn'
 import { getCompetitorEntity } from './competitor'
 import { getEventEntity } from './event'
-import { getLeaderboardEntity } from './leaderboard'
+import { getLeaderboardEntity, isLeaderboardFinished } from './leaderboard'
 import { getMarkEntity } from './mark'
 import { getRegattaEntity } from './regatta'
 
@@ -53,6 +53,7 @@ const buildSession = (
   // result.regattaStrippedDisplayName = '',
   result.boat = boatEntity && checkIn.boatId ? mapResToBoat(boatEntity[checkIn.boatId]) : undefined
   result.mark = markEntity && checkIn.markId ? mapResToMark(markEntity[checkIn.markId]) : undefined
+  result.isFinished = isLeaderboardFinished(result.leaderboardName, Object.values(leaderboardEntity))
   return result
 }
 
@@ -127,11 +128,15 @@ export const getSession = (leaderboardName: string) => createSelector(
 )
 
 
-export const getFilteredSessionList = createSelector(
+export const getFilteredSessionList = (forTracking: any) => createSelector(
   getSessionList,
   getActiveEventFilters,
   (sessions: Session[], filters: EventFilter[]) => {
     return compose(
+      when(
+        always(forTracking),
+        reject((session: any) => session.isFinished)
+      ),
       unless(
         always(filters.includes(EventFilter.Archived)),
         reject((session: Session) => !!session.isArchived)
