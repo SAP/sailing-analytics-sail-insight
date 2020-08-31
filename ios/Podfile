@@ -10,7 +10,6 @@ target 'sap_sailing_insight' do
   rn_path = '../node_modules/react-native'
   permissions_path = '../node_modules/react-native-permissions/ios'
 
-  #pod 'React', :path => '../node_modules/react-native/'
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
   pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways.podspec"
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"

@@ -495,7 +495,8 @@ PODS:
   - RNSVG (9.13.6):
     - React
   - RSKImageCropper (2.2.3)
-  - SailInsightExpeditionCommunication (1.1.20):
+  - SailInsightExpeditionCommunication (1.1.23):
+    - CocoaAsyncSocket
     - React
   - SailInsightMTCPNetwork (1.0.7):
     - React
@@ -867,13 +868,13 @@ SPEC CHECKSUMS:
   RNSnackbar: 160077964866262ed08cfd33ab4760219ea2aef6
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
-  SailInsightExpeditionCommunication: a6a4af12bb43674464e9efe04a6322277ab2f836
+  SailInsightExpeditionCommunication: 1825cddc77d819fac4bc62ddda5dc2119db3f03f
   SailInsightMTCPNetwork: c344b7f9e06b17a1f1b2333c4c670e6d0c74a19e
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: a92aaf6e22bca58ccb291a9a77288729fb5c52f6
+PODFILE CHECKSUM: b4e11c61049ab23442de7e3b8819a1b1d618a6cf
 
 COCOAPODS: 1.9.1
