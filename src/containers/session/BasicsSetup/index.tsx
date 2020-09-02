@@ -1,8 +1,10 @@
 import { __, always, compose, concat, defaultTo, merge, mergeLeft, reduce } from 'ramda'
 
+import React from 'react'
 import I18n from 'i18n'
 import moment from 'moment'
 
+import { View } from 'react-native'
 import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
 import { text, view } from 'components/fp/react-native'
 import { field as reduxFormField, textInputWithMeta } from 'components/fp/redux-form'
@@ -26,15 +28,25 @@ const icon = compose(
   fromClass(IconText).contramap,
   always)
 
-const fieldBox = (child: any) => Component((props: any) => compose(
-  fold(props),
-  view({ style: styles.fieldBoxContainer }),
-  concat(text({ style: styles.fieldBoxLabel }, props.label)),
-  view({style: { flexDirection: 'row' }}),
-  reduce(concat, nothing()))([
-    child,
-    defaultTo(nothing(), props.icon)
-  ]))
+// TODO: Revisit this once React gets an update from 16.13
+// const fieldBox = (child: any) => Component((props: any) => compose(
+//   fold(props),
+//   view({ style: styles.fieldBoxContainer }),
+//   concat(text({ style: styles.fieldBoxLabel }, props.label)),
+//   view({style: { flexDirection: 'row' }}),
+//   reduce(concat, nothing()))([
+//     child,
+//     defaultTo(nothing(), props.icon)
+//   ]))
+
+const fieldBox = (child: any) => Component((props: any) =>
+  <View style={styles.fieldBoxContainer}>
+    {text({ style: styles.fieldBoxLabel }, props.label).fold(props)}
+    <View style={{ flexDirection: 'row' }}>
+      {child.fold(props)}
+      {defaultTo(nothing(), props.icon).fold(props)}
+    </View>
+  </View>)
 
 const boxedTextInput = fieldBox(
   textInputWithMeta.contramap((props: any) => ({
