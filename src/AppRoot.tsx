@@ -419,9 +419,7 @@ const AppNavigator = Component(props => compose(
   stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults,
     component: props => [
       <WebView {...props}/>,
-      Platform.select({
-        android: <ScreenOrientation orientation={LANDSCAPE}/>,
-        ios: null })],
+      <ScreenOrientation orientation={LANDSCAPE}/>],
     options: { title: I18n.t('caption_sap_analytics_header') } }))
 ]))
 

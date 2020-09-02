@@ -68,6 +68,7 @@ static void InitializeFlipper(UIApplication *application) {
   rootView.frame = self.window.bounds;
   launchScreenView.frame = self.window.bounds;
   rootView.loadingView = launchScreenView;
+  rootView.translatesAutoresizingMaskIntoConstraints = NO;
   
   // 7. set the backgroundView as main view for the rootViewController (instead of the rootView)
   rootViewController.view = backgroundView;
@@ -78,6 +79,16 @@ static void InitializeFlipper(UIApplication *application) {
   
   // 9. after the window is visible, add the rootView as a subview to your backgroundView
   [backgroundView addSubview:rootView];
+
+  // 10. add constraints for layout on different screen sizes
+  NSArray *constraints = @[[NSLayoutConstraint constraintWithItem:rootView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:backgroundView attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0],
+                         [NSLayoutConstraint constraintWithItem:rootView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual
+                                                         toItem:backgroundView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:0.0],
+                         [NSLayoutConstraint constraintWithItem:rootView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:backgroundView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0.0],
+                         [NSLayoutConstraint constraintWithItem:rootView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:backgroundView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0.0]
+                         ];
+  
+  [backgroundView addConstraints: constraints];
   
   // [REQUIRED] Register BackgroundFetch
   [[TSBackgroundFetch sharedInstance] didFinishLaunching];
