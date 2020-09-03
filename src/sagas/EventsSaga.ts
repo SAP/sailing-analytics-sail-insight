@@ -6,7 +6,7 @@ import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
   START_POLLING_SELECTED_EVENT, STOP_POLLING_SELECTED_EVENT,
   SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent,
-  updateSelectingEvent, updateStartingTracking, updateEventPollingStatus } from 'actions/events'
+  updateSelectingEvent, updateStartingTracking, updateEventPollingStatus, updateEvent } from 'actions/events'
 import { fetchRegatta } from 'actions/regattas'
 import * as Screens from 'navigation/Screens'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
@@ -19,10 +19,10 @@ import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
-import { Share } from 'react-native'
+import { Share, Alert } from 'react-native'
 import { all, call, put, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
-import { getSelectedEventInfo, isPollingEvent } from 'selectors/event'
+import { getSelectedEventInfo, isPollingEvent, getSelectedEventEndDate, getSelectedEventStartDate, getEventIdThatsBeingSelected } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
 import { isAppActive } from 'selectors/appState'
 import { getRegatta, getRegattaNumberOfRaces, getRegattaPlannedRaces } from 'selectors/regatta'
@@ -36,6 +36,15 @@ const valueAtIndex = curry((index, array) => compose(
   values,
   pick(__, array))(
   [index]))
+
+function eventConfirmationAlert() {
+  return new Promise(resolve => {
+    Alert.alert(I18n.t('caption_event_time'), '',
+      [ { text: I18n.t('button_proceed'), onPress: () => resolve(true) },
+        { text: I18n.t('button_discard'), onPress: () => resolve(false) }
+      ])
+  })
+}
 
 function* safeApiCall(method, ...args) {
   let result
@@ -109,8 +118,32 @@ function* fetchCoursesForCurrrentEvent({ payload }: any) {
 function* setRaceTime({ payload }: any) {
   const { race, raceTime, value } = payload
   const date = moment(value).valueOf()
-  const { leaderboardName, serverUrl, regattaName } = yield select(getSelectedEventInfo)
+  const { leaderboardName, serverUrl, regattaName, eventId } = yield select(getSelectedEventInfo)
+  const eventEndDate = yield select(getSelectedEventEndDate)
+  const eventStartDate = yield select(getSelectedEventStartDate)
   const api = dataApi(serverUrl)
+
+  if (eventEndDate < date || 
+    eventStartDate > date) 
+  {
+    // wait to make sure time picker is dismissed
+    yield delay(500)
+    const proceed = yield call(eventConfirmationAlert)
+    if (!proceed) {
+      return
+    }
+
+    if (eventEndDate < date) {
+      // update event end time
+      yield put(updateEvent({id: eventId, data: { endDate: date }}))
+      yield safeApiCall(api.updateEvent(eventId, { enddateasmillis: date }))
+    } else {
+      // update event start time
+      yield put(updateEvent({id: eventId, data: { startDate: date }}))
+      yield safeApiCall(api.updateEvent(eventId, { startdateasmillis: date }))
+    }
+
+  }
 
   yield put(updateRaceTime({
     [`${leaderboardName}-${race}`]: { ...raceTime, startTimeAsMillis: date }
