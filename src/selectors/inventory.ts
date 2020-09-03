@@ -1,7 +1,7 @@
 import { compose, find, reduce, concat, props, equals,
   prop, __, defaultTo, curry, when, has, propEq, map,
   always, not, includes, reject, flatten, partition, reverse,
-  addIndex, sortBy, indexOf, unless, isNil, merge } from 'ramda'
+  addIndex, sortBy, indexOf, unless, isNil, merge, isEmpty } from 'ramda'
 import { getEntityArrayByType} from './entity'
 import { createSelector } from 'reselect'
 import { getEditedCourse, hasSameStartFinish } from './course'
@@ -11,6 +11,11 @@ import { MARK_PROPERTIES_ENTITY_NAME } from 'api/schemas'
 const mapIndexed = addIndex(map)
 
 const startFinishMarks = ['Start/Finish Pin', 'Start/Finish Boat', 'Start Pin', 'Start Boat', 'Finish Pin', 'Finish Boat']
+
+export const hasMarkProperties = (state: any) => compose(
+  not,
+  isEmpty)(
+  getEntityArrayByType(state, MARK_PROPERTIES_ENTITY_NAME))
 
 export const getMarkProperties = (state: any) => compose(
   flatten,
