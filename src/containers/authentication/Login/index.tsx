@@ -6,6 +6,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import { login } from 'actions/auth'
 import { fetchUserInfo, syncEventList } from 'actions/user'
+import { loadMarkProperties } from 'actions/inventory'
 import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import * as Screens from 'navigation/Screens'
 import { PasswordReset } from 'navigation/Screens'
@@ -76,6 +77,7 @@ class Login extends TextInputForm<{
       this.setState({ isLoading: true })
       await this.props.login(username, password)
       this.props.fetchUserInfo()
+      this.props.loadMarkProperties({ createMissingDefaultMarkProperties: false })
       this.props.syncEventList()
       this.props.navigation.reset({ index: 1, routes: [{ name: Screens.Main }]})
     } catch (err) {
@@ -149,4 +151,7 @@ const mapStateToProps = (state: any) => ({
   isNetworkConnected: isNetworkConnected(state),
 })
 
-export default connect(mapStateToProps, { fetchUserInfo, login, syncEventList })(Login)
+export default connect(
+  mapStateToProps,
+  { fetchUserInfo, login, syncEventList, loadMarkProperties })(
+  Login)

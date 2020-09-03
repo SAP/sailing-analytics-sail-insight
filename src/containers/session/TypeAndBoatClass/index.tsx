@@ -14,7 +14,7 @@ import {
   FORM_KEY_REGATTA_TYPE,
 } from 'forms/eventCreation'
 import { RegattaType } from 'models/EventCreationData'
-import ModalDropdown from 'react-native-modal-dropdown'
+import ModalDropdown from 'components/ModalDropdown'
 import SwitchSelector from 'react-native-switch-selector'
 
 import { $MediumBlue, $primaryActiveColor } from 'styles/colors'

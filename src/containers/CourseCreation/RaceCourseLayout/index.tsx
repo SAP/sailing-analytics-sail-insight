@@ -562,8 +562,6 @@ const WaypointEditForm = Component((props: any) =>
   ]))
 
 const WaypointsList = Component(props => {
-  console.log('redrawing waypoints list')
-
   const startWidth = 115
   const waypointWidth = 60
   const windowWidth = Dimensions.get('window').width
