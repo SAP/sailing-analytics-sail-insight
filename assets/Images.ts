@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 
 export default {
   defaults: {
@@ -36,7 +37,7 @@ export default {
     expandMore: require('./img/icons/icon-arrow-expand-more.png'),
     pickImage: require('./img/new_icons/camera.png'),
     delete: require('./img/icons/icon-delete.png'),
-    share: require('./img/icons/icon-open-in-new.png'),
+    share: Platform.OS === 'ios' ? require('./img/new_icons/icon-share-ios.png') : require('./img/new_icons/icon-share-android.png'),
     plus: require('./img/icons/plus.png'),
     arrowRight: require('./img/icons/icon-arrow-chevron-right.png'),
     arrowLeft: require('./img/icons/icon-arrow-chevron-left.png'),
