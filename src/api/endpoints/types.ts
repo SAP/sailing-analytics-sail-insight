@@ -15,7 +15,8 @@ export interface CreateEventBody {
 }
 
 export interface UpdateEventBody {
-  enddateasmillis: number
+  enddateasmillis?: number
+  startdateasmillis?: number
 }
 
 export interface UpdateLeaderboardBody {

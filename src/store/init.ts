@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import crashlytics from '@react-native-firebase/crashlytics'
 import { createNetworkMiddleware } from 'react-native-offline'
 import { applyMiddleware } from 'redux'

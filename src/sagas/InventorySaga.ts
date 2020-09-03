@@ -24,7 +24,7 @@ const defaultMarkProperties = [
   { name: 'Reaching Mark', shortName: 'R', markType: 'BUOY' },
 ]
 
-export function* loadMarkProperties() {
+export function* loadMarkProperties({ payload }: any = { payload: { createMissingDefaultMarkProperties: true }}) {
   const hasUser = yield select(isLoggedIn)
 
   if (!hasUser) return
@@ -38,10 +38,9 @@ export function* loadMarkProperties() {
       compose(not, hasMarkProperties(values(markProperties.entities.markProperties))),
       defaultMarkProperties)
 
-  yield put(removeEntities({ type: 'markProperties' }))
   yield put(receiveEntities(markProperties))
 
-  if (!isEmpty(missingDefaultMarkProperties)) { 
+  if (!isEmpty(missingDefaultMarkProperties) && payload.createMissingDefaultMarkProperties) { 
     const newMarkProperties = yield all(missingDefaultMarkProperties.map(mp => call(api.createMarkProperties, mp)))
 
     yield put(normalizeAndReceiveEntities(newMarkProperties, [markPropertiesSchema]))
