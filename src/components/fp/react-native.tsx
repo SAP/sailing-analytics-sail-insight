@@ -1,3 +1,4 @@
+import React from 'react'
 import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sheet'
 import IconText from 'components/IconText'
 import TextButton from 'components/TextButton'
@@ -9,7 +10,12 @@ import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
 import { G, Path, Svg, Text as rnSvgText } from 'react-native-svg'
 import { Component, contramap, fold, fromClass, nothing, buildComponentWithChildren } from './component'
 
-export const view = buildComponentWithChildren(View)
+// TODO: Revisit this once React gets an update from 16.13
+//export const view = buildComponentWithChildren(View)
+export const view = curry((settings, c) => Component(props =>
+  <View {...settings}>
+    {c.fold ? c.fold(props) : c}
+  </View>))
 export const scrollView = buildComponentWithChildren(ScrollView)
 export const keyboardAvoidingView = buildComponentWithChildren(KeyboardAvoidingView)
 export const text = buildComponentWithChildren(Text)

@@ -7,7 +7,7 @@ import {
   View,
   Platform,
 } from 'react-native'
-import ModalDropdown from 'react-native-modal-dropdown'
+import ModalDropdown from 'components/ModalDropdown'
 import { connect } from 'react-redux'
 
 import I18n from 'i18n'
