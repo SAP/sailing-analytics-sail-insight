@@ -382,7 +382,10 @@ const AppNavigator = Component(props => compose(
   stackNavigator({
     initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,
-    screenOptions: screenWithHeaderOptions
+    screenOptions: ({ route }) => ({
+      ...screenWithHeaderOptions,
+      gestureEnabled: route.name !== 'Main'
+    })
   }),
   reduce(concat, nothing())
 )([

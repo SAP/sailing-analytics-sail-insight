@@ -439,6 +439,8 @@ PODS:
     - React-Core (= 0.63.2)
     - React-cxxreact (= 0.63.2)
     - React-jsi (= 0.63.2)
+  - ReactNativeART (1.2.0):
+    - React
   - RNBackgroundFetch (3.0.4):
     - React
   - RNBackgroundGeolocation (3.7.0):
@@ -578,6 +580,7 @@ DEPENDENCIES:
   - React-RCTText (from `../node_modules/react-native/Libraries/Text`)
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "ReactNativeART (from `../node_modules/@react-native-community/art`)"
   - RNBackgroundFetch (from `../node_modules/react-native-background-fetch`)
   - RNBackgroundGeolocation (from `../node_modules/react-native-background-geolocation-android`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
@@ -728,6 +731,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeART:
+    :path: "../node_modules/@react-native-community/art"
   RNBackgroundFetch:
     :path: "../node_modules/react-native-background-fetch"
   RNBackgroundGeolocation:
@@ -848,6 +853,7 @@ SPEC CHECKSUMS:
   React-RCTText: 1b6773e776e4b33f90468c20fe3b16ca3e224bb8
   React-RCTVibration: 4d2e726957f4087449739b595f107c0d4b6c2d2d
   ReactCommon: a0a1edbebcac5e91338371b72ffc66aa822792ce
+  ReactNativeART: 78edc68dd4a1e675338cd0cd113319cf3a65f2ab
   RNBackgroundFetch: 388cf1595934d22fed275b8db9b48a28bb4eb7b6
   RNBackgroundGeolocation: ccfbbcb9b67f05c5372c48d9d3db9a819861ef5b
   RNCAsyncStorage: 2a692bcb9b69b76a2f1a95f33db057129700af64
