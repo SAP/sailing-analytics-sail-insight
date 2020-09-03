@@ -46,7 +46,10 @@ export const logout = () => (dispatch: DispatchType) => {
 }
 
 export const requestPasswordReset = (usernameOrEmail: string) => {
-  if (usernameOrEmail.includes('@')) {
+  // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const isEmail = re.test(usernameOrEmail.toLowerCase()) // Use the regex to test whether the string is an email
+  if (isEmail) {
     return authApi().requestPasswordReset('', usernameOrEmail)
   }
 
