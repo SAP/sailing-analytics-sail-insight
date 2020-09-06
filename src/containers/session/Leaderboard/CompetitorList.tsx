@@ -99,8 +99,8 @@ class CompetitorList extends React.Component<{
     return (
       <TouchableHighlight
         style={[styles.listRowButtonContainer]}
-        onPress={onCompetitorItemPress && (() => onCompetitorItemPress(id))}
-      >
+        disabled={!onCompetitorItemPress}
+        onPress={() => onCompetitorItemPress(id)}>
         <View style={[styles.listRowContainer]}>
           <View style={[styles.listItemContainer]}>
             {this.renderItemInnerContent(item)}
