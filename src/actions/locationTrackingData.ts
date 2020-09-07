@@ -1,6 +1,7 @@
 import { createAction } from 'redux-actions'
 
 export const updateTrackingStatus = createAction('UPDATE_LOCATION_TRACKING_STATUS')
+export const updateTrackingContext = createAction('UPDATE_LOCATION_TRACKING_CONTEXT')
 export const removeTrackedRegatta = createAction('REMOVE_TRACKED_REGATTA')
 export const updateTrackedRegatta = createAction('UPDATE_TRACKED_REGATTA')
 export const updateTrackingStatistics = createAction('UPDATE_TRACKING_STATISTICS')
