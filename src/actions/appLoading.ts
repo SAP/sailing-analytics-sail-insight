@@ -10,6 +10,9 @@ import { updateStartLine, stopUpdateStartLineBasedOnCurrentCourse } from './comm
 import * as LocationService from 'services/LocationService'
 
 export const initializeApp = (navigation:object) => async (dispatch: DispatchType) => {
+  await LocationService.ready()
+  await dispatch(initLocationUpdates())
+
   /// reset flags for loading
   await dispatch(updateCreatingEvent(false))
   await dispatch(updateLoadingCheckInFlag(false))
@@ -29,7 +32,4 @@ export const initializeApp = (navigation:object) => async (dispatch: DispatchTyp
 
   await dispatch(checkCurrentAuthSession())
   await dispatch(handleAppStartDeepLink(navigation))
-
-  LocationService.ready().then(() =>
-    dispatch(initLocationUpdates()))
 }

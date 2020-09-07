@@ -17,6 +17,9 @@ export interface LocationStats {
 export const getLocationTrackingStatus = (state: RootState = {}) =>
   state.locationTracking && state.locationTracking.status
 
+export const getLocationTrackingContext = (state: RootState = {}) =>
+state.locationTracking && state.locationTracking.context
+
 export const getTrackedEventId = (state: RootState = {}) =>
   state.locationTracking && state.locationTracking.eventId
 

@@ -26,11 +26,11 @@ import { AuthContext } from 'navigation/NavigationContext'
 // Actions
 import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
-import { handleLocation, initLocationUpdates } from 'actions/locations'
+import { handleLocation } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 
 // Selectors
-import { getLocationTrackingStatus } from 'selectors/location'
+import { getLocationTrackingStatus, getLocationTrackingContext } from 'selectors/location'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { getSelectedMarkProperties } from 'selectors/course'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
@@ -239,7 +239,10 @@ const markTrackingNavigator = Component(props => compose(
 const trackingNavigator = Component(props => compose(
   fold(props),
   stackNavigator({
-    initialRouteName: props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ? Screens.Tracking : Screens.WelcomeTracking,
+    initialRouteName: props.locationTrackingContext === LocationService.LocationTrackingContext.REMOTE &&
+      props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ?
+        Screens.Tracking :
+        Screens.WelcomeTracking,
     ...stackNavigatorConfig,
     screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
@@ -254,7 +257,8 @@ const trackingNavigator = Component(props => compose(
 
 const TrackingSwitch = connect((state: any) => ({
     boundToMark: isBoundToMark(state),
-    locationTrackingStatus: getLocationTrackingStatus(state)
+    locationTrackingStatus: getLocationTrackingStatus(state),
+    locationTrackingContext: getLocationTrackingContext(state)
 }))(props => {
   return props.boundToMark
     ? markTrackingNavigator.fold(props)
@@ -336,7 +340,7 @@ const preventTabPressBackAction = (navigatorScreen, toPrevent, toGoBack) => (pro
 
 const trackingTabPress = preventTabPressBackAction(
   Screens.TrackingNavigator,
-  [Screens.Tracking, Screens.SetWind, Screens.Leaderboard],
+  [Screens.Tracking, Screens.WelcomeTracking, Screens.TrackingList, Screens.SetWind, Screens.Leaderboard],
   [Screens.SetWind, Screens.Leaderboard]
 )
 
@@ -514,6 +518,5 @@ const mapStateToProps = (state: any) => ({
 
 export default connect(
   mapStateToProps,
-  { performDeepLink, updateTrackingStatus, handleLocation,
-  initLocationUpdates, initializeApp })(
+  { performDeepLink, updateTrackingStatus, handleLocation, initializeApp })(
   AppRoot)
