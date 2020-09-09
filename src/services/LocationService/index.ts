@@ -123,6 +123,11 @@ export const LocationTrackingStatus = {
   STOPPED: 'STOPPED',
 }
 
+export const LocationTrackingContext = {
+  LOCAL: 'LOCAL',
+  REMOTE: 'REMOTE'
+}
+
 export const GpsFixesThreshold = {
   NORMAL: 0,
   BATTERY_OPTIMIZED: 30

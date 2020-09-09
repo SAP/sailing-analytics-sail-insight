@@ -14,6 +14,7 @@ import {
   updateTrackedRegatta,
   updateTrackingStatistics,
   updateTrackingStatus,
+  updateTrackingContext
 } from 'actions/locationTrackingData'
 import { removeUserData } from '../actions/auth'
 
@@ -37,6 +38,7 @@ const initialState: LocationTrackingState = {
 const reducer = handleActions(
   {
     [updateTrackingStatus as any]: itemUpdateHandler('status'),
+    [updateTrackingContext as any]: itemUpdateHandler('context'),
     [updateLastWindCourse as any]: itemUpdateHandler('lastWindCourse'),
     [updateLastWindSpeed as any]: itemUpdateHandler('lastWindSpeedInKnots'),
     [updateStartedAt as any]: itemUpdateHandler('startedAt'),

@@ -7,6 +7,7 @@ import { CheckInUpdate } from 'models'
 import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
 import * as Screens from 'navigation/Screens'
+import * as LocationService from 'services/LocationService'
 import { getNowAsMillis } from 'helpers/date'
 import { getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
@@ -17,7 +18,7 @@ import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { updateTrackedRegatta } from 'actions/locationTrackingData'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
-import { removeTrackedRegatta, resetTrackingStatistics } from './locationTrackingData'
+import { removeTrackedRegatta, resetTrackingStatistics, updateTrackingContext } from './locationTrackingData'
 import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCurrentCourse } from 'actions/communications'
 
 export const stopTracking = () => async (dispatch: DispatchType, getState: GetStateType) => {
@@ -38,14 +39,6 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     return
   }
 
-  // try {
-  //   await dispatch(reuseBindingFromOtherDevice(checkInData, false))
-  //   checkInData = getCheckInByLeaderboardName(checkInData.leaderboardName)(getState())
-  // } catch (err) {
-  //   // Ignore errors to not crash start tracking if the reuse of bindings doesn't work
-  //   console.log('An error occured when trying to reuse competitor bindings from other devices', { err })
-  // }
-
   const markTracking = checkInData.markId
   const eventIsNotBound = compose(
     all(isNil),
@@ -63,17 +56,18 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     return
   }
 
+  dispatch(resetTrackingStatistics())
+  dispatch(updateTrackingContext(LocationService.LocationTrackingContext.REMOTE))
+  await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId))
+
   if (useLoadingSpinner) {
     dispatch(updateLoadingCheckInFlag(true))
   }
-  dispatch(resetTrackingStatistics())
   dispatch(updateLatestTrackedRace(null))
   dispatch(updateTrackedRegatta({
     leaderboardName: checkInData.leaderboardName,
     eventId: checkInData.eventId,
   }))
-
-  await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId))
 
   if (markTracking) {
     navigation.navigate(Screens.TrackingNavigator, { screen: Screens.MarkTracking })

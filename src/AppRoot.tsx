@@ -6,7 +6,8 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import ScreenOrientation, { PORTRAIT, LANDSCAPE } from 'react-native-orientation-locker/ScreenOrientation'
 
-import { compose, reduce, concat, mergeDeepLeft, merge, includes, once, when, always } from 'ramda'
+import { compose, reduce, concat, mergeDeepLeft, merge,
+  includes, once, when, always, reject, isNil } from 'ramda'
 
 // Store
 import 'store/init'
@@ -25,14 +26,15 @@ import { AuthContext } from 'navigation/NavigationContext'
 // Actions
 import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
-import { handleLocation, initLocationUpdates } from 'actions/locations'
+import { handleLocation } from 'actions/locations'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 
 // Selectors
-import { getLocationTrackingStatus } from 'selectors/location'
+import { getLocationTrackingStatus, getLocationTrackingContext } from 'selectors/location'
 import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
 import { getSelectedMarkProperties } from 'selectors/course'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+import { hasMarkProperties } from 'selectors/inventory'
 
 // Components
 import { stackScreen, stackNavigator, tabsScreen, tabsNavigator } from 'components/fp/navigation'
@@ -237,7 +239,10 @@ const markTrackingNavigator = Component(props => compose(
 const trackingNavigator = Component(props => compose(
   fold(props),
   stackNavigator({
-    initialRouteName: props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ? Screens.Tracking : Screens.WelcomeTracking,
+    initialRouteName: props.locationTrackingContext === LocationService.LocationTrackingContext.REMOTE &&
+      props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ?
+        Screens.Tracking :
+        Screens.WelcomeTracking,
     ...stackNavigatorConfig,
     screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
@@ -252,7 +257,8 @@ const trackingNavigator = Component(props => compose(
 
 const TrackingSwitch = connect((state: any) => ({
     boundToMark: isBoundToMark(state),
-    locationTrackingStatus: getLocationTrackingStatus(state)
+    locationTrackingStatus: getLocationTrackingStatus(state),
+    locationTrackingContext: getLocationTrackingContext(state)
 }))(props => {
   return props.boundToMark
     ? markTrackingNavigator.fold(props)
@@ -334,7 +340,7 @@ const preventTabPressBackAction = (navigatorScreen, toPrevent, toGoBack) => (pro
 
 const trackingTabPress = preventTabPressBackAction(
   Screens.TrackingNavigator,
-  [Screens.Tracking, Screens.SetWind, Screens.Leaderboard],
+  [Screens.Tracking, Screens.WelcomeTracking, Screens.TrackingList, Screens.SetWind, Screens.Leaderboard],
   [Screens.SetWind, Screens.Leaderboard]
 )
 
@@ -363,10 +369,13 @@ const mainTabsNavigator = Component(props => compose(
       tabBarLabel: ({ color, focused }) => getTabBarLabel(route, color, focused),
     }),
   }),
-  reduce(concat, nothing()))([
+  reduce(concat, nothing()),
+  reject(isNil))([
   tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
   tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold, listeners: { tabPress: event => eventTabPress(merge(props, event)) } }),
-  tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }),
+  // Recompose branch utility cannot be used here since react-navigation expects
+  // direct children for a navigator to be Screen components.
+  props.userHasMarkProperties ? tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }) : null,
   tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
 ]))
 
@@ -377,7 +386,10 @@ const AppNavigator = Component(props => compose(
   stackNavigator({
     initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,
-    screenOptions: screenWithHeaderOptions
+    screenOptions: ({ route }) => ({
+      ...screenWithHeaderOptions,
+      gestureEnabled: route.name !== 'Main'
+    })
   }),
   reduce(concat, nothing())
 )([
@@ -400,7 +412,10 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({
     name: Screens.RegisterBoat, component: RegisterBoat
   })),
-  stackScreen(withoutHeader({ name: Screens.Main, component: mainTabsNavigator.fold })),
+  stackScreen(withoutHeader({
+    name: Screens.Main,
+    component: mainTabsNavigator.contramap(merge({ userHasMarkProperties: props.userHasMarkProperties })).fold
+  })),
   stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withGradientHeaderBackground, withoutTitle)({
     name: Screens.QRScanner, component: QRScanner
   })),
@@ -419,9 +434,7 @@ const AppNavigator = Component(props => compose(
   stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults,
     component: props => [
       <WebView {...props}/>,
-      Platform.select({
-        android: <ScreenOrientation orientation={LANDSCAPE}/>,
-        ios: null })],
+      <ScreenOrientation orientation={LANDSCAPE}/>],
     options: { title: I18n.t('caption_sap_analytics_header') } }))
 ]))
 
@@ -499,11 +512,11 @@ class AppRoot extends ReactComponent {
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
   isLoadingCheckIn: isLoadingCheckIn(state),
-  shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state)
+  shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state),
+  userHasMarkProperties: hasMarkProperties(state)
 })
 
 export default connect(
   mapStateToProps,
-  { performDeepLink, updateTrackingStatus, handleLocation,
-  initLocationUpdates, initializeApp })(
+  { performDeepLink, updateTrackingStatus, handleLocation, initializeApp })(
   AppRoot)

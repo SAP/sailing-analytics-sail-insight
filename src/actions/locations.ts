@@ -8,7 +8,8 @@ import {
   updateStartedAt,
   updateTrackedRegatta,
   updateTrackingStatistics,
-  updateTrackingStatus
+  updateTrackingStatus,
+  updateTrackingContext
 } from 'actions/locationTrackingData'
 import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
 import { getVerboseLoggingSetting } from 'selectors/settings'
@@ -51,7 +52,7 @@ export const startLocationUpdates = (
     await LocationService.setVerboseLogging(verboseLogging)
     await LocationService.start()
     await LocationService.changePace(true)
-    dispatch(updateStartedAt(currentTimestampAsText()))
+    await dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
     Logger.debug('Error during startLocationUpdates', err)
     // dispatch(removeTrackedRegatta())
@@ -75,16 +76,17 @@ export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
 
 // A tracking mode where gps fixes are not sent to the server.
 // Used inside course creator to get instant ping locations.
-export const startLocalLocationUpdates = () => async () => {
+export const startLocalLocationUpdates = () => async (dispatch) => {
   if (await LocationService.isEnabled()) {
     return
   }
 
   // For the course creator, we want tracking to stop when the
   // app is closed.
-  await LocationService.setConfig({ stopOnTerminate: true })
+  await LocationService.setConfig({ url: undefined, stopOnTerminate: true })
   await LocationService.start()
   await LocationService.changePace(true)
+  await dispatch(updateTrackingContext(LocationService.LocationTrackingContext.LOCAL))
 }
 
 export const stopLocalLocationUpdates = () => async (dispatch: DispatchType, getState: GetStateType) => {
@@ -111,5 +113,6 @@ export const initLocationUpdates = () => async (dispatch: DispatchType) => {
   const status = enabled ?
   LocationService.LocationTrackingStatus.RUNNING :
   LocationService.LocationTrackingStatus.STOPPED
-  dispatch(updateTrackingStatus(status))
+
+  return dispatch(updateTrackingStatus(status))
 }

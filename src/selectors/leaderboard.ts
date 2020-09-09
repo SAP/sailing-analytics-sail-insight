@@ -1,4 +1,4 @@
-import { compose, all, prop, propEq, head, find, defaultTo } from 'ramda'
+import { compose, all, prop, propEq, head, find, defaultTo, any } from 'ramda'
 import { get, last, values } from 'lodash'
 import { createSelector } from 'reselect'
 
@@ -99,7 +99,7 @@ const eventRacesStatusSelector = (status: string) => (leaderboardName: any, lead
     find(propEq('name', leaderboardName)))(
     leaderboards)
 
-const createCurrentEventRacesStatusSelector = (status: string) => createSelector(
+const createCurrentEventRacesStatusAllSelector = (status: string) => createSelector(
   getSelectedEventInfo,
   getLeaderboards,
   (event: any, leaderboards: any) => eventRacesStatusSelector(status)(
@@ -109,6 +109,16 @@ const createCurrentEventRacesStatusSelector = (status: string) => createSelector
 
 export const isLeaderboardFinished = eventRacesStatusSelector('FINISHED')
 
-export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusSelector('TRACKING')
-export const isCurrentLeaderboardFinished = createCurrentEventRacesStatusSelector('FINISHED')
+const createCurrentEventRacesStatusAnySelector = (status: string) => createSelector(
+  getSelectedEventInfo,
+  getLeaderboards,
+  (event, leaderboards) => compose(
+    any(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
+    defaultTo({}),
+    prop('trackedRacesInfo'),
+    find(propEq('name', defaultTo({}, event).leaderboardName)))(
+    leaderboards))
+
+export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusAnySelector('TRACKING')
+export const isCurrentLeaderboardFinished = createCurrentEventRacesStatusAllSelector('FINISHED')
 export const isLeaderboardStale = (state: any) => state.leaderboardTracking.isLeaderboardStale
