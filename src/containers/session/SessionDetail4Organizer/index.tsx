@@ -9,6 +9,7 @@ import { startTracking } from 'actions/tracking'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
 import { editResultsUrl } from 'services/CheckInService'
+import { alertPromise } from 'helpers/utils'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
@@ -123,6 +124,7 @@ const editResultsButton = Component((props: any) => compose(
   fold(props),
   textButton({
     onPress: async (props: any) => {
+      await alertPromise('', I18n.t('text_edit_results_disclaimer'), 'OK', false)
       props.navigation.navigate(Screens.EditResults, { data: { url: editResultsUrl(props.session) } })
     },
     style: [styles.button],
@@ -133,11 +135,12 @@ const copyEditLinkToClipboardButton = Component((props: any) => compose(
   fold(props),
   textButton({
   onPress: async (props: any) => {
+    await alertPromise('', I18n.t('text_copy_results_disclaimer'), 'OK', false)
     Clipboard.setString(editResultsUrl(props.session))
-    Snackbar.show({
+    setTimeout(() => Snackbar.show({
       text: I18n.t('text_link_copied_to_clipboard'),
       duration: Snackbar.LENGTH_SHORT
-    })
+    }), 300) // For some reason doesn't work without the timeout when there's an await in the surrounding function
   },
   style: [styles.button],
   textStyle: styles.buttonContent }))(
