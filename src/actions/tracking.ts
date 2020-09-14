@@ -75,8 +75,6 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     navigation.navigate(Screens.Tracking)
   }
 
-  let showAlertRaceNotStarted = false
-
   try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
   catch (e) {}
 
@@ -87,9 +85,7 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
       .filter(race => race.trackingStartDate < now)
       .filter(race => race.trackingEndDate > now || race.trackingEndDate === null)
 
-    if (activeRaces.length === 0) {
-      showAlertRaceNotStarted = true
-    } else {
+    if (activeRaces.length !== 0) {
       const latestActiveRace = maxBy(activeRaces, 'trackingStartDate')
       const latestTrackName = latestActiveRace && latestActiveRace.columnName
 
@@ -111,13 +107,5 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     throw err
   } finally {
     dispatch(updateLoadingCheckInFlag(false))
-
-    if (showAlertRaceNotStarted && !markTracking) {
-      // workaround for stuck fullscreen loading indicator when alert is called
-      setTimeout(async () => Alert.alert(
-          I18n.t('caption_race_not_started_yet'),
-          I18n.t('text_race_not_started_yet'),
-        ), 800)
-    }
   }
 }
