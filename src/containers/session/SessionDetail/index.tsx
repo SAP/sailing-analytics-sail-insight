@@ -62,7 +62,7 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
     isBeforeEventStartTime,
     competitorList : competitorListData,
     qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
-    name: session.regattaName,
+    name: (session?.event?.name) || session.regattaName,
     startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate),
     location: session && session.event && session.event.venue && session.event.venue.name,
     boatClass: session && session.regatta && session.regatta.boatClass,

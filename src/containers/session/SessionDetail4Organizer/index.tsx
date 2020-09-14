@@ -1,22 +1,25 @@
-import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
+import { __, always, compose, concat, curry, merge, mergeLeft, reduce, toUpper, propEq,
   prop, isNil, equals } from 'ramda'
 import Images from '@assets/Images'
+import { dataApi } from 'api'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { fetchRegattaCompetitors } from 'actions/regattas'
-import { stopTracking } from 'actions/events'
+import { fetchEvent, updateEventBasics, stopTracking } from 'actions/events'
 import { startTracking } from 'actions/tracking'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
 import { editResultsUrl } from 'services/CheckInService'
-import { Component, fold, nothing,
+import { Component, contramap, fold, fromClass, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
+  recomposeWithState as withState,
   nothingAsClass
 } from 'components/fp/component'
-import { iconText, scrollView, text, inlineText, touchableOpacity, view, textButton } from 'components/fp/react-native'
+import { icon, iconText, scrollView, text, inlineText, touchableOpacity, view, textButton } from 'components/fp/react-native'
+import TextInput from 'components/TextInput'
 import I18n from 'i18n'
-import { Alert } from 'react-native'
+import { ActivityIndicator, Alert } from 'react-native'
 import { container } from 'styles/commons'
 import styles from './styles'
 import { mapStateToSessionDetailsProps } from '../SessionDetail'
@@ -31,6 +34,9 @@ import {
   shareEventButton,
 } from '../../session/common'
 import { getLastPlannedRaceTime } from 'selectors/regatta'
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { showUnknownErrorSnackbarMessage } from 'helpers/errors'
 import Clipboard from '@react-native-community/clipboard'
 import Snackbar from 'react-native-snackbar'
 
@@ -65,9 +71,18 @@ const mapStateToProps = (state: any, props: any) => {
     isBeforeLastPlannedRaceStartTime,
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
-    isEventOrganizer: true
+    isEventOrganizer: true,
+    isNetworkConnected: isNetworkConnectedSelector(state)
   }
 }
+
+const withIsEditingEventName = withState('isEditingEventName', 'setIsEditingEventName', false)
+const withIsSavingEventName = withState('isSavingEventName', 'setIsSavingEventName', false)
+const withEventNameField = withState('eventNameField', 'setEventNameField', '')
+const nothingIfEditingEventName = branch(propEq('isEditingEventName', true), nothingAsClass)
+const nothingIfNotEditingEventName = branch(propEq('isEditingEventName', false), nothingAsClass)
+const nothingIfSavingEventName = branch(propEq('isSavingEventName', true), nothingAsClass)
+const nothingIfNotSavingEventName = branch(propEq('isSavingEventName', false), nothingAsClass)
 
 const sessionData = {
   racesAndScoringOnPress: (props: any) => props.navigation.navigate(Screens.RaceDetails, { data: props.session }),
@@ -81,13 +96,69 @@ const endEvent = (props: any) => {
   ])
 }
 
+const editIcon = Component((props: any) => compose(
+  fold(props),
+  touchableOpacity({ onPress: () => {
+    props.setIsEditingEventName(true)
+    props.setEventNameField(props.name)
+  }})
+)(icon({ source: Images.actions.pen, iconTintColor: 'white', style: styles.eventNameIcon })))
+
+const confirmIcon = Component((props: any) => compose(
+  fold(props),
+  touchableOpacity({ onPress: async () => {
+    if (!props.isNetworkConnected) {
+      showNetworkRequiredSnackbarMessage()
+      return
+    }
+
+    props.setIsSavingEventName(true)
+    try {
+      await updateEventBasics({ name: props.eventNameField }, props.session)
+      const api = dataApi(props.session.serverUrl)
+      await props.fetchEvent(api.requestEvent, props.session.eventId, props.session.secret)
+      props.setIsEditingEventName(false)
+    } catch (err) {
+      showUnknownErrorSnackbarMessage()
+    } finally {
+      props.setIsSavingEventName(false)
+    }
+  }})
+)(icon({ source: Images.actions.accept, iconTintColor: 'white', style: styles.eventNameIcon })))
+
+const eventNameTextInput = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.eventNameField }),
+  contramap(always({
+    value: props.eventNameField,
+    onChangeText: props.setEventNameField,
+  })),
+)(fromClass(TextInput)))
+
+const loader = fromClass(ActivityIndicator).contramap(always({
+  size: 'small',
+  color: 'white'
+}))
+
+const eventName = Component((props: any) => compose(
+  fold(props),
+  view({ style: styles.eventNameContainer }),
+  reduce(concat, nothing())
+)([
+  nothingIfEditingEventName(text({ style: styles.headlineHeavy }, props.name)),
+  nothingIfEditingEventName(editIcon),
+  nothingIfNotEditingEventName(eventNameTextInput),
+  nothingIfNotEditingEventName(nothingIfSavingEventName(confirmIcon)),
+  nothingIfNotEditingEventName(nothingIfNotSavingEventName(loader)),
+]))
+
 export const sessionDetailsCard = Component((props: any) => compose(
     fold(props),
     concat(__, view({ style: styles.containerAngledBorder1 }, nothing())),
     view({ style: styles.container1 }),
     reduce(concat, nothing()))([
     text({ style: styles.textLight }, props.startDate),
-    text({ style: styles.headlineHeavy }, props.name),
+    eventName,
     iconText({
       style: styles.location,
       iconStyle: styles.locationIcon,
@@ -181,8 +252,11 @@ export const endEventCard = Component((props: any) => compose(
 
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
+    withIsEditingEventName,
+    withIsSavingEventName,
+    withEventNameField,
     connect(mapStateToProps, {
-      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors
+      fetchEvent, checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors
     }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
