@@ -278,6 +278,7 @@
   "caption_invalid_qr_code_missing_mark": "To generate the QR code you need to save the course first by backing out of the course creator once.\n(Tip: Tap arrow top left twice)",
   "caption_scan_qr_code_for_mark_binding": "Scan this QR code with another device or use this device as a tracker",
   "caption_leave": "Are you sure?",
+  "caption_dont_show_again": "Don't show again",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",
