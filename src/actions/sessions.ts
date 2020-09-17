@@ -43,6 +43,7 @@ import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from '../selectors/competitor'
 import { getLocationTrackingStatus } from 'selectors/location'
+import { getMark } from '../selectors/mark'
 import { getUserBoatByBoatName, getUserTeamByNameBoatClassNationalitySailnumber } from 'selectors/user'
 import { getRegatta } from '../selectors/regatta'
 import { getApiServerUrl } from 'api/config'
@@ -303,6 +304,15 @@ const useBindingFromCheckInLink = (data: CheckIn) => async (dispatch: DispatchTy
         // TODO Attach competitor image to session
       }
     }
+  } else if (data.markId) {
+    const api = dataApi(data.serverUrl)
+    const mark = getMark(data.markId)(getState())
+    const markPropertiesId = mark?.originatingMarkPropertiesId
+    try {
+      await api.updateMarkPropertyPositioning(markPropertiesId, getDeviceId())
+    // Ignore errors, because we expect the request to fail due to permissions
+    // when trying to modify the markProperties objects of other users
+    } catch (err) {}
   }
 }
 
