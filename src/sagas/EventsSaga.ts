@@ -274,13 +274,12 @@ function* openEventLeaderboard() {
 
 function* openSAPAnalyticsEvent() {
   const { serverUrl, eventId, regattaName } = yield select(getSelectedEventInfo)
-
-  Share.share({
+  setTimeout(() => Share.share({
     title: I18n.t('text_share_session_sap_event_header', { regattaName }),
     message: I18n.t('text_share_session_sap_event_message', {
         regattaName,
         link: `${serverUrl}/gwt/Home.html#/event/:eventId=${eventId}` }),
-  })
+  }), 1)
 }
 
 function* startTracking({ payload }: any) {
