@@ -181,9 +181,14 @@ export const endEventCard = Component((props: any) => compose(
 
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToProps, {
-      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors
-    }),
+    connect(
+      mapStateToProps,
+      { checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
     withCompetitorListState,

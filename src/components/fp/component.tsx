@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-    compose, curry, reject, isNil, always, prop,
-    __, addIndex, map, reduce, concat, is, merge,
-    objOf, when, has
+  compose, curry, reject, isNil, always, prop,
+  __, addIndex, map, merge,
+  objOf, when, has, ifElse
 } from 'ramda'
 import {
     branch,
@@ -24,22 +24,26 @@ const asArray = (x: any) => Array.isArray(x) ? x : [x]
 
 const classToFn = (C: any) => (props: any) => <C {...props}/>
 
-const Component = compose(
-    (g: Function) => ({
-        g,
-        map:       (f: Function) => Component((x: any) => f(g(x), x)),
-        contramap: (f: Function) => Component((x: any) => g(f(x))),
-        concat:    (other: any) => Component((x: any) =>
-            g(x).concat(is(Array, other) ?
-                reduce(concat, nothing(), other).g(x) :
-                other.g(x))),
-        // fold :: props -> JSX
-        fold:      compose(
-            mapIndexed((element, i) => React.cloneElement(element, { key: i })),
-            reject(isNil),
-            g)
-    }),
-    (x: any) => compose(asArray, x))
+const ComponentRenderer = ({ props, g }) => compose(
+  mapIndexed((e, index) => merge(e, { key: index })),
+  reject(isNil),
+  g)(
+  props)
+
+export const Component = compose(
+  g => ({
+    g,
+    map:       f => Component(x => f(g(x), x)),
+    contramap: f => Component(x => g(f(x))),
+    concat:    other => Component(x => g(x).concat(other.g(x))),
+    fold: ifElse(prop('customRenderer'),
+      compose(
+        mapIndexed((e, index) => merge(e, { key: index })),
+        reject(isNil),
+        g),
+      props => <ComponentRenderer props={props} g={g}/>)
+  }),
+  x => compose(asArray, x))
 
 const enhance = (fn: any) => (...args: any[]) => compose(
     Component,
