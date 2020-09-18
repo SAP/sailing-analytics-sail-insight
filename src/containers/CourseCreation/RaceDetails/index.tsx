@@ -3,7 +3,6 @@ import { __, always, append, compose, concat, cond, defaultTo,
   objOf, prop, reduce, uncurryN, T, unless, when, dissocPath, path, addIndex,
   gte, allPass, propEq
 } from 'ramda'
-import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
 import { selectRace, setRaceTime, startTracking, setDiscards, updateEventSettings, startPollingSelectedEvent, stopPollingSelectedEvent } from 'actions/events'
@@ -18,6 +17,7 @@ import {
   recomposeBranch as branch,
   recomposeMapProps as mapProps,
   recomposeLifecycle as lifeCycle,
+  recomposeWithState as withState,
   reduxConnect as connect,
 } from 'components/fp/component'
 import { forwardingPropsFlatList, text, touchableOpacity, view } from 'components/fp/react-native'
@@ -28,7 +28,7 @@ import { dateShortText, dateTimeShortHourText } from 'helpers/date'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
-import DatePicker from 'react-native-datepicker'
+import DateTimePicker from 'react-native-modal-datetime-picker'
 import { getCourseById, getCourseSequenceDisplay } from 'selectors/course'
 import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
 import { isNetworkConnected } from 'selectors/network'
@@ -79,6 +79,8 @@ const nothingIfRaceTimeNotSet = branch(
   ),
   nothingAsClass
 )
+
+const withDateTimePickerName = withState('dateTimePickerName', 'setDateTimePickerName', null)
 
 const withPollingOfEvent = compose(
   lifeCycle({
@@ -220,52 +222,45 @@ const clockIcon = Component((props: any) => compose(
   }))
 )
 
+const raceTimePickerComponent = fromClass(DateTimePicker).contramap((props: any) => ({
+  onConfirm: (value: number) => {
+    props.setDateTimePickerName(null)
+    if (!props.isTracking) {
+      props.startTracking(props.session)
+    }
+    return props.setRaceTime({
+      race: props.item.name,
+      raceTime: props.item.raceTime,
+      value
+    })
+  },
+  onCancel: () => {
+    props.setDateTimePickerName(null)
+  },
+  date: new Date(moment(getRaceStartTime(props.item) || new Date())),
+  diplay: 'spinner',
+  mode: 'datetime',
+  confirmTextIOS: I18n.t('caption_confirm'),
+  cancelTextIOS: I18n.t('caption_cancel'),
+  isVisible: props.dateTimePickerName === props.item.name,
+}))
 
-const raceTimePickerTouchableHighlight = ({ isNetworkConnected }: any) => fromClass(
-  TouchableHighlight
-).contramap((props: any) => merge(props, {
-  onPress: async (args: any) => {
-    if (!isNetworkConnected) {
+const raceTimePickerTouchableHighlight = (props: any) => touchableOpacity({
+  onPress: () => {
+    if (!props.isNetworkConnected) {
       showNetworkRequiredSnackbarMessage()
       return
     }
-    return props.onPress(args)
-  }
-}))
-
+    props.setDateTimePickerName(props.item.name)
+  },
+  disabled: !props.canUpdateCurrentEvent,
+})
 
 const raceTimePicker = Component((props: any) => compose(
   fold(props),
+  concat(raceTimePickerComponent),
   view({ style: styles.raceTimeContainer }),
-  concat(__, fromClass(DatePicker).contramap(always({
-    TouchableComponent: raceTimePickerTouchableHighlight(props).fold,
-    onDateChange: (value: number) => {
-      if (!props.isTracking) {
-        props.startTracking(props.session)
-      }
-      return props.setRaceTime({
-        race: props.item.name,
-        raceTime: props.item.raceTime,
-        value
-      })
-    },
-    date: moment(getRaceStartTime(props.item) || new Date()),
-    androidMode: 'spinner',
-    mode: 'datetime',
-    confirmBtnText: I18n.t('caption_confirm'),
-    cancelBtnText: I18n.t('caption_cancel'),
-    hideText: true,
-    disabled: !props.canUpdateCurrentEvent,
-    showIcon: false,
-    style: {position: 'absolute', width: Dimensions.get('window').width / 2 - 30, height: 60, top: 0, left: 0 },
-    customStyles: {
-      dateInput: {
-        height: 60,
-        width: Dimensions.get('window').width / 2 - 30,
-        borderWidth: 0,
-      }
-    },
-  }))),
+  raceTimePickerTouchableHighlight(props),
   view({ style: styles.raceNameTimeContainer }),
   concat(arrowRight),
   concat(clockIcon),
@@ -354,6 +349,7 @@ export default Component((props: Object) =>
       { areStatePropsEqual: compose(
         apply(equals),
         unapply(map(dissocPath(['session', 'leaderboard'])))) }),
+    withDateTimePickerName,
     withPollingOfEvent,
     nothingIfNoSession,
     view({ style: styles.mainContainer }),
