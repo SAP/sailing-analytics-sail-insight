@@ -110,6 +110,8 @@ class Login extends TextInputForm<{
                 keyboardType={'default'}
                 returnKeyType="next"
                 autoCapitalize="none"
+                textContentType="username"
+                autoCompleteType="username"
                 onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_PASSWORD)}
                 inputRef={this.handleInputRef(FORM_KEY_USERNAME)}/>
               <TextInput
@@ -123,8 +125,10 @@ class Login extends TextInputForm<{
                 keyboardType={'default'}
                 returnKeyType="go"
                 autoCapitalize="none"
-                onSubmitEditing={this.onSubmit}
+                textContentType="password"
+                autoCompleteType="password"
                 secureTextEntry={true}
+                onSubmitEditing={this.onSubmit}
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}/>
               {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}
               <TextButton
