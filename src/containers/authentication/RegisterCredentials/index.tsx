@@ -67,6 +67,8 @@ class RegisterCredentials extends TextInputForm<Props> {
                   keyboardType={'default'}
                   returnKeyType="next"
                   autoCapitalize="none"
+                  textContentType="username"
+                  autoCompleteType="username"
                   onSubmitEditing={this.handleOnSubmitInput(registrationForm.FORM_KEY_PASSWORD)}
                   inputRef={this.handleInputRef(registrationForm.FORM_KEY_USERNAME)}
                 />
@@ -78,6 +80,8 @@ class RegisterCredentials extends TextInputForm<Props> {
                   keyboardType={'default'}
                   returnKeyType="next"
                   autoCapitalize="none"
+                  textContentType="password"
+                  autoCompleteType="password"
                   secureTextEntry={true}
                   onSubmitEditing={this.handleOnSubmitInput(registrationForm.FORM_KEY_EMAIL)}
                   inputRef={this.handleInputRef(registrationForm.FORM_KEY_PASSWORD)}
@@ -92,6 +96,9 @@ class RegisterCredentials extends TextInputForm<Props> {
                   keyboardType={'email-address'}
                   returnKeyType="go"
                   autoCapitalize="none"
+                  textContentType="emailAddress"
+                  autoCompleteType="email"
+                  // autoCorrect={false}
                   onSubmitEditing={this.props.handleSubmit(this.onSubmit)}
                   inputRef={this.handleInputRef(registrationForm.FORM_KEY_EMAIL)}
                 />
