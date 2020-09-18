@@ -143,7 +143,14 @@ export default Component(
     fold(props),
     withBoatClasses,
     withApiErrors,
-    connect(mapStateToProps, { createEventActionQueue, updateCreatingEvent }),
+    connect(
+      mapStateToProps,
+      { createEventActionQueue, updateCreatingEvent },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
     reduxForm(formSettings),
     keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: useHeaderHeight() }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: props.setScrollViewRef }),
