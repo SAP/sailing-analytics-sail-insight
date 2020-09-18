@@ -4,9 +4,9 @@ import React from 'react'
 import I18n from 'i18n'
 import moment from 'moment'
 
-import { View } from 'react-native'
-import { Component, contramap, fold, fromClass, nothing } from 'components/fp/component'
-import { text, view } from 'components/fp/react-native'
+import { Platform, View } from 'react-native'
+import { Component, contramap, fold, fromClass, nothing, recomposeWithState as withState } from 'components/fp/component'
+import { text, view, touchableOpacity } from 'components/fp/react-native'
 import { field as reduxFormField, textInputWithMeta } from 'components/fp/redux-form'
 import IconText from 'components/IconText'
 import {
@@ -16,7 +16,7 @@ import {
   FORM_KEY_NAME,
 } from 'forms/eventCreation'
 
-import DatePicker from 'react-native-datepicker'
+import DateTimePicker from 'react-native-modal-datetime-picker'
 
 import Images from '@assets/Images'
 import { Dimensions } from 'react-native'
@@ -38,6 +38,9 @@ const icon = compose(
 //     child,
 //     defaultTo(nothing(), props.icon)
 //   ]))
+
+const withDatePickerName = withState('datePickerName', 'setDatePickerName', null)
+
 
 const fieldBox = (child: any) => Component((props: any) =>
   <View style={styles.fieldBoxContainer}>
@@ -74,32 +77,44 @@ const locationInput = reduxFormField({
   component: boxedTextInput.fold,
 })
 
+const toDate = (value: any) => {
+  return moment(value).format('MM/DD/YYYY')
+}
+
+const datePickerTouchableView = Component((props: any) => 
+  compose(
+    fold(props),
+    touchableOpacity({
+      onPress: () => {
+        props.onShowDatePicker(true)
+      },
+    }),
+    text({}),
+    toDate,
+  )(props.input.value)
+)
+
 const formDatePicker = Component((props: any) => compose(
   fold(props),
   view({ style: styles.formDatePickerContainer }),
   concat(icon({ source: props.icon, style: { tintColor: lighterGray }})),
+  concat(datePickerTouchableView),
   contramap((props: any) => ({
-    style: { width: Dimensions.get('window').width / 2 - 24 - 2 * $smallSpacing - 8 },
-    onDateChange: value => props.input.onChange(moment(value)),
-    date: props.input.value,
-    androidMode: 'spinner',
-    mode: 'date',
-    showIcon: false,
-    format: 'MM/DD/YYYY',
-    customStyles: {
-      dateInput: {
-        height: 'auto',
-        alignItems: 'flex-start',
-        borderWidth: 0,
-      },
-      btnTextConfirm: {
-        color: $primaryButtonColor
-      },
+    onConfirm: (value: number) => {
+      props.onShowDatePicker(false)
+      props.input.onChange(moment(value))
     },
-    confirmBtnText: I18n.t('caption_ok'),
-    cancelBtnText: I18n.t('caption_cancel'),
+    onCancel: () => {
+      props.onShowDatePicker(false)
+    },
+    date: new Date(moment(props.input.value)),
+    display: Platform.OS === 'android' ? 'calendar' : 'spinner',
+    mode: 'date',
+    isVisible: props.showDatePicker,
+    confirmTextIOS: I18n.t('caption_ok'),
+    cancelTextIOS: I18n.t('caption_cancel'),
   })))(
-  fromClass(DatePicker)))
+  fromClass(DateTimePicker)))
 
 const startDateInput = Component((props: any) =>
   fold(props)(
@@ -112,15 +127,27 @@ const startDateInput = Component((props: any) =>
           props.change(FORM_KEY_DATE_TO, value)
         }
       },
+      onShowDatePicker: (show: boolean) => {
+        props.setDatePickerName(show ? FORM_KEY_DATE_FROM : null)
+      },
+      showDatePicker: props.datePickerName === FORM_KEY_DATE_FROM,
     }),
   ),
 )
 
-const endDateInput = reduxFormField({
-  name: FORM_KEY_DATE_TO,
-  component: formDatePicker.fold,
-  icon: Images.actions.arrowLeft,
-})
+const endDateInput = Component((props: any) =>
+  fold(props)(
+    reduxFormField({
+      name: FORM_KEY_DATE_TO,
+      component: formDatePicker.fold,
+      icon: Images.actions.arrowLeft,
+      onShowDatePicker: (show: boolean) => {
+        props.setDatePickerName(show ? FORM_KEY_DATE_TO : null)
+      },
+      showDatePicker: props.datePickerName === FORM_KEY_DATE_TO,
+    })
+  )
+)
 
 const dateInput = Component((props: any) => compose(
   fold(props),
@@ -132,6 +159,7 @@ const dateInput = Component((props: any) => compose(
 
 export default Component((props: Object) => compose(
   fold(props),
+  withDatePickerName,
   concat(__, view({ style: styles.containerAngledBorder }, nothing())),
   view({ style: styles.container }),
   reduce(concat, nothing()))([
