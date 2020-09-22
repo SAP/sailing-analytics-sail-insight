@@ -314,6 +314,7 @@ export default Component((props: any) => compose(
     withIsSavingEventName,
     withEventNameField,
     withDatePickerName,
+    withCompetitorListState,
     connect(
       mapStateToProps,
       { fetchEvent, checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors },
@@ -325,7 +326,6 @@ export default Component((props: any) => compose(
     concat(dateEditor),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
-    withCompetitorListState,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
     competitorListRefreshHandler,
