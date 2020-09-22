@@ -314,9 +314,14 @@ export default Component((props: any) => compose(
     withIsSavingEventName,
     withEventNameField,
     withDatePickerName,
-    connect(mapStateToProps, {
-      fetchEvent, checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors
-    }),
+    connect(
+      mapStateToProps,
+      { fetchEvent, checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
     concat(dateEditor),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,

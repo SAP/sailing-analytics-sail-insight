@@ -80,9 +80,12 @@ class PasswordReset extends TextInputForm<{
                   error={usernameError}
                   onChangeText={this.onUsernameOrEmailChange}
                   placeholder={I18n.t('text_placeholder_your_username_or_email')}
-                  keyboardType={'default'}
+                  keyboardType={'email-address'}
                   returnKeyType="go"
                   autoCapitalize="none"
+                  textContentType="emailAddress"
+                  autoCompleteType="email"
+                  //  autoCorrect={false}
                   onSubmitEditing={this.onSubmit}
                 />
               </View>

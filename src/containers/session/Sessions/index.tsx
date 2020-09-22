@@ -188,12 +188,15 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   }
 }
 
-const mapStateToProps = (state: any) => ({
-  showHints: isSessionListEmpty(state),
-  isLoggedIn: isLoggedInSelector(state),
-  sessions: getFilteredSessionList(state),
-  eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
-  isLoadingEventList: isLoadingEventList(state)
-})
+const mapStateToProps = (state: any, props: any) => {
+  const sessions = getFilteredSessionList(props.route?.params?.forTracking)(state)
+  return ({
+    sessions,
+    showHints: isSessionListEmpty(state),
+    isLoggedIn: isLoggedInSelector(state),
+    eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
+    isLoadingEventList: isLoadingEventList(state)
+  })
+}
 
 export default connect(mapStateToProps, { fetchEventList, selectEvent, startTracking, authBasedNewSession })(Sessions)

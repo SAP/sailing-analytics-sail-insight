@@ -230,14 +230,14 @@ const withLeftHeaderCloseButton = (options) => mergeDeepLeft({
 // ----------------------------------------------------------------------------
 
 const markTrackingNavigator = Component(props => compose(
-  fold(props),
-  stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
+  fold(merge(props, { customRenderer: true })),
+  stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptionscustomRenderer }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.MarkTracking, component: MarkTracking.fold })),
 ]))
 
 const trackingNavigator = Component(props => compose(
-  fold(props),
+  fold(merge(props, { customRenderer: true })),
   stackNavigator({
     initialRouteName: props.locationTrackingContext === LocationService.LocationTrackingContext.REMOTE &&
       props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ?
@@ -266,7 +266,7 @@ const TrackingSwitch = connect((state: any) => ({
 })
 
 const sessionsNavigator = Component(props => compose(
-  fold(props),
+  fold(merge(props, { customRenderer: true })),
   stackNavigator({ initialRouteName: Screens.Sessions, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.Sessions, component: Sessions })),
@@ -299,7 +299,7 @@ const sessionsNavigator = Component(props => compose(
 ]))
 
 const accountNavigator = Component(props => compose(
-  fold(props),
+  fold(merge(props, { customRenderer: true })),
   stackNavigator({ initialRouteName: Screens.AccountList, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.AccountList, component: AccountList })),
@@ -351,7 +351,7 @@ const eventTabPress  = preventTabPressBackAction(
 )
 
 const mainTabsNavigator = Component(props => compose(
-  fold(props),
+  fold(merge(props, { customRenderer: true })),
   tabsNavigator({
     initialRouteName: Screens.TrackingNavigator,
     lazy: false,
@@ -367,7 +367,7 @@ const mainTabsNavigator = Component(props => compose(
     screenOptions: ({ route }) => ({
       tabBarIcon: ({ color, focused }) => getTabBarIcon(route, color, focused),
       tabBarLabel: ({ color, focused }) => getTabBarLabel(route, color, focused),
-    }),
+    })
   }),
   reduce(concat, nothing()),
   reject(isNil))([
@@ -382,7 +382,7 @@ const mainTabsNavigator = Component(props => compose(
 const joinRegattaScreenMixins = compose(withLeftHeaderCloseButton, withTransparentHeader, withoutTitle)
 
 const AppNavigator = Component(props => compose(
-  fold(props),
+  fold(merge(props, { customRenderer: true })),
   stackNavigator({
     initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,

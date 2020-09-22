@@ -84,7 +84,7 @@ const createEventSubmitFailed = () => {
 const formSettings = {
   validate,
   onSubmitFail: createEventSubmitFailed,
-  form: EVENT_CREATION_FORM_NAME,
+  form: EVENT_CREATION_FORM_NAME
 }
 
 const withApiErrors = withState('apiErrors', 'setApiErrors', [])
@@ -109,6 +109,8 @@ const withBoatClasses = compose(
       })
     }
   }))
+
+const withDatePickerName = withState('datePickerName', 'setDatePickerName', null)
 
 const arrowUp = icon({
   source: Images.courseConfig.arrowUp,
@@ -143,7 +145,15 @@ export default Component(
     fold(props),
     withBoatClasses,
     withApiErrors,
-    connect(mapStateToProps, { createEventActionQueue, updateCreatingEvent }),
+    withDatePickerName,
+    connect(
+      mapStateToProps,
+      { createEventActionQueue, updateCreatingEvent },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
     reduxForm(formSettings),
     keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: useHeaderHeight() }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: props.setScrollViewRef }),

@@ -1,5 +1,5 @@
-import { __, always, compose, concat,
-  merge, reduce, isNil, prop } from 'ramda'
+import { __, compose, concat,
+  merge, reduce, isNil, prop, equals } from 'ramda'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking } from 'actions/tracking'
@@ -89,10 +89,17 @@ const sessionData = {
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta, startTracking, fetchRegattaCompetitors }),
+    withCompetitorListState,
+    connect(
+      mapStateToSessionDetailsProps,
+      { checkOut, collectCheckInData, shareSessionRegatta, startTracking, fetchRegattaCompetitors },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
-    withCompetitorListState,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
       competitorListRefreshHandler,

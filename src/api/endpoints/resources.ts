@@ -192,6 +192,7 @@ export interface DataApi {
   updatePreference: (key: string, body: any) => any
   removePreference: (key: string) => any
   removeMarkProperty: (markId: string) => any
+  updateMarkProperty: (markId: string, body: any) => any
   requestManeuvers: (
     regattaName: string,
     raceName: string,
@@ -399,6 +400,13 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     removeMarkProperty: id => dataRequest(
       endpoints.markProperty({ pathParams: [id]}),
       { method: HttpMethods.DELETE }
+    ),
+    updateMarkProperty: (id, body) => dataRequest(
+      endpoints.markProperty({ pathParams: [id], urlParams: body }),
+      {
+        method: HttpMethods.PUT,
+        bodyType: 'x-www-form-urlencoded'
+      }
     ),
     requestManeuvers: (regattaName, raceName, filters) => dataRequest(
       endpoints.regattaRaceManeuvers({ pathParams: [regattaName, raceName], urlParams: filters }),
