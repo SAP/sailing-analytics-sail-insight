@@ -1,9 +1,9 @@
+import { compose, when, isEmpty, always, unless, includes, __, trim, toUpper } from 'ramda'
 import React, { ChangeEvent } from 'react'
 import { KeyboardType, NativeSyntheticEvent, TextInputChangeEventData, View, ImageBackground } from 'react-native'
 import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import LinearGradient from 'react-native-linear-gradient'
-import { compose, when, isEmpty, always, unless, includes, __, trim } from 'ramda'
 
 import { saveTeam, SaveTeamAction } from 'actions/user'
 
@@ -160,7 +160,7 @@ class RegisterBoat extends TextInputForm<Props> {
     try {
       this.setState({ isLoading: true, error: null })
 
-      const sailNumber = values[FORM_KEY_SAIL_NUMBER]
+      const sailNumber = toUpper(values[FORM_KEY_SAIL_NUMBER])
       let countryList = []
       try {
         const countryCodeResponse = await selfTrackingApi().requestCountryCodes()
