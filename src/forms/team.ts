@@ -1,3 +1,4 @@
+import { toUpper } from 'ramda'
 import { TeamTemplate } from 'models'
 
 
@@ -17,6 +18,6 @@ export const teamFromFormValues = (values: any) => values && ({
   imageData: values[FORM_KEY_IMAGE] || undefined,
   boatClass: values[FORM_KEY_BOAT_CLASS],
   boatName: values[FORM_KEY_BOAT_NAME],
-  sailNumber: values[FORM_KEY_SAIL_NUMBER],
+  sailNumber: toUpper(values[FORM_KEY_SAIL_NUMBER]),
   handicap: values[FORM_KEY_HANDICAP],
 } as TeamTemplate)
