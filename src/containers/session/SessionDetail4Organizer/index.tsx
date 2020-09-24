@@ -145,15 +145,17 @@ const loader = fromClass(ActivityIndicator).contramap(always({
 
 const eventName = Component((props: any) => compose(
   fold(props),
+  withIsEditingEventName,
+  withIsSavingEventName,
+  withEventNameField,
   view({ style: styles.eventNameContainer }),
-  reduce(concat, nothing())
-)([
-  nothingIfEditingEventName(text({ style: styles.headlineHeavy }, props.name)),
-  nothingIfEditingEventName(editIcon),
-  nothingIfNotEditingEventName(eventNameTextInput),
-  nothingIfNotEditingEventName(nothingIfSavingEventName(confirmIcon)),
-  nothingIfNotEditingEventName(nothingIfNotSavingEventName(loader)),
-]))
+  reduce(concat, nothing()))([
+    nothingIfEditingEventName(text({ style: styles.headlineHeavy }, props.name)),
+    nothingIfEditingEventName(editIcon),
+    nothingIfNotEditingEventName(eventNameTextInput),
+    nothingIfNotEditingEventName(nothingIfSavingEventName(confirmIcon)),
+    nothingIfNotEditingEventName(nothingIfNotSavingEventName(loader)),
+  ]))
 
 const openDateEditingModal = (props: any, datePickerPurpose: string) => () => {
   if (props.endDate === null) { // If you click on the date when there is only a single date shown, then edit the end date
@@ -310,9 +312,6 @@ export const endEventCard = Component((props: any) => compose(
 
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
-    withIsEditingEventName,
-    withIsSavingEventName,
-    withEventNameField,
     withDatePickerName,
     withCompetitorListState,
     connect(
