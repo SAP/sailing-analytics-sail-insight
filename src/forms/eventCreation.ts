@@ -23,8 +23,8 @@ export const FORM_KEY_NUMBER_OF_RACES = 'numberOfRaces'
 export const FORM_KEY_DISCARDS = 'discards'
 
 export const generateInitialValues = () => ({
-  [FORM_KEY_DATE_FROM]: moment(new Date()).startOf('day'),
-  [FORM_KEY_DATE_TO]: moment(new Date()).endOf('day'),
+  [FORM_KEY_DATE_FROM]: moment().startOf('day'),
+  [FORM_KEY_DATE_TO]: moment().endOf('day'),
   [FORM_KEY_NUMBER_OF_RACES]: 3,
   [FORM_KEY_DISCARDS]: [],
   [FORM_KEY_REGATTA_TYPE]: RegattaType.OneDesign,

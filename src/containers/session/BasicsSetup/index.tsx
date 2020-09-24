@@ -39,9 +39,6 @@ const icon = compose(
 //     defaultTo(nothing(), props.icon)
 //   ]))
 
-const withDatePickerName = withState('datePickerName', 'setDatePickerName', null)
-
-
 const fieldBox = (child: any) => Component((props: any) =>
   <View style={styles.fieldBoxContainer}>
     {text({ style: styles.fieldBoxLabel }, props.label).fold(props)}
@@ -159,7 +156,6 @@ const dateInput = Component((props: any) => compose(
 
 export default Component((props: Object) => compose(
   fold(props),
-  withDatePickerName,
   concat(__, view({ style: styles.containerAngledBorder }, nothing())),
   view({ style: styles.container }),
   reduce(concat, nothing()))([

@@ -1,3 +1,4 @@
+import { debounce } from 'lodash'
 import { __, compose, concat, reduce, merge, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
   defaultTo, pick, head, tap, of, flatten, init, nth, map, last, negate,
@@ -35,7 +36,7 @@ import I18n from 'i18n'
 const hasNoPadding = propEq('mapOffset', 0)
 const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
 
-const trimCoordinates = (coordinate: any) => 
+const trimCoordinates = (coordinate: any) =>
   coordinate.toFixed(7)
 
 const withNavigationHandlers = withHandlers({
@@ -156,9 +157,9 @@ const navigationBackHandler = Component((props: any) => compose(
     onWillFocus: (payload: any) => {
       props.navigation.setOptions({
         headerRight: HeaderSaveTextButton({
-          onPress: () => {
+          onPress: debounce(() => {
             props.onNavigationSavePress()
-          }
+          }, 500, { leading: true, trailing: false })
         }),
         headerLeft: HeaderCancelTextButton({
           onPress: () => {
@@ -293,7 +294,7 @@ const coordinatesContainer = Component((props: any) => compose(
     view({ style: styles.coordinatesModalContainer, onLayout: (nativeEvent: any) => onCoordinatesLayout(props, nativeEvent) }),
     reduce(concat, nothing()))([
       latitudeInput,
-      longitudeInput  
+      longitudeInput
     ]))
 
 export default Component((props: object) =>

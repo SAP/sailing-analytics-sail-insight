@@ -456,10 +456,10 @@ PODS:
     - React
   - RNDeviceInfo (5.4.3):
     - React
-  - RNFastImage (7.0.0):
+  - RNFastImage (8.3.2):
     - React
-    - SDWebImage (~> 5.0)
-    - SDWebImageWebPCoder (~> 0.2.3)
+    - SDWebImage (~> 5.8)
+    - SDWebImageWebPCoder (~> 0.6.1)
   - RNFBAnalytics (6.3.4):
     - Firebase/Core (~> 6.13.0)
     - React
@@ -498,18 +498,18 @@ PODS:
     - React
   - RNSVG (9.13.6):
     - React
-  - RSKImageCropper (2.2.3)
+  - RSKImageCropper (2.3.0)
   - SailInsightExpeditionCommunication (1.1.23):
     - CocoaAsyncSocket
     - React
   - SailInsightMTCPNetwork (1.0.7):
     - React
-  - SDWebImage (5.8.4):
-    - SDWebImage/Core (= 5.8.4)
-  - SDWebImage/Core (5.8.4)
-  - SDWebImageWebPCoder (0.2.5):
+  - SDWebImage (5.9.1):
+    - SDWebImage/Core (= 5.9.1)
+  - SDWebImage/Core (5.9.1)
+  - SDWebImageWebPCoder (0.6.1):
     - libwebp (~> 1.0)
-    - SDWebImage/Core (~> 5.0)
+    - SDWebImage/Core (~> 5.7)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -866,7 +866,7 @@ SPEC CHECKSUMS:
   RNCMaskedView: a88953beefbd347a29072d9eba90e42945fe291e
   RNDateTimePicker: a84d2b439666c9243d42a8396c588d4d1d36e3f3
   RNDeviceInfo: 9b5790f85eb03e12de682a97618031a215c7f386
-  RNFastImage: 4e3cd0485ffce7304537e3efc05f99cdc9808107
+  RNFastImage: e19ba191922e7dab9d932a4d59d62d76660aa222
   RNFBAnalytics: b8bad44e6653af73219b1a7af24bf3452cb02c1b
   RNFBApp: 7d4006751de8bb5cafa2e8d2e7d94ee250df81db
   RNFBCrashlytics: 93e1cc09a93aa4bb1e9b5a07af0efb2702db5a39
@@ -879,11 +879,11 @@ SPEC CHECKSUMS:
   RNScreens: b5c0e1b2b04512919e78bd3898e144a157ce2363
   RNSnackbar: 160077964866262ed08cfd33ab4760219ea2aef6
   RNSVG: 8ba35cbeb385a52fd960fd28db9d7d18b4c2974f
-  RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
+  RSKImageCropper: c337eacdcbed50e695e5153ff0c2b861b6ebfa84
   SailInsightExpeditionCommunication: 1825cddc77d819fac4bc62ddda5dc2119db3f03f
   SailInsightMTCPNetwork: c344b7f9e06b17a1f1b2333c4c670e6d0c74a19e
-  SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
-  SDWebImageWebPCoder: 947093edd1349d820c40afbd9f42acb6cdecd987
+  SDWebImage: a990c053fff71e388a10f3357edb0be17929c9c5
+  SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   Yoga: 7740b94929bbacbddda59bf115b5317e9a161598
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
