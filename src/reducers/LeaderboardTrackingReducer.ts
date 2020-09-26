@@ -4,10 +4,11 @@ import { handleActions } from 'redux-actions'
 
 import { CompetitorGap } from 'reducers/config'
 import {
-  clearLeaderboardGaps,
+  startPollingLeaderboard,
+  stopPollingLeaderboard,
   updateLatestTrackedRace,
   updateLeaderboardGaps,
-  updateLeaderboardStale,
+  updateLeaderboardPollingStatus
 } from '../actions/leaderboards'
 
 const competitorGaps = handleActions({
@@ -51,7 +52,7 @@ const competitorGaps = handleActions({
 
       return merge(state, updates)
     },
-    [clearLeaderboardGaps as any]: always({}),
+    [startPollingLeaderboard as any]: always({}),
 }, {})
 
 const latestTrackedRace = handleActions({
@@ -59,11 +60,17 @@ const latestTrackedRace = handleActions({
 }, null)
 
 const isLeaderboardStale = handleActions({
-  [updateLeaderboardStale as any]: (state: any, action: any) => action.payload
+  [startPollingLeaderboard as any]: always(false),
+  [stopPollingLeaderboard as any]: always(true)
+}, false)
+
+const isLeaderboardPolling = handleActions({
+  [updateLeaderboardPollingStatus as any]: (state: any, action: any) => action.payload
 }, false)
 
 export default combineReducers({
   competitorGaps,
   latestTrackedRace,
-  isLeaderboardStale
+  isLeaderboardStale,
+  isLeaderboardPolling
 })

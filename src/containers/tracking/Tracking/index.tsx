@@ -2,6 +2,7 @@ import { get } from 'lodash'
 import React from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
+import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import timer from 'react-native-timer'
 import { connect } from 'react-redux'
 import { NavigationEvents } from '@react-navigation/compat'
@@ -15,7 +16,7 @@ import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { getBoat } from 'selectors/boat'
-import { getTrackedCheckIn } from 'selectors/checkIn'
+import { getTrackedCheckIn, isLoadingCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
 import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
@@ -49,6 +50,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
   rank?: number,
   leaderboardEnabled?: boolean,
   isNetworkConnected: boolean,
+  isLoadingCheckIn?: boolean
 } > {
   public state = {
     isLoading: false,
@@ -74,6 +76,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
       trackedContextName,
       rank,
       leaderboardEnabled,
+      isLoadingCheckIn
     } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
@@ -162,6 +165,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
           isLoading={this.state.isLoading}>
           {this.state.buttonText}
         </TextButton>
+        <SpinnerOverlay visible={isLoadingCheckIn} cancelable={false}/>
       </ScrollContentView>
     )
   }
@@ -252,6 +256,7 @@ const mapStateToProps = (state: any) => {
     rank: getTrackedCompetitorLeaderboardRank(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
     isNetworkConnected: isNetworkConnected(state),
+    isLoadingCheckIn: isLoadingCheckIn(state)
   }
 }
 
