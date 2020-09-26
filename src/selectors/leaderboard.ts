@@ -122,3 +122,5 @@ const createCurrentEventRacesStatusAnySelector = (status: string) => createSelec
 export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusAnySelector('TRACKING')
 export const isCurrentLeaderboardFinished = createCurrentEventRacesStatusAllSelector('FINISHED')
 export const isLeaderboardStale = (state: any) => state.leaderboardTracking.isLeaderboardStale
+export const isPollingLeaderboard = () => (state: any) =>
+  !!(state.leaderboardTracking && state.leaderboardTracking.isLeaderboardPolling)
