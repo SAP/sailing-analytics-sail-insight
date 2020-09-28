@@ -1,10 +1,9 @@
 import { __, always, compose, concat, defaultTo, merge, mergeLeft, reduce } from 'ramda'
-
 import React from 'react'
 import I18n from 'i18n'
 import moment from 'moment'
-
 import { Platform, View } from 'react-native'
+import DateTimePicker from 'react-native-modal-datetime-picker'
 import { Component, contramap, fold, fromClass, nothing, recomposeWithState as withState } from 'components/fp/component'
 import { text, view, touchableOpacity } from 'components/fp/react-native'
 import { field as reduxFormField, textInputWithMeta } from 'components/fp/redux-form'
@@ -16,11 +15,9 @@ import {
   FORM_KEY_NAME,
 } from 'forms/eventCreation'
 
-import DateTimePicker from 'react-native-modal-datetime-picker'
+import { fieldValueOrInitialIfEmpty } from '../common'
 
 import Images from '@assets/Images'
-import { Dimensions } from 'react-native'
-import { $smallSpacing } from 'styles/dimensions'
 import styles, { darkerGray, lighterGray } from './styles'
 import { $primaryButtonColor } from 'styles/colors'
 
@@ -78,18 +75,16 @@ const toDate = (value: any) => {
   return moment(value).format('MM/DD/YYYY')
 }
 
-const datePickerTouchableView = Component((props: any) => 
-  compose(
-    fold(props),
-    touchableOpacity({
-      onPress: () => {
-        props.onShowDatePicker(true)
-      },
-    }),
-    text({}),
-    toDate,
-  )(props.input.value)
-)
+const datePickerTouchableView = Component((props: any) =>  compose(
+  fold(props),
+  touchableOpacity({
+    onPress: () => {
+      props.onShowDatePicker(true)
+    },
+  }),
+  text({}),
+  toDate)(
+  fieldValueOrInitialIfEmpty(props)))
 
 const formDatePicker = Component((props: any) => compose(
   fold(props),
@@ -104,7 +99,7 @@ const formDatePicker = Component((props: any) => compose(
     onCancel: () => {
       props.onShowDatePicker(false)
     },
-    date: new Date(moment(props.input.value)),
+    date: new Date(moment(fieldValueOrInitialIfEmpty(props))),
     display: Platform.OS === 'android' ? 'calendar' : 'spinner',
     mode: 'date',
     isVisible: props.showDatePicker,

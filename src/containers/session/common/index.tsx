@@ -15,7 +15,7 @@ import { __, always, anyPass, append, compose, concat, curry,
   equals, has, head, length, map, merge, mergeLeft, objOf,
   prepend, prop, propEq, range, reduce, reject, isNil,
   remove, sortBy, split, toString, toUpper, update, when,
-  isEmpty, defaultTo, complement,
+  isEmpty, defaultTo, complement, path, either,
   call, last, inc, take, identity } from 'ramda'
 import { Dimensions, ActivityIndicator } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
@@ -27,6 +27,11 @@ import * as LocationService from 'services/LocationService'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 
 const maxNumberOfRaces = 50
+
+export const fieldValueOrInitialIfEmpty = props => compose(
+  when(either(isNil, isEmpty), always(props.meta.initial)),
+  path(['input', 'value']))(
+  props)
 
 const plusIcon = fromClass(IconText).contramap(always({
   source: Images.actions.plus,
