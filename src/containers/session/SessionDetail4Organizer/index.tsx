@@ -323,7 +323,7 @@ export default Component((props: any) => compose(
         areStatePropsEqual: equals
       }),
     concat(dateEditor),
-    scrollView({ style: styles.container, nestedScrollEnabled: true }),
+    scrollView({ style: styles.container, nestedScrollEnabled: true, keyboardShouldPersistTaps: 'handled' }),
     nothingIfNoSession,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
