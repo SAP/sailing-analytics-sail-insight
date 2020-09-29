@@ -683,6 +683,7 @@ const withOnNavigationBackPress = withHandlers({
     } else {
       props.navigation.goBack()
     }
+    return true
   },
   onNavigationSavePress: (props: any) => () => {
     const handleSave = () => {
