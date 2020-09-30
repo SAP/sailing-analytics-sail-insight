@@ -6,7 +6,7 @@ import { any, map, evolve, merge, curry, dissoc, not, has,
 } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
-import { safe } from './index'
+import { safe, safeApiCall } from './index'
 import uuidv4 from 'uuid/v4'
 import {
   loadCourse,
@@ -16,6 +16,7 @@ import {
   TOGGLE_SAME_START_FINISH,
   NAVIGATE_BACK_FROM_COURSE_CREATION,
   FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING,
+  UPDATE_MARK_POSITION,
   editCourse,
   updateCourseLoading,
   replaceWaypointMarkConfiguration,
@@ -359,6 +360,35 @@ function* saveCourseFlow({ navigation }: any) {
   yield call(loadMarkProperties)
 }
 
+function* updateMarkPositionFlow({ payload }: any) {
+  const { serverUrl, leaderboardName, secret } = yield select(getSelectedRaceInfo)
+  const { markConfigurationId, location, bindToThisDevice = false } = payload
+  const { markId, markPropertiesId } = yield select(getMarkConfigurationById(markConfigurationId))
+
+  const api = dataApi(serverUrl)
+
+  if (!(yield select(isNetworkConnected))) {
+    return
+  }
+
+  if (location) {
+    const { latitude, longitude } = location
+    const updateMarkPropertyCall = markPropertiesId &&
+      safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, undefined, latitude, longitude)
+
+    const updateMarkCall = markId &&
+      safeApiCall(api.sendMarkGpsFix, leaderboardName, markId, {
+        latitude,
+        longitude,
+        timestamp: Date.now() * 1000, // timestamp in millis
+      }, secret)
+
+    yield all([updateMarkPropertyCall, updateMarkCall])
+  } else if (bindToThisDevice) {
+
+  }
+}
+
 function* assignMarkOrMarkPropertiesToWaypointMarkConfiguration(waypointId, markConfigurationId, markOrMarkProperties) {
   if (markOrMarkProperties.isMarkConfiguration) {
     yield put(replaceWaypointMarkConfiguration({
@@ -482,6 +512,7 @@ export default function* watchCourses() {
     takeEvery(SAVE_COURSE, saveCourseFlow),
     takeLatest(TOGGLE_SAME_START_FINISH, toggleSameStartFinish),
     takeLatest(NAVIGATE_BACK_FROM_COURSE_CREATION, navigateBackFromCourseCreation),
-    takeLatest(FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING, fetchAndUpdateMarkConfigurationDeviceTracking)
+    takeLatest(FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING, fetchAndUpdateMarkConfigurationDeviceTracking),
+    takeEvery(UPDATE_MARK_POSITION, updateMarkPositionFlow)
   ])
 }
