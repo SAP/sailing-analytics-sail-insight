@@ -28,7 +28,7 @@ import {
 import { selectRace } from 'actions/events'
 import * as Screens from 'navigation/Screens'
 import { loadMarkProperties } from 'sagas/InventorySaga'
-import { getHashedDeviceId } from 'selectors/user'
+import { getDeviceId, getHashedDeviceId } from 'selectors/user'
 import { isNetworkConnected } from 'selectors/network'
 import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
 import { getCourseById, getEditedCourse, hasSameStartFinish,
@@ -39,6 +39,7 @@ import {
   getSelectedRaceInfo
 } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
+import { checkInDeviceMappingData } from 'services/CheckInService'
 import { updateCheckInAndEventInventory } from 'actions/checkIn'
 import { receiveEntities } from 'actions/entities'
 import Snackbar from 'react-native-snackbar'
@@ -385,7 +386,19 @@ function* updateMarkPositionFlow({ payload }: any) {
 
     yield all([updateMarkPropertyCall, updateMarkCall])
   } else if (bindToThisDevice) {
+    if (markPropertiesId) {
+      yield safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, getDeviceId())
+    }
 
+    if (markId) {
+      // Bind this device to the mark
+      yield safeApiCall(api.startDeviceMapping, leaderboardName, checkInDeviceMappingData({ markId, secret }))
+
+      // Update the checkIn
+      yield put(updateCheckInAndEventInventory({ leaderboardName, markId }))
+      const mark = yield call(api.requestMark, leaderboardName, markId, secret)
+      yield put(receiveEntities(mark))
+    }
   }
 }
 

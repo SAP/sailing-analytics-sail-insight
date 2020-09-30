@@ -14,7 +14,11 @@ import {
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import styles from './styles'
 import { Dimensions } from 'react-native'
-import { updateMarkConfigurationWithCurrentDeviceAsTracker, fetchAndUpdateMarkConfigurationDeviceTracking } from 'actions/courses'
+import {
+  updateMarkConfigurationWithCurrentDeviceAsTracker,
+  fetchAndUpdateMarkConfigurationDeviceTracking,
+  updateMarkPosition,
+} from 'actions/courses'
 import { getDeviceId } from 'selectors/user'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getMarkConfigurationById } from 'selectors/course'
@@ -71,10 +75,13 @@ const useThisDeviceButton = Component(props => compose(
       // const continueBinding = await props.warnAboutMultipleBindingsToTheSameMark(
       //   props.selectedMarkConfiguration,
       // )
+      //
+      const markConfigurationId = props.selectedMarkConfiguration
       props.updateMarkConfigurationWithCurrentDeviceAsTracker({
-        id: props.selectedMarkConfiguration,
+        id: markConfigurationId,
         deviceId: getDeviceId()
       })
+      props.updateMarkPosition({ markConfigurationId, bindToThisDevice: true })
 
       props.navigation.goBack()
     },
@@ -98,6 +105,7 @@ export default Component((props: object) =>
     connect(mapStateToProps, {
       updateMarkConfigurationWithCurrentDeviceAsTracker,
       fetchAndUpdateMarkConfigurationDeviceTracking,
+      updateMarkPosition,
     }),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
