@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { NavigationEvents } from '@react-navigation/compat'
 
 import {
-  startPeriodicLeaderboardUpdates,
-  stopPeriodicLeaderboardUpdates,
+  startPollingLeaderboard,
+  stopPollingLeaderboard,
 } from 'actions/leaderboards'
 
 class LeaderboardFetcher extends React.Component<{
@@ -14,22 +14,22 @@ class LeaderboardFetcher extends React.Component<{
 
   public render() {
     return (
-      <NavigationEvents onWillFocus={this.onFocus} onWillBlur={this.onBlur} />
+      <NavigationEvents onDidFocus={this.onFocus} onWillBlur={this.onBlur} />
     )
   }
 
   protected onFocus = () => {
-    this.setState({
-      interval: this.props.startPeriodicLeaderboardUpdates(this.props.rankOnly)
-    })
+    // Leave time for the previous navigation event to do the blur action
+    // before setting the new up. Ex: when going from tracking screen to leaderboard screen
+    // where both pages have a NavigationEvents instance present.
+    setTimeout(() => this.props.startPollingLeaderboard({ rankOnly: this.props.rankOnly }), 1000)
   }
   protected onBlur = () => {
-    this.props.stopPeriodicLeaderboardUpdates(this.state.interval)
-    this.setState({ interval: null })
+    this.props.stopPollingLeaderboard()
   }
 }
 
 export default connect(
   () => ({}),
-  { startPeriodicLeaderboardUpdates, stopPeriodicLeaderboardUpdates },
+  { startPollingLeaderboard, stopPollingLeaderboard },
 )(LeaderboardFetcher)

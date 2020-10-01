@@ -30,7 +30,7 @@ const reducer = handleActions(
 
       keys(entities).forEach((entityTypeKey) => {
         const entityType = state[entityTypeKey] || {}
-        newState[entityTypeKey] = { ...entityType }
+        newState[entityTypeKey] = action.payload.replace ? {} : { ...entityType }
 
         keys(entities[entityTypeKey]).forEach((entityKey) => {
           set(

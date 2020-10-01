@@ -9,6 +9,7 @@ import watchOffline from './OfflineSaga'
 import watchCommunications from './CommunicationsSaga'
 import watchSettings from './SettingsSaga'
 import watchAppState from './AppStateSaga'
+import watchLeaderboard from './leaderboardSaga'
 
 export function* safe(effect) {
   try {
@@ -28,6 +29,7 @@ export default function* rootSaga() {
     watchOffline(),
     watchCommunications(),
     watchSettings(),
-    watchAppState()
+    watchAppState(),
+    watchLeaderboard()
   ])
 }
