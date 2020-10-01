@@ -20,7 +20,7 @@ import {
 } from 'components/fp/component'
 
 import { getMarkPositionsExceptCurrent } from 'selectors/course'
-import { updateMarkConfigurationLocation } from 'actions/courses'
+import { updateMarkConfigurationLocation, updateMarkPosition } from 'actions/courses'
 import { view, text } from 'components/fp/react-native'
 import TextInputDeprecated from 'components/TextInputDeprecated'
 import Images from '@assets/Images'
@@ -63,10 +63,14 @@ const withNavigationHandlers = withHandlers({
     }
   },
   onNavigationSavePress: (props: any) => () => {
+    const location = pick(['latitude', 'longitude'], props.region)
+    const markConfigurationId = props.selectedMarkConfiguration
+
     props.updateMarkConfigurationLocation({
-      id: props.selectedMarkConfiguration,
-      value: pick(['latitude', 'longitude'], props.region)
+      id: markConfigurationId,
+      value: location
     })
+    props.updateMarkPosition({ markConfigurationId, location })
     props.navigation.goBack()
   }
 })
@@ -94,7 +98,7 @@ const icon = compose(
   always)
 
 const mapStateToProps = (state) => ({
-  otherMarksPositions: getMarkPositionsExceptCurrent(state)
+    otherMarksPositions: getMarkPositionsExceptCurrent(state),
 })
 
 const markerIcon = icon({
@@ -300,7 +304,7 @@ const coordinatesContainer = Component((props: any) => compose(
 export default Component((props: object) =>
   compose(
     fold(defaultProps(props)),
-    connect(mapStateToProps, { updateMarkConfigurationLocation }),
+    connect(mapStateToProps, { updateMarkConfigurationLocation, updateMarkPosition }),
     withInitialRender,
     withRegion,
     withMapOffset,

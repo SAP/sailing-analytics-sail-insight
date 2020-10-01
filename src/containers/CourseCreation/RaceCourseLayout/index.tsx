@@ -20,7 +20,7 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
   updateMarkConfigurationLocation, assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew,
-  navigateBackFromCourseCreation } from 'actions/courses'
+  navigateBackFromCourseCreation, updateMarkPosition } from 'actions/courses'
 import { startLocalLocationUpdates, stopLocalLocationUpdates } from 'actions/locations'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
@@ -176,8 +176,8 @@ const GateMarkSelectorItem = Component((props: object) =>
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
       onPress: (props: any) => {
-        props.selectMarkConfiguration(props.markConfigurationId) 
-        updateSelectedPositionType(props)} 
+        props.selectMarkConfiguration(props.markConfigurationId)
+        updateSelectedPositionType(props)}
       }),
     text({ style: styles.gateMarkSelectorText }),
     defaultTo(''),
@@ -244,10 +244,13 @@ const MarkPositionPing = Component((props: object) => compose(
     onPress: (props: any) => {
       const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
 
+      const location = { latitude: lastLatitude, longitude: lastLongitude }
+      const markConfigurationId = props.selectedMarkConfiguration
       props.updateMarkConfigurationLocation({
-        id: props.selectedMarkConfiguration,
-        value: { latitude: lastLatitude, longitude: lastLongitude }
+        id: markConfigurationId,
+        value: location
       })
+      props.updateMarkPosition({ markConfigurationId, location })
     }
   }))(
   text({ style: [styles.locationText, styles.pingText] },
@@ -730,7 +733,7 @@ export default Component((props: object) =>
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
       assignMarkOrMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
       changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation,
-      startLocalLocationUpdates, stopLocalLocationUpdates }, null,
+      startLocalLocationUpdates, stopLocalLocationUpdates, updateMarkPosition }, null,
       { areStatePropsEqual: (next, prev) => compose(
           apply(equals),
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(

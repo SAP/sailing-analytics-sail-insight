@@ -1,4 +1,3 @@
-import crashlytics from '@react-native-firebase/crashlytics'
 import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
@@ -15,6 +14,7 @@ import { fetchPermissionsForEvent } from 'actions/permissions'
 import { updateCheckIn } from 'actions/checkIn'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
+import { safeApiCall } from './index'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
@@ -44,19 +44,6 @@ function eventConfirmationAlert() {
         { text: I18n.t('button_discard'), onPress: () => resolve(false) }
       ])
   })
-}
-
-function* safeApiCall(method, ...args) {
-  let result
-
-  try {
-    result = yield call(method, ...args)
-  } catch (e) {
-    crashlytics().setAttribute('saga', 'true')
-    crashlytics().recordError(e)
-  }
-
-  return result
 }
 
 function* selectEventSaga({ payload }: any) {
@@ -123,8 +110,8 @@ function* setRaceTime({ payload }: any) {
   const eventStartDate = yield select(getSelectedEventStartDate)
   const api = dataApi(serverUrl)
 
-  if (eventEndDate < date || 
-    eventStartDate > date) 
+  if (eventEndDate < date ||
+    eventStartDate > date)
   {
     // wait to make sure time picker is dismissed
     yield delay(500)

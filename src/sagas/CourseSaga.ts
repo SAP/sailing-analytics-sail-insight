@@ -1,12 +1,12 @@
-import { any, map, evolve, merge, curry, dissoc, not, has,
+import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
-  find, findLast, eqProps, propEq, when, tap, defaultTo, isEmpty, isNil,
+  find, findLast, eqProps, pathEq, propEq, propOr, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
   toPairs, values, fromPairs, ifElse, always, findIndex, equals,
 } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import { dataApi } from 'api'
-import { safe } from './index'
+import { safe, safeApiCall } from './index'
 import uuidv4 from 'uuid/v4'
 import {
   loadCourse,
@@ -16,6 +16,7 @@ import {
   TOGGLE_SAME_START_FINISH,
   NAVIGATE_BACK_FROM_COURSE_CREATION,
   FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING,
+  UPDATE_MARK_POSITION,
   editCourse,
   updateCourseLoading,
   replaceWaypointMarkConfiguration,
@@ -27,7 +28,7 @@ import {
 import { selectRace } from 'actions/events'
 import * as Screens from 'navigation/Screens'
 import { loadMarkProperties } from 'sagas/InventorySaga'
-import { getHashedDeviceId } from 'selectors/user'
+import { getDeviceId, getHashedDeviceId } from 'selectors/user'
 import { isNetworkConnected } from 'selectors/network'
 import { getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
 import { getCourseById, getEditedCourse, hasSameStartFinish,
@@ -38,6 +39,7 @@ import {
   getSelectedRaceInfo
 } from 'selectors/event'
 import { getRegattaPlannedRaces } from 'selectors/regatta'
+import { checkInDeviceMappingData } from 'services/CheckInService'
 import { updateCheckInAndEventInventory } from 'actions/checkIn'
 import { receiveEntities } from 'actions/entities'
 import Snackbar from 'react-native-snackbar'
@@ -359,6 +361,75 @@ function* saveCourseFlow({ navigation }: any) {
   yield call(loadMarkProperties)
 }
 
+function* isThisDeviceBoundToMark({ markId, regattaName, serverUrl }: any) {
+  const api = dataApi(serverUrl)
+  const trackingDevices = yield safeApiCall(api.requestTrackingDevices, regattaName)
+
+  if (!trackingDevices) {
+    return false // If the call failed just assume that the device is unbound
+  }
+
+  const activeBindings = compose(
+    find(allPass([
+      pathEq(['deviceId', 'type'], 'smartphoneUUID'),
+      pathEq(['deviceId', 'id'], getDeviceId()),
+      (status) => !status.mappedTo // No binding end date
+    ])),
+    propOr([], 'deviceStatuses'),
+    defaultTo({}),
+    find(propEq('markId', markId)),
+    propOr([], 'marks'),
+    defaultTo({})
+  )(trackingDevices)
+
+  return !!activeBindings
+}
+
+function* updateMarkPositionFlow({ payload }: any) {
+  const { serverUrl, leaderboardName, regattaName, secret } = yield select(getSelectedRaceInfo)
+  const { markConfigurationId, location, bindToThisDevice = false } = payload
+  const { markId, markPropertiesId } = yield select(getMarkConfigurationById(markConfigurationId))
+
+  const api = dataApi(serverUrl)
+
+  if (!(yield select(isNetworkConnected))) {
+    return
+  }
+
+  if (location) {
+    const { latitude, longitude } = location
+    const updateMarkPropertyCall = markPropertiesId &&
+      safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, undefined, latitude, longitude)
+
+    const updateMarkCall = markId &&
+      safeApiCall(api.sendMarkGpsFix, leaderboardName, markId, {
+        latitude,
+        longitude,
+        timestamp: Date.now() * 1000, // timestamp in millis
+      }, secret)
+
+    yield all([updateMarkPropertyCall, updateMarkCall])
+  } else if (bindToThisDevice) {
+    if (markPropertiesId) {
+      yield safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, getDeviceId())
+    }
+
+    if (markId) {
+      // Update the checkIn
+      yield put(updateCheckInAndEventInventory({ leaderboardName, markId }))
+      const mark = yield call(api.requestMark, leaderboardName, markId, secret)
+      yield put(receiveEntities(mark))
+
+
+      // Bind this device to the mark if it is not already bound
+      const isDeviceBound = yield isThisDeviceBoundToMark({ markId, regattaName, serverUrl })
+      if (!isDeviceBound) {
+        yield safeApiCall(api.startDeviceMapping, leaderboardName, checkInDeviceMappingData({ markId, secret }))
+      }
+    }
+  }
+}
+
 function* assignMarkOrMarkPropertiesToWaypointMarkConfiguration(waypointId, markConfigurationId, markOrMarkProperties) {
   if (markOrMarkProperties.isMarkConfiguration) {
     yield put(replaceWaypointMarkConfiguration({
@@ -482,6 +553,7 @@ export default function* watchCourses() {
     takeEvery(SAVE_COURSE, saveCourseFlow),
     takeLatest(TOGGLE_SAME_START_FINISH, toggleSameStartFinish),
     takeLatest(NAVIGATE_BACK_FROM_COURSE_CREATION, navigateBackFromCourseCreation),
-    takeLatest(FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING, fetchAndUpdateMarkConfigurationDeviceTracking)
+    takeLatest(FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING, fetchAndUpdateMarkConfigurationDeviceTracking),
+    takeEvery(UPDATE_MARK_POSITION, updateMarkPositionFlow)
   ])
 }
