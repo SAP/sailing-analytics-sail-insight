@@ -10,7 +10,7 @@ import { Component, fold, nothing, nothingAsClass,
 import { scrollView, view } from 'components/fp/react-native'
 import * as Screens from 'navigation/Screens'
 import { BRANCH_APP_DOMAIN } from 'environment'
-import { dateFromToText } from 'helpers/date'
+import { dateFromToStringParts, dateFromToText } from 'helpers/date'
 import I18n from 'i18n'
 import { getCustomScreenParamData } from 'navigation/utils'
 import querystring from 'query-string'
@@ -56,14 +56,20 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
 
   const competitorListData = getRegattaCompetitorList(session.regattaName)(state)
 
+  const dateParts = session && session.event && dateFromToStringParts(session.event.startDate, session.event.endDate)
+  const dateText = session && session.event && dateFromToText(session.event.startDate, session.event.endDate)
+  const [startDate = null, endDate = null] = dateParts || []
+
   return {
     session,
     checkIn,
     isBeforeEventStartTime,
+    startDate,
+    endDate,
+    dateText,
     competitorList : competitorListData,
     qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
-    name: session.regattaName,
-    startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate),
+    name: (session?.event?.name) || session.regattaName,
     location: session && session.event && session.event.venue && session.event.venue.name,
     boatClass: session && session.regatta && session.regatta.boatClass,
     currentUserIsCompetitorForEvent: currentUserIsCompetitorForEvent(leaderboardName)(state),

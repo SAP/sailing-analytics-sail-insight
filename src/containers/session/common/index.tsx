@@ -163,7 +163,7 @@ export const sessionDetailsCard = Component((props: any) => compose(
     view({ style: styles.container1 }),
     reduce(concat, nothing()),
   )([
-    text({ style: styles.textLight }, props.startDate),
+    text({ style: styles.textLight }, props.dateText),
     text({ style: styles.headlineHeavy }, props.name),
     iconText({
       style: styles.location,

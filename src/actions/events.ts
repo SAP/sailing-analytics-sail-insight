@@ -6,7 +6,7 @@ import { CheckIn, Session } from 'models'
 import { ActionQueue, fetchAction } from 'helpers/actions'
 
 import { collectCheckInData, updateCheckInAndEventInventory } from 'actions/checkIn'
-import { selfTrackingApi } from 'api'
+import { dataApi, selfTrackingApi } from 'api'
 import { getApiServerUrl } from 'api/config'
 import { CreateEventBody } from 'api/endpoints/types'
 import { DispatchType } from 'helpers/types'
@@ -40,10 +40,12 @@ export const updateEvent = createAction('UPDATE_EVENT')
 export const receiveEvent = createAction('RECEIVE_EVENT')
 export const updateEventFilters = createAction('UPDATE_EVENT_FILTERS')
 
-export const fetchEvent = (requestFunction: ((...args: any[]) => void)) =>
-  (...args: any[]) => async (dispatch: DispatchType) => {
-    return await dispatch(fetchAction(requestFunction, receiveEvent)(...args))
-  }
+export const fetchEvent = (
+  requestFunction: (...args: any[]) => void,
+  ...args: any[]
+) => async (dispatch: DispatchType) => {
+  return await dispatch(fetchAction(requestFunction, receiveEvent)(...args))
+}
 
 export const archiveEvent = (session: Session, isArchived: boolean) => updateCheckInAndEventInventory({
   isArchived,
@@ -55,11 +57,16 @@ const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
   [RegattaType.Handicap]:  'TIME_ON_TIME_AND_DISTANCE',
 })[regattaType]
 
+const setStartTimeToCurrentTimestampIfToday = dateFrom =>
+  moment().isSame(dateFrom, 'day')
+    ? moment().toISOString()
+    : dateFrom.toISOString()
+
 const createEvent = (eventData: EventCreationData) => async () => {
   const secret = getSharingUuid()
 
   const { dateFrom } = eventData
-  const startdate = moment().isSame(dateFrom, 'day') ? moment().toISOString() : dateFrom.toISOString()
+  const startdate = setStartTimeToCurrentTimestampIfToday(dateFrom)
 
   const response = await selfTrackingApi().createEvent({
     secret,
@@ -105,6 +112,18 @@ export const createEventActionQueue = ({ eventData, navigation }: any) => (
       createAction(CREATE_EVENT)({ ...data, navigation }),
     ),
   ])
+
+export const updateEventBasics = async (eventData: EventCreationData, editedSession: Session) => {
+  const { dateFrom, dateTo } = eventData
+  const startdate = dateFrom && setStartTimeToCurrentTimestampIfToday(dateFrom)
+
+  await dataApi(editedSession.serverUrl).updateEvent(editedSession.eventId, {
+    startdate,
+    enddate:                    dateTo && dateTo.toISOString(),
+    eventName:                  eventData.name,
+    venuename:                  eventData.location,
+  })
+}
 
 export const updateEventSettings = (session: object, data: object) => (dispatch: DispatchType, getState) => {
   const regattaRaces = getRegattaPlannedRaces(session.regattaName)(getState())
