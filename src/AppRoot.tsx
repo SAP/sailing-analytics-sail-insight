@@ -231,7 +231,7 @@ const withLeftHeaderCloseButton = (options) => mergeDeepLeft({
 
 const markTrackingNavigator = Component(props => compose(
   fold(merge(props, { customRenderer: true })),
-  stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptionscustomRenderer }),
+  stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.MarkTracking, component: MarkTracking.fold })),
 ]))
