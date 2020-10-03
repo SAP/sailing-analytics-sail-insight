@@ -72,6 +72,7 @@ const apiEndpoints = (serverUrl: string) => {
     leaderboard: getUrlV1('/leaderboards/{0}'),
     leaderboardV2: getUrlV2('/leaderboards/{0}'),
     marks: getUrlV1('/leaderboards/{0}/marks/{1}'),
+    markGpsFix: getUrlV1('/leaderboards/{0}/marks/{1}/gps_fixes'),
     markProperties: getSharedUrlV1('/markproperties'),
     markProperty: getSharedUrlV1('/markproperties/{0}'),
     markPropertyPositioning: getSharedUrlV1('/markproperties/{0}/positioning'),
@@ -151,6 +152,7 @@ export interface DataApi {
   requestMarkProperty: (id: string) => any,
   updateMarkPropertyPositioning: (id: string, deviceUuid?: string, latDeg?: number, lonDeg?: number) => any,
   requestMark: (leaderboardName: string, markId: string, secret?: string) => any
+  sendMarkGpsFix: (leaderboardName: string, markId: string, body: any, secret?: string) => any
   requestBoat: (leaderboardName: string, boatId: string, secret?: string) => any
   requestCourse: (regattaName: string, raceName: string, fleet: String) => any
   requestRaceTime: (regattaName: string, raceName: string, fleet: String) => any
@@ -192,6 +194,7 @@ export interface DataApi {
   updatePreference: (key: string, body: any) => any
   removePreference: (key: string) => any
   removeMarkProperty: (markId: string) => any
+  updateMarkProperty: (markId: string, body: any) => any
   requestManeuvers: (
     regattaName: string,
     raceName: string,
@@ -275,6 +278,13 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     ),
     requestMark: (leaderboardName, markId, secret) => dataRequest(
         endpoints.marks({ pathParams: [leaderboardName, markId], urlParams: { secret } }), { dataSchema: markSchema }
+    ),
+    sendMarkGpsFix: (leaderboardName, markId, body, secret) => dataRequest(
+      endpoints.markGpsFix({ pathParams: [leaderboardName, markId], urlParams: { secret } }),
+      {
+        body,
+        method: HttpMethods.POST,
+      }
     ),
     requestBoat: (leaderboardName, boatId, secret)  => dataRequest(
         endpoints.boats({ pathParams: [boatId], urlParams: { leaderboardName, secret } }),
@@ -399,6 +409,13 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     removeMarkProperty: id => dataRequest(
       endpoints.markProperty({ pathParams: [id]}),
       { method: HttpMethods.DELETE }
+    ),
+    updateMarkProperty: (id, body) => dataRequest(
+      endpoints.markProperty({ pathParams: [id], urlParams: body }),
+      {
+        method: HttpMethods.PUT,
+        bodyType: 'x-www-form-urlencoded'
+      }
     ),
     requestManeuvers: (regattaName, raceName, filters) => dataRequest(
       endpoints.regattaRaceManeuvers({ pathParams: [regattaName, raceName], urlParams: filters }),

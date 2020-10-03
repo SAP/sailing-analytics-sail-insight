@@ -246,7 +246,7 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
     const fetchTrackedElementsObjects = trackedElements.map(fetchBoundObject)
 
     await Promise.all([
-      ...spreadableList(eventId, dispatch(fetchEvent(dataApi.requestEvent)(eventId, secret))),
+      ...spreadableList(eventId, dispatch(fetchEvent(dataApi.requestEvent, eventId, secret))),
       dispatch(fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName, secret)),
       dispatch(fetchRegatta(regattaName, secret, serverUrl)),
       dispatch(fetchAllRaces(regattaName, secret, serverUrl)),
@@ -359,17 +359,6 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
   async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
 
-  // allow joining an event even when tracking is active
-  /*if (getLocationTrackingStatus(getState()) === LocationTrackingStatus.RUNNING) {
-    Alert.alert(
-      I18n.t('text_deep_link_tracking_active_title'),
-      I18n.t('text_deep_link_tracking_active_message'),
-      [{ text: 'OK' } ],
-      { cancelable: false }
-    )
-
-    return
-  }*/
 
   try {
     dispatch(updateLoadingCheckInFlag(true))

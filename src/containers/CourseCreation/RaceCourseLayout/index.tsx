@@ -20,15 +20,14 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
   updateMarkConfigurationLocation, assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew,
-  navigateBackFromCourseCreation } from 'actions/courses'
+  navigateBackFromCourseCreation, updateMarkPosition } from 'actions/courses'
 import { startLocalLocationUpdates, stopLocalLocationUpdates } from 'actions/locations'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
-  isDefaultWaypointSelection, 
-  hasEditedCourseChanged} from 'selectors/course'
+  isDefaultWaypointSelection, hasEditedCourseChanged} from 'selectors/course'
 import { getLocationStats } from 'selectors/location'
-import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
+import { getFilteredMarkPropertiesAndMarksOptionsForCourse, getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
 import { getHashedDeviceId } from 'selectors/user'
 import { coordinatesToString } from 'helpers/utils'
 import * as Screens from 'navigation/Screens'
@@ -68,7 +67,13 @@ const mapStateToProps = (state: any) => ifElse(
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
     marksAndMarkPropertiesOptions: getFilteredMarkPropertiesAndMarksOptionsForCourse(state),
     sameStartFinish: hasSameStartFinish(state),
-    hasCourseChanged: hasEditedCourseChanged(state)
+    hasCourseChanged: hasEditedCourseChanged(state),
+    newGateMarkOptions: [
+      getMarkPropertiesOrMarkForCourseByName('Gate Mark 1')(state),
+      getMarkPropertiesOrMarkForCourseByName('Gate Mark 2')(state)],
+    newLineMarkOptions: [
+      getMarkPropertiesOrMarkForCourseByName('Line Mark 1')(state),
+      getMarkPropertiesOrMarkForCourseByName('Line Mark 2')(state)]
   }))
 
 const isLoading = propEq('loading', true)
@@ -116,6 +121,24 @@ const openGeolocationScreenWithPosition = curry((props, location) => compose(
   prop('coords'))(
   location))
 
+const changeSelectedWaypointToNewLine = ({ passingInstruction, markOrMarkPropertiesOptions }, props) => {
+  const markConfigurationIds = [uuidv4(), uuidv4()]
+
+  props.changeWaypointToNewLine({
+    id: props.selectedWaypoint.id,
+    passingInstruction,
+    markConfigurationIds
+  })
+
+  mapIndexed(
+    (markOrMarkProperties, index) => markOrMarkProperties &&
+      props.assignMarkOrMarkPropertiesToMarkConfiguration({
+        id: markConfigurationIds[index],
+        markOrMarkProperties
+      }),
+    markOrMarkPropertiesOptions)
+}
+
 const icon = compose(
   fromClass(IconText).contramap,
   always)
@@ -153,8 +176,8 @@ const GateMarkSelectorItem = Component((props: object) =>
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
       onPress: (props: any) => {
-        props.selectMarkConfiguration(props.markConfigurationId) 
-        updateSelectedPositionType(props)} 
+        props.selectMarkConfiguration(props.markConfigurationId)
+        updateSelectedPositionType(props)}
       }),
     text({ style: styles.gateMarkSelectorText }),
     defaultTo(''),
@@ -221,10 +244,13 @@ const MarkPositionPing = Component((props: object) => compose(
     onPress: (props: any) => {
       const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
 
+      const location = { latitude: lastLatitude, longitude: lastLongitude }
+      const markConfigurationId = props.selectedMarkConfiguration
       props.updateMarkConfigurationLocation({
-        id: props.selectedMarkConfiguration,
-        value: { latitude: lastLatitude, longitude: lastLongitude }
+        id: markConfigurationId,
+        value: location
       })
+      props.updateMarkPosition({ markConfigurationId, location })
     }
   }))(
   text({ style: [styles.locationText, styles.pingText] },
@@ -331,18 +357,16 @@ const CreateNewSelector = Component((props: object) =>
     touchableOpacity({ onPress: () => createNewMark(PassingInstruction.Starboard, props) },
       markStarboardIcon),
     touchableOpacity({
-      onPress: () => props.changeWaypointToNewLine({
-        id: props.selectedWaypoint.id,
+      onPress: () => changeSelectedWaypointToNewLine({
         passingInstruction: PassingInstruction.Line,
-        markConfigurationIds: [uuidv4(), uuidv4()]
-      })
+        markOrMarkPropertiesOptions: props.newLineMarkOptions
+      }, props)
     }, lineIcon),
     touchableOpacity({
-      onPress: () => props.changeWaypointToNewLine({
-        id: props.selectedWaypoint.id,
+      onPress: () => changeSelectedWaypointToNewLine({
         passingInstruction: PassingInstruction.Gate,
-        markConfigurationIds: [uuidv4(), uuidv4()]
-      })
+        markOrMarkPropertiesOptions: props.newGateMarkOptions
+      }, props)
     }, gateIcon) ]))
 
 const TextInputWithLabel = Component((props: any) => compose(
@@ -709,7 +733,7 @@ export default Component((props: object) =>
       changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
       assignMarkOrMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
       changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation,
-      startLocalLocationUpdates, stopLocalLocationUpdates }, null,
+      startLocalLocationUpdates, stopLocalLocationUpdates, updateMarkPosition }, null,
       { areStatePropsEqual: (next, prev) => compose(
           apply(equals),
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(

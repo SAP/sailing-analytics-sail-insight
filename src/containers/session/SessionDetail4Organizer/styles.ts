@@ -110,7 +110,6 @@ export default EStyleSheets.create({
   },
   headlineHeavy: {
     color: 'white',
-    marginTop: 10,
     fontSize: 20,
     ...withSecondaryHeavyFont,
   },
@@ -173,4 +172,16 @@ export default EStyleSheets.create({
   locationIcon: {
     tintColor: 'white',
   },
+  eventNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  eventNameIcon: {
+    marginLeft: 10
+  },
+  eventNameField: {
+    width: '75%'
+  }
 })

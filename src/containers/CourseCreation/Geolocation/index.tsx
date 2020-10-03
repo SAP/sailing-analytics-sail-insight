@@ -1,3 +1,4 @@
+import { debounce } from 'lodash'
 import { __, compose, concat, reduce, merge, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
   defaultTo, pick, head, tap, of, flatten, init, nth, map, last, negate,
@@ -19,7 +20,7 @@ import {
 } from 'components/fp/component'
 
 import { getMarkPositionsExceptCurrent } from 'selectors/course'
-import { updateMarkConfigurationLocation } from 'actions/courses'
+import { updateMarkConfigurationLocation, updateMarkPosition } from 'actions/courses'
 import { view, text } from 'components/fp/react-native'
 import TextInputDeprecated from 'components/TextInputDeprecated'
 import Images from '@assets/Images'
@@ -35,7 +36,7 @@ import I18n from 'i18n'
 const hasNoPadding = propEq('mapOffset', 0)
 const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
 
-const trimCoordinates = (coordinate: any) => 
+const trimCoordinates = (coordinate: any) =>
   coordinate.toFixed(7)
 
 const withNavigationHandlers = withHandlers({
@@ -62,10 +63,14 @@ const withNavigationHandlers = withHandlers({
     }
   },
   onNavigationSavePress: (props: any) => () => {
+    const location = pick(['latitude', 'longitude'], props.region)
+    const markConfigurationId = props.selectedMarkConfiguration
+
     props.updateMarkConfigurationLocation({
-      id: props.selectedMarkConfiguration,
-      value: pick(['latitude', 'longitude'], props.region)
+      id: markConfigurationId,
+      value: location
     })
+    props.updateMarkPosition({ markConfigurationId, location })
     props.navigation.goBack()
   }
 })
@@ -93,7 +98,7 @@ const icon = compose(
   always)
 
 const mapStateToProps = (state) => ({
-  otherMarksPositions: getMarkPositionsExceptCurrent(state)
+    otherMarksPositions: getMarkPositionsExceptCurrent(state),
 })
 
 const markerIcon = icon({
@@ -156,9 +161,9 @@ const navigationBackHandler = Component((props: any) => compose(
     onWillFocus: (payload: any) => {
       props.navigation.setOptions({
         headerRight: HeaderSaveTextButton({
-          onPress: () => {
+          onPress: debounce(() => {
             props.onNavigationSavePress()
-          }
+          }, 500, { leading: true, trailing: false })
         }),
         headerLeft: HeaderCancelTextButton({
           onPress: () => {
@@ -293,13 +298,13 @@ const coordinatesContainer = Component((props: any) => compose(
     view({ style: styles.coordinatesModalContainer, onLayout: (nativeEvent: any) => onCoordinatesLayout(props, nativeEvent) }),
     reduce(concat, nothing()))([
       latitudeInput,
-      longitudeInput  
+      longitudeInput
     ]))
 
 export default Component((props: object) =>
   compose(
     fold(defaultProps(props)),
-    connect(mapStateToProps, { updateMarkConfigurationLocation }),
+    connect(mapStateToProps, { updateMarkConfigurationLocation, updateMarkPosition }),
     withInitialRender,
     withRegion,
     withMapOffset,

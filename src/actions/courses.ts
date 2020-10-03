@@ -9,6 +9,7 @@ export const TOGGLE_SAME_START_FINISH = 'TOGGLE_SAME_START_FINISH'
 export const NAVIGATE_BACK_FROM_COURSE_CREATION = 'NAVIGATE_BACK_FROM_COURSE_CREATION'
 export const FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING = 'FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING'
 export const FETCH_COURSES_FOR_EVENT = 'FETCH_COURSES_FOR_EVENT'
+export const UPDATE_MARK_POSITION = 'UPDATE_MARK_POSITION'
 
 export const fetchCoursesForEvent = createAction(FETCH_COURSES_FOR_EVENT)
 export const loadCourse = createAction('LOAD_COURSE')
@@ -17,6 +18,7 @@ export const editCourse = createAction('EDIT_COURSE')
 export const selectMarkConfiguration = createAction(SELECT_MARK_CONFIGURATION)
 export const saveCourse = createAction(SAVE_COURSE)
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
+export const updateMarkPosition = createAction(UPDATE_MARK_POSITION)
 
 export const updateWaypointName = createAction('UPDATE_WAYPOINT_NAME')
 export const updateWaypointShortName = createAction('UPDATE_WAYPOINT_SHORT_NAME')

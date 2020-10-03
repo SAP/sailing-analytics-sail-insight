@@ -13,9 +13,9 @@ import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { __, always, anyPass, append, compose, concat, curry,
   equals, has, head, length, map, merge, mergeLeft, objOf,
-  prepend, prop, propEq, range, reduce, reject,
+  prepend, prop, propEq, range, reduce, reject, isNil,
   remove, sortBy, split, toString, toUpper, update, when,
-  isEmpty, defaultTo, path, complement,
+  isEmpty, defaultTo, complement, path, either,
   call, last, inc, take, identity } from 'ramda'
 import { Dimensions, ActivityIndicator } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
@@ -27,6 +27,11 @@ import * as LocationService from 'services/LocationService'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 
 const maxNumberOfRaces = 50
+
+export const fieldValueOrInitialIfEmpty = props => compose(
+  when(either(isNil, isEmpty), always(props.meta.initial)),
+  path(['input', 'value']))(
+  props)
 
 const plusIcon = fromClass(IconText).contramap(always({
   source: Images.actions.plus,
@@ -66,7 +71,7 @@ export const overlayPicker = curry((
       }),
       objOf('children'),
       head,
-      when(has('fold'), fold(props)))(
+      when(has('fold'), fold(merge(props, { customRenderer: true }))))(
       c)))
 
 export const FramedNumberItem = Component(props => compose(
@@ -158,7 +163,7 @@ export const sessionDetailsCard = Component((props: any) => compose(
     view({ style: styles.container1 }),
     reduce(concat, nothing()),
   )([
-    text({ style: styles.textLight }, props.startDate),
+    text({ style: styles.textLight }, props.dateText),
     text({ style: styles.headlineHeavy }, props.name),
     iconText({
       style: styles.location,
@@ -286,7 +291,7 @@ export const withCompetitorListState = compose(
 
 const COMPETITOR_LIST_REFRESH_RATE = 10000
 
-const isCompetitorListEmpty = compose(isEmpty, defaultTo([]), prop('competitorList'))
+const isCompetitorListEmpty = compose(isEmpty, reject(isNil), defaultTo([]), prop('competitorList'))
 const isCompetitorListNotEmpty = complement(isCompetitorListEmpty)
 const nothingIfCompetitorListStale = branch(propEq('competitorListStale', true), nothingAsClass)
 const nothingIfCompetitorListNotStale = branch(propEq('competitorListStale', false), nothingAsClass)
@@ -355,8 +360,7 @@ export const competitorList = Component((props: any) => compose(
   fold(props),
   concat(text({ style: styles.headline }, I18n.t('text_competitor_list').toUpperCase())),
   view({ style: styles.competitorListContainer }),
-  reduce(concat, nothing())
-)([
+  reduce(concat, nothing()))([
   nothingIfCompetitorListNotStale(loader),
   nothingIfCompetitorListStale(nothingIfCompetitorListEmpty(competitorListItems)),
   nothingIfCompetitorListStale(nothingIfCompetitorListNotEmpty(noCompetitorsText)),

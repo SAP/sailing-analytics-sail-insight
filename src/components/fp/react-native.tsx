@@ -44,7 +44,7 @@ const pressable = curry((buttonComponent, settings, c) => Component((props: Obje
   merge(settings),
   objOf('children'),
   head,
-  when(has('fold'), fold(props)))(
+  when(has('fold'), fold(merge(props, { customRenderer: true }))))(
   c)))
 
 export const touchableHighlight =  pressable(TouchableHighlight)

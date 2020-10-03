@@ -1,4 +1,4 @@
-import { __, always, compose, concat, defaultTo, map, merge, reduce } from 'ramda'
+import { __, always, compose, concat, defaultTo, map, merge, reduce, equals } from 'ramda'
 
 import {
   Component,
@@ -107,7 +107,14 @@ const List = Component((props: object) => compose(
 export default Component((props: object) =>
   compose(
     fold(props),
-    connect(mapStateToProps, { deleteMarkProperties, loadMarkProperties }),
+    connect(
+      mapStateToProps,
+      { deleteMarkProperties, loadMarkProperties },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
     withLoadingOfMarkProperties,
     scrollView({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),

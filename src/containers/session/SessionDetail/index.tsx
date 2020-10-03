@@ -1,5 +1,5 @@
-import { __, always, compose, concat,
-  merge, reduce, isNil, prop } from 'ramda'
+import { __, compose, concat,
+  merge, reduce, isNil, prop, equals } from 'ramda'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking } from 'actions/tracking'
@@ -10,7 +10,7 @@ import { Component, fold, nothing, nothingAsClass,
 import { scrollView, view } from 'components/fp/react-native'
 import * as Screens from 'navigation/Screens'
 import { BRANCH_APP_DOMAIN } from 'environment'
-import { dateFromToText } from 'helpers/date'
+import { dateFromToStringParts, dateFromToText } from 'helpers/date'
 import I18n from 'i18n'
 import { getCustomScreenParamData } from 'navigation/utils'
 import querystring from 'query-string'
@@ -56,14 +56,20 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
 
   const competitorListData = getRegattaCompetitorList(session.regattaName)(state)
 
+  const dateParts = session && session.event && dateFromToStringParts(session.event.startDate, session.event.endDate)
+  const dateText = session && session.event && dateFromToText(session.event.startDate, session.event.endDate)
+  const [startDate = null, endDate = null] = dateParts || []
+
   return {
     session,
     checkIn,
     isBeforeEventStartTime,
+    startDate,
+    endDate,
+    dateText,
     competitorList : competitorListData,
     qrCodeLink: `https://${BRANCH_APP_DOMAIN}/invite?checkinUrl=${encodeURIComponent(checkinUrl)}`,
-    name: session.regattaName,
-    startDate: session && session.event && dateFromToText(session.event.startDate, session.event.endDate),
+    name: (session?.event?.name) || session.regattaName,
     location: session && session.event && session.event.venue && session.event.venue.name,
     boatClass: session && session.regatta && session.regatta.boatClass,
     currentUserIsCompetitorForEvent: currentUserIsCompetitorForEvent(leaderboardName)(state),
@@ -83,10 +89,17 @@ const sessionData = {
 export default Component((props: any) =>
   compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToSessionDetailsProps, { checkOut, collectCheckInData, shareSessionRegatta, startTracking, fetchRegattaCompetitors }),
+    withCompetitorListState,
+    connect(
+      mapStateToSessionDetailsProps,
+      { checkOut, collectCheckInData, shareSessionRegatta, startTracking, fetchRegattaCompetitors },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
     scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
-    withCompetitorListState,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
       competitorListRefreshHandler,

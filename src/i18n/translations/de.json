@@ -273,7 +273,7 @@
   "text_beta_self_tracking": "Das setzen von Start- und Ziellinie geschieht bisher automatisch im Backend. Wir arbeiten gerade an einem nutzerfreundlichen Editor dafür, so dass Du diese Linien entsprechend anpassen kannst. Die Statistiken berechnen sich nur, wenn eine Start- und Ziellinie von unserem System auch richtig erkannt wurde.",
   "caption_race_not_started_yet": "Rennen noch nicht gestartet",
   "caption_create": "ERSTELLEN",
-  "caption_invalid_qr_code_missing_mark": "Um den QR code zu generieren muss der Kurs gespeichert werden.\n(Tip: Pfeil oben links zwei mal drücken).",
+  "caption_invalid_qr_code_missing_mark": "Um den QR code zu generieren muss der Kurs gespeichert werden \n(Tip: oben rechts auf dem vorherigen Bildschirm).",
   "caption_scan_qr_code_for_mark_binding": "Scannen Sie diesen QR-Code mit einem anderen Gerät oder verwenden Sie dieses Gerät als Tracker",
   "caption_leave": "Bist du sicher?",
   "caption_dont_show_again": "Nicht mehr anzeigen",

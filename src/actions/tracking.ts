@@ -22,11 +22,11 @@ import { removeTrackedRegatta, resetTrackingStatistics, updateTrackingContext } 
 import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCurrentCourse } from 'actions/communications'
 
 export const stopTracking = () => async (dispatch: DispatchType, getState: GetStateType) => {
-    await dispatch(stopLocationUpdates())
-    dispatch(removeTrackedRegatta())
-    // stop updating start line start line
-    dispatch(stopUpdateStartLineBasedOnCurrentCourse())
-  }
+  await dispatch(stopLocationUpdates())
+  dispatch(removeTrackedRegatta())
+  // stop updating start line start line
+  dispatch(stopUpdateStartLineBasedOnCurrentCourse())
+}
 
 export const startTracking = ({ data, navigation, useLoadingSpinner = true }: any) => async (
   dispatch: DispatchType,
@@ -58,11 +58,11 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
 
   dispatch(resetTrackingStatistics())
   dispatch(updateTrackingContext(LocationService.LocationTrackingContext.REMOTE))
-  await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId))
 
   if (useLoadingSpinner) {
     dispatch(updateLoadingCheckInFlag(true))
   }
+
   dispatch(updateLatestTrackedRace(null))
   dispatch(updateTrackedRegatta({
     leaderboardName: checkInData.leaderboardName,
@@ -75,7 +75,8 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     navigation.navigate(Screens.Tracking)
   }
 
-  let showAlertRaceNotStarted = false
+  await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId))
+  await dispatch(updateLoadingCheckInFlag(false))
 
   try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
   catch (e) {}
@@ -87,9 +88,7 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
       .filter(race => race.trackingStartDate < now)
       .filter(race => race.trackingEndDate > now || race.trackingEndDate === null)
 
-    if (activeRaces.length === 0) {
-      showAlertRaceNotStarted = true
-    } else {
+    if (activeRaces.length !== 0) {
       const latestActiveRace = maxBy(activeRaces, 'trackingStartDate')
       const latestTrackName = latestActiveRace && latestActiveRace.columnName
 
@@ -109,15 +108,5 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     }
   } catch (err) {
     throw err
-  } finally {
-    dispatch(updateLoadingCheckInFlag(false))
-
-    if (showAlertRaceNotStarted && !markTracking) {
-      // workaround for stuck fullscreen loading indicator when alert is called
-      setTimeout(async () => Alert.alert(
-          I18n.t('caption_race_not_started_yet'),
-          I18n.t('text_race_not_started_yet'),
-        ), 800)
-    }
   }
 }
