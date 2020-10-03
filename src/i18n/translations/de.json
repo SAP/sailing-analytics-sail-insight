@@ -180,7 +180,7 @@
   "text_session_filter_invited": "Events zu denen ich eingeladen wurde",
   "text_session_filter_archived": "Archivierte Events",
   "text_edit_results_disclaimer": "Die folgende Seite ist noch nicht für die mobile Anwendung optimiert. Wir arbeiten daran. Du kannst die Seite aber auch im Desktop Browser öffnen. Der Link zu der Seite kann über den Button \"Link kopieren\" in die Zwischenablage kopiert werden. Bitte beachte dass zur Berabeitung die Anmeldedaten deines Accounts erfoderlich sind.",
-  "text_copy_results_disclaimer": "This link is a shortcut to the Result Editing Page that is part of the SAP Sailing Analytics Admin Console. If you open it in a mobile or desktop browser, you will need to log in to the Admin Console, so have your username and password available. In your mobile browser, we recommend that you use landscape mode or use a desktop browser to get the job done. Please note that the page is not optimized for mobile yet. We will improve this going forward. However, the page is handy, and we want to empower users to create complete and correct leaderboards. Thank you for your understanding.",
+  "text_copy_results_disclaimer": "Wir haben gerade den Link zu der Seite auf der Du die Ergebnisse editieren kannst in die Zwischenablage kopiert. Die Seite ist Teil der Admin Console der SAP Sailing Analytics. Halte Deinen Benutzernamen und Passwort bereit, wenn du sie in einem Browser öffnest.",
 
   "text_join_with_boat_01": "Du wirst diesem Event mit dem Boot ",
   "text_join_with_boat_02": " beitreten.",
