@@ -674,6 +674,14 @@ const LoadingIndicator = Component((props: any) => compose(
   view({ style: styles.loadingContainer }))(
   text({ style: styles.loadingText }, I18n.t('caption_course_creator_loading'))))
 
+const saveCourse = (props: any) => () => {
+  const handleSave = () => {
+    props.navigateBackFromCourseCreation({ navigation: props.navigation })
+  }
+  Keyboard.dismiss()
+  setTimeout(() => handleSave(), 50)
+}
+
 const withOnNavigationBackPress = withHandlers({
   onNavigationCancelPress: (props: any) => () => {
     if (props.hasCourseChanged) {
@@ -683,26 +691,30 @@ const withOnNavigationBackPress = withHandlers({
     } else {
       props.navigation.goBack()
     }
+  },
+  onNavigationSavePress: saveCourse,
+  onNavigationBackButtonPress: (props: any) => () => {
+    if (props.hasCourseChanged) {
+      Alert.alert(I18n.t('caption_unsaved_changes'), '',
+        [ { text: I18n.t('button_save'), onPress: saveCourse(props)},
+      { text: I18n.t('button_dont_save'), onPress: () => props.navigation.goBack() }])
+    } else {
+      props.navigation.goBack()
+    }
     return true
   },
-  onNavigationSavePress: (props: any) => () => {
-    const handleSave = () => {
-      props.navigateBackFromCourseCreation({ navigation: props.navigation })
-    }
-    Keyboard.dismiss()
-    setTimeout(() => handleSave(), 50)
-  }
+
 })
 
 const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
     onWillBlur: (payload: any) => {
-      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationCancelPress)
+      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
       props.stopLocalLocationUpdates()
     },
     onWillFocus: (payload: any) => {
-      BackHandler.addEventListener('hardwareBackPress', props.onNavigationCancelPress)
+      BackHandler.addEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
       props.navigation.setOptions({
         headerRight: HeaderSaveTextButton({
           onPress: () => {

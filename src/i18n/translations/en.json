@@ -276,6 +276,7 @@
   "caption_invalid_qr_code_missing_mark": "To generate the QR code for this mark, you need to first save the course \n(Find the \"Save\" option top right in previous screen).",
   "caption_scan_qr_code_for_mark_binding": "Scan this QR code with another device or use this device as a tracker",
   "caption_leave": "Are you sure?",
+  "caption_unsaved_changes": "You made changes that are not saved yet.",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",
@@ -382,6 +383,8 @@
   "button_discard": "Discard",
   "button_yes": "Yes",
   "button_no": "No",
+  "button_save": "Save changes",
+  "button_dont_save": "Back out without saving",
   "text_entry_open_SAP_Analytics_button": "You can only view the SAP Sailing Analytics after the entry list has been closed. Are you ready to close the entry list (note that no competitors can be added afterwards)?",
   "text_entry_open_when_setting_time": "Start time cannot be set until the entry list is closed. Are you ready to close the entry? Note that no competitors can be added afterwards.",
   "text_delete_binding_alert": "Do you really want to delete the binding?",
