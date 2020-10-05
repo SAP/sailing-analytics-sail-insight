@@ -423,6 +423,7 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     ),
     requestTrackingDevices: regattaName => dataRequest(
       endpoints.regattaTrackingDevices({ pathParams: [regattaName] }),
+      { method: HttpMethods.POST }
     ),
     createAutoCourse: (leaderboardName, raceColumn, fleet) => dataRequest(
       endpoints.createAutoCourse({ pathParams: [leaderboardName], urlParams: { fleet, race_column: raceColumn } }),
