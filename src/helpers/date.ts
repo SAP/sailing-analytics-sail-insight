@@ -57,8 +57,8 @@ export const durationText = (startDateText?: string) => {
   if (!startDateText) {
     return
   }
-  const diff = moment() - moment(startDateText)
-  return moment.utc(moment.duration(diff).asMilliseconds()).format('HH:mm:ss')
+  const diff = moment().startOf('second') - moment(startDateText).startOf('second')
+  return moment.utc(moment.duration(diff).asMilliseconds()).startOf('second').format('HH:mm:ss')
 }
 
 export const dateText = (dateValue: string | number, format = 'LL') => {
@@ -161,7 +161,7 @@ export const getTimestampAsMillis = (timestamp?: string) => {
   return momentValue.utc().valueOf()
 }
 
-export const currentTimestampAsText = () => moment().utc().format()
+export const currentTimestampAsText = () => moment().utc().startOf('second').format()
 
 export const isExpired = (timestamp: string, limitInHours: number) => {
   if (!timestamp) {
