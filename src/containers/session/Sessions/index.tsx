@@ -192,7 +192,7 @@ const mapStateToProps = (state: any, props: any) => {
   const sessions = getFilteredSessionList(props.route?.params?.forTracking)(state)
   return ({
     sessions,
-    showHints: isSessionListEmpty(state),
+    showHints: isSessionListEmpty(props.route?.params?.forTracking)(state),
     isLoggedIn: isLoggedInSelector(state),
     eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
     isLoadingEventList: isLoadingEventList(state)
