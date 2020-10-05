@@ -76,7 +76,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
     return (
       <ScrollContentView style={[container.main]}>
         <NavigationEvents
-          onWillFocus={() => {
+          onDidFocus={() => {
             BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
             timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 500)
             KeepAwake.activate()
