@@ -700,7 +700,7 @@ const NavigationBackHandler = Component((props: any) => compose(
       BackHandler.removeEventListener('hardwareBackPress', props.onNavigationCancelPress)
       props.stopLocalLocationUpdates()
     },
-    onWillFocus: (payload: any) => {
+    onDidFocus: (payload: any) => {
       BackHandler.addEventListener('hardwareBackPress', props.onNavigationCancelPress)
       props.navigation.setOptions({
         headerRight: HeaderSaveTextButton({
