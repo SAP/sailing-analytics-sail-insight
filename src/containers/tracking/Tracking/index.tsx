@@ -59,16 +59,6 @@ class Tracking extends React.Component<NavigationScreenProps & {
     stoppingFailed: false,
   }
 
-  public componentDidMount() {
-    timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 1000)
-    KeepAwake.activate()
-  }
-
-  public componentWillUnmount() {
-    timer.clearInterval(this)
-    KeepAwake.deactivate()
-  }
-
   public render() {
     const {
       trackingStats,
@@ -86,8 +76,16 @@ class Tracking extends React.Component<NavigationScreenProps & {
     return (
       <ScrollContentView style={[container.main]}>
         <NavigationEvents
-          onWillFocus={() => { BackHandler.addEventListener('hardwareBackPress', this.handleBackButton) }}
-          onWillBlur={() => { BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton) }}
+          onWillFocus={() => {
+            BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+            timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 500)
+            KeepAwake.activate()
+          }}
+          onWillBlur={() => {
+            BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
+            timer.clearInterval(this)
+            KeepAwake.deactivate()
+          }}
         />
         <LeaderboardFetcher rankOnly />
         <ConnectivityIndicator style={styles.connectivity}/>
