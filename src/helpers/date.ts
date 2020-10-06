@@ -66,13 +66,13 @@ export const dateText = (dateValue: string | number, format = 'LL') => {
   return moment(dateValue).locale(supportedLocale).format(get(defaultDateFormat(supportedLocale, format), 'dateFormat'))
 }
 
-export const dateFromToStringParts = (
+export const dateFromToText = (
   startValue?: string | number,
   endValue?: string | number,
   format = 'L',
   omitSameDay: boolean = true,
 ) => {
-  if (!startValue) { return [null, null] }
+  if (!startValue) { return null }
 
   const supportedLocale = getSupportedLocale(I18n.locale)
   const dateFormat = get(defaultDateFormat(supportedLocale, format), 'dateFormat')
@@ -80,23 +80,10 @@ export const dateFromToStringParts = (
   const startDate = moment(startValue).locale(supportedLocale)
   const endDate =  moment(endValue).locale(supportedLocale)
   if (!endValue || (omitSameDay && startDate.isSame(endDate, 'day'))) {
-    return [startDate.format(dateFormat), null]
+    return startDate.format(dateFormat)
   }
   const startFormat = startDate.year() === endDate.year() ? cleanYearFromFormat(dateFormat) : dateFormat
-  return [startDate.format(startFormat), endDate.format(dateFormat)]
-}
-
-
-export const dateFromToText = (
-  startValue?: string | number,
-  endValue?: string | number,
-  format = 'L',
-  omitSameDay: boolean = true,
-) => {
-  const [startDate, endDate] = dateFromToStringParts(startValue, endValue, format, omitSameDay)
-  if (!startDate) { return null }
-  if (!endDate) { return startDate }
-  return `${startDate} - ${endDate}`
+  return `${startDate.format(startFormat)} - ${endDate.format(dateFormat)}`
 }
 
 export const dateTimeText = (dateValue: string | number | Date) => {
@@ -114,7 +101,7 @@ export const dateRangeText = (dateValue1: string | number | Date, dateValue2?: 
 
   const moment1 =  moment(dateValue1).locale(supportedLocale)
   const moment2 = dateValue2 ? moment(dateValue1).locale(supportedLocale) : null
-
+  
   // No date2 or the same day
   if (moment2 == null || moment1.isSame(moment2, 'day')) {
     return moment1.format('D. MMMM YYYY')

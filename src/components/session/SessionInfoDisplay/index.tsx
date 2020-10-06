@@ -83,7 +83,6 @@ class SessionInfoDisplay extends React.Component<ViewProps & {
                   ellipsizeMode="tail"
                 >
                 {
-                  (session.event && session.event.name) ||
                   session.userStrippedDisplayName ||
                   (session.leaderboard && (session.leaderboard.displayName || session.leaderboard.name))
                 }
