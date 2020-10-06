@@ -48,7 +48,7 @@ const fieldBox = (child: any) => Component((props: any) =>
 const boxedTextInput = fieldBox(
   textInputWithMeta.contramap((props: any) => ({
     ...props,
-    value: props.input.value,
+    defaultValue: props.input.value,
     onChangeText: props.input.onChange,
     // underlineColorAndroid: darkerGray,
     borderBottomWidth: 1,
