@@ -1,6 +1,3 @@
-import I18n from 'i18n'
-import Snackbar from 'react-native-snackbar'
-
 export const ErrorCodes = {
   UNAUTHORIZED: 'error_unauthorized',
   MISSING_DATA: 'error_data_retrieval',
@@ -13,9 +10,3 @@ export const ErrorCodes = {
   REGATTA_ALREADY_EXISTS: 'error_regatta_already_exists',
   LEADERBOARD_ALREADY_EXISTS: 'error_leaderboard_already_exists'
 }
-
-export const showUnknownErrorSnackbarMessage = () =>
-  Snackbar.show({
-    text: I18n.t('error_unknown'),
-    duration: Snackbar.LENGTH_SHORT
-  })

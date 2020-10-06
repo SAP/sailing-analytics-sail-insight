@@ -21,7 +21,6 @@ export default {
     team: require('./img/team_headerimage.png'),
   },
   actions: {
-    accept: require('./img/icons/accept.png'),
     add: require('./img/new_icons/add_icon_circle.png'),
     decrease: require('./img/new_icons/minus_icon_circle.png'),
     settings: require('./img/icons/icon-settings.png'),

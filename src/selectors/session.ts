@@ -131,25 +131,18 @@ export const getSession = (leaderboardName: string) => createSelector(
 export const getFilteredSessionList = (forTracking: any) => createSelector(
   getSessionList,
   getActiveEventFilters,
-  (sessions: Session[], filters: EventFilter[]) => {
-    return compose(
-      when(
-        always(forTracking),
-        reject((session: any) => session.isFinished)
-      ),
-      unless(
-        always(filters.includes(EventFilter.Archived)),
-        reject((session: Session) => !!session.isArchived)
-      ),
-      unless(
-        always(filters.includes(EventFilter.All)),
-        reject((session: Session) => !session.isArchived)
-      ),
-    )(sessions)
-  },
-)
+  (sessions: Session[], filters: EventFilter[]) => compose(
+    when(
+      always(forTracking),
+      reject((session: any) => session.isFinished)),
+    unless(
+      always(filters.includes(EventFilter.Archived)),
+      reject((session: Session) => !!session.isArchived)),
+    unless(
+      always(filters.includes(EventFilter.All)),
+      reject((session: Session) => !session.isArchived)))(
+    sessions))
 
-export const isSessionListEmpty = createSelector(
-  getFilteredSessionList,
-  (checkInList: any[]) => isEmpty(checkInList),
-)
+export const isSessionListEmpty = forTracking => createSelector(
+  getFilteredSessionList(forTracking),
+  (checkInList: any[]) => isEmpty(checkInList))

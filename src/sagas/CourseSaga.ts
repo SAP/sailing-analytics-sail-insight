@@ -405,7 +405,7 @@ function* updateMarkPositionFlow({ payload }: any) {
       safeApiCall(api.sendMarkGpsFix, leaderboardName, markId, {
         latitude,
         longitude,
-        timestamp: Date.now() * 1000, // timestamp in millis
+        timestamp: Date.now(),
       }, secret)
 
     yield all([updateMarkPropertyCall, updateMarkCall])
