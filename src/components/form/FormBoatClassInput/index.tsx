@@ -131,7 +131,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   protected renderTextInput = () => {
     const {
       label,
-      input: { name, ...restInput } = { name: undefined },
+      input: { name, value, ...restInput } = { name: undefined },
       meta: { touched: showError, error } = { touched: () => {}, error: undefined },
       style,
       ...additionalProps
