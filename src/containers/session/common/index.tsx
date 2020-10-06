@@ -25,6 +25,7 @@ import CompetitorList from '../Leaderboard/CompetitorList'
 import { NavigationEvents } from '@react-navigation/compat'
 import * as LocationService from 'services/LocationService'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
+import { getWindowWidth } from 'helpers/screen';
 
 const maxNumberOfRaces = 50
 
@@ -221,7 +222,7 @@ export const qrCode = Component((props: any) => compose(
   view({ style: styles.qrCodeContainer }))(
   fromClass(QRCode).contramap((props: any) => ({
     value: props.qrCodeLink,
-    size: Dimensions.get('window').width - 85,
+    size: getWindowWidth() - 85,
     backgroundColor: 'white',
     quietZone: 10
   }))
