@@ -124,34 +124,32 @@ class Tracking extends React.Component<NavigationScreenProps & {
               />
             </View>
           </View>
-          <View style={styles.propertyRow}>
-            <View style={styles.leftPropertyContainer}>
+          <View style={styles.propertiesTiles}>
+            <View style={styles.propertiesRow}>
               <TrackingProperty
-                style={[styles.measurementContainer, styles.propertyBottom]}
+                style={[styles.measurementContainer, styles.propertyBottom, styles.leftPropertyContainer]}
                 titleStyle={styles.measurementTitle}
                 valueStyle={styles.measurementValue}
                 title={I18n.t('text_tracking_time')}
-                value={this.state.durationText || EMPTY_DURATION_TEXT}
-              />
+                value={this.state.durationText || EMPTY_DURATION_TEXT}/>
               <TrackingProperty
-                style={styles.measurementContainer}
-                titleStyle={styles.measurementTitle}
-                valueStyle={styles.measurementValue}
-                title={I18n.t('text_tracking_distance')}
-                value={distance}
-                unit={I18n.t('text_tracking_unit_meters')}
-              />
-            </View>
-            <View
-              style={styles.rightPropertyContainer}>
-              <TrackingProperty
-                style={[styles.measurementContainer]}
+                style={[styles.measurementContainer, styles.propertyBottom, styles.rightPropertyContainer]}
                 titleStyle={styles.measurementTitle}
                 valueStyle={styles.measurementValue}
                 title={I18n.t('text_tracking_gps_accuracy')}
                 value={`${trackingStats.locationAccuracy || EMPTY_VALUE}`}
-                unit={I18n.t('text_tracking_unit_meters')}
-              />
+                unit={I18n.t('text_tracking_unit_meters')}/>
+            </View>
+            <View style={styles.propertiesRow}>
+              <TrackingProperty
+                style={[styles.measurementContainer, styles.leftPropertyContainer]}
+                titleStyle={styles.measurementTitle}
+                valueStyle={styles.measurementValue}
+                title={I18n.t('text_tracking_distance')}
+                value={distance}
+                unit={I18n.t('text_tracking_unit_meters')}/>
+              <TrackingProperty
+                style={[styles.measurementContainerStub, styles.rightPropertyContainer]}/>
             </View>
           </View>
         </View>
@@ -179,7 +177,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
   protected handleBackButton = () => true
   protected handleTimerEvent = () => {
     const {trackingStats} = this.props
-    this.setState({durationText: durationText(trackingStats.startedAt)})
+    this.setState({ durationText: durationText(trackingStats.startedAt) })
   }
 
   protected stopTrackingConfirmationDialog = () => new Promise(resolve =>
