@@ -4,7 +4,7 @@ import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
   toPairs, values, fromPairs, ifElse, always, findIndex, equals,
 } from 'ramda'
-import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest, delay } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe, safeApiCall } from './index'
 import uuidv4 from 'uuid/v4'
@@ -319,6 +319,11 @@ function* saveCourseFlow({ navigation }: any) {
     equals,
   )(raceColumnName)
 
+  // Delaying the next race course loading due to the GET request ending
+  // on a server replica rather than on master. To be removed once the request
+  // is switched to POST
+  yield delay(1000)
+
   if (nextRaceColumnName) {
     const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
     const nextCourse = copyCourse(editedCourse, updatedCourse, latestNextRaceCourseState)
@@ -536,12 +541,19 @@ function* fetchAndUpdateMarkConfigurationDeviceTracking() {
     findLast(propEq('markId', markConfiguration.markId)),
     defaultTo([]),
     prop('marks'),
-    prop('result')
-  )(allTrackingDevices)
+    prop('result'))(
+    allTrackingDevices)
+
+  const currentTrackingDeviceId = compose(
+    prop('deviceId'),
+    defaultTo({}),
+    find(compose(isNil, prop('mappedTo'))))(
+    trackingDevices)
 
   if (trackingDevices) {
     yield put(changeMarkConfigurationDeviceTracking({
       trackingDevices,
+      currentTrackingDeviceId,
       id: selectedMarkConfiguration,
     }))
   }
