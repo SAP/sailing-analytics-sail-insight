@@ -159,7 +159,10 @@ const copyCourse = (courseToCopy: any, latestCopiedCourseState: any, latestTarge
 
 function* fetchCourseFromServer({ regattaName, race, serverUrl }: any) {
   const api = dataApi(serverUrl)
-  const latestCourseState = yield call(api.requestCourse, regattaName, race, 'Default')
+  const latestCourseState = yield safeApiCall(api.requestCourse, regattaName, race, 'Default')
+
+  if (!latestCourseState)
+    return
 
   yield put(loadCourse({
     raceId: `${regattaName} - ${race}`,
@@ -178,7 +181,7 @@ function* selectCourseFlow({ payload }: any) {
   yield put(updateCourseLoading(true))
   yield put(selectRace(race))
 
-  const latestCourseState = yield safeApiCall(fetchCourseFromServer, { regattaName, race, serverUrl })
+  const latestCourseState = yield call(fetchCourseFromServer, { regattaName, race, serverUrl })
 
   if (!latestCourseState)
     return
@@ -333,7 +336,7 @@ function* saveCourseFlow({ navigation }: any) {
   yield delay(1000)
 
   if (nextRaceColumnName) {
-    const latestNextRaceCourseState = yield safeApiCall(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
+    const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
 
     if (!latestNextRaceCourseState)
       return
