@@ -1,6 +1,6 @@
 import { isString } from 'lodash'
 import querystring from 'query-string'
-import { compose, includes, prop, __, when } from 'ramda'
+import { compose, includes, prop, __, when, merge } from 'ramda'
 
 import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
@@ -45,6 +45,7 @@ export interface RequestOptions {
   body?: any,
   bodyType?: BodyType,
   timeout?: number,
+  headers?: any
 }
 
 const getBody = (type: BodyType, body: any) => {
@@ -91,12 +92,17 @@ export const request = async (
     timeout = 10000,
   } = options
 
+  console.log('request with options', options)
+
   const data = body && { body: getBody(bodyType, body) }
+
+  let headers = await getHeaders(url, method, body, bodyType, signer)
+
 
   const fetchOptions = {
     method,
     timeout,
-    headers: await getHeaders(url, method, body, bodyType, signer),
+    headers: merge(headers, options.headers),
     credentials: 'omit',
     ...data,
   }

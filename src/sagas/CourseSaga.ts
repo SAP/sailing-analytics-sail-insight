@@ -330,11 +330,6 @@ function* saveCourseFlow({ navigation }: any) {
     equals)(
     raceColumnName)
 
-  // Delaying the next race course loading due to the GET request ending
-  // on a server replica rather than on master. To be removed once the request
-  // is switched to POST
-  yield delay(1000)
-
   if (nextRaceColumnName) {
     const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
 
