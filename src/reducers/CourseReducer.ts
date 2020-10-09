@@ -130,12 +130,13 @@ const markConfigurations = handleActions({
   [changeMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
       mergeLeft({
+        currentTrackingDeviceId: action.payload.currentTrackingDeviceId,
         trackingDevices: map(applySpec({
           trackingDeviceType: path(['deviceId', 'type']),
           trackingDeviceHash: compose(toHashedString, path(['deviceId', 'id'])),
           trackingDeviceMappedFromMillis: prop('mappedFrom'),
           trackingDeviceLastKnownPosition: prop('lastGPSFix'),
-        }))(action.payload.trackingDevices),
+        }))(action.payload.trackingDevices)
       }))),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(

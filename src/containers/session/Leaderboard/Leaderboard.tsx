@@ -124,7 +124,7 @@ class Leaderboard extends React.Component<{
                   rankingMetric={rankingMetric}
                 />
               </View>
-              <ModalDropdown
+              {/* <ModalDropdown
                 options={difference(Object.values(ColumnValueType), [
                   ColumnValueType.GapToCompetitor,
                 ])}
@@ -137,7 +137,7 @@ class Leaderboard extends React.Component<{
                 onDropdownWillHide={() =>
                   this.setState({ chooseMetricModalShowing: false })
                 }
-              >
+              > */}
                 <View style={{ flexDirection: 'row' }}>
                   <Text
                     style={[styles.title]}
@@ -146,13 +146,13 @@ class Leaderboard extends React.Component<{
                   >
                     {`${columnText} `}
                   </Text>
-                  {chooseMetricModalShowing ? (
+                  {/* {chooseMetricModalShowing ? (
                     <TRIANGLE_UP />
                   ) : (
                     <TRIANGLE_DOWN />
-                  )}
+                  )} */}
                 </View>
-              </ModalDropdown>
+              {/* </ModalDropdown> */}
             </View>
           </View>
         </View>

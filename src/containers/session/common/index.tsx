@@ -15,7 +15,7 @@ import { __, always, anyPass, append, compose, concat, curry,
   equals, has, head, length, map, merge, mergeLeft, objOf,
   prepend, prop, propEq, range, reduce, reject, isNil,
   remove, sortBy, split, toString, toUpper, update, when,
-  isEmpty, defaultTo, complement,
+  isEmpty, defaultTo, complement, path, either,
   call, last, inc, take, identity } from 'ramda'
 import { Dimensions, ActivityIndicator } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
@@ -25,8 +25,14 @@ import CompetitorList from '../Leaderboard/CompetitorList'
 import { NavigationEvents } from '@react-navigation/compat'
 import * as LocationService from 'services/LocationService'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
+import { getWindowWidth } from 'helpers/screen';
 
 const maxNumberOfRaces = 50
+
+export const fieldValueOrInitialIfEmpty = props => compose(
+  when(either(isNil, isEmpty), always(props.meta.initial)),
+  path(['input', 'value']))(
+  props)
 
 const plusIcon = fromClass(IconText).contramap(always({
   source: Images.actions.plus,
@@ -216,7 +222,7 @@ export const qrCode = Component((props: any) => compose(
   view({ style: styles.qrCodeContainer }))(
   fromClass(QRCode).contramap((props: any) => ({
     value: props.qrCodeLink,
-    size: Dimensions.get('window').width - 85,
+    size: getWindowWidth() - 85,
     backgroundColor: 'white',
     quietZone: 10
   }))

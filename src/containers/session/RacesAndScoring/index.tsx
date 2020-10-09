@@ -15,7 +15,8 @@ import {
   FORM_KEY_NUMBER_OF_RACES } from 'forms/eventCreation'
 import I18n from 'i18n'
 
-import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard, withUpdatingDiscardItem } from '../common'
+import { DiscardSelector, FramedNumber, overlayPicker, withAddDiscard,
+  withUpdatingDiscardItem, fieldValueOrInitialIfEmpty } from '../common'
 
 import styles from './styles'
 
@@ -28,10 +29,10 @@ const raceNumberSelector = Component((props: any) =>
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       style: { },
-      selectedValue: Number(props.input.value),
+      selectedValue: Number(fieldValueOrInitialIfEmpty(props)),
       onValueChange: props.input.onChange,
     }))(
-    FramedNumber.contramap(always({ value: props.input.value }))))
+    FramedNumber.contramap(always({ value: fieldValueOrInitialIfEmpty(props) }))))
 
 const raceNumberFormField = reduxFormField({
   name: FORM_KEY_NUMBER_OF_RACES,

@@ -31,7 +31,7 @@ import { updateTrackingStatus } from 'actions/locationTrackingData'
 
 // Selectors
 import { getLocationTrackingStatus, getLocationTrackingContext } from 'selectors/location'
-import { areThereActiveCheckIns, isLoadingCheckIn, isBoundToMark } from 'selectors/checkIn'
+import { areThereActiveCheckIns, isBoundToMark } from 'selectors/checkIn'
 import { getSelectedMarkProperties } from 'selectors/course'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { hasMarkProperties } from 'selectors/inventory'
@@ -231,7 +231,7 @@ const withLeftHeaderCloseButton = (options) => mergeDeepLeft({
 
 const markTrackingNavigator = Component(props => compose(
   fold(merge(props, { customRenderer: true })),
-  stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptionscustomRenderer }),
+  stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.MarkTracking, component: MarkTracking.fold })),
 ]))
@@ -362,6 +362,7 @@ const mainTabsNavigator = Component(props => compose(
       style: tab.bottomTabBar,
       showLabel: true,
       showIcon: true,
+      labelPosition: 'below-icon',
       keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,
     },
     screenOptions: ({ route }) => ({
@@ -460,14 +461,13 @@ class AppRoot extends ReactComponent {
   }
 
   public render() {
-    const { isLoggedIn,isLoadingCheckIn } = this.props
+    const { isLoggedIn } = this.props
     return (
       <ActionSheetProvider>
         <AuthContext.Provider value = {{ isLoggedIn }}>
           <NavigationContainer ref={navigationContainer}>
             <ScreenOrientation orientation={PORTRAIT}/>
             { AppNavigator.fold(this.props) }
-            <SpinnerOverlay visible={isLoadingCheckIn} cancelable={false}/>
           </NavigationContainer>
         </AuthContext.Provider>
       </ActionSheetProvider>
@@ -511,7 +511,6 @@ class AppRoot extends ReactComponent {
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
-  isLoadingCheckIn: isLoadingCheckIn(state),
   shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state),
   userHasMarkProperties: hasMarkProperties(state)
 })
