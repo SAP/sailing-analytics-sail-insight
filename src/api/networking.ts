@@ -92,12 +92,9 @@ export const request = async (
     timeout = 10000,
   } = options
 
-  console.log('request with options', options)
-
   const data = body && { body: getBody(bodyType, body) }
 
   let headers = await getHeaders(url, method, body, bodyType, signer)
-
 
   const fetchOptions = {
     method,
