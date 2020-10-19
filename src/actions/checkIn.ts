@@ -32,6 +32,8 @@ import { getRegatta, getRegattaNumberOfRaces } from '../selectors/regatta'
 import { getHashedDeviceId } from 'selectors/user'
 import { getStore } from '../store'
 import { saveTeam } from './user'
+import { getLeaderboard } from 'selectors/leaderboard'
+import { getCompetitor } from 'selectors/competitor'
 
 export const DELETE_MARK_BINDING = 'DELETE_MARK_BINDING'
 export const UPDATE_DELETING_MARK_BINDING = 'UPDATE_DELETING_MARK_BINDING'
@@ -144,6 +146,34 @@ export const reuseBindingFromOtherDevice = (
     CheckInService.checkInDeviceMappingData({ ...objectId, secret }),
   )
   await dispatch(updateCheckInAndEventInventory({ ...objectId, leaderboardName, trackedElements: otherBindings } as CheckInUpdate))
+}
+
+export const getExistingCompetitorBinding = (leaderboardName: string) => async (
+  dispatch: DispatchType,
+  getState: any,
+) => {
+
+  // get current leaderboard info (competitors info)
+  const currentLeaderboard = getLeaderboard(leaderboardName)(getState())
+  let existingBinding = null
+
+  // check allowed conditions (is anonymous)
+  const anonymous = !isLoggedIn(getState())
+
+  if (anonymous) {
+    // check if any of the current leaderboard competitors match an existing competitor
+    if (currentLeaderboard && currentLeaderboard.competitors) {
+      currentLeaderboard.competitors.forEach(competitor => {
+        let competitorMatch = getCompetitor(competitor.id)(getState())
+
+        if (competitorMatch) {
+          existingBinding = competitorMatch
+        }
+      })
+    }
+  }
+  
+  return existingBinding
 }
 
 export const preventDuplicateCompetitorBindings = (checkIn: any, selectedBoat: any) => async (

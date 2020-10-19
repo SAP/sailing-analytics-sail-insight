@@ -10,6 +10,7 @@ import { ErrorCodes } from './errors'
 
 const ERROR_TRANSLATION_PREFIX = 'error_'
 const USER_EXISTS_TEXT = 'user already exists'
+const DEVICE_ALREADY_REGISTERED = 'device is already registered'
 
 const getTranslation = (translationKey: string, defaultMessage?: string, params?: any) => {
   const result = I18n.t(translationKey, params)
@@ -65,7 +66,9 @@ export const getErrorDisplayMessage = (exception: any) => {
       case STATUS_UNAUTHORIZED:
         return I18n.t(ErrorCodes.UNAUTHORIZED)
       case STATUS_FORBIDDEN:
-        return I18n.t(ErrorCodes.FORBIDDEN)
+        return isString(errorKey) && errorKey.toLowerCase().includes(DEVICE_ALREADY_REGISTERED) ?
+          I18n.t(ErrorCodes.DEVICE_ALREADY_EXISTS) :
+          I18n.t(ErrorCodes.FORBIDDEN)
       case STATUS_PRECONDITION_FAILED:
         return isString(errorKey) && errorKey.toLowerCase().includes(USER_EXISTS_TEXT) ?
           I18n.t(ErrorCodes.USER_EXISTS) :
