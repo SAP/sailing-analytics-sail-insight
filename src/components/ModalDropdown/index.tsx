@@ -22,6 +22,7 @@ import {
   FlatList
 } from 'react-native';
 
+import { listKeyExtractor } from 'helpers/utils';
 import PropTypes from 'prop-types';
 
 const TOUCHABLE_ELEMENTS = [
@@ -287,6 +288,7 @@ export default class ModalDropdown extends Component {
                 style={styles.list}
                 dataSource={this._dataSource}
                 renderRow={this._renderRow}
+                keyExtractor={listKeyExtractor}
                 renderSeparator={renderSeparator || this._renderSeparator}
                 automaticallyAdjustContentInsets={false}
                 showsVerticalScrollIndicator={showsVerticalScrollIndicator}
