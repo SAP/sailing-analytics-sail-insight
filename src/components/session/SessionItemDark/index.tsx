@@ -22,28 +22,23 @@ class SessionItemDark extends React.Component<ViewProps & {
   onItemPress: OnPressType,
   swipeableLeftOpenEventId: string,
   onSwipeableLeftWillOpen: any,
+  swipeableReference: any
 } > {
-  constructor(props) {
+  constructor(props: any) {
     super(props)
-    this.swipeableRef = React.createRef()
   }
 
   public render() {
     const {
       style,
       session,
-      swipeableLeftOpenEventId,
       onSwipeableLeftWillOpen,
     } = this.props
 
     const archived = session.event && session.event.archived || false
     const { eventId } = session
 
-    if (swipeableLeftOpenEventId != eventId) {
-      this.swipeableRef?.current?.close()
-    }
-
-    const renderLeftActions = (progress, dragX) => {
+    const renderLeftActions = (_progress: any, dragX: any) => {
       const trans = dragX.interpolate({
         inputRange: [0, 50, 100, 101],
         outputRange: [-20, 0, 0, 1],
@@ -70,7 +65,7 @@ class SessionItemDark extends React.Component<ViewProps & {
         overshootLeft={false}
         leftThreshold={50}
         renderLeftActions={renderLeftActions}
-        ref={this.swipeableRef}
+        ref={this.props.swipeableReference}
         onSwipeableLeftWillOpen={() => onSwipeableLeftWillOpen(eventId)}
       >
       <View style={styles.container}>
