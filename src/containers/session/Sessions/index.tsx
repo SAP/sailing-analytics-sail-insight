@@ -44,6 +44,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
 } > {
 
   swipeableListReferences: { [id: string]: any} = {}
+  styles: any
 
   private debouncedButtonClick = debounce(
     (actionType: string, ...args: any) => {
@@ -157,21 +158,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
         <NavigationEvents
           onWillFocus={() => this.setState({ openedWhenLoading: isLoadingEventList })}
         />
-        <ScrollView
+        <View
           style={this.styles.scrollContainer}
-          contentContainerStyle={{ flexGrow: 1 }}
-          refreshControl={this.props.isLoggedIn &&
-            <RefreshControl
-              refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
-              onRefresh={() => {
-                if (!shouldShowLoadingSpinner) {
-                  this.setState({ openedWhenLoading: false });
-                  this.props.fetchEventList();
-                }
-              }}
-              tintColor="white"
-            />
-          }
         >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
@@ -195,17 +183,30 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
                 data={this.props.sessions}
                 renderItem={this.renderItem}
                 extraData={this.state.swipeableLeftOpenEventId}
+                refreshControl={this.props.isLoggedIn ?
+                  <RefreshControl
+                    refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
+                    onRefresh={() => {
+                      if (!shouldShowLoadingSpinner) {
+                        this.setState({ openedWhenLoading: false });
+                        this.props.fetchEventList();
+                      }
+                    }}
+                    tintColor="white"
+                  /> :
+                  undefined
+                }
               />
           }
-        </ScrollView>
-        <View style={this.styles.bottomButton}>
+        </View>
+        
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
               textStyle={this.styles.qrButtonText}
               onPress={() => this.props.navigation.navigate(Screens.QRScanner)}>
             {I18n.t('caption_qr_scanner').toUpperCase()}
           </TextButton>
-        </View>
+        
       </View>
     )
   }
