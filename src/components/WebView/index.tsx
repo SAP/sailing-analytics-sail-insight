@@ -18,14 +18,14 @@ class WebView extends React.Component<{
   comingFromTrackingScreen: boolean,
 } > {
 
-  public defaultProps = {
+  public static defaultProps = {
     withAccessToken: true,
   }
 
   public state = {}
 
   public render() {
-    const { url, accessToken } = this.props
+    const { url, accessToken, children} = this.props
 
     return (
       <View style={container.list}>
@@ -42,6 +42,7 @@ class WebView extends React.Component<{
           style={styles.web}
           scalesPageToFit={true}
         />
+        {children}
       </View>
     )
   }
