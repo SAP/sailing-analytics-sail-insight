@@ -1396,6 +1396,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-4.7.0.tgz#7482d36836cac69d0a0ae25581f65bc472639930"
   integrity sha512-a/sDB+AsLEUNmhAUlAaTYeXKyQdFGBUfatqKkX5jluBo2CB3OAuTHfm7rSjcaLB9EmG5iSq3fOTpync2E7EYTA==
 
+"@react-native-community/picker@1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/picker/-/picker-1.6.0.tgz#ddb2b04ca251b79980e3052ece4e685b7abf0444"
+  integrity sha512-ijB33rCW3m9vu8jbXAcEh+icCmK0pyvCXiGfAwPgGSaFLsmE27dsle3022EbE+dqqQgpxUNtOkrd5C3B+/dcuA==
+
 "@react-native-community/slider@^2.0.8":
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-2.0.8.tgz#c4a3c342638270e0adc942b51427ec17104a786d"
@@ -5838,7 +5843,7 @@ moment@2.22.2:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
   integrity sha1-PCV/mDn8DpP/UxSWMiOeuQeD/2Y=
 
-moment@>=2.14.0, moment@^2.22.0:
+moment@>=2.14.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
@@ -6742,13 +6747,6 @@ react-native-dash@0.0.9:
     prop-types "^15.5.10"
     react-native-measureme "0.0.1"
 
-react-native-datepicker@^1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/react-native-datepicker/-/react-native-datepicker-1.7.2.tgz#58d0822591a0ac9b32aba082650222a0ee29669d"
-  integrity sha1-WNCCJZGgrJsyq6CCZQIioO4pZp0=
-  dependencies:
-    moment "^2.22.0"
-
 react-native-device-info@5.4.3:
   version "5.4.3"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-5.4.3.tgz#b3ff063bb4dfe6fab282098a7bce8f8a09fa2a49"
@@ -6903,11 +6901,12 @@ react-native-permissions@^2.0.2, react-native-permissions@^2.0.9:
   resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-2.0.9.tgz#5eabdaa952dd099d14e3790af691f49ff2de0895"
   integrity sha512-64F95x4Y1RqsQiPco+Qs+OAm3rKUTRfWDMpp1f0If9YfRXOxxVFJqf7mSlVvlSY4pZAhZgLVydOmA7aTTduPUw==
 
-react-native-picker-select@^6.0.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-picker-select/-/react-native-picker-select-6.4.0.tgz#f14a044e91ae5aaddba8b5043da087c87d26d955"
-  integrity sha512-SntLOt+UgAchh8GCoBitabhcWjyFBtYsweQHlPfca6UUNhfTuL+Oo85G43DpIXVfO3Xg2fb5kI051kuKXARc/g==
+react-native-picker-select@^8.0.0:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-picker-select/-/react-native-picker-select-8.0.2.tgz#c57c56f0228fb92e0c8386e9e46d38ce2d487afe"
+  integrity sha512-A0VyIdkWyE6D+AK8t2uQ95PJ+RjpiUZia8+rQLr5cK3GPmCqBLQ8+aWbnUr3vT/TV4bGMqc8u2Dov5h7CVQIXQ==
   dependencies:
+    "@react-native-community/picker" "1.6.0"
     lodash.isequal "^4.5.0"
 
 react-native-progress@^4.1.2:
