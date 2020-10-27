@@ -7000,10 +7000,12 @@ react-native-svg@9.13.6:
     css-select "^2.0.2"
     css-tree "^1.0.0-alpha.37"
 
-react-native-switch-selector@^1.1.14:
-  version "1.1.14"
-  resolved "https://registry.yarnpkg.com/react-native-switch-selector/-/react-native-switch-selector-1.1.14.tgz#953fc2fb1f1feb97e9a3a1fc7f87718a7b4c2a5b"
-  integrity sha512-VhmasNtYuJpG5B0954vyMSvOcT1qM6WQeZ1hrx6OxgcH6kdfZynC77MKlj8w022wI1AccyPCQrttgne+WSe5Wg==
+react-native-switch-selector@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-switch-selector/-/react-native-switch-selector-2.0.6.tgz#e21cf77b8c8596a83e455b54b06f60a1267e26c3"
+  integrity sha512-noBFzh5QMf3Jp/B+kg0uLmbBPID5y9bhTpZ577ZabV3p5eErSTdYSmZHqvn0XCXPraBUDKAC73/0L4ttMv+rOQ==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-native-text@^1.0.8:
   version "1.0.8"
