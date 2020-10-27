@@ -1,5 +1,7 @@
 /* tslint:disable:no-console */
 
+import { LogBox } from 'react-native'
+
 export const DEFAULT_SERVER_URL = 'https://my.sapsailing.com'
 export const DATA_API_PREFIX = '/sailingserver/api/v1'
 export const SHARED_DATA_API_PREFIX = '/sharedsailingserver/api/v1'
@@ -20,5 +22,9 @@ export const SERVER_MASTER_UDP_PORT  = {
 
 export const init = () => {
   // initializations for local development
-  console.disableYellowBox = true
+  LogBox.ignoreAllLogs(true)
+  LogBox.ignoreLogs([
+    'React.createFactory()', 
+    'VirtualizedLists should never be nested inside plain ScrollViews',
+  ])
 }

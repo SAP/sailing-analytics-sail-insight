@@ -119,7 +119,7 @@
     "@types/lodash": "4.14.116",
     "@types/query-string": "6.1.0",
     "@types/react": "16.9.17",
-    "@types/react-native": "0.57.0",
+    "@types/react-native": "0.63.2",
     "@types/react-native-autocomplete-input": "^3.5.1",
     "@types/react-native-permissions": "1.1.1",
     "@types/react-navigation": "2.0.23",
