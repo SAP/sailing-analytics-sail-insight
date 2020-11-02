@@ -179,6 +179,8 @@
   "text_session_filter_own": "Meine Events",
   "text_session_filter_invited": "Events zu denen ich eingeladen wurde",
   "text_session_filter_archived": "Archivierte Events",
+  "text_edit_results_disclaimer": "Die folgende Seite ist noch nicht für die mobile Anwendung optimiert. Wir arbeiten daran. Du kannst die Seite aber auch im Desktop Browser öffnen. Der Link zu der Seite kann über den Button \"Link kopieren\" in die Zwischenablage kopiert werden. Bitte beachte dass zur Berabeitung die Anmeldedaten deines Accounts erfoderlich sind.",
+  "text_copy_results_disclaimer": "Wir haben gerade den Link zu der Seite auf der Du die Ergebnisse editieren kannst in die Zwischenablage kopiert. Die Seite ist Teil der Admin Console der SAP Sailing Analytics. Halte Deinen Benutzernamen und Passwort bereit, wenn du sie in einem Browser öffnest.",
 
   "text_join_with_boat_01": "Du wirst diesem Event mit dem Boot ",
   "text_join_with_boat_02": " beitreten.",
@@ -204,7 +206,7 @@
   "caption_start_tracking": "Starte Tracking",
   "caption_stop_tracking": "Tracking Beenden",
   "caption_edit_results": "Ergebnisse editieren",
-  "caption_copy_edit_results_to_clipboard": "Kopieren Editier-Link",
+  "caption_copy_edit_results_to_clipboard": "Link kopieren",
   "caption_to_event": "Zum Event",
   "caption_to_leaderboard": "Zum Leaderboard",
   "caption_done": "Fertig",
@@ -274,6 +276,7 @@
   "caption_invalid_qr_code_missing_mark": "Um den QR code zu generieren muss der Kurs gespeichert werden \n(Tip: oben rechts auf dem vorherigen Bildschirm).",
   "caption_scan_qr_code_for_mark_binding": "Scannen Sie diesen QR-Code mit einem anderen Gerät oder verwenden Sie dieses Gerät als Tracker",
   "caption_leave": "Bist du sicher?",
+  "caption_dont_show_again": "Nicht mehr anzeigen",
   "caption_unsaved_changes": "Du hast Änderungen vorgenommen die noch nicht gespeichert wurden.",
 
   "error_title": "Ein Fehler ist aufgetreten",
