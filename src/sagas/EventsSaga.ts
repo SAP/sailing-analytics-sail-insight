@@ -39,7 +39,7 @@ const valueAtIndex = curry((index, array) => compose(
 
 function eventConfirmationAlert() {
   return new Promise(resolve => {
-    Alert.alert(I18n.t('caption_event_time'), '',
+    Alert.alert(I18n.t('caption_race_set_time'), I18n.t('text_alert_event_time'),
       [ { text: I18n.t('button_proceed'), onPress: () => resolve(true) },
         { text: I18n.t('button_discard'), onPress: () => resolve(false) }
       ])
