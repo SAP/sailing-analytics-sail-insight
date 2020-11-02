@@ -158,7 +158,7 @@ const Map = Component((props: any) => compose(
 const navigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillFocus: (payload: any) => {
+    onDidFocus: (payload: any) => {
       props.navigation.setOptions({
         headerRight: HeaderSaveTextButton({
           onPress: debounce(() => {

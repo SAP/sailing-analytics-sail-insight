@@ -246,7 +246,7 @@ export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkIn
     const fetchTrackedElementsObjects = trackedElements.map(fetchBoundObject)
 
     await Promise.all([
-      ...spreadableList(eventId, dispatch(fetchEvent(dataApi.requestEvent, eventId, secret))),
+      ...spreadableList(eventId, dispatch(fetchEvent(dataApi.requestEvent)(eventId, secret))),
       dispatch(fetchEntityAction(dataApi.requestLeaderboardV2)(leaderboardName, secret)),
       dispatch(fetchRegatta(regattaName, secret, serverUrl)),
       dispatch(fetchAllRaces(regattaName, secret, serverUrl)),

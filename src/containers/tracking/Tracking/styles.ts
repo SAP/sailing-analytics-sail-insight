@@ -20,8 +20,12 @@ export default EStyleSheets.create({
     backgroundColor: 'white',
     paddingHorizontal: '$tinySpacing',
     paddingVertical: smallScreen ? 1 : '$tinySpacing',
-    width: '100%',
-
+    flex: 1,
+  },
+  measurementContainerStub: {
+    flex: 1,
+    paddingHorizontal: '$tinySpacing',
+    paddingVertical: smallScreen ? 1 : '$tinySpacing',
   },
   measurementTitle: {
     color: 'black',
@@ -60,12 +64,17 @@ export default EStyleSheets.create({
     marginBottom: 24,
   },
   informationItem: {
-    padding: '$tinySpacing',
+    padding: $tinySpacing,
   },
-  propertyRow: {
-    marginTop: smallScreen ? '$tinySpacing' : '$smallSpacing',
+  propertiesTiles: {
+    marginTop: $tinySpacing,
+  },
+  propertiesRow: {
+    display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flex: 1,
+    width: '100%',
+    justifyContent: 'space-evenly'
   },
   propertyReverseRow: {
     flexDirection: 'row-reverse',
@@ -89,12 +98,10 @@ export default EStyleSheets.create({
     flex: 0.5,
   },
   leftPropertyContainer: {
-    width: Dimensions.get('window').width / 2 - $tinySpacing / 2 - $smallSpacing,
     marginRight: $tinySpacing / 2,
   },
   rightPropertyContainer: {
     marginLeft: $tinySpacing / 2,
-    width: Dimensions.get('window').width / 2 - $tinySpacing / 2 - $smallSpacing,
   },
   rankIcon: {
     tintColor: '$Orange',

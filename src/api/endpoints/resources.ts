@@ -291,7 +291,13 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
         { dataSchema: boatSchema },
     ),
     requestCourse: (regattaName, raceName, fleet) => dataRequest(
-      endpoints.course({ pathParams: [regattaName, raceName, fleet] })
+      endpoints.course({ pathParams: [regattaName, raceName, fleet] }),
+      // Course loading routed thru master to always ensure it has the latest
+      // in terms of mark configurations. Otherwise, if it is routed thru a
+      // replica, it might not return up-to-date information about mark configurations.
+      // The most evident scenario is when saving a course for a race, which in turm
+      // tries to apply that course to the next race immediately.
+      { headers: { 'X-SAPSSE-Forward-Request-To': 'master' }}
     ),
     requestRaceTime: (regattaName, raceName, fleet, secret) => dataRequest(
       endpoints.raceTime({ pathParams: [regattaName], urlParams: {race_column: raceName, fleet, secret}})
@@ -423,6 +429,7 @@ const getApi: (serverUrl?: string) => DataApi = (serverUrl) => {
     ),
     requestTrackingDevices: regattaName => dataRequest(
       endpoints.regattaTrackingDevices({ pathParams: [regattaName] }),
+      { method: HttpMethods.POST }
     ),
     createAutoCourse: (leaderboardName, raceColumn, fleet) => dataRequest(
       endpoints.createAutoCourse({ pathParams: [leaderboardName], urlParams: { fleet, race_column: raceColumn } }),

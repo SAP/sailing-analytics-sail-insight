@@ -362,6 +362,7 @@ const mainTabsNavigator = Component(props => compose(
       style: tab.bottomTabBar,
       showLabel: true,
       showIcon: true,
+      labelPosition: 'below-icon',
       keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,
     },
     screenOptions: ({ route }) => ({

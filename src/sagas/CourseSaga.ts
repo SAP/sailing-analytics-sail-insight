@@ -4,7 +4,7 @@ import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
   toPairs, values, fromPairs, ifElse, always, findIndex, equals,
 } from 'ramda'
-import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest, delay } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe, safeApiCall } from './index'
 import uuidv4 from 'uuid/v4'
@@ -159,7 +159,10 @@ const copyCourse = (courseToCopy: any, latestCopiedCourseState: any, latestTarge
 
 function* fetchCourseFromServer({ regattaName, race, serverUrl }: any) {
   const api = dataApi(serverUrl)
-  const latestCourseState = yield call(api.requestCourse, regattaName, race, 'Default')
+  const latestCourseState = yield safeApiCall(api.requestCourse, regattaName, race, 'Default')
+
+  if (!latestCourseState)
+    return
 
   yield put(loadCourse({
     raceId: `${regattaName} - ${race}`,
@@ -179,6 +182,9 @@ function* selectCourseFlow({ payload }: any) {
   yield put(selectRace(race))
 
   const latestCourseState = yield call(fetchCourseFromServer, { regattaName, race, serverUrl })
+
+  if (!latestCourseState)
+    return
 
   yield call(loadMarkProperties)
 
@@ -271,7 +277,10 @@ function* saveCourseToServer({ editedCourse, existingCourse, regattaName, raceCo
       reject(compose(not, markConfigurationUsedInEditedCourse, prop('id'))))
   }, editedCourse)
 
-  const updatedCourse = yield call(api.createCourse, regattaName, raceColumnName, fleet, course)
+  const updatedCourse = yield safeApiCall(api.createCourse, regattaName, raceColumnName, fleet, course)
+
+  if (!updatedCourse)
+    return
 
   yield put(loadCourse({
     raceId,
@@ -307,20 +316,26 @@ function* saveCourseFlow({ navigation }: any) {
     serverUrl
   })
 
+  if (!updatedCourse)
+    return
+
   const plannedRaces = yield select(getRegattaPlannedRaces(regattaName))
 
   const nextRaceColumnName = compose(
     ifElse(
       id => id >= 0 && id < plannedRaces.length - 1,
       id => plannedRaces[id + 1],
-      always(undefined)
-    ),
+      always(undefined)),
     findIndex(__, plannedRaces),
-    equals,
-  )(raceColumnName)
+    equals)(
+    raceColumnName)
 
   if (nextRaceColumnName) {
     const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
+
+    if (!latestNextRaceCourseState)
+      return
+
     const nextCourse = copyCourse(editedCourse, updatedCourse, latestNextRaceCourseState)
 
     yield call(saveCourseToServer, {
@@ -405,7 +420,7 @@ function* updateMarkPositionFlow({ payload }: any) {
       safeApiCall(api.sendMarkGpsFix, leaderboardName, markId, {
         latitude,
         longitude,
-        timestamp: Date.now() * 1000, // timestamp in millis
+        timestamp: Date.now(),
       }, secret)
 
     yield all([updateMarkPropertyCall, updateMarkCall])
@@ -536,12 +551,20 @@ function* fetchAndUpdateMarkConfigurationDeviceTracking() {
     findLast(propEq('markId', markConfiguration.markId)),
     defaultTo([]),
     prop('marks'),
-    prop('result')
-  )(allTrackingDevices)
+    prop('result'))(
+    allTrackingDevices)
+
+  const currentTrackingDeviceId = compose(
+    prop('deviceId'),
+    defaultTo({}),
+    find(compose(isNil, prop('mappedTo'))),
+    defaultTo([]))(
+    trackingDevices)
 
   if (trackingDevices) {
     yield put(changeMarkConfigurationDeviceTracking({
       trackingDevices,
+      currentTrackingDeviceId,
       id: selectedMarkConfiguration,
     }))
   }
