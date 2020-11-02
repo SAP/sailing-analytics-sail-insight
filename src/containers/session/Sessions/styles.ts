@@ -14,6 +14,7 @@ export default (forTracking: boolean) => EStyleSheets.create({
     flexDirection: 'column',
     backgroundColor: '$primaryBackgroundColor',
     paddingTop: forTracking ? 40 : 0,
+    flexGrow: 1,
   },
   headLine: {
     color: 'white',
@@ -23,7 +24,7 @@ export default (forTracking: boolean) => EStyleSheets.create({
   },
   list: {
     backgroundColor: 'transparent',
-    paddingBottom: forTracking ? 150 + 40 : 150,
+    paddingTop: 10,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -61,15 +62,10 @@ export default (forTracking: boolean) => EStyleSheets.create({
     fontSize: 20,
     ...withSecondaryMediumFont,
   },
-  bottomButton: {
-    position: 'absolute',
-    width: '100%',
-    height: 'auto',
-    backgroundColor: 'transparent',
-    bottom: 0,
-  },
   qrButton: {
-    marginBottom: 30,
+    position: 'absolute',
+    width: '76%',
+    bottom: 30,
     ...(forTracking ? {
       backgroundColor: 'white'
     } : {})

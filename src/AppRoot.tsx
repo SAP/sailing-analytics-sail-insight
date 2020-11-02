@@ -195,6 +195,10 @@ const MarkLocationHeader = connect(
 
 const navigationContainer = React.createRef()
 
+const EditResultsComponent = (props: any) => 
+  <WebView {...props}>
+    <ScreenOrientation orientation={LANDSCAPE}/>
+  </WebView>
 
 // ----------------------------------------------------------------------------
 // Navigation Modifiers -------------------------------------------------------
@@ -433,10 +437,9 @@ const AppNavigator = Component(props => compose(
     name: Screens.PasswordReset, component: PasswordReset
   })),
   stackScreen(withLeftHeaderBackButton({ name: Screens.EditResults,
-    component: props => [
-      <WebView {...props}/>,
-      <ScreenOrientation orientation={LANDSCAPE}/>],
-    options: { title: I18n.t('caption_sap_analytics_header') } }))
+    component: EditResultsComponent,
+    options: { title: I18n.t('caption_sap_analytics_header') } }),
+    )
 ]))
 
 class AppRoot extends ReactComponent {

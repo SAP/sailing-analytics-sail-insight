@@ -7,7 +7,6 @@ import { RectButton } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import { OnPressType } from 'helpers/types'
-import I18n from 'i18n'
 import { Session } from 'models'
 
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
@@ -24,10 +23,11 @@ class SessionItem extends React.Component<ViewProps & {
   loading?: boolean,
   swipeableLeftOpenEventId: string,
   onSwipeableLeftWillOpen: any,
+  swipeableReference: any,
 } > {
-  constructor(props) {
+
+  constructor(props: any) {
     super(props)
-    this.swipeableRef = React.createRef()
   }
 
   public state = {
@@ -39,18 +39,13 @@ class SessionItem extends React.Component<ViewProps & {
       style,
       session,
       loading = false,
-      swipeableLeftOpenEventId,
       onSwipeableLeftWillOpen,
     } = this.props
 
     const archived = !!session.isArchived
     const { eventId } = session
 
-    if (swipeableLeftOpenEventId != eventId) {
-      this.swipeableRef?.current?.close()
-    }
-
-    const renderLeftActions = (progress, dragX) => {
+    const renderLeftActions = (_progress: any, dragX: any) => {
       const trans = dragX.interpolate({
         inputRange: [0, 50, 100, 101],
         outputRange: [-20, 0, 0, 1],
@@ -78,7 +73,7 @@ class SessionItem extends React.Component<ViewProps & {
         overshootLeft={false}
         leftThreshold={50}
         renderLeftActions={renderLeftActions}
-        ref={this.swipeableRef}
+        ref={this.props.swipeableReference}
         onSwipeableLeftWillOpen={() => onSwipeableLeftWillOpen(eventId)}
       >
       <View style={styles.container}>

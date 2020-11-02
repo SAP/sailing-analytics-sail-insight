@@ -9,7 +9,7 @@ import {
   recomposeLifecycle as lifeCycle,
   recomposeWithState as withState
 } from 'components/fp/component'
-import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
+import { text, view, touchableOpacity, forwardingPropsFlatList } from 'components/fp/react-native'
 import { ControlPointClass } from 'models/Course'
 
 import { getMarkProperties } from 'selectors/inventory'
@@ -116,7 +116,7 @@ export default Component((props: object) =>
         areStatePropsEqual: equals
       }),
     withLoadingOfMarkProperties,
-    scrollView({ style: styles.mainContainer }),
+    view({ style: styles.mainContainer }),
     concat(text({ style: styles.title }, 'MARK INVENTORY')),
     concat(CreateNewSelector))(
     List))
