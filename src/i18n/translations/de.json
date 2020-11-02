@@ -391,6 +391,9 @@
   "text_entry_open_when_setting_time": "Die Startzeit kann erst festgelegt werden, wenn die Teilnehmerliste geschlossen wurde. Bist Du bereit den Zugang zu schließen? Beachte dass keine Teilnehmer nachträglich hinzugefügt werden können.",
   "text_delete_binding_alert": "Bist Du sicher, dass Du die Verknüpfung aufheben möchtest?",
 
+  "caption_no_connectivity": "Keine Konnektivität",
+  "text_alert_no_connectivity" : "Bitte stellen Sie sicher, dass Sail Insight über einen Internetzugang verfügt.",
+
   "caption_basics": "Basis",
   "caption_event_creation_date": "Datum",
   "text_location": "Austragungsort",

@@ -123,6 +123,7 @@ export interface CommunicationsReducerState {
 
 export interface AppReducerState {
   active: boolean
+  networkAvailable: boolean
 }
 
 export interface UIReducerState {
