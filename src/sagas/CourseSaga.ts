@@ -6,7 +6,7 @@ import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
 } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest, delay } from 'redux-saga/effects'
 import { dataApi } from 'api'
-import { safe, safeApiCall } from './index'
+import { safe, safeApiCall } from './HelpersSaga'
 import uuidv4 from 'uuid/v4'
 import {
   loadCourse,
@@ -329,11 +329,6 @@ function* saveCourseFlow({ navigation }: any) {
     findIndex(__, plannedRaces),
     equals)(
     raceColumnName)
-
-  // Delaying the next race course loading due to the GET request ending
-  // on a server replica rather than on master. To be removed once the request
-  // is switched to POST
-  yield delay(1000)
 
   if (nextRaceColumnName) {
     const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })

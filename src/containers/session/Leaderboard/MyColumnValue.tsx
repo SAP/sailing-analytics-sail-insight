@@ -3,7 +3,8 @@ import React from 'react'
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 
 import ColumnValue, { Props as ColumnValueProps } from './ColumnValue'
-import { ColumnValueType } from './Leaderboard'
+
+import { ColumnValueType } from './constants'
 
 interface MyColumnValueProps extends ColumnValueProps {
   comparedCompetitorData?: LeaderboardCompetitorCurrentTrack

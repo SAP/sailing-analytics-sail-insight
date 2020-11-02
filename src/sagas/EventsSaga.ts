@@ -14,7 +14,7 @@ import { fetchPermissionsForEvent } from 'actions/permissions'
 import { updateCheckIn } from 'actions/checkIn'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
-import { safeApiCall } from './index'
+import { safeApiCall } from './HelpersSaga'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
@@ -39,7 +39,7 @@ const valueAtIndex = curry((index, array) => compose(
 
 function eventConfirmationAlert() {
   return new Promise(resolve => {
-    Alert.alert(I18n.t('caption_event_time'), '',
+    Alert.alert(I18n.t('caption_race_set_time'), I18n.t('text_alert_event_time'),
       [ { text: I18n.t('button_proceed'), onPress: () => resolve(true) },
         { text: I18n.t('button_discard'), onPress: () => resolve(false) }
       ])
@@ -193,7 +193,7 @@ function* createEvent(payload: object) {
   yield call(api.updateRegatta, regattaName, {
     controlTrackingFromStartAndFinishTimes: true,
     useStartTimeInference: false,
-    defaultCourseAreaUuid: regatta.courseAreaId,
+    defaultCourseAreaUuid: head(regatta.courseAreaIds),
     autoRestartTrackingUponCompetitorSetChange: true,
   })
   yield all(races.map(race =>

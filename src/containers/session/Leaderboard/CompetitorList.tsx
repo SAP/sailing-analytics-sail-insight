@@ -11,7 +11,8 @@ import Flag from 'react-native-flags'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 import ColumnValue from './ColumnValue'
-import { ColumnValueType, EMPTY_VALUE } from './Leaderboard'
+import { ColumnValueType, EMPTY_VALUE } from './constants'
+import { listKeyExtractor } from 'helpers/utils'
 import styles, { normalRowValueFontSize } from './styles'
 
 class CompetitorList extends React.Component<{
@@ -29,6 +30,7 @@ class CompetitorList extends React.Component<{
         data={this.props.leaderboard}
         contentContainerStyle={[styles.listContentContainer]}
         renderItem={this.renderItem}
+        keyExtractor={listKeyExtractor}
         nestedScrollEnabled={true}
       />
     )

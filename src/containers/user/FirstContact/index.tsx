@@ -1,9 +1,11 @@
 import React from 'react'
-import { Image, ImageBackground, View, ViewProps } from 'react-native'
+import { Alert, Image, ImageBackground, View, ViewProps } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
 
+import { registerNetStateListeners, unregisterNetStateListeners, registerAppStateListeners, unregisterAppStateListeners } from 'actions/appState'
+import { isNetworkConnected } from 'selectors/network';
 import { isLoggedIn } from 'selectors/auth'
 import { QRScanner, LoginFromSplash, RegisterCredentials } from 'navigation/Screens'
 import TextButton from 'components/TextButton'
@@ -17,8 +19,28 @@ import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 interface Props {
   isLoggedIn: boolean,
+  isConnected: boolean,
+  registerNetStateListeners: () => void,
+  unregisterNetStateListeners: () => void,
+  registerAppStateListeners: () => void,
+  unregisterAppStateListeners: () => void,
 }
 class FirstContact extends React.Component<ViewProps & NavigationScreenProps & Props> {
+
+  componentDidMount() {
+    this.props.registerAppStateListeners()
+    this.props.registerNetStateListeners()
+  }
+
+  componentWillUnmount() {
+    this.props.unregisterAppStateListeners()
+    this.props.unregisterNetStateListeners()
+  }
+
+  showNetworkAlert() {
+    Alert.alert(I18n.t('caption_no_connectivity'), I18n.t('text_alert_no_connectivity'))
+  }
+
   public render() {
     return (
       <ImageBackground source={Images.defaults.map3} style={{ width: '100%', height: '100%' }}>
@@ -30,19 +52,19 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
                 <TextButton
                   style={[button.primary]}
                   textStyle={button.primaryText}
-                  onPress={() => this.props.navigation.navigate(RegisterCredentials)}>
+                  onPress={() => this.props.isConnected ? this.props.navigation.navigate(RegisterCredentials) : this.showNetworkAlert()}>
                   {I18n.t('caption_register').toUpperCase()}
                 </TextButton>
                 <TextButton
                   style={[button.secondary]}
                   textStyle={button.secondaryText}
-                  onPress={() => this.props.navigation.navigate(QRScanner)}>
+                  onPress={() => this.props.isConnected ? this.props.navigation.navigate(QRScanner) : this.showNetworkAlert()}>
                   {I18n.t('caption_qr_scanner').toUpperCase()}
                 </TextButton>
                 <TextButton
                   style={[button.secondary]}
                   textStyle={button.secondaryText}
-                  onPress={() => this.props.navigation.navigate(LoginFromSplash)}>
+                  onPress={() => this.props.isConnected ? this.props.navigation.navigate(LoginFromSplash) : this.showNetworkAlert()}>
                   {I18n.t('text_login').toUpperCase()}
                 </TextButton>
               </View>
@@ -61,6 +83,14 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
 
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedIn(state),
+  isConnected: isNetworkConnected(state),
 })
 
-export default connect(mapStateToProps)(FirstContact)
+export default connect(
+  mapStateToProps, 
+  { registerNetStateListeners, 
+    unregisterNetStateListeners,
+    registerAppStateListeners,
+    unregisterAppStateListeners,
+  }
+  )(FirstContact)
