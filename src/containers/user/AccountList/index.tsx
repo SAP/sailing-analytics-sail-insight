@@ -15,6 +15,7 @@ import {
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
 import { getCommunicationSetting } from '../../../selectors/settings';
+import { listKeyExtractor } from 'helpers/utils'
 import styles from './styles'
 
 const EMPTY_VALUE = '-'
@@ -93,7 +94,12 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
           <Text style={styles.headline}>{I18n.t('title_your_account').toUpperCase()}</Text>
         </View>
         <View style={{ width: '100%' , marginTop: 'auto' }}>
-          <FlatList data={data} renderItem={this.renderItem} scrollEnabled={false} />
+          <FlatList 
+            data={data} 
+            renderItem={this.renderItem} 
+            keyExtractor={listKeyExtractor}
+            scrollEnabled={false} 
+          />
         </View>
       </View>
     )

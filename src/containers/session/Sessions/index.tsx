@@ -42,9 +42,14 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean,
   showHints: boolean,
 } > {
+
+  swipeableListReferences: { [id: string]: any} = {}
+  styles: any
+
   private debouncedButtonClick = debounce(
     (actionType: string, ...args: any) => {
       this.setState({ swipeableLeftOpenEventId: '' })
+      this.closeSwipeableRows()
       switch (actionType) {
         case 'SELECT':
           return this.props.selectEvent(...args)
@@ -58,9 +63,10 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     { leading: true, trailing: false }
   )
 
-  constructor(props) {
+  constructor(props: any) {
     super(props)
     this.styles = createStyles(this.props.route?.params?.forTracking)
+    this.swipeableListReferences = {};
   }
 
   public state = {
@@ -72,6 +78,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   public componentDidMount() {
     this._unsubscribeFromBlur = this.props.navigation.addListener('blur', () => {
       this.setState({ swipeableLeftOpenEventId: '' })
+      this.closeSwipeableRows()
     })
   }
 
@@ -79,12 +86,27 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     this._unsubscribeFromBlur()
   }
 
+  public closeSwipeableRows() {
+    Object.keys(this.swipeableListReferences).forEach((key) => {
+      this.swipeableListReferences[key]?.close()
+    })
+  }
+
+  public closeSwipeableRow(previousRow: string, currentRow: string) {
+    if (!!previousRow && previousRow !== currentRow) {
+      this.swipeableListReferences[previousRow]?.close()
+    }
+  }
+
   public renderItem = ({ item }: any) => {
     const { eventIdThatsBeingSelected } = this.props
     const { swipeableLeftOpenEventId } = this.state
     const { eventId } = item
     const isLoading = eventId === eventIdThatsBeingSelected
-    const onSwipeableLeftWillOpen = eventId => this.setState({ swipeableLeftOpenEventId: eventId })
+    const onSwipeableLeftWillOpen = (eventId: string) => {
+      this.closeSwipeableRow(swipeableLeftOpenEventId, eventId)
+      this.setState({ swipeableLeftOpenEventId: eventId })
+    }
     if (!this.props.route?.params?.forTracking) {
       return (
         <SessionItem
@@ -94,6 +116,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           loading={isLoading}
           swipeableLeftOpenEventId={swipeableLeftOpenEventId}
           onSwipeableLeftWillOpen={onSwipeableLeftWillOpen}
+          swipeableReference={(ref: any) => this.swipeableListReferences[item.eventId] = ref}
         />
       )
     } else {
@@ -104,6 +127,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
           session={item}
           swipeableLeftOpenEventId={swipeableLeftOpenEventId}
           onSwipeableLeftWillOpen={onSwipeableLeftWillOpen}
+          swipeableReference={(ref: any) => this.swipeableListReferences[item.eventId] = ref}
         />
       )
     }
@@ -134,21 +158,8 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
         <NavigationEvents
           onWillFocus={() => this.setState({ openedWhenLoading: isLoadingEventList })}
         />
-        <ScrollView
+        <View
           style={this.styles.scrollContainer}
-          contentContainerStyle={{ flexGrow: 1 }}
-          refreshControl={this.props.isLoggedIn &&
-            <RefreshControl
-              refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
-              onRefresh={() => {
-                if (!shouldShowLoadingSpinner) {
-                  this.setState({ openedWhenLoading: false });
-                  this.props.fetchEventList();
-                }
-              }}
-              tintColor="white"
-            />
-          }
         >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
@@ -172,17 +183,30 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
                 data={this.props.sessions}
                 renderItem={this.renderItem}
                 extraData={this.state.swipeableLeftOpenEventId}
+                refreshControl={this.props.isLoggedIn ?
+                  <RefreshControl
+                    refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
+                    onRefresh={() => {
+                      if (!shouldShowLoadingSpinner) {
+                        this.setState({ openedWhenLoading: false });
+                        this.props.fetchEventList();
+                      }
+                    }}
+                    tintColor="white"
+                  /> :
+                  undefined
+                }
               />
           }
-        </ScrollView>
-        <View style={this.styles.bottomButton}>
+        </View>
+        
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
               textStyle={this.styles.qrButtonText}
               onPress={() => this.props.navigation.navigate(Screens.QRScanner)}>
             {I18n.t('caption_qr_scanner').toUpperCase()}
           </TextButton>
-        </View>
+        
       </View>
     )
   }

@@ -52,7 +52,8 @@ export default EStyleSheets.create({
   markListContainer: {
     marginLeft: 15,
     marginRight: 15,
-    marginBottom: 30,
+    marginBottom: 0,
+    flex: 1,
   },
 
   markContainer: {

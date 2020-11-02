@@ -31,7 +31,7 @@ class ManeuverMonitor extends React.Component<NavigationScreenProps & {
     this.props.navigation.setParams({ heading: I18n.t(maneuver.maneuverType) || I18n.t('title_maneuver_monitor') })
   }
 
-  public componentWillReceiveProps() {
+  public componentDidUpdate() {
     const newTime = get(this, 'props.maneuver.positionAndTime.unixtime')
     this.lastManeuverTimeInMillis = newTime
   }

@@ -31,7 +31,7 @@ export const alertPromise = (
       title,
       message,
       [
-        { text: cancelText, style: 'cancel', onPress: () => resolve(false) },
+        ...(cancelText ? [{ text: cancelText, style: 'cancel', onPress: () => resolve(false) }] : []),
         { text: confirmText, onPress: () => resolve(true) },
       ],
       { cancelable: false },

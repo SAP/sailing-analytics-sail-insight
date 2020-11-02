@@ -6,9 +6,11 @@ import { shareSessionRegatta } from 'actions/sessions'
 import { fetchRegattaCompetitors } from 'actions/regattas'
 import { stopTracking } from 'actions/events'
 import { startTracking } from 'actions/tracking'
+import { updateShowCopyResultsDisclaimer, updateShowEditResultsDisclaimer } from 'actions/uiState'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
 import { editResultsUrl } from 'services/CheckInService'
+import { alertPromise } from 'helpers/utils'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
@@ -31,6 +33,10 @@ import {
   shareEventButton,
 } from '../../session/common'
 import { getLastPlannedRaceTime } from 'selectors/regatta'
+import { shouldShowCopyResultsDisclaimer, shouldShowEditResultsDisclaimer } from 'selectors/uiState'
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { showUnknownErrorSnackbarMessage } from 'helpers/errors'
 import Clipboard from '@react-native-community/clipboard'
 import Snackbar from 'react-native-snackbar'
 
@@ -65,7 +71,10 @@ const mapStateToProps = (state: any, props: any) => {
     isBeforeLastPlannedRaceStartTime,
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
-    isEventOrganizer: true
+    isEventOrganizer: true,
+    showEditResultsDisclaimer: shouldShowEditResultsDisclaimer(state),
+    showCopyResultsDisclaimer: shouldShowCopyResultsDisclaimer(state),
+    isNetworkConnected: isNetworkConnectedSelector(state)
   }
 }
 
@@ -123,6 +132,10 @@ const editResultsButton = Component((props: any) => compose(
   fold(props),
   textButton({
     onPress: async (props: any) => {
+      if (props.showEditResultsDisclaimer) {
+        const stopShowing = !(await alertPromise('', I18n.t('text_edit_results_disclaimer'), 'OK', I18n.t('caption_dont_show_again')))
+        if (stopShowing) { props.updateShowEditResultsDisclaimer(false) }
+      }
       props.navigation.navigate(Screens.EditResults, { data: { url: editResultsUrl(props.session) } })
     },
     style: [styles.button],
@@ -133,11 +146,15 @@ const copyEditLinkToClipboardButton = Component((props: any) => compose(
   fold(props),
   textButton({
   onPress: async (props: any) => {
+    if (props.showCopyResultsDisclaimer) {
+      const stopShowing = !(await alertPromise('', I18n.t('text_copy_results_disclaimer'), 'OK', I18n.t('caption_dont_show_again')))
+      if (stopShowing) { props.updateShowCopyResultsDisclaimer(false) }
+    }
     Clipboard.setString(editResultsUrl(props.session))
-    Snackbar.show({
+    setTimeout(() => Snackbar.show({
       text: I18n.t('text_link_copied_to_clipboard'),
       duration: Snackbar.LENGTH_SHORT
-    })
+    }), 300) // For some reason doesn't work without the timeout when there's an await in the surrounding function
   },
   style: [styles.button],
   textStyle: styles.buttonContent }))(
@@ -183,7 +200,8 @@ export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
     connect(
       mapStateToProps,
-      { checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta, fetchRegattaCompetitors },
+      { checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta,
+        fetchRegattaCompetitors, updateShowCopyResultsDisclaimer, updateShowEditResultsDisclaimer },
       null,
       {
         pure: true,
