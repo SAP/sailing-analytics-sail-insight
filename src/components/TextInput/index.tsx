@@ -48,8 +48,10 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
 
   private input?: any
 
-  public componentWillReceiveProps(props) {
-    this.setState({ text: props.value })
+  static getDerivedStateFromProps(props: any, _: any) {
+    return {
+      text: props.value
+    }
   }
 
   public render() {

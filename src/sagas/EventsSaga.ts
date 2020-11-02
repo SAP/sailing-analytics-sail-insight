@@ -14,7 +14,7 @@ import { fetchPermissionsForEvent } from 'actions/permissions'
 import { updateCheckIn } from 'actions/checkIn'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
-import { safeApiCall } from './index'
+import { safeApiCall } from './HelpersSaga'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
