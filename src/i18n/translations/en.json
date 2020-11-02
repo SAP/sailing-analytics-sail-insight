@@ -181,6 +181,8 @@
   "text_session_filter_own": "Events created by me",
   "text_session_filter_invited": "Events I was invited to",
   "text_session_filter_archived": "Archived events",
+  "text_edit_results_disclaimer": "Please note that this page is not optimized for mobile yet! While we work on that, note that you can also open the page in your desktop browser via the link that you can copy by tapping the \"copy link\" button.  Accessing the page elsewhere will require another login, so keep your details ready.",
+  "text_copy_results_disclaimer": "We just copied the link to the Result Editing Page to your clipboard. The page is part of the SAP Sailing Analytics Admin Console. If you open it in a mobile or desktop browser, you will need to log in to the Admin Console, so have your username and password available.",
 
   "text_join_with_boat_01": "You will join this race with ",
   "text_join_with_boat_02": ".",
@@ -276,6 +278,7 @@
   "caption_invalid_qr_code_missing_mark": "To generate the QR code for this mark, you need to first save the course \n(Find the \"Save\" option top right in previous screen).",
   "caption_scan_qr_code_for_mark_binding": "Scan this QR code with another device or use this device as a tracker",
   "caption_leave": "Are you sure?",
+  "caption_dont_show_again": "Don't show again",
   "caption_unsaved_changes": "You made changes that are not saved yet.",
 
   "error_title": "An error occurred",
