@@ -21,6 +21,7 @@ export interface RootState {
   permissions?: any,
   communications?: any | CommunicationsReducerState,
   appState?: any | AppReducerState,
+  uiState?: any | UIReducerState
 }
 
 
@@ -123,4 +124,9 @@ export interface CommunicationsReducerState {
 export interface AppReducerState {
   active: boolean
   networkAvailable: boolean
+}
+
+export interface UIReducerState {
+  showEditResultsDisclaimer: boolean
+  showCopyResultsDisclaimer: boolean
 }

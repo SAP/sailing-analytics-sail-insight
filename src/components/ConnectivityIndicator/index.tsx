@@ -16,7 +16,7 @@ class ConnectivityIndicator extends React.Component<ViewProps & {
 
   public state = { isConnected: true }
 
-  public componentWillMount() {
+  public componentDidMount() {
     NetInfo.isConnected.addEventListener(
       'connectionChange',
       this.setNetworkStatus,

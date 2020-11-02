@@ -2,8 +2,8 @@ import React from 'react'
 import { Text, View } from 'react-native'
 
 import moment from 'moment'
+import { EMPTY_VALUE } from './constants'
 
-import { EMPTY_VALUE } from './Leaderboard'
 import styles from './styles'
 
 const TRIANGLE_UP = '▲'

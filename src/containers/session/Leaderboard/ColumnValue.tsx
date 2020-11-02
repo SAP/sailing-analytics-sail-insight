@@ -6,7 +6,7 @@ import { always, cond, gt, isNil, lt, T } from 'ramda'
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 
 import Gap from './Gap'
-import { ColumnValueType, EMPTY_VALUE } from './Leaderboard'
+import { ColumnValueType, EMPTY_VALUE } from './constants'
 import styles from './styles'
 
 export interface Props {

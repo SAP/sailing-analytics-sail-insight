@@ -38,7 +38,7 @@ class ManeuverMonitor extends React.Component<NavigationScreenProps & {
     timer.clearTimeout(this)
   }
 
-  public componentWillReceiveProps() {
+  public componentDidUpdate() {
     const newTime = get(this, 'props.maneuver.positionAndTime.unixtime')
     if (this.lastManeuverTimeInMillis && newTime && this.lastManeuverTimeInMillis === newTime) {
       this.updateTimer()

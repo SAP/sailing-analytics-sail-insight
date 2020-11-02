@@ -19,41 +19,13 @@ import Text from 'components/Text'
 import CompetitorList from './CompetitorList'
 import LeaderboardFetcher from './LeaderboardFetcher'
 import MyColumnValue from './MyColumnValue'
+import { ColumnValueType, EMPTY_VALUE } from './constants'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import { $smallSpacing } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
 import styles, { topRowValueFontSize } from './styles'
-
-export const EMPTY_VALUE = '-'
-
-export enum ColumnValueType {
-  GapToLeader = 'text_leaderboard_column_gap',
-  GapToCompetitor = 'text_leaderboard_column_gap_competitor',
-  GapToMyBoat = 'text_leaderboard_column_gap_my_boat',
-  RegattaRank = 'text_leaderboard_column_regattaRank',
-  Speed = 'text_leaderboard_column_speed',
-  AverageSpeed = 'text_leaderboard_column_averageSpeed',
-  DistanceTravelled = 'text_leaderboard_column_distanceTravelled',
-  NumberOfManeuvers = 'text_leaderboard_column_maneuvers',
-}
-
-const TRIANGLE_UP = () => {
-  return (
-    <View style={styles.triangleUp}>
-      <Image source={Images.actions.arrowUp} style={styles.titleArrow} />
-    </View>
-  )
-}
-
-const TRIANGLE_DOWN = () => {
-  return (
-    <View style={styles.triangleDown}>
-      <Image source={Images.actions.arrowDown} style={styles.titleArrow} />
-    </View>
-  )
-}
 
 class Leaderboard extends React.Component<{
   trackedCheckInCompetitorId: string | undefined
