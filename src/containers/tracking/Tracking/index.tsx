@@ -1,9 +1,8 @@
 import { get } from 'lodash'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
-import timer from 'react-native-timer'
 import { connect } from 'react-redux'
 import { NavigationEvents } from '@react-navigation/compat'
 import * as Screens from 'navigation/Screens'
@@ -41,6 +40,16 @@ import { NavigationScreenProps } from 'react-navigation'
 const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
 
+const Timer = ({ onUpdate }) => {
+  useEffect(() => {
+    let timer = setInterval(onUpdate, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  return null
+}
+
 class Tracking extends React.Component<NavigationScreenProps & {
   stopTracking: any,
   openLatestRaceTrackDetails: any,
@@ -57,6 +66,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
     durationText: EMPTY_DURATION_TEXT,
     buttonText: I18n.t('caption_stop').toUpperCase(),
     stoppingFailed: false,
+    isFocused: false
   }
 
   public render() {
@@ -76,14 +86,14 @@ class Tracking extends React.Component<NavigationScreenProps & {
     return (
       <ScrollContentView style={[container.main]}>
         <NavigationEvents
-          onDidFocus={() => {
+          onWillFocus={() => {
             BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-            timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 500)
+            this.setState({ isFocused: true })
             KeepAwake.activate()
           }}
           onWillBlur={() => {
             BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
-            timer.clearInterval(this)
+            this.setState({ isFocused: false })
             KeepAwake.deactivate()
           }}
         />
@@ -162,6 +172,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
           {this.state.buttonText}
         </TextButton>
         <SpinnerOverlay visible={isLoadingCheckIn} cancelable={false}/>
+        {this.state.isFocused && <Timer onUpdate={this.handleTimerEvent}/>}
       </ScrollContentView>
     )
   }
@@ -197,7 +208,6 @@ class Tracking extends React.Component<NavigationScreenProps & {
 
     await this.setState({ isLoading: true })
     try {
-      timer.clearInterval(this)
       await this.props.stopTracking(this.props.checkInData)
       this.props.navigation.navigate(Screens.WelcomeTracking)
     } catch (err) {

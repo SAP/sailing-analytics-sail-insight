@@ -2,13 +2,11 @@ import { get, isNumber } from 'lodash'
 import { defaultTo } from 'ramda'
 import React from 'react'
 import { View } from 'react-native'
-import timer from 'react-native-timer'
 import { NavigationScreenProps } from 'react-navigation'
 import { connect } from 'react-redux'
 
 import { Maneuver } from 'api/endpoints/types'
 import I18n from 'i18n'
-import { navigateToTracking } from 'navigation'
 import { getCustomScreenParamData } from 'navigation/utils'
 
 import Text from 'components/Text'
@@ -26,7 +24,6 @@ class ManeuverMonitor extends React.Component<NavigationScreenProps & {
   private lastManeuverTimeInMillis: number | undefined
 
   public componentDidMount() {
-    timer.setTimeout(this, 'maneuver_timer', this.handleTimerEvent, 10000)
     const { maneuver } = this.props
     if (!maneuver) {
       return
@@ -34,15 +31,8 @@ class ManeuverMonitor extends React.Component<NavigationScreenProps & {
     this.props.navigation.setParams({ heading: I18n.t(maneuver.maneuverType) || I18n.t('title_maneuver_monitor') })
   }
 
-  public componentWillUnmount() {
-    timer.clearTimeout(this)
-  }
-
   public componentDidUpdate() {
     const newTime = get(this, 'props.maneuver.positionAndTime.unixtime')
-    if (this.lastManeuverTimeInMillis && newTime && this.lastManeuverTimeInMillis === newTime) {
-      this.updateTimer()
-    }
     this.lastManeuverTimeInMillis = newTime
   }
 
@@ -131,15 +121,6 @@ class ManeuverMonitor extends React.Component<NavigationScreenProps & {
         </View>
       </View>
     )
-  }
-
-  private updateTimer = () => {
-    timer.clearTimeout(this)
-    timer.setTimeout(this, 'maneuver_timer', this.handleTimerEvent, 10000)
-  }
-
-  private handleTimerEvent = () => {
-    navigateToTracking()
   }
 
   private toFixedFractionText = (value: string | number, fractionDigits?: number) => {
