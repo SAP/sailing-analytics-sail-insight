@@ -181,6 +181,8 @@
   "text_session_filter_own": "Events created by me",
   "text_session_filter_invited": "Events I was invited to",
   "text_session_filter_archived": "Archived events",
+  "text_edit_results_disclaimer": "Please note that this page is not optimized for mobile yet! While we work on that, note that you can also open the page in your desktop browser via the link that you can copy by tapping the \"copy link\" button.  Accessing the page elsewhere will require another login, so keep your details ready.",
+  "text_copy_results_disclaimer": "We just copied the link to the Result Editing Page to your clipboard. The page is part of the SAP Sailing Analytics Admin Console. If you open it in a mobile or desktop browser, you will need to log in to the Admin Console, so have your username and password available.",
 
   "text_join_with_boat_01": "You will join this race with ",
   "text_join_with_boat_02": ".",
@@ -276,6 +278,7 @@
   "caption_invalid_qr_code_missing_mark": "To generate the QR code for this mark, you need to first save the course \n(Find the \"Save\" option top right in previous screen).",
   "caption_scan_qr_code_for_mark_binding": "Scan this QR code with another device or use this device as a tracker",
   "caption_leave": "Are you sure?",
+  "caption_dont_show_again": "Don't show again",
   "caption_unsaved_changes": "You made changes that are not saved yet.",
 
   "error_title": "An error occurred",
@@ -358,10 +361,12 @@
   "text_low_point_scoring": "Low point scoring applies.",
   "text_contact_for_other_scoring": "Please contact us if you require any other scoring system.",
   "text_alert_for_start_tracking": "You really want to start tracking?\nEvent entry will be closed.",
+  "text_alert_event_time": "This start time is outside the date range of the regatta/event. Do you want to change the event dates?",
   "text_user_is_competitor": "You are a competitor on this event",
   "caption_see_course": "See Course",
   "caption_define_course": "Define Course",
   "caption_set_time": "Set Time",
+  "caption_race_set_time": "Set Time",
   "caption_course_not_defined": "No course yet",
   "caption_time_not_set": "No start time yet",
   "text_discard_after": "Discard after Races",
@@ -379,7 +384,6 @@
   "caption_end_event": "End Event",
   "caption_end": "End",
   "caption_define": "Define",
-  "caption_event_time": "This start time is outside the date range of the regatta/event. Do you want to change the event dates?",
   "button_proceed": "Proceed",
   "button_discard": "Discard",
   "button_yes": "Yes",
@@ -389,6 +393,9 @@
   "text_entry_open_SAP_Analytics_button": "You can only view the SAP Sailing Analytics after the entry list has been closed. Are you ready to close the entry list (note that no competitors can be added afterwards)?",
   "text_entry_open_when_setting_time": "Start time cannot be set until the entry list is closed. Are you ready to close the entry? Note that no competitors can be added afterwards.",
   "text_delete_binding_alert": "Do you really want to delete the binding?",
+
+  "caption_no_connectivity": "No Connectivity",
+  "text_alert_no_connectivity" : "Please make sure that Sail Insight has internet access.",
 
   "caption_basics": "Basics",
   "caption_event_creation_date": "Date",

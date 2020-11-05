@@ -19,25 +19,13 @@ import Text from 'components/Text'
 import CompetitorList from './CompetitorList'
 import LeaderboardFetcher from './LeaderboardFetcher'
 import MyColumnValue from './MyColumnValue'
+import { ColumnValueType, EMPTY_VALUE } from './constants'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import { $smallSpacing } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
 import styles, { topRowValueFontSize } from './styles'
-
-export const EMPTY_VALUE = '-'
-
-export enum ColumnValueType {
-  GapToLeader = 'text_leaderboard_column_gap',
-  GapToCompetitor = 'text_leaderboard_column_gap_competitor',
-  GapToMyBoat = 'text_leaderboard_column_gap_my_boat',
-  RegattaRank = 'text_leaderboard_column_regattaRank',
-  Speed = 'text_leaderboard_column_speed',
-  AverageSpeed = 'text_leaderboard_column_averageSpeed',
-  DistanceTravelled = 'text_leaderboard_column_distanceTravelled',
-  NumberOfManeuvers = 'text_leaderboard_column_maneuvers',
-}
 
 const TRIANGLE_UP = () => {
   return (
@@ -124,7 +112,7 @@ class Leaderboard extends React.Component<{
                   rankingMetric={rankingMetric}
                 />
               </View>
-              {/* <ModalDropdown
+              <ModalDropdown
                 options={difference(Object.values(ColumnValueType), [
                   ColumnValueType.GapToCompetitor,
                 ])}
@@ -137,7 +125,7 @@ class Leaderboard extends React.Component<{
                 onDropdownWillHide={() =>
                   this.setState({ chooseMetricModalShowing: false })
                 }
-              > */}
+              >
                 <View style={{ flexDirection: 'row' }}>
                   <Text
                     style={[styles.title]}
@@ -146,13 +134,13 @@ class Leaderboard extends React.Component<{
                   >
                     {`${columnText} `}
                   </Text>
-                  {/* {chooseMetricModalShowing ? (
+                  {chooseMetricModalShowing ? (
                     <TRIANGLE_UP />
                   ) : (
                     <TRIANGLE_DOWN />
-                  )} */}
+                  )}
                 </View>
-              {/* </ModalDropdown> */}
+              </ModalDropdown>
             </View>
           </View>
         </View>

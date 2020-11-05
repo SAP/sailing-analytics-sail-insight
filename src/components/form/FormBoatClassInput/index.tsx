@@ -49,8 +49,10 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     }
   }
 
-  public componentWillReceiveProps(props:any) {
-    this.setState({ query: props.input.value })
+  static getDerivedStateFromProps(props: any, _: any) {
+    return {
+      query: props.input.value
+    }
   }
 
   public render() {

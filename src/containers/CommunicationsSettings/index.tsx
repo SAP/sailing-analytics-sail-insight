@@ -33,7 +33,7 @@ class CommunicationSettings extends React.Component<ViewProps & {
   serverPort: string,
 }> {
 
-  public componentWillMount() {
+  public componentDidMount() {
     this.props.fetchCommunicationInfo()
   }
 
