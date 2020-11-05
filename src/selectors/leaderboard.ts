@@ -17,6 +17,7 @@ import { CompetitorGapMap, RootState } from 'reducers/config'
 import { getTrackedLeaderboardName } from 'selectors/location'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getTrackedCheckIn, getTrackedCheckInCompetitorId } from './checkIn'
+import { getCompetitor } from './competitor'
 
 export const getLeaderboardEntity = (state: any) =>
   getEntities(state, LEADERBOARD_ENTITY_NAME)
@@ -124,3 +125,21 @@ export const isCurrentLeaderboardFinished = createCurrentEventRacesStatusAllSele
 export const isLeaderboardStale = (state: any) => state.leaderboardTracking.isLeaderboardStale
 export const isPollingLeaderboard = () => (state: any) =>
   !!(state.leaderboardTracking && state.leaderboardTracking.isLeaderboardPolling)
+
+export const getExistingLeaderboardCompetitor = (leaderboardName: string) => (state: any) => {
+    // allow for all users (anonymous or logged)
+    const currentLeaderboard = getLeaderboard(leaderboardName)(state)
+    let existingBinding = null
+    
+    if (currentLeaderboard && currentLeaderboard.competitors) {
+      currentLeaderboard.competitors.forEach(competitor => {
+        let competitorMatch = getCompetitor(competitor.id)(state)
+  
+        if (competitorMatch) {
+          existingBinding = competitorMatch
+        }
+      })
+    }
+  
+    return existingBinding
+}
