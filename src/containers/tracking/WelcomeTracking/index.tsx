@@ -1,6 +1,6 @@
 import I18n from 'i18n'
 import React, { useEffect, useState } from 'react'
-import { usesAutoDateAndTime, usesAutoTimeZone } from 'react-native-localize'
+import { useAutomaticDateTimeAndTimezone } from 'helpers/date'
 import { ImageBackground, Text, View, ViewProps, BackHandler, Image, AppState } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import LinearGradient from 'react-native-linear-gradient'
@@ -13,9 +13,9 @@ import { text, button } from 'styles/commons'
 import { $siDarkBlue, $siTransparent } from 'styles/colors';
 
 const AutomaticTimeNotice = () => {
-  const [noticeVisible, setNoticeVisible] = useState(!usesAutoDateAndTime() || !usesAutoTimeZone())
+  const [noticeVisible, setNoticeVisible] = useState(!useAutomaticDateTimeAndTimezone())
   const appStateChangeHandler = () =>
-    setNoticeVisible(!usesAutoDateAndTime() || !usesAutoTimeZone())
+    setNoticeVisible(!useAutomaticDateTimeAndTimezone())
 
   useEffect(() => {
     AppState.addEventListener('change', appStateChangeHandler)
