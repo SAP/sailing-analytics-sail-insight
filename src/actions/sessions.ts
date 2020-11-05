@@ -31,7 +31,7 @@ import { getSharingUuid } from 'helpers/uuid'
 
 import { BRANCH_APP_DOMAIN } from 'environment'
 import querystring from 'query-string'
-import { registerDevice, updateCheckIn, updateCheckInAndEventInventory, getExistingCompetitorBinding } from 'actions/checkIn'
+import { registerDevice, updateCheckIn, updateCheckInAndEventInventory } from 'actions/checkIn'
 import { ApiBodyKeys as CheckInBodyKeys } from 'models/CheckIn'
 
 import { startTracking } from 'actions/tracking'
@@ -46,6 +46,7 @@ import { getLocationTrackingStatus } from 'selectors/location'
 import { getMark } from '../selectors/mark'
 import { getUserBoatByBoatName, getUserTeamByNameBoatClassNationalitySailnumber } from 'selectors/user'
 import { getRegatta } from '../selectors/regatta'
+import { getExistingLeaderboardCompetitor } from 'selectors/leaderboard'
 import { getApiServerUrl } from 'api/config'
 
 export const shareSession = (checkIn: CheckIn) => async () => {
@@ -227,7 +228,7 @@ export const createUserAttachmentToSession = (
           if (err.status && err.status === 403 &&
             err.data && typeof err.data === 'string' && err.data.startsWith('Device is already registered')) {
             // allow already joined race from the same device, if biding is allowed
-            const competitor = await dispatch(getExistingCompetitorBinding(regattaName))
+            const competitor =  getExistingLeaderboardCompetitor(regattaName)(getState())
             if (competitor) {
               competitorId = competitor.id
               boatId = competitor.id
