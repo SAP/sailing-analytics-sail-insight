@@ -27,6 +27,22 @@ import { $smallSpacing } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
 import styles, { topRowValueFontSize } from './styles'
 
+const TRIANGLE_UP = () => {
+  return (
+    <View style={styles.triangleUp}>
+      <Image source={Images.actions.arrowUp} style={styles.titleArrow} />
+    </View>
+  )
+}
+
+const TRIANGLE_DOWN = () => {
+  return (
+    <View style={styles.triangleDown}>
+      <Image source={Images.actions.arrowDown} style={styles.titleArrow} />
+    </View>
+  )
+}
+
 class Leaderboard extends React.Component<{
   trackedCheckInCompetitorId: string | undefined
   leaderboard: LeaderboardCompetitorCurrentTrack[]
@@ -96,7 +112,7 @@ class Leaderboard extends React.Component<{
                   rankingMetric={rankingMetric}
                 />
               </View>
-              {/* <ModalDropdown
+              <ModalDropdown
                 options={difference(Object.values(ColumnValueType), [
                   ColumnValueType.GapToCompetitor,
                 ])}
@@ -109,7 +125,7 @@ class Leaderboard extends React.Component<{
                 onDropdownWillHide={() =>
                   this.setState({ chooseMetricModalShowing: false })
                 }
-              > */}
+              >
                 <View style={{ flexDirection: 'row' }}>
                   <Text
                     style={[styles.title]}
@@ -118,13 +134,13 @@ class Leaderboard extends React.Component<{
                   >
                     {`${columnText} `}
                   </Text>
-                  {/* {chooseMetricModalShowing ? (
+                  {chooseMetricModalShowing ? (
                     <TRIANGLE_UP />
                   ) : (
                     <TRIANGLE_DOWN />
-                  )} */}
+                  )}
                 </View>
-              {/* </ModalDropdown> */}
+              </ModalDropdown>
             </View>
           </View>
         </View>
