@@ -41,5 +41,21 @@ export default EStyleSheets.create({
     },
     forgotPasswordLink: {
         textAlign: 'left'
+    },
+    automaticTimeNotice: {
+      flexDirection: 'row',
+      alignSelf: 'stretch',
+      backgroundColor: '#BE5246',
+      padding: 10,
+      borderRadius: 4,
+    },
+    automaticTimeNoticeText: {
+      color: 'white',
+      fontSize: 15,
+      paddingRight: 30
+    },
+    attentionIcon: {
+      marginTop: 2,
+      marginRight: 5
     }
 })

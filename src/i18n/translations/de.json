@@ -192,6 +192,7 @@
   "text_add_boat_explainer": "Du kannst dieses Boot später in den Einstellungen (unter Account) bearbeiten oder ein neues Boot erstellen.",
   "text_link_copied_to_clipboard": "Link in die Zwischenablage kopiert",
   "text_course_saved": "Kurs erfolgreich gespeichert",
+  "text_automatic_time_warning": "Bitte aktivieren Sie die automatische Zeit und Zeitzone in den Einstellungen Ihres Telefons, damit die Nachverfolgung genau ist.",
 
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",
