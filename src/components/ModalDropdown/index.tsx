@@ -19,10 +19,9 @@ import {
   TouchableHighlight,
   Modal,
   ActivityIndicator,
-  FlatList
 } from 'react-native';
 
-import { listKeyExtractor } from 'helpers/utils';
+import ListView from "deprecated-react-native-listview";
 import PropTypes from 'prop-types';
 
 const TOUCHABLE_ELEMENTS = [
@@ -89,9 +88,9 @@ export default class ModalDropdown extends Component {
     };
   }
 
-  static getDerivedStateFromProps(props: any, state: any) {
-    let { buttonText, selectedIndex } = state;
-    const { defaultIndex, defaultValue, options } = props;
+  componentWillReceiveProps(nextProps) {
+    let {buttonText, selectedIndex} = this.state;
+    const {defaultIndex, defaultValue, options} = nextProps;
     buttonText = this._nextValue == null ? buttonText : this._nextValue;
     selectedIndex = this._nextIndex == null ? selectedIndex : this._nextIndex;
     if (selectedIndex < 0) {
@@ -103,11 +102,11 @@ export default class ModalDropdown extends Component {
     this._nextValue = null;
     this._nextIndex = null;
 
-    return {
+    this.setState({
       loading: !options,
       buttonText,
       selectedIndex
-    };
+    });
   }
 
   render() {
@@ -284,11 +283,10 @@ export default class ModalDropdown extends Component {
   _renderDropdown() {
     const {scrollEnabled, renderSeparator, showsVerticalScrollIndicator, keyboardShouldPersistTaps} = this.props;
     return (
-      <FlatList scrollEnabled={scrollEnabled}
+      <ListView scrollEnabled={scrollEnabled}
                 style={styles.list}
                 dataSource={this._dataSource}
                 renderRow={this._renderRow}
-                keyExtractor={listKeyExtractor}
                 renderSeparator={renderSeparator || this._renderSeparator}
                 automaticallyAdjustContentInsets={false}
                 showsVerticalScrollIndicator={showsVerticalScrollIndicator}
@@ -299,7 +297,7 @@ export default class ModalDropdown extends Component {
 
   get _dataSource() {
     const {options} = this.props;
-    const ds = new FlatList.DataSource({
+    const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     });
     return ds.cloneWithRows(options);

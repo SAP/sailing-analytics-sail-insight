@@ -46,6 +46,7 @@ import { getLocationTrackingStatus } from 'selectors/location'
 import { getMark } from '../selectors/mark'
 import { getUserBoatByBoatName, getUserTeamByNameBoatClassNationalitySailnumber } from 'selectors/user'
 import { getRegatta } from '../selectors/regatta'
+import { getExistingLeaderboardCompetitor } from 'selectors/leaderboard'
 import { getApiServerUrl } from 'api/config'
 
 export const shareSession = (checkIn: CheckIn) => async () => {
@@ -226,7 +227,14 @@ export const createUserAttachmentToSession = (
         else {
           if (err.status && err.status === 403 &&
             err.data && typeof err.data === 'string' && err.data.startsWith('Device is already registered')) {
-            // allow already joined race from the same device
+            // allow already joined race from the same device, if biding is allowed
+            const competitor =  getExistingLeaderboardCompetitor(regattaName)(getState())
+            if (competitor) {
+              competitorId = competitor.id
+              boatId = competitor.id
+            } else {
+              throw err
+            }
           } else {
             throw err
           }

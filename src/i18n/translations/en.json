@@ -315,6 +315,7 @@
   "error_network_required_alert": "Please make sure your device is connected to the internet and then try again. If the error persists, please contact support@sapsailing.com",
   "error_network_required_snackbar": "Network connection required to perform this action",
   "error_field_invalid_handicap": "Handicap can not be 0.",
+  "error_device_already_exists": "This device is already registered to this regatta",
 
   "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
   "url_privacy_policy": "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",
