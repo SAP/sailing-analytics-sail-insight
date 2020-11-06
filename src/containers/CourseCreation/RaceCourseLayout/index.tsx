@@ -20,14 +20,19 @@ import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
   updateMarkConfigurationLocation, assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew,
-  navigateBackFromCourseCreation, updateMarkPosition } from 'actions/courses'
+  navigateBackFromCourseCreation, updateMarkPosition, updateWaypoint } from 'actions/courses'
 import { startLocalLocationUpdates, stopLocalLocationUpdates } from 'actions/locations'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
-  isDefaultWaypointSelection, hasEditedCourseChanged} from 'selectors/course'
+  isDefaultWaypointSelection,
+  hasEditedCourseChanged,
+  getLinesAndGateOptionsForCurrentEventAndWaypoint } from 'selectors/course'
 import { getLocationStats } from 'selectors/location'
-import { getFilteredMarkPropertiesAndMarksOptionsForCourse, getMarkPropertiesOrMarkForCourseByName } from 'selectors/inventory'
+import {
+  getFilteredMarkPropertiesAndMarksOptionsForCourse,
+  getMarkPropertiesOrMarkForCourseByName
+} from 'selectors/inventory'
 import { getHashedDeviceId } from 'selectors/user'
 import { coordinatesToString } from 'helpers/utils'
 import * as Screens from 'navigation/Screens'
@@ -66,6 +71,7 @@ const mapStateToProps = (state: any) => ifElse(
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
     marksAndMarkPropertiesOptions: getFilteredMarkPropertiesAndMarksOptionsForCourse(state),
+    linesAndGateOptionsForCurrentEventAndWaypoint: getLinesAndGateOptionsForCurrentEventAndWaypoint(state),
     sameStartFinish: hasSameStartFinish(state),
     hasCourseChanged: hasEditedCourseChanged(state),
     newGateMarkOptions: [
@@ -448,34 +454,41 @@ compose(
       let markConfigurationId = props.selectedMarkConfiguration
 
       // This code needs to be moved in upper layers.
-      if (isEmptyWaypoint(props)) {
-        markConfigurationId = uuidv4()
-
-        props.changeWaypointToNewMark({
+      if (props.item.isWaypoint) {
+        props.updateWaypoint({
           id: props.selectedWaypoint.id,
-          markConfigurationIds: [props.item.isMarkConfiguration ? props.item.id : markConfigurationId]
-        })
-      }
-
-      if (props.item.isMarkConfiguration) {
-        props.replaceWaypointMarkConfiguration({
-          id: props.selectedWaypoint.id,
-          oldId: markConfigurationId,
-          newId: props.item.id
+          waypoint: props.item
         })
       } else {
-        const newId = uuidv4()
+        if (isEmptyWaypoint(props)) {
+          markConfigurationId = uuidv4()
 
-        props.changeWaypointMarkConfigurationToNew({
-          id: props.selectedWaypoint.id,
-          oldId: markConfigurationId,
-          newId
-        })
+          props.changeWaypointToNewMark({
+            id: props.selectedWaypoint.id,
+            markConfigurationIds: [props.item.isMarkConfiguration ? props.item.id : markConfigurationId]
+          })
+        }
 
-        props.assignMarkOrMarkPropertiesToMarkConfiguration({
-          id: newId,
-          markOrMarkProperties: props.item
-        })
+        if (props.item.isMarkConfiguration) {
+          props.replaceWaypointMarkConfiguration({
+            id: props.selectedWaypoint.id,
+            oldId: markConfigurationId,
+            newId: props.item.id
+          })
+        } else {
+          const newId = uuidv4()
+
+          props.changeWaypointMarkConfigurationToNew({
+            id: props.selectedWaypoint.id,
+            oldId: markConfigurationId,
+            newId
+          })
+
+          props.assignMarkOrMarkPropertiesToMarkConfiguration({
+            id: newId,
+            markOrMarkProperties: props.item
+          })
+        }
       }
     }
   }),
@@ -485,7 +498,10 @@ compose(
   intersperse(' '),
   mapIndexed((v, i) => i === 0 ? `(${v})` : v),
   map(defaultTo('')),
-  rProps(['shortName', 'name']),
+  ifElse(
+    propEq('isWaypoint', true),
+    rProps(['controlPointShortName', 'controlPointName']),
+    rProps(['shortName', 'name'])),
   when(has('effectiveProperties'), prop('effectiveProperties')),
   prop('item'))(
   props))
@@ -497,7 +513,11 @@ const marksAndMarkPropertiesWithoutTheOtherGateSideMark = (props: any) => {
     defaultTo([]),
     prop('markConfigurationIds'))(
     props.selectedWaypoint)
-  return reject(propEq('id', otherSideId), props.marksAndMarkPropertiesOptions)
+
+  return compose(
+    concat(__, props.linesAndGateOptionsForCurrentEventAndWaypoint),
+    reject(propEq('id', otherSideId)))(
+    props.marksAndMarkPropertiesOptions)
 }
 
 const MarksOrMarkPropertiesOptionsList = Component((props: object) => compose(
@@ -743,7 +763,7 @@ export default Component((props: object) =>
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
-      changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
+      updateWaypoint, changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
       assignMarkOrMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
       changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation,
       startLocalLocationUpdates, stopLocalLocationUpdates, updateMarkPosition }, null,

@@ -18,6 +18,7 @@ import {
   addWaypoint,
   removeWaypoint,
   selectMarkConfiguration,
+  updateWaypoint,
   updateWaypointName,
   updateWaypointShortName,
   updateMarkConfigurationName,
@@ -62,6 +63,9 @@ const waypoints = handleActions({
     action.payload),
   [addWaypoint as any]: (state: any, action: any) => insert(action.payload.index, { id: action.payload.id }, state),
   [removeWaypoint as any]: (state: any, action: any) => reject(propEq('id', action.payload.id), state),
+  [updateWaypoint as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeLeft(action.payload.waypoint)),
+    state),
   [updateWaypointName as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), mergeLeft({ controlPointName: action.payload.value })),
     state),
