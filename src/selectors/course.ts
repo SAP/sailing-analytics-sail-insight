@@ -1,12 +1,13 @@
-import { prop, propEq, propOr, find, compose, path, defaultTo,
+import { prop, propEq, propOr, find, compose, path, defaultTo, append,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
-  apply, map, take, move, evolve, dissoc, not, flatten, reject, __,
-  curry,reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr,
-  fromPairs, mergeWithKey
+  apply, map, take, move, evolve, dissoc, not, flatten, reject, __, filter,
+  curry, reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr,
+  fromPairs, mergeWithKey, values, pick, uniqBy, includes, merge
 } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
 import { toHashedString } from 'helpers/utils'
+import { PassingInstruction } from 'models/Course'
 
 import {
   CourseState,
@@ -33,8 +34,7 @@ export const getAllCoursesForSelectedEvent = createSelector(
   getSelectedEventInfo,
   getCourses,
   (selectedEventInfo, courses) => compose(
-    fromPairs,
-    map((key) => [key, prop(key, courses)]),
+    map(key => prop(key, courses)),
     map(compose(concat(`${selectedEventInfo.regattaName} - ${selectedEventInfo.trackPrefix || 'R'}`), String)),
     range(1),
     inc)(
@@ -48,6 +48,12 @@ export const getSelectedWaypoint = createSelector(
   (editedCourse, waypointId) => find(propEq('id', waypointId), editedCourse.waypoints))
 
 export const isDefaultWaypointSelection = (state: any) => state.courses.isDefaultWaypointSelection
+export const isSelectedWaypointLineOrGate = createSelector(
+  getSelectedWaypoint,
+  compose(
+    includes(__, [PassingInstruction.Line, PassingInstruction.Gate]),
+    prop('passingInstruction'))
+)
 
 export const getMarkConfigurationById = id => createSelector(
   getEditedCourse,
@@ -191,3 +197,42 @@ export const getCourseSequenceDisplay = (courseId: string) => (state: any) => {
     propOr({}, 'waypoints'),
   )(courseById)
 }
+
+export const getMarkConfigurationsMapToEditedCourse = createSelector(
+  getAllCoursesForSelectedEvent,
+  getEditedCourse,
+  (eventCourses, editedCourse) => compose(
+    fromPairs,
+    map(conf => ([
+      conf.id,
+      find(
+        both(
+          propEq('markPropertiesId', conf.markPropertiesId),
+          propEq('markId', conf.markId)),
+        editedCourse.markConfigurations).id
+    ])),
+    flatten,
+    map(prop('markConfigurations')))(
+    eventCourses))
+
+export const getLinesAndGateOptionsForCurrentEventAndWaypoint = createSelector(
+  isSelectedWaypointLineOrGate,
+  getAllCoursesForSelectedEvent,
+  getMarkConfigurationsMapToEditedCourse,
+  getEditedCourse,
+  (isSelectedWaypointLineOrGate, eventCourses, markConfigurationsMap, editedCourse) => compose(
+    when(always(isSelectedWaypointLineOrGate), always([])),
+    map(compose(
+      merge({ isWaypoint: true }),
+      evolve({ markConfigurationIds: map(prop(__, markConfigurationsMap)) }))),
+    uniqBy(compose(
+      reduce(concat, ''),
+      values,
+      pick(['controlPointName', 'controlPointShortName'])
+    )),
+    reject(compose(includes(__, ['Start', 'Finish']), prop('controlPointName'))),
+    filter(compose(either(equals(PassingInstruction.Line), equals(PassingInstruction.Gate)), prop('passingInstruction'))),
+    flatten,
+    map(prop('waypoints')),
+    append(editedCourse))(
+    eventCourses))

@@ -20,6 +20,7 @@ export const saveCourse = createAction(SAVE_COURSE)
 export const updateCourseLoading = createAction('UPDATE_COURSE_LOADING')
 export const updateMarkPosition = createAction(UPDATE_MARK_POSITION)
 
+export const updateWaypoint = createAction('UPDATE_WAYPOINT')
 export const updateWaypointName = createAction('UPDATE_WAYPOINT_NAME')
 export const updateWaypointShortName = createAction('UPDATE_WAYPOINT_SHORT_NAME')
 export const updateWaypointPassingInstruction = createAction('UPDATE_WAYPOINT_PASSING_INSTRUCTION')
