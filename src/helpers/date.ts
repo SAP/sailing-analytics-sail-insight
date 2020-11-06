@@ -6,11 +6,10 @@ import {
 } from 'lodash'
 import momentDurationSetup from 'moment-duration-format'
 import moment from 'moment/min/moment-with-locales'
-
+import { usesAutoDateAndTime, usesAutoTimeZone } from 'react-native-localize'
+import { isPlatformAndroid } from 'environment'
 import I18n, { SupportedLocales } from 'i18n'
-
 import Logger from './Logger'
-
 
 momentDurationSetup(moment)
 
@@ -158,3 +157,6 @@ export const isExpired = (timestamp: string, limitInHours: number) => {
 }
 
 export const getDurationInS = (start?: number, end?: number) => (start && end && ((end - start) / 60)) || 0
+
+export const useAutomaticDateTimeAndTimezone = () =>
+  isPlatformAndroid ? (usesAutoDateAndTime() && usesAutoTimeZone()) : true

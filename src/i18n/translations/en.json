@@ -183,7 +183,6 @@
   "text_session_filter_archived": "Archived events",
   "text_edit_results_disclaimer": "Please note that this page is not optimized for mobile yet! While we work on that, note that you can also open the page in your desktop browser via the link that you can copy by tapping the \"copy link\" button.  Accessing the page elsewhere will require another login, so keep your details ready.",
   "text_copy_results_disclaimer": "We just copied the link to the Result Editing Page to your clipboard. The page is part of the SAP Sailing Analytics Admin Console. If you open it in a mobile or desktop browser, you will need to log in to the Admin Console, so have your username and password available.",
-
   "text_join_with_boat_01": "You will join this race with ",
   "text_join_with_boat_02": ".",
   "text_join_with_boat_explainer_01": "Visit the ",
@@ -194,6 +193,7 @@
   "text_add_boat_explainer": "You can edit this boat later or add more boats by visiting the user settings.",
   "text_link_copied_to_clipboard": "Link copied to clipboard",
   "text_course_saved": "Course successfully saved",
+  "text_automatic_time_warning": "Please enable automatic time and timezone in your phone's settings for tracking to be accurate.",
 
   "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
   "user_profile_alert_label" : "Logout",
