@@ -457,7 +457,7 @@ compose(
       if (props.item.isWaypoint) {
         props.updateWaypoint({
           id: props.selectedWaypoint.id,
-          waypoint: props.item
+          waypoint: merge(props.item, { id: uuidv4() })
         })
       } else {
         if (isEmptyWaypoint(props)) {

@@ -2,7 +2,7 @@ import { prop, propEq, propOr, find, compose, path, defaultTo, append,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
   apply, map, take, move, evolve, dissoc, not, flatten, reject, __, filter,
   curry, reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr,
-  fromPairs, mergeWithKey, values, pick, uniqBy, includes, merge
+  fromPairs, mergeWithKey, values, pick, uniqBy, includes, merge, pathEq
 } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
@@ -207,10 +207,11 @@ export const getMarkConfigurationsMapToEditedCourse = createSelector(
       conf.id,
       find(
         both(
-          propEq('markPropertiesId', conf.markPropertiesId),
-          propEq('markId', conf.markId)),
+          pathEq(['effectiveProperties', 'name'], conf.effectiveProperties.name),
+          pathEq(['effectiveProperties', 'shortName'], conf.effectiveProperties.shortName)),
         editedCourse.markConfigurations).id
     ])),
+    concat(editedCourse.markConfigurations),
     flatten,
     map(prop('markConfigurations')))(
     eventCourses))
