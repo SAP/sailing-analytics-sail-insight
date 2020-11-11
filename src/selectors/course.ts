@@ -205,12 +205,14 @@ export const getMarkConfigurationsMapToEditedCourse = createSelector(
     fromPairs,
     map(conf => ([
       conf.id,
+      prop('id'),
       find(
         both(
           pathEq(['effectiveProperties', 'name'], conf.effectiveProperties.name),
           pathEq(['effectiveProperties', 'shortName'], conf.effectiveProperties.shortName)),
-        editedCourse.markConfigurations).id
+        editedCourse.markConfigurations)
     ])),
+    filter(identity),
     concat(editedCourse.markConfigurations),
     flatten,
     map(prop('markConfigurations')))(
