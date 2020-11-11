@@ -42,6 +42,7 @@ class TextInputDeprecated extends React.Component<ViewProps & RNTextInputProps &
 
   public state = {
     text: this.props.value || '',
+    previousPropsText: undefined,
     height: 0,
     isEntrySecured: true,
     isFocused: false,
@@ -49,10 +50,14 @@ class TextInputDeprecated extends React.Component<ViewProps & RNTextInputProps &
 
   private input?: any
 
-  static getDerivedStateFromProps(props: any, _: any) {
-    return {
-      text: props.value
+  static getDerivedStateFromProps(nextProps: any, previousState: any) {
+    if (nextProps.value !== previousState.previousPropsText) {
+      return { 
+        text: nextProps.value,
+        previousPropsText: nextProps.value
+      }
     }
+    return null
   }
 
   public render() {
