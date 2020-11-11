@@ -23,6 +23,7 @@ import {
 
 import ListView from "deprecated-react-native-listview";
 import PropTypes from 'prop-types';
+import { getWindowHeight, getWindowWidth } from 'helpers/screen';
 
 const TOUCHABLE_ELEMENTS = [
   'TouchableHighlight',
@@ -227,9 +228,8 @@ export default class ModalDropdown extends Component {
   _calcPosition() {
     const {dropdownStyle, style, adjustFrame} = this.props;
 
-    const dimensions = Dimensions.get('window');
-    const windowWidth = dimensions.width;
-    const windowHeight = dimensions.height;
+    const windowWidth = getWindowWidth();
+    const windowHeight = getWindowHeight();
 
     const dropdownHeight = (dropdownStyle && StyleSheet.flatten(dropdownStyle).height) ||
       StyleSheet.flatten(styles.dropdown).height;
