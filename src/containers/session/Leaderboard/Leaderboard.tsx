@@ -19,6 +19,7 @@ import Text from 'components/Text'
 import CompetitorList from './CompetitorList'
 import LeaderboardFetcher from './LeaderboardFetcher'
 import MyColumnValue from './MyColumnValue'
+import { getWindowWidth } from 'helpers/screen'
 import { ColumnValueType, EMPTY_VALUE } from './constants'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
@@ -183,7 +184,7 @@ class Leaderboard extends React.Component<{
 
   private renderAdjustFrame = (propertyStyle: any) => {
     propertyStyle.left = $smallSpacing
-    propertyStyle.width = Dimensions.get('window').width - 2 * $smallSpacing
+    propertyStyle.width = getWindowWidth() - 2 * $smallSpacing
     propertyStyle.height = 235
     propertyStyle.marginTop = Platform.OS === 'ios' ? 10 : -10
     return propertyStyle

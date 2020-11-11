@@ -10,3 +10,6 @@ export const isPortrait = () =>
 export const getWindowWidth = () =>
   isPortrait() ? Dimensions.get('window').width : Dimensions.get('window').height
     
+export const getWindowHeight = () =>
+  isPortrait() ? Dimensions.get('window').height : Dimensions.get('window').width
+
