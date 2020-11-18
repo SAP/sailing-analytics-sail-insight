@@ -30,6 +30,7 @@ const config: Config = {
   stopOnTerminate: false,
   isMoving: true,
   heartbeatInterval: 1,
+  stopTimeout: 10,
   disableStopDetection: true,
   pausesLocationUpdatesAutomatically: false,
   stopOnStationary: false,
@@ -37,6 +38,12 @@ const config: Config = {
   debug: false,
   logMaxDays: 2,
   locationAuthorizationRequest: 'Always',
+  backgroundPermissionRationale: {
+    title: I18n.t('text_background_tracking_permission_title'),
+    message: I18n.t('text_background_tracking_permission_message'),
+    positiveAction: I18n.t('text_background_tracking_permission_allow'),
+    negativeAction: I18n.t('caption_cancel')
+  },
   showsBackgroundLocationIndicator: true,
   stationaryRadius: 1,
   preventSuspend: true,
