@@ -1406,29 +1406,23 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-2.0.8.tgz#c4a3c342638270e0adc942b51427ec17104a786d"
   integrity sha512-FZC3wjYzHQiD7jT7ALy3QNccyLj9zQBRiKGBFr/QvrWLkVg5orpIJ53aYFXm3eOkNvUV+wjhoI9uCkh3LCN2+A==
 
-"@react-native-firebase/analytics@6.3.4":
-  version "6.3.4"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-6.3.4.tgz#f75586ff6d4fa6ed2d0cb1e24d362778ba2bb557"
-  integrity sha512-8nxft9iZfbd+sRgspnb3o9+/TDcfwaltiFDEFZCM+qLQLeIGvVstUFOp5Ecu3jlTfLI0n1IUcIgBHyxBQ2Ktow==
+"@react-native-firebase/analytics@7.6.10":
+  version "7.6.10"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-7.6.10.tgz#1c8cd7b31cebed53aeacd177bb01fead5f733738"
+  integrity sha512-Qok1s8oY1Gy3VHcCUSKK2oFc8ExghyKhf/KIjI/3gDVW6WDCB9eTGw/QmI5+br6nhZTKhWAgGfnToEQweJ24ig==
 
-"@react-native-firebase/app-types@6.3.4":
-  version "6.3.4"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app-types/-/app-types-6.3.4.tgz#e54a3de33455417db63a7b1de2b7795af1c25cae"
-  integrity sha512-xZ1rVo+GvAfQ/fk6PalYgfsAoV6bd09Vh6SNqR7RPVf9PltaBS0gNxfITXAx6fR+7OyZ1H54orSBjyOIhM+g5Q==
-
-"@react-native-firebase/app@6.3.4":
-  version "6.3.4"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-6.3.4.tgz#5beee0f8ffb1e58bfc8edc054988c3a4007c5984"
-  integrity sha512-hDV3kjBn1X0KAR5kj2DVnm+65K3WVVPtIpcM4TDQIbXudsKsxoG8Z1lGZ4EY89K6EHgCouapdJf5aoqVQ4UDNw==
+"@react-native-firebase/app@8.4.7":
+  version "8.4.7"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-8.4.7.tgz#7393ba7af36bd815bd5af7c64a20b0dd8a7e3341"
+  integrity sha512-jN788Q17aMOHc49wKc74RC3iZNhFoS+yTZhMBHFVyytf64uK3ofYAk3hjvukkylUTKF0Ni/L+04M0IDv8kStKg==
   dependencies:
-    "@react-native-firebase/app-types" "6.3.4"
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/crashlytics@6.3.4":
-  version "6.3.4"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-6.3.4.tgz#775767ce60828fedc923242a459310e2282e54e1"
-  integrity sha512-ddOvaJr2xlz1lVyFG4OZP2KchCzbc2oCZo2/n3EKuFoYSgNAoMXknk/ab+aT4ZMAnCrK0Wvsy8PE/aDGVDeODg==
+"@react-native-firebase/crashlytics@8.4.12":
+  version "8.4.12"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-8.4.12.tgz#7fadaff1a1555cbca4e05a3b568cfa68775e7c5a"
+  integrity sha512-+tnJnqG0KKXSN1UF0+UJjQP2w6PEdCHbMwp9S1l5D6MzE16YUD+PRZbueLU/9O7r6nkhXMJuiK8g2LiGv8puyA==
   dependencies:
     stacktrace-js "^2.0.0"
 
@@ -6744,22 +6738,22 @@ react-native-background-fetch@^3.0.4:
     plist "^3.0.1"
     xcode "^2.0.0"
 
-react-native-background-fetch@~3.0.6:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-3.0.6.tgz#0123722caa92bcbe4bb191bd37f2d5b0d3e65f2d"
-  integrity sha512-F3C/uHC6PHcyPLEB5iQeX4bU41x1CcjFKYf7P54rTSuYG9BlV3z0oyhzbCkWxCCabMl9yzFozuqpUMKybMGD4w==
+react-native-background-fetch@~3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-background-fetch/-/react-native-background-fetch-3.1.0.tgz#5ec182662e76bd8257f21c6f65cdcb73e87a0708"
+  integrity sha512-dnrfX3Od4r3aKuRSwDkpaPFXc3dYD5DbIW7CWC41M1CdEZEXNIWfZRvJPMVa72iflOzAh68ZTfZ3PgBK/NDtsQ==
   dependencies:
     fast-plist "^0.1.2"
     plist "^3.0.1"
     xcode "^2.0.0"
 
-"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.7.0":
-  version "3.7.0"
-  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#64b58ff358a03e722187d37cdda277e933dc08b6"
+"react-native-background-geolocation-android@https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.9.3":
+  version "3.9.3"
+  resolved "https://github.com/transistorsoft/react-native-background-geolocation-android.git#e21650dcb2ed4e96e34ee0a032f0796e597ed313"
   dependencies:
     fast-plist "^0.1.2"
     plist "^2.0.1"
-    react-native-background-fetch "~3.0.6"
+    react-native-background-fetch "~3.1.0"
     xcode "^0.9.1"
 
 react-native-background-timer@2.1.1:
