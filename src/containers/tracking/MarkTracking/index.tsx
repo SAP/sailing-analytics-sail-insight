@@ -113,6 +113,14 @@ const informationDisplay = Component((props: any) => compose(
   nothingIfNotTracking(gpsAccuracyDisplay)
 ]))
 
+const stopTrackingConfirmationDialog = () => new Promise(resolve =>
+  Alert.alert('', I18n.t('text_tracking_alert_stop_confirmation_message'),
+    [
+      { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
+      { text: I18n.t('button_yes'), onPress: () => resolve(true) }
+    ],
+    { cancelable: true }))
+
 const trackingButton = Component((props: any) =>
   fold(props)(
   textButton({
@@ -121,9 +129,11 @@ const trackingButton = Component((props: any) =>
     onPress: async () => {
       props.setIsLoading(true)
       if (props.isTracking) {
-        try {
-          await props.stopTracking(props.checkIn)
-        } catch (err) {}
+        if (await stopTrackingConfirmationDialog()) {
+          try {
+            await props.stopTracking(props.checkIn)
+          } catch (err) {}
+        }
       } else {
         try {
           await props.startTracking({ data: props.checkIn, navigation: props.navigation, useLoadingSpinner: false })
