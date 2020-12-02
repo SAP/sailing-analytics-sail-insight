@@ -9,6 +9,7 @@ import { startTracking } from 'actions/tracking'
 import { updateShowCopyResultsDisclaimer, updateShowEditResultsDisclaimer } from 'actions/uiState'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
+import { getTrackedEventId } from 'selectors/location'
 import { editResultsUrl } from 'services/CheckInService'
 import { alertPromise } from 'helpers/utils'
 import { Component, fold, nothing,
@@ -66,8 +67,11 @@ const mapStateToProps = (state: any, props: any) => {
   const isBeforeEventStartTime =
     (sessionData.session?.event?.startDate || new Date(0)) > Date.now()
 
+  const isTrackingEvent = sessionData.session?.eventId === getTrackedEventId(state)
+
   return {
     ...sessionData,
+    isTrackingEvent,
     isBeforeLastPlannedRaceStartTime,
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),

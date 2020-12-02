@@ -210,6 +210,7 @@
   "caption_delete_mark_binding": "Delete binding with this device",
   "caption_start_tracking": "Start tracking",
   "caption_stop_tracking": "Stop tracking",
+  "caption_is_tracking": "Tracking",
   "caption_edit_results": "Edit results",
   "caption_copy_edit_results_to_clipboard": "Copy Edit Link",
   "caption_to_event": "To the event",

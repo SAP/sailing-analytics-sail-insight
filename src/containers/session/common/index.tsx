@@ -266,7 +266,10 @@ export const startTrackingButton = Component((props: any) => compose(
     style: [styles.button, styles.trackingButton],
     textStyle: styles.buttonContent,
   })
-)(text({}, I18n.t('caption_start_tracking').toUpperCase())))
+)(text({}, props.isTrackingEvent ? 
+  I18n.t('caption_is_tracking').toUpperCase() : 
+  I18n.t('caption_start_tracking').toUpperCase())
+))
 
 export const competitorsCard = Component((props: any) =>
   compose(
