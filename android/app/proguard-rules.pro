@@ -18,3 +18,4 @@
 -keep class io.invertase.firebase.** { *; }
 -dontwarn io.invertase.firebase.**
 -keep class com.facebook.hermes.unicode.** { *; }
+-keep public class org.sailyachtresearch.sailinsight.BuildConfig {*; }

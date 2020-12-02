@@ -15,7 +15,7 @@ import { DispatchType, GetStateType } from 'helpers/types'
 import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
 import { updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
-import { updateTrackedRegatta } from 'actions/locationTrackingData'
+import { updateTrackedRegatta, updateTrackingStatus } from 'actions/locationTrackingData'
 import { fetchRegattaAndRaces } from 'actions/regattas'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { removeTrackedRegatta, resetTrackingStatistics, updateTrackingContext } from './locationTrackingData'
@@ -23,6 +23,8 @@ import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCur
 
 export const stopTracking = () => async (dispatch: DispatchType, getState: GetStateType) => {
   await dispatch(stopLocationUpdates())
+  await dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.STOPPED))
+
   dispatch(removeTrackedRegatta())
   // stop updating start line start line
   dispatch(stopUpdateStartLineBasedOnCurrentCourse())
