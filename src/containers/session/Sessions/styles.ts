@@ -76,11 +76,13 @@ export default (forTracking: boolean) => EStyleSheets.create({
     ...withSecondaryHeavyFont,
   },
   hintContainer: {
-    marginBottom: 85,
+    marginTop: 5,
+    marginBottom: 5,
     flex: 1,
     justifyContent: 'center'
   },
   hintBackgroundImage: {
+    flex: 1,
     marginLeft: 'auto',
     marginRight: 'auto',
   }
