@@ -1,5 +1,6 @@
 import { PositionFix } from 'models'
 import * as LocationService from 'services/LocationService'
+import BackgroundGeolocation from 'react-native-background-geolocation-android'
 import { currentTimestampAsText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'
@@ -44,14 +45,19 @@ export const startLocationUpdates = (
     await LocationService.setConfig({
       url,
       stopOnTerminate: false,
+      persistMode: BackgroundGeolocation.PERSIST_MODE_ALL,
       autoSyncThreshold: bulkSending ?
         LocationService.GpsFixesThreshold.BATTERY_OPTIMIZED :
         LocationService.GpsFixesThreshold.NORMAL
     })
 
     await LocationService.setVerboseLogging(verboseLogging)
-    await LocationService.start()
-    await LocationService.changePace(true)
+
+    if (!(await LocationService.isEnabled())) {
+      await LocationService.start()
+      await LocationService.changePace(true)
+    }
+
     await dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
     Logger.debug('Error during startLocationUpdates', err)
@@ -83,7 +89,10 @@ export const startLocalLocationUpdates = () => async (dispatch) => {
 
   // For the course creator, we want tracking to stop when the
   // app is closed.
-  await LocationService.setConfig({ url: undefined, stopOnTerminate: true })
+  await LocationService.setConfig({
+    url: undefined,
+    persistMode: BackgroundGeolocation.PERSIST_MODE_NONE,
+    stopOnTerminate: true })
   await LocationService.start()
   await LocationService.changePace(true)
   await dispatch(updateTrackingContext(LocationService.LocationTrackingContext.LOCAL))
@@ -96,8 +105,8 @@ export const stopLocalLocationUpdates = () => async (dispatch: DispatchType, get
     return
   }
 
-  await LocationService.stop()
-  await LocationService.changePace(false)
+  await dispatch(stopLocationUpdates())
+  await dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.STOPPED))
 }
 
 export const handleLocation = (gpsFix: PositionFix) => async (dispatch: DispatchType, getState: GetStateType) => {

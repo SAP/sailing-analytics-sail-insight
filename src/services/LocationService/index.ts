@@ -111,10 +111,10 @@ export const isEnabled: () => any = () => new Promise<any>((resolve, reject) => 
 ))
 
 export const addStatusListener = (listener: (status: any) => void) =>
-  BackgroundGeolocation.on(STATUS_KEY, listener)
+  BackgroundGeolocation.onEnabledChange(listener)
 
 export const removeStatusListener = (listener: (enabled: boolean) => void) =>
-  BackgroundGeolocation.un(STATUS_KEY, listener)
+  BackgroundGeolocation.removeListener(STATUS_KEY, listener)
 
 export const addLocationListener = (listener: (location: any) => void) => locationListeners.push(listener)
 
@@ -185,11 +185,5 @@ export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, re
   BackgroundGeolocation.start(resolve, reject))
 
 export const stop = () => new Promise<any>((resolve, reject) => BackgroundGeolocation.stop(resolve, reject))
-
-// export const addHeartbeatListener = (listener: (status: any) => void) =>
-//   BackgroundGeolocation.on(HEARTBEAT_KEY, listener)
-//
-// export const removeHeartbeatListener = (listener: (enabled: boolean) => void) =>
-//   BackgroundGeolocation.un(HEARTBEAT_KEY, listener)
 
 export const changePace = (enabled: boolean) => BackgroundGeolocation.changePace(enabled)

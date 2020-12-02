@@ -1,4 +1,4 @@
-package com.sap_sailing_insight;
+package org.sailyachtresearch.sailinsight;
 
 import java.util.ArrayList;
 import java.util.Arrays;
