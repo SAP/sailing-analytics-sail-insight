@@ -18,6 +18,7 @@ import { canUpdateCurrentEvent } from 'selectors/permissions'
 import { getRegattaCompetitorList, getRegattaPlannedRaces } from 'selectors/regatta'
 import { getSession } from 'selectors/session'
 import { currentUserIsCompetitorForEvent, getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { getTrackedEventId } from 'selectors/location'
 import { container } from 'styles/commons'
 import {
   competitorsCard,
@@ -56,6 +57,8 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
 
   const competitorListData = getRegattaCompetitorList(session.regattaName)(state)
 
+  const isTrackingEvent = getCustomScreenParamData(props).eventId === getTrackedEventId(state)
+
   return {
     session,
     checkIn,
@@ -71,7 +74,8 @@ export const mapStateToSessionDetailsProps = (state: any, props: any) => {
     racesButtonLabel: canUpdateCurrentEvent(state) ?
       I18n.t('text_define_races').toUpperCase() :
       I18n.t('text_see_racing_scoring').toUpperCase(),
-    isEventOrganizer: false
+    isEventOrganizer: false,
+    isTrackingEvent
   }
 }
 
