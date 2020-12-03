@@ -1,4 +1,4 @@
-package com.sap_sailing_insight;
+package org.sailyachtresearch.sailinsight;
 
 import java.lang.reflect.InvocationTargetException;
 import android.content.Context;

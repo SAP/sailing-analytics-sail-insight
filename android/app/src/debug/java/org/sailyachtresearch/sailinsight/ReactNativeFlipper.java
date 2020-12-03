@@ -1,4 +1,4 @@
-package com.sap_sailing_insight;
+package org.sailyachtresearch.sailinsight;
 
 import android.content.Context;
 import com.facebook.flipper.android.AndroidFlipperClient;
