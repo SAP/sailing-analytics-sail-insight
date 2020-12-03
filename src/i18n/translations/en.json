@@ -284,6 +284,7 @@
   "caption_leave": "Are you sure?",
   "caption_dont_show_again": "Don't show again",
   "caption_unsaved_changes": "You made changes that are not saved yet.",
+  "caption_overwrite_courses": "Copy course",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",
@@ -397,6 +398,7 @@
   "text_entry_open_SAP_Analytics_button": "You can only view the SAP Sailing Analytics after the entry list has been closed. Are you ready to close the entry list (note that no competitors can be added afterwards)?",
   "text_entry_open_when_setting_time": "Start time cannot be set until the entry list is closed. Are you ready to close the entry? Note that no competitors can be added afterwards.",
   "text_delete_binding_alert": "Do you really want to delete the binding?",
+  "text_overwrite_courses": "Do you want to overwrite the next courses?",
 
   "caption_no_connectivity": "No Connectivity",
   "text_alert_no_connectivity" : "Please make sure that Sail Insight has internet access.",

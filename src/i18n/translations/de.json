@@ -280,6 +280,7 @@
   "caption_leave": "Bist du sicher?",
   "caption_dont_show_again": "Nicht mehr anzeigen",
   "caption_unsaved_changes": "Du hast Änderungen vorgenommen die noch nicht gespeichert wurden.",
+  "caption_overwrite_courses": "Kurs kopieren",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",
@@ -396,6 +397,7 @@
   "text_entry_open_SAP_Analytics_button": "Sie können die SAP Sailing Analytics erst nach dem Schließen der Teilnehmerliste anzeigen. Bist Du bereit den Zugang zu schließen? Beachte dass keine Teilnehmer nachträglich hinzugefügt werden können.",
   "text_entry_open_when_setting_time": "Die Startzeit kann erst festgelegt werden, wenn die Teilnehmerliste geschlossen wurde. Bist Du bereit den Zugang zu schließen? Beachte dass keine Teilnehmer nachträglich hinzugefügt werden können.",
   "text_delete_binding_alert": "Bist Du sicher, dass Du die Verknüpfung aufheben möchtest?",
+  "text_overwrite_courses": "Möchten Sie die nächsten Kurse überschreiben?",
 
   "caption_no_connectivity": "Keine Konnektivität",
   "text_alert_no_connectivity" : "Bitte stellen Sie sicher, dass Sail Insight über einen Internetzugang verfügt.",

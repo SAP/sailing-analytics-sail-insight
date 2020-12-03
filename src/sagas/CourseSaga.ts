@@ -2,7 +2,7 @@ import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, pathEq, propEq, propOr, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
-  toPairs, values, fromPairs, ifElse, always, findIndex, equals,
+  toPairs, values, fromPairs, ifElse, always, findIndex, equals, takeLast, indexOf, pick
 } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest, delay } from 'redux-saga/effects'
 import { dataApi } from 'api'
@@ -46,6 +46,7 @@ import Snackbar from 'react-native-snackbar'
 import I18n from 'i18n'
 import { PassingInstruction } from 'models/Course'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { alertPromise } from 'helpers/utils'
 
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
@@ -80,6 +81,21 @@ const newCourse = () => {
 const courseWithWaypointIds = evolve({
   waypoints: map(w => merge(w, { id: uuidv4() }))
 })
+
+const getMarkConfigurations = curry((course: any) => map(
+  pick(['markConfigurationIds']),
+  map(evolve({
+    markConfigurationIds: map((id) => {
+      return compose(
+        defaultTo({}),
+        pick(['effectiveProperties', 'lastKnownPosition']),
+        find(propEq('id', id)),
+        prop('markConfigurations')
+      )(course)
+      }
+    )}
+  ))(course.waypoints)
+))
 
 const copyCourse = (courseToCopy: any, latestCopiedCourseState: any, latestTargetCourseState: any) => {
   // To copy over to another course we need to use the markConfigurations of
@@ -321,32 +337,52 @@ function* saveCourseFlow({ navigation }: any) {
 
   const plannedRaces = yield select(getRegattaPlannedRaces(regattaName))
 
-  const nextRaceColumnName = compose(
+  const nextRacesColumnNames = compose(
     ifElse(
       id => id >= 0 && id < plannedRaces.length - 1,
-      id => plannedRaces[id + 1],
+      id => takeLast(plannedRaces.length - (id + 1), plannedRaces),
       always(undefined)),
     findIndex(__, plannedRaces),
     equals)(
     raceColumnName)
 
-  if (nextRaceColumnName) {
-    const latestNextRaceCourseState = yield call(fetchCourseFromServer, { regattaName, serverUrl, race: nextRaceColumnName })
+  if (nextRacesColumnNames) {
 
-    if (!latestNextRaceCourseState)
-      return
+    const nextCourses = yield all(nextRacesColumnNames.map((raceName: string) =>
+      fetchCourseFromServer({regattaName, race: raceName, serverUrl})
+    ))
+    const updatedCourseMarks = getMarkConfigurations(updatedCourse)
 
-    const nextCourse = copyCourse(editedCourse, updatedCourse, latestNextRaceCourseState)
+    let overwriteRequired = false // any next course differs from the current edited course
+    let overwriteAllNew = true // all next courses are not yet created, overwrite directly without prompt
 
-    yield call(saveCourseToServer, {
-      regattaName,
-      fleet,
-      serverUrl,
-      editedCourse: nextCourse,
-      existingCourse: latestNextRaceCourseState,
-      raceColumnName: nextRaceColumnName,
-      raceId: getRaceId(regattaName, nextRaceColumnName),
-    })
+    for (const nextCourse of nextCourses) {
+      const currentCourseMarks = getMarkConfigurations(nextCourse)
+      overwriteRequired = overwriteRequired || !equals(updatedCourseMarks, currentCourseMarks)
+      overwriteAllNew = overwriteAllNew && currentCourseMarks.length === 0
+    }
+
+    let overwriteApproved = false
+    if (overwriteRequired && !overwriteAllNew) {
+      overwriteApproved = yield call(alertPromise, I18n.t('caption_overwrite_courses'), I18n.t('text_overwrite_courses'), I18n.t('caption_confirm'), I18n.t('caption_cancel'))
+    }
+
+    if (overwriteApproved || overwriteAllNew) {
+      for (const nextCourse of nextCourses) {
+        const editedNextCourse = copyCourse(editedCourse, updatedCourse, nextCourse)
+        const index = indexOf(nextCourse, nextCourses)
+        yield call(saveCourseToServer, {
+          regattaName,
+          fleet,
+          serverUrl,
+          editedCourse: editedNextCourse,
+          existingCourse: nextCourse,
+          raceColumnName: nextRacesColumnNames[index],
+          raceId: getRaceId(regattaName, nextRacesColumnNames[index]),
+        })
+      }
+    }
+
   }
 
   const markUsedWithCurrentDeviceAsTracker = compose(
