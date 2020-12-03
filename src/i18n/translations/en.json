@@ -283,7 +283,7 @@
   "caption_leave": "Are you sure?",
   "caption_dont_show_again": "Don't show again",
   "caption_unsaved_changes": "You made changes that are not saved yet.",
-  "caption_overwrite_courses": "Courses",
+  "caption_overwrite_courses": "Copy course",
 
   "error_title": "An error occurred",
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",

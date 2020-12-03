@@ -279,7 +279,7 @@
   "caption_leave": "Bist du sicher?",
   "caption_dont_show_again": "Nicht mehr anzeigen",
   "caption_unsaved_changes": "Du hast Änderungen vorgenommen die noch nicht gespeichert wurden.",
-  "caption_overwrite_courses": "Kurse",
+  "caption_overwrite_courses": "Kurs kopieren",
 
   "error_title": "Ein Fehler ist aufgetreten",
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",
