@@ -5,9 +5,9 @@ import { connect } from 'react-redux'
 import { getCustomScreenParamData } from 'navigation/utils'
 
 const FAQ_URL =
-  'https://sailinsight.zendesk.com/hc/en-us/sections/360001223820-FAQ'
+  'https://support.sapsailing.com/hc/en-us/sections/360004950399-FAQ'
 const KNOWN_ISSUES_URL =
-  'https://sailinsight.zendesk.com/hc/en-us/sections/360003420079-Known-Issues'
+  'https://support.sapsailing.com/hc/en-us/sections/360004950439-Known-Issues'
 
 class ZendeskSupport extends React.Component<{
   supportType: string
