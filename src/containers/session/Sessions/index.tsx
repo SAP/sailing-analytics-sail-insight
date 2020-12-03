@@ -143,6 +143,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
               : Images.defaults.background_empty
           }
           style={this.styles.hintBackgroundImage}
+          resizeMode='contain'
         />
       </View>
     )
