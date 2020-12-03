@@ -733,6 +733,9 @@ const NavigationBackHandler = Component((props: any) => compose(
       BackHandler.removeEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
       props.stopLocalLocationUpdates()
     },
+    onWillFocus: (payload: any) => {
+      props.startLocalLocationUpdates()
+    },
     onDidFocus: (payload: any) => {
       BackHandler.addEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
       props.navigation.setOptions({
@@ -747,7 +750,6 @@ const NavigationBackHandler = Component((props: any) => compose(
           }
         })
       })
-      props.startLocalLocationUpdates()
     }
   })),
   fromClass)(

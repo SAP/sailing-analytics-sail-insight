@@ -34,12 +34,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.sap_sailing_insight",
+    package = "org.sailyachtresearch.sailinsight",
 )
 
 android_resource(
     name = "res",
-    package = "com.sap_sailing_insight",
+    package = "org.sailyachtresearch.sailinsight",
     res = "src/main/res",
 )
 

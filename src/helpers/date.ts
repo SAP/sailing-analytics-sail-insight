@@ -57,7 +57,12 @@ export const durationText = (startDateText?: string) => {
     return
   }
   const diff = moment().startOf('second') - moment(startDateText).startOf('second')
-  return moment.utc(moment.duration(diff).asMilliseconds()).startOf('second').format('HH:mm:ss')
+  const duration = moment.duration(diff)
+  if (duration.asDays() >= 1) { // use moment-duration-format for more than 24 hours format
+    return duration.format('HH:mm:ss')
+  } else { // use moment format for less the 24 hours format 00:00:00
+    return moment.utc(duration.asMilliseconds()).startOf('second').format('HH:mm:ss')
+  }
 }
 
 export const dateText = (dateValue: string | number, format = 'LL') => {
