@@ -267,7 +267,7 @@ export const startTrackingButton = Component((props: any) => compose(
     textStyle: styles.buttonContent,
   })
 )(text({}, props.isTrackingEvent ? 
-  I18n.t('caption_is_tracking').toUpperCase() : 
+  I18n.t('caption_view_tracking').toUpperCase() : 
   I18n.t('caption_start_tracking').toUpperCase())
 ))
 
