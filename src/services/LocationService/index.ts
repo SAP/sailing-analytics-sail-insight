@@ -33,6 +33,8 @@ const config: Config = {
   stopTimeout: 10,
   disableStopDetection: true,
   pausesLocationUpdatesAutomatically: false,
+  locationsOrderDirection: 'DESC',
+  maxDaysToPersist: 10,
   stopOnStationary: false,
   foregroundService: true,
   debug: false,
