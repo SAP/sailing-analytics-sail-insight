@@ -59,9 +59,11 @@ const mapStateToProps = (state: any) => ifElse(
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMarkConfiguration: getSelectedMarkConfiguration(state),
     isDefaultWaypointSelection: isDefaultWaypointSelection(state),
+    defaultPositionType: (!isNil(compose(prop('trackingDeviceHash'))(getSelectedMarkDeviceTracking(state))) || isEmpty(getSelectedMarkPosition(state))) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation,
     selectedMarkProperties: getSelectedMarkProperties(state),
     selectedMarkLocation: getSelectedMarkPosition(state),
-    selectedMarkDeviceTracking: compose(
+    selectedMarkDeviceTracking: compose(prop('trackingDeviceHash'))(getSelectedMarkDeviceTracking(state)),
+    selectedMarkDeviceTrackingCaption: compose(
       defaultTo(I18n.t('text_course_creation_no_device_assigned')),
       unless(isNil, ifElse(
         propEq('trackingDeviceHash', getHashedDeviceId()),
@@ -93,6 +95,15 @@ const isStartOrFinishGate = both(isGateWaypoint,
     take(2),
     move(-1, 0))(
     props.course.waypoints))
+const isTrackingSelected = compose(
+  either(
+    propEq('selectedPositionType', MarkPositionType.TrackingDevice),
+    both(
+      compose(isNil, prop('selectedPositionType')),
+      propEq('defaultPositionType', MarkPositionType.TrackingDevice)
+    )
+  )
+)
 
 const nothingWhenLoading = branch(isLoading, nothingAsClass)
 const nothingWhenNotLoading = branch(isNotLoading, nothingAsClass)
@@ -103,8 +114,9 @@ const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
 const nothingWhenEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
-const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
-const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
+
+const nothingWhenNotTrackingSelected = branch(compose(not, isTrackingSelected), nothingAsClass)
+const nothingWhenNotGeolocationSelected = branch(isTrackingSelected, nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
 const nothingWhenNoMarkLocation = branch(compose(either(isNil, isEmpty), prop('selectedMarkLocation')), nothingAsClass)
 const nothingWhenNotEditingGateName = branch(compose(equals(false), prop('editingGateName')), nothingAsClass)
@@ -112,8 +124,7 @@ const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editin
 const nothingWhenNoShowMarkProperties = branch(compose(equals(false), prop('showMarkProperties')), nothingAsClass)
 const nothingWhenShowMarkProperties = branch(compose(equals(true), prop('showMarkProperties')), nothingAsClass)
 
-const updateSelectedPositionType = (props: any) => { props.setSelectedPositionType(isEmpty(props.selectedMarkLocation) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation) }
-const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', (props: any) => { return isEmpty(props.selectedMarkLocation) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation })
+const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', null)
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
 const withEditingGateName = withState('editingGateName', 'setEditingGateName', false)
 const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
@@ -183,7 +194,8 @@ const GateMarkSelectorItem = Component((props: object) =>
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
       onPress: (props: any) => {
         props.selectMarkConfiguration(props.markConfigurationId)
-        updateSelectedPositionType(props)}
+        props.setSelectedPositionType(null)
+      }
       }),
     text({ style: styles.gateMarkSelectorText }),
     defaultTo(''),
@@ -221,7 +233,10 @@ const SameStartFinish = Component((props: object) =>
     reduce(concat, nothing()))([
     fromClass(CheckBox).contramap(merge({
       isChecked: props.sameStartFinish,
-      onClick: props.toggleSameStartFinish,
+      onClick: () => {
+        props.toggleSameStartFinish()
+        props.setSelectedPositionType(null)
+      },
       checkBoxColor: 'white'
     })),
     text({ style: styles.sameStartFinishText }, I18n.t('text_course_creator_start_and_finish_same'))
@@ -231,7 +246,7 @@ const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.locationContainer }),
-    concat(text({ style: styles.trackingText }, props.selectedMarkDeviceTracking)),
+    concat(text({ style: styles.trackingText }, props.selectedMarkDeviceTrackingCaption)),
     touchableOpacity({
       style: styles.changeTrackingButton,
       onPress: () => props.navigation.navigate(Screens.CourseTrackerBinding,
@@ -300,7 +315,7 @@ const PositionSelector = fromClass(SwitchSelector).contramap((props: any) => ({
   options: locationTypes,
   initial: compose(
     when(gt(0), always(0)),
-    findIndex(i => i.value === props.selectedPositionType))(
+    findIndex(i => props.selectedPositionType ? i.value === props.selectedPositionType : i.value === props.defaultPositionType))(
     locationTypes),
   onPress: props.setSelectedPositionType,
   backgroundColor: $MediumBlue,
@@ -329,11 +344,13 @@ const DeleteButton = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.deleteWaypointContainer }),
-    touchableOpacity({ onPress: (props: any) =>
-      props.removeWaypoint({
-        id: props.selectedWaypoint.id,
-        newSelectedId: props.course.waypoints[findIndex(propEq('id', props.selectedWaypoint.id), props.course.waypoints) - 1].id
-      })
+    touchableOpacity({ onPress: (props: any) => {
+        props.removeWaypoint({
+          id: props.selectedWaypoint.id,
+          newSelectedId: props.course.waypoints[findIndex(propEq('id', props.selectedWaypoint.id), props.course.waypoints) - 1].id
+        })
+        props.setSelectedPositionType(null)
+      }
     }),
     view({ style: styles.deleteWaypointButton }),
     concat(deleteIcon))(
@@ -654,8 +671,8 @@ const WaypointsList = Component(props => {
           props.addWaypoint({ index, id: uuidv4() })
         } else {
           props.selectWaypoint(waypoint.id)
-          updateSelectedPositionType(props)
         }
+        props.setSelectedPositionType(null)
       }
 
       return compose(
