@@ -50,5 +50,6 @@ export default interface PositionFix {
   accuracy?: number
   latitude: number
   longitude: number
-  timeMillis: number
+  timeMillis: number,
+  odometer?: number
 }
