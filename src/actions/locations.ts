@@ -55,6 +55,7 @@ export const startLocationUpdates = (
 
     if (!(await LocationService.isEnabled())) {
       await LocationService.start()
+      await LocationService.resetOdometer()
       await LocationService.changePace(true)
     }
 
@@ -114,7 +115,9 @@ export const handleLocation = (gpsFix: PositionFix) => async (dispatch: Dispatch
     return
   }
 
-  dispatch(updateTrackingStatistics(gpsFix))
+  const odometer = await LocationService.getOdometer()
+
+  dispatch(updateTrackingStatistics({ ...gpsFix, odometer }))
 }
 
 export const initLocationUpdates = () => async (dispatch: DispatchType) => {

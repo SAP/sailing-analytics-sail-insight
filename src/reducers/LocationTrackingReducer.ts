@@ -64,11 +64,6 @@ const reducer = handleActions(
       }
       gpsFix = action.payload
 
-      const { lastLatitude, lastLongitude } = state
-      const distance = !lastLatitude || !lastLongitude ?
-        state.distance :
-        state.distance + distanceInM(lastLatitude, lastLongitude, gpsFix.latitude, gpsFix.longitude)
-
       const locationAccuracy = typeof gpsFix.accuracy === 'number' ?
           gpsFix.accuracy :
           null
@@ -86,7 +81,7 @@ const reducer = handleActions(
         locationAccuracy,
         speedInKnots,
         headingInDeg,
-        distance,
+        distance: gpsFix.odometer,
         lastLatitude: gpsFix.latitude,
         lastLongitude: gpsFix.longitude,
       })
