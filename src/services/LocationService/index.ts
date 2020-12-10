@@ -28,6 +28,7 @@ const config: Config = {
   distanceFilter: 0,
   disableElasticity: true,
   stopOnTerminate: false,
+  desiredOdometerAccuracy: 10,
   isMoving: true,
   heartbeatInterval: 1,
   stopTimeout: 10,
@@ -177,6 +178,8 @@ export const setAccessToken = (token: string) =>
       accessToken: token
     },
   })
+
+export const { getOdometer, resetOdometer } = BackgroundGeolocation
 
 export const setVerboseLogging = (verboseLogging: boolean) =>
   BackgroundGeolocation.setConfig({
