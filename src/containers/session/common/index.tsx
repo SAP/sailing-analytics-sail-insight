@@ -383,7 +383,7 @@ const shareActionSheet = curry((Comp: any) => Component(props => compose(
   connectActionSheet,
   touchableOpacity({
     onPress: props => props.showActionSheetWithOptions({
-      options: ['Share SAP Analytics Link', 'Visit Overall Leaderboard', 'Cancel'],
+      options: ['Share SAP Sailing Analytics Link', 'Visit Overall Leaderboard', 'Cancel'],
       cancelButtonIndex: 2,
     },
     compose(
