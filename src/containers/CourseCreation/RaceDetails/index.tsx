@@ -151,7 +151,7 @@ const raceNumberSelector = Component((props: any) =>
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       selectedValue: props.numberOfRaces,
-      onValueChange: v => props.updateEventSettings(props.session, { numberOfRaces: v }),
+      onValueChange: value => value && props.updateEventSettings(props.session, { numberOfRaces: value })
     }))(
     FramedNumber.contramap(always({ value: props.numberOfRaces }))))
 
