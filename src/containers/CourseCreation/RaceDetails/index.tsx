@@ -210,7 +210,7 @@ const raceAnalyticsButton = Component((props: any) =>
         }]
       ])
     }))(
-    text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
+    text({ style: styles.sapAnalyticsButton }, I18n.t('caption_go_to_sap_analytics').toUpperCase())))
 
 const clockIcon = Component((props: any) => compose(
   fold(props),

@@ -411,7 +411,8 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withoutTitle, withoutHeaderLeft)({
     name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
     options: {
-      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigationContainer.current.navigate(Screens.Main)}>{I18n.t('caption_skip')}</TextButton>
+      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigationContainer.current.navigate(Screens.Main)}>{I18n.t('caption_skip')}</TextButton>,
+      gestureEnabled: false
     }
   })),
   stackScreen(compose(withLeftHeaderBackButton, withTransparentHeader, withoutTitle)({

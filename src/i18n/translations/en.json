@@ -441,7 +441,8 @@
   "text_finish_waypoint_long_name": "Finish",
   "text_finish_waypoint_short_name": "F",
 
-  "caption_sap_analytics_header": "SAP Analytics",
+  "caption_sap_analytics_header": "SAP Sailing Analytics",
+  "caption_go_to_sap_analytics": "Go to SAP Sailing Analytics",
 
   "text_temporary_mark_inventory": "Currently, you can only delete marks from your inventory. Adding and Editing Marks (Name, Location, etc.) is only possible via the course-creator inside an event. We will soon add these features here.",
 
