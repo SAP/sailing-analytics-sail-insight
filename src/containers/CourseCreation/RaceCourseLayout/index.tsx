@@ -1,6 +1,6 @@
 import { __, compose, always, both, path, when, move, length, subtract, curry, of as Rof,
   prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc, reject,
-  objOf, isNil, not, equals, pick, ifElse, insert, complement, uncurryN, apply,
+  objOf, isNil, not, equals, ifElse, insert, complement, uncurryN, apply, T, cond,
   propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head, isEmpty, either } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
@@ -29,6 +29,7 @@ import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguratio
   hasEditedCourseChanged,
   getLinesAndGateOptionsForCurrentEventAndWaypoint } from 'selectors/course'
 import { getLocationStats } from 'selectors/location'
+import { getSelectedEventInfo } from 'selectors/event'
 import {
   getFilteredMarkPropertiesAndMarksOptionsForCourse,
   getMarkPropertiesOrMarkForCourseByName
@@ -51,10 +52,10 @@ import I18n from 'i18n'
 
 const mapIndexed = addIndex(map)
 
-const mapStateToProps = (state: any) => ifElse(
-  getCourseLoading,
-  always({ loading: true }),
-  state => ({
+const mapStateToProps = (state: any) => cond([
+  [getCourseLoading, always({ loading: true })],
+  [compose(isNil, getSelectedEventInfo), always({})],
+  [T, state => ({
     course: getEditedCourse(state),
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMarkConfiguration: getSelectedMarkConfiguration(state),
@@ -80,7 +81,7 @@ const mapStateToProps = (state: any) => ifElse(
     newLineMarkOptions: [
       getMarkPropertiesOrMarkForCourseByName('Line Mark 1')(state),
       getMarkPropertiesOrMarkForCourseByName('Line Mark 2')(state)]
-  }))
+  })]])
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
@@ -610,6 +611,11 @@ const WaypointsList = Component(props => {
   const waypointWidth = 60
   const windowWidth = Dimensions.get('window').width
   let finishWidth = 175
+
+  if (!props.course) {
+    return null
+  }
+
   let svgWidth = startWidth + (props.course.waypoints.length - 1) * waypointWidth + finishWidth
 
   if (windowWidth > svgWidth) {
