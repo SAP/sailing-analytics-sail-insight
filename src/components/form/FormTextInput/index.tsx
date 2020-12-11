@@ -10,6 +10,21 @@ class FormTextInput extends React.Component<ViewProps & RNTextInputProps & Wrapp
   input?: any,
   meta?: any,
 } > {
+  public state = {
+    text: this.props.value || '',
+    previousPropsText: undefined
+  }
+
+  static getDerivedStateFromProps(nextProps: any, previousState: any) {
+    if (nextProps.value !== previousState.previousPropsText) {
+      return { 
+        text: nextProps.value,
+        previousPropsText: nextProps.value
+      }
+    }
+    return null
+  }
+
   public render() {
     const {
       label,
@@ -19,6 +34,8 @@ class FormTextInput extends React.Component<ViewProps & RNTextInputProps & Wrapp
       ...additionalProps
     } = this.props
 
+    const { text: stateText } = this.state
+
     return (
       <TextInput
         style={style}
@@ -27,6 +44,7 @@ class FormTextInput extends React.Component<ViewProps & RNTextInputProps & Wrapp
         onChangeText={onChange}
         {...restInput}
         {...additionalProps}
+        value={stateText}
       />
     )
   }
