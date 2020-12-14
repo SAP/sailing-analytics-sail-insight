@@ -59,10 +59,10 @@ const mapStateToProps = (state: any) => ifElse(
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMarkConfiguration: getSelectedMarkConfiguration(state),
     isDefaultWaypointSelection: isDefaultWaypointSelection(state),
-    defaultPositionType: (!isNil(compose(prop('trackingDeviceHash'))(getSelectedMarkDeviceTracking(state))) || isEmpty(getSelectedMarkPosition(state))) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation,
+    defaultPositionType: (compose(not, isNil, prop('trackingDeviceHash'))(getSelectedMarkDeviceTracking(state)) || isEmpty(getSelectedMarkPosition(state))) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation,
     selectedMarkProperties: getSelectedMarkProperties(state),
     selectedMarkLocation: getSelectedMarkPosition(state),
-    selectedMarkDeviceTracking: compose(prop('trackingDeviceHash'))(getSelectedMarkDeviceTracking(state)),
+    selectedMarkDeviceTracking: prop('trackingDeviceHash', getSelectedMarkDeviceTracking(state)),
     selectedMarkDeviceTrackingCaption: compose(
       defaultTo(I18n.t('text_course_creation_no_device_assigned')),
       unless(isNil, ifElse(
