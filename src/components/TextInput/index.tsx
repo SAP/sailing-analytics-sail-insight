@@ -44,14 +44,19 @@ class TextInput extends React.Component<ViewProps & RNTextInputProps & TextInput
     height: 0,
     isEntrySecured: true,
     isFocused: false,
+    previousPropsText: undefined
   }
 
   private input?: any
 
-  static getDerivedStateFromProps(props: any, _: any) {
-    return {
-      text: props.value
+  static getDerivedStateFromProps(nextProps: any, previousState: any) {
+    if (nextProps.value !== previousState.previousPropsText) {
+      return { 
+        text: nextProps.value,
+        previousPropsText: nextProps.value
+      }
     }
+    return null
   }
 
   public render() {
