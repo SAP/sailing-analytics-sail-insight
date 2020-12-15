@@ -16,10 +16,11 @@ class FormTextInput extends React.Component<ViewProps & RNTextInputProps & Wrapp
   }
 
   static getDerivedStateFromProps(nextProps: any, previousState: any) {
-    if (nextProps.value !== previousState.previousPropsText) {
+    const value = nextProps.input.value || nextProps.input.defaultValue
+    if (value !== previousState.previousPropsText) {
       return { 
-        text: nextProps.value,
-        previousPropsText: nextProps.value
+        text: value,
+        previousPropsText: value
       }
     }
     return null
