@@ -229,11 +229,17 @@ export const createUserAttachmentToSession = (
             err.data && typeof err.data === 'string' && err.data.startsWith('Device is already registered')) {
             // allow already joined race from the same device, if biding is allowed
             const competitor =  getExistingLeaderboardCompetitor(regattaName)(getState())
+
             if (competitor) {
               competitorId = competitor.id
               boatId = competitor.id
             } else {
-              throw err
+              // Temporary fix to avoid a loop when registering for an event
+              // Assign a black competitor and id so that the app at least
+              // can track. To be replaced with the proper solution of asking
+              // the user what to do with existing/new competitor-device bindings.
+              competitorId = 'unknown'
+              boatId = 'unknown'
             }
           } else {
             throw err
@@ -252,8 +258,10 @@ export const createUserAttachmentToSession = (
 
     // ownership request for competitor and boat
     // add competitor id, boat it to server only if event is on the current logged in server
-    if (user && boatId && competitorId && isSameServer) {
-      await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
+    if (user && boatId && competitorId && isSameServer && competitorId !== 'unknown') {
+      try {
+        await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
+      } catch (err) {}
     }
 
     dispatch(updateCheckInAndEventInventory({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
