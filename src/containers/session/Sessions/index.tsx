@@ -1,9 +1,10 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
 
-import { ActivityIndicator, Image, Text, TouchableOpacity, View, ViewProps, Platform, RefreshControl, ScrollView } from 'react-native'
+import { ActivityIndicator, Image, Text, TouchableOpacity, View,
+  ViewProps, Platform, RefreshControl, Alert } from 'react-native'
 import { connect } from 'react-redux'
-
+import { isPlatformAndroid } from 'environment'
 import * as Screens from 'navigation/Screens'
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { ShowActionSheetType } from 'helpers/types'
@@ -56,7 +57,13 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
         case 'CREATE':
           return this.props.authBasedNewSession(...args)
         case 'TRACK':
-          return this.props.startTracking(...args)
+          console.log('tracking selected')
+          if (isPlatformAndroid) {
+            return Alert.alert(I18n.t('text_background_tracking_disclosure_title'), I18n.t('text_background_tracking_disclosure_content'),
+              [{ text: I18n.t('caption_ok'), onPress: () => this.props.startTracking(...args) }])
+          } else {
+            return this.props.startTracking(...args)
+          }
       }
     },
     1500,
