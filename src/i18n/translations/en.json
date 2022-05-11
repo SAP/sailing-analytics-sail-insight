@@ -128,8 +128,10 @@
   "text_empty_sessions_account_title": "You want to track yourself?",
   "text_empty_sessions_account_text": "Register and find out what Sail Insight powered by SAP is capable of.",
   "text_not_implemented_yet": "Not implemented yet.",
+  "text_background_tracking_disclosure_title": "Background Location Access",
+  "text_background_tracking_disclosure_content": "Sail Insight collects location data to enable boat tracking in races even when the app is closed or not in use.\n\nThis data will be uploaded to SAP Sailing Analytics for live tracking of all competitors.",
   "text_background_tracking_permission_title": "Allow Sail Insight to access this device's location even when closed or not in use.",
-  "text_background_tracking_permission_message": "Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.",
+  "text_background_tracking_permission_message": "This app collects location data to enable tracking even when closed or not in use.",
   "text_background_tracking_permission_allow": "Change to Allow all the time",
   "text_tracking_maneuvers": "Maneuvers",
   "text_tracking_alert_already_running_title": "Start and Dismiss?",
@@ -323,7 +325,7 @@
   "error_device_already_exists": "This device is already registered to this regatta",
 
   "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
-  "url_privacy_policy": "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",
+  "url_privacy_policy": "https://support.sapsailing.com/hc/en-us/articles/4912517259794-Sail-Inisght-Privacy-Policy",
 
   "JIBE": "Jibe",
   "HEAD_UP": "Heading Up",

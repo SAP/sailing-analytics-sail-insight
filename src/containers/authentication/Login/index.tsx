@@ -11,6 +11,7 @@ import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import * as Screens from 'navigation/Screens'
 import { PasswordReset } from 'navigation/Screens'
 import { isNetworkConnected } from 'selectors/network'
+import EulaLink from 'components/EulaLink'
 
 import I18n from 'i18n'
 
@@ -143,6 +144,7 @@ class Login extends TextInputForm<{
                   {I18n.t('caption_forgot_password')} {'›'}
                 </Text>
               </TouchableOpacity>
+              <EulaLink mode="LOGIN" />
             </View>
           </ScrollContentView>
         </LinearGradient>

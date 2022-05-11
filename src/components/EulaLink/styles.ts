@@ -1,7 +1,11 @@
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 export default EStyleSheet.create({
-    textLink: {
-        color: '$siSapYellow',
-    }
+  text: {
+    fontSize: 14,
+    lineHeight: 20
+  },
+  textLink: {
+    color: '$siSapYellow'
+  }
 })
