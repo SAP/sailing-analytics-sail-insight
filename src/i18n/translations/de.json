@@ -1,12 +1,7 @@
 {
-  "title_welcome": "Willkommen",
-  "title_regattas": "Regatten",
-  "title_check_in": "Sail Insight powered by SAP",
-  "title_app_settings": "Einstellungen",
   "title_your_account": "Dein Account",
   "title_your_team": "Dein Team",
   "title_maneuver_monitor": "Manöver-Monitor",
-  "title_edit_session": "Bearbeiten",
   "title_set_wind": "Wind Werte",
   "title_leaderboard": "Rangliste",
   "title_eula": "AGB",
@@ -23,8 +18,6 @@
   "title_add_boat_02": "Boot",
   "title_add_boat_03": " hinzufügen",
   "title_edit_competitor": "Bearbeiten Teilnehmer",
-
-  "text_more_information_at" : "Mehr Informationen auf",
   "text_device_id": "Geräte-ID",
   "text_accuracy": "Genauigkeit",
   "text_unsent_gps_fixes": "Ungesendete GPS-Positionen",
@@ -193,7 +186,11 @@
   "text_link_copied_to_clipboard": "Link in die Zwischenablage kopiert",
   "text_course_saved": "Kurs erfolgreich gespeichert",
   "text_automatic_time_warning": "Bitte aktivieren Sie die automatische Zeit und Zeitzone in den Einstellungen Ihres Telefons, damit die Nachverfolgung genau ist.",
-
+  "text_mark_inventory": "Mark Inventory",
+  "text_delete_mark": "Delete mark",
+  "text_deleting_mark": "Deleting Mark",
+  "text_delete_mark_prompt": "Do you really want to irretrievably delete {{mark}}?",
+  "text_decide_for_action": "Decide for an action",
   "user_profile_alert_text" : "Alle auf dem Telefon gespeicherten Events und Tracks werden gelöscht. Momentan ist es nicht möglich diese Daten wiederherzustellen.",
   "user_profile_alert_label" : "Logout",
 

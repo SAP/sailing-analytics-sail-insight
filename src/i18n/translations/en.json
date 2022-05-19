@@ -1,12 +1,7 @@
 {
-  "title_welcome": "Welcome",
-  "title_regattas": "Regattas",
-  "title_check_in": "Sail Insight powered by SAP",
-  "title_app_settings": "Settings",
   "title_your_account": "Your account",
   "title_your_team": "Your boat",
   "title_maneuver_monitor": "Maneuver Monitor",
-  "title_edit_session": "Edit",
   "title_set_wind": "Set wind",
   "title_leaderboard": "Leaderboard",
   "title_eula": "Terms and Conditions",
@@ -23,9 +18,7 @@
   "title_add_boat_02": "Boat",
   "title_add_boat_03": "",
   "title_edit_competitor": "Edit competitor",
-
   "text_more": "More",
-  "text_more_information_at": "More information at",
   "text_device_id": "Device id",
   "text_accuracy": "Accuracy",
   "text_unsent_gps_fixes": "Unsent GPS fixes",
@@ -197,7 +190,11 @@
   "text_link_copied_to_clipboard": "Link copied to clipboard",
   "text_course_saved": "Course successfully saved",
   "text_automatic_time_warning": "Please enable automatic time and timezone in your phone's settings for tracking to be accurate.",
-
+  "text_mark_inventory": "Mark Inventory",
+  "text_delete_mark": "Delete mark",
+  "text_deleting_mark": "Deleting Mark",
+  "text_delete_mark_prompt": "Do you really want to irretrievably delete {{mark}}?",
+  "text_decide_for_action": "Decide for an action",
   "user_profile_alert_text" : "Please note that all tracking data will be deleted from your phone. Currently it is not possible to restore it after logging in.",
   "user_profile_alert_label" : "Logout",
 

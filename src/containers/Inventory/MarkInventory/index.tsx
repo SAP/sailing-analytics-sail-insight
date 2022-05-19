@@ -74,17 +74,17 @@ const MarkPropertiesItem = Component((props: object) =>
       onPress: () => {
         Alert.alert(
           '',
-          'Decide for an action',
+          I18n.t('text_decide_for_action'),
           [
             //{ text: 'Edit mark' },
             //{ text: 'Share mark' },
-            { text: 'Delete mark', onPress: () => {
-              Alert.alert('Deleting Mark', `Do you really want to irretrievably delete ${props.item.name}?`, [
-                { text: 'Yes', onPress: () => props.deleteMarkProperties(props.item) },
-                { text: 'No' },
+            { text: I18n.t('text_delete_mark'), onPress: () => {
+              Alert.alert(I18n.t('text_deleting_mark'), I18n.t('text_delete_mark_prompt', { mark: props.item.name }), [
+                { text: I18n.t('button_yes'), onPress: () => props.deleteMarkProperties(props.item) },
+                { text: I18n.t('button_no') },
               ])
             }},
-            { text: 'Cancel' },
+            { text: I18n.t('caption_cancel') },
           ])
       }
     }),
@@ -117,6 +117,6 @@ export default Component((props: object) =>
       }),
     withLoadingOfMarkProperties,
     view({ style: styles.mainContainer }),
-    concat(text({ style: styles.title }, 'MARK INVENTORY')),
+    concat(text({ style: styles.title }, I18n.t('text_mark_inventory').toUpperCase())),
     concat(CreateNewSelector))(
     List))

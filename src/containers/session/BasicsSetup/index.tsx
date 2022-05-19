@@ -154,7 +154,7 @@ export default Component((props: Object) => compose(
   concat(__, view({ style: styles.containerAngledBorder }, nothing())),
   view({ style: styles.container }),
   reduce(concat, nothing()))([
-    text({ style: styles.sectionHeaderStyle }, 'BASICS'),
+    text({ style: styles.sectionHeaderStyle }, I18n.t('caption_basics').toUpperCase()),
     nameInput,
     dateInput,
     locationInput,
