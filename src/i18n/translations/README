@@ -1,0 +1,9 @@
+These message files are authored in the development languages en.json and de.json.
+Then, they shall be copied to the Git repo at ssh://trac@sapsailing.com/home/trac/git 
+into folder mobile/sailinsight/src/i18n/translations and pushed to the translation
+branch in the SAP-internal Gerrit repo. They will be picked up by the SAP language
+labs and translated into all other project languages. They will show up on the
+translation branch of the SAP-internal Gerrit repo approximately one week later
+and can be pushed to the ssh://trac@sapsailing.com/home/trac/git repo and then
+copied to this repository into this folder to have them available for an app
+build of the Sail Insight app.
