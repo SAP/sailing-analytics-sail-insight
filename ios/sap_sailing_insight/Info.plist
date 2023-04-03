@@ -2,14 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.transistorsoft.fetch</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Sail Insight</string>
+	<string>sap_sailing_insight</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -21,28 +17,15 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.9.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>orgsailyachtresearchsailinsight</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
-	<string>157</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
@@ -52,51 +35,8 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>App requires media library</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>App requires calendar</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Sail Insight requires camera access, to be able to scan QR-Codes and take a team photo. The permission is only used for this functionality.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>Accelerometer use increases battery efficiency by intelligently toggling location-tracking</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Sail Insight requires photo library, so you can choose one of your photos as the team image. The permission is only used for this functionality.</string>
-	<key>Permitted background task scheduler identifiers</key>
-	<array>
-		<string>com.transistorsoft.fetch</string>
-	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>BentonSans-Bold.otf</string>
-		<string>BentonSans-ExtraLight.otf</string>
-		<string>BentonSans-Light.otf</string>
-		<string>BentonSans-Medium.otf</string>
-		<string>BentonSans-Regular.otf</string>
-		<string>BentonSans-Thin.otf</string>
-		<string>FloodStd.otf</string>
-		<string>SFCompactText-Bold.otf</string>
-		<string>SFCompactText-Regular.otf</string>
-		<string>SFProDisplay-Bold.otf</string>
-		<string>SFProDisplay-Heavy.otf</string>
-		<string>SFProDisplay-HeavyItalic.otf</string>
-		<string>SFProDisplay-Light.otf</string>
-		<string>SFProDisplay-Medium.otf</string>
-	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>location</string>
-		<string>processing</string>
-	</array>
+	<string></string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -106,20 +46,10 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>branch_app_domain</key>
-	<string>sailinsight30-app.sapsailing.com</string>
-	<key>branch_key</key>
-	<dict>
-		<key>live</key>
-		<string>key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0</string>
-	</dict>
 </dict>
 </plist>

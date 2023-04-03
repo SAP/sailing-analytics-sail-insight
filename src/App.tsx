@@ -15,7 +15,8 @@ initStyles()
 const store = getStore()
 const persistor = getPersistor()
 
-Platform.OS === 'ios' && enableScreens()
+// @todo the following line is probably not required anymore as per BC break of the lib; double check this
+// Platform.OS === 'ios' && enableScreens()
 
 // enable hot module replacement for reducers
 if (module.hot) {
