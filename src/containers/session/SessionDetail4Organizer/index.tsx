@@ -38,7 +38,7 @@ import { shouldShowCopyResultsDisclaimer, shouldShowEditResultsDisclaimer } from
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { showUnknownErrorSnackbarMessage } from 'helpers/errors'
-import Clipboard from '@react-native-community/clipboard'
+import Clipboard from '@react-native-clipboard/clipboard'
 import Snackbar from 'react-native-snackbar'
 
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)

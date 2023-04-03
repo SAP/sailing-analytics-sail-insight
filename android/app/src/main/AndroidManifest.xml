@@ -1,6 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.sailyachtresearch.sailinsight">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -9,9 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission
-          android:name="android.permission.READ_PHONE_STATE"
-          tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove" />
 
     <application
       android:name=".MainApplication"
@@ -19,56 +15,53 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme"
-      android:largeHeap="true"
-      android:networkSecurityConfig="@xml/network_security_config">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="sensor">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <!-- Branch URI Scheme -->
-            <intent-filter>
-              <data android:scheme="${branchIOScheme}" />
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-
-            <!-- Branch App Links (optional) -->
-            <intent-filter android:autoVerify="true">
-              <action android:name="android.intent.action.VIEW" />
-              <category android:name="android.intent.category.DEFAULT" />
-              <category android:name="android.intent.category.BROWSABLE" />
-              <data android:scheme="https" android:host="${branchIOAppLink}" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-
-        <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="3dc9e130898c2eaa54dbc5d29a6947337e460e82acda40c3c4e5da034dfc2ad6" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBSHpWlDYpWOAeTZ0jo8qLreEpNINs0u1s"/>
-
-        <!-- Branch init -->
-        <meta-data android:name="io.branch.sdk.BranchKey" android:value="${branchIOKey}" />
-        <!--<meta-data android:name="io.branch.sdk.BranchKey.test" android:value="branchIOTestKey" />-->
-        <meta-data android:name="io.branch.sdk.TestMode" android:value="${branchIOTestMode}" />
-        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
-
-        <!-- Branch install referrer tracking (optional) -->
-        <receiver android:name="io.branch.referral.InstallListener" android:exported="true">
+      android:theme="@style/AppTheme">
+      <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+        android:launchMode="singleTask"
+        android:windowSoftInputMode="adjustResize"
+        android:exported="true">
         <intent-filter>
-        <action android:name="com.android.vending.INSTALL_REFERRER" />
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-        </receiver>
-    </application>
 
+        <!-- Branch URI Scheme -->
+        <intent-filter>
+          <data android:scheme="${branchIOScheme}" />
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+        </intent-filter>
+
+        <!-- Branch App Links (optional) -->
+        <intent-filter android:autoVerify="true">
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="https" android:host="${branchIOAppLink}" />
+        </intent-filter>
+      </activity>
+
+      <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="3dc9e130898c2eaa54dbc5d29a6947337e460e82acda40c3c4e5da034dfc2ad6" />
+
+      <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyBSHpWlDYpWOAeTZ0jo8qLreEpNINs0u1s"/>
+
+      <!-- Branch init -->
+      <meta-data android:name="io.branch.sdk.BranchKey" android:value="${branchIOKey}" />
+      <!--<meta-data android:name="io.branch.sdk.BranchKey.test" android:value="branchIOTestKey" />-->
+      <meta-data android:name="io.branch.sdk.TestMode" android:value="${branchIOTestMode}" />
+      <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+
+      <!-- Branch install referrer tracking (optional) -->
+      <receiver android:name="io.branch.referral.InstallListener" android:exported="true">
+        <intent-filter>
+          <action android:name="com.android.vending.INSTALL_REFERRER" />
+        </intent-filter>
+      </receiver>
+    </application>
 </manifest>
