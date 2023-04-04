@@ -1,7 +1,6 @@
 import { get } from 'lodash'
 import React, { useEffect } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
-import KeepAwake from 'react-native-keep-awake'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import { connect } from 'react-redux'
 import { NavigationEvents } from '@react-navigation/compat'
@@ -36,6 +35,7 @@ import styles from './styles'
 import ScrollContentView from 'components/ScrollContentView';
 import Toast from 'react-native-root-toast'
 import { NavigationScreenProps } from 'react-navigation'
+import {activateKeepAwake, deactivateKeepAwake} from "@sayem314/react-native-keep-awake";
 
 const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
@@ -89,12 +89,12 @@ class Tracking extends React.Component<NavigationScreenProps & {
           onWillFocus={() => {
             BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
             this.setState({ isFocused: true })
-            KeepAwake.activate()
+            activateKeepAwake();
           }}
           onWillBlur={() => {
             BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
             this.setState({ isFocused: false })
-            KeepAwake.deactivate()
+            deactivateKeepAwake();
           }}
         />
         <LeaderboardFetcher rankOnly />
