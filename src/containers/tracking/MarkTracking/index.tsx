@@ -1,6 +1,5 @@
 import { always, compose, concat, not, prop, reduce } from 'ramda'
 import { Alert, Dimensions } from 'react-native'
-import KeepAwake from 'react-native-keep-awake'
 
 import Images from '@assets/Images'
 import I18n from 'i18n'
@@ -26,6 +25,7 @@ import { getLocationStats, getLocationTrackingStatus } from 'selectors/location'
 import { getUnknownErrorMessage } from 'helpers/texts'
 
 import styles, { deleteBindingColor, headerImageBackgroundColor } from './styles'
+import {activateKeepAwake, deactivateKeepAwake} from "@sayem314/react-native-keep-awake";
 
 const mapStateToProps = (state: any) => ({
   markName: getNameOfBoundMark(state),
@@ -39,10 +39,10 @@ const nothingIfNotTracking = branch(compose(not, prop('isTracking')), nothingAsC
 
 const withKeepAwake = lifecycle({
   componentDidMount() {
-    KeepAwake.activate()
+    activateKeepAwake()
   },
   componentWillUnmount() {
-    KeepAwake.deactivate()
+    deactivateKeepAwake()
   }
 })
 
