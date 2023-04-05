@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
-import ScreenOrientation, { PORTRAIT, LANDSCAPE } from 'react-native-orientation-locker/ScreenOrientation'
+import { OrientationLocker, PORTRAIT, LANDSCAPE } from 'react-native-orientation-locker'
 
 import { compose, reduce, concat, mergeDeepLeft, merge,
   includes, once, when, always, reject, isNil } from 'ramda'
@@ -195,9 +195,9 @@ const MarkLocationHeader = connect(
 
 const navigationContainer = React.createRef()
 
-const EditResultsComponent = (props: any) => 
+const EditResultsComponent = (props: any) =>
   <WebView {...props}>
-    <ScreenOrientation orientation={LANDSCAPE}/>
+    <OrientationLocker orientation={LANDSCAPE}/>
   </WebView>
 
 // ----------------------------------------------------------------------------
@@ -470,7 +470,7 @@ class AppRoot extends ReactComponent {
       <ActionSheetProvider>
         <AuthContext.Provider value = {{ isLoggedIn }}>
           <NavigationContainer ref={navigationContainer}>
-            <ScreenOrientation orientation={PORTRAIT}/>
+            <OrientationLocker orientation={PORTRAIT}/>
             { AppNavigator.fold(this.props) }
           </NavigationContainer>
         </AuthContext.Provider>

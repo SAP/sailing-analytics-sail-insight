@@ -8,6 +8,7 @@ import { getPersistor, getStore } from 'store'
 import { initStyles, recalculateStyles } from 'styles'
 import AppRoot from './AppRoot'
 import { enableScreens } from 'react-native-screens'
+import 'react-native-get-random-values';
 
 declare var module: any
 
