@@ -1,5 +1,6 @@
-import I18n from 'react-native-i18n'
-
+import {I18nManager} from 'react-native';
+import * as RNLocalize from 'react-native-localize';
+import { I18n as I18nJS } from 'i18n-js';
 
 export const SupportedLocales: any = {
   da: 'da',
@@ -15,8 +16,7 @@ export const SupportedLocales: any = {
   zh: 'zh'
 }
 
-I18n.fallbacks = true
-I18n.translations = {
+const translations = {
   [SupportedLocales.da]: require('./translations/da.json'),
   [SupportedLocales.de]: require('./translations/de.json'),
   [SupportedLocales.en]: require('./translations/en.json'),
@@ -28,6 +28,15 @@ I18n.translations = {
   [SupportedLocales.ru]: require('./translations/ru.json'),
   [SupportedLocales.sl]: require('./translations/sl.json'),
   [SupportedLocales.zh]: require('./translations/zh.json')
-}
+};
 
-export default I18n
+const defaultLanguage = { languageTag: 'en', isRTL: false };
+const selectedLanguage = RNLocalize.findBestAvailableLanguage(Object.keys(translations)) || defaultLanguage;
+
+I18nManager.forceRTL(selectedLanguage.isRTL);
+
+const I18n = new I18nJS(translations);
+I18n.locale = selectedLanguage.languageTag;
+I18n.defaultLocale = defaultLanguage.languageTag;
+
+export default I18n;
