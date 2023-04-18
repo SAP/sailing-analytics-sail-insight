@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 apply plugin: "com.google.gms.google-services"
+apply plugin: "com.google.firebase.crashlytics"
 
 import com.android.build.OutputFile
 
@@ -94,13 +95,15 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.sap_sailing_insight"
+    namespace "org.sailyachtresearch.sailinsight"
     defaultConfig {
-        applicationId "com.sap_sailing_insight"
+        applicationId "org.sailyachtresearch.sailinsight"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        missingDimensionStrategy 'react-native-camera', 'general'
     }
 
     splits {
@@ -147,6 +150,31 @@ android {
 
         }
     }
+
+    flavorDimensions "default"
+
+        productFlavors {
+            dev {
+                dimension "default"
+                manifestPlaceholders = [
+                        branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0",
+                        branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_lhTIEBBwuu6qPvasPZfUcnlgyyb3fI7p",
+                        branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight30-app.sapsailing.com",
+                        branchIOTestMode: false,
+                        branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "orgsailyachtresearchsailinsight",
+                ]
+            }
+             live {
+                 dimension "default"
+                 manifestPlaceholders = [
+                         branchIOKey: System.getenv("BRANCH_IO_KEY") ?: "key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0",
+                         branchIOTestKey: System.getenv("BRANCH_IO_TEST_KEY") ?: "key_test_lhTIEBBwuu6qPvasPZfUcnlgyyb3fI7p",
+                         branchIOAppLink: System.getenv("BRANCH_IO_APP_DOMAIN") ?: "sailinsight30-app.sapsailing.com",
+                         branchIOTestMode: false,
+                         branchIOScheme: System.getenv("BRANCH_IO_SCHEME") ?: "orgsailyachtresearchsailinsight",
+                 ]
+             }
+        }
 }
 
 dependencies {
@@ -169,3 +197,6 @@ dependencies {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+Project background_geolocation = project(':react-native-background-geolocation')
+apply from: "${background_geolocation.projectDir}/app.gradle"

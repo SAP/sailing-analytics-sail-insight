@@ -11,7 +11,7 @@ import {
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
 import { BackHandler, Alert, Keyboard } from 'react-native'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 import { MarkPositionType, PassingInstruction } from 'models/Course'
 import { getStore } from 'store'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,

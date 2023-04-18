@@ -1,4 +1,4 @@
-package com.sap_sailing_insight;
+package org.sailyachtresearch.sailinsight;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
