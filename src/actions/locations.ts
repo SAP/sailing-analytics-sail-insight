@@ -1,6 +1,6 @@
 import { PositionFix } from 'models'
 import * as LocationService from 'services/LocationService'
-import BackgroundGeolocation from 'react-native-background-geolocation-android'
+import BackgroundGeolocation from 'react-native-background-geolocation'
 import { currentTimestampAsText } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { DispatchType, GetStateType } from 'helpers/types'

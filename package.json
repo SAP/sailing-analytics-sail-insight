@@ -9,7 +9,7 @@
     "start": "react-native start",
     "test": "jest",
     "clear-gradle-cache": "rm -rf $HOME/.gradle/",
-    "clear-everything": "rm -rf $TMPDIR/react-* && rm -rf $TMPDIR/metro-* && yarn cache clean && rm -rf android/build && (cd android && ./gradlew clean)"
+    "clear-everything": "rm -rf $TMPDIR/react-* && rm -rf $TMPDIR/metro-* && yarn cache clean && rm -rf android/build && rm -rf android/app/build && (cd android && ./gradlew clean)"
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "^4.0.1",
@@ -45,6 +45,7 @@
     "react": "18.2.0",
     "react-native": "0.71.5",
     "react-native-autocomplete-input": "^5.3.2",
+    "react-native-background-fetch": "^4.1.9",
     "react-native-background-geolocation": "^4.11.1",
     "react-native-background-timer": "^2.4.1",
     "react-native-branch": "^5.8.0",
@@ -89,8 +90,9 @@
     "react-native-version-number": "^0.3.6",
     "react-native-webview": "^12.0.1",
     "react-redux": "^7.2.9",
+    "recompose": "^0.30.0",
     "redux": "^4.2.1",
-    "redux-actions": "^3.0.0",
+    "redux-actions": "^2.6.5",
     "redux-form": "^8.3.10",
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.3",
@@ -114,6 +116,7 @@
     "@types/react-test-renderer": "^18.0.0",
     "@types/redux-actions": "^2.6.2",
     "@types/redux-form": "^8.3.5",
+    "@types/uuid": "^9.0.1",
     "babel-jest": "^29.2.1",
     "babel-plugin-module-resolver": "^5.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
@@ -122,6 +125,7 @@
     "metro-react-native-babel-preset": "0.73.9",
     "prettier": "^2.4.1",
     "react-test-renderer": "18.2.0",
+    "redux-devtools-extension": "^2.13.9",
     "typescript": "4.8.4"
   },
   "jest": {

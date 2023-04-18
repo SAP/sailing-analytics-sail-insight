@@ -7,7 +7,7 @@ import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
 import { all, call, put, select, takeEvery, takeLatest, delay } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe, safeApiCall } from './HelpersSaga'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 import {
   loadCourse,
   saveCourse,
