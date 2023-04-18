@@ -1,4 +1,4 @@
-import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
+import { any, allPass, map, evolve, mergeRight, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, pathEq, propEq, propOr, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
@@ -79,7 +79,7 @@ const newCourse = () => {
 }
 
 const courseWithWaypointIds = evolve({
-  waypoints: map(w => merge(w, { id: uuidv4() }))
+  waypoints: map(w => mergeRight(w, { id: uuidv4() }))
 })
 
 const getMarkConfigurations = curry((course: any) => map(

@@ -1,4 +1,4 @@
-import { __, always, compose, concat, defaultTo, map, merge, reduce, equals } from 'ramda'
+import { __, always, compose, concat, defaultTo, map, mergeRight, reduce, equals } from 'ramda'
 
 import {
   Component,
@@ -63,7 +63,7 @@ const CreateNewSelector = Component((props: object) =>
     always(nothing()),
     view({ style: styles.createNewClassContainer }),
     reduce(concat, nothing()),
-    map(compose(ControlPointClassSelectorItem.contramap, merge)))([
+    map(compose(ControlPointClassSelectorItem.contramap, mergeRight)))([
     { ['class']: ControlPointClass.MarkPair, icon: gateIcon, label: 'Line/Gate' },
     { ['class']: ControlPointClass.Mark, icon: markIcon, label: 'Mark' }]))
 
@@ -99,7 +99,7 @@ const List = Component((props: object) => compose(
   fold(props),
   view({ style: styles.markListContainer }))(
   forwardingPropsFlatList.contramap((props: any) =>
-    merge({
+    mergeRight({
       data: props.markProperties,
       renderItem: MarkPropertiesItem.fold,
     }, props))))

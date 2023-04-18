@@ -1,5 +1,5 @@
 import { debounce } from 'lodash'
-import { __, compose, concat, reduce, merge, ifElse, values,
+import { __, compose, concat, reduce, mergeRight, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
   defaultTo, pick, head, tap, of, flatten, init, nth, map, last, negate,
   equals, reject, all, not } from 'ramda'
@@ -121,7 +121,7 @@ const marker = Component((props: any) => compose(
 const defaultProps = (props) => ({
   ...props,
   region: compose(
-    unless(has('latitudeDelta'), merge({ latitudeDelta: 0.005, longitudeDelta: 0.005 })),
+    unless(has('latitudeDelta'), mergeRight({ latitudeDelta: 0.005, longitudeDelta: 0.005 })),
     when(isEmpty, always(props.currentPosition)),
     when(isNil, always(compose(
       defaultTo({}),
@@ -157,7 +157,7 @@ const Map = Component((props: any) => compose(
 
 const navigationBackHandler = Component((props: any) => compose(
   fold(props),
-  contramap(merge({
+  contramap(mergeRight({
     onDidFocus: (payload: any) => {
       props.navigation.setOptions({
         headerRight: HeaderSaveTextButton({
@@ -204,7 +204,7 @@ const switchSelector = Component(props => compose(
   view({ style: styles.switchSelectorContainer }),
   reduce(concat, nothing()))([
   text({ style: styles.switchSelectorText }, props.switchLabels[0]),
-  fromClass(Switch).contramap(merge({
+  fromClass(Switch).contramap(mergeRight({
     value: props.switchLabels[1] === props.coordinatesDirection,
     ...(Platform.OS === 'android' ? {
       trackColor: { false: 'gray', true: 'gray' },
@@ -222,7 +222,7 @@ const coordinatesInput = Component((props: any) => compose(
     concat(text({ style: styles.coordinatesTitle }, props.title)),
     view({ style: styles.coordinatesControlContainer }),
     reduce(concat, nothing()))([
-      textInput.contramap(merge({
+      textInput.contramap(mergeRight({
         decimal: false,
         value: defaultTo('', props.degrees),
         inputStyle: { width: 70 },
@@ -230,11 +230,11 @@ const coordinatesInput = Component((props: any) => compose(
           const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
 
           props.setInitialRender(true)
-          props.setRegion(merge(props.region, { [props.unit]: ddm2dd([[value || 0, props.minutes, direction]])[0] }))
+          props.setRegion(mergeRight(props.region, { [props.unit]: ddm2dd([[value || 0, props.minutes, direction]])[0] }))
         },
         maxLength: 3 })),
       text({ style: styles.symbolText }, '°'),
-      textInput.contramap(merge({
+      textInput.contramap(mergeRight({
         decimal: true,
         value: defaultTo('', props.minutes),
         inputStyle: { width: 115 },
@@ -242,14 +242,14 @@ const coordinatesInput = Component((props: any) => compose(
           const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
 
           props.setInitialRender(true)
-          props.setRegion(merge(props.region, { [props.unit]: ddm2dd([[props.degrees, value || 0, direction]])[0] }))
+          props.setRegion(mergeRight(props.region, { [props.unit]: ddm2dd([[props.degrees, value || 0, direction]])[0] }))
         },
         maxLength: 6 })),
       text({ style: styles.symbolText }, "'"),
-      switchSelector.contramap(merge({
+      switchSelector.contramap(mergeRight({
         onValueChange: value => {
           props.setInitialRender(true)
-          props.setRegion(merge(props.region, {
+          props.setRegion(mergeRight(props.region, {
             [props.unit]: ddm2dd([[
               props.degrees,
               props.minutes,
@@ -262,7 +262,7 @@ const coordinatesInput = Component((props: any) => compose(
       }))
     ]))
 
-const latitudeInput = coordinatesInput.contramap(props => merge({
+const latitudeInput = coordinatesInput.contramap(props => mergeRight({
   title: 'Latitude',
   unit: 'latitude',
   degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of, prop('latitude'))(props.region),
@@ -277,7 +277,7 @@ const latitudeInput = coordinatesInput.contramap(props => merge({
     values,
     pick(['latitude', 'longitude']))(props.region),
   switchLabels: ['N', 'S'] }, props))
-const longitudeInput = coordinatesInput.contramap(props => merge({
+const longitudeInput = coordinatesInput.contramap(props => mergeRight({
   unit: 'longitude',
   title: 'Longitude',
   degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of, prop('longitude'))(props.region),

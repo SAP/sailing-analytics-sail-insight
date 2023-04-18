@@ -1,5 +1,5 @@
 import { findIndex } from 'lodash'
-import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __, merge, tap } from 'ramda'
+import {  always, compose, concat, mergeLeft, propEq, reduce, when, gt, __, tap } from 'ramda'
 
 import I18n from 'i18n'
 
@@ -83,7 +83,7 @@ export default Component((props: Object) =>
       text({ style: styles.sectionHeaderStyle }, I18n.t('caption_regatta_details').toUpperCase()),
       regattaTypeInput,
       // No recompose higher order function here as it interferes with the
-      // already delicate interop between redux-form and functional component monad 
+      // already delicate interop between redux-form and functional component monad
       props.regattaType === RegattaType.OneDesign ? boatClassInput : nothing(),
       // nothingIfOneDesignSelected(ratingSystemDropdown),
     ]))

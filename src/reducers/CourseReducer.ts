@@ -1,4 +1,4 @@
-import { merge, defaultTo, prop, compose, insert, reject, tap,
+import { mergeRight, defaultTo, prop, compose, insert, reject, tap,
   propEq, head, map, when, mergeLeft, mergeDeepLeft, always, ifElse,
   append, concat, pick, dissoc, evolve, equals, isNil, find, has,
   apply, applySpec, take, move, last, includes, __, path } from 'ramda'
@@ -209,7 +209,7 @@ const editedCourse = combineReducers({
 
 const all = handleActions({
   [loadCourse as any]: (state: any = {}, action: any) =>
-    merge(state, { [action.payload.raceId]: action.payload.course }),
+    mergeRight(state, { [action.payload.raceId]: action.payload.course }),
   [removeUserData as any]: always({})
 }, {})
 

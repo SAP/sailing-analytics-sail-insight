@@ -1,4 +1,4 @@
-import { __, always, compose, concat, defaultTo, merge, mergeLeft, reduce } from 'ramda'
+import { __, always, compose, concat, defaultTo, mergeLeft, reduce } from 'ramda'
 import React from 'react'
 import I18n from 'i18n'
 import moment from 'moment'

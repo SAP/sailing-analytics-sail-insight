@@ -2,7 +2,7 @@ import { prop, propEq, propOr, find, compose, path, defaultTo, append,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
   apply, map, take, move, evolve, dissoc, not, flatten, reject, __, filter,
   curry, reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr,
-  fromPairs, mergeWithKey, values, pick, uniqBy, includes, merge, pathEq
+  fromPairs, mergeWithKey, values, pick, uniqBy, includes, mergeRight, pathEq
 } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
@@ -225,7 +225,7 @@ export const getLinesAndGateOptionsForCurrentEventAndWaypoint = createSelector(
   (isSelectedWaypointLineOrGate, eventCourses, markConfigurationsMap, editedCourse) => compose(
     when(always(isSelectedWaypointLineOrGate), always([])),
     map(compose(
-      merge({ isWaypoint: true }),
+      mergeRight({ isWaypoint: true }),
       evolve({ markConfigurationIds: map(prop(__, markConfigurationsMap)) }))),
     uniqBy(compose(
       reduce(concat, ''),

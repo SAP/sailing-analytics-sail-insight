@@ -1,4 +1,4 @@
-import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
+import { __, compose, concat, curry, mergeRight, reduce, toUpper, propEq,
   prop, isNil, equals } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
@@ -201,7 +201,7 @@ export const endEventCard = Component((props: any) => compose(
 
 
 export default Component((props: any) => compose(
-    fold(merge(props, sessionData)),
+    fold(mergeRight(props, sessionData)),
     connect(
       mapStateToProps,
       { checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta,

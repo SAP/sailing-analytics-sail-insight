@@ -1,5 +1,5 @@
 import { __, compose, always, both, path, when, move, length, subtract, curry, of as Rof,
-  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc, reject,
+  prop, map, reduce, concat, mergeRight, defaultTo, any, take, props as rProps, dissoc, reject,
   objOf, isNil, not, equals, ifElse, insert, complement, uncurryN, apply, T, cond,
   propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head, isEmpty, either } from 'ramda'
 import {
@@ -220,8 +220,8 @@ const GateMarkSelector = Component((props: object) =>
     intersperse(dashLine),
     map(compose(
       GateMarkSelectorItem.contramap,
-      merge,
-      when(propEq('markConfigurationId', props.selectedMarkConfiguration), merge({ selected: true })),
+      mergeRight,
+      when(propEq('markConfigurationId', props.selectedMarkConfiguration), mergeRight({ selected: true })),
       objOf('markConfigurationId'))),
     defaultTo([]),
     path(['selectedWaypoint', 'markConfigurationIds']))(
@@ -232,7 +232,7 @@ const SameStartFinish = Component((props: object) =>
     fold(props),
     view({ style: styles.sameStartFinishContainer }),
     reduce(concat, nothing()))([
-    fromClass(CheckBox).contramap(merge({
+    fromClass(CheckBox).contramap(mergeRight({
       isChecked: props.sameStartFinish,
       onClick: () => {
         props.toggleSameStartFinish()
@@ -440,7 +440,7 @@ const EditButton = Component(props => compose(
 const MarkPropertiesDropdown = Component(props => compose(
   fold(props),
   view({ style: styles.markNameEditContainer }),
-  concat(__, EditButton.contramap(merge({
+  concat(__, EditButton.contramap(mergeRight({
     onPress: () => props.setEditingMarkName(!props.editingMarkName)
   }))),
   touchableOpacity({
@@ -459,7 +459,7 @@ const GateNameDropdown = Component(props => compose(
   touchableOpacity({ style: styles.markNameEditContainer,
     onPress: () => props.setEditingGateName(!props.editingGateName) }),
   view({ style: { flex: 1, flexDirection: 'row' }}),
-  concat(__, EditButton.contramap(merge({ onPress: () => props.setEditingGateName(!props.editingGateName) }))),
+  concat(__, EditButton.contramap(mergeRight({ onPress: () => props.setEditingGateName(!props.editingGateName) }))),
   view({ style: { ...styles.markPropertiesDropdownTextContainer, flex: 1 } }),
   text({ style: styles.markPropertiesDropdownText }))(
   `(${defaultTo('', props.selectedWaypoint.controlPointShortName)}) ${defaultTo('', props.selectedWaypoint.controlPointName)}`))
@@ -475,7 +475,7 @@ compose(
       if (props.item.isWaypoint) {
         props.updateWaypoint({
           id: props.selectedWaypoint.id,
-          waypoint: merge(props.item, { id: uuidv4() })
+          waypoint: mergeRight(props.item, { id: uuidv4() })
         })
       } else {
         if (isEmptyWaypoint(props)) {
@@ -542,7 +542,7 @@ const MarksOrMarkPropertiesOptionsList = Component((props: object) => compose(
     fold(props),
     scrollView({ style: styles.markPropertiesListContainer, nestedScrollEnabled: true, flexGrow: 0 }))(
     forwardingPropsFlatList.contramap((props: any) =>
-      merge({
+      mergeRight({
         data: marksAndMarkPropertiesWithoutTheOtherGateSideMark(props),
         renderItem: MarksOrMarkPropertiesOptionsListItem.fold
       }, props))))
@@ -556,8 +556,8 @@ const ShortAndLongName = Component((props: object) =>
     reduce(concat, nothing()),
     mapIndexed((data, index) => compose(
       view({ style: index === 1 ? { marginLeft: 30 } : { flex: 1, flexBasis: 1 }}),
-      compose(TextInputWithLabel.contramap, merge),
-      merge({
+      compose(TextInputWithLabel.contramap, mergeRight),
+      mergeRight({
         maxLength: index === 1 ? 4 : 100,
         inputStyle: styles.textInput,
         inputContainerStyle: styles.textInputContainer,
@@ -592,8 +592,8 @@ const PassingInstructions = Component((props: object) =>
     reduce(concat, nothing()),
     map(compose(
       PassingInstructionItem.contramap,
-      merge,
-      when(propEq('type', props.selectedWaypoint.passingInstruction), merge({ selected: true })))),
+      mergeRight,
+      when(propEq('type', props.selectedWaypoint.passingInstruction), mergeRight({ selected: true })))),
     ifElse(isGateWaypoint, always(gatePassingInstructions), always(singleMarkPassingInstructions)))(
     props))
 
@@ -607,15 +607,15 @@ const WaypointEditForm = Component((props: any) =>
       reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(nothingWhenNotStartOrFinishGate(SameStartFinish)),
       nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(GateNameDropdown))),
-      nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(merge({ items: gateNameInputData(props), isGateEdit: true })))))),
+      nothingWhenStartOrFinishGate(nothingWhenNotAGate(nothingWhenEmptyWaypoint(nothingWhenNotEditingGateName(ShortAndLongName.contramap(mergeRight({ items: gateNameInputData(props), isGateEdit: true })))))),
       nothingWhenEmptyWaypoint(nothingWhenNotAGate(GateMarkSelector))
     ])),
     when(always(isGateWaypoint(props)), view({ style: styles.gateEditContainer })),
     reduce(concat, nothing()))([
       nothingWhenEmptyWaypoint(MarkPropertiesDropdown),
       nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(MarksOrMarkPropertiesOptionsList)),
-      nothingWhenStartOrFinishGate(nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector.contramap(merge({ insideGate: isGateWaypoint(props) }))))),
-      nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(merge({ items: markNamesInputData(props) })))),
+      nothingWhenStartOrFinishGate(nothingWhenEmptyWaypoint(nothingWhenNoShowMarkProperties(CreateNewSelector.contramap(mergeRight({ insideGate: isGateWaypoint(props) }))))),
+      nothingWhenEmptyWaypoint(nothingWhenNotEditingMarkName(ShortAndLongName.contramap(mergeRight({ items: markNamesInputData(props) })))),
       nothingWhenGate(nothingWhenEmptyWaypoint(PassingInstructions)),
       nothingWhenEmptyWaypoint(MarkPosition),
       nothingWhenNotEmptyWaypoint(MarksOrMarkPropertiesOptionsList),
@@ -751,7 +751,7 @@ const withOnNavigationBackPress = withHandlers({
 
 const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
-  contramap(merge({
+  contramap(mergeRight({
     onWillBlur: (payload: any) => {
       BackHandler.removeEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
       props.stopLocalLocationUpdates()
