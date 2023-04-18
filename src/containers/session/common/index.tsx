@@ -12,7 +12,7 @@ import IconText from 'components/IconText'
 import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { __, always, anyPass, append, compose, concat, curry,
-  equals, has, head, length, map, merge, mergeLeft, objOf,
+  equals, has, head, length, map, mergeRight, mergeLeft, objOf,
   prepend, prop, propEq, range, reduce, reject, isNil,
   remove, sortBy, split, toString, toUpper, update, when,
   isEmpty, defaultTo, complement, path, either,
@@ -55,8 +55,8 @@ export const overlayPicker = curry((
       fold(props),
       fromClass(ModalSelector).contramap,
       always,
-      merge({
-        style: merge({ backgroundColor: 'transparent' }, style),
+      mergeRight({
+        style: mergeRight({ backgroundColor: 'transparent' }, style),
         optionContainerStyle: {
           marginTop: 30,
           backgroundColor: '#123748',
@@ -72,7 +72,7 @@ export const overlayPicker = curry((
       }),
       objOf('children'),
       head,
-      when(has('fold'), fold(merge(props, { customRenderer: true }))))(
+      when(has('fold'), fold(mergeRight(props, { customRenderer: true }))))(
       c)))
 
 export const FramedNumberItem = Component(props => compose(
@@ -117,7 +117,7 @@ export const DiscardSelector = Component((props: any) => compose(
   fold(props),
   concat(text({ style: styles.textHeader }, I18n.t('caption_discard_after_races'))),
   view({ style: styles.discardContainer }),
-  contramap(merge({
+  contramap(mergeRight({
     style: { flexGrow: 0 },
     renderItem: (props: any) =>
       props.item.type === 'add' ?
@@ -266,8 +266,8 @@ export const startTrackingButton = Component((props: any) => compose(
     style: [styles.button, styles.trackingButton],
     textStyle: styles.buttonContent,
   })
-)(text({}, props.isTrackingEvent ? 
-  I18n.t('caption_view_tracking').toUpperCase() : 
+)(text({}, props.isTrackingEvent ?
+  I18n.t('caption_view_tracking').toUpperCase() :
   I18n.t('caption_start_tracking').toUpperCase())
 ))
 
@@ -306,7 +306,7 @@ export const competitorListRefreshHandler = Component((props: any) =>
   compose(
     fold(props),
     contramap(
-      merge({
+      mergeRight({
         onWillFocus: () => {
           const callback = async () => {
             const { leaderboardName, regattaName } = props.session

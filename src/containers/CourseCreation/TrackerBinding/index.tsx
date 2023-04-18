@@ -1,4 +1,4 @@
-import { __,  compose, concat, reduce, toUpper, merge, isNil, propEq } from 'ramda'
+import { __,  compose, concat, reduce, toUpper, mergeRight, isNil, propEq } from 'ramda'
 import querystring from 'query-string'
 import QRCode from 'react-native-qrcode-svg'
 import {
@@ -93,7 +93,7 @@ const useThisDeviceButton = Component(props => compose(
 
 const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
-  contramap(merge({
+  contramap(mergeRight({
     onWillBlur: (payload: any) => (!payload || !payload.state) && props.fetchAndUpdateMarkConfigurationDeviceTracking()
   })),
   fromClass)(

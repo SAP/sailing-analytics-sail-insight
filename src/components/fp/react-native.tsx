@@ -3,7 +3,7 @@ import { useActionSheet as rnUseActionSheet } from '@expo/react-native-action-sh
 import IconText from 'components/IconText'
 import TextButton from 'components/TextButton'
 import Button from 'components/Button'
-import { __, always, compose, concat, curry, has, head, merge, mergeLeft, objOf, reduce, when } from 'ramda'
+import { __, always, compose, concat, curry, has, head, mergeRight, mergeLeft, objOf, reduce, when } from 'ramda'
 import { useState as reactUseState } from 'react'
 import { FlatList, Image, KeyboardAvoidingView, ScrollView, Text,
   TouchableHighlight, TouchableOpacity, View } from 'react-native'
@@ -41,11 +41,11 @@ const pressable = curry((buttonComponent, settings, c) => Component((props: Obje
   fold(props),
   fromClass(buttonComponent).contramap,
   always,
-  merge(__, { onPress: () => settings.onPress(props) }),
-  merge(settings),
+  mergeRight(__, { onPress: () => settings.onPress(props) }),
+  mergeRight(settings),
   objOf('children'),
   head,
-  when(has('fold'), fold(merge(props, { customRenderer: true }))))(
+  when(has('fold'), fold(mergeRight(props, { customRenderer: true }))))(
   c)))
 
 export const touchableHighlight =  pressable(TouchableHighlight)
@@ -65,7 +65,7 @@ export const forwardingPropsFlatList = Component((props: any) =>
 export const useActionSheet = () => c => {
   const { showActionSheetWithOptions } = rnUseActionSheet();
 
-  return c.contramap(merge({
+  return c.contramap(mergeRight({
     showActionSheetWithOptions
   }))
 }
@@ -73,7 +73,7 @@ export const useActionSheet = () => c => {
 export const useState = (name, updateFn, initialValue) => c => {
   const [value, updater] = reactUseState(initialValue)
 
-  return c.contramap(merge(__, {
+  return c.contramap(mergeRight(__, {
     [name]:     value,
     [updateFn]: updater
   }))
@@ -81,7 +81,7 @@ export const useState = (name, updateFn, initialValue) => c => {
 
 export const inlineText = curry((settings, c) => Component((props: Object) => compose(
   fold(props),
-  text(merge({ style: { flexDirection: 'row' } }, settings)),
+  text(mergeRight({ style: { flexDirection: 'row' } }, settings)),
   reduce(concat, nothing()),
   )(c)))
 

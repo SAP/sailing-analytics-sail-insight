@@ -1,6 +1,6 @@
 import {
   __, addIndex, always, append, compose, concat,
-  map, merge, objOf,
+  map, mergeRight, objOf,
   path, reduce } from 'ramda'
 
 import {
@@ -48,7 +48,7 @@ const scoringSystemLabel = Component((props: object) =>
     ]))
 
 const withDiscardDataFromForm = mapProps(props => compose(
-  merge(props),
+  mergeRight(props),
   objOf('data'),
   append({ type: 'add' }),
   mapIndexed((value, index) => ({ value, index })),

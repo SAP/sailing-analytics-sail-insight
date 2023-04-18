@@ -1,5 +1,5 @@
 import { filter, compose, not, __, find, propEq, values,
-  curry, isEmpty, merge } from 'ramda'
+  curry, isEmpty, mergeRight } from 'ramda'
 import { takeLatest, call, put, takeEvery, select, all } from 'redux-saga/effects'
 import { markPropertiesSchema } from 'api/schemas'
 import { LOAD_MARK_PROPERTIES } from 'actions/inventory'
@@ -38,9 +38,9 @@ export function* loadMarkProperties({ payload }: any = { payload: { createMissin
       compose(not, hasMarkProperties(values(markProperties.entities.markProperties))),
       defaultMarkProperties)
 
-  yield put(receiveEntities(merge(markProperties, { replace: true })))
+  yield put(receiveEntities(mergeRight(markProperties, { replace: true })))
 
-  if (!isEmpty(missingDefaultMarkProperties) && payload.createMissingDefaultMarkProperties) { 
+  if (!isEmpty(missingDefaultMarkProperties) && payload.createMissingDefaultMarkProperties) {
     const newMarkProperties = yield all(missingDefaultMarkProperties.map(mp => call(api.createMarkProperties, mp)))
 
     yield put(normalizeAndReceiveEntities(newMarkProperties, [markPropertiesSchema]))

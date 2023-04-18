@@ -1,4 +1,4 @@
-import { always, merge, defaultTo, toPairs, prop } from 'ramda'
+import { always, mergeRight, defaultTo, toPairs, prop } from 'ramda'
 import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
 
@@ -47,10 +47,10 @@ const competitorGaps = handleActions({
             }
           }
 
-          return merge(aggregator, { [competitor]: competitorGap })
+          return mergeRight(aggregator, { [competitor]: competitorGap })
         },      {})
 
-      return merge(state, updates)
+      return mergeRight(state, updates)
     },
     [startPollingLeaderboard as any]: always({}),
 }, {})

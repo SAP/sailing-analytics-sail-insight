@@ -1,6 +1,6 @@
 import { isString } from 'lodash'
 import querystring from 'query-string'
-import { compose, includes, prop, __, when, merge } from 'ramda'
+import { compose, includes, prop, __, when, mergeRight } from 'ramda'
 
 import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
@@ -95,7 +95,7 @@ export const request = async (
   const fetchOptions = {
     method,
     timeout,
-    headers: merge(headers, options.headers),
+    headers: mergeRight(headers, options.headers),
     credentials: 'omit',
     ...data,
   }

@@ -1,5 +1,5 @@
 import { __, compose, concat,
-  merge, reduce, isNil, prop, equals } from 'ramda'
+  mergeRight, reduce, isNil, prop, equals } from 'ramda'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { startTracking } from 'actions/tracking'
@@ -86,7 +86,7 @@ const sessionData = {
 
 export default Component((props: any) =>
   compose(
-    fold(merge(props, sessionData)),
+    fold(mergeRight(props, sessionData)),
     withCompetitorListState,
     connect(
       mapStateToSessionDetailsProps,
