@@ -8,10 +8,6 @@ import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
 import crashlytics from '@react-native-firebase/crashlytics'
 
-import SailInsightMtcpNetwork from 'sail-insight-mtcp-network/index'
-import { getStore } from "../store";
-import { getMtcpSetting } from "../selectors/settings";
-
 const responseHasFatalError = compose(
   includes(__, [400, 404, 405]),
   prop('status'))
@@ -105,12 +101,7 @@ export const request = async (
   }
   let response
   try {
-    const mtcpEnabled = getMtcpSetting(getStore().getState())
-    if (isPlatformAndroid || !mtcpEnabled) {
-      response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
-    } else {
-      response = await timeoutPromise(SailInsightMtcpNetwork.fetch(url, fetchOptions), timeout, 'Server request timeout')
-    }
+    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout');
   } catch (err) {
     throw err
   } finally {

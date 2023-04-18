@@ -17,9 +17,6 @@ export const getVerboseLoggingSetting = (state: RootState = {}) =>
 export const getCommunicationSetting = (state: RootState = {}) =>
   state.settings && state.settings.communicationEnabled
 
-export const getMtcpSetting = (state: RootState = {}) =>
-  state.settings && state.settings.mtcpEnabled
-
 export const getLeaderboardEnabledSetting = (state: RootState = {}) => true
   //state.settings && state.settings.leaderboardEnabled
 
@@ -29,7 +26,7 @@ export const getServerProxyUrlSetting = (state: RootState = {}) =>
 export const getMasterUdpIP = (state: RootState = {}) =>
   state.settings && state.settings.masterUdpIP
 
-export const getMasterUdpPort = (state: RootState = {}) => 
+export const getMasterUdpPort = (state: RootState = {}) =>
   state.settings && state.settings.masterUdpPort && state.settings.serverUrl &&
   state.settings.masterUdpPort[state.settings.serverUrl] || state.settings.masterUdpPort[DEFAULT_SERVER_ANY_URL]
 

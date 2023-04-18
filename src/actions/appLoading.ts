@@ -4,7 +4,7 @@ import { checkCurrentAuthSession } from './auth'
 import { handleAppStartDeepLink } from './deepLinking'
 import { updateCreatingEvent, updateLoadingEventList, updateSelectingEvent, updateStartingTracking, updateEventPollingStatus } from './events'
 import { updateDeletingMarkBinding, updateLoadingCheckInFlag } from './checkIn'
-import { updateCommunicationSettings, updateMtcpSettings } from './settings'
+import { updateCommunicationSettings } from './settings'
 import { initLocationUpdates } from './locations'
 import { updateStartLine, stopUpdateStartLineBasedOnCurrentCourse } from './communications'
 import * as LocationService from 'services/LocationService'
@@ -27,7 +27,6 @@ export const initializeApp = (navigation:object) => async (dispatch: DispatchTyp
 
   /// update native modules settings
   dispatch(updateCommunicationSettings())
-  dispatch(updateMtcpSettings())
   /// update native modules settings
 
   await dispatch(checkCurrentAuthSession())
