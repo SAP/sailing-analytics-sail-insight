@@ -9,6 +9,7 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
+import io.branch.rnbranch.RNBranchModule;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -58,5 +59,10 @@ public class MainApplication extends Application implements ReactApplication {
       DefaultNewArchitectureEntryPoint.load();
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+
+    // Branch logging for debugging
+    RNBranchModule.enableLogging();
+
+    RNBranchModule.getAutoInstance(this);
   }
 }
