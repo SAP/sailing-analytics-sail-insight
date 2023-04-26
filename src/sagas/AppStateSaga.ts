@@ -1,10 +1,10 @@
-import { 
-  registerAppStateListeners, 
-  unregisterAppStateListeners, 
-  registerNetStateListeners, 
-  unregisterNetStateListeners, 
-  updateAppState, 
-  updateNetState 
+import {
+  registerAppStateListeners,
+  unregisterAppStateListeners,
+  registerNetStateListeners,
+  unregisterNetStateListeners,
+  updateAppState,
+  updateNetState
 } from 'actions/appState'
 import { takeLatest, all, put, take, call } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
@@ -16,10 +16,10 @@ let networkChannel: any
 
 function* handleAppStateChange() {
   appStateChannel = eventChannel((listener: any) => {
-    AppState.addEventListener('change', listener)
-    
+    const subscription = AppState.addEventListener('change', listener)
+
     return () => {
-      AppState.removeEventListener('change', listener)
+      subscription.remove();
     }
   })
   try {
@@ -47,7 +47,7 @@ function *updateNetworkAvailability(state: NetInfoState) {
 function* handleNetworkChange() {
   networkChannel = eventChannel((listener: any) => {
     const unsubscribe = NetInfo.addEventListener(listener)
-    
+
     return () => {
       unsubscribe()
     }
