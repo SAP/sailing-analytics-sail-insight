@@ -38,5 +38,6 @@ I18nManager.forceRTL(selectedLanguage.isRTL);
 const I18n = new I18nJS(translations);
 I18n.locale = selectedLanguage.languageTag;
 I18n.defaultLocale = defaultLanguage.languageTag;
+I18n.enableFallback = true;
 
 export default I18n;
