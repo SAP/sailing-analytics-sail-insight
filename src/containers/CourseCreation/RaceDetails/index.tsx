@@ -50,7 +50,7 @@ const getRaceStartTime = compose(
   defaultTo({}),
   prop('raceTime'))
 
-const nothingIfNoCourseDefined = branch(compose(propEq('courseDefined', false), prop('item')), nothingAsClass)
+const nothingIfNoCourseDefined = branch(compose(propEq(false, 'courseDefined'), prop('item')), nothingAsClass)
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 

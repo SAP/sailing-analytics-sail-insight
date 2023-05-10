@@ -33,7 +33,7 @@ import { $Orange, $primaryBackgroundColor, $secondaryBackgroundColor } from 'sty
 import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
 import I18n from 'i18n'
 
-const hasNoPadding = propEq('mapOffset', 0)
+const hasNoPadding = propEq(0, 'mapOffset')
 const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
 
 const trimCoordinates = (coordinate: any) =>
@@ -254,7 +254,7 @@ const coordinatesInput = Component((props: any) => compose(
               props.degrees,
               props.minutes,
               compose(
-                when(always(propEq('unit', 'longitude', props)), negate),
+                when(always(propEq('longitude', 'unit', props)), negate),
                 ifElse(equals(true), always(-1), always(1)))(
                 value)
             ]])[0] }))

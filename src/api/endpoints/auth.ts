@@ -34,6 +34,7 @@ const securityEndpoints = (serverUrl: string) => {
 
 const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
   const endpoints = securityEndpoints(serverUrl ? serverUrl : getApiServerUrl())
+
   return {
     user: (username?: string) => dataRequest(
       endpoints.user({ urlParams: username && { username } }),

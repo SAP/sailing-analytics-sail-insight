@@ -41,12 +41,12 @@ import { showUnknownErrorSnackbarMessage } from 'helpers/errors'
 import Clipboard from '@react-native-clipboard/clipboard'
 import Snackbar from 'react-native-snackbar'
 
-const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
+const nothingWhenFinished = branch(propEq(true, 'isFinished'), nothingAsClass)
 // If we change this we need to make sure that the stopTracking function in the EventsSaga sets the tracking end time on the correct race
-const nothingWhenBeforeLastPlannedRaceStartTime = branch(propEq('isBeforeLastPlannedRaceStartTime', true), nothingAsClass)
+const nothingWhenBeforeLastPlannedRaceStartTime = branch(propEq(true, 'isBeforeLastPlannedRaceStartTime'), nothingAsClass)
 const nothingWhenNoBoatClass = branch(compose(equals(''), prop('boatClass')), nothingAsClass)
-const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
-const nothingIfCurrentUserIsNotACompetitor = branch(propEq('currentUserIsCompetitorForEvent', false), nothingAsClass)
+const nothingIfCurrentUserIsCompetitor = branch(propEq(true, 'currentUserIsCompetitorForEvent'), nothingAsClass)
+const nothingIfCurrentUserIsNotACompetitor = branch(propEq(false, 'currentUserIsCompetitorForEvent'), nothingAsClass)
 
 const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
   fold(props),

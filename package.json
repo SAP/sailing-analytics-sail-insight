@@ -9,7 +9,8 @@
     "start": "react-native start",
     "test": "jest",
     "clear-gradle-cache": "rm -rf $HOME/.gradle/",
-    "clear-everything": "rm -rf $TMPDIR/react-* && rm -rf $TMPDIR/metro-* && yarn cache clean && rm -rf android/build && rm -rf android/app/build && (cd android && ./gradlew clean)"
+    "clear-everything": "rm -rf $TMPDIR/react-* && rm -rf $TMPDIR/metro-* && yarn cache clean && rm -rf android/build && rm -rf android/app/build && (cd android && ./gradlew clean)",
+    "debug-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/generated/res/react/devDebug/ && cd android && ./gradlew assembleDebug && cd .."
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "^4.0.1",
@@ -111,7 +112,7 @@
     "@tsconfig/react-native": "^2.0.2",
     "@types/jest": "^29.2.1",
     "@types/lodash": "^4.14.192",
-    "@types/ramda": "^0.29.0",
+    "@types/ramda": "^0.29.1",
     "@types/react": "^18.0.24",
     "@types/react-test-renderer": "^18.0.0",
     "@types/redux-actions": "^2.6.2",

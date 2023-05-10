@@ -71,5 +71,5 @@ export const getFilteredMarkPropertiesAndMarksOptionsForCourse = createSelector(
 export const getMarkPropertiesOrMarkForCourseByName = name => createSelector(
   getMarkPropertiesAndMarksOptionsForCourse,
   find(compose(
-    propEq('name', name),
+    propEq(name, 'name'),
     when(has('effectiveProperties'), prop('effectiveProperties')))))

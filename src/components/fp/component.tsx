@@ -73,8 +73,6 @@ const recomposeWithHandlers      = enhance(withHandlers)
 const recomposeWithState         = enhance(withState)
 const recomposeWithStateHandlers = enhance(withStateHandlers)
 const recomposeMapProps          = enhance(mapProps)
-const recomposeDefaultProps      = enhance(defaultProps)
-const recomposeWithProps         = enhance(withProps)
 const recomposeLifecycle         = enhance(lifecycle)
 const connectActionSheet         = enhanceSimple(rnConnectActionSheet)
 
@@ -103,8 +101,6 @@ export {
     recomposeWithState,
     recomposeWithStateHandlers,
     recomposeMapProps,
-    recomposeWithProps,
-    recomposeDefaultProps,
     recomposeLifecycle,
     nothing,
     nothingAsClass,

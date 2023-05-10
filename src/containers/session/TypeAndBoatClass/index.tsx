@@ -20,8 +20,8 @@ import SwitchSelector from 'react-native-switch-selector'
 import { $MediumBlue, $primaryActiveColor } from 'styles/colors'
 import styles from './styles'
 
-const isOneDesignSelected = propEq('regattaType', RegattaType.OneDesign)
-const isHandicapSelected = propEq('regattaType', RegattaType.Handicap)
+const isOneDesignSelected = propEq(RegattaType.OneDesign, 'regattaType')
+const isHandicapSelected = propEq(RegattaType.Handicap, 'regattaType')
 const nothingIfOneDesignSelected = branch(isOneDesignSelected, nothingAsClass)
 
 const regattaTypeOptions = [
