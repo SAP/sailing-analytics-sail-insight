@@ -132,14 +132,14 @@ export const withUpdatingDiscardItem = handler => withHandlers({
   removeDiscardItem: (props: any) => (index: number) => compose(
     handler,
     map(prop('value')),
-    reject(propEq('type', 'add')),
+    reject(propEq('add','type')),
     remove(index, 1),
     prop('data'))(
     props),
   updateDiscardItem: (props: any) => (index: number, value: object) => compose(
     handler,
     map(prop('value')),
-    reject(propEq('type', 'add')),
+    reject(propEq('add','type')),
     update(index, { index, value }),
     prop('data'))(
     props),
@@ -150,7 +150,7 @@ export const withAddDiscard = handler => withHandlers({
     handler,
     append(value),
     map(prop('value')),
-    reject(propEq('type', 'add')),
+    reject(propEq('add','type')),
     prop('data'))(
     props),
 })
@@ -244,11 +244,11 @@ export const joinAsCompetitorButton = Component(props => compose(
   text({ style: styles.buttonContent }))(
   I18n.t('caption_join_as_competitor').toUpperCase()))
 
-const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
-const nothingIfCurrentUserIsNotCompetitor = branch(propEq('currentUserIsCompetitorForEvent', false), nothingAsClass)
+const nothingIfCurrentUserIsCompetitor = branch(propEq(true,'currentUserIsCompetitorForEvent'), nothingAsClass)
+const nothingIfCurrentUserIsNotCompetitor = branch(propEq(false,'currentUserIsCompetitorForEvent'), nothingAsClass)
 
 const nothingIfShouldntShowStartTracking = branch(
-  anyPass([propEq('isFinished', true), propEq('isBeforeEventStartTime', true)]),
+  anyPass([propEq(true,'isFinished'), propEq(true,'isBeforeEventStartTime')]),
   nothingAsClass,
 )
 
@@ -297,8 +297,8 @@ const COMPETITOR_LIST_REFRESH_RATE = 10000
 
 const isCompetitorListEmpty = compose(isEmpty, reject(isNil), defaultTo([]), prop('competitorList'))
 const isCompetitorListNotEmpty = complement(isCompetitorListEmpty)
-const nothingIfCompetitorListStale = branch(propEq('competitorListStale', true), nothingAsClass)
-const nothingIfCompetitorListNotStale = branch(propEq('competitorListStale', false), nothingAsClass)
+const nothingIfCompetitorListStale = branch(propEq(true,'competitorListStale'), nothingAsClass)
+const nothingIfCompetitorListNotStale = branch(propEq(false,'competitorListStale'), nothingAsClass)
 const nothingIfCompetitorListEmpty = branch(isCompetitorListEmpty, nothingAsClass)
 const nothingIfCompetitorListNotEmpty = branch(isCompetitorListNotEmpty, nothingAsClass)
 

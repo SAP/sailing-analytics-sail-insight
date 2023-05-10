@@ -277,12 +277,12 @@ export const fetchEventList = () => async(dispatch, getState) => {
     prop(trackedElementType),
     defaultTo({}),
     findLast(has(trackedElementType)),
-    filter(propEq('deviceId', deviceId)),
+    filter(propEq(deviceId,'deviceId')),
     prop('trackedElements')
   )
 
   const getTrackedElementsFromDifferentDevices = compose(
-    reject(propEq('deviceId', deviceId)),
+    reject(propEq(deviceId,'deviceId')),
     prop('trackedElements')
   )
 
@@ -304,7 +304,7 @@ export const fetchEventList = () => async(dispatch, getState) => {
     try {
       await dispatch(collectCheckInData(checkIn))
     } catch (error) {
-      const isKnownError = anyPass([is(ApiException), propEq('status', STATUS_INTERNAL_ERROR), propEq('status', STATUS_NOT_FOUND)])
+      const isKnownError = anyPass([is(ApiException), propEq(STATUS_INTERNAL_ERROR,'status'), propEq(STATUS_NOT_FOUND,'status')])
       if (isKnownError(error)) {
         return
       } else {

@@ -32,7 +32,7 @@ export function* loadMarkProperties({ payload }: any = { payload: { createMissin
   const api = dataApi(getServerUrlSetting())
   const markProperties = yield call(api.requestMarkProperties)
 
-  const hasMarkProperties = curry((list, mp) => find(propEq('name', mp.name), list))
+  const hasMarkProperties = curry((list, mp) => find(propEq(mp.name, 'name'), list))
   const missingDefaultMarkProperties =
     filter(
       compose(not, hasMarkProperties(values(markProperties.entities.markProperties))),

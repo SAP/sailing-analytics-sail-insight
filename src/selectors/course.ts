@@ -45,7 +45,7 @@ export const getEditedCourse = (state: any) => state.courses.editedCourse
 export const getSelectedWaypoint = createSelector(
   getEditedCourse,
   (state: any): string | undefined => state.courses.selectedWaypoint,
-  (editedCourse, waypointId) => find(propEq('id', waypointId), editedCourse.waypoints))
+  (editedCourse, waypointId) => find(propEq(waypointId, 'id'), editedCourse.waypoints))
 
 export const isDefaultWaypointSelection = (state: any) => state.courses.isDefaultWaypointSelection
 export const isSelectedWaypointLineOrGate = createSelector(
@@ -57,7 +57,7 @@ export const isSelectedWaypointLineOrGate = createSelector(
 
 export const getMarkConfigurationById = id => createSelector(
   getEditedCourse,
-  compose(find(propEq('id', id)), prop('markConfigurations')))
+  compose(find(propEq(id, 'id')), prop('markConfigurations')))
 
 export const getSelectedMarkConfiguration = createSelector(
   getSelectedWaypoint,
@@ -75,7 +75,7 @@ export const getMarkPropertiesByMarkConfiguration = markConfigurationId => creat
   compose(
     defaultTo({}),
     prop('effectiveProperties'),
-    find(propEq('id', markConfigurationId)),
+    find(propEq(markConfigurationId, 'id')),
     prop('markConfigurations')))
 
 export const getMarkPositionByMarkConfiguration = markConfigurationId => createSelector(
@@ -86,7 +86,7 @@ export const getMarkPositionByMarkConfiguration = markConfigurationId => createS
       'lon_deg': 'longitude_deg'
     }),
     prop('lastKnownPosition'),
-    find(propEq('id', markConfigurationId)),
+    find(propEq(markConfigurationId, 'id')),
     prop('markConfigurations')))
 
 const concatTrackingDevices = (key, l, r) => key == 'trackingDevices' ? concat(l, r) : r
@@ -95,7 +95,7 @@ export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => c
   getEditedCourse,
   compose(
     find(both(
-      propEq('trackingDeviceType', 'smartphoneUUID'),
+      propEq('smartphoneUUID', 'trackingDeviceType'),
       compose(isNil, prop('trackingDeviceMappedToMillis')))),
     defaultTo([]),
     prop('trackingDevices'),
@@ -108,7 +108,7 @@ export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => c
         trackingDeviceHash: toHashedString(v.currentTrackingDeviceId.id)
       }]
     }, v)),
-    find(propEq('id', markConfigurationId)),
+    find(propEq(markConfigurationId, 'id')),
     prop('markConfigurations')))
 
 export const getSelectedMarkProperties = createSelector(
@@ -153,7 +153,7 @@ export const waypointLabel = (waypoint: any) => compose(
     return isStartOrFinish ? waypoint.controlPointName : waypoint.controlPointShortName || compose(
       defaultTo('\u2022'),
       path(['effectiveProperties', 'shortName']),
-      find(propEq('id', compose(head, defaultTo([]), prop('markConfigurationIds'))(waypoint))),
+      find(propEq(compose(head, defaultTo([]), prop('markConfigurationIds'))(waypoint), 'id')),
       prop('markConfigurations'))(
       course)
   },
@@ -207,8 +207,8 @@ export const getMarkConfigurationsMapToEditedCourse = createSelector(
       conf.id,
       find(
         both(
-          pathEq(['effectiveProperties', 'name'], conf.effectiveProperties.name),
-          pathEq(['effectiveProperties', 'shortName'], conf.effectiveProperties.shortName)),
+          pathEq(conf.effectiveProperties.name, ['effectiveProperties', 'name']),
+          pathEq(conf.effectiveProperties.shortName, ['effectiveProperties', 'shortName'])),
         editedCourse.markConfigurations).id
     ])),
     reject(isNil),

@@ -89,7 +89,7 @@ const getMarkConfigurations = curry((course: any) => map(
       return compose(
         defaultTo({}),
         pick(['effectiveProperties', 'lastKnownPosition']),
-        find(propEq('id', id)),
+        find(propEq(id, 'id')),
         prop('markConfigurations')
       )(course)
       }
@@ -149,14 +149,14 @@ const copyCourse = (courseToCopy: any, latestCopiedCourseState: any, latestTarge
         // Finds the markPropertyId of the newly created mark
         const copiedMarkPropertiesId = compose(
           prop('markPropertiesId'),
-          find(propEq('id', copiedMarkConfigurationId)),
+          find(propEq(copiedMarkConfigurationId, 'id')),
           prop('markConfigurations')
         )(latestCopiedCourseState)
 
         // Gets the markConfigurationId from the target course
         const latestId = compose(
           prop('id'),
-          find(propEq('markPropertiesId', copiedMarkPropertiesId)),
+          find(propEq(copiedMarkPropertiesId, 'markPropertiesId')),
           prop('markConfigurations')
         )(latestTargetCourseState)
 
@@ -240,7 +240,7 @@ function* selectCourseFlow({ payload }: any) {
 const didConfigurationPropertyChangedAcrossCourses = curry((fromCourse, toCourse, property, configuration) => {
   const getById = id => compose(
     defaultTo({}),
-    find(propEq('id', id)),
+    find(propEq(id, 'id')),
     defaultTo([]),
     prop('markConfigurations'))
   const getByConfigurationId = getById(configuration.id)
@@ -388,7 +388,7 @@ function* saveCourseFlow({ navigation }: any) {
   const markUsedWithCurrentDeviceAsTracker = compose(
     head,
     filter(compose(find(both(
-      propEq('trackingDeviceHash', getHashedDeviceId()),
+      propEq(getHashedDeviceId(), 'trackingDeviceHash'),
       compose(isNil, prop('trackingDeviceMappedToMillis')))),
       prop('trackingDevices'))),
     flatten,
@@ -428,7 +428,7 @@ function* isThisDeviceBoundToMark({ markId, regattaName, serverUrl }: any) {
     ])),
     propOr([], 'deviceStatuses'),
     defaultTo({}),
-    find(propEq('markId', markId)),
+    find(propEq(markId, 'markId')),
     propOr([], 'marks'),
     defaultTo({})
   )(trackingDevices)
@@ -584,7 +584,7 @@ function* fetchAndUpdateMarkConfigurationDeviceTracking() {
   const trackingDevices = compose(
     prop('deviceStatuses'),
     defaultTo({}),
-    findLast(propEq('markId', markConfiguration.markId)),
+    findLast(propEq(markConfiguration.markId, 'markId')),
     defaultTo([]),
     prop('marks'),
     prop('result'))(

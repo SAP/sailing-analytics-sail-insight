@@ -48,8 +48,8 @@ const mapStateToProps = (state: any, props: any) => {
   }
 }
 
-const nothingWhenInvalidMark = branch(propEq('invalidMark', true), nothingAsClass)
-const nothingWhenValidMark = branch(propEq('invalidMark', false), nothingAsClass)
+const nothingWhenInvalidMark = branch(propEq(true, 'invalidMark'), nothingAsClass)
+const nothingWhenValidMark = branch(propEq(false, 'invalidMark'), nothingAsClass)
 
 const InvalidMarkOverlay = Component(props => compose(
   fold(props),

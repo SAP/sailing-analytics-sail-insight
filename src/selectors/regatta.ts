@@ -19,7 +19,7 @@ export const getRegattaCompetitor = (
   regattaName: string,
   competitorId: string,
 ) => (state: any) =>
-  find(propEq('id', competitorId))(getRegattaCompetitorList(regattaName)(state))
+  find(propEq(competitorId, 'id'))(getRegattaCompetitorList(regattaName)(state))
 
 export const getSelectedRegatta = (state: any) => state.events.selectedRegatta
 export const getRegattaPlannedRaces = (name: string) => (state: any) => {

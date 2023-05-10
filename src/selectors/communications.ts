@@ -31,11 +31,11 @@ export const getMarkPositionsForCourse = (course: any, mark: string) => {
   const getMarkPositions = compose(
     map((markConfiguration: any) => markConfiguration.lastKnownPosition),
     defaultTo({}),
-    map(id => find(propEq('id', id))(course.markConfigurations)),
+    map(id => find(propEq(id, 'id'))(course.markConfigurations)),
     defaultTo({}),
     prop('markConfigurationIds'),
     defaultTo({}),
-    find(propEq('controlPointName', mark)),
+    find(propEq(mark, 'controlPointName')),
     defaultTo({})
   )
 

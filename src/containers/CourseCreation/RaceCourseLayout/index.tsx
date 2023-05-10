@@ -67,7 +67,7 @@ const mapStateToProps = (state: any) => cond([
     selectedMarkDeviceTrackingCaption: compose(
       defaultTo(I18n.t('text_course_creation_no_device_assigned')),
       unless(isNil, ifElse(
-        propEq('trackingDeviceHash', getHashedDeviceId()),
+        propEq(getHashedDeviceId(), 'trackingDeviceHash'),
         always(I18n.t('text_course_creation_this_device_is_used')),
         always(I18n.t('text_course_creation_a_device_is_tracking')))))(
       getSelectedMarkDeviceTracking(state)),
@@ -85,7 +85,7 @@ const mapStateToProps = (state: any) => cond([
       getMarkPropertiesOrMarkForCourseByName('Line Mark 2')(state)]
   })]])
 
-const isLoading = propEq('loading', true)
+const isLoading = propEq(true,'loading')
 const isNotLoading = complement(isLoading)
 const isGateWaypoint = compose(equals(2), length, defaultTo([]), path(['selectedWaypoint', 'markConfigurationIds']))
 const isEmptyWaypoint = compose(isNil, path(['selectedWaypoint', 'markConfigurationIds']))
@@ -98,10 +98,10 @@ const isStartOrFinishGate = both(isGateWaypoint,
     props.course.waypoints))
 const isTrackingSelected = compose(
   either(
-    propEq('selectedPositionType', MarkPositionType.TrackingDevice),
+    propEq(MarkPositionType.TrackingDevice,'selectedPositionType'),
     both(
       compose(isNil, prop('selectedPositionType')),
-      propEq('defaultPositionType', MarkPositionType.TrackingDevice)
+      propEq(MarkPositionType.TrackingDevice,'defaultPositionType')
     )
   )
 )
@@ -221,7 +221,7 @@ const GateMarkSelector = Component((props: object) =>
     map(compose(
       GateMarkSelectorItem.contramap,
       mergeRight,
-      when(propEq('markConfigurationId', props.selectedMarkConfiguration), mergeRight({ selected: true })),
+      when(propEq(props.selectedMarkConfiguration,'markConfigurationId'), mergeRight({ selected: true })),
       objOf('markConfigurationId'))),
     defaultTo([]),
     path(['selectedWaypoint', 'markConfigurationIds']))(
@@ -348,7 +348,7 @@ const DeleteButton = Component((props: object) =>
     touchableOpacity({ onPress: (props: any) => {
         props.removeWaypoint({
           id: props.selectedWaypoint.id,
-          newSelectedId: props.course.waypoints[findIndex(propEq('id', props.selectedWaypoint.id), props.course.waypoints) - 1].id
+          newSelectedId: props.course.waypoints[findIndex(propEq(props.selectedWaypoint.id,'id'), props.course.waypoints) - 1].id
         })
         props.setSelectedPositionType(null)
       }
@@ -517,7 +517,7 @@ compose(
   mapIndexed((v, i) => i === 0 ? `(${v})` : v),
   map(defaultTo('')),
   ifElse(
-    propEq('isWaypoint', true),
+    propEq(true,'isWaypoint'),
     rProps(['controlPointShortName', 'controlPointName']),
     rProps(['shortName', 'name'])),
   when(has('effectiveProperties'), prop('effectiveProperties')),
@@ -534,7 +534,7 @@ const marksAndMarkPropertiesWithoutTheOtherGateSideMark = (props: any) => {
 
   return compose(
     concat(__, props.linesAndGateOptionsForCurrentEventAndWaypoint),
-    reject(propEq('id', otherSideId)))(
+    reject(propEq(otherSideId,'id')))(
     props.marksAndMarkPropertiesOptions)
 }
 
@@ -593,7 +593,7 @@ const PassingInstructions = Component((props: object) =>
     map(compose(
       PassingInstructionItem.contramap,
       mergeRight,
-      when(propEq('type', props.selectedWaypoint.passingInstruction), mergeRight({ selected: true })))),
+      when(propEq(props.selectedWaypoint.passingInstruction,'type'), mergeRight({ selected: true })))),
     ifElse(isGateWaypoint, always(gatePassingInstructions), always(singleMarkPassingInstructions)))(
     props))
 
@@ -647,7 +647,7 @@ const WaypointsList = Component(props => {
       always(equals(true, props.isDefaultWaypointSelection)),
       always(props.course.waypoints.length - 2)),
     when(equals(props.course.waypoints.length - 1), subtract(__, 1)),
-    findIndex(propEq('id', props.selectedWaypoint.id)))(
+    findIndex(propEq(props.selectedWaypoint.id,'id')))(
     props.course.waypoints)
 
   return compose(

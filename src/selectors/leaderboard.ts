@@ -45,7 +45,7 @@ export const getTrackedCompetitorLeaderboardRank = createSelector(
   (leaderboard, competitorId) => {
     const trackedCompetitor = (leaderboard &&
       leaderboard.competitors &&
-      find(propEq('id', competitorId), leaderboard.competitors)) || {}
+      find(propEq(competitorId, 'id'), leaderboard.competitors)) || {}
     const currentLeaderboardTrack =
       trackedCompetitor &&
       getLeaderboardCompetitorCurrentRaceColumn(trackedCompetitor)
@@ -94,10 +94,10 @@ export const getTrackedLeaderboard = createSelector(
   })
 
 const eventRacesStatusSelector = (status: string) => (leaderboardName: any, leaderboards: any) => compose(
-    all(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
+    all(compose(propEq(status, 'status'), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
     defaultTo({}),
     prop('trackedRacesInfo'),
-    find(propEq('name', leaderboardName)))(
+    find(propEq(leaderboardName, 'name')))(
     leaderboards)
 
 const createCurrentEventRacesStatusAllSelector = (status: string) => createSelector(
@@ -114,10 +114,10 @@ const createCurrentEventRacesStatusAnySelector = (status: string) => createSelec
   getSelectedEventInfo,
   getLeaderboards,
   (event, leaderboards) => compose(
-    any(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
+    any(compose(propEq(status, 'status'), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
     defaultTo({}),
     prop('trackedRacesInfo'),
-    find(propEq('name', defaultTo({}, event).leaderboardName)))(
+    find(propEq(defaultTo({}, event).leaderboardName, 'name')))(
     leaderboards))
 
 export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusAnySelector('TRACKING')
@@ -130,16 +130,16 @@ export const getExistingLeaderboardCompetitor = (leaderboardName: string) => (st
     // allow for all users (anonymous or logged)
     const currentLeaderboard = getLeaderboard(leaderboardName)(state)
     let existingBinding = null
-    
+
     if (currentLeaderboard && currentLeaderboard.competitors) {
       currentLeaderboard.competitors.forEach(competitor => {
         let competitorMatch = getCompetitor(competitor.id)(state)
-  
+
         if (competitorMatch) {
           existingBinding = competitorMatch
         }
       })
     }
-  
+
     return existingBinding
 }
