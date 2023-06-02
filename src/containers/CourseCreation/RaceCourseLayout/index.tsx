@@ -375,7 +375,8 @@ const CreateNewSelector = Component((props: object) =>
     concat(text({ style: styles.createNewTitle }, I18n.t('caption_course_creator_create_new'))),
     view({ style: { ...styles.createNewClassContainer, justifyContent: props.insideGate ? 'center' : 'space-between' }}),
     reduce(concat, nothing()),
-    when(always(equals(true, props.insideGate)), compose(Rof, head)))([
+    when(always(equals(true, props.insideGate)), compose(Rof(Array), head))
+    )([
     touchableOpacity({ onPress: () => createNewMark(PassingInstruction.Port, props) },
       markPortIcon),
     touchableOpacity({ onPress: () => createNewMark(PassingInstruction.Starboard, props) },
