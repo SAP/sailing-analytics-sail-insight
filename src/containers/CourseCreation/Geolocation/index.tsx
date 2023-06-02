@@ -1,7 +1,7 @@
 import { debounce } from 'lodash'
 import { __, compose, concat, reduce, mergeRight, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
-  defaultTo, pick, head, tap, of, flatten, init, nth, map, last, negate,
+  defaultTo, pick, head, of, flatten, init, nth, map, last, negate,
   equals, reject, all, not } from 'ramda'
 
 import MapView, { Marker } from 'react-native-maps'
@@ -265,8 +265,8 @@ const coordinatesInput = Component((props: any) => compose(
 const latitudeInput = coordinatesInput.contramap(props => mergeRight({
   title: 'Latitude',
   unit: 'latitude',
-  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of, prop('latitude'))(props.region),
-  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, dd2ddm, reject(isNil), of, prop('latitude'))(props.region),
+  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of(Array), prop('latitude'))(props.region),
+  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, dd2ddm, reject(isNil), of(Array), prop('latitude'))(props.region),
   coordinatesDirection: compose(
     last,
     defaultTo(['N']),
@@ -280,8 +280,8 @@ const latitudeInput = coordinatesInput.contramap(props => mergeRight({
 const longitudeInput = coordinatesInput.contramap(props => mergeRight({
   unit: 'longitude',
   title: 'Longitude',
-  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of, prop('longitude'))(props.region),
-  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, dd2ddm, reject(isNil), of, prop('longitude'))(props.region),
+  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of(Array), prop('longitude'))(props.region),
+  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, dd2ddm, reject(isNil), of(Array), prop('longitude'))(props.region),
   coordinatesDirection: compose(
     last,
     defaultTo(['E']),
