@@ -11,7 +11,6 @@ export default {
     app_logo: require('./img/defaults/AppLogo.png'),
     ws_logo: require('./img/defaults/ws_logo_home.png'),
     sap_logo: require('./img/defaults/sap_logo_home.png'),
-    syrf_logo: require('./img/defaults/syrf_logo_home.png'),
     sap_logo_insights: require('./img/defaults/InsightsBySap.png'),
     poweredBySAP: require('./img/defaults/poweredBySAP.png'),
     attention: require('./img/new_icons/attention.png'),
