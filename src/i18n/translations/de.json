@@ -362,6 +362,8 @@
   "text_background_tracking_permission_title": "Erlauben Sie Sail Insight den Zugriff auf den Standort dieses Geräts, auch wenn es geschlossen oder nicht in Gebrauch ist.",
   "text_background_tracking_permission_message": "Sail Insight erfordert Zugriff auf den Hintergrundstandort, um Sie verfolgen zu können. Die Erlaubnis wird nur während der Verfolgung verwendet und dient nur zur Auswertung der Daten.",
   "text_background_tracking_permission_allow": "Wechseln Sie zu Allow all the time",
+  "text_background_tracking_disclosure_title": "Aktiviere Hintergrund-Tracking",
+  "text_background_tracking_disclosure_content": "Du aktivierst jetzt das Hintergrund-Tracking. Das ermöglicht der App, Dich weiter zu tracken, auch wenn Du Dein Gerät sperrst oder andere Anwendungen verwendest. Vergiss nicht, nach dem Segeln das Tracking zu stoppen. Für weitere Details siehe unsere Datenschutzerklärung.",
   "text_alert_event_time": "Diese Startzeit liegt außerhalb des Datumsbereichs der Regatta / Veranstaltung. Möchten Sie die Veranstaltungstermine ändern?",
   "text_user_is_competitor": "Sie sind ein Teilnehmer an dieser Veranstaltung",
   "caption_see_course": "Kurs ansehen",

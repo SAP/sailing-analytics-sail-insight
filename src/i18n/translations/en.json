@@ -124,6 +124,8 @@
   "text_background_tracking_permission_title": "Allow Sail Insight to access this device's location even when closed or not in use.",
   "text_background_tracking_permission_message": "Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.",
   "text_background_tracking_permission_allow": "Change to Allow all the time",
+  "text_background_tracking_disclosure_title": "Activating Background Tracking",
+  "text_background_tracking_disclosure_content": "You're about to activate background tracking. This allows the app to keep tracking your boat even when you lock your screen or use other apps. Make sure to stop tracking when you're done sailing. For more details see our privacy policy.",
   "text_tracking_maneuvers": "Maneuvers",
   "text_tracking_alert_already_running_title": "Start and Dismiss?",
   "text_tracking_alert_already_running_message": "A tracking event is running already. Do you really want to start tracking?",
