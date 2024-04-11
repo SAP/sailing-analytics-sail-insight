@@ -317,7 +317,7 @@
   "error_field_invalid_handicap" : "障碍不能为 0。",
   "error_device_already_exists" : "此设备已注册此场比赛",
   "url_eula" : "http://www.sailyachtresearch.org/sail-insight-eula/",
-  "url_privacy_policy" : "http://www.sailyachtresearch.org/sail-insights-privacy-policy/",
+  "url_privacy_policy" : "https://sailinsight.zendesk.com/hc/en-us/articles/4912517259794-Sail-Inisght-Privacy-Policy",
   "JIBE" : "顺风转向",
   "HEAD_UP" : "顶风行驶",
   "BEAR_AWAY" : "顺偏行驶",
