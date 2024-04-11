@@ -10,7 +10,8 @@
     "test": "jest",
     "clear-gradle-cache": "rm -rf $HOME/.gradle/",
     "clear-everything": "rm -rf $TMPDIR/react-* && rm -rf $TMPDIR/metro-* && yarn cache clean && rm -rf android/build && rm -rf android/app/build && (cd android && ./gradlew clean)",
-    "debug-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/generated/res/react/devDebug/ && cd android && ./gradlew assembleDebug && cd .."
+    "debug-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/generated/res/react/devDebug/ && cd android && ./gradlew assembleDebug && cd ..",
+    "release-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/generated/res/react/liveDebug/ && cd android && ./gradlew assembleRelease && cd .."
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "^4.0.1",
