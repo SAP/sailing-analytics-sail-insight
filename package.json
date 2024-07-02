@@ -46,7 +46,7 @@
     "query-string": "6.2.0",
     "ramda": "^0.26.1",
     "react": "16.13.1",
-    "react-native": "0.63.2",
+    "react-native": "0.69.12",
     "react-native-autocomplete-input": "^4.2.0",
     "react-native-background-fetch": "^3.0.4",
     "react-native-background-geolocation-android": "https://github.com/transistorsoft/react-native-background-geolocation-android.git#3.9.3",
