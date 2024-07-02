@@ -91,6 +91,16 @@ export default EStyleSheets.create({
     marginRight: 5
   },
 
+  iconEditStyle: {
+    width: 15,
+    height: 15,
+  },
+
+  editIconContainerStyle: {
+    marginLeft: 10,
+    justifyContent: 'center',
+  },
+
   clockIconContainerStyle: {
     paddingTop: 2,
     marginRight: 7

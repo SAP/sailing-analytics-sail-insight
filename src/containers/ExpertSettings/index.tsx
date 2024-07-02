@@ -19,11 +19,13 @@ import {
   updateLeaderboardEnabledSetting,
   updateServerUrlSetting,
   updateVerboseLoggingSetting,
-  updateMtcpAndCommunicationSetting,
+  updateCommunicationEnabledSetting,
+  updateMtcpEnabledSetting,
   updateServerProxyUrlSetting,
   updateMasterUdpIPSetting,
   updateMasterUdpPortSetting,
   updateCommunicationSettings,
+  updateMtcpSettings,
 } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
@@ -32,15 +34,15 @@ import {
   getLeaderboardEnabledSetting,
   getServerUrlSetting,
   getVerboseLoggingSetting,
-  getMtcpAndCommunicationSetting,
+  getCommunicationSetting,
+  getMtcpSetting,
   getServerProxyUrlSetting,
   getMasterUdpIP,
   getMasterUdpPort,
   getMasterUdpPorts,
-  IsDefaultServerUrl,
+  getDefaultAnyServerUrl,
 } from '../../selectors/settings'
 import styles from './styles'
-import { times } from 'ramda'
 
 interface Props {
   formServer?: string,
@@ -49,13 +51,16 @@ interface Props {
   updateMasterUdpIPSetting: (value: string) => void,
   updateMasterUdpPortSetting: (value: number) => void,
   updateCommunicationSettings: () => void,
+  updateMtcpSettings: () => void,
   verboseLogging: boolean,
-  mtcpAndCommunication: boolean,
+  communicationSetting: boolean,
+  mtcpSetting: boolean,
   updateVerboseLoggingSetting: (value: boolean) => void,
-  updateMtcpAndCommunicationSetting: (value: boolean) => void,
+  updateCommunicationEnabledSetting: (value: boolean) => void,
+  updateMtcpEnabledSetting: (value: boolean) => void,
   leaderboardEnabled: boolean,
   updateLeaderboardEnabledSetting: (value: boolean) => void,
-  masterUdpPorts: ['', ''],
+  masterUdpPorts: any,
 }
 
 class ExpertSettings extends TextInputForm<Props> {
@@ -65,9 +70,10 @@ class ExpertSettings extends TextInputForm<Props> {
   }
 
   public handleServerUrlChange = (event: any, value: any) => {
-    if (this.props.masterUdpPorts.length > 1) {
-      const masterUdpPort = IsDefaultServerUrl(value) ? this.props.masterUdpPorts[0] : this.props.masterUdpPorts[1]
-      this.props.change(expertSettingsForm.FORM_KEY_MASTER_PORT, masterUdpPort)
+    if (this.props.masterUdpPorts[value]) {
+      this.props.change(expertSettingsForm.FORM_KEY_MASTER_PORT, this.props.masterUdpPorts[value])
+    } else {
+      this.props.change(expertSettingsForm.FORM_KEY_MASTER_PORT, this.props.masterUdpPorts[getDefaultAnyServerUrl()])
     }
   }
 
@@ -142,14 +148,22 @@ class ExpertSettings extends TextInputForm<Props> {
             switchValue={this.props.verboseLogging}
             onSwitchValueChange={this.props.updateVerboseLoggingSetting}
           />
+          {false && 
           <EditItemSwitch
               style={styles.item}
               titleStyle={{ color: 'white' }}
-              title={I18n.t('text_mtcp_and_communication')}
-              switchValue={this.props.mtcpAndCommunication}
-              onSwitchValueChange={this.props.updateMtcpAndCommunicationSetting}
+              title={I18n.t('text_mtcp_setting')}
+              switchValue={this.props.mtcpSetting}
+              onSwitchValueChange={this.props.updateMtcpEnabledSetting}
+          />}
+          <EditItemSwitch
+              style={styles.item}
+              titleStyle={{ color: 'white' }}
+              title={I18n.t('text_communication_setting')}
+              switchValue={this.props.communicationSetting}
+              onSwitchValueChange={this.props.updateCommunicationEnabledSetting}
           />
-          {this.props.mtcpAndCommunication && this.renderProxySettings()}
+          {this.props.communicationSetting && this.renderProxySettings()}
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
           <TextButton
@@ -189,18 +203,23 @@ class ExpertSettings extends TextInputForm<Props> {
 
   protected onSubmit = async (values: any) => {
     await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
-    if (this.props.mtcpAndCommunication) {
+    if (this.props.communicationSetting || this.props.mtcpSetting) {
       await this.props.updateServerProxyUrlSetting(values[expertSettingsForm.FORM_KEY_PROXY_URL])
+    }
+    if (this.props.communicationSetting) {
       await this.props.updateMasterUdpIPSetting(values[expertSettingsForm.FORM_KEY_MASTER_IP])
       await this.props.updateMasterUdpPortSetting(values[expertSettingsForm.FORM_KEY_MASTER_PORT])
       this.props.updateCommunicationSettings()
+    }
+    if (this.props.mtcpSetting) {
+      this.props.updateMtcpSettings()
     }
     this.props.navigation.goBack()
   }
 
   protected onLogToEmailSubmit = () => {
     this.setState({ emailLoading: true })
-    BackgroundGeolocation.emailLog('sailinsight@sailtracks.tv').then(() => {
+    BackgroundGeolocation.logger.emailLog('support@sapsailing.com').then(() => {
       Alert.alert(I18n.t('caption_success'))
       this.props.navigation.goBack()
     }).catch(() => {
@@ -221,7 +240,8 @@ const mapStateToProps = (state: any) => {
       [expertSettingsForm.FORM_KEY_MASTER_PORT]: getMasterUdpPort(state),
     },
     verboseLogging: getVerboseLoggingSetting(state),
-    mtcpAndCommunication: getMtcpAndCommunicationSetting(state),
+    communicationSetting: getCommunicationSetting(state),
+    mtcpSetting: getMtcpSetting(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
     masterUdpPorts: getMasterUdpPorts(state),
   }
@@ -229,8 +249,8 @@ const mapStateToProps = (state: any) => {
 
 export default connect(
   mapStateToProps,
-  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting, updateMtcpAndCommunicationSetting,
-  updateServerProxyUrlSetting, updateMasterUdpIPSetting, updateMasterUdpPortSetting, updateCommunicationSettings, change },
+  { updateServerUrlSetting, updateVerboseLoggingSetting, updateLeaderboardEnabledSetting, updateCommunicationEnabledSetting, updateMtcpEnabledSetting,
+  updateServerProxyUrlSetting, updateMasterUdpIPSetting, updateMasterUdpPortSetting, updateCommunicationSettings, updateMtcpSettings, change },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,

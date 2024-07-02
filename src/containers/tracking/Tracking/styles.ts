@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native'
+import { Dimensions, PixelRatio } from 'react-native'
 import EStyleSheets from 'react-native-extended-stylesheet'
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import { $tinySpacing, $smallSpacing } from 'styles/dimensions'
@@ -7,6 +7,7 @@ import { withSecondaryLightFont, withSecondaryHeavyFont, withDefaultBoldFont } f
 const windowHeight = Dimensions.get('window').height
 const skipAndroid = true
 const topMargin = windowHeight * 0.057
+const smallScreen = PixelRatio.getPixelSizeForLayoutSize(windowHeight) < 1930
 
 
 export default EStyleSheets.create({
@@ -17,9 +18,14 @@ export default EStyleSheets.create({
   },
   measurementContainer: {
     backgroundColor: 'white',
-    padding: '$tinySpacing',
-    width: '100%',
-
+    paddingHorizontal: '$tinySpacing',
+    paddingVertical: smallScreen ? 1 : '$tinySpacing',
+    flex: 1,
+  },
+  measurementContainerStub: {
+    flex: 1,
+    paddingHorizontal: '$tinySpacing',
+    paddingVertical: smallScreen ? 1 : '$tinySpacing',
   },
   measurementTitle: {
     color: 'black',
@@ -47,37 +53,43 @@ export default EStyleSheets.create({
   },
   rankText: {
     color: '$Orange',
-    fontSize: 60,
+    fontSize: smallScreen ? 40 : 60,
     ...withSecondaryHeavyFont,
   },
   connectivity: {
     marginTop: getStatusBarHeight(skipAndroid),
   },
   stopButton: {
-    marginTop: 24,
+    marginTop: smallScreen ? 12 : 24,
     marginBottom: 24,
   },
   informationItem: {
-    padding: '$tinySpacing',
+    padding: $tinySpacing,
   },
-  propertyRow: {
-    marginTop: '$smallSpacing',
+  propertiesTiles: {
+    marginTop: $tinySpacing,
+  },
+  propertiesRow: {
+    display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flex: 1,
+    width: '100%',
+    justifyContent: 'space-evenly'
   },
   propertyReverseRow: {
     flexDirection: 'row-reverse',
     justifyContent: 'space-between',
   },
   tagLine: {
-    height: 56,
+    height: 30,
+    width: 120,
     alignSelf: 'flex-end',
     resizeMode: 'contain',
     marginBottom: 20,
-    marginTop: 8,
+    marginTop: 20,
   },
   property: {
-    marginTop: '$tinySpacing',
+    marginTop: smallScreen ? 0 : '$tinySpacing'
   },
   propertyBottom: {
     marginBottom: '$tinySpacing',
@@ -86,12 +98,10 @@ export default EStyleSheets.create({
     flex: 0.5,
   },
   leftPropertyContainer: {
-    width: Dimensions.get('window').width / 2 - $tinySpacing / 2 - $smallSpacing,
     marginRight: $tinySpacing / 2,
   },
   rightPropertyContainer: {
     marginLeft: $tinySpacing / 2,
-    width: Dimensions.get('window').width / 2 - $tinySpacing / 2 - $smallSpacing,
   },
   rankIcon: {
     tintColor: '$Orange',

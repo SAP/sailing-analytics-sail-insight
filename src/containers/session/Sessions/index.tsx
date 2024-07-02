@@ -1,20 +1,26 @@
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
-import { Text, TouchableOpacity, View, ViewProps } from 'react-native'
-import { connect } from 'react-redux'
 
+import { ActivityIndicator, Image, Text, TouchableOpacity, View,
+  ViewProps, Platform, RefreshControl, Alert } from 'react-native'
+import { connect } from 'react-redux'
+import { isPlatformAndroid } from 'environment'
 import * as Screens from 'navigation/Screens'
 import { startTracking, StartTrackingAction } from 'actions/tracking'
 import { ShowActionSheetType } from 'helpers/types'
 import I18n from 'i18n'
+import { debounce } from 'lodash'
 
 import { authBasedNewSession } from 'actions/auth'
 import { selectEvent } from 'actions/events'
+import { fetchEventList } from 'actions/checkIn'
 import { Session } from 'models'
 import { NavigationScreenProps } from 'react-navigation'
-import { getFilteredSessionList } from 'selectors/session'
-import { getEventIdThatsBeingSelected } from 'selectors/event'
+import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+import { getFilteredSessionList, isSessionListEmpty } from 'selectors/session'
+import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
 
+import { NavigationEvents } from '@react-navigation/compat'
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
@@ -34,50 +40,139 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   authBasedNewSession: () => void,
   selectEvent: any,
   eventIdThatsBeingSelected?: string,
+  isLoggedIn: boolean,
+  showHints: boolean,
 } > {
 
-  constructor(props) {
+  swipeableListReferences: { [id: string]: any} = {}
+  styles: any
+
+  private debouncedButtonClick = debounce(
+    (actionType: string, ...args: any) => {
+      this.setState({ swipeableLeftOpenEventId: '' })
+      this.closeSwipeableRows()
+      switch (actionType) {
+        case 'SELECT':
+          return this.props.selectEvent(...args)
+        case 'CREATE':
+          return this.props.authBasedNewSession(...args)
+        case 'TRACK':
+          console.log('tracking selected')
+          if (isPlatformAndroid) {
+            return Alert.alert(I18n.t('text_background_tracking_disclosure_title'), I18n.t('text_background_tracking_disclosure_content'),
+              [{ text: I18n.t('caption_ok'), onPress: () => this.props.startTracking(...args) }])
+          } else {
+            return this.props.startTracking(...args)
+          }
+      }
+    },
+    1500,
+    { leading: true, trailing: false }
+  )
+
+  constructor(props: any) {
     super(props)
     this.styles = createStyles(this.props.route?.params?.forTracking)
+    this.swipeableListReferences = {};
   }
 
   public state = {
     hideAddButton: false,
+    swipeableLeftOpenEventId: '',
+    openedWhenLoading: true,
+  }
+
+  public componentDidMount() {
+    this._unsubscribeFromBlur = this.props.navigation.addListener('blur', () => {
+      this.setState({ swipeableLeftOpenEventId: '' })
+      this.closeSwipeableRows()
+    })
+  }
+
+  public componentWillUnmount() {
+    this._unsubscribeFromBlur()
+  }
+
+  public closeSwipeableRows() {
+    Object.keys(this.swipeableListReferences).forEach((key) => {
+      this.swipeableListReferences[key]?.close()
+    })
+  }
+
+  public closeSwipeableRow(previousRow: string, currentRow: string) {
+    if (!!previousRow && previousRow !== currentRow) {
+      this.swipeableListReferences[previousRow]?.close()
+    }
   }
 
   public renderItem = ({ item }: any) => {
     const { eventIdThatsBeingSelected } = this.props
+    const { swipeableLeftOpenEventId } = this.state
     const { eventId } = item
     const isLoading = eventId === eventIdThatsBeingSelected
+    const onSwipeableLeftWillOpen = (eventId: string) => {
+      this.closeSwipeableRow(swipeableLeftOpenEventId, eventId)
+      this.setState({ swipeableLeftOpenEventId: eventId })
+    }
     if (!this.props.route?.params?.forTracking) {
       return (
         <SessionItem
           style={this.styles.cardsContainer}
-          onItemPress={() => this.props.selectEvent({ data: item, navigation: this.props.navigation })}
-          //onItemPress={() => console.log('item select')}
+          onItemPress={() => this.debouncedButtonClick('SELECT', { data: item, navigation: this.props.navigation })}
           session={item}
           loading={isLoading}
+          swipeableLeftOpenEventId={swipeableLeftOpenEventId}
+          onSwipeableLeftWillOpen={onSwipeableLeftWillOpen}
+          swipeableReference={(ref: any) => this.swipeableListReferences[item.eventId] = ref}
         />
       )
     } else {
       return (
         <SessionItemDark
           style={this.styles.cardsContainer}
-          onItemPress={() => this.props.startTracking({ data: item, navigation: this.props.navigation })}
+          onItemPress={() => this.debouncedButtonClick('TRACK', { data: item, navigation: this.props.navigation })}
           session={item}
+          swipeableLeftOpenEventId={swipeableLeftOpenEventId}
+          onSwipeableLeftWillOpen={onSwipeableLeftWillOpen}
+          swipeableReference={(ref: any) => this.swipeableListReferences[item.eventId] = ref}
         />
       )
     }
   }
 
-  public render() {
+  public renderHint = () => {
     return (
-      <View style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}>
-        <ScrollContentView style={this.styles.scrollContainer}>
+      <View style={this.styles.hintContainer}>
+        <Image
+          source={
+            I18n.locale.substring(0, 3) === 'de-'
+              ? Images.defaults.background_empty_de
+              : Images.defaults.background_empty
+          }
+          style={this.styles.hintBackgroundImage}
+          resizeMode='contain'
+        />
+      </View>
+    )
+  }
+
+  public render() {
+    const { openedWhenLoading } = this.state
+    const { isLoadingEventList, showHints } = this.props
+
+    const shouldShowLoadingSpinner = openedWhenLoading && isLoadingEventList
+    return (
+      <View style={this.styles.container}>
+        <NavigationEvents
+          onWillFocus={() => this.setState({ openedWhenLoading: isLoadingEventList })}
+        />
+        <View
+          style={this.styles.scrollContainer}
+        >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
             style={this.styles.createButton}
-            onPress={() => this.props.authBasedNewSession(this.props.navigation)}>
+            onPress={() => this.debouncedButtonClick('CREATE', this.props.navigation)}>
             <IconText
               source={Images.actions.add}
               iconStyle={this.styles.createButtonIcon}
@@ -87,28 +182,53 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
               {I18n.t('session_create_new_event').toUpperCase()}
             </IconText>
           </TouchableOpacity>
-          <FloatingComponentList
-            style={this.styles.list}
-            data={this.props.sessions}
-            renderItem={this.renderItem}
-          />
-        </ScrollContentView>
-        <View style={this.styles.bottomButton}>
+          {shouldShowLoadingSpinner
+            ? <View style={{ flex: 1, justifyContent: 'center' }}>
+                <ActivityIndicator size="large" color="white" />
+              </View>
+            : showHints ? this.renderHint() :<FloatingComponentList
+                style={this.styles.list}
+                data={this.props.sessions}
+                renderItem={this.renderItem}
+                extraData={this.state.swipeableLeftOpenEventId}
+                refreshControl={this.props.isLoggedIn ?
+                  <RefreshControl
+                    refreshing={!shouldShowLoadingSpinner && isLoadingEventList}
+                    onRefresh={() => {
+                      if (!shouldShowLoadingSpinner) {
+                        this.setState({ openedWhenLoading: false });
+                        this.props.fetchEventList();
+                      }
+                    }}
+                    tintColor="white"
+                  /> :
+                  undefined
+                }
+              />
+          }
+        </View>
+        
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
               textStyle={this.styles.qrButtonText}
               onPress={() => this.props.navigation.navigate(Screens.QRScanner)}>
             {I18n.t('caption_qr_scanner').toUpperCase()}
           </TextButton>
-        </View>
+        
       </View>
     )
   }
 }
 
-const mapStateToProps = (state: any) => ({
-  sessions: getFilteredSessionList(state),
-  eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
-})
+const mapStateToProps = (state: any, props: any) => {
+  const sessions = getFilteredSessionList(props.route?.params?.forTracking)(state)
+  return ({
+    sessions,
+    showHints: isSessionListEmpty(props.route?.params?.forTracking)(state),
+    isLoggedIn: isLoggedInSelector(state),
+    eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
+    isLoadingEventList: isLoadingEventList(state)
+  })
+}
 
-export default connect(mapStateToProps, { selectEvent, startTracking, authBasedNewSession })(Sessions)
+export default connect(mapStateToProps, { fetchEventList, selectEvent, startTracking, authBasedNewSession })(Sessions)

@@ -10,16 +10,11 @@ import {
   removeTrackedRegatta, resetTrackingStatistics,
   updateLastWindCourse,
   updateLastWindSpeed,
-  updateStartAutoCourseStatus,
   updateStartedAt,
-  updateTrackedEventId,
-  updateTrackedLeaderboard,
   updateTrackedRegatta,
-  updateTrackingStartTimeUpdateFlag,
   updateTrackingStatistics,
   updateTrackingStatus,
-  updateUnsentGpsFixCount,
-  updateValidGpsFixCount,
+  updateTrackingContext
 } from 'actions/locationTrackingData'
 import { removeUserData } from '../actions/auth'
 
@@ -37,24 +32,16 @@ const initialState: LocationTrackingState = {
   lastLatitude: null,
   lastLongitude: null,
   lastWindCourse: null,
-  lastWindSpeedInKnots: null,
-  wasTrackingStartTimeUpdated: false,
-  startAutoCourseUpdateStatus: 'MISSING',
-  validGpsFixCount: 0,
+  lastWindSpeedInKnots: null
 }
 
 const reducer = handleActions(
   {
     [updateTrackingStatus as any]: itemUpdateHandler('status'),
-    [updateTrackedLeaderboard as any]: itemUpdateHandler('leaderboardName'),
-    [updateTrackedEventId as any]: itemUpdateHandler('eventId'),
-    [updateUnsentGpsFixCount as any]: itemUpdateHandler('unsentGpsFixCount'),
+    [updateTrackingContext as any]: itemUpdateHandler('context'),
     [updateLastWindCourse as any]: itemUpdateHandler('lastWindCourse'),
     [updateLastWindSpeed as any]: itemUpdateHandler('lastWindSpeedInKnots'),
     [updateStartedAt as any]: itemUpdateHandler('startedAt'),
-    [updateTrackingStartTimeUpdateFlag as any]: itemUpdateHandler('wasTrackingStartTimeUpdated'),
-    [updateValidGpsFixCount as any]: itemUpdateHandler('validGpsFixCount'),
-    [updateStartAutoCourseStatus as any]: itemUpdateHandler('startAutoCourseUpdateStatus'),
     [updateTrackedRegatta as any]: (state: any = {}, action: any) =>
       !action || !action.payload ?
         state :
@@ -77,11 +64,6 @@ const reducer = handleActions(
       }
       gpsFix = action.payload
 
-      const { lastLatitude, lastLongitude } = state
-      const distance = !lastLatitude || !lastLongitude ?
-        state.distance :
-        state.distance + distanceInM(lastLatitude, lastLongitude, gpsFix.latitude, gpsFix.longitude)
-
       const locationAccuracy = typeof gpsFix.accuracy === 'number' ?
           gpsFix.accuracy :
           null
@@ -99,7 +81,7 @@ const reducer = handleActions(
         locationAccuracy,
         speedInKnots,
         headingInDeg,
-        distance,
+        distance: gpsFix.odometer,
         lastLatitude: gpsFix.latitude,
         lastLongitude: gpsFix.longitude,
       })

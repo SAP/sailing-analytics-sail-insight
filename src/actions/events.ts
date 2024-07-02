@@ -1,11 +1,13 @@
 import { createAction } from 'redux-actions'
+import moment from 'moment'
 
 import { CheckIn, Session } from 'models'
 
 import { ActionQueue, fetchAction } from 'helpers/actions'
 
-import { collectCheckInData, updateCheckIn } from 'actions/checkIn'
+import { collectCheckInData, updateCheckInAndEventInventory } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
+import { getApiServerUrl } from 'api/config'
 import { CreateEventBody } from 'api/endpoints/types'
 import { DispatchType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
@@ -15,7 +17,11 @@ import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
 export const UPDATE_CREATING_EVENT = 'UPDATE_CREATING_EVENT'
+export const UPDATE_LOADING_EVENT_LIST = 'UPDATE_LOADING_EVENT_LIST'
 export const UPDATE_SELECTING_EVENT = 'UPDATE_SELECTING_EVENT'
+export const START_POLLING_SELECTED_EVENT = 'START_POLLING_SELECTED_EVENT'
+export const STOP_POLLING_SELECTED_EVENT = 'STOP_POLLING_SELECTED_EVENT'
+export const UPDATE_EVENT_POLLING_STATUS = 'UPDATE_EVENT_POLLING_STATUS'
 export const UPDATE_STARTING_TRACKING = 'UPDATE_STARTING_TRACKING'
 export const SELECT_EVENT = 'SELECT_EVENT'
 export const SELECT_RACE = 'SELECT_RACE'
@@ -39,24 +45,10 @@ export const fetchEvent = (requestFunction: ((...args: any[]) => void)) =>
     return await dispatch(fetchAction(requestFunction, receiveEvent)(...args))
   }
 
-export const archiveEvent = (session: Session, archived: boolean) => (
-  dispatch: DispatchType,
-) => {
-  const eventId = session.eventId || session.event && session.event.id
-
-  if (!eventId) {
-    return
-  }
-
-  const payload = {
-    id: eventId,
-    data: {
-      archived,
-    },
-  }
-
-  dispatch(updateEvent(payload))
-}
+export const archiveEvent = (session: Session, isArchived: boolean) => updateCheckInAndEventInventory({
+  isArchived,
+  leaderboardName: session.leaderboardName,
+})
 
 const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
   [RegattaType.OneDesign]: 'ONE_DESIGN',
@@ -65,8 +57,15 @@ const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
 
 const createEvent = (eventData: EventCreationData) => async () => {
   const secret = getSharingUuid()
+
+  const { dateFrom } = eventData
+  const startdate = moment().isSame(dateFrom, 'day') ? moment().toISOString() : dateFrom.toISOString()
+
   const response = await selfTrackingApi().createEvent({
     secret,
+    startdate,
+    baseurl:                    getApiServerUrl(),
+    enddate:                    eventData.dateTo.toISOString(),
     eventName:                  eventData.name,
     venuename:                  eventData.location,
     ispublic:                   false,
@@ -80,10 +79,8 @@ const createEvent = (eventData: EventCreationData) => async () => {
       eventData.regattaType === RegattaType.OneDesign
         ? eventData.boatClass
         : null,
-    ...(eventData.dateFrom ? { startdate: eventData.dateFrom.toISOString() } : {}),
-    ...(eventData.dateTo   ? { enddate: eventData.dateTo.toISOString() } : {}),
   } as CreateEventBody)
-  console.log('create event response', response)
+
   return eventCreationResponseToCheckIn(response, {
     secret,
     trackPrefix: 'R',
@@ -102,7 +99,7 @@ export const createEventActionQueue = ({ eventData, navigation }: any) => (
       collectCheckInData(data),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
-      updateCheckIn(data),
+      updateCheckInAndEventInventory(data),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
       createAction(CREATE_EVENT)({ ...data, navigation }),
@@ -134,7 +131,11 @@ export const updateEventSettings = (session: object, data: object) => (dispatch:
 }
 
 export const updateCreatingEvent = createAction(UPDATE_CREATING_EVENT)
+export const updateLoadingEventList = createAction(UPDATE_LOADING_EVENT_LIST)
 export const updateSelectingEvent = createAction(UPDATE_SELECTING_EVENT)
+export const startPollingSelectedEvent = createAction(START_POLLING_SELECTED_EVENT)
+export const stopPollingSelectedEvent = createAction(STOP_POLLING_SELECTED_EVENT)
+export const updateEventPollingStatus = createAction(UPDATE_EVENT_POLLING_STATUS)
 export const updateStartingTracking = createAction(UPDATE_STARTING_TRACKING)
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)

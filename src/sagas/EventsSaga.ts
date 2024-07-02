@@ -1,11 +1,11 @@
-import crashlytics from '@react-native-firebase/crashlytics'
 import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
   OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
+  START_POLLING_SELECTED_EVENT, STOP_POLLING_SELECTED_EVENT,
   SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent,
-  updateSelectingEvent, updateStartingTracking } from 'actions/events'
+  updateSelectingEvent, updateStartingTracking, updateEventPollingStatus, updateEvent } from 'actions/events'
 import { fetchRegatta } from 'actions/regattas'
 import * as Screens from 'navigation/Screens'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
@@ -14,18 +14,22 @@ import { fetchPermissionsForEvent } from 'actions/permissions'
 import { updateCheckIn } from 'actions/checkIn'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
+import { safeApiCall } from './HelpersSaga'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
-import { __, apply, compose, concat, curry, dec, path, prop, length,
+import { __, apply, compose, concat, curry, dec, path, prop, last, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
-import { Share } from 'react-native'
-import { all, call, put, select, takeEvery, takeLatest, take } from 'redux-saga/effects'
+import { Share, Alert } from 'react-native'
+import { all, call, put, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
-import { getSelectedEventInfo } from 'selectors/event'
+import { getSelectedEventInfo, isPollingEvent, getSelectedEventEndDate, getSelectedEventStartDate, getEventIdThatsBeingSelected } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
-import { getRegatta, getRegattaPlannedRaces } from 'selectors/regatta'
+import { isAppActive } from 'selectors/appState'
+import { getRegatta, getRegattaNumberOfRaces, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { StackActions } from '@react-navigation/native'
+
+const EventPollingInterval = 15000
 
 const valueAtIndex = curry((index, array) => compose(
   head,
@@ -33,17 +37,13 @@ const valueAtIndex = curry((index, array) => compose(
   pick(__, array))(
   [index]))
 
-function* safeApiCall(method, ...args) {
-  let result
-
-  try {
-    result = yield call(method, ...args)
-  } catch (e) {
-    crashlytics().setAttribute('saga', 'true')
-    crashlytics().recordError(e)
-  }
-
-  return result
+function eventConfirmationAlert() {
+  return new Promise(resolve => {
+    Alert.alert(I18n.t('caption_race_set_time'), I18n.t('text_alert_event_time'),
+      [ { text: I18n.t('button_proceed'), onPress: () => resolve(true) },
+        { text: I18n.t('button_discard'), onPress: () => resolve(false) }
+      ])
+  })
 }
 
 function* selectEventSaga({ payload }: any) {
@@ -105,8 +105,32 @@ function* fetchCoursesForCurrrentEvent({ payload }: any) {
 function* setRaceTime({ payload }: any) {
   const { race, raceTime, value } = payload
   const date = moment(value).valueOf()
-  const { leaderboardName, serverUrl, regattaName } = yield select(getSelectedEventInfo)
+  const { leaderboardName, serverUrl, regattaName, eventId } = yield select(getSelectedEventInfo)
+  const eventEndDate = yield select(getSelectedEventEndDate)
+  const eventStartDate = yield select(getSelectedEventStartDate)
   const api = dataApi(serverUrl)
+
+  if (eventEndDate < date ||
+    eventStartDate > date)
+  {
+    // wait to make sure time picker is dismissed
+    yield delay(500)
+    const proceed = yield call(eventConfirmationAlert)
+    if (!proceed) {
+      return
+    }
+
+    if (eventEndDate < date) {
+      // update event end time
+      yield put(updateEvent({id: eventId, data: { endDate: date }}))
+      yield safeApiCall(api.updateEvent(eventId, { enddateasmillis: date }))
+    } else {
+      // update event start time
+      yield put(updateEvent({id: eventId, data: { startDate: date }}))
+      yield safeApiCall(api.updateEvent(eventId, { startdateasmillis: date }))
+    }
+
+  }
 
   yield put(updateRaceTime({
     [`${leaderboardName}-${race}`]: { ...raceTime, startTimeAsMillis: date }
@@ -156,23 +180,24 @@ function* setDiscards({ payload }: any) {
 
 function* createEvent(payload: object) {
   const data = payload.payload.payload
+  const { eventId, leaderboardName, secret, serverUrl, numberOfRaces, regattaName } = data
   const navigation = payload.payload.navigation
-  const api = dataApi(data.serverUrl)
+  const api = dataApi(serverUrl)
   const races = compose(
     map(compose(concat('R'), toString)),
     range(1),
     inc)(
-    data.numberOfRaces)
-  const regatta = yield select(getRegatta(data.regattaName))
+    numberOfRaces)
+  const regatta = yield select(getRegatta(regattaName))
 
-  console.log('create event', payload)
-
-  yield call(api.updateRegatta, data.regattaName,
-    { controlTrackingFromStartAndFinishTimes: true,
-      useStartTimeInference: false,
-      defaultCourseAreaUuid: regatta.courseAreaId })
+  yield call(api.updateRegatta, regattaName, {
+    controlTrackingFromStartAndFinishTimes: true,
+    useStartTimeInference: false,
+    defaultCourseAreaUuid: head(regatta.courseAreaIds),
+    autoRestartTrackingUponCompetitorSetChange: true,
+  })
   yield all(races.map(race =>
-    call(api.denoteRaceForTracking, data.leaderboardName, race, 'Default')))
+    call(api.denoteRaceForTracking, leaderboardName, race, 'Default')))
   yield put(selectEvent({ data, replaceCurrentScreen: true, navigation }))
 }
 
@@ -218,12 +243,7 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
   const api = dataApi(payload.serverUrl)
   const entities = yield call(api.requestRegatta, payload.regattaName)
 
-  const numberOfRaces = compose(
-    length,
-    prop('races'),
-    head,
-    path(['entities', 'regatta', payload.regattaName, 'series']))(
-    entities)
+  const numberOfRaces = getRegattaNumberOfRaces(entities.entities.regatta[payload.regattaName])
 
   yield put(updateCheckIn({
     leaderboardName: payload.leaderboardName,
@@ -241,13 +261,12 @@ function* openEventLeaderboard() {
 
 function* openSAPAnalyticsEvent() {
   const { serverUrl, eventId, regattaName } = yield select(getSelectedEventInfo)
-
-  Share.share({
+  setTimeout(() => Share.share({
     title: I18n.t('text_share_session_sap_event_header', { regattaName }),
     message: I18n.t('text_share_session_sap_event_message', {
         regattaName,
         link: `${serverUrl}/gwt/Home.html#/event/:eventId=${eventId}` }),
-  })
+  }), 1)
 }
 
 function* startTracking({ payload }: any) {
@@ -270,15 +289,56 @@ function* startTracking({ payload }: any) {
 }
 
 function* stopTracking({ payload }: any) {
-  const { serverUrl, leaderboardName } = payload
+  const { serverUrl, leaderboardName, regattaName } = payload
   const api = dataApi(serverUrl)
 
   yield safeApiCall(api.stopTracking, leaderboardName, { fleet: 'Default' })
+
+  // Set end of tracking time for the last race
+  const races = yield select(getRegattaPlannedRaces(regattaName))
+  const lastRace = last(races)
+
+  yield safeApiCall(api.setTrackingTimes, regattaName,
+    {
+      fleet: 'Default',
+      race_column: lastRace,
+      endoftrackingasmillis: moment().valueOf()
+    })
 
   const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
   if (leaderboardData) {
     yield put(receiveEntities(leaderboardData))
   }
+}
+
+function* handleSelectedEventPolling() {
+  let isPolling = yield select(isPollingEvent())
+  if (!isPolling) {
+    isPolling = true
+    yield put(updateEventPollingStatus(true))
+
+    while (true && isPolling)
+    {
+      const isForeground = yield select(isAppActive())
+      if (isForeground) {
+        const eventData = yield select(getSelectedEventInfo)
+        const { regattaName, secret, serverUrl } = eventData
+        yield put(fetchRegatta(regattaName, secret, serverUrl))
+        yield put(fetchRacesTimesForEvent(eventData))
+      }
+
+      yield delay(EventPollingInterval)
+      isPolling = yield select(isPollingEvent())
+    }
+  }
+}
+
+function* startPollingSelectedEvent() {
+  yield call(handleSelectedEventPolling)
+}
+
+function* stopPollingSelectedEvent() {
+  yield put(updateEventPollingStatus(false))
 }
 
 export default function* watchEvents() {
@@ -294,4 +354,6 @@ export default function* watchEvents() {
     yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
     yield takeLatest(START_TRACKING, startTracking)
     yield takeLatest(STOP_TRACKING, stopTracking)
+    yield takeLatest(START_POLLING_SELECTED_EVENT, startPollingSelectedEvent)
+    yield takeLatest(STOP_POLLING_SELECTED_EVENT, stopPollingSelectedEvent)
 }

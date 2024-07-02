@@ -1,4 +1,7 @@
 import ExpeditionCommunication, { Server1 } from 'sail-insight-expedition-communication'
+import { Platform } from 'react-native'
+
+const fixDigits = 7
 
 export const getServerState = () => {
     return new Promise((resolve) => {
@@ -24,11 +27,14 @@ export const sendStartLine = (startLine: any) => {
 
     if (startLine.pinLongitude && startLine.pinLongitude && startLine.boatLatitude && startLine.boatLongitude) {
         //#L,P,16.9897166666667,-61.7854166666667*3F
-        //#L,P,16.9903666666667,-61.7697833333333*3E
+        //#L,S,16.9903666666667,-61.7697833333333*3E
 
-        const startPin = `#L,P,${startLine.pinLatitude},${startLine.pinLongitude}`
-        const startBoat = `#L,P,${startLine.boatLatitude},${startLine.boatLongitude}`
+        let startPin = `#L,P,${startLine.pinLatitude.toFixed(fixDigits)},${startLine.pinLongitude.toFixed(fixDigits)}`
+        let startBoat = `#L,S,${startLine.boatLatitude.toFixed(fixDigits)},${startLine.boatLongitude.toFixed(fixDigits)}`
 
+        startPin = startPin + '*' + getChecksum(startPin) + '\r\n'
+        startBoat = startBoat + '*' + getChecksum(startBoat) + '\r\n'
+ 
         ExpeditionCommunication.clearMessages(Server1)
 
         sendServerMessage(startPin)
@@ -41,4 +47,26 @@ export const sendStartLine = (startLine: any) => {
 
 export const updateSettings = (settings: any) => {
     ExpeditionCommunication.configureCommunication(settings)
+}
+
+export const keepServerAlive = () => {
+    if (Platform.OS === 'ios') {
+        ExpeditionCommunication.keepServerAlive(Server1)
+    }
+}
+
+const getChecksum = (text: String) => {
+    let bytes = []
+    let checksum = 0
+    for (let i = 0; i < text.length; i++) {
+        bytes.push(text.charCodeAt(i));
+    }
+
+    for (let i = 0; i < bytes.length; i++) {
+        checksum = checksum ^ bytes[i]
+    }
+
+    let checksumHex = ('0' + (checksum & 0xFF).toString(16)).slice(-2).toUpperCase()
+
+    return checksumHex
 }

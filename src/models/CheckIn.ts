@@ -80,14 +80,15 @@ export interface CheckInUpdate {
   competitorId?: string
   boatId?: string
   markId?: string
-  isSelfTracking?: boolean
   currentTrackName?: string
   currentRaceName?: string
   currentFleet?: string
   trackPrefix?: string
   numberOfRaces?: number
+  isArchived?: boolean
   secret?: string
   trackingContext?: TrackingContext
+  trackedElements?: any
 }
 
 export default interface CheckIn extends CheckInUpdate {

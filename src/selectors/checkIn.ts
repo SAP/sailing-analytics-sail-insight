@@ -1,12 +1,14 @@
 import { any, chain, compose, findLast, isNil, not, path, prop, propEq,
-  values, defaultTo } from 'ramda'
+  values, defaultTo, reject } from 'ramda'
 import { createSelector } from 'reselect'
 import { CheckIn } from 'models'
 import { mapResToEvent } from 'models/Event'
 import { RootState } from 'reducers/config'
+import { getBoat } from '../selectors/boat'
+import { getCompetitor } from '../selectors/competitor'
 import { getEventEntity } from './event'
 import { getTrackedEventId, getTrackedLeaderboardName } from './location'
-import { getMarkEntity } from './mark'
+import { getMark, getMarkEntity } from './mark'
 
 export const getActiveCheckInEntity = (state: RootState = {}) =>
   state.checkIn && state.checkIn.active
@@ -73,6 +75,7 @@ export const getMarkBindingCheckIn = createSelector(
   getActiveCheckInEntity,
   compose(
     findLast(isMarkBinding),
+    reject(checkIn => !!checkIn.isArchived),
     values,
     defaultTo({})
   )
@@ -111,6 +114,41 @@ export const getMarkPropertiesIdOfBoundMark = createSelector(
   )
 )
 
+export const getCheckInsByMarkPropertiesId = (markPropertiesId: string) => createSelector(
+  getActiveCheckInEntity,
+  getMarkEntity,
+  (checkIns = {}, marks = {}) => Object.values(checkIns).filter(({ markId }) => {
+    if (!markId) return false
+    const mark = prop(markId)(marks)
+    const originatingMarkPropertiesId = prop('originatingMarkPropertiesId')(mark || {})
+    if (!originatingMarkPropertiesId) return false
+    return originatingMarkPropertiesId === markPropertiesId
+  })
+)
+
 export const isLoadingCheckIn = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingCheckIn
 export const isLoadingSplash = (state: RootState = {}) => state.checkIn && state.checkIn.isLoadingSplash
 export const isDeletingMarkBinding = (state: RootState = {}) => state.checkIn && state.checkIn.isDeletingMarkBinding
+
+export const checkInObjectToText = checkInData => state => {
+  const constructString = (objectType: string, selector: any) => {
+    const obj = selector(state)
+    const { name } = obj || {}
+    if (name) return `the ${objectType} "${name}"`
+    return `a ${objectType}`
+  }
+
+  const { competitorId, markId, boatId } = checkInData
+
+  if (competitorId) {
+    return constructString('competitor', getCompetitor(competitorId))
+  }
+
+  if (markId) {
+    return constructString('mark', getMark(markId))
+  }
+
+  if (boatId) {
+    return constructString('boat', getBoat(boatId))
+  }
+}

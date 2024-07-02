@@ -20,16 +20,25 @@ class SessionItemDark extends React.Component<ViewProps & {
   onTrackingPress?: OnPressType,
   archiveEvent: any,
   onItemPress: OnPressType,
+  swipeableLeftOpenEventId: string,
+  onSwipeableLeftWillOpen: any,
+  swipeableReference: any
 } > {
+  constructor(props: any) {
+    super(props)
+  }
+
   public render() {
     const {
       style,
       session,
+      onSwipeableLeftWillOpen,
     } = this.props
 
     const archived = session.event && session.event.archived || false
+    const { eventId } = session
 
-    const renderLeftActions = (progress, dragX) => {
+    const renderLeftActions = (_progress: any, dragX: any) => {
       const trans = dragX.interpolate({
         inputRange: [0, 50, 100, 101],
         outputRange: [-20, 0, 0, 1],
@@ -56,6 +65,8 @@ class SessionItemDark extends React.Component<ViewProps & {
         overshootLeft={false}
         leftThreshold={50}
         renderLeftActions={renderLeftActions}
+        ref={this.props.swipeableReference}
+        onSwipeableLeftWillOpen={() => onSwipeableLeftWillOpen(eventId)}
       >
       <View style={styles.container}>
           <TouchableOpacity

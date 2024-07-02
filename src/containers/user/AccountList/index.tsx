@@ -14,14 +14,15 @@ import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
-import { getMtcpAndCommunicationSetting } from '../../../selectors/settings';
+import { getCommunicationSetting } from '../../../selectors/settings';
+import { listKeyExtractor } from 'helpers/utils'
 import styles from './styles'
 
 const EMPTY_VALUE = '-'
 
 const loggedInItems = (props: any) => [
   {
-    title: props.user.fullName || EMPTY_VALUE,
+    title: props.user.username || EMPTY_VALUE,
     subtitle: props.user.email || EMPTY_VALUE,
     big: true,
     onPress: () => props.navigation.navigate(Screens.UserProfile),
@@ -44,6 +45,11 @@ const notLoggedInItems = (props: Readonly<{ children?: ReactNode }> & Readonly<a
 const settingsItem = (props: any) => ({
   title: I18n.t('caption_settings'),
   onPress: () => props.navigation.navigate(Screens.AppSettings),
+})
+
+const supportItem = (props: any) => ({
+  title: I18n.t('caption_support'),
+  onPress: () => props.navigation.navigate(Screens.Support),
 })
 
 const communicationsItem = (props: any) => ({
@@ -71,7 +77,8 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 
     let data = [
       ...(isLoggedIn ? loggedInItems(propsWithDebouncedNavigation) : notLoggedInItems(propsWithDebouncedNavigation)),
-      settingsItem(propsWithDebouncedNavigation)
+      settingsItem(propsWithDebouncedNavigation),
+      supportItem(propsWithDebouncedNavigation)
     ]
 
     if (propsWithDebouncedNavigation.expeditionCommunicationEnabled) {
@@ -83,11 +90,16 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
         <View style={{ flex: 1, position: 'relative' }}>
           <Image source={Images.account.account_placeholder} resizeMode="cover" style={styles.backendImage} />
           <Image source={Images.account.account_gradient} resizeMode="stretch" style={styles.gradient} />
-          <Image source={Images.defaults.sap_logo} style={styles.sap_logo} />
+          <Image source={Images.defaults.poweredBySAP} style={styles.sap_logo} />
           <Text style={styles.headline}>{I18n.t('title_your_account').toUpperCase()}</Text>
         </View>
         <View style={{ width: '100%' , marginTop: 'auto' }}>
-          <FlatList data={data} renderItem={this.renderItem} scrollEnabled={false} />
+          <FlatList 
+            data={data} 
+            renderItem={this.renderItem} 
+            keyExtractor={listKeyExtractor}
+            scrollEnabled={false} 
+          />
         </View>
       </View>
     )
@@ -108,7 +120,7 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 const mapStateToProps = (state: any) => ({
   user: getUserInfo(state) || {},
   isLoggedIn: isLoggedInSelector(state),
-  expeditionCommunicationEnabled: getMtcpAndCommunicationSetting(state)
+  expeditionCommunicationEnabled: getCommunicationSetting(state)
 })
 
 export default connect(mapStateToProps)(AccountList)

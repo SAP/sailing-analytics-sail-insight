@@ -16,6 +16,8 @@ import permissions from './permissionsReducer'
 import SettingsReducer from './SettingsReducer'
 import UserReducer from './UserReducer'
 import CommunicationsReducer from './CommunicationsReducer'
+import AppStateReducer from './AppStateReducer'
+import UIStateReducer from './UIStateReducer'
 
 const reducer: RootState = {
   auth: AuthReducer,
@@ -32,6 +34,8 @@ const reducer: RootState = {
   events: EventReducer,
   permissions,
   communications: CommunicationsReducer,
+  appState: AppStateReducer,
+  uiState: UIStateReducer,
 }
 
 const reducers = combineReducers(reducer)

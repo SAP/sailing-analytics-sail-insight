@@ -1,47 +1,32 @@
 import { difference, find, get, sortBy } from 'lodash'
 import React from 'react'
 import {
+  ActivityIndicator,
   Dimensions,
-  FlatList,
   Image,
-  ListRenderItemInfo,
-  TouchableHighlight,
   View,
   Platform,
 } from 'react-native'
-import Flag from 'react-native-flags'
-import ModalDropdown from 'react-native-modal-dropdown'
+import ModalDropdown from 'components/ModalDropdown'
 import { connect } from 'react-redux'
 
 import I18n from 'i18n'
 import { getTrackedCheckInCompetitorId } from 'selectors/checkIn'
-import { getTrackedLeaderboard } from 'selectors/leaderboard'
+import { getTrackedLeaderboard, isLeaderboardStale } from 'selectors/leaderboard'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import Text from 'components/Text'
-import TrackingPropertyReverse from 'components/TrackingPropertyReverse'
-import ColumnValue from './ColumnValue'
+import CompetitorList from './CompetitorList'
+import LeaderboardFetcher from './LeaderboardFetcher'
 import MyColumnValue from './MyColumnValue'
+import { getWindowWidth } from 'helpers/screen'
+import { ColumnValueType, EMPTY_VALUE } from './constants'
 
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
-import { container } from 'styles/commons'
 import { $smallSpacing } from 'styles/dimensions'
 import Images from '../../../../assets/Images'
-import styles, { normalRowValueFontSize, topRowValueFontSize } from './styles'
-
-export const EMPTY_VALUE = '-'
-
-export enum ColumnValueType {
-  GapToLeader = 'text_leaderboard_column_gap',
-  GapToCompetitor = 'text_leaderboard_column_gap_competitor',
-  GapToMyBoat = 'text_leaderboard_column_gap_my_boat',
-  RegattaRank = 'text_leaderboard_column_regattaRank',
-  Speed = 'text_leaderboard_column_speed',
-  AverageSpeed = 'text_leaderboard_column_averageSpeed',
-  DistanceTravelled = 'text_leaderboard_column_distanceTravelled',
-  NumberOfManeuvers = 'text_leaderboard_column_maneuvers',
-}
+import styles, { topRowValueFontSize } from './styles'
 
 const TRIANGLE_UP = () => {
   return (
@@ -74,11 +59,12 @@ class Leaderboard extends React.Component<{
     const {
       trackedCheckInCompetitorId: myCompetitorId,
       rankingMetric,
+      isLeaderboardStale
     } = this.props
     const leaderboard = sortBy(
       this.props.leaderboard,
       (o: LeaderboardCompetitorCurrentTrack) =>
-        o.trackedColumn ? o.trackedColumn.trackedRank : o.rank,
+        o.trackedColumn ? o.trackedColumn.rank : o.rank,
     )
 
     const {
@@ -89,7 +75,7 @@ class Leaderboard extends React.Component<{
 
     const myCompetitorData = this.getCompetitorById(myCompetitorId)
 
-    const rank = get(myCompetitorData, ['trackedColumn', 'trackedRank'])
+    const rank = get(myCompetitorData, ['trackedColumn', 'rank'])
 
     const comparedCompetitorData = selectedCompetitor
       ? this.getCompetitorById(selectedCompetitor)
@@ -102,6 +88,7 @@ class Leaderboard extends React.Component<{
 
     return (
       <View style={styles.mainContainer}>
+        <LeaderboardFetcher rankOnly={false} />
         <ConnectivityIndicator style={styles.connectivity} />
         <Text style={styles.header}>{'Leaderboard'.toUpperCase()}</Text>
         <View style={styles.container}>
@@ -158,9 +145,24 @@ class Leaderboard extends React.Component<{
             </View>
           </View>
         </View>
-        <View style={[styles.listContainer]}>
-          <FlatList data={leaderboard} contentContainerStyle={[styles.listContentContainer]} renderItem={this.renderItem} />
-        </View>
+        {
+          isLeaderboardStale ? (
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <ActivityIndicator size="large" color="white" />
+            </View>
+          ) : (
+            <View style={[styles.listContainer]}>
+              <CompetitorList
+                leaderboard={leaderboard}
+                forLeaderboard={true}
+                onCompetitorItemPress={this.onLeaderboardItemPress}
+                rankingMetric={rankingMetric}
+                myCompetitorData={myCompetitorData}
+                selectedColumn={selectedColumn}
+              />
+            </View>
+          )
+        }
       </View>
     )
   }
@@ -182,7 +184,7 @@ class Leaderboard extends React.Component<{
 
   private renderAdjustFrame = (propertyStyle: any) => {
     propertyStyle.left = $smallSpacing
-    propertyStyle.width = Dimensions.get('window').width - 2 * $smallSpacing
+    propertyStyle.width = getWindowWidth() - 2 * $smallSpacing
     propertyStyle.height = 235
     propertyStyle.marginTop = Platform.OS === 'ios' ? 10 : -10
     return propertyStyle
@@ -195,47 +197,6 @@ class Leaderboard extends React.Component<{
   private onDropdownSelect = (index: any, value: any) => {
     this.setState({ selectedColumn: value })
   }
-
-  private renderItem = ({
-    item,
-  }: ListRenderItemInfo<LeaderboardCompetitorCurrentTrack>) => {
-    const { name, countryCode, id } = item
-    const rank = get(item, ['trackedColumn', 'trackedRank'])
-    const { selectedColumn } = this.state
-    const { rankingMetric } = this.props
-
-    const myCompetitorData = this.getCompetitorById(this.props.trackedCheckInCompetitorId)
-
-    return (
-      <TouchableHighlight
-        style={[styles.listRowButtonContainer]}
-        onPress={this.onLeaderboardItemPress(id)}
-      >
-        <View style={[styles.listRowContainer]}>
-          <View style={[styles.listItemContainer]}>
-            <View style={[styles.textContainer, styles.itemTextContainer]}>
-              <Text style={[styles.rankTextSmall]}>{rank || EMPTY_VALUE}</Text>
-              <Flag
-                style={[styles.flag]}
-                code={countryCode}
-                size={normalRowValueFontSize}
-              />
-              <Text style={[styles.nameText]}>{name || EMPTY_VALUE}</Text>
-            </View>
-            <View style={{ flex: 0 }}>
-              <ColumnValue
-                selectedColumn={selectedColumn}
-                competitorData={item}
-                myCompetitorData={myCompetitorData}
-                rankingMetric={rankingMetric}
-                fontSize={normalRowValueFontSize}
-              />
-            </View>
-          </View>
-        </View>
-      </TouchableHighlight>
-    )
-  }
 }
 
 const mapStateToProps = (state: any) => {
@@ -243,6 +204,7 @@ const mapStateToProps = (state: any) => {
     trackedCheckInCompetitorId: getTrackedCheckInCompetitorId(state),
     leaderboard: getTrackedLeaderboard(state) || [],
     rankingMetric: getTrackedRegattaRankingMetric(state),
+    isLeaderboardStale: isLeaderboardStale(state),
   }
 }
 

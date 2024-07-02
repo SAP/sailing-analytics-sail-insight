@@ -1,4 +1,3 @@
-import { AutoCourseUpdateState } from 'helpers/types'
 import {
   CourseStateMap,
   SelectedCourseState,
@@ -21,6 +20,8 @@ export interface RootState {
   markInventory?: any,
   permissions?: any,
   communications?: any | CommunicationsReducerState,
+  appState?: any | AppReducerState,
+  uiState?: any | UIReducerState
 }
 
 
@@ -38,9 +39,6 @@ export interface LocationTrackingState {
   lastLongitude: number | null
   lastWindCourse: number | null
   lastWindSpeedInKnots: number | null
-  wasTrackingStartTimeUpdated: boolean
-  validGpsFixCount: number
-  startAutoCourseUpdateStatus: AutoCourseUpdateState
 }
 
 export interface CompetitorGap {
@@ -65,12 +63,12 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
-  mtcpAndCommunication: boolean,
+  communicationEnabled: boolean,
+  mtcpEnabled: boolean,
   leaderboardEnabled: boolean,
   proxyUrl: string,
   masterUdpIP: string,
-  masterUdpPort: string,
-  masterUdpPortDefault: string,
+  masterUdpPort: object,
 }
 
 export interface AuthState {
@@ -90,6 +88,8 @@ export interface EventState {
   isCreatingEvent: boolean
   isSelectingEvent: boolean
   isStartingTracking: boolean
+  isLoadingEventList: boolean
+  isPollingEvent: boolean
 }
 
 export interface CheckInState {
@@ -115,4 +115,18 @@ export interface CommunicationsReducerState {
   state: boolean
   valid: boolean
   startLine: object
+  startLinePolling: boolean
+  startLineCourse: object
+  expeditionMessages: any[]
+  expeditionMessagesLimit: number
+}
+
+export interface AppReducerState {
+  active: boolean
+  networkAvailable: boolean
+}
+
+export interface UIReducerState {
+  showEditResultsDisclaimer: boolean
+  showCopyResultsDisclaimer: boolean
 }

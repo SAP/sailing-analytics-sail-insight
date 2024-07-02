@@ -2,12 +2,18 @@ import BackgroundGeolocation, { Config } from 'react-native-background-geolocati
 
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import { getNowAsMillis, getTimestampAsMillis } from 'helpers/date'
-import Logger from 'helpers/Logger'
 import { metersPerSecondsToKnots } from 'helpers/physics'
 import { PositionFix } from 'models'
 import I18n from '../../i18n'
+import { getAccessToken } from 'selectors/auth'
+import { getDeviceId } from 'selectors/user'
+import { getTrackedCheckInBaseUrl } from 'selectors/checkIn'
+import { getVerboseLoggingSetting } from 'selectors/settings'
+import { getBulkGpsSetting } from 'selectors/settings'
+import { getStore } from 'store'
+import { getDataApiGenerator } from 'api/config'
+import { keepCommunicationAlive } from 'actions/communications'
 
-const LOG_TAG = '[BG_LOCATION]'
 const HEARTBEAT_KEY = 'heartbeat'
 const STATUS_KEY = 'enabledchange'
 // const MOTION_CHANGE_KEY = 'motionchange'
@@ -15,26 +21,37 @@ const LOCATION_KEY = 'location'
 
 const config: Config = {
   reset: true,
+  activityType: BackgroundGeolocation.ACTIVITY_TYPE_OTHER_NAVIGATION,
   desiredAccuracy: isPlatformAndroid ?
     BackgroundGeolocation.DESIRED_ACCURACY_HIGH :
     BackgroundGeolocation.DESIRED_ACCURACY_NAVIGATION,
-  distanceFilter: 0, // no minimum travel distance before location update to increase accuracy
-  disableElasticity: true, // disable auto distanceFilter based on speed to increase accuracy
-  stopOnTerminate: true, // Default: true. Set false to continue tracking after user teminates the app.
-  heartbeatInterval: 1, // in seconds
+  distanceFilter: 0,
+  disableElasticity: true,
+  stopOnTerminate: false,
+  desiredOdometerAccuracy: 10,
+  isMoving: true,
+  heartbeatInterval: 1,
+  stopTimeout: 10,
   disableStopDetection: true,
+  pausesLocationUpdatesAutomatically: false,
+  locationsOrderDirection: 'DESC',
+  maxDaysToPersist: 10,
   stopOnStationary: false,
-  // debug
+  foregroundService: true,
   debug: false,
-  // debug: __DEV__,
-  logLevel: BackgroundGeolocation.LOG_LEVEL_WARNING,
   logMaxDays: 2,
-  // iOS:
   locationAuthorizationRequest: 'Always',
+  backgroundPermissionRationale: {
+    title: I18n.t('text_background_tracking_permission_title'),
+    message: I18n.t('text_background_tracking_permission_message'),
+    positiveAction: I18n.t('text_background_tracking_permission_allow'),
+    negativeAction: I18n.t('caption_cancel')
+  },
   showsBackgroundLocationIndicator: true,
   stationaryRadius: 1,
   preventSuspend: true,
-  // Android:
+  batchSync: true,
+  maxBatchSize: 30,
   allowIdenticalLocations: true,
   locationUpdateInterval: 333,
   fastestLocationUpdateInterval: 333,
@@ -46,9 +63,6 @@ const config: Config = {
 
 const locationListeners: any[] = []
 
-const Log = (...args: any[]) => Logger.debug(LOG_TAG, ...args)
-
-
 export const registerEvents = () => {
   // BackgroundGeolocation.on(MOTION_CHANGE_KEY, async (status: any) => {
   //   Log('Motion change:', status)
@@ -57,6 +71,8 @@ export const registerEvents = () => {
   BackgroundGeolocation.on(LOCATION_KEY, async (location: any) => {
     // Log('Location:', location)
     await handleGeolocation(location)
+
+    keepCommunicationAlive()
   })
 
   BackgroundGeolocation.on(HEARTBEAT_KEY, async (params: any) => {
@@ -98,10 +114,10 @@ export const isEnabled: () => any = () => new Promise<any>((resolve, reject) => 
 ))
 
 export const addStatusListener = (listener: (status: any) => void) =>
-  BackgroundGeolocation.on(STATUS_KEY, listener)
+  BackgroundGeolocation.onEnabledChange(listener)
 
 export const removeStatusListener = (listener: (enabled: boolean) => void) =>
-  BackgroundGeolocation.un(STATUS_KEY, listener)
+  BackgroundGeolocation.removeListener(STATUS_KEY, listener)
 
 export const addLocationListener = (listener: (location: any) => void) => locationListeners.push(listener)
 
@@ -117,30 +133,62 @@ export const LocationTrackingStatus = {
   STOPPED: 'STOPPED',
 }
 
-export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) => {
-  BackgroundGeolocation.ready(
+export const LocationTrackingContext = {
+  LOCAL: 'LOCAL',
+  REMOTE: 'REMOTE'
+}
+
+export const GpsFixesThreshold = {
+  NORMAL: 0,
+  BATTERY_OPTIMIZED: 30
+}
+
+export const ready = () => {
+  const state = getStore().getState()
+  const url = getDataApiGenerator(getTrackedCheckInBaseUrl(state))('/gps_fixes')({})
+  const token = getAccessToken(state)
+  const verboseLogging = getVerboseLoggingSetting(state)
+  const bulkSending = getBulkGpsSetting(state)
+
+  return BackgroundGeolocation.ready(
     {
       ...config,
-      ...(!!verboseLogging ? {
-        logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
-      } : {}),
+      url,
+      autoSyncThreshold: bulkSending ? GpsFixesThreshold.BATTERY_OPTIMIZED : GpsFixesThreshold.NORMAL,
+      authorization: {
+        strategy: 'JWT',
+        accessToken: token
+      },
+      httpRootProperty: 'fixes',
+      locationTemplate: '{"latitude": <%= latitude %>, "longitude": <%= longitude %>, "timestamp-iso": "<%= timestamp %>", "speed": <%= speed %>, "course": <%= heading %>, "accuracy": <%= accuracy %>}',
+      params: {
+        deviceUuid: getDeviceId()
+      },
+      logLevel: verboseLogging ? BackgroundGeolocation.LOG_LEVEL_VERBOSE : BackgroundGeolocation.LOG_LEVEL_OFF
+    })
+}
+
+export const setConfig = (config: any) =>
+  BackgroundGeolocation.setConfig(config)
+
+export const setAccessToken = (token: string) =>
+  BackgroundGeolocation.setConfig({
+    authorization: {
+      strategy: 'JWT',
+      accessToken: token
     },
-    (state: any) => {
-      if (!state.enabled) {
-        return BackgroundGeolocation.start(resolve, reject)
-      }
-      return reject(state)
-    },
-    reject,
-  )
-})
+  })
+
+export const { getOdometer, resetOdometer } = BackgroundGeolocation
+
+export const setVerboseLogging = (verboseLogging: boolean) =>
+  BackgroundGeolocation.setConfig({
+    logLevel: verboseLogging ? BackgroundGeolocation.LOG_LEVEL_VERBOSE : BackgroundGeolocation.LOG_LEVEL_OFF
+  })
+
+export const start = (verboseLogging?: boolean) => new Promise<any>((resolve, reject) =>
+  BackgroundGeolocation.start(resolve, reject))
 
 export const stop = () => new Promise<any>((resolve, reject) => BackgroundGeolocation.stop(resolve, reject))
-
-// export const addHeartbeatListener = (listener: (status: any) => void) =>
-//   BackgroundGeolocation.on(HEARTBEAT_KEY, listener)
-//
-// export const removeHeartbeatListener = (listener: (enabled: boolean) => void) =>
-//   BackgroundGeolocation.un(HEARTBEAT_KEY, listener)
 
 export const changePace = (enabled: boolean) => BackgroundGeolocation.changePace(enabled)

@@ -18,6 +18,7 @@ import {
   addWaypoint,
   removeWaypoint,
   selectMarkConfiguration,
+  updateWaypoint,
   updateWaypointName,
   updateWaypointShortName,
   updateMarkConfigurationName,
@@ -62,6 +63,9 @@ const waypoints = handleActions({
     action.payload),
   [addWaypoint as any]: (state: any, action: any) => insert(action.payload.index, { id: action.payload.id }, state),
   [removeWaypoint as any]: (state: any, action: any) => reject(propEq('id', action.payload.id), state),
+  [updateWaypoint as any]: (state: any, action: any) => map(
+    when(propEq('id', action.payload.id), mergeLeft(action.payload.waypoint)),
+    state),
   [updateWaypointName as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), mergeLeft({ controlPointName: action.payload.value })),
     state),
@@ -130,12 +134,13 @@ const markConfigurations = handleActions({
   [changeMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
     when(propEq('id', action.payload.id), compose(
       mergeLeft({
+        currentTrackingDeviceId: action.payload.currentTrackingDeviceId,
         trackingDevices: map(applySpec({
           trackingDeviceType: path(['deviceId', 'type']),
           trackingDeviceHash: compose(toHashedString, path(['deviceId', 'id'])),
           trackingDeviceMappedFromMillis: prop('mappedFrom'),
           trackingDeviceLastKnownPosition: prop('lastGPSFix'),
-        }))(action.payload.trackingDevices),
+        }))(action.payload.trackingDevices)
       }))),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
@@ -219,6 +224,7 @@ const courseLoading = handleActions({
 
 const selectedWaypoint = handleActions({
   [selectWaypoint as any]: (state: any = {}, action: any) => action.payload,
+  [updateWaypoint as any]: (state: any, action: any) => action.payload.waypoint.id,
   [addWaypoint as any]: (state: any, action: any) => action.payload.id,
   [removeWaypoint as any]: (state: any, action: any) => action.payload.newSelectedId,
   [editCourse as any]: (state: any = [], action: any) => compose(

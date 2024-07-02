@@ -1,4 +1,4 @@
-import { compose, all, prop, propEq, head, find, defaultTo } from 'ramda'
+import { compose, all, prop, propEq, head, find, defaultTo, any } from 'ramda'
 import { get, last, values } from 'lodash'
 import { createSelector } from 'reselect'
 
@@ -17,6 +17,7 @@ import { CompetitorGapMap, RootState } from 'reducers/config'
 import { getTrackedLeaderboardName } from 'selectors/location'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getTrackedCheckIn, getTrackedCheckInCompetitorId } from './checkIn'
+import { getCompetitor } from './competitor'
 
 export const getLeaderboardEntity = (state: any) =>
   getEntities(state, LEADERBOARD_ENTITY_NAME)
@@ -48,9 +49,9 @@ export const getTrackedCompetitorLeaderboardRank = createSelector(
     const currentLeaderboardTrack =
       trackedCompetitor &&
       getLeaderboardCompetitorCurrentRaceColumn(trackedCompetitor)
-    const trackedRank = currentLeaderboardTrack && currentLeaderboardTrack.trackedRank
+    const rank = currentLeaderboardTrack && currentLeaderboardTrack.rank
 
-    return trackedRank
+    return rank
   }
 )
 
@@ -92,15 +93,53 @@ export const getTrackedLeaderboard = createSelector(
     return stuff
   })
 
-const createCurrentEventRacesStatusSelector = (status: string) => createSelector(
+const eventRacesStatusSelector = (status: string) => (leaderboardName: any, leaderboards: any) => compose(
+    all(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
+    defaultTo({}),
+    prop('trackedRacesInfo'),
+    find(propEq('name', leaderboardName)))(
+    leaderboards)
+
+const createCurrentEventRacesStatusAllSelector = (status: string) => createSelector(
+  getSelectedEventInfo,
+  getLeaderboards,
+  (event: any, leaderboards: any) => eventRacesStatusSelector(status)(
+    defaultTo({}, event).leaderboardName, leaderboards
+  )
+)
+
+export const isLeaderboardFinished = eventRacesStatusSelector('FINISHED')
+
+const createCurrentEventRacesStatusAnySelector = (status: string) => createSelector(
   getSelectedEventInfo,
   getLeaderboards,
   (event, leaderboards) => compose(
-    all(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
+    any(compose(propEq('status', status), defaultTo({}), prop('trackedRace'), head, prop('fleets'))),
     defaultTo({}),
     prop('trackedRacesInfo'),
     find(propEq('name', defaultTo({}, event).leaderboardName)))(
     leaderboards))
 
-export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusSelector('TRACKING')
-export const isCurrentLeaderboardFinished = createCurrentEventRacesStatusSelector('FINISHED')
+export const isCurrentLeaderboardTracking = createCurrentEventRacesStatusAnySelector('TRACKING')
+export const isCurrentLeaderboardFinished = createCurrentEventRacesStatusAllSelector('FINISHED')
+export const isLeaderboardStale = (state: any) => state.leaderboardTracking.isLeaderboardStale
+export const isPollingLeaderboard = () => (state: any) =>
+  !!(state.leaderboardTracking && state.leaderboardTracking.isLeaderboardPolling)
+
+export const getExistingLeaderboardCompetitor = (leaderboardName: string) => (state: any) => {
+    // allow for all users (anonymous or logged)
+    const currentLeaderboard = getLeaderboard(leaderboardName)(state)
+    let existingBinding = null
+    
+    if (currentLeaderboard && currentLeaderboard.competitors) {
+      currentLeaderboard.competitors.forEach(competitor => {
+        let competitorMatch = getCompetitor(competitor.id)(state)
+  
+        if (competitorMatch) {
+          existingBinding = competitorMatch
+        }
+      })
+    }
+  
+    return existingBinding
+}

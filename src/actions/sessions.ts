@@ -1,7 +1,7 @@
 import { find, get, head, includes, orderBy } from 'lodash'
 import { Alert } from 'react-native'
-
-import { authApi, selfTrackingApi } from 'api'
+import moment from 'moment/min/moment-with-locales'
+import { authApi, dataApi, selfTrackingApi } from 'api'
 import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
 import { ManeuverChangeItem } from 'api/endpoints/types'
@@ -9,8 +9,10 @@ import { competitorSchema } from 'api/schemas'
 import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { createSharingData, SharingData, showShareSheet } from 'integrations/DeepLinking'
-import { CheckIn, CheckInUpdate, CompetitorInfo, TrackingSession } from 'models'
-import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
+import { CheckIn, CheckInUpdate, CompetitorInfo, TeamTemplate, TrackingSession } from 'models'
+import { mapResToCompetitor } from 'models/Competitor'
+import { mapResToRegatta } from 'models/Regatta'
+import { getDefaultHandicapType, HandicapTypes, getTimeOnTimeFactor } from 'models/TeamTemplate'
 
 import { eventCreationResponseToCheckIn, getDeviceId } from 'services/CheckInService'
 import CheckInException from 'services/CheckInService/CheckInException'
@@ -18,7 +20,8 @@ import * as LocationService from 'services/LocationService'
 import { addUserPrefix } from 'services/SessionService'
 import SessionException from 'services/SessionService/SessionException'
 
-import { ActionQueue, withDataApi } from 'helpers/actions'
+import { withDataApi } from 'helpers/actions'
+import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { getNowAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
 import { getErrorDisplayMessage } from 'helpers/texts'
@@ -28,7 +31,9 @@ import { getSharingUuid } from 'helpers/uuid'
 
 import { BRANCH_APP_DOMAIN } from 'environment'
 import querystring from 'query-string'
-import { collectCheckInData, registerDevice, updateCheckIn } from 'actions/checkIn'
+import { registerDevice, updateCheckIn, updateCheckInAndEventInventory } from 'actions/checkIn'
+import { ApiBodyKeys as CheckInBodyKeys } from 'models/CheckIn'
+
 import { startTracking } from 'actions/tracking'
 import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
@@ -36,8 +41,13 @@ import { selectEvent } from 'actions/events'
 import { saveTeam } from 'actions/user'
 import { getUserInfo, isLoggedIn } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
+import { getCompetitor } from '../selectors/competitor'
 import { getLocationTrackingStatus } from 'selectors/location'
-import { getUserBoatByBoatName } from 'selectors/user'
+import { getMark } from '../selectors/mark'
+import { getUserBoatByBoatName, getUserTeamByNameBoatClassNationalitySailnumber } from 'selectors/user'
+import { getRegatta } from '../selectors/regatta'
+import { getExistingLeaderboardCompetitor } from 'selectors/leaderboard'
+import { getApiServerUrl } from 'api/config'
 
 export const shareSession = (checkIn: CheckIn) => async () => {
   if (!checkIn || !checkIn.leaderboardName || !checkIn.eventId || !checkIn.secret) {
@@ -105,21 +115,19 @@ export const createEvent = (session: TrackingSession, isPublic?: boolean) => asy
   )
 }
 
-export const updateEventEndTime = (leaderboardName: string, eventId: string) =>
-  withDataApi({ leaderboard: leaderboardName })(
-    dataApi => dataApi.updateEvent(eventId, { enddateasmillis: getNowAsMillis() }),
-  )
+export const updateCompetitor = (competitor: any) => {
+  const { competitorId = {} } = competitor
 
-const getTimeOnTimeFactor = (competitorInfo: CompetitorInfo) => {
-  const { handicapType = getDefaultHandicapType(), handicapValue = null } = competitorInfo.handicap || {}
+  const updatePromise = Promise.all(Object.entries(competitorId).map(([serverUrl, id]: any) => {
+    const api = dataApi(serverUrl)
+    return api.updateCompetitor(id, {
+      name: competitor.name,
+      nationality: competitor.nationality,
+      timeOnTimeFactor: getTimeOnTimeFactor(competitor.handicap)
+    })
+  }))
 
-  if (!handicapType || !handicapValue) return undefined
-
-  if (handicapType === HandicapTypes.TimeOnTime) return handicapValue
-
-  const timeOnTimeFactor = 100 / handicapValue
-
-  return timeOnTimeFactor
+  return updatePromise
 }
 
 const allowReadAccessToCompetitorAndBoat = (serverUrl: string, competitorId: string, boatId: string) => {
@@ -154,21 +162,21 @@ export const createUserAttachmentToSession = (
     const user = getUserInfo(getState())
     if (
       !competitorInfo.boatClass ||
-      !competitorInfo.sailNumber ||
-      !competitorInfo.nationality
+      !competitorInfo.sailNumber
     ) {
-      throw new SessionException('user/nationality/boat data missing.')
+      throw new SessionException('user/boat data missing.')
     }
     const baseValues = {
-      competitorName: competitorInfo.teamName || competitorInfo.name,
+      competitorName: competitorInfo.name,
       competitorEmail: user && user.email,
       nationalityIOC: competitorInfo.nationality,
     }
 
     const serverUrl = getServerUrl(regattaName)(getState())
-    const userBoat = getUserBoatByBoatName(competitorInfo.teamName)(getState())
+    const userBoat = getUserBoatByBoatName(competitorInfo.name)(getState())
     let boatId = get(userBoat, ['id', serverUrl])
     let competitorId = get(userBoat, ['competitorId', serverUrl])
+    const isSameServer = getApiServerUrl() === serverUrl
 
     let registrationSuccess = false
     if (boatId && competitorId) {
@@ -182,7 +190,12 @@ export const createUserAttachmentToSession = (
         registrationSuccess = registrationResponse.status === 200
 
         if (registrationSuccess) {
-          await dispatch(registerDevice(regattaName, { competitorId }))
+          await dispatch(registerDevice(regattaName, {
+            competitorId,
+            // Adjust the device mapping to cover one day prior to the moment
+            // of joining an event to allow single tracks coverage in the event.
+            [CheckInBodyKeys.FromMillis]: moment(new Date()).subtract(1, 'days').valueOf()
+          }))
         }
       } catch (err) {
         if (!(err instanceof ApiException)) {
@@ -195,17 +208,44 @@ export const createUserAttachmentToSession = (
     // or if the registration of the existing one to the regatta failed
     let newCompetitorWithBoat
     if (!registrationSuccess) {
-      newCompetitorWithBoat = await dataApi.createAndAddCompetitor(regattaName, {
-        ...baseValues,
-        boatclass: competitorInfo.boatClass,
-        sailid: competitorInfo.sailNumber,
-        timeontimefactor: getTimeOnTimeFactor(competitorInfo),
-        ...(secret ? { secret } : {}),
-        ...(secret ? { deviceUuid: getDeviceId() } : {}),
-      })
+      try {
+        newCompetitorWithBoat = await dataApi.createAndAddCompetitor(regattaName, {
+          ...baseValues,
+          boatclass: competitorInfo.boatClass,
+          sailid: competitorInfo.sailNumber,
+          timeontimefactor: getTimeOnTimeFactor(competitorInfo.handicap),
+          ...(secret ? { secret } : {}),
+          ...(secret ? { deviceUuid: getDeviceId() } : {}),
+        })
 
-      competitorId = newCompetitorWithBoat.id
-      boatId = newCompetitorWithBoat.boat.id
+        competitorId = newCompetitorWithBoat.id
+        boatId = newCompetitorWithBoat.boat.id
+      } catch (err) {
+        if (!(err instanceof ApiException)) {
+          throw err
+        }
+        else {
+          if (err.status && err.status === 403 &&
+            err.data && typeof err.data === 'string' && err.data.startsWith('Device is already registered')) {
+            // allow already joined race from the same device, if biding is allowed
+            const competitor =  getExistingLeaderboardCompetitor(regattaName)(getState())
+
+            if (competitor) {
+              competitorId = competitor.id
+              boatId = competitor.id
+            } else {
+              // Temporary fix to avoid a loop when registering for an event
+              // Assign a black competitor and id so that the app at least
+              // can track. To be replaced with the proper solution of asking
+              // the user what to do with existing/new competitor-device bindings.
+              competitorId = 'unknown'
+              boatId = 'unknown'
+            }
+          } else {
+            throw err
+          }
+        }
+      }
     }
 
     if (competitorInfo.teamImage && competitorInfo.teamImage.data) {
@@ -216,17 +256,20 @@ export const createUserAttachmentToSession = (
       dispatch(normalizeAndReceiveEntities(newCompetitorWithBoat, competitorSchema))
     }
 
-    if (user && boatId && competitorId) {
-      await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
+    // ownership request for competitor and boat
+    // add competitor id, boat it to server only if event is on the current logged in server
+    if (user && boatId && competitorId && isSameServer && competitorId !== 'unknown') {
+      try {
+        await allowReadAccessToCompetitorAndBoat(serverUrl, competitorId, boatId)
+      } catch (err) {}
     }
 
-    dispatch(updateCheckIn({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
+    dispatch(updateCheckInAndEventInventory({ competitorId, leaderboardName: regattaName } as CheckInUpdate))
     if (user) {
       await dispatch(
         saveTeam(
           {
-            name: competitorInfo.teamName,
-            boatName: competitorInfo.boatName,
+            name: competitorInfo.name,
             boatClass: competitorInfo.boatClass,
             sailNumber: competitorInfo.sailNumber,
             nationality: competitorInfo.nationality,
@@ -249,19 +292,55 @@ export const createUserAttachmentToSession = (
   },
 )
 
-export type CreateSessionCreationQueueAction = (session: TrackingSession, options?: {isPublic?: boolean}) => any
-export const createSessionCreationQueue: CreateSessionCreationQueueAction = (session, options) =>
-  (dispatch: DispatchType) => ActionQueue.create(
-    dispatch,
-    [
-      createEvent(session, options && options.isPublic),
-      ActionQueue.createItemUsingPreviousResult((data: CheckIn) => collectCheckInData(data)),
-      ActionQueue.createItemUsingPreviousResult((data: CheckIn) => updateCheckIn(data)),
-      // Important: TrackingSession is given as CompetitorInfo
-      createUserAttachmentToSession(session.name, session),
-      registerDevice(session.name),
-    ],
-  )
+const useBindingFromCheckInLink = (data: CheckIn) => async (dispatch: DispatchType, getState: GetStateType) => {
+  await dispatch(registerDevice(data.leaderboardName))
+  const update: CheckInUpdate = { leaderboardName: data.leaderboardName }
+  await dispatch(updateCheckInAndEventInventory(update))
+
+  if (data.competitorId) {
+    const competitor  = mapResToCompetitor(getCompetitor(data.competitorId)(getState()))
+    const regatta = mapResToRegatta(getRegatta(data.regattaName)(getState()))
+
+    if (competitor && competitor.name && competitor.nationality && competitor.sailId &&
+      regatta && regatta.boatClass) {
+      // find team by name, boatClass, nationality and sailNumber
+      const existingTeam = getUserTeamByNameBoatClassNationalitySailnumber(competitor.name,
+                                                                           regatta.boatClass,
+                                                                           competitor.nationality,
+                                                                           competitor.sailId)(getState())
+      if (!existingTeam) {
+        const team = {
+          name: competitor.name,
+          nationality: competitor.nationality,
+          sailNumber: competitor.sailId,
+          boatClass: regatta.boatClass,
+        } as TeamTemplate
+        dispatch(saveTeam(team))
+      } else {
+        // TODO Attach competitor image to session
+      }
+    }
+  } else if (data.markId) {
+    const api = dataApi(data.serverUrl)
+    const mark = getMark(data.markId)(getState())
+    const markPropertiesId = mark?.originatingMarkPropertiesId
+    try {
+      await api.updateMarkPropertyPositioning(markPropertiesId, getDeviceId())
+    // Ignore errors, because we expect the request to fail due to permissions
+    // when trying to modify the markProperties objects of other users
+    } catch (err) {}
+  }
+}
+
+export const navigateToTracking = (navigation: any) => (
+  dispatch: any,
+  getState: any,
+) => {
+  const isLogged = isLoggedIn(getState())
+  return isLogged
+    ? navigation.navigate(Screens.TrackingNavigator)
+    : navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+}
 
 export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {
@@ -269,6 +348,13 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       throw new CheckInException('data is missing')
     }
     await dispatch(updateCheckIn(data))
+
+    if (doesCheckInContainBinding(data)) {
+      await dispatch(useBindingFromCheckInLink(data))
+      dispatch(navigateToTracking(navigation))
+      return
+    }
+
     try {
       await dispatch(createUserAttachmentToSession(data.leaderboardName, competitorValues, data.secret))
 
@@ -278,13 +364,12 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
-        const isLogged = isLoggedIn(getState())
-        isLogged ? navigation.navigate(Screens.SessionsNavigator) :
-          navigation.navigate(Screens.Main, { screen: Screens.SessionsNavigator })
+        dispatch(navigateToTracking(navigation))
       }
     } catch (err) {
       Logger.debug(err)
       Alert.alert(getErrorDisplayMessage(err))
+      throw err
     }
   }
 

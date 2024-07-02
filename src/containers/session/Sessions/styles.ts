@@ -3,11 +3,18 @@ import { $DarkBlue } from 'styles/colors'
 import { withSecondaryHeavyFont, withSecondaryMediumFont } from 'styles/compositions/text'
 
 export default (forTracking: boolean) => EStyleSheets.create({
+  container: {
+    paddingTop: 40,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '$primaryBackgroundColor'
+  },
   scrollContainer: {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '$primaryBackgroundColor',
-    paddingTop: forTracking ? 80 : 40,
+    paddingTop: forTracking ? 40 : 0,
+    flexGrow: 1,
   },
   headLine: {
     color: 'white',
@@ -17,7 +24,7 @@ export default (forTracking: boolean) => EStyleSheets.create({
   },
   list: {
     backgroundColor: 'transparent',
-    paddingBottom: forTracking ? 150 + 40 : 150,
+    paddingTop: 10,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -55,15 +62,10 @@ export default (forTracking: boolean) => EStyleSheets.create({
     fontSize: 20,
     ...withSecondaryMediumFont,
   },
-  bottomButton: {
-    position: 'absolute',
-    width: '100%',
-    height: 'auto',
-    backgroundColor: 'transparent',
-    bottom: 0,
-  },
   qrButton: {
-    marginBottom: 30,
+    position: 'absolute',
+    width: '76%',
+    bottom: 30,
     ...(forTracking ? {
       backgroundColor: 'white'
     } : {})
@@ -73,4 +75,15 @@ export default (forTracking: boolean) => EStyleSheets.create({
     fontSize: 24,
     ...withSecondaryHeavyFont,
   },
+  hintContainer: {
+    marginTop: 5,
+    marginBottom: 5,
+    flex: 1,
+    justifyContent: 'center'
+  },
+  hintBackgroundImage: {
+    flex: 1,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  }
 })

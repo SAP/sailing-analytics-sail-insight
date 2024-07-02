@@ -19,6 +19,7 @@ import { createEventActionQueue, updateCreatingEvent } from 'actions/events'
 import {
   EVENT_CREATION_FORM_NAME,
   eventCreationDataFromFormValues,
+  FORM_KEY_DATE_TO,
   FORM_KEY_REGATTA_TYPE,
   FORM_KEY_NUMBER_OF_RACES,
   generateInitialValues,
@@ -35,6 +36,8 @@ import { $declineColor } from 'styles/colors'
 import IconText from 'components/IconText'
 import Images from '@assets/Images'
 import { isCreatingEvent } from 'selectors/event'
+import { isNetworkConnected } from 'selectors/network'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -45,12 +48,14 @@ const mapStateToProps = (state: any) => ({
   defaultValues: generateDefaultValues(),
   maxNumberOfDiscards: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_NUMBER_OF_RACES)(state) + 1,
   regattaType: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_REGATTA_TYPE)(state),
+  endDate: getFormFieldValue(EVENT_CREATION_FORM_NAME, FORM_KEY_DATE_TO)(state),
   formErrors: compose(
     values,
     when(always(equals(hasSubmitFailed(EVENT_CREATION_FORM_NAME)(state), false)), always({})),
     defaultTo({}))(
     getFormSyncErrors(EVENT_CREATION_FORM_NAME)(state)),
   isCreatingEvent: isCreatingEvent(state),
+  isNetworkConnected: isNetworkConnected(state),
 })
 
 const createEvent = (props: any) => async (formValues: any) => {
@@ -58,6 +63,11 @@ const createEvent = (props: any) => async (formValues: any) => {
 
   Keyboard.dismiss()
   props.setApiErrors([])
+
+  if (!props.isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
 
   try {
     await props.createEventActionQueue({ eventData: eventCreationData, navigation: props.navigation }).execute()
@@ -67,9 +77,14 @@ const createEvent = (props: any) => async (formValues: any) => {
   }
 }
 
+const createEventSubmitFailed = () => {
+  Keyboard.dismiss()
+}
+
 const formSettings = {
   validate,
-  form: EVENT_CREATION_FORM_NAME,
+  onSubmitFail: createEventSubmitFailed,
+  form: EVENT_CREATION_FORM_NAME
 }
 
 const withApiErrors = withState('apiErrors', 'setApiErrors', [])
@@ -95,6 +110,8 @@ const withBoatClasses = compose(
     }
   }))
 
+const withDatePickerName = withState('datePickerName', 'setDatePickerName', null)
+
 const arrowUp = icon({
   source: Images.courseConfig.arrowUp,
   style: { justifyContent: 'flex-end', height: 25 },
@@ -116,9 +133,9 @@ const createButton = Component(
     view({ style: { backgroundColor: $LightBlue }}),
   )(
   textButton({
-    style: styles.createButton, 
-    textStyle: styles.createButtonText,  
-    onPress: props.handleSubmit(createEvent(props)), 
+    style: styles.createButton,
+    textStyle: styles.createButtonText,
+    onPress: props.handleSubmit(createEvent(props)),
     isLoading: props.isCreatingEvent},
     text({}, I18n.t('caption_create'))))
 )
@@ -128,7 +145,15 @@ export default Component(
     fold(props),
     withBoatClasses,
     withApiErrors,
-    connect(mapStateToProps, { createEventActionQueue, updateCreatingEvent }),
+    withDatePickerName,
+    connect(
+      mapStateToProps,
+      { createEventActionQueue, updateCreatingEvent },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
     reduxForm(formSettings),
     keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null, keyboardVerticalOffset: useHeaderHeight() }),
     scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: props.setScrollViewRef }),

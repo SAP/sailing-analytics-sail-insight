@@ -1,10 +1,13 @@
-import { prop, propEq, propOr, find, compose, path, defaultTo,
+import { prop, propEq, propOr, find, compose, path, defaultTo, append,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
-  apply, map, take, move, evolve, dissoc, not, flatten, reject, __,
-  curry,reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr
+  apply, map, take, move, evolve, dissoc, not, flatten, reject, __, filter,
+  curry, reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr,
+  fromPairs, mergeWithKey, values, pick, uniqBy, includes, merge, pathEq
 } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
+import { toHashedString } from 'helpers/utils'
+import { PassingInstruction } from 'models/Course'
 
 import {
   CourseState,
@@ -31,7 +34,7 @@ export const getAllCoursesForSelectedEvent = createSelector(
   getSelectedEventInfo,
   getCourses,
   (selectedEventInfo, courses) => compose(
-    map(prop(__, courses)),
+    map(key => prop(key, courses)),
     map(compose(concat(`${selectedEventInfo.regattaName} - ${selectedEventInfo.trackPrefix || 'R'}`), String)),
     range(1),
     inc)(
@@ -45,6 +48,12 @@ export const getSelectedWaypoint = createSelector(
   (editedCourse, waypointId) => find(propEq('id', waypointId), editedCourse.waypoints))
 
 export const isDefaultWaypointSelection = (state: any) => state.courses.isDefaultWaypointSelection
+export const isSelectedWaypointLineOrGate = createSelector(
+  getSelectedWaypoint,
+  compose(
+    includes(__, [PassingInstruction.Line, PassingInstruction.Gate]),
+    prop('passingInstruction'))
+)
 
 export const getMarkConfigurationById = id => createSelector(
   getEditedCourse,
@@ -80,6 +89,8 @@ export const getMarkPositionByMarkConfiguration = markConfigurationId => createS
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
+const concatTrackingDevices = (key, l, r) => key == 'trackingDevices' ? concat(l, r) : r
+
 export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => createSelector(
   getEditedCourse,
   compose(
@@ -88,6 +99,15 @@ export const getMarkDeviceTrackingByMarkConfiguration = markConfigurationId => c
       compose(isNil, prop('trackingDeviceMappedToMillis')))),
     defaultTo([]),
     prop('trackingDevices'),
+    // In case of a mark properties object, tracker is found on the currentTrackingDeviceId
+    // property instead of having a trackingDevices array. This fuses currentTrackingDeviceId
+    // into trackingDevices so the information is correctly displayed in the visual components
+    when(prop('currentTrackingDeviceId'), v => mergeWithKey(concatTrackingDevices, {
+      trackingDevices: [{
+        trackingDeviceType: 'smartphoneUUID',
+        trackingDeviceHash: toHashedString(v.currentTrackingDeviceId.id)
+      }]
+    }, v)),
     find(propEq('id', markConfigurationId)),
     prop('markConfigurations')))
 
@@ -120,7 +140,9 @@ export const hasEditedCourseChanged = createSelector(
   getEditedCourse,
   (selectedCourse, editedCourse) => compose(
     not,
-    equals(evolve({ waypoints: map(dissoc('id')) }, selectedCourse)),
+    equals(compose(
+      dissoc('shortName'),
+      evolve({ waypoints: map(dissoc('id')) }))(selectedCourse)),
     evolve({ waypoints: map(dissoc('id')) }))(
     editedCourse))
 
@@ -175,3 +197,44 @@ export const getCourseSequenceDisplay = (courseId: string) => (state: any) => {
     propOr({}, 'waypoints'),
   )(courseById)
 }
+
+export const getMarkConfigurationsMapToEditedCourse = createSelector(
+  getAllCoursesForSelectedEvent,
+  getEditedCourse,
+  (eventCourses, editedCourse) => compose(
+    fromPairs,
+    map(conf => ([
+      conf.id,
+      find(
+        both(
+          pathEq(['effectiveProperties', 'name'], conf.effectiveProperties.name),
+          pathEq(['effectiveProperties', 'shortName'], conf.effectiveProperties.shortName)),
+        editedCourse.markConfigurations).id
+    ])),
+    reject(isNil),
+    concat(editedCourse.markConfigurations),
+    flatten,
+    map(prop('markConfigurations')))(
+    eventCourses))
+
+export const getLinesAndGateOptionsForCurrentEventAndWaypoint = createSelector(
+  isSelectedWaypointLineOrGate,
+  getAllCoursesForSelectedEvent,
+  getMarkConfigurationsMapToEditedCourse,
+  getEditedCourse,
+  (isSelectedWaypointLineOrGate, eventCourses, markConfigurationsMap, editedCourse) => compose(
+    when(always(isSelectedWaypointLineOrGate), always([])),
+    map(compose(
+      merge({ isWaypoint: true }),
+      evolve({ markConfigurationIds: map(prop(__, markConfigurationsMap)) }))),
+    uniqBy(compose(
+      reduce(concat, ''),
+      values,
+      pick(['controlPointName', 'controlPointShortName'])
+    )),
+    reject(compose(includes(__, ['Start', 'Finish']), prop('controlPointName'))),
+    filter(compose(either(equals(PassingInstruction.Line), equals(PassingInstruction.Gate)), prop('passingInstruction'))),
+    flatten,
+    map(prop('waypoints')),
+    append(editedCourse))(
+    eventCourses))

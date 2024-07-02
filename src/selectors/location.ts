@@ -17,6 +17,9 @@ export interface LocationStats {
 export const getLocationTrackingStatus = (state: RootState = {}) =>
   state.locationTracking && state.locationTracking.status
 
+export const getLocationTrackingContext = (state: RootState = {}) =>
+state.locationTracking && state.locationTracking.context
+
 export const getTrackedEventId = (state: RootState = {}) =>
   state.locationTracking && state.locationTracking.eventId
 
@@ -44,12 +47,3 @@ export const getLocationStats = (state: RootState = {}) => {
     lastWindSpeedInKnots: data.lastWindSpeedInKnots,
   } as LocationStats
 }
-
-export const wasTrackingStartTimeUpdated = (state: RootState) =>
-  state.locationTracking && state.locationTracking.wasTrackingStartTimeUpdated
-
-export const getStartAutoCourseUpdateStatus = (state: RootState) =>
-  state.locationTracking && state.locationTracking.startAutoCourseUpdateStatus
-
-export const getValidGpsFixCount = (state: RootState) =>
-  state.locationTracking && state.locationTracking.validGpsFixCount

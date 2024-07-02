@@ -49,8 +49,10 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     }
   }
 
-  public componentWillReceiveProps(props:any) {
-    this.setState({ query: props.input.value })
+  static getDerivedStateFromProps(props: any, _: any) {
+    return {
+      query: props.input.value
+    }
   }
 
   public render() {
@@ -131,7 +133,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   protected renderTextInput = () => {
     const {
       label,
-      input: { name, ...restInput } = { name: undefined },
+      input: { name, value, ...restInput } = { name: undefined },
       meta: { touched: showError, error } = { touched: () => {}, error: undefined },
       style,
       ...additionalProps
@@ -143,7 +145,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       style={style}
       inputStyle={styles.input}
       placeholder={label}
-      hideTopPlaceholder={true}
+      hideTopPlaceholder={false}
       defaultValue={query}
       error={showError ? error : undefined}
       onChangeText={this.handleChangeText}

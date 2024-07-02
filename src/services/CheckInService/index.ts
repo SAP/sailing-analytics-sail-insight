@@ -80,7 +80,7 @@ export const checkInDeviceMappingData = (checkInData: CheckIn) => {
   return body
 }
 
-export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
+export const checkoutDeviceMappingData = (checkInData: CheckIn, deviceId = getDeviceId()) => {
   if (!checkInData) {
     return null
   }
@@ -91,7 +91,7 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   } = checkInData
 
   const body = {
-    [CheckInBodyKeys.DeviceUUID]: getDeviceId(),
+    [CheckInBodyKeys.DeviceUUID]: deviceId,
     [CheckInBodyKeys.ToMillis]: new Date().getTime(),
     ...(boatId ? { [CheckInBodyKeys.BoatId]: boatId } : {}),
     ...(competitorId ? { [CheckInBodyKeys.CompetitorId]: competitorId } : {}),
@@ -99,19 +99,6 @@ export const checkoutDeviceMappingData = (checkInData: CheckIn) => {
   }
   return body
 }
-
-const gpsFixPostItem = (fix: PositionFix) => fix && ({
-  [GPSFixBodyKeys.Latitude]: fix.latitude,
-  [GPSFixBodyKeys.Longitude]: fix.longitude,
-  [GPSFixBodyKeys.Timestamp]: fix.timeMillis,
-  [GPSFixBodyKeys.Course]: fix.bearingInDeg || 0,
-  [GPSFixBodyKeys.Speed]: (fix.speedInKnots || 0) * 0.51444444444,
-})
-
-export const gpsFixPostData = (fixes: PositionFix[]) => fixes && ({
-  [GPSFixBodyKeys.DeviceUUID]: getDeviceUuid(DeviceInfo.getUniqueId()),
-  [GPSFixBodyKeys.Fixes]: fixes.map(fix => gpsFixPostItem(fix)).filter(fix => !!fix),
-})
 
 export const eventUrl = (checkInData: any) =>
   checkInData &&
@@ -128,6 +115,9 @@ export const raceUrl = (session: CheckIn, race: Race) =>
   // tslint:disable-next-line max-line-length
   `${session.serverUrl}/gwt/RaceBoard.html?regattaName=${encodeURIComponent(session.leaderboardName)}&raceName=${encodeURIComponent(race.name)}&leaderboardName=${encodeURIComponent(session.leaderboardName)}&eventId=${encodeURIComponent(session.eventId)}&mode=FULL_ANALYSIS`
 
+export const editResultsUrl = (session: CheckIn) =>
+  session && `${session.serverUrl}/gwt/LeaderboardEditing.html?name=${encodeURIComponent(session.leaderboardName)}`
+
 export const eventCreationResponseToCheckIn = (
   response: CreateEventResponseData,
   additionalProperties?: CheckInUpdate,
@@ -137,7 +127,6 @@ export const eventCreationResponseToCheckIn = (
   regattaName: response.regatta,
   isTraining: false,
   serverUrl: getApiServerUrl(),
-  //isSelfTracking: true,
   trackPrefix: additionalProperties && additionalProperties.trackPrefix,
   secret: additionalProperties && additionalProperties.secret,
   numberOfRaces: additionalProperties && additionalProperties.numberOfRaces

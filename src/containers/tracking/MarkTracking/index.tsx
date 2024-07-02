@@ -16,14 +16,13 @@ import {
   recomposeLifecycle as lifecycle,
   recomposeWithState as withState,
 } from 'components/fp/component'
-import { button, icon, image, text, textButton, touchableOpacity, view } from 'components/fp/react-native'
+import { button, icon, image, text, textButton, view } from 'components/fp/react-native'
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import { button as buttonStyles, container } from 'styles/commons'
 import { deleteMarkBinding } from 'actions/checkIn'
 import { startTracking, stopTracking } from 'actions/tracking'
 import { getMarkBindingCheckIn, getNameOfBoundMark, isDeletingMarkBinding } from 'selectors/checkIn'
-import { getLocationStats } from 'selectors/location'
-import * as LocationService from 'services/LocationService'
+import { getLocationStats, getLocationTrackingStatus } from 'selectors/location'
 import { getUnknownErrorMessage } from 'helpers/texts'
 
 import styles, { deleteBindingColor, headerImageBackgroundColor } from './styles'
@@ -32,19 +31,11 @@ const mapStateToProps = (state: any) => ({
   markName: getNameOfBoundMark(state),
   checkIn: getMarkBindingCheckIn(state),
   trackingStats: getLocationStats(state) || {},
-  isDeletingMarkBinding: isDeletingMarkBinding(state)
+  isDeletingMarkBinding: isDeletingMarkBinding(state),
+  isTracking: getLocationTrackingStatus(state) === 'RUNNING'
 })
 
 const nothingIfNotTracking = branch(compose(not, prop('isTracking')), nothingAsClass)
-
-const withIsTracking = compose(
-  withState('isTracking', 'setIsTracking', false),
-  lifecycle({
-    componentDidMount() {
-      LocationService.isEnabled().then(locationEnabled => this.props.setIsTracking(locationEnabled))
-    }
-  })
-)
 
 const withKeepAwake = lifecycle({
   componentDidMount() {
@@ -122,6 +113,14 @@ const informationDisplay = Component((props: any) => compose(
   nothingIfNotTracking(gpsAccuracyDisplay)
 ]))
 
+const stopTrackingConfirmationDialog = () => new Promise(resolve =>
+  Alert.alert('', I18n.t('text_tracking_alert_stop_confirmation_message'),
+    [
+      { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
+      { text: I18n.t('button_yes'), onPress: () => resolve(true) }
+    ],
+    { cancelable: true }))
+
 const trackingButton = Component((props: any) =>
   fold(props)(
   textButton({
@@ -130,16 +129,14 @@ const trackingButton = Component((props: any) =>
     onPress: async () => {
       props.setIsLoading(true)
       if (props.isTracking) {
-        try {
-          await props.stopTracking(props.checkIn)
-          props.setIsTracking(false)
-        } catch (err) {
-          Alert.alert(I18n.t('error_tracking_resend_info_title'), I18n.t('error_tracking_resend_info_text'))
+        if (await stopTrackingConfirmationDialog()) {
+          try {
+            await props.stopTracking(props.checkIn)
+          } catch (err) {}
         }
       } else {
         try {
-          await props.startTracking({ data: props.checkIn, navigation: props.navigation, markTracking: true })
-          props.setIsTracking(true)
+          await props.startTracking({ data: props.checkIn, navigation: props.navigation, useLoadingSpinner: false })
         } catch (err) {
           Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
         }
@@ -155,12 +152,11 @@ const connectivityIndicator = Component((props:any) => compose(
   fold(props),
   contramap(always({
     style: styles.connectivity
-  }))
-)(fromClass(ConnectivityIndicator)))
+  })))(
+  fromClass(ConnectivityIndicator)))
 
 export default Component((props:any) => compose(
   fold(props),
-  withIsTracking,
   withIsLoading,
   withKeepAwake,
   connect(mapStateToProps, { deleteMarkBinding, startTracking, stopTracking }),

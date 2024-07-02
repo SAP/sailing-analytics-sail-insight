@@ -6,11 +6,10 @@ import {
 } from 'lodash'
 import momentDurationSetup from 'moment-duration-format'
 import moment from 'moment/min/moment-with-locales'
-
+import { usesAutoDateAndTime, usesAutoTimeZone } from 'react-native-localize'
+import { isPlatformAndroid } from 'environment'
 import I18n, { SupportedLocales } from 'i18n'
-
 import Logger from './Logger'
-
 
 momentDurationSetup(moment)
 
@@ -57,8 +56,13 @@ export const durationText = (startDateText?: string) => {
   if (!startDateText) {
     return
   }
-  const diff = moment() - moment(startDateText)
-  return moment.utc(moment.duration(diff).asMilliseconds()).format('HH:mm:ss')
+  const diff = moment().startOf('second') - moment(startDateText).startOf('second')
+  const duration = moment.duration(diff)
+  if (duration.asDays() >= 1) { // use moment-duration-format for more than 24 hours format
+    return duration.format('HH:mm:ss')
+  } else { // use moment format for less the 24 hours format 00:00:00
+    return moment.utc(duration.asMilliseconds()).startOf('second').format('HH:mm:ss')
+  }
 }
 
 export const dateText = (dateValue: string | number, format = 'LL') => {
@@ -93,6 +97,33 @@ export const dateTimeText = (dateValue: string | number | Date) => {
   return moment(dateValue).locale(supportedLocale).format(`${dateFormat} - ${timeFormat}`)
 }
 
+/**
+ * Returns a hypenated string from one or two date values
+ */
+export const dateRangeText = (dateValue1: string | number | Date, dateValue2?: string | number | Date): string => {
+  const supportedLocale = getSupportedLocale(I18n.locale)
+
+  const moment1 =  moment(dateValue1).locale(supportedLocale)
+  const moment2 = dateValue2 ? moment(dateValue1).locale(supportedLocale) : null
+  
+  // No date2 or the same day
+  if (moment2 == null || moment1.isSame(moment2, 'day')) {
+    return moment1.format('D. MMMM YYYY')
+
+  // Same month
+  } else if (moment1.isSame(moment2, 'month')) {
+    return moment1.format('D') + '–'+ moment2.format('D. MMMM YYYY') // EN Dash
+
+  // Same year
+  } else if (moment1.isSame(moment2, 'year')) {
+    return moment1.format('D. MMMM') + ' – '+ moment2.format('D. MMMM YYYY') // EN Dash + thin spaces
+
+  // Not the same year
+  } else {
+    return moment1.format('D. MMMM YYYY') + ' – '+ moment2.format('D. MMMM YYYY') // EN Dash + thin spaces
+  }
+}
+
 export const dateShortText = (dateValue: string | number | Date) => {
   const supportedLocale = getSupportedLocale(I18n.locale)
   return moment(dateValue).locale(supportedLocale).format('DD.MM.YYYY')
@@ -121,7 +152,7 @@ export const getTimestampAsMillis = (timestamp?: string) => {
   return momentValue.utc().valueOf()
 }
 
-export const currentTimestampAsText = () => moment().utc().format()
+export const currentTimestampAsText = () => moment().utc().startOf('second').format()
 
 export const isExpired = (timestamp: string, limitInHours: number) => {
   if (!timestamp) {
@@ -131,3 +162,6 @@ export const isExpired = (timestamp: string, limitInHours: number) => {
 }
 
 export const getDurationInS = (start?: number, end?: number) => (start && end && ((end - start) / 60)) || 0
+
+export const useAutomaticDateTimeAndTimezone = () =>
+  isPlatformAndroid ? (usesAutoDateAndTime() && usesAutoTimeZone()) : true

@@ -1,5 +1,5 @@
 import { EVENT_ENTITY_NAME } from 'api/schemas'
-import { find, identity, propEq, values } from 'ramda'
+import { find, identity, propEq, values, compose, prop } from 'ramda'
 import { createSelector } from 'reselect'
 import { getEntities, getEntityArrayByType, getEntityById } from './entity'
 import { RootState } from 'reducers/config'
@@ -21,6 +21,28 @@ export const getSelectedEventInfo = createSelector(
     (state: any): any[] => values(state.checkIn.active),
     (selectedEvent, activeCheckIns): SelectedEventInfo | undefined =>
       selectedEvent && find(propEq('eventId', selectedEvent), activeCheckIns))
+
+export const getSelectedEventEndDate = createSelector(
+  (state: any): any[] => values(state.events.all),
+  (state: any): string | undefined => state.events.selectedEvent,
+  (allEvents, selectedEvent) => 
+    selectedEvent && 
+    compose(
+      prop('endDate'),
+      find(propEq('id', selectedEvent))
+    )(allEvents)
+)
+
+export const getSelectedEventStartDate = createSelector(
+  (state: any): any[] => values(state.events.all),
+  (state: any): string | undefined => state.events.selectedEvent,
+  (allEvents, selectedEvent) => 
+    selectedEvent && 
+    compose(
+      prop('startDate'),
+      find(propEq('id', selectedEvent))
+    )(allEvents)
+)
 
 export const getSelectedRaceInfo = createSelector(
   getSelectedEventInfo,
@@ -47,3 +69,9 @@ export const getEventIdThatsBeingSelected = (state: any) =>
 
 export const isStartingTracking = (state: any) =>
   !!(state.events && state.events.isStartingTracking)
+
+export const isLoadingEventList = (state: any) =>
+  !!(state.events && state.events.isLoadingEventList)
+
+export const isPollingEvent = () => (state: any) =>
+  !!(state.events && state.events.isPollingEvent)

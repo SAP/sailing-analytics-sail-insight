@@ -1,22 +1,38 @@
+import React from 'react';
 import Images from '@assets/Images'
-import { Component, contramap, fold, fromClass, nothing,
+import { Component, contramap, fold, fromClass, nothing, connectActionSheet,
   recomposeWithHandlers as withHandlers,
   recomposeBranch as branch,
-  nothingAsClass } from 'components/fp/component'
-import { forwardingPropsFlatList, iconText, inlineText, text, touchableOpacity, view } from 'components/fp/react-native'
+  recomposeWithState as withState,
+  reduxConnect as connect,
+  nothingAsClass,
+} from 'components/fp/component'
+import { forwardingPropsFlatList, iconText, inlineText, text, textButton, touchableOpacity, view } from 'components/fp/react-native'
 import IconText from 'components/IconText'
 import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
-import { __, always, append, compose, concat, curry,
-  equals, has, head, length, map, merge, objOf,
-  prepend, prop, propEq, range, reduce, reject,
-  remove, split, toString, toUpper, update, when } from 'ramda'
-import { Dimensions } from 'react-native'
+import { __, always, anyPass, append, compose, concat, curry,
+  equals, has, head, length, map, merge, mergeLeft, objOf,
+  prepend, prop, propEq, range, reduce, reject, isNil,
+  remove, sortBy, split, toString, toUpper, update, when,
+  isEmpty, defaultTo, complement, path, either,
+  call, last, inc, take, identity } from 'ramda'
+import { Dimensions, ActivityIndicator } from 'react-native'
 import ModalSelector from 'react-native-modal-selector'
 import QRCode from 'react-native-qrcode-svg'
 import styles from './styles'
+import CompetitorList from '../Leaderboard/CompetitorList'
+import { NavigationEvents } from '@react-navigation/compat'
+import * as LocationService from 'services/LocationService'
+import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
+import { getWindowWidth } from 'helpers/screen';
 
 const maxNumberOfRaces = 50
+
+export const fieldValueOrInitialIfEmpty = props => compose(
+  when(either(isNil, isEmpty), always(props.meta.initial)),
+  path(['input', 'value']))(
+  props)
 
 const plusIcon = fromClass(IconText).contramap(always({
   source: Images.actions.plus,
@@ -56,7 +72,7 @@ export const overlayPicker = curry((
       }),
       objOf('children'),
       head,
-      when(has('fold'), fold(props)))(
+      when(has('fold'), fold(merge(props, { customRenderer: true }))))(
       c)))
 
 export const FramedNumberItem = Component(props => compose(
@@ -168,8 +184,8 @@ export const typeAndBoatClassCard = Component((props: any) => compose(
     text({ style: styles.headline }, I18n.t('caption_regatta_details').toUpperCase()),
     inlineText({ style: styles.text }, [
       text({ style: styles.textLight }, 'Style '),
-      props.boatClass !== '' ? 
-        text({ style: styles.textValue }, I18n.t('caption_one_design').toUpperCase()) 
+      props.boatClass !== '' ?
+        text({ style: styles.textValue }, I18n.t('caption_one_design').toUpperCase())
       : text({ style: styles.textValue }, I18n.t('text_handicap_label').toUpperCase())
     ]),
     props.boatClass !== '' ?
@@ -206,7 +222,7 @@ export const qrCode = Component((props: any) => compose(
   view({ style: styles.qrCodeContainer }))(
   fromClass(QRCode).contramap((props: any) => ({
     value: props.qrCodeLink,
-    size: Dimensions.get('window').width - 85,
+    size: getWindowWidth() - 85,
     backgroundColor: 'white',
     quietZone: 10
   }))
@@ -223,13 +239,37 @@ export const inviteCompetitorsButton = Component(props => compose(
 export const joinAsCompetitorButton = Component(props => compose(
   fold(props),
   styledButton({
-    onPress: (props: any) => props.navigation.navigate(Screens.EditCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
+    onPress: (props: any) => props.navigation.navigate(Screens.JoinRegattaAsCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
   }),
   text({ style: styles.buttonContent }))(
   I18n.t('caption_join_as_competitor').toUpperCase()))
 
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
 const nothingIfCurrentUserIsNotCompetitor = branch(propEq('currentUserIsCompetitorForEvent', false), nothingAsClass)
+
+const nothingIfShouldntShowStartTracking = branch(
+  anyPass([propEq('isFinished', true), propEq('isBeforeEventStartTime', true)]),
+  nothingAsClass,
+)
+
+export const startTrackingButton = Component((props: any) => compose(
+  fold(props),
+  nothingIfShouldntShowStartTracking,
+  textButton({
+    onPress: async (props: any) => {
+      if (!await LocationService.isEnabled()) {
+        props.startTracking({ data: props.checkIn, navigation: props.navigation })
+      } else {
+        props.navigation.navigate(Screens.Tracking)
+      }
+    },
+    style: [styles.button, styles.trackingButton],
+    textStyle: styles.buttonContent,
+  })
+)(text({}, props.isTrackingEvent ? 
+  I18n.t('caption_view_tracking').toUpperCase() : 
+  I18n.t('caption_start_tracking').toUpperCase())
+))
 
 export const competitorsCard = Component((props: any) =>
   compose(
@@ -242,5 +282,128 @@ export const competitorsCard = Component((props: any) =>
       nothingIfCurrentUserIsNotCompetitor(text({ style: styles.textLast }, I18n.t('text_user_is_competitor'))),
       inviteCompetitorsButton,
       nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton),
-      qrCode
+      shareEventButton,
+      startTrackingButton,
+      qrCode,
+      competitorList
     ]))
+
+export const withCompetitorListState = compose(
+  withState('competitorListRefreshInterval', 'setCompetitorListRefreshInterval', 0),
+  withState('competitorListStale', 'setCompetitorListStale', true)
+)
+
+const COMPETITOR_LIST_REFRESH_RATE = 10000
+
+const isCompetitorListEmpty = compose(isEmpty, reject(isNil), defaultTo([]), prop('competitorList'))
+const isCompetitorListNotEmpty = complement(isCompetitorListEmpty)
+const nothingIfCompetitorListStale = branch(propEq('competitorListStale', true), nothingAsClass)
+const nothingIfCompetitorListNotStale = branch(propEq('competitorListStale', false), nothingAsClass)
+const nothingIfCompetitorListEmpty = branch(isCompetitorListEmpty, nothingAsClass)
+const nothingIfCompetitorListNotEmpty = branch(isCompetitorListNotEmpty, nothingAsClass)
+
+export const competitorListRefreshHandler = Component((props: any) =>
+  compose(
+    fold(props),
+    contramap(
+      merge({
+        onWillFocus: () => {
+          const callback = async () => {
+            const { leaderboardName, regattaName } = props.session
+            await props.fetchRegattaCompetitors(regattaName, leaderboardName)
+            props.setCompetitorListStale(false)
+          }
+          callback()
+          props.setCompetitorListRefreshInterval(
+            setInterval(callback, COMPETITOR_LIST_REFRESH_RATE),
+          )
+        },
+        onWillBlur: () => {
+          clearInterval(props.competitorListRefreshInterval)
+          props.setCompetitorListStale(true)
+        },
+      }),
+    ),
+    fromClass,
+  )(NavigationEvents),
+)
+
+const competitorListItems = Component((props: any) => compose(
+  fold(props),
+  contramap(mergeLeft({
+    leaderboard: sortBy(prop('name'), props.competitorList),
+    forLeaderboard: false,
+    showHandicapValues: props.isEventOrganizer && props.boatClass === '', // Handicap regatta check
+    onCompetitorItemPress: props.isEventOrganizer && props.boatClass === '' &&
+      (competitorId => props.navigation.navigate(Screens.EditCompetitor, {
+        data: { competitorId, session: props.session }
+      }))
+  })),
+  fromClass
+)(CompetitorList))
+
+const loader = fromClass(ActivityIndicator).contramap(always({
+  size: 'small',
+  color: 'white'
+}))
+
+const noCompetitorsText = text(
+  {
+    style: {
+      color: 'white',
+      fontSize: 17,
+      textAlign: 'center',
+      fontFamily: 'SFProDisplay-Light',
+      marginTop: 10,
+    },
+  },
+  I18n.t('text_competitor_list_empty'),
+)
+
+export const competitorList = Component((props: any) => compose(
+  fold(props),
+  concat(text({ style: styles.headline }, I18n.t('text_competitor_list').toUpperCase())),
+  view({ style: styles.competitorListContainer }),
+  reduce(concat, nothing()))([
+  nothingIfCompetitorListNotStale(loader),
+  nothingIfCompetitorListStale(nothingIfCompetitorListEmpty(competitorListItems)),
+  nothingIfCompetitorListStale(nothingIfCompetitorListNotEmpty(noCompetitorsText)),
+]))
+
+const shareIcon = fromClass(IconText).contramap(always({
+  source: Images.actions.share,
+  iconTintColor: 'white',
+  style: { justifyContent: 'center', alignItems: 'center', marginRight: 15 },
+  iconStyle: { width: 25, height: 25 }
+}))
+
+const shareActionSheet = curry((Comp: any) => Component(props => compose(
+  fold(props),
+  connect(null, { openSAPAnalyticsEvent, openEventLeaderboard }),
+  connectActionSheet,
+  touchableOpacity({
+    onPress: props => props.showActionSheetWithOptions({
+      options: ['Share SAP Sailing Analytics Link', 'Visit Overall Leaderboard', 'Cancel'],
+      cancelButtonIndex: 2,
+    },
+    compose(
+      call,
+      last,
+      take(__, [props.openSAPAnalyticsEvent, props.openEventLeaderboard, identity]),
+      inc))
+  }))(Comp)))
+
+export const ShareButton = Component((props: any) => compose(
+  fold(props),
+  shareActionSheet)(
+  shareIcon))
+
+export const shareEventButton = Component((props:any) => compose(
+  fold(props),
+  shareActionSheet,
+  text({ style: [styles.buttonContent, styles.button] }))
+  (I18n.t('caption_share_event').toUpperCase())
+)
+
+
+

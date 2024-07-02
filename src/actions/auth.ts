@@ -1,13 +1,16 @@
 import { createAction } from 'redux-actions'
 import { authApi } from 'api'
 import AuthException from 'api/AuthException'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { DispatchType, GetStateType } from 'helpers/types'
+import * as LocationService from 'services/LocationService'
 import * as Screens from 'navigation/Screens'
 import { ApiAccessToken, User } from 'models'
 import { mapUserToRes } from 'models/User'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 
-export type RegisterActionType = (username: string, email: string, password: string, name: string) => any
+export type RegisterActionType = (username: string, email: string, password: string, name?: string) => any
 
 export const updateToken = createAction('UPDATE_TOKEN')
 export const updateCurrentUserInformation = createAction('UPDATE_CURRENT_USER_INFORMATION')
@@ -18,6 +21,7 @@ const handleAccessToken = (dataPromise?: Promise<ApiAccessToken>) => async (disp
   const data = await dataPromise
   await dispatch(updateToken(data && data.accessToken))
   await dispatch(fetchCurrentUser())
+  await LocationService.setAccessToken(data?.accessToken || '')
 }
 
 export const checkCurrentAuthSession = () => async (dispatch: DispatchType) => {
@@ -41,13 +45,26 @@ export const logout = () => (dispatch: DispatchType) => {
   dispatch(removeUserData())
 }
 
-export const requestPasswordReset = (username: string, email: string) =>
-   authApi().requestPasswordReset(username, email)
+export const requestPasswordReset = (usernameOrEmail: string) => {
+  // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  const isEmail = re.test(usernameOrEmail.toLowerCase()) // Use the regex to test whether the string is an email
+  if (isEmail) {
+    return authApi().requestPasswordReset('', usernameOrEmail)
+  }
+
+  return authApi().requestPasswordReset(usernameOrEmail, '')
+}
 
 export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
   dispatch(updateCurrentUserInformation(await authApi().user()))
 
 export const authBasedNewSession = (navigation:object) => (dispatch: DispatchType, getState: GetStateType) => {
+  const isNetworkConnected = isNetworkConnectedSelector(getState())
+  if (!isNetworkConnected) {
+    showNetworkRequiredSnackbarMessage()
+    return
+  }
   const isLoggedIn = isLoggedInSelector(getState())
   navigation.navigate(isLoggedIn ? Screens.EventCreation : Screens.RegisterCredentials)
 }

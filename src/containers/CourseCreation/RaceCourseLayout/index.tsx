@@ -1,58 +1,70 @@
 import { __, compose, always, both, path, when, move, length, subtract, curry, of as Rof,
-  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc,
-  objOf, isNil, not, equals, pick, tap, ifElse, insert, complement, uncurryN, apply,
+  prop, map, reduce, concat, merge, defaultTo, any, take, props as rProps, dissoc, reject,
+  objOf, isNil, not, equals, ifElse, insert, complement, uncurryN, apply, T, cond,
   propEq, addIndex, intersperse, gt, findIndex, unless, has, toUpper, head, isEmpty, either } from 'ramda'
 import {
   Component, fold, fromClass, nothing, nothingAsClass, contramap,
   reduxConnect as connect,
   recomposeBranch as branch,
   recomposeWithState as withState,
+  recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { Switch, Platform } from 'react-native'
-import Geolocation from '@react-native-community/geolocation'
+import { BackHandler, Alert, Keyboard } from 'react-native'
 import uuidv4 from 'uuid/v4'
 import { MarkPositionType, PassingInstruction } from 'models/Course'
+import { getStore } from 'store'
 import { selectWaypoint, removeWaypoint, addWaypoint, toggleSameStartFinish,
   selectMarkConfiguration, updateWaypointName, updateWaypointShortName,
   updateMarkConfigurationName, updateMarkConfigurationShortName,
   updateWaypointPassingInstruction, changeWaypointToNewMark, changeWaypointToNewLine,
   updateMarkConfigurationLocation, assignMarkOrMarkPropertiesToMarkConfiguration,
   replaceWaypointMarkConfiguration, changeWaypointMarkConfigurationToNew,
-  navigateBackFromCourseCreation } from 'actions/courses'
+  navigateBackFromCourseCreation, updateMarkPosition, updateWaypoint } from 'actions/courses'
+import { startLocalLocationUpdates, stopLocalLocationUpdates } from 'actions/locations'
 import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguration,
   getEditedCourse, getCourseLoading, getSelectedMarkConfiguration, getSelectedMarkProperties,
   getSelectedMarkPosition, hasSameStartFinish, getSelectedMarkDeviceTracking,
-  isDefaultWaypointSelection } from 'selectors/course'
-import { getFilteredMarkPropertiesAndMarksOptionsForCourse } from 'selectors/inventory'
+  isDefaultWaypointSelection,
+  hasEditedCourseChanged,
+  getLinesAndGateOptionsForCurrentEventAndWaypoint } from 'selectors/course'
+import { getLocationStats } from 'selectors/location'
+import { getSelectedEventInfo } from 'selectors/event'
+import {
+  getFilteredMarkPropertiesAndMarksOptionsForCourse,
+  getMarkPropertiesOrMarkForCourseByName
+} from 'selectors/inventory'
 import { getHashedDeviceId } from 'selectors/user'
 import { coordinatesToString } from 'helpers/utils'
 import * as Screens from 'navigation/Screens'
-import TextInput from 'components/TextInput'
+import TextInputDeprecated from 'components/TextInputDeprecated'
 import SwitchSelector from 'react-native-switch-selector'
+import CheckBox from 'react-native-check-box'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
+import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
 import Dash from 'react-native-dash'
 import { NavigationEvents } from '@react-navigation/compat'
 import styles from './styles'
-import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue,
-  $secondaryBackgroundColor, $primaryBackgroundColor } from 'styles/colors'
+import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 import { Dimensions } from 'react-native'
 import I18n from 'i18n'
 
 const mapIndexed = addIndex(map)
 
-const mapStateToProps = (state: any) => ifElse(
-  getCourseLoading,
-  always({ loading: true }),
-  state => ({
+const mapStateToProps = (state: any) => cond([
+  [getCourseLoading, always({ loading: true })],
+  [compose(isNil, getSelectedEventInfo), always({})],
+  [T, state => ({
     course: getEditedCourse(state),
     selectedWaypoint: getSelectedWaypoint(state),
     selectedMarkConfiguration: getSelectedMarkConfiguration(state),
     isDefaultWaypointSelection: isDefaultWaypointSelection(state),
+    defaultPositionType: (compose(not, isNil, prop('trackingDeviceHash'))(getSelectedMarkDeviceTracking(state)) || isEmpty(getSelectedMarkPosition(state))) ? MarkPositionType.TrackingDevice : MarkPositionType.Geolocation,
     selectedMarkProperties: getSelectedMarkProperties(state),
     selectedMarkLocation: getSelectedMarkPosition(state),
-    selectedMarkDeviceTracking: compose(
+    selectedMarkDeviceTracking: prop('trackingDeviceHash', getSelectedMarkDeviceTracking(state)),
+    selectedMarkDeviceTrackingCaption: compose(
       defaultTo(I18n.t('text_course_creation_no_device_assigned')),
       unless(isNil, ifElse(
         propEq('trackingDeviceHash', getHashedDeviceId()),
@@ -62,8 +74,16 @@ const mapStateToProps = (state: any) => ifElse(
     waypointLabel: uncurryN(2, waypointLabel)(__, state),
     markPropertiesByMarkConfiguration: uncurryN(2, getMarkPropertiesByMarkConfiguration)(__, state),
     marksAndMarkPropertiesOptions: getFilteredMarkPropertiesAndMarksOptionsForCourse(state),
-    sameStartFinish: hasSameStartFinish(state)
-  }))
+    linesAndGateOptionsForCurrentEventAndWaypoint: getLinesAndGateOptionsForCurrentEventAndWaypoint(state),
+    sameStartFinish: hasSameStartFinish(state),
+    hasCourseChanged: hasEditedCourseChanged(state),
+    newGateMarkOptions: [
+      getMarkPropertiesOrMarkForCourseByName('Gate Mark 1')(state),
+      getMarkPropertiesOrMarkForCourseByName('Gate Mark 2')(state)],
+    newLineMarkOptions: [
+      getMarkPropertiesOrMarkForCourseByName('Line Mark 1')(state),
+      getMarkPropertiesOrMarkForCourseByName('Line Mark 2')(state)]
+  })]])
 
 const isLoading = propEq('loading', true)
 const isNotLoading = complement(isLoading)
@@ -76,6 +96,15 @@ const isStartOrFinishGate = both(isGateWaypoint,
     take(2),
     move(-1, 0))(
     props.course.waypoints))
+const isTrackingSelected = compose(
+  either(
+    propEq('selectedPositionType', MarkPositionType.TrackingDevice),
+    both(
+      compose(isNil, prop('selectedPositionType')),
+      propEq('defaultPositionType', MarkPositionType.TrackingDevice)
+    )
+  )
+)
 
 const nothingWhenLoading = branch(isLoading, nothingAsClass)
 const nothingWhenNotLoading = branch(isNotLoading, nothingAsClass)
@@ -86,8 +115,9 @@ const nothingWhenNotStartOrFinishGate = branch(compose(not, isStartOrFinishGate)
 const nothingWhenStartOrFinishGate = branch(isStartOrFinishGate, nothingAsClass)
 const nothingWhenEmptyWaypoint = branch(isEmptyWaypoint, nothingAsClass)
 const nothingWhenNotEmptyWaypoint = branch(compose(not, isEmptyWaypoint), nothingAsClass)
-const nothingWhenNotTrackingSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.TrackingDevice)), nothingAsClass)
-const nothingWhenNotGeolocationSelected = branch(compose(not, propEq('selectedPositionType', MarkPositionType.Geolocation)), nothingAsClass)
+
+const nothingWhenNotTrackingSelected = branch(compose(not, isTrackingSelected), nothingAsClass)
+const nothingWhenNotGeolocationSelected = branch(isTrackingSelected, nothingAsClass)
 const nothingWhenNotSelected = branch(compose(isNil, prop('selected')), nothingAsClass)
 const nothingWhenNoMarkLocation = branch(compose(either(isNil, isEmpty), prop('selectedMarkLocation')), nothingAsClass)
 const nothingWhenNotEditingGateName = branch(compose(equals(false), prop('editingGateName')), nothingAsClass)
@@ -95,10 +125,37 @@ const nothingWhenNotEditingMarkName = branch(compose(equals(false), prop('editin
 const nothingWhenNoShowMarkProperties = branch(compose(equals(false), prop('showMarkProperties')), nothingAsClass)
 const nothingWhenShowMarkProperties = branch(compose(equals(true), prop('showMarkProperties')), nothingAsClass)
 
-const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', MarkPositionType.TrackingDevice)
+const withSelectedPositionType = withState('selectedPositionType', 'setSelectedPositionType', null)
 const withEditingMarkName = withState('editingMarkName', 'setEditingMarkName', false)
 const withEditingGateName = withState('editingGateName', 'setEditingGateName', false)
 const withShowMarkProperties = withState('showMarkProperties', 'setShowMarkProperties', false)
+
+const openGeolocationScreenWithPosition = curry((props, location) => compose(
+  position => props.navigation.navigate(Screens.CourseGeolocation,
+    { data: {
+      selectedMarkConfiguration: props.selectedMarkConfiguration,
+      currentPosition: position,
+      markPosition: props.selectedMarkLocation } }),
+  prop('coords'))(
+  location))
+
+const changeSelectedWaypointToNewLine = ({ passingInstruction, markOrMarkPropertiesOptions }, props) => {
+  const markConfigurationIds = [uuidv4(), uuidv4()]
+
+  props.changeWaypointToNewLine({
+    id: props.selectedWaypoint.id,
+    passingInstruction,
+    markConfigurationIds
+  })
+
+  mapIndexed(
+    (markOrMarkProperties, index) => markOrMarkProperties &&
+      props.assignMarkOrMarkPropertiesToMarkConfiguration({
+        id: markConfigurationIds[index],
+        markOrMarkProperties
+      }),
+    markOrMarkPropertiesOptions)
+}
 
 const icon = compose(
   fromClass(IconText).contramap,
@@ -136,7 +193,11 @@ const GateMarkSelectorItem = Component((props: object) =>
     concat(__, nothingWhenNotSelected(arrowUp({ size: 35, iconStyle: { width: 37, height: 24 } }))),
     touchableOpacity({
       style: [ styles.gateMarkSelectorItem, props.selected ? styles.gateMarkSelectorItemSelected : null ],
-      onPress: (props: any) => props.selectMarkConfiguration(props.markConfigurationId) }),
+      onPress: (props: any) => {
+        props.selectMarkConfiguration(props.markConfigurationId)
+        props.setSelectedPositionType(null)
+      }
+      }),
     text({ style: styles.gateMarkSelectorText }),
     defaultTo(''),
     prop('shortName'),
@@ -149,8 +210,8 @@ const GateMarkSelector = Component((props: object) =>
     concat(nothingWhenStartOrFinishGate(
       text(
         {style: [styles.sectionTitle, styles.indentedSectionTitle] },
-        props.selectedWaypoint.passingInstruction === PassingInstruction.Line ? 
-          I18n.t('caption_course_creation_define_line_marks') : 
+        props.selectedWaypoint.passingInstruction === PassingInstruction.Line ?
+          I18n.t('caption_course_creation_define_line_marks') :
           I18n.t('caption_course_creation_define_gate_marks')
       )
     )),
@@ -171,17 +232,13 @@ const SameStartFinish = Component((props: object) =>
     fold(props),
     view({ style: styles.sameStartFinishContainer }),
     reduce(concat, nothing()))([
-    fromClass(Switch).contramap(merge({
-      value: props.sameStartFinish,
-      onValueChange: props.toggleSameStartFinish,
-      ...(
-        Platform.OS === 'android' ? {
-          trackColor: { false: 'gray', true: 'white' },
-          thumbColor: 'white',
-        } : {
-          trackColor: { true: $primaryBackgroundColor, false: $secondaryBackgroundColor },
-          tintColor: $primaryBackgroundColor,
-        })
+    fromClass(CheckBox).contramap(merge({
+      isChecked: props.sameStartFinish,
+      onClick: () => {
+        props.toggleSameStartFinish()
+        props.setSelectedPositionType(null)
+      },
+      checkBoxColor: 'white'
     })),
     text({ style: styles.sameStartFinishText }, I18n.t('text_course_creator_start_and_finish_same'))
   ]))
@@ -190,7 +247,7 @@ const MarkPositionTracking = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.locationContainer }),
-    concat(text({ style: styles.trackingText }, props.selectedMarkDeviceTracking)),
+    concat(text({ style: styles.trackingText }, props.selectedMarkDeviceTrackingCaption)),
     touchableOpacity({
       style: styles.changeTrackingButton,
       onPress: () => props.navigation.navigate(Screens.CourseTrackerBinding,
@@ -206,15 +263,20 @@ const MarkPositionPing = Component((props: object) => compose(
   fold(props),
   touchableOpacity({
     style: styles.pingPositionButton,
-    onPress: (props: object) => Geolocation.getCurrentPosition(compose(
-      position => props.updateMarkConfigurationLocation({
-        id: props.selectedMarkConfiguration,
-        value: position
-      }),
-      pick(['latitude', 'longitude']),
-      prop('coords')))
+    onPress: (props: any) => {
+      const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
+
+      const location = { latitude: lastLatitude, longitude: lastLongitude }
+      const markConfigurationId = props.selectedMarkConfiguration
+      props.updateMarkConfigurationLocation({
+        id: markConfigurationId,
+        value: location
+      })
+      props.updateMarkPosition({ markConfigurationId, location })
+    }
   }))(
-  text({ style: [styles.locationText, styles.pingText] }, I18n.t('caption_course_creator_ping_position').toUpperCase())))
+  text({ style: [styles.locationText, styles.pingText] },
+  I18n.t('caption_course_creator_ping_position').toUpperCase())))
 
 const MarkPositionCoordinates = Component(props => compose(
   fold(props),
@@ -233,13 +295,18 @@ const MarkPositionGeolocation = Component((props: object) =>
     concat(MarkPositionPing),
     touchableOpacity({
       style: styles.editPositionButton,
-      onPress: () => Geolocation.getCurrentPosition(({ coords }) =>
-        props.navigation.navigate(Screens.CourseGeolocation,
-          { data: {
-            selectedMarkConfiguration: props.selectedMarkConfiguration,
-            currentPosition: coords,
-            markPosition: props.selectedMarkLocation } })) }))(
-    text({ style: styles.locationText }, I18n.t('caption_course_creation_edit_position'))))
+      onPress: (props: any) => {
+        if (isEmpty(props.selectedMarkLocation)) {
+          const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
+
+          openGeolocationScreenWithPosition(props,
+            { coords: { latitude: lastLatitude, longitude: lastLongitude }})
+        } else {
+          openGeolocationScreenWithPosition(props, { coords: props.selectedMarkLocation })
+        }
+      }}))(
+    text({ style: styles.locationText },
+    I18n.t('caption_course_creation_edit_position'))))
 
 const locationTypes = [
   { value: MarkPositionType.TrackingDevice, label: I18n.t('caption_course_creation_tracker'), customIcon: trackerIcon.fold },
@@ -249,7 +316,7 @@ const PositionSelector = fromClass(SwitchSelector).contramap((props: any) => ({
   options: locationTypes,
   initial: compose(
     when(gt(0), always(0)),
-    findIndex(i => i.value === props.selectedPositionType))(
+    findIndex(i => props.selectedPositionType ? i.value === props.selectedPositionType : i.value === props.defaultPositionType))(
     locationTypes),
   onPress: props.setSelectedPositionType,
   backgroundColor: $MediumBlue,
@@ -278,11 +345,13 @@ const DeleteButton = Component((props: object) =>
   compose(
     fold(props),
     view({ style: styles.deleteWaypointContainer }),
-    touchableOpacity({ onPress: (props: any) =>
-      props.removeWaypoint({
-        id: props.selectedWaypoint.id,
-        newSelectedId: props.course.waypoints[findIndex(propEq('id', props.selectedWaypoint.id), props.course.waypoints) - 1].id
-      })
+    touchableOpacity({ onPress: (props: any) => {
+        props.removeWaypoint({
+          id: props.selectedWaypoint.id,
+          newSelectedId: props.course.waypoints[findIndex(propEq('id', props.selectedWaypoint.id), props.course.waypoints) - 1].id
+        })
+        props.setSelectedPositionType(null)
+      }
     }),
     view({ style: styles.deleteWaypointButton }),
     concat(deleteIcon))(
@@ -312,24 +381,22 @@ const CreateNewSelector = Component((props: object) =>
     touchableOpacity({ onPress: () => createNewMark(PassingInstruction.Starboard, props) },
       markStarboardIcon),
     touchableOpacity({
-      onPress: () => props.changeWaypointToNewLine({
-        id: props.selectedWaypoint.id,
+      onPress: () => changeSelectedWaypointToNewLine({
         passingInstruction: PassingInstruction.Line,
-        markConfigurationIds: [uuidv4(), uuidv4()]
-      })
+        markOrMarkPropertiesOptions: props.newLineMarkOptions
+      }, props)
     }, lineIcon),
     touchableOpacity({
-      onPress: () => props.changeWaypointToNewLine({
-        id: props.selectedWaypoint.id,
+      onPress: () => changeSelectedWaypointToNewLine({
         passingInstruction: PassingInstruction.Gate,
-        markConfigurationIds: [uuidv4(), uuidv4()]
-      })
+        markOrMarkPropertiesOptions: props.newGateMarkOptions
+      }, props)
     }, gateIcon) ]))
 
 const TextInputWithLabel = Component((props: any) => compose(
   fold(props),
   view({ style: props.isShort ? { flexBasis: 10 } : { flexBasis: 50 }}),
-  concat(__, fromClass(TextInput)),
+  concat(__, fromClass(TextInputDeprecated)),
   text({ style: styles.textInputLabel, numberOfLines: 1 }))(
   props.inputLabel))
 
@@ -405,34 +472,41 @@ compose(
       let markConfigurationId = props.selectedMarkConfiguration
 
       // This code needs to be moved in upper layers.
-      if (isEmptyWaypoint(props)) {
-        markConfigurationId = uuidv4()
-
-        props.changeWaypointToNewMark({
+      if (props.item.isWaypoint) {
+        props.updateWaypoint({
           id: props.selectedWaypoint.id,
-          markConfigurationIds: [props.item.isMarkConfiguration ? props.item.id : markConfigurationId]
-        })
-      }
-
-      if (props.item.isMarkConfiguration) {
-        props.replaceWaypointMarkConfiguration({
-          id: props.selectedWaypoint.id,
-          oldId: markConfigurationId,
-          newId: props.item.id
+          waypoint: merge(props.item, { id: uuidv4() })
         })
       } else {
-        const newId = uuidv4()
+        if (isEmptyWaypoint(props)) {
+          markConfigurationId = uuidv4()
 
-        props.changeWaypointMarkConfigurationToNew({
-          id: props.selectedWaypoint.id,
-          oldId: markConfigurationId,
-          newId
-        })
+          props.changeWaypointToNewMark({
+            id: props.selectedWaypoint.id,
+            markConfigurationIds: [props.item.isMarkConfiguration ? props.item.id : markConfigurationId]
+          })
+        }
 
-        props.assignMarkOrMarkPropertiesToMarkConfiguration({
-          id: newId,
-          markOrMarkProperties: props.item
-        })
+        if (props.item.isMarkConfiguration) {
+          props.replaceWaypointMarkConfiguration({
+            id: props.selectedWaypoint.id,
+            oldId: markConfigurationId,
+            newId: props.item.id
+          })
+        } else {
+          const newId = uuidv4()
+
+          props.changeWaypointMarkConfigurationToNew({
+            id: props.selectedWaypoint.id,
+            oldId: markConfigurationId,
+            newId
+          })
+
+          props.assignMarkOrMarkPropertiesToMarkConfiguration({
+            id: newId,
+            markOrMarkProperties: props.item
+          })
+        }
       }
     }
   }),
@@ -442,17 +516,34 @@ compose(
   intersperse(' '),
   mapIndexed((v, i) => i === 0 ? `(${v})` : v),
   map(defaultTo('')),
-  rProps(['shortName', 'name']),
+  ifElse(
+    propEq('isWaypoint', true),
+    rProps(['controlPointShortName', 'controlPointName']),
+    rProps(['shortName', 'name'])),
   when(has('effectiveProperties'), prop('effectiveProperties')),
   prop('item'))(
   props))
+
+const marksAndMarkPropertiesWithoutTheOtherGateSideMark = (props: any) => {
+  const otherSideId = compose(
+    head,
+    reject(equals(props.selectedMarkConfiguration)),
+    defaultTo([]),
+    prop('markConfigurationIds'))(
+    props.selectedWaypoint)
+
+  return compose(
+    concat(__, props.linesAndGateOptionsForCurrentEventAndWaypoint),
+    reject(propEq('id', otherSideId)))(
+    props.marksAndMarkPropertiesOptions)
+}
 
 const MarksOrMarkPropertiesOptionsList = Component((props: object) => compose(
     fold(props),
     scrollView({ style: styles.markPropertiesListContainer, nestedScrollEnabled: true, flexGrow: 0 }))(
     forwardingPropsFlatList.contramap((props: any) =>
       merge({
-        data: props.marksAndMarkPropertiesOptions,
+        data: marksAndMarkPropertiesWithoutTheOtherGateSideMark(props),
         renderItem: MarksOrMarkPropertiesOptionsListItem.fold
       }, props))))
 
@@ -467,7 +558,7 @@ const ShortAndLongName = Component((props: object) =>
       view({ style: index === 1 ? { marginLeft: 30 } : { flex: 1, flexBasis: 1 }}),
       compose(TextInputWithLabel.contramap, merge),
       merge({
-        maxLength: index === 1 ? 5 : 100,
+        maxLength: index === 1 ? 4 : 100,
         inputStyle: styles.textInput,
         inputContainerStyle: styles.textInputContainer,
         containerStyle: styles.textInputInputContainer }))(data)))(
@@ -534,9 +625,14 @@ const WaypointEditForm = Component((props: any) =>
 
 const WaypointsList = Component(props => {
   const startWidth = 115
-  const waypointWidth = 43
+  const waypointWidth = 60
   const windowWidth = Dimensions.get('window').width
   let finishWidth = 175
+
+  if (!props.course) {
+    return null
+  }
+
   let svgWidth = startWidth + (props.course.waypoints.length - 1) * waypointWidth + finishWidth
 
   if (windowWidth > svgWidth) {
@@ -572,12 +668,18 @@ const WaypointsList = Component(props => {
       const pathData =
         isStart ? 'M132.736 40.158L115.924.5H.5v79.462h115.424z' :
         isFinish ? `M${finishWidth}.372.5H.755l16.936 39.926L.755 80h${finishWidth}.617z` :
-        'M60.367 40.158L43.555.5H.755l16.826 39.658-16.826 39.8h42.8z'
+        'M77 40.158 L60 .5 H.755 l17 39.658 l-17 39.8 h60 z'
       const textTransform = `translate(${isStart ? 43 : isFinish ? 65 : 37}, 47)`
       const textAnchor = isStart || isFinish ? 'start' : 'middle'
-      const onPressOut = () => waypoint.isAdd ?
-        props.addWaypoint({ index, id: uuidv4() }) :
-        props.selectWaypoint(waypoint.id)
+      const x = isStart || isFinish ? 0 : 17/2
+      const onPressOut = () => {
+        if (waypoint.isAdd) {
+          props.addWaypoint({ index, id: uuidv4() })
+        } else {
+          props.selectWaypoint(waypoint.id)
+        }
+        props.setSelectedPositionType(null)
+      }
 
       return compose(
         svgGroup({
@@ -592,7 +694,7 @@ const WaypointsList = Component(props => {
         ifElse(
           always(waypoint.isAdd),
           always(svgPath.contramap(always({
-            d: 'M34.026 52.098v-10.5h-10.5v-3h10.5v-10.5h3v10.5h10.5v3h-10.5v10.5z',
+            d: 'M42.526 52.098 v-10.5 h-10.5 v-3 h10.5 v-10.5 h3 v10.5 h10.5 v3h -10.5 v10.5 z',
             fill: '#fff'
           }))),
           svgText({
@@ -600,6 +702,7 @@ const WaypointsList = Component(props => {
             fill: '#fff',
             fontSize: 18,
             textAnchor,
+            x,
             fontFamily: 'SFProDisplay-Bold',
             letterSpacing: '.016em'
           })))(
@@ -614,10 +717,63 @@ const LoadingIndicator = Component((props: any) => compose(
   view({ style: styles.loadingContainer }))(
   text({ style: styles.loadingText }, I18n.t('caption_course_creator_loading'))))
 
+const saveCourse = (props: any) => () => {
+  const handleSave = () => {
+    props.navigateBackFromCourseCreation({ navigation: props.navigation })
+  }
+  Keyboard.dismiss()
+  setTimeout(() => handleSave(), 50)
+}
+
+const withOnNavigationBackPress = withHandlers({
+  onNavigationCancelPress: (props: any) => () => {
+    if (props.hasCourseChanged) {
+      Alert.alert(I18n.t('caption_leave'), '',
+      [ { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
+      { text: I18n.t('button_no'), onPress: () => {} }])
+    } else {
+      props.navigation.goBack()
+    }
+  },
+  onNavigationSavePress: saveCourse,
+  onNavigationBackButtonPress: (props: any) => () => {
+    if (props.hasCourseChanged) {
+      Alert.alert(I18n.t('caption_unsaved_changes'), '',
+        [ { text: I18n.t('button_save'), onPress: saveCourse(props)},
+      { text: I18n.t('button_dont_save'), onPress: () => props.navigation.goBack() }])
+    } else {
+      props.navigation.goBack()
+    }
+    return true
+  },
+
+})
+
 const NavigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onDidBlur: (payload: any) => (!payload || !payload.state) && props.navigateBackFromCourseCreation()
+    onWillBlur: (payload: any) => {
+      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
+      props.stopLocalLocationUpdates()
+    },
+    onWillFocus: (payload: any) => {
+      props.startLocalLocationUpdates()
+    },
+    onDidFocus: (payload: any) => {
+      BackHandler.addEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
+      props.navigation.setOptions({
+        headerRight: HeaderSaveTextButton({
+          onPress: () => {
+            props.onNavigationSavePress()
+          }
+        }),
+        headerLeft: HeaderCancelTextButton({
+          onPress: () => {
+            props.onNavigationCancelPress()
+          }
+        })
+      })
+    }
   })),
   fromClass)(
   NavigationEvents))
@@ -632,13 +788,15 @@ export default Component((props: object) =>
       selectWaypoint, removeWaypoint, selectMarkConfiguration, addWaypoint,
       toggleSameStartFinish, updateWaypointName, updateWaypointShortName,
       updateMarkConfigurationName, updateMarkConfigurationShortName, updateWaypointPassingInstruction,
-      changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
+      updateWaypoint, changeWaypointToNewMark, changeWaypointToNewLine, updateMarkConfigurationLocation,
       assignMarkOrMarkPropertiesToMarkConfiguration, replaceWaypointMarkConfiguration,
-      changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation }, null,
+      changeWaypointMarkConfigurationToNew, navigateBackFromCourseCreation,
+      startLocalLocationUpdates, stopLocalLocationUpdates, updateMarkPosition }, null,
       { areStatePropsEqual: (next, prev) => compose(
           apply(equals),
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(
           [next, prev]) }),
+    withOnNavigationBackPress,
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true, contentContainerStyle: { flexGrow: 1 } }),
     reduce(concat, nothing()))(
     [ NavigationBackHandler,

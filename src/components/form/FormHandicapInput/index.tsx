@@ -5,7 +5,7 @@ import SwitchSelector from 'react-native-switch-selector'
 import { WrappedFieldProps } from 'redux-form'
 
 import FormTextInput from 'components/form/FormTextInput'
-import { getDefaultHandicapType, HandicapTypes } from 'models/TeamTemplate'
+import { convertHandicapValue, getDefaultHandicapType, HandicapTypes, getAllowedHandicapValue } from 'models/TeamTemplate'
 
 import styles from './styles'
 import { $primaryActiveColor, $primaryBackgroundColor } from 'styles/colors'
@@ -59,6 +59,7 @@ class FormHandicapInput extends React.Component<
         <FormTextInput
           {...this.getHandicapValueProps()}
           keyboardType="numeric"
+          onBlurWithoutText={true}
         />
       </View>
     )
@@ -69,36 +70,32 @@ class FormHandicapInput extends React.Component<
     return index === -1 ? 0 : index
   }
 
-  private convertHandicapValue = (fromType: HandicapTypes, toType: HandicapTypes, value?: string) => {
-    if (!value) {
-      return value
-    }
-
-    const handicapValueFloat = parseFloat(value.replace(',', '.'))
-    if (fromType === HandicapTypes.Yardstick && toType === HandicapTypes.TimeOnTime ||
-        fromType === HandicapTypes.TimeOnTime && toType === HandicapTypes.Yardstick) {
-      return (+(100 / handicapValueFloat).toFixed(1)).toString()
-    }
-
-    return value
-  }
-
   private getHandicapTypeProps = () => {
     const {
       input: { value: inputValue , onChange },
     } = this.props
 
-    const { handicapType = getDefaultHandicapType() } = inputValue
+    const { handicapType = getDefaultHandicapType(),
+            handicapTypeRaw,
+            handicapValueRaw
+          } = inputValue
 
     const handicapTypeOnChange = (value: any) =>
+    {
+      const hasRawValues = handicapValueRaw !== undefined && handicapTypeRaw !== undefined
       onChange({
         handicapType: value,
-        handicapValue: this.convertHandicapValue(
+        handicapValue: hasRawValues && value === handicapTypeRaw ?
+          getAllowedHandicapValue(value, handicapValueRaw) :
+          getAllowedHandicapValue(value, convertHandicapValue(
           handicapType,
           value,
-          inputValue.handicapValue,
-        ),
+          hasRawValues && handicapType === handicapTypeRaw ? handicapValueRaw : inputValue.handicapValue,
+        )),
+        handicapTypeRaw: hasRawValues ? handicapTypeRaw : handicapType,
+        handicapValueRaw: hasRawValues ? handicapValueRaw : inputValue.handicapValue
       })
+    }
 
     return {
       value: handicapType,
@@ -118,14 +115,16 @@ class FormHandicapInput extends React.Component<
         value === '' ? undefined : value.replace(/[^0-9,.]/g, '')
       onChange({
         handicapType: inputValue.handicapType,
-        handicapValue: numericValue,
+        handicapValue: getAllowedHandicapValue(inputValue.handicapType, numericValue),
+        handicapValueRaw: getAllowedHandicapValue(inputValue.handicapType, numericValue),
+        handicapTypeRaw: inputValue.handicapType
       })
     }
 
     return {
       ...this.props,
       input: {
-        value: handicapValue,
+        value: getAllowedHandicapValue(inputValue.handicapType, handicapValue),
         onChange: handicapValueOnChange,
         ...restInputProps,
       },

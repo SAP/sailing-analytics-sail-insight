@@ -1,12 +1,12 @@
-import { __, always, append, compose, concat, defaultTo,
-  equals, ifElse, isEmpty, isNil, map, merge, not, apply, unapply,
-  objOf, prop, reduce, uncurryN, unless, when, dissocPath, path, addIndex,
-  gte, allPass
+import { __, always, append, compose, concat, cond, defaultTo,
+  equals, isEmpty, isNil, map, merge, not, apply, unapply,
+  objOf, prop, reduce, uncurryN, T, unless, when, dissocPath, path, addIndex,
+  gte, allPass, propEq
 } from 'ramda'
-import { Alert, Dimensions, TouchableHighlight } from 'react-native'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
-import { selectRace, setRaceTime, startTracking, setDiscards, updateEventSettings } from 'actions/events'
+import { selectRace, setRaceTime, startTracking, setDiscards, updateEventSettings, startPollingSelectedEvent, stopPollingSelectedEvent } from 'actions/events'
+import { registerAppStateListeners, unregisterAppStateListeners } from 'actions/appState'
 import { openTrackDetails } from 'actions/navigation'
 import {
   Component,
@@ -16,6 +16,8 @@ import {
   nothingAsClass,
   recomposeBranch as branch,
   recomposeMapProps as mapProps,
+  recomposeLifecycle as lifeCycle,
+  recomposeWithState as withState,
   reduxConnect as connect,
 } from 'components/fp/component'
 import { forwardingPropsFlatList, text, touchableOpacity, view } from 'components/fp/react-native'
@@ -26,7 +28,7 @@ import { dateShortText, dateTimeShortHourText } from 'helpers/date'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
-import DatePicker from 'react-native-datepicker'
+import DateTimePicker from 'react-native-modal-datetime-picker'
 import { getCourseById, getCourseSequenceDisplay } from 'selectors/course'
 import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
 import { isNetworkConnected } from 'selectors/network'
@@ -48,6 +50,8 @@ const getRaceStartTime = compose(
   defaultTo({}),
   prop('raceTime'))
 
+const nothingIfNoCourseDefined = branch(compose(propEq('courseDefined', false), prop('item')), nothingAsClass)
+
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 
 const nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent = branch(
@@ -66,10 +70,6 @@ const nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent = branch(
   ]),
   nothingAsClass
 )
-const nothingIfCantUpdateAndNotTracking = branch(
-  (props: any) => !props.canUpdateCurrentEvent && !props.isTracking,
-  nothingAsClass
-)
 
 const nothingIfRaceTimeNotSet = branch(
   compose(
@@ -79,6 +79,27 @@ const nothingIfRaceTimeNotSet = branch(
   ),
   nothingAsClass
 )
+
+const withDateTimePickerName = withState('dateTimePickerName', 'setDateTimePickerName', null)
+
+const withPollingOfEvent = compose(
+  lifeCycle({
+    componentDidMount() {
+      // add only for competitor screen
+      if (!this.props.canUpdateCurrentEvent) {
+        this.props.navigation.addListener('focus',
+          () => {
+            this.props.registerAppStateListeners()
+            this.props.startPollingSelectedEvent()
+          })
+        this.props.navigation.addListener('blur',
+          () => {
+            this.props.unregisterAppStateListeners()
+            this.props.stopPollingSelectedEvent()
+          })
+      }
+    }
+  }))
 
 const mapStateToProps = (state: any, props: any) => {
   const eventData = getSelectedEventInfo(state)
@@ -130,7 +151,7 @@ const raceNumberSelector = Component((props: any) =>
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       selectedValue: props.numberOfRaces,
-      onValueChange: v => props.updateEventSettings(props.session, { numberOfRaces: v }),
+      onValueChange: value => value && props.updateEventSettings(props.session, { numberOfRaces: value })
     }))(
     FramedNumber.contramap(always({ value: props.numberOfRaces }))))
 
@@ -147,6 +168,16 @@ const arrowRight = icon({
   iconTintColor: arrowColor
 })
 
+const editIcon = Component((props: any) => compose(
+  fold(props),
+  view({style: styles.editIconContainerStyle})
+  )(icon({ 
+    source: Images.actions.penEdit, 
+    iconStyle: styles.iconEditStyle,
+    iconTintColor: arrowColor
+  }))
+)
+
 const defineLayoutButton = Component((props: any) =>
   compose(
     fold(props),
@@ -161,7 +192,8 @@ const defineLayoutButton = Component((props: any) =>
       text({ style: styles.defineCourseText },
         props.item.courseDefined ? props.item.sequenceDisplay :
         !props.canUpdateCurrentEvent ? I18n.t('caption_course_not_defined'):
-        I18n.t('caption_define_course'))
+        I18n.t('caption_define_course')),
+      nothingIfNoCourseDefined(editIcon)
     ]))
 
 const raceAnalyticsButton = Component((props: any) =>
@@ -169,27 +201,16 @@ const raceAnalyticsButton = Component((props: any) =>
     fold(props),
     view({ style: styles.sapAnalyticsContainer }),
     touchableOpacity({
-      onPress: ifElse(
-        always(props.isTracking),
-        () => props.openTrackDetails(props.item, props.navigation),
-        async () => {
-          const startTracking = await new Promise(resolve =>
-            Alert.alert('', I18n.t('text_entry_open_SAP_Analytics_button'),
-              [
-                { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
-                { text: I18n.t('caption_close_entry'), onPress: () => resolve(true) }
-              ]
-            )
-          )
-
-          if (startTracking) {
-            await props.startTracking(props.session)
-            props.openTrackDetails(props.item, props.navigation)
-          }
-        }
-      )
+      onPress: cond([
+        [always(!props.isNetworkConnected), showNetworkRequiredSnackbarMessage],
+        [always(props.isTracking), () => props.openTrackDetails(props.item, props.navigation)],
+        [T, async () => {
+          await props.startTracking(props.session)
+          props.openTrackDetails(props.item, props.navigation)
+        }]
+      ])
     }))(
-    text({ style: styles.sapAnalyticsButton }, 'Go to SAP Analytics'.toUpperCase())))
+    text({ style: styles.sapAnalyticsButton }, I18n.t('caption_go_to_sap_analytics').toUpperCase())))
 
 const clockIcon = Component((props: any) => compose(
   fold(props),
@@ -201,66 +222,45 @@ const clockIcon = Component((props: any) => compose(
   }))
 )
 
+const raceTimePickerComponent = fromClass(DateTimePicker).contramap((props: any) => ({
+  onConfirm: (value: number) => {
+    props.setDateTimePickerName(null)
+    if (!props.isTracking) {
+      props.startTracking(props.session)
+    }
+    return props.setRaceTime({
+      race: props.item.name,
+      raceTime: props.item.raceTime,
+      value
+    })
+  },
+  onCancel: () => {
+    props.setDateTimePickerName(null)
+  },
+  date: new Date(moment(getRaceStartTime(props.item) || new Date())),
+  diplay: 'spinner',
+  mode: 'datetime',
+  confirmTextIOS: I18n.t('caption_confirm'),
+  cancelTextIOS: I18n.t('caption_cancel'),
+  isVisible: props.dateTimePickerName === props.item.name,
+}))
 
-const raceTimePickerTouchableHighlight = ({ isNetworkConnected, isTracking, canUpdateCurrentEvent }: any) => fromClass(
-  TouchableHighlight
-).contramap((props: any) => merge(props, {
-  onPress: async (args: any) => {
-    if (!isNetworkConnected) {
+const raceTimePickerTouchableHighlight = (props: any) => touchableOpacity({
+  onPress: () => {
+    if (!props.isNetworkConnected) {
       showNetworkRequiredSnackbarMessage()
       return
     }
-    if (!isTracking && canUpdateCurrentEvent) {
-      const continueAnyways = await new Promise(resolve =>
-        Alert.alert(
-          '',
-          I18n.t('text_entry_open_when_setting_time'),
-          [
-            { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
-            { text: I18n.t('caption_close_entry'), onPress: () => resolve(true) }
-          ]
-        )
-      )
-
-      if (!continueAnyways) return
-    }
-    return props.onPress(args)
-  }
-}))
-
+    props.setDateTimePickerName(props.item.name)
+  },
+  disabled: !props.canUpdateCurrentEvent,
+})
 
 const raceTimePicker = Component((props: any) => compose(
   fold(props),
+  concat(raceTimePickerComponent),
   view({ style: styles.raceTimeContainer }),
-  concat(__, fromClass(DatePicker).contramap(always({
-    TouchableComponent: raceTimePickerTouchableHighlight(props).fold,
-    onDateChange: (value: number) => {
-      if (!props.isTracking) {
-        props.startTracking(props.session)
-      }
-      return props.setRaceTime({
-        race: props.item.name,
-        raceTime: props.item.raceTime,
-        value
-      })
-    },
-    date: moment(getRaceStartTime(props.item) || new Date()),
-    androidMode: 'spinner',
-    mode: 'datetime',
-    confirmBtnText: I18n.t('caption_confirm'),
-    cancelBtnText: I18n.t('caption_cancel'),
-    hideText: true,
-    disabled: !props.canUpdateCurrentEvent,
-    showIcon: false,
-    style: {position: 'absolute', width: Dimensions.get('window').width / 2 - 30, height: 60, top: 0, left: 0 },
-    customStyles: {
-      dateInput: {
-        height: 60,
-        width: Dimensions.get('window').width / 2 - 30,
-        borderWidth: 0,
-      }
-    },
-  }))),
+  raceTimePickerTouchableHighlight(props),
   view({ style: styles.raceNameTimeContainer }),
   concat(arrowRight),
   concat(clockIcon),
@@ -281,7 +281,6 @@ const raceItem = Component((props: object) =>
     concat(__,
       compose(
         nothingIfRaceTimeNotSet,
-        nothingIfCantUpdateAndNotTracking,
         nothingIfMoreThan10MinutesBeforeStartAndCantUpdateEvent
       )(raceAnalyticsButton)
     ),
@@ -344,10 +343,14 @@ export default Component((props: Object) =>
     fold(props),
     connect(mapStateToProps, {
       selectCourse, selectRace, setRaceTime, startTracking,
-      updateEventSettings, openTrackDetails, setDiscards }, null,
+      updateEventSettings, openTrackDetails, setDiscards,
+      startPollingSelectedEvent, stopPollingSelectedEvent,
+      registerAppStateListeners, unregisterAppStateListeners }, null,
       { areStatePropsEqual: compose(
         apply(equals),
         unapply(map(dissocPath(['session', 'leaderboard'])))) }),
+    withDateTimePickerName,
+    withPollingOfEvent,
     nothingIfNoSession,
     view({ style: styles.mainContainer }),
     reduce(concat, nothing()))

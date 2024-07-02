@@ -1,24 +1,26 @@
 import { get } from 'lodash'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import KeepAwake from 'react-native-keep-awake'
-import timer from 'react-native-timer'
+import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import { connect } from 'react-redux'
+import { NavigationEvents } from '@react-navigation/compat'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
-import { stopTracking, StopTrackingAction } from 'actions/tracking'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
+import { stopTracking } from 'actions/tracking'
 import { durationText } from 'helpers/date'
 import Logger from 'helpers/Logger'
-import { degToCompass } from 'helpers/physics'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { getBoat } from 'selectors/boat'
-import { getTrackedCheckIn } from 'selectors/checkIn'
+import { getTrackedCheckIn, isLoadingCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
 import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { getMark } from 'selectors/mark'
+import { isNetworkConnected } from 'selectors/network'
 import { getLeaderboardEnabledSetting } from 'selectors/settings'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
@@ -26,6 +28,7 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 import TrackingProperty from 'components/TrackingProperty'
 import TrackingPropertyAutoFit from 'components/TrackingPropertyAutoFit'
+import LeaderboardFetcher from 'containers/session/Leaderboard/LeaderboardFetcher'
 
 import { button, container } from 'styles/commons'
 import styles from './styles'
@@ -37,31 +40,33 @@ import { NavigationScreenProps } from 'react-navigation'
 const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
 
+const Timer = ({ onUpdate }) => {
+  useEffect(() => {
+    let timer = setInterval(onUpdate, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  return null
+}
+
 class Tracking extends React.Component<NavigationScreenProps & {
-  stopTracking: StopTrackingAction,
+  stopTracking: any,
   openLatestRaceTrackDetails: any,
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
-  trackedRank?: number,
+  rank?: number,
   leaderboardEnabled?: boolean,
+  isNetworkConnected: boolean,
+  isLoadingCheckIn?: boolean
 } > {
   public state = {
     isLoading: false,
     durationText: EMPTY_DURATION_TEXT,
     buttonText: I18n.t('caption_stop').toUpperCase(),
-  }
-
-  public componentDidMount() {
-    timer.setInterval(this, 'tracking_timer', this.handleTimerEvent, 1000)
-    KeepAwake.activate()
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackButton)
-  }
-
-  public componentWillUnmount() {
-    timer.clearInterval(this)
-    KeepAwake.deactivate()
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
+    stoppingFailed: false,
+    isFocused: false
   }
 
   public render() {
@@ -69,8 +74,9 @@ class Tracking extends React.Component<NavigationScreenProps & {
       trackingStats,
       checkInData,
       trackedContextName,
-      trackedRank,
+      rank,
       leaderboardEnabled,
+      isLoadingCheckIn
     } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
@@ -79,15 +85,28 @@ class Tracking extends React.Component<NavigationScreenProps & {
 
     return (
       <ScrollContentView style={[container.main]}>
+        <NavigationEvents
+          onWillFocus={() => {
+            BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+            this.setState({ isFocused: true })
+            KeepAwake.activate()
+          }}
+          onWillBlur={() => {
+            BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
+            this.setState({ isFocused: false })
+            KeepAwake.deactivate()
+          }}
+        />
+        <LeaderboardFetcher rankOnly />
         <ConnectivityIndicator style={styles.connectivity}/>
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}
         <View style={styles.container}>
           <View style={styles.propertyReverseRow}>
-            <TouchableOpacity onPress={() => this.props.openLatestRaceTrackDetails(this.props.navigation)}>
+            <TouchableOpacity onPress={this.handleSapButton}>
               <View style={{ justifyContent: 'flex-end' }}>
                 <Image
                   style={styles.tagLine}
-                  source={Images.defaults.sap_logo}
+                  source={Images.defaults.sap_logo_insights}
                 />
               </View>
             </TouchableOpacity>
@@ -98,7 +117,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
                 valueStyle={styles.rankText}
                 iconStyle={styles.rankIcon}
                 title={I18n.t('text_tracking_rank')}
-                value={`${trackedRank || EMPTY_VALUE}`}
+                value={`${rank || EMPTY_VALUE}`}
                 onPress={this.onLeaderboardPress}
               />
             }
@@ -115,47 +134,32 @@ class Tracking extends React.Component<NavigationScreenProps & {
               />
             </View>
           </View>
-          <View style={styles.propertyRow}>
-            <View style={styles.leftPropertyContainer}>
+          <View style={styles.propertiesTiles}>
+            <View style={styles.propertiesRow}>
               <TrackingProperty
-                style={[styles.measurementContainer, styles.propertyBottom]}
+                style={[styles.measurementContainer, styles.propertyBottom, styles.leftPropertyContainer]}
                 titleStyle={styles.measurementTitle}
                 valueStyle={styles.measurementValue}
                 title={I18n.t('text_tracking_time')}
-                value={this.state.durationText || EMPTY_DURATION_TEXT}
-              />
+                value={this.state.durationText || EMPTY_DURATION_TEXT}/>
               <TrackingProperty
-                style={styles.measurementContainer}
-                titleStyle={styles.measurementTitle}
-                valueStyle={styles.measurementValue}
-                title={I18n.t('text_tracking_distance')}
-                value={distance}
-                unit={I18n.t('text_tracking_unit_meters')}
-              />
-            </View>
-            <View
-              style={styles.rightPropertyContainer}
-            >
-              {
-                !checkInData.isSelfTracking ? null :
-                <TrackingProperty
-                  style={[styles.measurementContainer, styles.propertyBottom]}
-                  titleStyle={styles.measurementTitle}
-                  valueStyle={styles.measurementValue}
-                  iconStyle={styles.windIcon}
-                  title={I18n.t('text_tracking_wind')}
-                  onPress={this.onSetWindPress}
-                  {...this.createWindProps()}
-                />
-              }
-              <TrackingProperty
-                style={[styles.measurementContainer]}
+                style={[styles.measurementContainer, styles.propertyBottom, styles.rightPropertyContainer]}
                 titleStyle={styles.measurementTitle}
                 valueStyle={styles.measurementValue}
                 title={I18n.t('text_tracking_gps_accuracy')}
                 value={`${trackingStats.locationAccuracy || EMPTY_VALUE}`}
-                unit={I18n.t('text_tracking_unit_meters')}
-              />
+                unit={I18n.t('text_tracking_unit_meters')}/>
+            </View>
+            <View style={styles.propertiesRow}>
+              <TrackingProperty
+                style={[styles.measurementContainer, styles.leftPropertyContainer]}
+                titleStyle={styles.measurementTitle}
+                valueStyle={styles.measurementValue}
+                title={I18n.t('text_tracking_distance')}
+                value={distance}
+                unit={I18n.t('text_tracking_unit_meters')}/>
+              <TrackingProperty
+                style={[styles.measurementContainerStub, styles.rightPropertyContainer]}/>
             </View>
           </View>
         </View>
@@ -164,38 +168,50 @@ class Tracking extends React.Component<NavigationScreenProps & {
           style={[button.actionFullWidth, container.largeHorizontalMargin, styles.stopButton]}
           textStyle={button.trackingActionText}
           onPress={this.onStopTrackingPress}
-          isLoading={this.state.isLoading}
-        >
+          isLoading={this.state.isLoading}>
           {this.state.buttonText}
         </TextButton>
+        <SpinnerOverlay visible={isLoadingCheckIn} cancelable={false}/>
+        {this.state.isFocused && <Timer onUpdate={this.handleTimerEvent}/>}
       </ScrollContentView>
     )
   }
 
-  protected handleBackButton = () => {
-    if (this.props.navigation.isFocused()) {
-      return true
-    }
-    else {
-      return false
+  protected handleSapButton = () => {
+    if (!this.props.isNetworkConnected) {
+      showNetworkRequiredSnackbarMessage()
+    } else {
+      this.props.openLatestRaceTrackDetails(this.props.navigation)
     }
   }
 
+  protected handleBackButton = () => true
   protected handleTimerEvent = () => {
     const {trackingStats} = this.props
-    this.setState({durationText: durationText(trackingStats.startedAt)})
+    this.setState({ durationText: durationText(trackingStats.startedAt) })
   }
 
+  protected stopTrackingConfirmationDialog = () => new Promise(resolve =>
+    Alert.alert('', I18n.t('text_tracking_alert_stop_confirmation_message'),
+      [
+        { text: I18n.t('caption_cancel'), onPress: () => resolve(false) },
+        { text: I18n.t('button_yes'), onPress: () => resolve(true) }
+      ],
+      { cancelable: true },
+    )
+  )
+
   protected onStopTrackingPress = async () => {
+    if (!(await this.stopTrackingConfirmationDialog())) {
+      return
+    }
+
     await this.setState({ isLoading: true })
     try {
-      timer.clearInterval(this)
       await this.props.stopTracking(this.props.checkInData)
-      this.props.navigation.goBack()
+      this.props.navigation.navigate(Screens.WelcomeTracking)
     } catch (err) {
       Logger.debug('onStopTrackingPress Error', err)
-      this.setState({ buttonText: I18n.t('caption_resend').toUpperCase() })
-      Alert.alert(I18n.t('error_tracking_resend_info_title'), I18n.t('error_tracking_resend_info_text'))
     } finally {
       this.setState({ isLoading: false })
       Toast.show(I18n.t('text_info_event_finished'), {
@@ -229,17 +245,6 @@ class Tracking extends React.Component<NavigationScreenProps & {
       directionInDeg: trackingStats.lastWindDirection,
     } })
   }
-
-  protected createWindProps() {
-    const { trackingStats } = this.props
-    if (!trackingStats || !trackingStats.lastWindDirection || !trackingStats.lastWindSpeedInKnots) {
-      return { value: I18n.t('caption_set_wind').toUpperCase() }
-    }
-    return {
-      value: `${degToCompass(trackingStats.lastWindDirection)} ${Math.round(trackingStats.lastWindSpeedInKnots)}`,
-      unit: I18n.t('text_tracking_unit_knots'),
-    }
-  }
 }
 
 const mapStateToProps = (state: any) => {
@@ -254,8 +259,10 @@ const mapStateToProps = (state: any) => {
       getMark(checkInData.markId)(state),
       'name',
     ),
-    trackedRank: getTrackedCompetitorLeaderboardRank(state),
+    rank: getTrackedCompetitorLeaderboardRank(state),
     leaderboardEnabled: getLeaderboardEnabledSetting(state),
+    isNetworkConnected: isNetworkConnected(state),
+    isLoadingCheckIn: isLoadingCheckIn(state)
   }
 }
 

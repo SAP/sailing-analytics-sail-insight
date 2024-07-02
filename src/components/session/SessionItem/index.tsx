@@ -1,13 +1,12 @@
 import React from 'react'
 import {
-  TouchableOpacity, View, ViewProps, Animated
+  ActivityIndicator, TouchableOpacity, View, ViewProps, Animated
 } from 'react-native'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { RectButton } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 import Images from '@assets/Images'
 import { OnPressType } from 'helpers/types'
-import I18n from 'i18n'
 import { Session } from 'models'
 
 import SessionInfoDisplay from 'components/session/SessionInfoDisplay'
@@ -21,18 +20,32 @@ class SessionItem extends React.Component<ViewProps & {
   onTrackingPress?: OnPressType,
   archiveEvent: any,
   onItemPress: OnPressType,
-  loading?: boolean
+  loading?: boolean,
+  swipeableLeftOpenEventId: string,
+  onSwipeableLeftWillOpen: any,
+  swipeableReference: any,
 } > {
+
+  constructor(props: any) {
+    super(props)
+  }
+
+  public state = {
+    isArchiving: false,
+  }
+
   public render() {
     const {
       style,
       session,
       loading = false,
+      onSwipeableLeftWillOpen,
     } = this.props
 
-    const archived = session.event && session.event.archived || false
+    const archived = !!session.isArchived
+    const { eventId } = session
 
-    const renderLeftActions = (progress, dragX) => {
+    const renderLeftActions = (_progress: any, dragX: any) => {
       const trans = dragX.interpolate({
         inputRange: [0, 50, 100, 101],
         outputRange: [-20, 0, 0, 1],
@@ -42,11 +55,14 @@ class SessionItem extends React.Component<ViewProps & {
           style={styles.leftAction}
           onPress={() => archived ? this.setArchiveValue(false) : this.setArchiveValue(true)}
         >
-          <Animated.Image
-            style={[styles.actionImage, {transform: [{translateX: trans}]}]}
-            source={Images.events.archive}
-          >
-          </Animated.Image>
+          {this.state.isArchiving ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            <Animated.Image
+              style={[styles.actionImage, { transform: [{ translateX: trans }] }]}
+              source={Images.events.archive}
+            />
+          )}
         </RectButton>
       )
     }
@@ -57,6 +73,8 @@ class SessionItem extends React.Component<ViewProps & {
         overshootLeft={false}
         leftThreshold={50}
         renderLeftActions={renderLeftActions}
+        ref={this.props.swipeableReference}
+        onSwipeableLeftWillOpen={() => onSwipeableLeftWillOpen(eventId)}
       >
       <View style={styles.container}>
           <TouchableOpacity
@@ -75,8 +93,10 @@ class SessionItem extends React.Component<ViewProps & {
     )
   }
 
-  private setArchiveValue = (archived: boolean) => {
-    this.props.archiveEvent(this.props.session, archived)
+  private setArchiveValue = async (archived: boolean) => {
+    this.setState({ isArchiving: true })
+    await this.props.archiveEvent(this.props.session, archived)
+    this.setState({ isArchiving: false })
   }
 }
 

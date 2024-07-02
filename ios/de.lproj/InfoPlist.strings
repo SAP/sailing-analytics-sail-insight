@@ -3,7 +3,7 @@
   sap_sailing_insight
 
   Created by Philipp Pajak on 17.04.19.
-  Copyright © 2019. All rights reserved.
+  Copyright © 2019-2024. All rights reserved.
 */
 NSCameraUsageDescription = "Sail Insight möchte auf deine Kamera zugreifen, um QR-Codes scannen zu können und Teamphotos aufzunehmen. Die Berechtigung wird ausschließlich für diese Funktionalität genutzt.";
 

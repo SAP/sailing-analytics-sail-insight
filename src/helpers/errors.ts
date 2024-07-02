@@ -8,5 +8,6 @@ export const ErrorCodes = {
   NO_BOAT_CLASS: 'error_no_boat_class',
   LEADERBOARD_GROUP_ALREADY_EXISTS: 'error_leaderboard_group_already_exists',
   REGATTA_ALREADY_EXISTS: 'error_regatta_already_exists',
-  LEADERBOARD_ALREADY_EXISTS: 'error_leaderboard_already_exists'
+  LEADERBOARD_ALREADY_EXISTS: 'error_leaderboard_already_exists',
+  DEVICE_ALREADY_EXISTS: 'error_device_already_exists'
 }

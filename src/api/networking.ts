@@ -1,6 +1,6 @@
 import { isString } from 'lodash'
 import querystring from 'query-string'
-import { compose, includes, prop, __, when } from 'ramda'
+import { compose, includes, prop, __, when, merge } from 'ramda'
 
 import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
@@ -10,7 +10,7 @@ import crashlytics from '@react-native-firebase/crashlytics'
 
 import SailInsightMtcpNetwork from 'sail-insight-mtcp-network/index'
 import { getStore } from "../store";
-import { getMtcpAndCommunicationSetting } from "../selectors/settings";
+import { getMtcpSetting } from "../selectors/settings";
 
 const responseHasFatalError = compose(
   includes(__, [400, 404, 405]),
@@ -45,6 +45,7 @@ export interface RequestOptions {
   body?: any,
   bodyType?: BodyType,
   timeout?: number,
+  headers?: any
 }
 
 const getBody = (type: BodyType, body: any) => {
@@ -93,15 +94,18 @@ export const request = async (
 
   const data = body && { body: getBody(bodyType, body) }
 
+  let headers = await getHeaders(url, method, body, bodyType, signer)
+
   const fetchOptions = {
     method,
     timeout,
-    headers: await getHeaders(url, method, body, bodyType, signer),
+    headers: merge(headers, options.headers),
+    credentials: 'omit',
     ...data,
   }
   let response
   try {
-    const mtcpEnabled = getMtcpAndCommunicationSetting(getStore().getState())
+    const mtcpEnabled = getMtcpSetting(getStore().getState())
     if (isPlatformAndroid || !mtcpEnabled) {
       response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
     } else {
@@ -124,7 +128,7 @@ export const request = async (
       )
     } else {
       when(responseHasFatalError, async (response: any) => {
-        const error = await response.text()
+        const error = await response.clone().text()
         crashlytics().setAttribute('status', response.status.toString())
         crashlytics().setAttribute('url', response.url)
         crashlytics().recordError(new Error(error))

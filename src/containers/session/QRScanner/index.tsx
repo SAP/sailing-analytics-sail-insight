@@ -3,19 +3,20 @@ import { Alert, Text, View } from 'react-native'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 import { connect } from 'react-redux'
 
-import { fetchCheckIn, isEventAlreadyJoined } from 'actions/checkIn'
+import { fetchCheckIn } from 'actions/checkIn'
 import Logger from 'helpers/Logger'
+import { showNetworkRequiredAlert } from 'helpers/network'
 import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
 import I18n from 'i18n'
-import { container } from 'styles/commons'
-import styles from './styles'
 import * as Screens from 'navigation/Screens'
 import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
-import { getActiveCheckInEntity } from 'selectors/checkIn'
+import { isNetworkConnected } from 'selectors/network'
+
+import styles from './styles'
 
 class QRScanner extends React.Component<{
   fetchCheckIn: (url: string) => any,
-  activeCheckIns: any,
+  isNetworkConnected: boolean
 } > {
   public state = {
     isLoading: false,
@@ -42,11 +43,9 @@ class QRScanner extends React.Component<{
     this.setState({ isLoading: true })
     try {
       const checkIn = await this.props.fetchCheckIn(url)
-      const activeCheckIns = this.props.activeCheckIns
-      const alreadyJoined = isEventAlreadyJoined(checkIn, activeCheckIns)
 
       this.props.navigation.goBack()
-      this.props.navigation.navigate(Screens.JoinRegatta, { data: { checkInData: checkIn, alreadyJoined } })
+      this.props.navigation.navigate(Screens.JoinRegatta, { data: checkIn })
     } catch (err) {
       Logger.debug(err)
       const title = getErrorTitle()
@@ -72,12 +71,17 @@ class QRScanner extends React.Component<{
     if (!qr || !qr.data) {
       return
     }
+
+    if (!this.props.isNetworkConnected) {
+      showNetworkRequiredAlert()
+      return
+    }
     return this.collectData(qr.data)
   }
 
   public render() {
     return (
-      <View style={container.main}>
+      <View style={styles.container}>
         <QRCodeScanner
           cameraStyle={styles.camera}
           markerStyle={styles.marker}
@@ -98,7 +102,7 @@ class QRScanner extends React.Component<{
 
 const mapStateToProps = (state: any) => {
   return {
-    activeCheckIns: getActiveCheckInEntity(state) || {}
+    isNetworkConnected: isNetworkConnected(state),
   }
 }
 

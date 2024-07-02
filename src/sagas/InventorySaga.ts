@@ -1,5 +1,5 @@
 import { filter, compose, not, __, find, propEq, values,
-  curry, isEmpty } from 'ramda'
+  curry, isEmpty, merge } from 'ramda'
 import { takeLatest, call, put, takeEvery, select, all } from 'redux-saga/effects'
 import { markPropertiesSchema } from 'api/schemas'
 import { LOAD_MARK_PROPERTIES } from 'actions/inventory'
@@ -24,7 +24,7 @@ const defaultMarkProperties = [
   { name: 'Reaching Mark', shortName: 'R', markType: 'BUOY' },
 ]
 
-export function* loadMarkProperties() {
+export function* loadMarkProperties({ payload }: any = { payload: { createMissingDefaultMarkProperties: true }}) {
   const hasUser = yield select(isLoggedIn)
 
   if (!hasUser) return
@@ -38,10 +38,9 @@ export function* loadMarkProperties() {
       compose(not, hasMarkProperties(values(markProperties.entities.markProperties))),
       defaultMarkProperties)
 
-  yield put(removeEntities({ type: 'markProperties' }))
-  yield put(receiveEntities(markProperties))
+  yield put(receiveEntities(merge(markProperties, { replace: true })))
 
-  if (!isEmpty(missingDefaultMarkProperties)) { 
+  if (!isEmpty(missingDefaultMarkProperties) && payload.createMissingDefaultMarkProperties) { 
     const newMarkProperties = yield all(missingDefaultMarkProperties.map(mp => call(api.createMarkProperties, mp)))
 
     yield put(normalizeAndReceiveEntities(newMarkProperties, [markPropertiesSchema]))

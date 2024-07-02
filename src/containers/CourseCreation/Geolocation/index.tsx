@@ -1,7 +1,8 @@
+import { debounce } from 'lodash'
 import { __, compose, concat, reduce, merge, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
   defaultTo, pick, head, tap, of, flatten, init, nth, map, last, negate,
-  equals, reject, all } from 'ramda'
+  equals, reject, all, not } from 'ramda'
 
 import MapView, { Marker } from 'react-native-maps'
 
@@ -10,29 +11,94 @@ import {
   contramap,
   fold,
   fromClass,
+  nothingAsClass,
   nothing,
   reduxConnect as connect,
-  recomposeWithState as withState
+  recomposeWithState as withState,
+  recomposeBranch as branch,
+  recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 
 import { getMarkPositionsExceptCurrent } from 'selectors/course'
-import { updateMarkConfigurationLocation } from 'actions/courses'
+import { updateMarkConfigurationLocation, updateMarkPosition } from 'actions/courses'
 import { view, text } from 'components/fp/react-native'
-import TextInput from 'components/TextInput'
+import TextInputDeprecated from 'components/TextInputDeprecated'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import styles from './styles'
-import { Switch, Platform } from 'react-native'
+import { Switch, Platform, Alert } from 'react-native'
 import { NavigationEvents } from '@react-navigation/compat'
 import { dd2ddm, ddm2dd } from 'helpers/utils'
 import { $Orange, $primaryBackgroundColor, $secondaryBackgroundColor } from 'styles/colors'
+import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
+import I18n from 'i18n'
+
+const hasNoPadding = propEq('mapOffset', 0)
+const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
+
+const trimCoordinates = (coordinate: any) =>
+  coordinate.toFixed(7)
+
+const withNavigationHandlers = withHandlers({
+  onNavigationCancelPress: (props: any) => () => {
+
+    // truncate to 7 significant digits
+    // same coordinates may differ after region is set resulting in incorrect alert shown
+    const coordinatesChanged = compose(
+      not,
+      equals(compose(map(trimCoordinates), reject(isNil), pick(['latitude', 'longitude']), defaultTo({}))(props.region)),
+      map(trimCoordinates),
+      reject(isNil),
+      markPositionToMapPosition,
+      pick(['latitude_deg', 'longitude_deg']),
+      defaultTo({})
+      )(props.markPosition)
+
+    if (coordinatesChanged) {
+      Alert.alert(I18n.t('caption_leave'), '',
+      [ { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
+      { text: I18n.t('button_no'), onPress: () => {} }])
+    } else {
+      props.navigation.goBack()
+    }
+  },
+  onNavigationSavePress: (props: any) => () => {
+    const location = pick(['latitude', 'longitude'], props.region)
+    const markConfigurationId = props.selectedMarkConfiguration
+
+    props.updateMarkConfigurationLocation({
+      id: markConfigurationId,
+      value: location
+    })
+    props.updateMarkPosition({ markConfigurationId, location })
+    props.navigation.goBack()
+  }
+})
+
+// get height of coordinates input
+// use calculated height (half input height + half marker icon height + bottom spacing) to offset marker icon on map so that it looks centered
+// in the remaining space
+// use calculated height to add map padding to show marker on right coordinates
+const onCoordinatesLayout = (props: any, { nativeEvent }: any = {}) => {
+  if (
+    !nativeEvent ||
+    !nativeEvent.layout ||
+    !nativeEvent.layout.height === undefined ||
+    nativeEvent.layout.x === undefined
+  ) {
+    return
+  }
+  const heightInput = nativeEvent.layout.height + nativeEvent.layout.x
+  const offset = heightInput / 2 + 53 + 26.5
+  props.setMapOffset(offset)
+}
 
 const icon = compose(
   fromClass(IconText).contramap,
   always)
 
 const mapStateToProps = (state) => ({
-  otherMarksPositions: getMarkPositionsExceptCurrent(state)
+    otherMarksPositions: getMarkPositionsExceptCurrent(state),
 })
 
 const markerIcon = icon({
@@ -66,10 +132,11 @@ const defaultProps = (props) => ({
 
 const withRegion = withState('region', 'setRegion', prop('region'))
 const withInitialRender = withState('initialRender', 'setInitialRender', true)
+const withMapOffset = withState('mapOffset', 'setMapOffset', 0)
 
 const centeredMarker = Component(props => compose(
   fold(props),
-  view({ style: styles.markerContainer }))(
+  view({ style: [styles.markerContainer, { paddingTop: props.mapOffset }] }))(
   markerIcon))
 
 const Map = Component((props: any) => compose(
@@ -79,6 +146,7 @@ const Map = Component((props: any) => compose(
     fromClass(MapView).contramap(always({
       ...(props.initialRender && { region: props.region }),
       style: styles.map,
+      mapPadding: {top: props.mapOffset, right: 0, bottom: 0, left: 0},
       mapType: 'satellite',
       children: map(marker.fold, props.otherMarksPositions),
       onRegionChange: region => {
@@ -90,10 +158,29 @@ const Map = Component((props: any) => compose(
 const navigationBackHandler = Component((props: any) => compose(
   fold(props),
   contramap(merge({
-    onWillBlur: (payload: any) => (!payload || !payload.state) && props.updateMarkConfigurationLocation({
-      id: props.selectedMarkConfiguration,
-      value: pick(['latitude', 'longitude'], props.region)
-    })
+    onDidFocus: (payload: any) => {
+      props.navigation.setOptions({
+        headerRight: HeaderSaveTextButton({
+          onPress: debounce(() => {
+            props.onNavigationSavePress()
+          }, 500, { leading: true, trailing: false })
+        }),
+        headerLeft: HeaderCancelTextButton({
+          onPress: () => {
+            props.onNavigationCancelPress()
+          }
+        }),
+        headerLeftContainerStyle: {
+          flex: 0.15,
+        },
+        headerRightContainerStyle: {
+          flex: 0.15
+        },
+        headerTitleContainerStyle: {
+          flex: 0.7,
+        }
+      })
+    }
   })),
   fromClass)(
   NavigationEvents))
@@ -106,10 +193,11 @@ const textInput = Component(props => compose(
     containerStyle: styles.inputContainer,
     inputContainerStyle: styles.inputContainer,
     value: props.value,
-    keyboardType: 'number-pad',
-    returnKeyType: 'done'
+    keyboardType: props.decimal ? 'decimal-pad' : 'number-pad',
+    returnKeyType: 'done',
+    selectionColor: 'white'
   })))(
-  fromClass(TextInput)))
+  fromClass(TextInputDeprecated)))
 
 const switchSelector = Component(props => compose(
   fold(props),
@@ -135,6 +223,7 @@ const coordinatesInput = Component((props: any) => compose(
     view({ style: styles.coordinatesControlContainer }),
     reduce(concat, nothing()))([
       textInput.contramap(merge({
+        decimal: false,
         value: defaultTo('', props.degrees),
         inputStyle: { width: 70 },
         onBlur: value => {
@@ -146,6 +235,7 @@ const coordinatesInput = Component((props: any) => compose(
         maxLength: 3 })),
       text({ style: styles.symbolText }, '°'),
       textInput.contramap(merge({
+        decimal: true,
         value: defaultTo('', props.minutes),
         inputStyle: { width: 115 },
         onBlur: value => {
@@ -203,15 +293,22 @@ const longitudeInput = coordinatesInput.contramap(props => merge({
     pick(['latitude', 'longitude']))(props.region),
   switchLabels: ['W', 'E'] }, props))
 
+const coordinatesContainer = Component((props: any) => compose(
+    fold(props),
+    view({ style: styles.coordinatesModalContainer, onLayout: (nativeEvent: any) => onCoordinatesLayout(props, nativeEvent) }),
+    reduce(concat, nothing()))([
+      latitudeInput,
+      longitudeInput
+    ]))
+
 export default Component((props: object) =>
   compose(
     fold(defaultProps(props)),
-    connect(mapStateToProps, { updateMarkConfigurationLocation }),
+    connect(mapStateToProps, { updateMarkConfigurationLocation, updateMarkPosition }),
     withInitialRender,
     withRegion,
+    withMapOffset,
+    withNavigationHandlers,
     concat(navigationBackHandler),
-    concat(Map),
-    view({ style: styles.coordinatesModalContainer }),
-    reduce(concat, nothing()))([
-    latitudeInput,
-    longitudeInput]))
+    concat(nothingWhenNoPadding(Map)),
+    )(coordinatesContainer))

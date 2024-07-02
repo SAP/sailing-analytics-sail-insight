@@ -1,59 +1,61 @@
 import EStyleSheets from 'react-native-extended-stylesheet'
-import { withSecondaryHeavyFont } from 'styles/compositions/text'
 
 export default EStyleSheets.create({
-  $sideMargin: 24,
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: 'transparent',
-  },
-  textContainer: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    flexGrow: 2,
-    display: 'flex',
-    marginTop: 80,
-    marginLeft: 20,
-    paddingTop: 60,
-    alignItems: 'flex-start',
-  },
-  title: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    ...withSecondaryHeavyFont,
-    textTransform: 'uppercase',
-    marginBottom: '$largeSpacing',
-  },
-  bottomContainer: {
-    flexGrow: 0,
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  bigButton: {
-    marginBottom: '$smallSpacing',
-  },
-  bigButtonWhite: {
-    alignSelf: 'stretch',
-    height: 56,
-    borderRadius: '$baseBorderRadius',
-    marginBottom: '$smallSpacing',
-    backgroundColor: 'white',
-    borderColor: 'white',
-    borderWidth: 1,
-  },
-  bigButtonText: {
-    color: 'white',
-    fontSize: 24,
-    ...withSecondaryHeavyFont,
-  },
-  bigButtonTextInverse: {
-    color: '#1D3F4E',
-    fontSize: 24,
-    ...withSecondaryHeavyFont,
-  },
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'transparent',
+        height: '100%',
+        width: '100%',
+    },
+    scrollContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '$siTransparent',
+    },
+    contentContainer: {
+        flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: '$siGutter',
+        marginTop: '$siStatusBarHeight',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    h1: {
+        marginTop: 168
+    },
+    bottomContainer: {
+        flexGrow: 0,
+        alignSelf: 'stretch',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    startTrackingButton: {
+        marginTop: '$siBaseSpacing * 2',
+        marginBottom: '$siBaseSpacing * 1'
+    },
+    scanQRCodeButton: {
+        marginTop: '$siBaseSpacing * 1',
+        marginBottom: '$siBaseSpacing * 3'
+    },
+    forgotPasswordLink: {
+        textAlign: 'left'
+    },
+    automaticTimeNotice: {
+      flexDirection: 'row',
+      alignSelf: 'stretch',
+      backgroundColor: '#BE5246',
+      padding: 10,
+      borderRadius: 4,
+    },
+    automaticTimeNoticeText: {
+      color: 'white',
+      fontSize: 15,
+      paddingRight: 30
+    },
+    attentionIcon: {
+      marginTop: 2,
+      marginRight: 5
+    }
 })

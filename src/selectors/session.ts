@@ -1,5 +1,5 @@
-import { isEmpty, orderBy, values } from 'lodash'
-import { isNil } from 'ramda'
+import { isEmpty, orderBy, reverse, values } from 'lodash'
+import { always, compose, isNil, reject, unless, when } from 'ramda'
 import { createSelector } from 'reselect'
 
 import { CheckIn, Session } from 'models'
@@ -18,7 +18,7 @@ import { getBoatEntity } from './boat'
 import { getActiveCheckInEntity, getCheckInByLeaderboardName } from './checkIn'
 import { getCompetitorEntity } from './competitor'
 import { getEventEntity } from './event'
-import { getLeaderboardEntity } from './leaderboard'
+import { getLeaderboardEntity, isLeaderboardFinished } from './leaderboard'
 import { getMarkEntity } from './mark'
 import { getRegattaEntity } from './regatta'
 
@@ -36,7 +36,7 @@ const buildSession = (
   if (isNil(checkIn)) {
     return null
   }
-  
+
   const result: Session = { ...checkIn }
 
   result.event = eventEntity && mapResToEvent(eventEntity[checkIn.eventId])
@@ -53,6 +53,7 @@ const buildSession = (
   // result.regattaStrippedDisplayName = '',
   result.boat = boatEntity && checkIn.boatId ? mapResToBoat(boatEntity[checkIn.boatId]) : undefined
   result.mark = markEntity && checkIn.markId ? mapResToMark(markEntity[checkIn.markId]) : undefined
+  result.isFinished = isLeaderboardFinished(result.leaderboardName, Object.values(leaderboardEntity))
   return result
 }
 
@@ -80,7 +81,7 @@ export const getSessionList = createSelector(
       return []
     }
     return orderBy(
-      values(activeCheckIns).map(checkIn => buildSession(
+      reverse(values(activeCheckIns).map(checkIn => buildSession(
         checkIn,
         eventEntity,
         leaderboardEntity,
@@ -89,7 +90,7 @@ export const getSessionList = createSelector(
         boatEntity,
         markEntity,
         userInfo,
-      )),
+      ))),
       ['event.startDate'],
       ['desc'],
     )
@@ -127,29 +128,21 @@ export const getSession = (leaderboardName: string) => createSelector(
 )
 
 
-export const isSessionListEmpty = createSelector(
-  getSessionList,
-  (checkInList: any[]) => isEmpty(checkInList),
-)
-
-export const getFilteredSessionList = createSelector(
+export const getFilteredSessionList = (forTracking: any) => createSelector(
   getSessionList,
   getActiveEventFilters,
-  (sessions: Session[], filters: EventFilter[]) => {
-    let filteredSessions = sessions
+  (sessions: Session[], filters: EventFilter[]) => compose(
+    when(
+      always(forTracking),
+      reject((session: any) => session.isFinished)),
+    unless(
+      always(filters.includes(EventFilter.Archived)),
+      reject((session: Session) => !!session.isArchived)),
+    unless(
+      always(filters.includes(EventFilter.All)),
+      reject((session: Session) => !session.isArchived)))(
+    sessions))
 
-    if (!filters.includes(EventFilter.All)) {
-      filteredSessions = filteredSessions.filter(
-        (session: Session) => session.event ? session.event.archived : false
-      )
-    }
-
-    if (!filters.includes(EventFilter.Archived)) {
-      filteredSessions = filteredSessions.filter(
-        (session: Session) => session.event ? !session.event.archived : true
-      )
-    }
-
-    return filteredSessions
-  },
-)
+export const isSessionListEmpty = forTracking => createSelector(
+  getFilteredSessionList(forTracking),
+  (checkInList: any[]) => isEmpty(checkInList))

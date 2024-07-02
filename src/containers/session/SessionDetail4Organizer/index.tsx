@@ -1,14 +1,17 @@
 import { __, compose, concat, curry, merge, reduce, toUpper, propEq,
-  prop, isNil, equals, both } from 'ramda'
+  prop, isNil, equals } from 'ramda'
 import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
-import { startTracking, stopTracking } from 'actions/events'
+import { fetchRegattaCompetitors } from 'actions/regattas'
+import { stopTracking } from 'actions/events'
+import { startTracking } from 'actions/tracking'
+import { updateShowCopyResultsDisclaimer, updateShowEditResultsDisclaimer } from 'actions/uiState'
 import * as Screens from 'navigation/Screens'
 import { isCurrentLeaderboardTracking, isCurrentLeaderboardFinished } from 'selectors/leaderboard'
-import { isNetworkConnected } from 'selectors/network'
-import { isStartingTracking } from 'selectors/event'
-import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { getTrackedEventId } from 'selectors/location'
+import { editResultsUrl } from 'services/CheckInService'
+import { alertPromise } from 'helpers/utils'
 import { Component, fold, nothing,
   reduxConnect as connect,
   recomposeBranch as branch,
@@ -20,13 +23,30 @@ import { Alert } from 'react-native'
 import { container } from 'styles/commons'
 import styles from './styles'
 import { mapStateToSessionDetailsProps } from '../SessionDetail'
-import { qrCode, inviteCompetitorsButton, joinAsCompetitorButton } from '../../session/common'
+import {
+  qrCode,
+  inviteCompetitorsButton,
+  joinAsCompetitorButton,
+  competitorList,
+  withCompetitorListState,
+  competitorListRefreshHandler,
+  startTrackingButton,
+  shareEventButton,
+} from '../../session/common'
+import { getLastPlannedRaceTime } from 'selectors/regatta'
+import { shouldShowCopyResultsDisclaimer, shouldShowEditResultsDisclaimer } from 'selectors/uiState'
+import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
+import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { showUnknownErrorSnackbarMessage } from 'helpers/errors'
+import Clipboard from '@react-native-community/clipboard'
+import Snackbar from 'react-native-snackbar'
 
-const nothingWhenTracking = branch(propEq('isTracking', true), nothingAsClass)
 const nothingWhenFinished = branch(propEq('isFinished', true), nothingAsClass)
-const nothingWhenEntryIsOpen = branch(both(propEq('isTracking', false), propEq('isFinished', false)), nothingAsClass)
+// If we change this we need to make sure that the stopTracking function in the EventsSaga sets the tracking end time on the correct race
+const nothingWhenBeforeLastPlannedRaceStartTime = branch(propEq('isBeforeLastPlannedRaceStartTime', true), nothingAsClass)
 const nothingWhenNoBoatClass = branch(compose(equals(''), prop('boatClass')), nothingAsClass)
 const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
+const nothingIfCurrentUserIsNotACompetitor = branch(propEq('currentUserIsCompetitorForEvent', false), nothingAsClass)
 
 const styledButton = curry(({ onPress, style }, content: any) => Component((props: any) => compose(
   fold(props),
@@ -38,12 +58,27 @@ const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClas
 const mapStateToProps = (state: any, props: any) => {
   const sessionData = mapStateToSessionDetailsProps(state, props)
 
+  const lastPlannedRaceTime = getLastPlannedRaceTime(sessionData?.session?.leaderboardName, sessionData?.session?.regattaName)(state)
+
+  const isBeforeLastPlannedRaceStartTime = lastPlannedRaceTime
+    ? Date.now() < lastPlannedRaceTime
+    : true
+
+  const isBeforeEventStartTime =
+    (sessionData.session?.event?.startDate || new Date(0)) > Date.now()
+
+  const isTrackingEvent = sessionData.session?.eventId === getTrackedEventId(state)
+
   return {
     ...sessionData,
+    isTrackingEvent,
+    isBeforeLastPlannedRaceStartTime,
     isTracking: isCurrentLeaderboardTracking(state),
     isFinished: isCurrentLeaderboardFinished(state),
-    isStartingTracking: isStartingTracking(state),
-    isNetworkConnected: isNetworkConnected(state),
+    isEventOrganizer: true,
+    showEditResultsDisclaimer: shouldShowEditResultsDisclaimer(state),
+    showCopyResultsDisclaimer: shouldShowCopyResultsDisclaimer(state),
+    isNetworkConnected: isNetworkConnectedSelector(state)
   }
 }
 
@@ -52,19 +87,8 @@ const sessionData = {
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
 
-const closeEntry = (props: any) => {
-  if (!props.isNetworkConnected) {
-    showNetworkRequiredSnackbarMessage()
-    return
-  }
-  Alert.alert(I18n.t('caption_start_tracking'), I18n.t('text_alert_for_start_tracking'), [
-    { text: I18n.t('button_yes'), onPress: () => props.startTracking(props.session) },
-    { text: I18n.t('button_no') },
-  ])
-}
-
 const endEvent = (props: any) => {
-  Alert.alert(I18n.t('caption_end_event'), I18n.t('text_tracking_alert_stop_confirmation_message'), [
+  Alert.alert(I18n.t('caption_end_event'), I18n.t('text_end_event_alert_message'), [
     { text: I18n.t('button_yes'), onPress: () => props.stopTracking(props.session) },
     { text: I18n.t('button_no') },
   ])
@@ -95,10 +119,9 @@ export const sessionDetailsCard = Component((props: any) => compose(
 
 export const defineRacesCard = Component((props: any) => compose(
     fold(props),
-    concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
-    view({ style: styles.container3 }),
+    concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
+    view({ style: styles.container2 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '2'),
     text({ style: styles.headline }, I18n.t('caption_define').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
       props.isTracking || props.isFinished ?
@@ -109,36 +132,56 @@ export const defineRacesCard = Component((props: any) => compose(
     },text({ style: styles.buttonContent }, toUpper(props.racesButtonLabel)))
   ]))
 
+const editResultsButton = Component((props: any) => compose(
+  fold(props),
+  textButton({
+    onPress: async (props: any) => {
+      if (props.showEditResultsDisclaimer) {
+        const stopShowing = !(await alertPromise('', I18n.t('text_edit_results_disclaimer'), 'OK', I18n.t('caption_dont_show_again')))
+        if (stopShowing) { props.updateShowEditResultsDisclaimer(false) }
+      }
+      props.navigation.navigate(Screens.EditResults, { data: { url: editResultsUrl(props.session) } })
+    },
+    style: [styles.button],
+    textStyle: styles.buttonContent,
+  }))(text({}, I18n.t('caption_edit_results').toUpperCase())))
+
+const copyEditLinkToClipboardButton = Component((props: any) => compose(
+  fold(props),
+  textButton({
+  onPress: async (props: any) => {
+    if (props.showCopyResultsDisclaimer) {
+      const stopShowing = !(await alertPromise('', I18n.t('text_copy_results_disclaimer'), 'OK', I18n.t('caption_dont_show_again')))
+      if (stopShowing) { props.updateShowCopyResultsDisclaimer(false) }
+    }
+    Clipboard.setString(editResultsUrl(props.session))
+    setTimeout(() => Snackbar.show({
+      text: I18n.t('text_link_copied_to_clipboard'),
+      duration: Snackbar.LENGTH_SHORT
+    }), 300) // For some reason doesn't work without the timeout when there's an await in the surrounding function
+  },
+  style: [styles.button],
+  textStyle: styles.buttonContent }))(
+  text({}, I18n.t('caption_copy_edit_results_to_clipboard').toUpperCase())))
+
 export const inviteCompetitorsCard = Component((props: any) => compose(
     fold(props),
-    concat(__, view({ style: styles.containerAngledBorder2 }, nothing())),
-    view({ style: styles.container2 }),
+    concat(__, view({ style: styles.containerAngledBorder3 }, nothing())),
+    view({ style: styles.container3 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '1'),
     text({ style: styles.headline }, I18n.t('caption_invite').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] },
-      props.isTracking || props.isFinished ?
+      props.isFinished ?
       I18n.t('text_invite_competitors_long_text_running') :
       I18n.t('text_invite_competitors_long_text_planning')),
-    nothingWhenFinished(nothingWhenTracking(inviteCompetitorsButton)),
-    nothingWhenFinished(nothingWhenTracking(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton))),
-    nothingWhenFinished(nothingWhenTracking(qrCode))
-  ]))
-
-export const closeEntryCard = Component((props: any) => compose(
-    fold(props),
-    concat(__, view({ style: styles.containerAngledBorder4 }, nothing())),
-    view({ style: styles.container4 }),
-    reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '3'),
-    text({ style: styles.headline }, I18n.t('caption_close').toUpperCase()),
-    text({ style: [styles.textExplain, styles.textLast] }, I18n.t('text_close_entry_long_text')),
-    textButton({
-      onPress: (props: any) => closeEntry(props),
-      style: styles.buttonBig,
-      isLoading: props.isStartingTracking,
-      preserveShapeWhenLoading: true
-    },text({ style: styles.buttonBigContent }, I18n.t('caption_close_entry').toUpperCase()))
+    nothingWhenFinished(inviteCompetitorsButton),
+    nothingWhenFinished(nothingIfCurrentUserIsCompetitor(joinAsCompetitorButton)),
+    shareEventButton,
+    nothingIfCurrentUserIsNotACompetitor(startTrackingButton),
+    nothingWhenFinished(qrCode),
+    competitorList,
+    editResultsButton,
+    copyEditLinkToClipboardButton
   ]))
 
 export const endEventCard = Component((props: any) => compose(
@@ -146,28 +189,36 @@ export const endEventCard = Component((props: any) => compose(
     concat(__, view({ style: styles.containerAngledBorder4 }, nothing())),
     view({ style: styles.container4 }),
     reduce(concat, nothing()))([
-    text({ style: styles.headlineTop }, '3'),
     text({ style: styles.headline }, I18n.t('caption_end').toUpperCase()),
     text({ style: [styles.textExplain, styles.textLast] }, !props.trackingStopped ? I18n.t('text_end_event_long_text_running') : I18n.t('text_end_event_long_text_finished')),
     nothingWhenFinished(
     textButton({
       onPress: (props: any) => endEvent(props),
       style: styles.buttonBig,
-    },text({ style: styles.buttonBigContent }, I18n.t('caption_end_event').toUpperCase())))
+      textStyle: styles.buttonBigContent,
+    },text({}, I18n.t('caption_end_event').toUpperCase())))
   ]))
+
 
 export default Component((props: any) => compose(
     fold(merge(props, sessionData)),
-    connect(mapStateToProps, { 
-      checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta
-    }),
-    scrollView({ style: styles.container }),
+    connect(
+      mapStateToProps,
+      { checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta,
+        fetchRegattaCompetitors, updateShowCopyResultsDisclaimer, updateShowEditResultsDisclaimer },
+      null,
+      {
+        pure: true,
+        areStatePropsEqual: equals
+      }),
+    scrollView({ style: styles.container, nestedScrollEnabled: true }),
     nothingIfNoSession,
+    withCompetitorListState,
     view({ style: [container.list, styles.cardsContainer] }),
     reduce(concat, nothing()))([
+    competitorListRefreshHandler,
     sessionDetailsCard,
-    inviteCompetitorsCard,
     defineRacesCard,
-    nothingWhenFinished(nothingWhenTracking(closeEntryCard)),
-    nothingWhenFinished(nothingWhenEntryIsOpen(endEventCard))
+    inviteCompetitorsCard,
+    nothingWhenFinished(nothingWhenBeforeLastPlannedRaceStartTime(endEventCard)),
   ]))

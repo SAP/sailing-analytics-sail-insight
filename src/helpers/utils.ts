@@ -1,11 +1,10 @@
 import { sha256 } from 'js-sha256'
 import { compose, join, map, move, reject, isNil, split, __, toUpper } from 'ramda'
-import { isArray, isMatch, isNumber, isObject, orderBy } from 'lodash'
+import { isArray, isMatch, isObject, orderBy } from 'lodash'
 import { Alert, Linking } from 'react-native'
 
 import { urlGenerator } from 'api/config'
 import I18n from 'i18n'
-import { Race, RaceStats } from 'models'
 
 export const toHashedString = compose(
   toUpper,
@@ -19,6 +18,24 @@ export const toHashedString = compose(
 export const notImplementedYetAlert = () => {
   Alert.alert(I18n.t('text_not_implemented_yet'))
 }
+
+export const alertPromise = (
+  title: string,
+  message: string | undefined,
+  confirmText: string,
+  cancelText: string = I18n.t('caption_cancel'),
+) =>
+  new Promise(resolve => {
+    Alert.alert(
+      title,
+      message,
+      [
+        ...(cancelText ? [{ text: cancelText, style: 'cancel', onPress: () => resolve(false) }] : []),
+        { text: confirmText, onPress: () => resolve(true) },
+      ],
+      { cancelable: false },
+    )
+  })
 
 export const listKeyExtractor = (item: any, index: number) => `${JSON.stringify(item)}${index}`
 
@@ -57,55 +74,6 @@ export function getOrderListFunction<Type = any>(valueKeys: string[], order?: 'a
 }
 
 export const spreadableList = (condition: any, ...params: any[]) => condition ? params : []
-
-
-const getAvg = ({ counter = 0, sum = 0 } = {}) => {
-  return counter > 0 ? sum / counter : 0
-}
-const add = (avg: {counter: number, sum: number}, value?: number) => {
-  if (!isNumber(value)) {
-    return avg
-  }
-  avg.counter += 1
-  avg.sum += value
-  return avg
-}
-export const getStatsFromTracks = (tracks: Race[]) => {
-  if (!tracks) {
-    return
-  }
-  let avgSpeedDown = { counter: 0, sum: 0 }
-  let avgSpeedUp = { counter: 0, sum: 0 }
-  let maxSpeedDown = 0
-  let maxSpeedUp = 0
-  let timeTraveled = 0
-  let distanceTraveled = 0
-  let maneuverCount = 0
-  tracks.forEach((track) => {
-    const stats = track.statistics
-    if (!stats) {
-      return
-    }
-    avgSpeedDown = add(avgSpeedDown, stats.avgSpeedDownwindKts)
-    avgSpeedUp = add(avgSpeedUp, stats.avgSpeedUpwindKts)
-    maxSpeedDown = Math.max(stats.maxSpeedDownwindKts || 0, maxSpeedDown)
-    maxSpeedUp = Math.max(stats.maxSpeedUpwindKts || 0, maxSpeedUp)
-    timeTraveled += stats.timeTraveledInS ? stats.timeTraveledInS : 0
-    distanceTraveled += stats.distanceInM ? stats.distanceInM : 0
-    maneuverCount += stats.numberOfManeuvers ? stats.numberOfManeuvers : 0
-  })
-  const result = {
-    avgSpeedDownwindKts: getAvg(avgSpeedDown),
-    avgSpeedUpwindKts: getAvg(avgSpeedUp),
-    maxSpeedDownwindKts: maxSpeedDown,
-    maxSpeedUpwindKts: maxSpeedUp,
-    numberOfManeuvers: maneuverCount,
-    timeTraveledInS: timeTraveled,
-    distanceInM: distanceTraveled,
-  } as RaceStats
-  return result
-}
-
 export const openUrl = (url: string) => Linking.openURL(url)
 export const addUrlParams = (baseUrl: string, urlParams?: any) => urlGenerator(baseUrl, '')('')({ urlParams })
 
@@ -148,8 +116,8 @@ export const ddm2dd = (arr: array) => {
   let coords = [];
 
   for (let i = 0; i < arr.length; i++) {
-    let deg = parseFloat(arr[i][0]),
-        min = parseFloat(arr[i][1]),
+    let deg = parseFloat(arr[i][0].replace(',', '.')),
+        min = parseFloat(arr[i][1].replace(',', '.')),
         dir = parseFloat(arr[i][2])
 
     coords[i] = dir*(deg+(min/60.0))
