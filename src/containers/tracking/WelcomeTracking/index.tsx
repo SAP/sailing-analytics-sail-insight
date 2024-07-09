@@ -18,9 +18,9 @@ const AutomaticTimeNotice = () => {
     setNoticeVisible(!useAutomaticDateTimeAndTimezone())
 
   useEffect(() => {
-    AppState.addEventListener('change', appStateChangeHandler)
+    const subscription = AppState.addEventListener('change', appStateChangeHandler)
 
-    return () => AppState.removeEventListener('change', appStateChangeHandler)
+    return () => subscription.remove();
   },
   [])
 

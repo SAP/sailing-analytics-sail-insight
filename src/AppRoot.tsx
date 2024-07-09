@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
-import ScreenOrientation, { PORTRAIT, LANDSCAPE } from 'react-native-orientation-locker/ScreenOrientation'
+import { OrientationLocker, PORTRAIT, LANDSCAPE } from 'react-native-orientation-locker'
 
-import { compose, reduce, concat, mergeDeepLeft, merge,
+import { compose, reduce, concat, mergeDeepLeft, mergeRight,
   includes, once, when, always, reject, isNil } from 'ramda'
 
 // Store
@@ -195,9 +195,9 @@ const MarkLocationHeader = connect(
 
 const navigationContainer = React.createRef()
 
-const EditResultsComponent = (props: any) => 
+const EditResultsComponent = (props: any) =>
   <WebView {...props}>
-    <ScreenOrientation orientation={LANDSCAPE}/>
+    <OrientationLocker orientation={LANDSCAPE}/>
   </WebView>
 
 // ----------------------------------------------------------------------------
@@ -234,14 +234,14 @@ const withLeftHeaderCloseButton = (options) => mergeDeepLeft({
 // ----------------------------------------------------------------------------
 
 const markTrackingNavigator = Component(props => compose(
-  fold(merge(props, { customRenderer: true })),
+  fold(mergeRight(props, { customRenderer: true })),
   stackNavigator({ initialRouteName: Screens.MarkTracking, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.MarkTracking, component: MarkTracking.fold })),
 ]))
 
 const trackingNavigator = Component(props => compose(
-  fold(merge(props, { customRenderer: true })),
+  fold(mergeRight(props, { customRenderer: true })),
   stackNavigator({
     initialRouteName: props.locationTrackingContext === LocationService.LocationTrackingContext.REMOTE &&
       props.locationTrackingStatus === LocationService.LocationTrackingStatus.RUNNING ?
@@ -270,7 +270,7 @@ const TrackingSwitch = connect((state: any) => ({
 })
 
 const sessionsNavigator = Component(props => compose(
-  fold(merge(props, { customRenderer: true })),
+  fold(mergeRight(props, { customRenderer: true })),
   stackNavigator({ initialRouteName: Screens.Sessions, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.Sessions, component: Sessions })),
@@ -303,7 +303,7 @@ const sessionsNavigator = Component(props => compose(
 ]))
 
 const accountNavigator = Component(props => compose(
-  fold(merge(props, { customRenderer: true })),
+  fold(mergeRight(props, { customRenderer: true })),
   stackNavigator({ initialRouteName: Screens.AccountList, ...stackNavigatorConfig, screenOptions: screenWithHeaderOptions }),
   reduce(concat, nothing()))([
   stackScreen(withoutHeader({ name: Screens.AccountList, component: AccountList })),
@@ -355,7 +355,7 @@ const eventTabPress  = preventTabPressBackAction(
 )
 
 const mainTabsNavigator = Component(props => compose(
-  fold(merge(props, { customRenderer: true })),
+  fold(mergeRight(props, { customRenderer: true })),
   tabsNavigator({
     initialRouteName: Screens.TrackingNavigator,
     lazy: false,
@@ -376,8 +376,8 @@ const mainTabsNavigator = Component(props => compose(
   }),
   reduce(concat, nothing()),
   reject(isNil))([
-  tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(merge(props, event)) } }),
-  tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold, listeners: { tabPress: event => eventTabPress(merge(props, event)) } }),
+  tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(mergeRight(props, event)) } }),
+  tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold, listeners: { tabPress: event => eventTabPress(mergeRight(props, event)) } }),
   // Recompose branch utility cannot be used here since react-navigation expects
   // direct children for a navigator to be Screen components.
   props.userHasMarkProperties ? tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }) : null,
@@ -387,7 +387,7 @@ const mainTabsNavigator = Component(props => compose(
 const joinRegattaScreenMixins = compose(withLeftHeaderCloseButton, withTransparentHeader, withoutTitle)
 
 const AppNavigator = Component(props => compose(
-  fold(merge(props, { customRenderer: true })),
+  fold(mergeRight(props, { customRenderer: true })),
   stackNavigator({
     initialRouteName: props.shouldShowFirstContact ? Screens.FirstContact: Screens.Main,
     ...stackNavigatorConfig,
@@ -420,7 +420,7 @@ const AppNavigator = Component(props => compose(
   })),
   stackScreen(withoutHeader({
     name: Screens.Main,
-    component: mainTabsNavigator.contramap(merge({ userHasMarkProperties: props.userHasMarkProperties })).fold
+    component: mainTabsNavigator.contramap(mergeRight({ userHasMarkProperties: props.userHasMarkProperties })).fold
   })),
   stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withGradientHeaderBackground, withoutTitle)({
     name: Screens.QRScanner, component: QRScanner
@@ -470,7 +470,7 @@ class AppRoot extends ReactComponent {
       <ActionSheetProvider>
         <AuthContext.Provider value = {{ isLoggedIn }}>
           <NavigationContainer ref={navigationContainer}>
-            <ScreenOrientation orientation={PORTRAIT}/>
+            <OrientationLocker orientation={PORTRAIT}/>
             { AppNavigator.fold(this.props) }
           </NavigationContainer>
         </AuthContext.Provider>

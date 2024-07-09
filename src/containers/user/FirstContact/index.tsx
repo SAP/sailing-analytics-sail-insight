@@ -72,7 +72,6 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
             <View style={styles.sponsorLogoContainer}>
               <Image source={Images.defaults.ws_logo} style={styles.wsLogo} resizeMode="stretch"/>
               <Image source={Images.defaults.sap_logo} style={styles.sapLogo}/>
-              <Image source={Images.defaults.syrf_logo} style={styles.syrfLogo}/>
             </View>
           </View>
         </LinearGradient>
@@ -87,8 +86,8 @@ const mapStateToProps = (state: any) => ({
 })
 
 export default connect(
-  mapStateToProps, 
-  { registerNetStateListeners, 
+  mapStateToProps,
+  { registerNetStateListeners,
     unregisterNetStateListeners,
     registerAppStateListeners,
     unregisterAppStateListeners,

@@ -14,7 +14,7 @@ import { ApiBodyKeys as CheckInBodyKeys, CheckInUpdate, urlParamsToCheckIn } fro
 import { ApiBodyKeys as GPSFixBodyKeys } from 'models/PositionFix'
 
 
-export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueId())
+export const getDeviceId = () => getDeviceUuid(DeviceInfo.getUniqueIdSync())
 
 export const getDeviceCountryIOC = () => {
   const deviceCountry = RNLocalize.getCountry()

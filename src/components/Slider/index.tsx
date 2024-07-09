@@ -5,11 +5,12 @@ import RNSlider from '@react-native-community/slider'
 import { $primaryInactiveColor, $primaryTextColor } from 'styles/colors'
 import styles from './styles'
 
+// @todo the commented properties are, as far as I can tell, only supported for the web version of the component. Check and consider removing ...
 
 class Slider extends React.Component<{
   style?: ViewStyle,
-  thumbStyle?: ViewStyle,
-  trackStyle?: ViewStyle,
+  //thumbStyle?: ViewStyle,
+  //trackStyle?: ViewStyle,
   thumbTintColor?: string,
   minimumTrackTintColor?: string,
   maximumTrackTintColor?: string,
@@ -25,8 +26,8 @@ class Slider extends React.Component<{
     const {
       style,
       thumbTintColor,
-      thumbStyle,
-      trackStyle,
+      //thumbStyle,
+      //trackStyle,
       minimumTrackTintColor,
       maximumTrackTintColor,
       ...remainingProps
@@ -35,11 +36,11 @@ class Slider extends React.Component<{
       <RNSlider
         style={style}
         thumbTintColor={thumbTintColor || $primaryTextColor}
-        thumbStyle={[styles.thumbStyle, thumbStyle]}
-        trackStyle={[styles.trackStyle, trackStyle]}
+        //thumbStyle={[styles.thumbStyle, thumbStyle]}
+        //trackStyle={[styles.trackStyle, trackStyle]}
         minimumTrackTintColor={minimumTrackTintColor || $primaryTextColor}
         maximumTrackTintColor={maximumTrackTintColor || $primaryInactiveColor}
-        thumbTouchSize={{ width: 40, height: 40 }}
+        //thumbTouchSize={{ width: 40, height: 40 }}
         {...remainingProps}
       />
     )

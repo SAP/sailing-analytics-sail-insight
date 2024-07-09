@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   compose, curry, reject, isNil, always, prop,
-  __, addIndex, map, merge,
+  __, addIndex, map, mergeRight,
   objOf, when, has, ifElse
 } from 'ramda'
 import {
@@ -25,7 +25,7 @@ const asArray = (x: any) => Array.isArray(x) ? x : [x]
 const classToFn = (C: any) => (props: any) => <C {...props}/>
 
 const ComponentRenderer = ({ props, g }) => compose(
-  mapIndexed((e, index) => merge(e, { key: index })),
+  mapIndexed((e, index) => mergeRight(e, { key: index })),
   reject(isNil),
   g)(
   props)
@@ -38,7 +38,7 @@ export const Component = compose(
     concat:    other => Component(x => g(x).concat(other.g(x))),
     fold: ifElse(prop('customRenderer'),
       compose(
-        mapIndexed((e, index) => merge(e, { key: index })),
+        mapIndexed((e, index) => mergeRight(e, { key: index })),
         reject(isNil),
         g),
       props => <ComponentRenderer props={props} g={g}/>)
@@ -57,12 +57,12 @@ const enhanceSimple = (fn: any) => compose(
     fn,
     prop('fold'))
 
-export const buildComponentWithChildren = curry((Comp, settings, c) =>	
+export const buildComponentWithChildren = curry((Comp, settings, c) =>
     Component((props: Object) => compose(
         fold(props),
         fromClass(Comp).contramap,
         always,
-        merge(settings),
+        mergeRight(settings),
         objOf('children'),
         when(has('fold'), fold(props)))(
         c)))
@@ -73,8 +73,6 @@ const recomposeWithHandlers      = enhance(withHandlers)
 const recomposeWithState         = enhance(withState)
 const recomposeWithStateHandlers = enhance(withStateHandlers)
 const recomposeMapProps          = enhance(mapProps)
-const recomposeDefaultProps      = enhance(defaultProps)
-const recomposeWithProps         = enhance(withProps)
 const recomposeLifecycle         = enhance(lifecycle)
 const connectActionSheet         = enhanceSimple(rnConnectActionSheet)
 
@@ -103,8 +101,6 @@ export {
     recomposeWithState,
     recomposeWithStateHandlers,
     recomposeMapProps,
-    recomposeWithProps,
-    recomposeDefaultProps,
     recomposeLifecycle,
     nothing,
     nothingAsClass,

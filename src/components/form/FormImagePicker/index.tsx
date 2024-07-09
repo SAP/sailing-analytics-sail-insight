@@ -2,7 +2,7 @@ import { get } from 'lodash'
 import React from 'react'
 import { ViewProps } from 'react-native'
 import { WrappedFieldProps } from 'redux-form'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 
 import Images from '@assets/Images'
 

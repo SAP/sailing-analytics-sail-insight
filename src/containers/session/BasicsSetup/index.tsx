@@ -1,4 +1,4 @@
-import { __, always, compose, concat, defaultTo, merge, mergeLeft, reduce } from 'ramda'
+import { __, always, compose, concat, defaultTo, mergeLeft, reduce } from 'ramda'
 import React from 'react'
 import I18n from 'i18n'
 import moment from 'moment'
@@ -154,7 +154,7 @@ export default Component((props: Object) => compose(
   concat(__, view({ style: styles.containerAngledBorder }, nothing())),
   view({ style: styles.container }),
   reduce(concat, nothing()))([
-    text({ style: styles.sectionHeaderStyle }, 'BASICS'),
+    text({ style: styles.sectionHeaderStyle }, I18n.t('caption_basics').toUpperCase()),
     nameInput,
     dateInput,
     locationInput,

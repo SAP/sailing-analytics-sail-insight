@@ -1,4 +1,4 @@
-import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
+import { any, allPass, map, evolve, mergeRight, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, pathEq, propEq, propOr, when, tap, defaultTo, isEmpty, isNil,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
@@ -7,7 +7,7 @@ import { any, allPass, map, evolve, merge, curry, dissoc, not, has,
 import { all, call, put, select, takeEvery, takeLatest, delay } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe, safeApiCall } from './HelpersSaga'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 import {
   loadCourse,
   saveCourse,
@@ -79,7 +79,7 @@ const newCourse = () => {
 }
 
 const courseWithWaypointIds = evolve({
-  waypoints: map(w => merge(w, { id: uuidv4() }))
+  waypoints: map(w => mergeRight(w, { id: uuidv4() }))
 })
 
 const getMarkConfigurations = curry((course: any) => map(
@@ -89,7 +89,7 @@ const getMarkConfigurations = curry((course: any) => map(
       return compose(
         defaultTo({}),
         pick(['effectiveProperties', 'lastKnownPosition']),
-        find(propEq('id', id)),
+        find(propEq(id, 'id')),
         prop('markConfigurations')
       )(course)
       }
@@ -149,14 +149,14 @@ const copyCourse = (courseToCopy: any, latestCopiedCourseState: any, latestTarge
         // Finds the markPropertyId of the newly created mark
         const copiedMarkPropertiesId = compose(
           prop('markPropertiesId'),
-          find(propEq('id', copiedMarkConfigurationId)),
+          find(propEq(copiedMarkConfigurationId, 'id')),
           prop('markConfigurations')
         )(latestCopiedCourseState)
 
         // Gets the markConfigurationId from the target course
         const latestId = compose(
           prop('id'),
-          find(propEq('markPropertiesId', copiedMarkPropertiesId)),
+          find(propEq(copiedMarkPropertiesId, 'markPropertiesId')),
           prop('markConfigurations')
         )(latestTargetCourseState)
 
@@ -240,7 +240,7 @@ function* selectCourseFlow({ payload }: any) {
 const didConfigurationPropertyChangedAcrossCourses = curry((fromCourse, toCourse, property, configuration) => {
   const getById = id => compose(
     defaultTo({}),
-    find(propEq('id', id)),
+    find(propEq(id, 'id')),
     defaultTo([]),
     prop('markConfigurations'))
   const getByConfigurationId = getById(configuration.id)
@@ -388,7 +388,7 @@ function* saveCourseFlow({ navigation }: any) {
   const markUsedWithCurrentDeviceAsTracker = compose(
     head,
     filter(compose(find(both(
-      propEq('trackingDeviceHash', getHashedDeviceId()),
+      propEq(getHashedDeviceId(), 'trackingDeviceHash'),
       compose(isNil, prop('trackingDeviceMappedToMillis')))),
       prop('trackingDevices'))),
     flatten,
@@ -428,7 +428,7 @@ function* isThisDeviceBoundToMark({ markId, regattaName, serverUrl }: any) {
     ])),
     propOr([], 'deviceStatuses'),
     defaultTo({}),
-    find(propEq('markId', markId)),
+    find(propEq(markId, 'markId')),
     propOr([], 'marks'),
     defaultTo({})
   )(trackingDevices)
@@ -584,7 +584,7 @@ function* fetchAndUpdateMarkConfigurationDeviceTracking() {
   const trackingDevices = compose(
     prop('deviceStatuses'),
     defaultTo({}),
-    findLast(propEq('markId', markConfiguration.markId)),
+    findLast(propEq(markConfiguration.markId, 'markId')),
     defaultTo([]),
     prop('marks'),
     prop('result'))(

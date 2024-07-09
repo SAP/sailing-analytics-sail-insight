@@ -1,5 +1,4 @@
-import uuidv1 from 'uuid/v1'
-import uuidv5 from 'uuid/v5'
+import { v1 as uuidv1, v5 as uuidv5 } from 'uuid';
 
 const DEVICE_UUID_NAMESPACE = '7a6d6c8f-c634-481d-8443-adcd36c869ea'
 

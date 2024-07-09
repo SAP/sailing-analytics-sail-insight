@@ -45,7 +45,4 @@ export default EStyleSheets.create({
     sapLogo: {
         marginHorizontal: '$siGutter / 2'
     },
-    syrfLogo: {
-        marginLeft: '$siGutter'
-    },
 })

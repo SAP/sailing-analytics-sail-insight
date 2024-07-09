@@ -1,4 +1,4 @@
-import { merge, defaultTo, prop, compose, insert, reject, tap,
+import { mergeRight, defaultTo, prop, compose, insert, reject, tap,
   propEq, head, map, when, mergeLeft, mergeDeepLeft, always, ifElse,
   append, concat, pick, dissoc, evolve, equals, isNil, find, has,
   apply, applySpec, take, move, last, includes, __, path } from 'ramda'
@@ -62,28 +62,28 @@ const waypoints = handleActions({
     prop('waypoints'))(
     action.payload),
   [addWaypoint as any]: (state: any, action: any) => insert(action.payload.index, { id: action.payload.id }, state),
-  [removeWaypoint as any]: (state: any, action: any) => reject(propEq('id', action.payload.id), state),
+  [removeWaypoint as any]: (state: any, action: any) => reject(propEq(action.payload.id, 'id'), state),
   [updateWaypoint as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeLeft(action.payload.waypoint)),
+    when(propEq(action.payload.id, 'id'), mergeLeft(action.payload.waypoint)),
     state),
   [updateWaypointName as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeLeft({ controlPointName: action.payload.value })),
+    when(propEq(action.payload.id, 'id'), mergeLeft({ controlPointName: action.payload.value })),
     state),
   [updateWaypointShortName as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeLeft({ controlPointShortName: action.payload.value })),
+    when(propEq(action.payload.id, 'id'), mergeLeft({ controlPointShortName: action.payload.value })),
     state),
   [updateWaypointPassingInstruction as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeLeft({ passingInstruction: action.payload.value })),
+    when(propEq(action.payload.id, 'id'), mergeLeft({ passingInstruction: action.payload.value })),
     state),
   [changeWaypointToNewMark as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id),
+    when(propEq(action.payload.id, 'id'),
       always({
         id: action.payload.id,
         passingInstruction: action.payload.passingInstruction || PassingInstruction.Port,
         markConfigurationIds: action.payload.markConfigurationIds
       })), state),
   [changeWaypointToNewLine as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id),
+    when(propEq(action.payload.id, 'id'),
       always({
         id: action.payload.id,
         controlPointName: defaultTo(action.payload.passingInstruction === PassingInstruction.Line ?
@@ -104,13 +104,13 @@ const markConfigurations = handleActions({
     prop('markConfigurations'))(
     action.payload),
   [updateMarkConfigurationName as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { name: action.payload.value } })),
+    when(propEq(action.payload.id, 'id'), mergeDeepLeft({ effectiveProperties: { name: action.payload.value } })),
     state),
   [updateMarkConfigurationShortName as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), mergeDeepLeft({ effectiveProperties: { shortName: action.payload.value } })),
+    when(propEq(action.payload.id, 'id'), mergeDeepLeft({ effectiveProperties: { shortName: action.payload.value } })),
     state),
   [updateMarkConfigurationLocation as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), compose(
+    when(propEq(action.payload.id, 'id'), compose(
       dissoc('currentTrackingDeviceId'),
       mergeLeft({
         lastKnownPosition: {
@@ -118,7 +118,7 @@ const markConfigurations = handleActions({
           longitude_deg: action.payload.value.longitude } }))),
     state),
   [updateMarkConfigurationWithCurrentDeviceAsTracker as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), compose(
+    when(propEq(action.payload.id, 'id'), compose(
       dissoc('lastKnownPosition'),
       mergeLeft({
         trackingDevices: [{
@@ -132,7 +132,7 @@ const markConfigurations = handleActions({
           stringRepresentation: action.payload.deviceId }}))),
     state),
   [changeMarkConfigurationDeviceTracking as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), compose(
+    when(propEq(action.payload.id, 'id'), compose(
       mergeLeft({
         currentTrackingDeviceId: action.payload.currentTrackingDeviceId,
         trackingDevices: map(applySpec({
@@ -144,7 +144,7 @@ const markConfigurations = handleActions({
       }))),
     state),
   [assignMarkOrMarkPropertiesToMarkConfiguration as any]: (state: any, action: any) => map(
-    when(propEq('id', action.payload.id), compose(
+    when(propEq(action.payload.id, 'id'), compose(
       mergeDeepLeft({
         markId: action.payload.markOrMarkProperties.markId,
         markPropertiesId: compose(
@@ -164,7 +164,7 @@ const markConfigurations = handleActions({
     state),
   [changeWaypointToNewMark as any]: (state: any, action: any) =>
     when(
-      compose(isNil, find(propEq('id', action.payload.markConfigurationIds[0]))),
+      compose(isNil, find(propEq(action.payload.markConfigurationIds[0], 'id'))),
       append({
       id: action.payload.markConfigurationIds[0],
       effectiveProperties: { markType: 'BUOY', shortName: 'NM', name: 'New Mark' }
@@ -209,7 +209,7 @@ const editedCourse = combineReducers({
 
 const all = handleActions({
   [loadCourse as any]: (state: any = {}, action: any) =>
-    merge(state, { [action.payload.raceId]: action.payload.course }),
+    mergeRight(state, { [action.payload.raceId]: action.payload.course }),
   [removeUserData as any]: always({})
 }, {})
 

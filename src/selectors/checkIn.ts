@@ -1,4 +1,4 @@
-import { any, chain, compose, findLast, isNil, not, path, prop, propEq,
+import { any, chain, compose, findLast, isNil, not, path, prop,
   values, defaultTo, reject } from 'ramda'
 import { createSelector } from 'reselect'
 import { CheckIn } from 'models'

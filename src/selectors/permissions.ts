@@ -8,7 +8,7 @@ export const canUpdateEvent = (eventId: string) => createSelector(
   getPermissions,
   compose(
     prop('granted'),
-    find(propEq('permission', `EVENT:UPDATE:${eventId}`))))
+    find(propEq(`EVENT:UPDATE:${eventId}`, 'permission'))))
 
 export const canUpdateCurrentEvent = createSelector(
   getSelectedEventInfo,

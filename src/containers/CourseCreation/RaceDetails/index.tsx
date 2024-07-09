@@ -1,5 +1,5 @@
 import { __, always, append, compose, concat, cond, defaultTo,
-  equals, isEmpty, isNil, map, merge, not, apply, unapply,
+  equals, isEmpty, isNil, map, mergeRight, not, apply, unapply,
   objOf, prop, reduce, uncurryN, T, unless, when, dissocPath, path, addIndex,
   gte, allPass, propEq
 } from 'ramda'
@@ -50,7 +50,7 @@ const getRaceStartTime = compose(
   defaultTo({}),
   prop('raceTime'))
 
-const nothingIfNoCourseDefined = branch(compose(propEq('courseDefined', false), prop('item')), nothingAsClass)
+const nothingIfNoCourseDefined = branch(compose(propEq(false, 'courseDefined'), prop('item')), nothingAsClass)
 
 const nothingIfNoSession = branch(compose(isNil, prop('session')), nothingAsClass)
 
@@ -171,8 +171,8 @@ const arrowRight = icon({
 const editIcon = Component((props: any) => compose(
   fold(props),
   view({style: styles.editIconContainerStyle})
-  )(icon({ 
-    source: Images.actions.penEdit, 
+  )(icon({
+    source: Images.actions.penEdit,
     iconStyle: styles.iconEditStyle,
     iconTintColor: arrowColor
   }))
@@ -296,7 +296,7 @@ const raceList = Component((props: object) => compose(
   fold(props),
   view({ style: styles.racesListContainer }))(
   forwardingPropsFlatList.contramap((props: any) =>
-    merge({
+    mergeRight({
       data: props.races,
       renderItem: raceItem.fold
     }, props))))
@@ -304,7 +304,7 @@ const raceList = Component((props: object) => compose(
 const mapIndexed = addIndex(map)
 
 const withDiscardDataFromEvent = mapProps(props => compose(
-  merge(props),
+  mergeRight(props),
   objOf('data'),
   append({ type: 'add' }),
   mapIndexed((value, index) => ({ value, index })),

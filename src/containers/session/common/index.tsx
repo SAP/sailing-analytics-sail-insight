@@ -12,7 +12,7 @@ import IconText from 'components/IconText'
 import * as Screens from 'navigation/Screens'
 import I18n from 'i18n'
 import { __, always, anyPass, append, compose, concat, curry,
-  equals, has, head, length, map, merge, mergeLeft, objOf,
+  equals, has, head, length, map, mergeRight, mergeLeft, objOf,
   prepend, prop, propEq, range, reduce, reject, isNil,
   remove, sortBy, split, toString, toUpper, update, when,
   isEmpty, defaultTo, complement, path, either,
@@ -55,8 +55,8 @@ export const overlayPicker = curry((
       fold(props),
       fromClass(ModalSelector).contramap,
       always,
-      merge({
-        style: merge({ backgroundColor: 'transparent' }, style),
+      mergeRight({
+        style: mergeRight({ backgroundColor: 'transparent' }, style),
         optionContainerStyle: {
           marginTop: 30,
           backgroundColor: '#123748',
@@ -72,7 +72,7 @@ export const overlayPicker = curry((
       }),
       objOf('children'),
       head,
-      when(has('fold'), fold(merge(props, { customRenderer: true }))))(
+      when(has('fold'), fold(mergeRight(props, { customRenderer: true }))))(
       c)))
 
 export const FramedNumberItem = Component(props => compose(
@@ -117,7 +117,7 @@ export const DiscardSelector = Component((props: any) => compose(
   fold(props),
   concat(text({ style: styles.textHeader }, I18n.t('caption_discard_after_races'))),
   view({ style: styles.discardContainer }),
-  contramap(merge({
+  contramap(mergeRight({
     style: { flexGrow: 0 },
     renderItem: (props: any) =>
       props.item.type === 'add' ?
@@ -132,14 +132,14 @@ export const withUpdatingDiscardItem = handler => withHandlers({
   removeDiscardItem: (props: any) => (index: number) => compose(
     handler,
     map(prop('value')),
-    reject(propEq('type', 'add')),
+    reject(propEq('add','type')),
     remove(index, 1),
     prop('data'))(
     props),
   updateDiscardItem: (props: any) => (index: number, value: object) => compose(
     handler,
     map(prop('value')),
-    reject(propEq('type', 'add')),
+    reject(propEq('add','type')),
     update(index, { index, value }),
     prop('data'))(
     props),
@@ -150,7 +150,7 @@ export const withAddDiscard = handler => withHandlers({
     handler,
     append(value),
     map(prop('value')),
-    reject(propEq('type', 'add')),
+    reject(propEq('add','type')),
     prop('data'))(
     props),
 })
@@ -244,11 +244,11 @@ export const joinAsCompetitorButton = Component(props => compose(
   text({ style: styles.buttonContent }))(
   I18n.t('caption_join_as_competitor').toUpperCase()))
 
-const nothingIfCurrentUserIsCompetitor = branch(propEq('currentUserIsCompetitorForEvent', true), nothingAsClass)
-const nothingIfCurrentUserIsNotCompetitor = branch(propEq('currentUserIsCompetitorForEvent', false), nothingAsClass)
+const nothingIfCurrentUserIsCompetitor = branch(propEq(true,'currentUserIsCompetitorForEvent'), nothingAsClass)
+const nothingIfCurrentUserIsNotCompetitor = branch(propEq(false,'currentUserIsCompetitorForEvent'), nothingAsClass)
 
 const nothingIfShouldntShowStartTracking = branch(
-  anyPass([propEq('isFinished', true), propEq('isBeforeEventStartTime', true)]),
+  anyPass([propEq(true,'isFinished'), propEq(true,'isBeforeEventStartTime')]),
   nothingAsClass,
 )
 
@@ -266,8 +266,8 @@ export const startTrackingButton = Component((props: any) => compose(
     style: [styles.button, styles.trackingButton],
     textStyle: styles.buttonContent,
   })
-)(text({}, props.isTrackingEvent ? 
-  I18n.t('caption_view_tracking').toUpperCase() : 
+)(text({}, props.isTrackingEvent ?
+  I18n.t('caption_view_tracking').toUpperCase() :
   I18n.t('caption_start_tracking').toUpperCase())
 ))
 
@@ -297,8 +297,8 @@ const COMPETITOR_LIST_REFRESH_RATE = 10000
 
 const isCompetitorListEmpty = compose(isEmpty, reject(isNil), defaultTo([]), prop('competitorList'))
 const isCompetitorListNotEmpty = complement(isCompetitorListEmpty)
-const nothingIfCompetitorListStale = branch(propEq('competitorListStale', true), nothingAsClass)
-const nothingIfCompetitorListNotStale = branch(propEq('competitorListStale', false), nothingAsClass)
+const nothingIfCompetitorListStale = branch(propEq(true,'competitorListStale'), nothingAsClass)
+const nothingIfCompetitorListNotStale = branch(propEq(false,'competitorListStale'), nothingAsClass)
 const nothingIfCompetitorListEmpty = branch(isCompetitorListEmpty, nothingAsClass)
 const nothingIfCompetitorListNotEmpty = branch(isCompetitorListNotEmpty, nothingAsClass)
 
@@ -306,7 +306,7 @@ export const competitorListRefreshHandler = Component((props: any) =>
   compose(
     fold(props),
     contramap(
-      merge({
+      mergeRight({
         onWillFocus: () => {
           const callback = async () => {
             const { leaderboardName, regattaName } = props.session

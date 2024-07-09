@@ -1,4 +1,4 @@
-import { compose, always, curry, merge, __, when, head, objOf, has, path, isNil, concat, equals } from 'ramda'
+import { compose, always, curry, mergeRight, __, when, head, objOf, has, path, isNil, concat, equals } from 'ramda'
 import { fromClass, fold, Component, enhance, nothingAsClass, recomposeBranch as branch } from './component'
 import { reduxForm as nativeReduxForm, FormSection } from 'redux-form'
 
@@ -19,7 +19,7 @@ const formSection = curry((settings, c) => Component((props: Object) => compose(
     fold(props),
     fromClass(FormSection).contramap,
     always,
-    merge(settings),
+    mergeRight(settings),
     objOf('children'),
     head,
     when(has('fold'), fold(props)),

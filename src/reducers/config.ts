@@ -64,7 +64,6 @@ export interface SettingsState {
   serverUrl: string,
   verboseLogging: boolean,
   communicationEnabled: boolean,
-  mtcpEnabled: boolean,
   leaderboardEnabled: boolean,
   proxyUrl: string,
   masterUdpIP: string,

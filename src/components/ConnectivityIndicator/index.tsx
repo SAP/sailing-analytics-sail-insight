@@ -1,6 +1,6 @@
 import React from 'react'
-import { AppState, View, ViewProps } from 'react-native'
-import NetInfo from "@react-native-community/netinfo"
+import {AppState, AppStateStatus, NativeEventSubscription, View, ViewProps} from 'react-native'
+import NetInfo, {NetInfoState, NetInfoSubscription} from "@react-native-community/netinfo"
 import Svg, { Circle } from 'react-native-svg'
 import { connect } from 'react-redux'
 import { getUnsentGpsFixCount } from 'selectors/location'
@@ -14,25 +14,25 @@ class ConnectivityIndicator extends React.Component<ViewProps & {
   unsentPositionFixCount: number,
 }> {
 
-  public state = { isConnected: true }
+  public state = { isConnected: true };
+  private appStateSubscription?: NativeEventSubscription;
+  private unsubscribeNetInfoSubscription?: NetInfoSubscription;
 
   public componentDidMount() {
-    NetInfo.isConnected.addEventListener(
-      'connectionChange',
-      this.setNetworkStatus,
-    )
-    AppState.addEventListener('change', this.handleAppStateChange)
+    this.unsubscribeNetInfoSubscription = NetInfo.addEventListener(this.setNetworkStatus);
+    this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange)
   }
 
   public componentWillUnmount() {
-    if (!NetInfo || !NetInfo.isConnected) {
+    if (!NetInfo) {
       return
     }
-    NetInfo.isConnected.removeEventListener(
-      'connectionChange',
-      this.setNetworkStatus,
-    )
-    AppState.removeEventListener('change', this.handleAppStateChange)
+
+    if (this.unsubscribeNetInfoSubscription) {
+      this.unsubscribeNetInfoSubscription();
+    }
+
+    this.appStateSubscription?.remove();
   }
 
   public render() {
@@ -69,15 +69,16 @@ class ConnectivityIndicator extends React.Component<ViewProps & {
     )
   }
 
-  protected setNetworkStatus = (status: any) => {
-    this.setState({ isConnected: status })
+  protected setNetworkStatus = (state: NetInfoState) => {
+    this.setState({ isConnected: state.isConnected && state.isInternetReachable });
   }
 
-  protected handleAppStateChange = (nextAppState: any) => {
-    if (nextAppState !== 'active' || !NetInfo || !NetInfo.isConnected) {
-      return
+  protected handleAppStateChange = (nextAppState: AppStateStatus) => {
+    if (nextAppState !== 'active' || !NetInfo) {
+      return;
     }
-    NetInfo.isConnected.fetch().then(this.setNetworkStatus)
+
+    NetInfo.fetch().then(this.setNetworkStatus);
   }
 }
 

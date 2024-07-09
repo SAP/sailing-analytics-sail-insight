@@ -1,4 +1,4 @@
-import { merge, compose } from 'ramda'
+import { mergeRight, compose } from 'ramda'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import { fromClass, buildComponentWithChildren } from './component'
@@ -10,8 +10,8 @@ export const tabsNavigator = buildComponentWithChildren(BottomTabs.Navigator)
 
 export const stackScreen = compose(
     fromClass(Stack.Screen).contramap,
-    merge)
+    mergeRight)
 
 export const tabsScreen = compose(
     fromClass(BottomTabs.Screen).contramap,
-    merge)
+    mergeRight)

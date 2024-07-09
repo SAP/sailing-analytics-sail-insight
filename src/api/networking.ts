@@ -1,16 +1,12 @@
 import { isString } from 'lodash'
 import querystring from 'query-string'
-import { compose, includes, prop, __, when, merge } from 'ramda'
+import { compose, includes, prop, __, when, mergeRight } from 'ramda'
 
 import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
 import crashlytics from '@react-native-firebase/crashlytics'
-
-import SailInsightMtcpNetwork from 'sail-insight-mtcp-network/index'
-import { getStore } from "../store";
-import { getMtcpSetting } from "../selectors/settings";
 
 const responseHasFatalError = compose(
   includes(__, [400, 404, 405]),
@@ -99,18 +95,13 @@ export const request = async (
   const fetchOptions = {
     method,
     timeout,
-    headers: merge(headers, options.headers),
+    headers: mergeRight(headers, options.headers),
     credentials: 'omit',
     ...data,
   }
   let response
   try {
-    const mtcpEnabled = getMtcpSetting(getStore().getState())
-    if (isPlatformAndroid || !mtcpEnabled) {
-      response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout')
-    } else {
-      response = await timeoutPromise(SailInsightMtcpNetwork.fetch(url, fetchOptions), timeout, 'Server request timeout')
-    }
+    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout');
   } catch (err) {
     throw err
   } finally {
