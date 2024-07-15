@@ -71,50 +71,6 @@ class ExpertSettings extends TextInputForm<Props> {
     }
   }
 
-  public renderProxySettings()
-  {
-    return (
-      <View>
-        <Field
-          style={styles.textInput}
-          containerStyle={styles.inputContainer}
-          label={I18n.t('text_server_proxy')}
-          name={expertSettingsForm.FORM_KEY_PROXY_URL}
-          component={FormTextInput}
-          validate={[validateRequired]}
-          keyboardType={'default'}
-          returnKeyType="next"
-          inputRef={this.handleInputRef(expertSettingsForm.FORM_KEY_PROXY_URL)}
-          onSubmitEditing={this.handleOnSubmitInput(expertSettingsForm.FORM_KEY_PROXY_URL)}
-            />
-        <Field
-          style={styles.textInput}
-          containerStyle={styles.inputContainer}
-          label={I18n.t('text_server_udp_ip')}
-          name={expertSettingsForm.FORM_KEY_MASTER_IP}
-          component={FormTextInput}
-          validate={[validateRequired]}
-          keyboardType={'default'}
-          returnKeyType="next"
-          inputRef={this.handleInputRef(expertSettingsForm.FORM_KEY_MASTER_IP)}
-          onSubmitEditing={this.handleOnSubmitInput(expertSettingsForm.FORM_KEY_MASTER_IP)}
-          />
-        <Field
-          style={styles.textInput}
-          containerStyle={styles.inputContainer}
-          label={I18n.t('text_server_udp_port')}
-          name={expertSettingsForm.FORM_KEY_MASTER_PORT}
-          component={FormTextInput}
-          validate={[validateRequired]}
-          keyboardType={'numeric'}
-          returnKeyType="next"
-          inputRef={this.handleInputRef(expertSettingsForm.FORM_KEY_MASTER_PORT)}
-          onSubmitEditing={this.handleOnSubmitInput(expertSettingsForm.FORM_KEY_MASTER_PORT)}
-          />
-      </View>
-    )
-  }
-
   public render() {
     return (
       <ScrollContentView extraHeight={$extraSpacingScrollContent}>
@@ -142,14 +98,6 @@ class ExpertSettings extends TextInputForm<Props> {
             switchValue={this.props.verboseLogging}
             onSwitchValueChange={this.props.updateVerboseLoggingSetting}
           />
-          <EditItemSwitch
-              style={styles.item}
-              titleStyle={{ color: 'white' }}
-              title={I18n.t('text_communication_setting')}
-              switchValue={this.props.communicationSetting}
-              onSwitchValueChange={this.props.updateCommunicationEnabledSetting}
-          />
-          {this.props.communicationSetting && this.renderProxySettings()}
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
           <TextButton
@@ -189,14 +137,6 @@ class ExpertSettings extends TextInputForm<Props> {
 
   protected onSubmit = async (values: any) => {
     await this.props.updateServerUrlSetting(values[expertSettingsForm.FORM_KEY_SERVER_URL])
-    if (this.props.communicationSetting) {
-      await this.props.updateServerProxyUrlSetting(values[expertSettingsForm.FORM_KEY_PROXY_URL])
-    }
-    if (this.props.communicationSetting) {
-      await this.props.updateMasterUdpIPSetting(values[expertSettingsForm.FORM_KEY_MASTER_IP])
-      await this.props.updateMasterUdpPortSetting(values[expertSettingsForm.FORM_KEY_MASTER_PORT])
-      this.props.updateCommunicationSettings()
-    }
     this.props.navigation.goBack()
   }
 

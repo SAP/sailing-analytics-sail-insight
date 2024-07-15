@@ -14,7 +14,7 @@ import {
 import { itemUpdateHandler } from 'helpers/reducers'
 import { SettingsState } from 'reducers/config'
 import { removeUserData } from '../actions/auth'
-import { DEFAULT_SERVER_URL, SERVER_PROXY_URL, SERVER_MASTER_UDP_IP, SERVER_MASTER_UDP_PORT, DEFAULT_SERVER_ANY_URL } from '../environment/init'
+import { DEFAULT_SERVER_URL, SERVER_MASTER_UDP_IP, SERVER_MASTER_UDP_PORT, DEFAULT_SERVER_ANY_URL } from '../environment/init'
 
 
 const initialState: SettingsState = {
@@ -24,7 +24,7 @@ const initialState: SettingsState = {
   verboseLogging: false,
   communicationEnabled: false,
   leaderboardEnabled: false,
-  proxyUrl: SERVER_PROXY_URL,
+  proxyUrl: '',
   masterUdpIP: SERVER_MASTER_UDP_IP,
   masterUdpPort: SERVER_MASTER_UDP_PORT,
 }
