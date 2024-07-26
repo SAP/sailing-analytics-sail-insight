@@ -4,7 +4,6 @@ import { checkCurrentAuthSession } from './auth'
 import { handleAppStartDeepLink } from './deepLinking'
 import { updateCreatingEvent, updateLoadingEventList, updateSelectingEvent, updateStartingTracking, updateEventPollingStatus } from './events'
 import { updateDeletingMarkBinding, updateLoadingCheckInFlag } from './checkIn'
-import { updateCommunicationSettings } from './settings'
 import { initLocationUpdates } from './locations'
 import { updateStartLine, stopUpdateStartLineBasedOnCurrentCourse } from './communications'
 import * as LocationService from 'services/LocationService'
@@ -24,10 +23,6 @@ export const initializeApp = (navigation:object) => async (dispatch: DispatchTyp
   dispatch(stopUpdateStartLineBasedOnCurrentCourse())
   dispatch(updateEventPollingStatus(false))
   /// reset flags for loading
-
-  /// update native modules settings
-  dispatch(updateCommunicationSettings())
-  /// update native modules settings
 
   await dispatch(checkCurrentAuthSession())
   await dispatch(handleAppStartDeepLink(navigation))

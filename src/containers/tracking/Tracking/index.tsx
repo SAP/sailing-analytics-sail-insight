@@ -20,7 +20,6 @@ import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
 import { getMark } from 'selectors/mark'
 import { isNetworkConnected } from 'selectors/network'
-import { getLeaderboardEnabledSetting } from 'selectors/settings'
 
 import ConnectivityIndicator from 'components/ConnectivityIndicator'
 import Text from 'components/Text'
@@ -57,7 +56,6 @@ class Tracking extends React.Component<NavigationScreenProps & {
   checkInData: CheckIn,
   trackedContextName?: string,
   rank?: number,
-  leaderboardEnabled?: boolean,
   isNetworkConnected: boolean,
   isLoadingCheckIn?: boolean
 } > {
@@ -72,15 +70,12 @@ class Tracking extends React.Component<NavigationScreenProps & {
   public render() {
     const {
       trackingStats,
-      checkInData,
       trackedContextName,
       rank,
-      leaderboardEnabled,
       isLoadingCheckIn
     } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
-    const courseOverGround = trackingStats.headingInDeg ? `${trackingStats.headingInDeg.toFixed(0)}°` : EMPTY_VALUE
     const distance = trackingStats.distance ? trackingStats.distance.toFixed(0) : '0'
 
     return (
@@ -110,8 +105,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
                 />
               </View>
             </TouchableOpacity>
-            {leaderboardEnabled &&
-              <TrackingPropertyAutoFit
+            <TrackingPropertyAutoFit
                 style={styles.rank}
                 titleStyle={styles.rankTitle}
                 valueStyle={styles.rankText}
@@ -119,8 +113,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
                 title={I18n.t('text_tracking_rank')}
                 value={`${rank || EMPTY_VALUE}`}
                 onPress={this.onLeaderboardPress}
-              />
-            }
+            />
           </View>
           <View style={styles.property}>
             <View>
@@ -260,7 +253,6 @@ const mapStateToProps = (state: any) => {
       'name',
     ),
     rank: getTrackedCompetitorLeaderboardRank(state),
-    leaderboardEnabled: getLeaderboardEnabledSetting(state),
     isNetworkConnected: isNetworkConnected(state),
     isLoadingCheckIn: isLoadingCheckIn(state)
   }

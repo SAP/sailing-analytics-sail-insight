@@ -14,7 +14,6 @@ import {
   getUserInfo,
   isLoggedIn as isLoggedInSelector,
 } from '../../../selectors/auth'
-import { getCommunicationSetting } from '../../../selectors/settings';
 import { listKeyExtractor } from 'helpers/utils'
 import styles from './styles'
 
@@ -68,7 +67,6 @@ const debounceNavigation = (waitTime: number, props: any) => ({
 class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
   isLoggedIn: boolean
   user: User,
-  expeditionCommunicationEnabled: boolean
 }> {
   public render() {
     const { isLoggedIn } = this.props
@@ -81,10 +79,6 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
       supportItem(propsWithDebouncedNavigation)
     ]
 
-    if (propsWithDebouncedNavigation.expeditionCommunicationEnabled) {
-      data.push(communicationsItem(propsWithDebouncedNavigation))
-    }
-
     return (
       <View style={[container.main, styles.container]}>
         <View style={{ flex: 1, position: 'relative' }}>
@@ -94,11 +88,11 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
           <Text style={styles.headline}>{I18n.t('title_your_account').toUpperCase()}</Text>
         </View>
         <View style={{ width: '100%' , marginTop: 'auto' }}>
-          <FlatList 
-            data={data} 
-            renderItem={this.renderItem} 
+          <FlatList
+            data={data}
+            renderItem={this.renderItem}
             keyExtractor={listKeyExtractor}
-            scrollEnabled={false} 
+            scrollEnabled={false}
           />
         </View>
       </View>
@@ -120,7 +114,6 @@ class AccountList extends React.Component<ViewProps & NavigationScreenProps & {
 const mapStateToProps = (state: any) => ({
   user: getUserInfo(state) || {},
   isLoggedIn: isLoggedInSelector(state),
-  expeditionCommunicationEnabled: getCommunicationSetting(state)
 })
 
 export default connect(mapStateToProps)(AccountList)

@@ -3,18 +3,13 @@ import { handleActions } from 'redux-actions'
 import {
   updateGpsBulkSetting,
   updateAnalyticsSettings,
-  updateLeaderboardEnabledSetting,
   updateServerUrlSetting,
   updateVerboseLoggingSetting,
-  updateCommunicationEnabledSetting,
-  updateServerProxyUrlSetting,
-  updateMasterUdpIPSetting,
-  updateMasterUdpPortSetting,
 } from 'actions/settings'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { SettingsState } from 'reducers/config'
 import { removeUserData } from '../actions/auth'
-import { DEFAULT_SERVER_URL, SERVER_MASTER_UDP_IP, SERVER_MASTER_UDP_PORT, DEFAULT_SERVER_ANY_URL } from '../environment/init'
+import { DEFAULT_SERVER_URL } from '../environment/init'
 
 
 const initialState: SettingsState = {
@@ -22,11 +17,6 @@ const initialState: SettingsState = {
   enableAnalytics: false,
   serverUrl: DEFAULT_SERVER_URL,
   verboseLogging: false,
-  communicationEnabled: false,
-  leaderboardEnabled: false,
-  proxyUrl: '',
-  masterUdpIP: SERVER_MASTER_UDP_IP,
-  masterUdpPort: SERVER_MASTER_UDP_PORT,
 }
 
 const reducer = handleActions(
@@ -35,29 +25,6 @@ const reducer = handleActions(
     [updateAnalyticsSettings as any]: itemUpdateHandler('enableAnalytics'),
     [updateServerUrlSetting as any]: itemUpdateHandler('serverUrl'),
     [updateVerboseLoggingSetting as any]: itemUpdateHandler('verboseLogging'),
-    [updateCommunicationEnabledSetting as any]: itemUpdateHandler('communicationEnabled'),
-    [updateLeaderboardEnabledSetting as any]: itemUpdateHandler('leaderboardEnabled'),
-    [updateServerProxyUrlSetting as any]: itemUpdateHandler('proxyUrl'),
-    [updateMasterUdpIPSetting as any]: itemUpdateHandler('masterUdpIP'),
-    [updateMasterUdpPortSetting as any]: (state: any = {}, action?: any) => {
-      if (state.serverUrl && state.masterUdpPort[state.serverUrl]) {
-        return {
-          ...state,
-          masterUdpPort: {
-            ...state.masterUdpPort,
-            [state.serverUrl]: action && action.payload
-          }
-        }
-      } else {
-        return {
-          ...state,
-          masterUdpPort: {
-            ...state.masterUdpPort,
-            [DEFAULT_SERVER_ANY_URL]: action && action.payload
-          }
-        }
-      }
-    },
     [removeUserData as any]: (state:SettingsState) => ({ ...initialState, serverUrl: state.serverUrl }),
   },
   initialState,
