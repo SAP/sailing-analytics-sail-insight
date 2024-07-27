@@ -63,11 +63,6 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
-  communicationEnabled: boolean,
-  leaderboardEnabled: boolean,
-  proxyUrl: string,
-  masterUdpIP: string,
-  masterUdpPort: object,
 }
 
 export interface AuthState {
