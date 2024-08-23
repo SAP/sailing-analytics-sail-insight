@@ -25,7 +25,7 @@ import { ColumnValueType, EMPTY_VALUE } from './constants'
 import { LeaderboardCompetitorCurrentTrack } from 'models'
 import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import { $smallSpacing } from 'styles/dimensions'
-import Images from '../../../../assets/Images'
+import Images from '../../../assets/Images'
 import styles, { topRowValueFontSize } from './styles'
 
 const TRIANGLE_UP = () => {

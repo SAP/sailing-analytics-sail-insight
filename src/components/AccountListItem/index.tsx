@@ -2,7 +2,7 @@ import React from 'react'
 import { Image, Text, TouchableHighlight, View } from 'react-native'
 
 import { $secondaryBackgroundColor } from 'styles/colors'
-import Images from '../../../assets/Images'
+import Images from '../../assets/Images'
 import styles from './styles'
 
 class AccountListItem extends React.Component<{

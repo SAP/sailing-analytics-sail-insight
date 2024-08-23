@@ -28,7 +28,7 @@ import SessionItem from 'components/session/SessionItem'
 import SessionItemDark from 'components/session/SessionItemDark'
 import TextButton from 'components/TextButton'
 import { button, container } from 'styles/commons'
-import Images from '../../../../assets/Images'
+import Images from '../../../assets/Images'
 import createStyles from './styles'
 
 
@@ -207,14 +207,14 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
               />
           }
         </View>
-        
+
           <TextButton
               style={[button.actionFullWidth, container.largeHorizontalMargin, this.styles.qrButton]}
               textStyle={this.styles.qrButtonText}
               onPress={() => this.props.navigation.navigate(Screens.QRScanner)}>
             {I18n.t('caption_qr_scanner').toUpperCase()}
           </TextButton>
-        
+
       </View>
     )
   }

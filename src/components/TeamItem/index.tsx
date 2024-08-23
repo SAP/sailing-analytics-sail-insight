@@ -5,7 +5,7 @@ import React from 'react'
 import { TouchableOpacity, View, ViewProps } from 'react-native'
 import { $placeholderBackgroundColor } from 'styles/colors'
 import { image, text } from 'styles/commons'
-import Images from '../../../assets/Images'
+import Images from '../../assets/Images'
 import Image from '../Image'
 import styles from './styles'
 

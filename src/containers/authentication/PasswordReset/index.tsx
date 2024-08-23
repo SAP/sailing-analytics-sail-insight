@@ -14,7 +14,7 @@ import { requestPasswordReset } from '../../../actions/auth'
 
 import I18n from 'i18n'
 
-import Images from '../../../../assets/Images'
+import Images from '../../../assets/Images'
 import styles from './styles'
 import { text, form, button } from 'styles/commons'
 import { $siDarkBlue, $siTransparent } from 'styles/colors';
@@ -31,7 +31,7 @@ class PasswordReset extends TextInputForm<{
 
   public onSubmit = async () => {
     let usernameError = null
-    
+
     this.setState({ error: null })
     const { usernameOrEmail } = this.state
     if (isEmpty(usernameOrEmail)) {

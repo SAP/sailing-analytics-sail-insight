@@ -31,7 +31,7 @@ const translations = {
 };
 
 const defaultLanguage = { languageTag: 'en', isRTL: false };
-const selectedLanguage = RNLocalize.findBestAvailableLanguage(Object.keys(translations)) || defaultLanguage;
+const selectedLanguage = RNLocalize.findBestLanguageTag(Object.keys(translations)) || defaultLanguage;
 
 I18nManager.forceRTL(selectedLanguage.isRTL);
 

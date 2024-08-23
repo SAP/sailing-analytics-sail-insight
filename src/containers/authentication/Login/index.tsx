@@ -21,7 +21,7 @@ import TextButton from 'components/TextButton'
 import TextInput from 'components/TextInput'
 import TextInputForm from 'components/base/TextInputForm'
 
-import Images from '../../../../assets/Images'
+import Images from '../../../assets/Images'
 import styles from './styles'
 import { text, form, button } from 'styles/commons'
 import { $siDarkBlue, $siTransparent } from 'styles/colors';

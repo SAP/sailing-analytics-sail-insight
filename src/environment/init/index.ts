@@ -2,8 +2,8 @@
 
 import { LogBox } from 'react-native'
 
-export const DEFAULT_SERVER_URL = 'https://my.sapsailing.com'
-// export const DEFAULT_SERVER_URL = 'https://dev.sapsailing.com'
+//export const DEFAULT_SERVER_URL = 'https://my.sapsailing.com'
+export const DEFAULT_SERVER_URL = 'https://dev.sapsailing.com'
 export const DATA_API_PREFIX = '/sailingserver/api/v1'
 export const SHARED_DATA_API_PREFIX = '/sharedsailingserver/api/v1'
 export const DATA_API_V2_PREFIX = '/sailingserver/api/v2'

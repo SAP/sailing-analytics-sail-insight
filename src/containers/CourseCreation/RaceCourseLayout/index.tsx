@@ -10,7 +10,7 @@ import {
   recomposeWithHandlers as withHandlers,
 } from 'components/fp/component'
 import { text, view, scrollView, touchableOpacity, forwardingPropsFlatList, svgGroup, svg, svgPath, svgText } from 'components/fp/react-native'
-import { BackHandler, Alert, Keyboard } from 'react-native'
+import {BackHandler, Alert, Keyboard, View, StyleSheet} from 'react-native'
 import { v4 as uuidv4 } from 'uuid';
 import { MarkPositionType, PassingInstruction } from 'models/Course'
 import { getStore } from 'store'
@@ -43,7 +43,6 @@ import CheckBox from 'react-native-check-box'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
-import Dash from 'react-native-dash'
 import { NavigationEvents } from '@react-navigation/compat'
 import styles from './styles'
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
@@ -181,10 +180,39 @@ const arrowUp = ({ color = $LightDarkBlue, size = 25, iconStyle = { height: 12 }
   style: { justifyContent: 'flex-end', height: size },
   iconStyle: { tintColor: color, ...iconStyle } })
 
-const dashLine = fromClass(Dash).contramap(always({
-  style: { height: 50, width: 90, alignItems: 'center' },
-  dashColor: 'white'
-}))
+const dashStyles = StyleSheet.create({
+    dashContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+});
+
+// Custom Dash Component
+const Dash = ({ dashColor = 'white', dashThickness = 2, dashLength = 4, dashGap = 2 }) => {
+    const dashStyles = {
+        backgroundColor: dashColor,
+        height: dashThickness,
+        width: dashLength,
+        marginRight: dashGap,
+    };
+
+    return (
+        <View style={dashStyles.dashContainer}>
+            {Array.from({ length: 10 }).map((_, index) => (
+                <View key={index} style={dashStyles} />
+            ))}
+        </View>
+    );
+};
+
+const dashLine = () => (
+    <Dash
+        dashColor="white"
+        dashThickness={2}
+        dashLength={4}
+        dashGap={2}
+    />
+);
 
 const GateMarkSelectorItem = Component((props: object) =>
   compose(

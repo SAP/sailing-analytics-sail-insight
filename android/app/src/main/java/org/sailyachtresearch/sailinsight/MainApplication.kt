@@ -1,5 +1,7 @@
 package org.sailyachtresearch.sailinsight
 
+import io.branch.rnbranch.*
+
 import android.app.Application
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -10,8 +12,6 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
-
-import io.branch.referral.Branch
 
 class MainApplication : Application(), ReactApplication {
 
@@ -36,16 +36,14 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
+    RNBranchModule.getAutoInstance(this)
+
     SoLoader.init(this, false)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-      // If you opted-in for the New Architecture, we load the native entry point for this app.
-      load()
+        // If you opted-in for the New Architecture, we load the native entry point for this app
+        load()
     }
 
-    // Branch logging for debugging
-    Branch.enableLogging()
-
-    // Branch object initialization
-    Branch.getAutoInstance(this)
+    RNBranchModule.enableLogging();
   }
 }

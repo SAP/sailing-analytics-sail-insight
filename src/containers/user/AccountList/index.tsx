@@ -8,7 +8,7 @@ import I18n from 'i18n'
 import User from 'models/User'
 import { NavigationScreenProps } from 'react-navigation'
 import { container } from 'styles/commons'
-import Images from '../../../../assets/Images'
+import Images from '../../../assets/Images'
 import Image from '../../../components/Image'
 import {
   getUserInfo,
