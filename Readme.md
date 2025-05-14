@@ -20,6 +20,12 @@ npm install -g react-native-cli
 npx jetify -r
 ```
 
+Change to the android/ folder and run
+```
+./gradlew assembleDebug
+```
+The APKs will be signed using a debug key and can be found under `android/app/build/outputs/apk/live/debug`.
+
 **iOS**
 
 7. make sure XCode and XCode command line tools are properly installed
