@@ -3,7 +3,10 @@ import { PERMISSIONS, RESULTS, request, check, Permission } from 'react-native-p
 import I18n from 'i18n'
 
 export const PermissionType = {
-  Photo : Platform.select({ ios: PERMISSIONS.IOS.PHOTO_LIBRARY, android: PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE }),
+  Photo : Platform.select({ ios: PERMISSIONS.IOS.PHOTO_LIBRARY, android: Platform.Version >= 34
+        ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
+        : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
+    }),
   Camera : Platform.select({ ios: PERMISSIONS.IOS.CAMERA, android: PERMISSIONS.ANDROID.CAMERA }),
   Location : Platform.select({ ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION }),
   Contacts : Platform.select({ ios: PERMISSIONS.IOS.CONTACTS, android: PERMISSIONS.ANDROID.READ_CONTACTS })
