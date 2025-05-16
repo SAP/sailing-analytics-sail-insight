@@ -41,7 +41,6 @@ export const login = (email: string, password: string) =>
   handleAccessToken(authApi().accessToken(email, password))
 
 export const logout = () => (dispatch: DispatchType) => {
-  authApi().removeAccessToken()
   dispatch(removeUserData())
 }
 
