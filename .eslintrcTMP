@@ -3,17 +3,26 @@
   "parser": "@typescript-eslint/parser",
   "plugins": [
     "@typescript-eslint",
-    "eslint-plugin-react"
+    "eslint-plugin-react",
+    "react-native",
+    "@react-native",
+    "react-hooks"
   ],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "@react-native"
   ],
   "ignorePatterns": [
     "babel.config.js",
     "metro.config.js"
   ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "rules": {
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
@@ -55,9 +64,11 @@
       }
     ],
     "react/jsx-curly-brace-presence": ["error", { "props": "always", "children": "never" }],
+    "react-hooks/rules-of-hooks": "error", // RNU
     "react-hooks/exhaustive-deps": "off",
     "jsx-a11y/alt-text": "off",
 
+    "react-native/no-inline-styles": "error", // RNU
 
     "eol-last": ["error", "always"],
     "max-len": ["error", { "code": 140 }],
