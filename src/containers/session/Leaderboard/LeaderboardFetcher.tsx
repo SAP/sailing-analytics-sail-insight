@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { NavigationEvents } from '@react-navigation/compat'
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useCallback, useEffect } from 'react';
 
 import {
   startPollingLeaderboard,
@@ -13,8 +14,26 @@ class LeaderboardFetcher extends React.Component<{
   public state = { interval: null }
 
   public render() {
+    const navigation = useNavigation();
+
+    useFocusEffect(
+        useCallback(() => {
+          return () => {
+            this.onBlur();
+          };
+        }, [this.onBlur]) // Add any dependencies if needed
+    );
+
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+        this.onFocus();
+      });
+
+      return unsubscribe;
+    }, [navigation]);
+
     return (
-      <NavigationEvents onDidFocus={this.onFocus} onWillBlur={this.onBlur} />
+      <></ >
     )
   }
 

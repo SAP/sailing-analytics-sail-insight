@@ -1,10 +1,12 @@
-import { debounce } from 'lodash'
-import { __, compose, concat, reduce, mergeRight, ifElse, values,
+import {debounce} from 'lodash'
+import {
+  __, compose, concat, reduce, mergeRight, ifElse, values,
   isEmpty, unless, prop, when, always, isNil, has, mergeLeft, propEq,
   defaultTo, pick, head, of, flatten, init, nth, map, last, negate,
-  equals, reject, all, not } from 'ramda'
+  equals, reject, all, not
+} from 'ramda'
 
-import MapView, { Marker } from 'react-native-maps'
+import MapView, {Marker} from 'react-native-maps'
 
 import {
   Component,
@@ -26,12 +28,40 @@ import TextInputDeprecated from 'components/TextInputDeprecated'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import styles from './styles'
-import { Switch, Platform, Alert } from 'react-native'
-import { NavigationEvents } from '@react-navigation/compat'
-import { dd2ddm, ddm2dd } from 'helpers/utils'
-import { $Orange, $primaryBackgroundColor, $secondaryBackgroundColor } from 'styles/colors'
-import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
+import {Switch, Platform, Alert} from 'react-native'
+import {useLayoutEffect} from 'react';
+import {dd2ddm, ddm2dd} from 'helpers/utils'
+import {$Orange, $primaryBackgroundColor, $secondaryBackgroundColor} from 'styles/colors'
+import {HeaderSaveTextButton, HeaderCancelTextButton} from 'components/HeaderTextButton'
 import I18n from 'i18n'
+
+// --- Updated navigationBackHandler using hooks ---
+const navigationBackHandler = Component((props: any) => {
+  useLayoutEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => HeaderSaveTextButton({
+        onPress: debounce(() => {
+          props.onNavigationSavePress();
+        }, 500, {leading: true, trailing: false})
+      }),
+      headerLeft: () => HeaderCancelTextButton({
+        onPress: () => {
+          props.onNavigationCancelPress();
+        }
+      }),
+      headerLeftContainerStyle: {
+        flex: 0.15,
+      },
+      headerRightContainerStyle: {
+        flex: 0.15
+      },
+      headerTitleContainerStyle: {
+        flex: 0.7,
+      }
+    });
+  }, [props.navigation, props.onNavigationSavePress, props.onNavigationCancelPress]);
+  return null;
+});
 
 const hasNoPadding = propEq(0, 'mapOffset')
 const nothingWhenNoPadding = branch(hasNoPadding, nothingAsClass)
@@ -154,36 +184,6 @@ const Map = Component((props: any) => compose(
         props.setRegion(region)
       }
     }))))
-
-const navigationBackHandler = Component((props: any) => compose(
-  fold(props),
-  contramap(mergeRight({
-    onDidFocus: (payload: any) => {
-      props.navigation.setOptions({
-        headerRight: HeaderSaveTextButton({
-          onPress: debounce(() => {
-            props.onNavigationSavePress()
-          }, 500, { leading: true, trailing: false })
-        }),
-        headerLeft: HeaderCancelTextButton({
-          onPress: () => {
-            props.onNavigationCancelPress()
-          }
-        }),
-        headerLeftContainerStyle: {
-          flex: 0.15,
-        },
-        headerRightContainerStyle: {
-          flex: 0.15
-        },
-        headerTitleContainerStyle: {
-          flex: 0.7,
-        }
-      })
-    }
-  })),
-  fromClass)(
-  NavigationEvents))
 
 const textInput = Component(props => compose(
   fold(props),

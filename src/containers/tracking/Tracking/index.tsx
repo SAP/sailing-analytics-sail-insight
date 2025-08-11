@@ -3,7 +3,9 @@ import React, { useEffect } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import { connect } from 'react-redux'
-import { NavigationEvents } from '@react-navigation/compat'
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
@@ -33,7 +35,6 @@ import styles from './styles'
 
 import ScrollContentView from 'components/ScrollContentView';
 import Toast from 'react-native-root-toast'
-import { NavigationScreenProps } from 'react-navigation'
 import {activateKeepAwake, deactivateKeepAwake} from "@sayem314/react-native-keep-awake";
 
 const EMPTY_VALUE = '-'
@@ -49,7 +50,21 @@ const Timer = ({ onUpdate }) => {
   return null
 }
 
-class Tracking extends React.Component<NavigationScreenProps & {
+type RootStackParamList = { // RNU check
+  WelcomeTracking: undefined;
+  Leaderboard: undefined;
+  SetWind: {
+    data: {
+      speedInKnots: number;
+      directionInDeg: number;
+    }
+  };
+  [key: string]: undefined | object;
+};
+type NavigationProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+};
+class Tracking extends React.Component<NavigationProps & {
   stopTracking: any,
   openLatestRaceTrackDetails: any,
   trackingStats: LocationStats,
@@ -58,7 +73,7 @@ class Tracking extends React.Component<NavigationScreenProps & {
   rank?: number,
   isNetworkConnected: boolean,
   isLoadingCheckIn?: boolean
-} > {
+},  any > {
   public state = {
     isLoading: false,
     durationText: EMPTY_DURATION_TEXT,
@@ -78,20 +93,23 @@ class Tracking extends React.Component<NavigationScreenProps & {
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
     const distance = trackingStats.distance ? trackingStats.distance.toFixed(0) : '0'
 
-    return (
-      <ScrollContentView style={[container.main]}>
-        <NavigationEvents
-          onWillFocus={() => {
-            BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-            this.setState({ isFocused: true })
-            activateKeepAwake();
-          }}
-          onWillBlur={() => {
+
+    useFocusEffect(
+        useCallback(() => {
+          BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+          this.setState({ isFocused: true })
+          activateKeepAwake();
+
+          return () => {
             BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
             this.setState({ isFocused: false })
             deactivateKeepAwake();
-          }}
-        />
+          };
+        }, []) // Add any dependencies if needed
+    );
+
+    return (
+      <ScrollContentView style={[container.main]}>
         <LeaderboardFetcher rankOnly />
         <ConnectivityIndicator style={styles.connectivity}/>
         {trackedContextName && <Text style={styles.contextName}>{trackedContextName}</Text>}

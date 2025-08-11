@@ -13,7 +13,7 @@ import {
 } from 'components/fp/component'
 import { text, touchableOpacity, view } from 'components/fp/react-native'
 import styles from './styles'
-import { Dimensions } from 'react-native'
+import {BackHandler, Dimensions} from 'react-native'
 import {
   updateMarkConfigurationWithCurrentDeviceAsTracker,
   fetchAndUpdateMarkConfigurationDeviceTracking,
@@ -23,7 +23,8 @@ import { getDeviceId } from 'selectors/user'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getMarkConfigurationById } from 'selectors/course'
 import { BRANCH_APP_DOMAIN } from 'environment'
-import { NavigationEvents } from '@react-navigation/compat'
+import { useFocusEffect, useNavigationState } from '@react-navigation/native';
+import {useCallback, useLayoutEffect} from 'react';
 import I18n from 'i18n'
 
 const { width: viewportWidth } = Dimensions.get('window')
@@ -91,13 +92,32 @@ const useThisDeviceButton = Component(props => compose(
   toUpper)(
   I18n.t('caption_course_creator_use_this_device')))
 
-const NavigationBackHandler = Component((props: any) => compose(
-  fold(props),
-  contramap(mergeRight({
-    onWillBlur: (payload: any) => (!payload || !payload.state) && props.fetchAndUpdateMarkConfigurationDeviceTracking()
-  })),
-  fromClass)(
-  NavigationEvents))
+const navigationBackHandler = ((props: any) => {
+    useLayoutEffect(() => {
+        props.navigation.setOptions({
+            headerLeft: () => ({
+                onPress: () => {
+                    props.fetchAndUpdateMarkConfigurationDeviceTracking()
+                    props.navigation.goBack()
+                }
+            }),
+        })
+
+        const onHardwareBackPress = () => {
+            props.fetchAndUpdateMarkConfigurationDeviceTracking()
+            props.navigation.goBack()
+            return true
+        }
+
+        BackHandler.addEventListener('hardwareBackPress', onHardwareBackPress)
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', onHardwareBackPress)
+        }
+    }, [props.navigation, props.fetchAndUpdateMarkConfigurationDeviceTracking])
+
+    return null
+})
+
 
 export default Component((props: object) =>
   compose(
@@ -109,7 +129,7 @@ export default Component((props: object) =>
     }),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
-    NavigationBackHandler,
+    navigationBackHandler(props),
     trackingQRCode,
     nothingWhenInvalidMark(text({ style: styles.scanText }, I18n.t('caption_scan_qr_code_for_mark_binding'))),
     useThisDeviceButton ]))

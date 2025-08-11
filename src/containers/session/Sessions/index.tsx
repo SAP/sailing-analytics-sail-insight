@@ -15,12 +15,12 @@ import { authBasedNewSession } from 'actions/auth'
 import { selectEvent } from 'actions/events'
 import { fetchEventList } from 'actions/checkIn'
 import { Session } from 'models'
-import { NavigationScreenProps } from 'react-navigation'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { getFilteredSessionList, isSessionListEmpty } from 'selectors/session'
 import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
-
-import { NavigationEvents } from '@react-navigation/compat'
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
 import ScrollContentView from 'components/ScrollContentView'
@@ -31,9 +31,21 @@ import { button, container } from 'styles/commons'
 import Images from '../../../../assets/Images'
 import createStyles from './styles'
 
+type RootStackParamList = {
+  Sessions: {
+    forTracking?: boolean;
+  };
+  QRScanner: undefined;
+  SessionDetails?: undefined;
+  Tracking?: undefined;
+  [key: string]: undefined | object;
+};
+type NavigationProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+};
 
 @connectActionSheet
-class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
+class Sessions extends React.Component<ViewProps & NavigationProps & {
   showActionSheetWithOptions: ShowActionSheetType,
   sessions: Session[],
   startTracking: StartTrackingAction,
@@ -42,7 +54,7 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
   eventIdThatsBeingSelected?: string,
   isLoggedIn: boolean,
   showHints: boolean,
-} > {
+}, any > {
 
   swipeableListReferences: { [id: string]: any} = {}
   styles: any
@@ -161,11 +173,17 @@ class Sessions extends React.Component<ViewProps & NavigationScreenProps & {
     const { isLoadingEventList, showHints } = this.props
 
     const shouldShowLoadingSpinner = openedWhenLoading && isLoadingEventList
+
+    useFocusEffect(
+        useCallback(() => {
+          this.setState({ openedWhenLoading: isLoadingEventList })
+
+          return () => {};
+        }, [isLoadingEventList]) // Add any dependencies if needed
+    );
+
     return (
       <View style={this.styles.container}>
-        <NavigationEvents
-          onWillFocus={() => this.setState({ openedWhenLoading: isLoadingEventList })}
-        />
         <View
           style={this.styles.scrollContainer}
         >
