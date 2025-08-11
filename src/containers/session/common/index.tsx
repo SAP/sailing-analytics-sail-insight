@@ -22,7 +22,8 @@ import ModalSelector from 'react-native-modal-selector'
 import QRCode from 'react-native-qrcode-svg'
 import styles from './styles'
 import CompetitorList from '../Leaderboard/CompetitorList'
-import { NavigationEvents } from '@react-navigation/compat'
+import { useFocusEffect, useNavigationState } from '@react-navigation/native';
+import { useCallback } from 'react';
 import * as LocationService from 'services/LocationService'
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { getWindowWidth } from 'helpers/screen';
@@ -302,31 +303,29 @@ const nothingIfCompetitorListNotStale = branch(propEq(false,'competitorListStale
 const nothingIfCompetitorListEmpty = branch(isCompetitorListEmpty, nothingAsClass)
 const nothingIfCompetitorListNotEmpty = branch(isCompetitorListNotEmpty, nothingAsClass)
 
-export const competitorListRefreshHandler = Component((props: any) =>
-  compose(
-    fold(props),
-    contramap(
-      mergeRight({
-        onWillFocus: () => {
-          const callback = async () => {
-            const { leaderboardName, regattaName } = props.session
-            await props.fetchRegattaCompetitors(regattaName, leaderboardName)
-            props.setCompetitorListStale(false)
-          }
-          callback()
-          props.setCompetitorListRefreshInterval(
-            setInterval(callback, COMPETITOR_LIST_REFRESH_RATE),
-          )
-        },
-        onWillBlur: () => {
-          clearInterval(props.competitorListRefreshInterval)
-          props.setCompetitorListStale(true)
-        },
-      }),
-    ),
-    fromClass,
-  )(NavigationEvents),
-)
+export const competitorListRefreshHandler = Component((props: any) => {
+    useFocusEffect(
+        useCallback(() => {
+            // On Focus
+            const callback = async () => {
+                const { leaderboardName, regattaName } = props.session;
+                await props.fetchRegattaCompetitors(regattaName, leaderboardName);
+                props.setCompetitorListStale(false);
+            };
+            callback();
+            props.setCompetitorListRefreshInterval(
+                setInterval(callback, COMPETITOR_LIST_REFRESH_RATE)
+            );
+            // On Blur (cleanup)
+            return () => {
+                clearInterval(props.competitorListRefreshInterval);
+                props.setCompetitorListStale(true);
+            };
+        }, [props.session, props.fetchRegattaCompetitors])
+    );
+
+    return null;
+})
 
 const competitorListItems = Component((props: any) => compose(
   fold(props),

@@ -44,7 +44,8 @@ import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
 import Dash from 'react-native-dash'
-import { NavigationEvents } from '@react-navigation/compat'
+import { useFocusEffect, useNavigationState } from '@react-navigation/native';
+import {useCallback, useLayoutEffect} from 'react';
 import styles from './styles'
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 import { Dimensions } from 'react-native'
@@ -737,47 +738,63 @@ const withOnNavigationBackPress = withHandlers({
     }
   },
   onNavigationSavePress: saveCourse,
-  onNavigationBackButtonPress: (props: any) => () => {
-    if (props.hasCourseChanged) {
-      Alert.alert(I18n.t('caption_unsaved_changes'), '',
-        [ { text: I18n.t('button_save'), onPress: saveCourse(props)},
-      { text: I18n.t('button_dont_save'), onPress: () => props.navigation.goBack() }])
-    } else {
-      props.navigation.goBack()
-    }
-    return true
-  },
-
 })
 
-const NavigationBackHandler = Component((props: any) => compose(
-  fold(props),
-  contramap(mergeRight({
-    onWillBlur: (payload: any) => {
-      BackHandler.removeEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
-      props.stopLocalLocationUpdates()
-    },
-    onWillFocus: (payload: any) => {
-      props.startLocalLocationUpdates()
-    },
-    onDidFocus: (payload: any) => {
-      BackHandler.addEventListener('hardwareBackPress', props.onNavigationBackButtonPress)
-      props.navigation.setOptions({
-        headerRight: HeaderSaveTextButton({
-          onPress: () => {
-            props.onNavigationSavePress()
-          }
-        }),
-        headerLeft: HeaderCancelTextButton({
-          onPress: () => {
-            props.onNavigationCancelPress()
-          }
-        })
-      })
-    }
-  })),
-  fromClass)(
-  NavigationEvents))
+const navigationBackHandler = (props: any) => {
+    useLayoutEffect(() => {
+        // Set header buttons
+        props.navigation.setOptions({
+            headerRight: () => HeaderSaveTextButton({
+                onPress: () => {
+                    Keyboard.dismiss();
+                    setTimeout(() => props.onNavigationSavePress(), 50);
+                }
+            }),
+            headerLeft: () => HeaderCancelTextButton({
+                onPress: () => {
+                    if (props.hasCourseChanged) {
+                        Alert.alert(I18n.t('caption_leave'), '',
+                            [
+                                { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
+                                { text: I18n.t('button_no'), onPress: () => {} }
+                            ]);
+                    } else {
+                        props.navigation.goBack();
+                    }
+                }
+            }),
+        });
+
+        // Hardware back button handling
+        const onHardwareBackPress = () => {
+            if (props.hasCourseChanged) {
+                Alert.alert(I18n.t('caption_unsaved_changes'), '',
+                    [
+                        { text: I18n.t('button_save'), onPress: () => {
+                                Keyboard.dismiss();
+                                setTimeout(() => {
+                                    props?.navigateBackFromCourseCreation({ navigation: props.navigation }); // RNU
+                                    props?.onNavigationSavePress();
+                                }, 50);
+                            }
+                        },
+                        { text: I18n.t('button_dont_save'), onPress: () => props.navigation.goBack() }
+                    ]);
+                return true; // prevent default
+            }
+            props.navigation.goBack();
+            return true;
+        };
+
+        BackHandler.addEventListener('hardwareBackPress', onHardwareBackPress);
+
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', onHardwareBackPress);
+        };
+    }, [props.navigation, props.onNavigationSavePress, props.hasCourseChanged]);
+
+    return null;
+};
 
 export default Component((props: object) =>
   compose(
@@ -800,7 +817,9 @@ export default Component((props: object) =>
     withOnNavigationBackPress,
     scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true, contentContainerStyle: { flexGrow: 1 } }),
     reduce(concat, nothing()))(
-    [ NavigationBackHandler,
+    [
+      navigationBackHandler(props),
       nothingWhenNotLoading(LoadingIndicator),
       nothingWhenLoading(WaypointsList),
-      nothingWhenLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm)) ]))
+      nothingWhenLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm))
+    ]))
