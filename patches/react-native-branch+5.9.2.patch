@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-branch/android/build.gradle b/node_modules/react-native-branch/android/build.gradle
+index 2b38e65..837e039 100644
+--- a/node_modules/react-native-branch/android/build.gradle
++++ b/node_modules/react-native-branch/android/build.gradle
+@@ -31,6 +31,7 @@ def safeExtGet(prop, fallback) {
+ // Top-level build file where you can add configuration options common to all sub-projects/modules.
+ 
+     android {
++        namespace 'io.branch.rnbranch'
+         compileSdkVersion safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
+ 
+         defaultConfig {

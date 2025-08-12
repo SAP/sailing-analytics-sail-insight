@@ -1,0 +1,12 @@
+diff --git a/node_modules/@react-native-firebase/crashlytics/android/build.gradle b/node_modules/@react-native-firebase/crashlytics/android/build.gradle
+index f886753..220da80 100644
+--- a/node_modules/@react-native-firebase/crashlytics/android/build.gradle
++++ b/node_modules/@react-native-firebase/crashlytics/android/build.gradle
+@@ -60,6 +60,7 @@ project.ext {
+ }
+ 
+ android {
++  namespace 'io.invertase.firebase.crashlytics'
+   defaultConfig {
+     multiDexEnabled true
+   }

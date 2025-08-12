@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-network-info/android/build.gradle b/node_modules/react-native-network-info/android/build.gradle
+index 33236e8..0472b42 100644
+--- a/node_modules/react-native-network-info/android/build.gradle
++++ b/node_modules/react-native-network-info/android/build.gradle
+@@ -12,6 +12,7 @@ def safeExtGet(prop, fallback) {
+     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+ }
+ android {
++    namespace 'com.pusherman.networkinfo'
+     compileSdkVersion safeExtGet("compileSdkVersion", 28)
+     buildToolsVersion safeExtGet("buildToolsVersion", "28.0.3")
+     defaultConfig {
