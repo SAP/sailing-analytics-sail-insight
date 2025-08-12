@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-camera/android/build.gradle b/node_modules/react-native-camera/android/build.gradle
+index 4aed495..4dce547 100644
+--- a/node_modules/react-native-camera/android/build.gradle
++++ b/node_modules/react-native-camera/android/build.gradle
+@@ -23,6 +23,7 @@ buildscript {
+ apply plugin: 'com.android.library'
+ 
+ android {
++  namespace 'org.reactnative.camera'
+   compileSdkVersion safeExtGet('compileSdkVersion', 29)
+   buildToolsVersion safeExtGet('buildToolsVersion', '29.0.2')
+ 

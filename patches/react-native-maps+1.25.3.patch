@@ -1,0 +1,29 @@
+diff --git a/node_modules/react-native-maps/android/build.gradle b/node_modules/react-native-maps/android/build.gradle
+index 334325a..7cddea0 100644
+--- a/node_modules/react-native-maps/android/build.gradle
++++ b/node_modules/react-native-maps/android/build.gradle
+@@ -17,6 +17,16 @@ buildscript {
+             classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}")
+         }
+     }
++    ext {
++        kotlinVersion = "1.7.10"
++    }
++    repositories {
++        google()
++        mavenCentral()
++    }
++    dependencies {
++        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
++    }
+ }
+ 
+ def supportsNamespace() {
+@@ -55,6 +65,7 @@ android {
+     }
+ 
+     compileSdk safeExtGet('compileSdkVersion', 35)
++    compileSdkVersion 33
+ 
+     defaultConfig {
+         minSdkVersion safeExtGet('minSdkVersion', 21)

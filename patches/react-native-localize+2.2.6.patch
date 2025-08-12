@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-localize/android/build.gradle b/node_modules/react-native-localize/android/build.gradle
+index f3587fb..6f7a694 100644
+--- a/node_modules/react-native-localize/android/build.gradle
++++ b/node_modules/react-native-localize/android/build.gradle
+@@ -20,6 +20,7 @@ buildscript {
+ apply plugin: "com.android.library"
+ 
+ android {
++    namespace 'com.zoontek.rnlocalize'
+     compileSdkVersion safeExtGet("compileSdkVersion", 31)
+     buildToolsVersion safeExtGet("buildToolsVersion", "31.0.0")
+     defaultConfig {
