@@ -1,4 +1,43 @@
-rootProject.name = 'sap_sailing_insight'
-apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
-include ':app'
-includeBuild('../node_modules/@react-native/gradle-plugin')
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+        google()
+    }
+    includeBuild("../node_modules/@react-native/gradle-plugin")
+    plugins {
+        id("com.android.application") version "8.6.0"
+        id("com.android.library") version "8.6.0"
+        id("org.jetbrains.kotlin.android") version "1.9.25"
+        id("com.google.gms.google-services") version "4.4.2"
+        id("com.google.firebase.crashlytics") version "3.0.2"
+        id("com.facebook.react.rootproject") apply false
+    }
+}
+
+plugins {
+    id("com.facebook.react.settings") version "0.76.9"
+}
+
+includeBuild("../node_modules/@react-native/gradle-plugin")
+
+// Allow project repositories; RN plugin adds one. // RN ds  2 & 3
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+  repositories {
+    google()
+    mavenCentral()
+  }
+}
+
+// Drive autolinking via the settings plugin
+extensions.configure(com.facebook.react.ReactSettingsExtension) { s ->
+  s.autolinkLibrariesFromCommand()
+}
+
+// include(":react-native-branch")
+// project(":react-native-branch").projectDir = file("../node_modules/react-native-branch/android")
+
+
+rootProject.name = "sap_sailing_insight"
+include(":app")
