@@ -1,36 +1,43 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// android/build.gradle (root project)
 
-buildscript {
-    ext {
-        buildToolsVersion = "33.0.0"
-        minSdkVersion = 21
-        compileSdkVersion = 33
-        targetSdkVersion = 33
+plugins {
+  id("com.android.application") version "8.6.0" apply false
+  id("com.android.library") version "8.6.0" apply false
+  id("org.jetbrains.kotlin.android") version "1.9.25" apply false
+  id("com.google.gms.google-services") version "4.4.2" apply false
+  id("com.google.firebase.crashlytics") version "3.0.2" apply false
 
-        // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
-        ndkVersion = "23.1.7779620"
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:8.0.1")
-        classpath("com.facebook.react:react-native-gradle-plugin")
-        classpath("com.google.gms:google-services:4.3.15")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.0")
-    }
+  // Apply RN root plugin at the root (NO version, thanks to includeBuild)
+  id("com.facebook.react.rootproject")
 }
 
+// Centralized versions (read from :app if you prefer; these are just convenience props)
+ext {
+  minSdkVersion      = 24
+  targetSdkVersion   = 34
+  compileSdkVersion  = 35
+  buildToolsVersion  = "35.0.0"
+  kotlinVersion      = "1.9.25"
+  ndkVersion         = "26.1.10909125"
+
+  // RNU ds 4
+  appCompatVersion 	= "1.4.2"      // Or higher.  Required for new AndroidX compatibility.
+  googlePlayServicesLocationVersion = "21.0.1"  // Or higher.
+}
+
+// RNU ds 3
+
 allprojects {
-    repositories {
-        maven {
-            // Required for react-native-background-geolocation
-            url("${project(':react-native-background-geolocation').projectDir}/libs")
-        }
-        maven {
-            // Required for react-native-background-fetch
-            url("${project(':react-native-background-fetch').projectDir}/libs")
-        }
-    }
+  repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://plugins.gradle.org/m2/' } // RNU ds 2
+
+    // NRU ds 4
+    // Required for react-native-background-geolocation
+    maven { url("${project(':react-native-background-geolocation').projectDir}/libs") }
+    maven { url 'https://developer.huawei.com/repo/' }
+    // Required for react-native-background-fetch
+    maven { url("${project(':react-native-background-fetch').projectDir}/libs") }
+  }
 }
