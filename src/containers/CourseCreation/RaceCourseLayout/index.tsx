@@ -43,7 +43,7 @@ import CheckBox from 'react-native-check-box'
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
 import { HeaderSaveTextButton, HeaderCancelTextButton } from 'components/HeaderTextButton'
-import Dash from 'react-native-dash'
+import DashedLine from 'react-native-dashed-line'
 import { useFocusEffect, useNavigationState } from '@react-navigation/native';
 import {useCallback, useLayoutEffect} from 'react';
 import styles from './styles'
@@ -182,9 +182,13 @@ const arrowUp = ({ color = $LightDarkBlue, size = 25, iconStyle = { height: 12 }
   style: { justifyContent: 'flex-end', height: size },
   iconStyle: { tintColor: color, ...iconStyle } })
 
-const dashLine = fromClass(Dash).contramap(always({
-  style: { height: 50, width: 90, alignItems: 'center' },
-  dashColor: 'white'
+const dashLine = fromClass(DashedLine).contramap(always({ // RNU
+  style: { width: 90, height: 50, justifyContent: 'center' },
+  axis: 'horizontal',
+  dashColor: 'white',
+  dashLength: 4,
+  dashGap: 2,
+  dashThickness: 2,
 }))
 
 const GateMarkSelectorItem = Component((props: object) =>

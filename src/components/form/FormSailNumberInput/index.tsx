@@ -53,6 +53,25 @@ class FormSailNumberInput extends React.Component<ViewProps & RNTextInputProps &
                 {...restInput}
                 {...additionalProps}
             />
+            <Autocomplete
+                containerStyle={style}
+                data={
+                  filteredData.length === 1 && comp(query, filteredData[0].sailNumber)
+                      ? []
+                      : filteredData
+                }
+                value={query}
+                renderTextInput={this.renderTextInput}
+                inputContainerStyle={styles.inputContainer}
+                listStyle={styles.list}
+                flatListProps={{
+                  keyboardShouldPersistTaps: 'always',
+                  keyExtractor: (item, i) => String(i),
+                  renderItem: ({ item, index }) => this.renderItem(item), // RNU
+                }}
+                {...restInput}
+                {...additionalProps}
+            />
           </View>
         </View>
     )
@@ -79,7 +98,7 @@ class FormSailNumberInput extends React.Component<ViewProps & RNTextInputProps &
     onSelectTeam(team)
   }
 
-  protected renderItem = (item: TeamTemplate) => {
+  protected renderItem = ({item}: any) => {
     return (
         <TouchableOpacity
             style={styles.listItem}

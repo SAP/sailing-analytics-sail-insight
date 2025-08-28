@@ -18,8 +18,6 @@ import { Session } from 'models'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { getFilteredSessionList, isSessionListEmpty } from 'selectors/session'
 import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import FloatingComponentList from 'components/FloatingComponentList'
 import IconText from 'components/IconText'
@@ -55,6 +53,8 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
   isLoggedIn: boolean,
   showHints: boolean,
 }, any > {
+  private _unsubscribeFromFocus?: () => void;
+  private _unsubscribeFromBlur?: () => void;
 
   swipeableListReferences: { [id: string]: any} = {}
   styles: any
@@ -95,6 +95,10 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
   }
 
   public componentDidMount() {
+    // when the screen gains focus, snapshot the loading flag into state
+    this._unsubscribeFromFocus = this.props.navigation.addListener('focus', () => {
+      this.setState({ openedWhenLoading: this.props.isLoadingEventList });
+    });
     this._unsubscribeFromBlur = this.props.navigation.addListener('blur', () => {
       this.setState({ swipeableLeftOpenEventId: '' })
       this.closeSwipeableRows()
@@ -102,7 +106,18 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
   }
 
   public componentWillUnmount() {
-    this._unsubscribeFromBlur()
+    this._unsubscribeFromBlur?.()
+    this._unsubscribeFromFocus?.()
+  }
+
+  public componentDidUpdate(prevProps: Readonly<any>) {
+    if (
+        prevProps.isLoadingEventList !== this.props.isLoadingEventList &&
+        // RN Navigation adds isFocused() on navigation objects
+        (this.props.navigation.isFocused?.() ?? false)
+    ) {
+      this.setState({ openedWhenLoading: this.props.isLoadingEventList });
+    }
   }
 
   public closeSwipeableRows() {
@@ -173,15 +188,6 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
     const { isLoadingEventList, showHints } = this.props
 
     const shouldShowLoadingSpinner = openedWhenLoading && isLoadingEventList
-
-    useFocusEffect(
-        useCallback(() => {
-          this.setState({ openedWhenLoading: isLoadingEventList })
-
-          return () => {};
-        }, [isLoadingEventList]) // Add any dependencies if needed
-    );
-
     return (
       <View style={this.styles.container}>
         <View
