@@ -1,4 +1,4 @@
-import React, { Component as ReactComponent } from 'react'
+import React, {Component as ReactComponent, useRef} from 'react'
 import { Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
@@ -209,17 +209,36 @@ const withoutTitle = mergeDeepLeft({ options: { title: '' }})
 const withoutHeaderTitle = mergeDeepLeft({ options: { headerTitle: () => null }})
 const withoutHeaderLeft = mergeDeepLeft({ options: { headerLeft: () => null } })
 const withTransparentHeader = mergeDeepLeft({ options: { ...navHeaderTransparentProps } })
-const withGradientHeaderBackground = mergeDeepLeft({ options: { headerBackground: (props: any) => <GradientNavigationBar transparent="true" {...props} /> } })
-const withRightModalBackButton = mergeDeepLeft({ options: { headerRight: () => <ModalBackButton type="icon" iconColor={$headerTintColor} /> } })
+const withGradientHeaderBackground = mergeDeepLeft({
+  options: {
+    headerBackground: (props: any) => <GradientNavigationBar transparent={true} {...props} />,
+  },
+})
+const withRightModalBackButton = mergeDeepLeft({
+  options: {
+    headerRight: () => (
+      <ModalBackButton type="icon" iconColor={$headerTintColor} />
+    ),
+  },
+})
 
 // Left header back button (Chevron only)
 const withLeftHeaderBackButton = (options) => mergeDeepLeft({
   options: {
-    headerLeft: HeaderBackButton({
-      labelVisible: false,
-      onPress: when(always(options.backOnceClickable), once)(() => navigationContainer.current.goBack())
-    })
-  }
+    headerLeft: (() => {
+      let pressed = false; // closure, no hooks
+      return () => (
+          <HeaderBackButton
+              labelVisible={false}
+              onPress={() => {
+                if (options.backOnceClickable && pressed) return;
+                pressed = true;
+                navigationContainer.current?.goBack();
+              }}
+          />
+      );
+    }),
+  },
 })(options)
 
 // Left header close button (X only)
@@ -314,14 +333,22 @@ const accountNavigator = Component(props => compose(
   stackScreen(compose(withLeftHeaderBackButton)({ name: Screens.Support, component: Support.fold, options: { title: I18n.t('caption_tab_support') } })),
   stackScreen(compose(withRightModalBackButton, withoutHeaderLeft)({ name: Screens.ExpertSettings, component: ExpertSettings, options: { title: I18n.t('title_expert_settings') } })),
   stackScreen({ name: Screens.ZendeskSupport, component: ZendeskSupport, options: ({ route }) => ({
-    headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
+    headerLeft: () => (
+      <HeaderBackButton
+          onPress={() => navigationContainer.current.goBack()}
+      />
+    ),
     title: route?.params?.data?.supportType === 'FAQ' ? I18n.t('caption_faq') : I18n.t('caption_known_issues')
   }) }),
   stackScreen(({
     name: Screens.TeamDetails,
     component: TeamDetails,
     options: ({ route }) => ({
-      headerLeft: HeaderBackButton({ onPress: () => navigationContainer.current.goBack() }),
+      headerLeft: () => (
+          <HeaderBackButton
+              onPress={() => navigationContainer.current.goBack()}
+          />
+      ),
       headerTitle: () => <TeamDetailsHeader/>,
       headerRight: () => teamDeleteHeader(route),
     })
@@ -354,34 +381,38 @@ const eventTabPress  = preventTabPressBackAction(
   []
 )
 
+const TrackingScreen  = TrackingSwitch;
+const SessionsScreen  = sessionsNavigator.fold;
+const AccountScreen   = accountNavigator.fold;
+const InventoryScreen = MarkInventory.fold;
+
 const mainTabsNavigator = Component(props => compose(
   fold(mergeRight(props, { customRenderer: true })),
   tabsNavigator({
     initialRouteName: Screens.TrackingNavigator,
-    lazy: false,
     backBehavior: 'initialRoute',
-    tabBarOptions: {
-      activeTintColor: $primaryTextColor,
-      inactiveTintColor: $secondaryTextColor,
-      style: tab.bottomTabBar,
-      showLabel: true,
-      showIcon: true,
-      labelPosition: 'below-icon',
-      keyboardHidesTabBar: (Platform.OS === 'android') ? true : false,
-    },
-    screenOptions: ({ route }) => ({
-      tabBarIcon: ({ color, focused }) => getTabBarIcon(route, color, focused),
-      tabBarLabel: ({ color, focused }) => getTabBarLabel(route, color, focused),
-    })
+    screenOptions: ({route}) => ({ // RNU
+      tabBarActiveTintColor: $primaryTextColor,
+      tabBarInactiveTintColor: $secondaryTextColor,
+      tabBarStyle: tab.bottomTabBar,
+      tabBarShowLabel: true,
+      tabBarLabelPosition: 'below-icon',
+      tabBarHideOnKeyboard: Platform.OS === 'android',
+
+      lazy: false,
+
+      tabBarIcon: ({color, focused}) => getTabBarIcon(route, color, focused),
+      tabBarLabel: ({color, focused}) => getTabBarLabel(route, color, focused),
+    }),
   }),
   reduce(concat, nothing()),
   reject(isNil))([
-  tabsScreen({ name: Screens.TrackingNavigator, component: TrackingSwitch, listeners: { tabPress: event => trackingTabPress(mergeRight(props, event)) } }),
-  tabsScreen({ name: Screens.SessionsNavigator, component: sessionsNavigator.fold, listeners: { tabPress: event => eventTabPress(mergeRight(props, event)) } }),
+  tabsScreen({ name: Screens.TrackingNavigator, component: TrackingScreen, listeners: { tabPress: event => trackingTabPress(mergeRight(props, event)) } }),
+  tabsScreen({ name: Screens.SessionsNavigator, component: SessionsScreen, listeners: { tabPress: event => eventTabPress(mergeRight(props, event)) } }),
   // Recompose branch utility cannot be used here since react-navigation expects
   // direct children for a navigator to be Screen components.
-  props.userHasMarkProperties ? tabsScreen({ name: Screens.Inventory, component: MarkInventory.fold }) : null,
-  tabsScreen({ name: Screens.Account, component: accountNavigator.fold }),
+  props.userHasMarkProperties ? tabsScreen({ name: Screens.Inventory, component: InventoryScreen }) : null,
+  tabsScreen({ name: Screens.Account, component: AccountScreen }),
 ]))
 
 const joinRegattaScreenMixins = compose(withLeftHeaderCloseButton, withTransparentHeader, withoutTitle)

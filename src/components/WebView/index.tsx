@@ -79,9 +79,11 @@ class WebView extends React.Component<{
   protected handleWillFocus = () => {
     BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackButton)
     this.props.navigation.setOptions({
-      headerLeft: HeaderBackButton({
-        onPress: this.goBack,
-      }),
+      headerLeft: () => (
+        <HeaderBackButton
+          onPress={() => this.goBack()}
+        />
+      ),
     })
   }
 }

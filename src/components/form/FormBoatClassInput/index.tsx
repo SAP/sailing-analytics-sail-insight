@@ -76,16 +76,24 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
         <View>
           <View style={styles.autocompleteContainer}>
             <Autocomplete
-                style={style}
-                data={filteredData.length === 1 && comp(query, filteredData[0].name) ? [] : filteredData}
-                defaultValue={query}
-                renderTextInput={this.renderTextInput}
-                renderItem={this.renderItem}
-                inputContainerStyle={[styles.inputContainer, containerStyle]}
-                listStyle={styles.list}
-                hideResults={hideResults}
-                {...restInput}
-                {...additionalProps}
+              containerStyle={style}  // was: style
+              data={
+                filteredData.length === 1 && comp(query, filteredData[0].name)
+                  ? []
+                  : filteredData
+              }
+              value={query}
+              renderTextInput={this.renderTextInput}
+              inputContainerStyle={[styles.inputContainer, containerStyle]}
+              listStyle={styles.list}
+              hideResults={hideResults}
+              flatListProps={{
+                keyExtractor: (_, i) => String(i),
+                renderItem: ({ item, index }) => this.renderItem(item),  // RNU
+                keyboardShouldPersistTaps: 'always',
+              }}
+              {...restInput}
+              {...additionalProps}
             />
           </View>
         </View>
