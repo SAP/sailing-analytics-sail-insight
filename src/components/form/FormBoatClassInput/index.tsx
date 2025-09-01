@@ -79,7 +79,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
               containerStyle={style}  // was: style
               data={
                 filteredData.length === 1 && comp(query, filteredData[0].name)
-                  ? []
+                  ? [] as BoatClassesBody[]
                   : filteredData
               }
               value={query}
@@ -89,7 +89,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
               hideResults={hideResults}
               flatListProps={{
                 keyExtractor: (_, i) => String(i),
-                renderItem: ({ item, index }) => this.renderItem(item),  // RNU
+                renderItem: (item) => this.renderItem(item),  // RNU
                 keyboardShouldPersistTaps: 'always',
               }}
               {...restInput}
@@ -127,12 +127,13 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   }
 
   protected renderItem = ({ item }: any) => {
-    const iconSource = item.iconUrl ? { uri: assetApiEndpoint(getApiServerUrl())(item.iconUrl)() } : ''
+    console.log(item);
+    const iconSource = item?.iconUrl ? { uri: assetApiEndpoint(getApiServerUrl())(item.iconUrl)() } : ''
     return (
         <TouchableOpacity
             style={styles.listItem}
-            onPress={this.setCurrentInput(item.name)}>
-          <Text>{item.name}</Text>
+            onPress={this.setCurrentInput(item?.name || '')}>
+          <Text>{item?.name || '-'}</Text>
           {iconSource ? (<Image style={styles.icon} source={iconSource} />) : null}
         </TouchableOpacity>
     )

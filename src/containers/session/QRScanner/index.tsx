@@ -1,6 +1,6 @@
-import React from 'react'
-import { Alert, Text, View } from 'react-native'
-import QRCodeScanner from 'react-native-qrcode-scanner'
+import React, { useEffect, useRef, useState } from 'react'
+import { Alert, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
+import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-camera'
 import { connect } from 'react-redux'
 
 import { fetchCheckIn } from 'actions/checkIn'
@@ -8,102 +8,120 @@ import Logger from 'helpers/Logger'
 import { showNetworkRequiredAlert } from 'helpers/network'
 import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
 import I18n from 'i18n'
-import * as Screens from 'navigation/Screens'
 import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
 import { isNetworkConnected } from 'selectors/network'
+import * as Screens from 'navigation/Screens'
 
-import styles from './styles'
+type Props = {
+    navigation: any
+    route?: any
+    fetchCheckIn: (qr: string) => Promise<any>
+    isNetworkConnected: boolean
+}
 
-class QRScanner extends React.Component<{
-  fetchCheckIn: (url: string) => any,
-  isNetworkConnected: boolean
-} > {
-  public state = {
-    isLoading: false,
-  }
+const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Props) => {
+    const device = useCameraDevice('back')
+    const [hasPermission, setHasPermission] = useState<boolean | null>(null)
+    const [busy, setBusy] = useState(false)
+    const lastValueRef = useRef<string | null>(null)
 
-  public scanner: any
+    useEffect(() => {
+        (async () => {
+            const status = await Camera.requestCameraPermission()
+            setHasPermission(status === 'granted')
+        })()
+    }, [])
 
-  public componentDidMount() {
-    this.reactivateScanner()
-  }
+    const handleValue = async (value?: string) => {
+        if (!value || busy) return
+        if (lastValueRef.current === value) return
+        lastValueRef.current = value
 
-  public onQrScannerRef = (ref: any) => {
-    this.scanner = ref
-  }
+        console.log('[VisionCamera] QR value:', value)
 
-  public reactivateScanner = () => {
-    if (!this.scanner || !this.scanner.reactivate) {
-      return
+        // If a callback was provided by the previous screen, use it and go back, optional
+        const cb = route?.params?.onRead
+        if (typeof cb === 'function') {
+            try { cb({ data: value }) } catch {}
+            navigation.goBack()
+            return
+        }
+
+        // Original behavior: fetch check-in (with network guard)
+        if (!isNetworkConnected) {
+            showNetworkRequiredAlert()
+            // navigation.goBack()
+            return
+        }
+
+        try {
+            setBusy(true)
+            const checkIn = await fetchCheckIn(value)
+
+            navigation.goBack()
+            navigation.navigate(Screens.JoinRegatta, { data: checkIn })
+        } catch (err: any) {
+            Alert.alert(
+                getErrorTitle(),
+                getErrorDisplayMessage(err),
+                [{ text: I18n.t('caption_ok'), onPress: () => { lastValueRef.current = null } }],
+                { cancelable: false }
+            )
+        } finally {
+            setBusy(false)
+        }
     }
-    this.scanner.reactivate()
-  }
 
-  public collectData = async (url: string) => {
-    this.setState({ isLoading: true })
-    try {
-      const checkIn = await this.props.fetchCheckIn(url)
+    const codeScanner = useCodeScanner({
+        codeTypes: ['qr'], // add more types if you need them
+        onCodeScanned: (codes) => {
+            const first = codes?.[0]
+            if (first?.value) handleValue(first.value)
+        },
+    })
 
-      this.props.navigation.goBack()
-      this.props.navigation.navigate(Screens.JoinRegatta, { data: checkIn })
-    } catch (err) {
-      Logger.debug(err)
-      const title = getErrorTitle()
-      let message = getErrorDisplayMessage(err)
-      if (err && err.name === 'AuthException') {
-        message = I18n.t('error_regatta_access_forbidden')
-      }
-
-      Alert.alert(
-        title,
-        message,
-        [
-          { text: I18n.t('caption_ok'), onPress: this.reactivateScanner },
-        ],
-        { cancelable: false },
-      )
-    } finally {
-      this.setState({ isLoading: false })
-    }
-  }
-
-  public onRead = async (qr: any) => {
-    if (!qr || !qr.data) {
-      return
+    if (hasPermission === false) {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'black', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: 'white' }}>{'Camera permission is required'}</Text>
+            </SafeAreaView>
+        )
     }
 
-    if (!this.props.isNetworkConnected) {
-      showNetworkRequiredAlert()
-      return
+    if (!device || hasPermission == null) {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'black', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ color: 'white' }}>{'Loading camera…'}</Text>
+            </SafeAreaView>
+        )
     }
-    return this.collectData(qr.data)
-  }
 
-  public render() {
     return (
-      <View style={styles.container}>
-        <QRCodeScanner
-          cameraStyle={styles.camera}
-          markerStyle={styles.marker}
-          onRead={this.onRead}
-          showMarker={true}
-          ref={this.onQrScannerRef}
-        />
-        {this.state.isLoading && <WaveActivityIndicatorFullscreen/>}
-        <View style={styles.bottomInfoField}>
-          <View style={styles.infoBalloon}>
-            <Text style={styles.infoBalloonText}>{I18n.t('text_place_QR_code')}</Text>
-          </View>
+        <View style={{ flex: 1, backgroundColor: 'black' }}>
+            <Camera
+                style={{ flex: 1 }}
+                device={device}
+                isActive={!busy}
+                codeScanner={codeScanner}
+                photo={false}
+                video={false}
+                audio={false}
+            />
+
+            {busy && <WaveActivityIndicatorFullscreen />}
+
+
+            <View style={{ position: 'absolute', bottom: 32, left: 0, right: 0, alignItems: 'center' }}>
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 12 }}>
+                    <Text style={{ color: 'white' }}>{I18n.t('text_place_QR_code')}</Text>
+                </View>
+            </View>
         </View>
-      </View>
     )
-  }
 }
 
-const mapStateToProps = (state: any) => {
-  return {
+const mapStateToProps = (state: any) => ({
     isNetworkConnected: isNetworkConnected(state),
-  }
-}
+})
 
 export default connect(mapStateToProps, { fetchCheckIn })(QRScanner)
