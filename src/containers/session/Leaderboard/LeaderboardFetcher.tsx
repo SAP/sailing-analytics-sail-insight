@@ -1,54 +1,63 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { useCallback, useEffect } from 'react';
-
+import React from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {connect} from 'react-redux';
 import {
   startPollingLeaderboard,
   stopPollingLeaderboard,
-} from 'actions/leaderboards'
+} from 'actions/leaderboards';
 
-class LeaderboardFetcher extends React.Component<{
-  rankOnly: boolean
-}> {
-  public state = { interval: null }
+type OwnProps = { rankOnly: boolean };
+type InjectedProps = {
+  startPollingLeaderboard: typeof startPollingLeaderboard;
+  stopPollingLeaderboard: typeof stopPollingLeaderboard;
+};
+type NavProp = ReturnType<typeof useNavigation>;
+type Props = OwnProps & InjectedProps & { navigation: NavProp };
 
-  public render() {
-    const navigation = useNavigation();
+class LeaderboardFetcherInner extends React.PureComponent<Props> {
+  private removeFocusListener?: () => void;
+  private removeBlurListener?: () => void;
 
-    useFocusEffect(
-        useCallback(() => {
-          return () => {
-            this.onBlur();
-          };
-        }, [this.onBlur]) // Add any dependencies if needed
+  componentDidMount() {
+    const {navigation} = this.props;
+    this.removeFocusListener = navigation.addListener('focus', this.onFocus);
+    this.removeBlurListener  = navigation.addListener('blur',  this.onBlur);
+
+    // If we're already focused when mounted, run once
+    if (navigation.isFocused?.()) {
+      this.onFocus();
+    }
+  }
+
+  componentWillUnmount() {
+    this.removeFocusListener?.();
+    this.removeBlurListener?.();
+    this.onBlur(); // mirror cleanup
+  }
+
+  private onFocus = () => {
+    setTimeout(
+        () => this.props.startPollingLeaderboard({rankOnly: this.props.rankOnly}),
+        1000
     );
+  };
 
-    useEffect(() => {
-      const unsubscribe = navigation.addListener('focus', () => {
-        this.onFocus();
-      });
+  private onBlur = () => {
+    this.props.stopPollingLeaderboard();
+  };
 
-      return unsubscribe;
-    }, [navigation]);
-
-    return (
-      <></ >
-    )
-  }
-
-  protected onFocus = () => {
-    // Leave time for the previous navigation event to do the blur action
-    // before setting the new up. Ex: when going from tracking screen to leaderboard screen
-    // where both pages have a NavigationEvents instance present.
-    setTimeout(() => this.props.startPollingLeaderboard({ rankOnly: this.props.rankOnly }), 1000)
-  }
-  protected onBlur = () => {
-    this.props.stopPollingLeaderboard()
+  render() {
+    return null;
   }
 }
 
-export default connect(
-  () => ({}),
-  { startPollingLeaderboard, stopPollingLeaderboard },
-)(LeaderboardFetcher)
+const ConnectedInner = connect<null, InjectedProps, OwnProps>(
+    null,
+    { startPollingLeaderboard, stopPollingLeaderboard }
+)(LeaderboardFetcherInner);
+
+// Wrapper that is the ONLY place a hook is used
+export default function LeaderboardFetcher(props: OwnProps) {
+  const navigation = useNavigation();
+  return <ConnectedInner {...props} navigation={navigation} />;
+}
