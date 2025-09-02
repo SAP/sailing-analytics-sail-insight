@@ -7,19 +7,26 @@ require Pod::Executable.execute_command('node', ['-p',
 
 platform :ios, '15.1' # Minimum iOS deployment target for RN 0.76+
 
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
+  # use_frameworks! :linkage => linkage.to_sym
 end
+use_frameworks! :linkage => :static
+$RNFirebaseAsStaticFramework = true
+
 
 target 'sap_sailing_insight' do
-  use_react_native!(
-    # Only path is needed; the script now handles autolinking (no app_path or config needed unless custom)
-    :path => "../node_modules/react-native"
-  )
+  config = use_native_modules!
+
+    use_react_native!(
+      :path => config[:reactNativePath],
+      :app_path => "#{Pod::Config.instance.installation_root}/.."
+    )
 
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
@@ -31,6 +38,15 @@ target 'sap_sailing_insight' do
   pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary"
   pod 'Permission-Calendars', :path => "#{permissions_path}/Calendars"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+  # modular headers
+  pod 'GoogleUtilities',        :modular_headers => true
+  pod 'GoogleDataTransport',    :modular_headers => true
+  pod 'nanopb',                 :modular_headers => true
+  pod 'FirebaseCore',           :modular_headers => true
+  pod 'FirebaseCoreExtension',  :modular_headers => true
+  pod 'FirebaseInstallations',  :modular_headers => true
+  pod 'FirebaseCoreInternal',   :modular_headers => true
+  pod 'FirebaseSessions',       :modular_headers => true
 
   target 'sap_sailing_insightTests' do
     inherit! :complete
@@ -50,9 +66,13 @@ target 'sap_sailing_insight' do
   end
 
   post_install do |installer|
+    react_native_post_install(installer)
+
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+        config.build_settings['DEFINES_MODULE'] = 'YES'
+        config.build_settings['CLANG_ENABLE_MODULES'] = 'YES'
       end
     end
 
