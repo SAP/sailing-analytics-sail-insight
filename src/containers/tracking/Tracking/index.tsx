@@ -3,8 +3,6 @@ import React, { useEffect } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import { connect } from 'react-redux'
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
@@ -74,12 +72,37 @@ class Tracking extends React.Component<NavigationProps & {
   isNetworkConnected: boolean,
   isLoadingCheckIn?: boolean
 },  any > {
+  private removeFocus?: () => void;
+  private removeBlur?: () => void;
   public state = {
     isLoading: false,
     durationText: EMPTY_DURATION_TEXT,
     buttonText: I18n.t('caption_stop').toUpperCase(),
     stoppingFailed: false,
     isFocused: false
+  }
+
+  public componentDidMount() {
+    // Run when the screen becomes focused
+    this.removeFocus = this.props.navigation.addListener('focus', () => {
+      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+      this.setState({ isFocused: true });
+      activateKeepAwake();
+    });
+
+    // Run when the screen loses focus
+    this.removeBlur = this.props.navigation.addListener('blur', () => {
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+      this.setState({ isFocused: false });
+      deactivateKeepAwake();
+    });
+  }
+
+  public componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    if (this.removeFocus) this.removeFocus();
+    if (this.removeBlur) this.removeBlur();
+    deactivateKeepAwake();
   }
 
   public render() {
@@ -94,19 +117,6 @@ class Tracking extends React.Component<NavigationProps & {
     const distance = trackingStats.distance ? trackingStats.distance.toFixed(0) : '0'
 
 
-    useFocusEffect(
-        useCallback(() => {
-          BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-          this.setState({ isFocused: true })
-          activateKeepAwake();
-
-          return () => {
-            BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton)
-            this.setState({ isFocused: false })
-            deactivateKeepAwake();
-          };
-        }, []) // Add any dependencies if needed
-    );
 
     return (
       <ScrollContentView style={[container.main]}>
