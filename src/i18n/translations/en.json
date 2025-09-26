@@ -321,7 +321,7 @@
   "error_field_invalid_handicap": "Handicap can not be 0.",
   "error_device_already_exists": "This device is already registered to this regatta",
 
-  "url_eula": "http://www.sailyachtresearch.org/sail-insight-eula/",
+  "url_eula": "https://www.sapsailing.com/EULA_Android_SailingBoatTracker.html",
   "url_privacy_policy": "https://wiki.sapsailing.com/wiki/info/mobile/sailinsight-privacy-policy",
 
   "JIBE": "Jibe",
