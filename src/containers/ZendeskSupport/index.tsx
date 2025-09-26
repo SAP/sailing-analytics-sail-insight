@@ -5,9 +5,9 @@ import { connect } from 'react-redux'
 import { getCustomScreenParamData } from 'navigation/utils'
 
 const FAQ_URL =
-  'https://support.sapsailing.com/hc/en-us/sections/360004950399-FAQ'
+  'https://wiki.sapsailing.com/wiki/howto/tutorials/sailinsight/faq-answers.md'
 const KNOWN_ISSUES_URL =
-  'https://support.sapsailing.com/hc/en-us/sections/360004950439-Known-Issues'
+  'https://bugzilla.sapsailing.com/bugzilla/buglist.cgi?bug_status=UNCONFIRMED&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&component=Sail%20Insight%20Powered%20by%20SAP&list_id=661661&order=Importance&product=Sailing%20Race%20Analytics&query_format=advanced&resolution=---'
 
 class ZendeskSupport extends React.Component<{
   supportType: string
