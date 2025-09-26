@@ -317,7 +317,7 @@
   "error_field_invalid_handicap" : "Le handicap ne peut pas être 0.",
   "error_device_already_exists" : "Cet appareil est déjà inscrit à cette régate.",
   "url_eula" : "http://www.sailyachtresearch.org/sail-insight-eula/",
-  "url_privacy_policy" : "https://sailinsight.zendesk.com/hc/en-us/articles/4912517259794-Sail-Inisght-Privacy-Policy",
+  "url_privacy_policy" : "https://wiki.sapsailing.com/wiki/info/mobile/sailinsight-privacy-policy",
   "JIBE" : "Change d'amure",
   "HEAD_UP" : "Lofe",
   "BEAR_AWAY" : "Abat",

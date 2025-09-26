@@ -317,7 +317,7 @@
   "error_field_invalid_handicap" : "Hendikep ne more biti 0.",
   "error_device_already_exists" : "Ta naprava je že registrirana tej regati",
   "url_eula" : "http://www.sailyachtresearch.org/sail-insight-eula/",
-  "url_privacy_policy" : "https://sailinsight.zendesk.com/hc/en-us/articles/4912517259794-Sail-Inisght-Privacy-Policy",
+  "url_privacy_policy" : "https://wiki.sapsailing.com/wiki/info/mobile/sailinsight-privacy-policy",
   "JIBE" : "Kroženje",
   "HEAD_UP" : "S premcem gor",
   "BEAR_AWAY" : "Obračanje od vetra",

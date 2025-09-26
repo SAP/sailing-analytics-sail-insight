@@ -317,7 +317,7 @@
   "error_field_invalid_handicap" : "Handicap nemůže být 0.",
   "error_device_already_exists" : "Toto zařízení je již zaregistrováno pro tuto regatu",
   "url_eula" : "http://www.sailyachtresearch.org/sail-insight-eula/",
-  "url_privacy_policy" : "https://sailinsight.zendesk.com/hc/en-us/articles/4912517259794-Sail-Inisght-Privacy-Policy",
+  "url_privacy_policy" : "https://wiki.sapsailing.com/wiki/info/mobile/sailinsight-privacy-policy",
   "JIBE" : "Jibe",
   "HEAD_UP" : "Heading Up??",
   "BEAR_AWAY" : "Bearing Away??",
