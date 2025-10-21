@@ -3,8 +3,6 @@ import { BackHandler, View } from 'react-native'
 import { WebView as RNWebView } from 'react-native-webview'
 import { connect } from 'react-redux'
 import { once } from 'ramda'
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
 import HeaderBackButton from 'components/HeaderBackButton'
 import * as Screens from 'navigation/Screens'
 import { getCustomScreenParamData } from 'navigation/utils'
@@ -25,18 +23,25 @@ class WebView extends React.Component<{
 
   public state = {}
 
+  private focusListener: any
+  private blurListener: any
+
+  componentDidMount() {
+    this.handleWillFocus()
+    // Add focus listener
+    this.focusListener = this.props.navigation.addListener('focus', this.handleWillFocus)
+    this.blurListener = this.props.navigation.addListener('blur', this.handleWillBlur)
+  }
+
+  componentWillUnmount() {
+    this.handleWillBlur()
+    // Remove listeners
+    if (this.focusListener) this.focusListener()
+    if (this.blurListener) this.blurListener()
+  }
+
   public render() {
     const { url, accessToken, children} = this.props
-
-    useFocusEffect(
-        useCallback(() => {
-          this.handleWillFocus();
-
-          return () => {
-            this.handleWillBlur();
-          };
-        }, [this.handleWillBlur, this.handleWillFocus]) // Add any dependencies if needed
-    );
 
     return (
       <View style={container.list}>
