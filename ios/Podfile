@@ -47,6 +47,8 @@ target 'sap_sailing_insight' do
   pod 'FirebaseInstallations',  :modular_headers => true
   pod 'FirebaseCoreInternal',   :modular_headers => true
   pod 'FirebaseSessions',       :modular_headers => true
+  # other modules
+  pod 'TOCropViewController', '2.6.1'
 
   target 'sap_sailing_insightTests' do
     inherit! :complete

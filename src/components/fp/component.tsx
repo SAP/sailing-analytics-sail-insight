@@ -31,19 +31,38 @@ const ComponentRenderer = ({ props, g }) => compose(
   props)
 
 export const Component = compose(
-  g => ({
-    g,
-    map:       f => Component(x => f(g(x), x)),
-    contramap: f => Component(x => g(f(x))),
-    concat:    other => Component(x => g(x).concat(other.g(x))),
-    fold: ifElse(prop('customRenderer'),
-      compose(
-        mapIndexed((e, index) => mergeRight(e, { key: index })),
-        reject(isNil),
-        g),
-      props => <ComponentRenderer props={props} g={g}/>)
-  }),
-  x => compose(asArray, x))
+    g => {
+        if (!g || typeof g !== 'function') {
+            console.error('Component received invalid g:', g);
+            return {
+                g: () => [],
+                map: () => Component(() => []),
+                contramap: () => Component(() => []),
+                concat: () => Component(() => []),
+                fold: () => null
+            };
+        }
+
+        return {
+            g,
+            map:       f => Component(x => f(g(x), x)),
+            contramap: f => Component(x => g(f(x))),
+            concat:    other => {
+                if (!other || !other.g) {
+                    console.error('concat received invalid other:', other);
+                    return Component(g);
+                }
+                return Component(x => g(x).concat(other.g(x)));
+            },
+            fold: ifElse(prop('customRenderer'),
+                compose(
+                    mapIndexed((e, index) => mergeRight(e, { key: index })),
+                    reject(isNil),
+                    g),
+                props => <ComponentRenderer props={props} g={g}/>)
+        };
+    },
+    x => compose(asArray, x))
 
 const enhance = (fn: any) => (...args: any[]) => compose(
     Component,

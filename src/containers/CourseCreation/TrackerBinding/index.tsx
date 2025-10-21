@@ -26,6 +26,7 @@ import { BRANCH_APP_DOMAIN } from 'environment'
 import { useFocusEffect, useNavigationState } from '@react-navigation/native';
 import {useCallback, useLayoutEffect} from 'react';
 import I18n from 'i18n'
+import HeaderBackButton from "../../../components/HeaderBackButton";
 
 const { width: viewportWidth } = Dimensions.get('window')
 const wp = (percentage: number) => Math.round((percentage * viewportWidth) / 100)
@@ -94,17 +95,23 @@ const useThisDeviceButton = Component(props => compose(
 
 const navigationBackHandler = ((props: any) => {
     useLayoutEffect(() => {
+        const handleBackPress = () => {
+            if (props.fetchAndUpdateMarkConfigurationDeviceTracking) {
+                props.fetchAndUpdateMarkConfigurationDeviceTracking();
+            }
+            props.navigation.goBack()
+        }
+
         props.navigation.setOptions({
-            headerLeft: () => ({
-                onPress: () => {
-                    props.fetchAndUpdateMarkConfigurationDeviceTracking()
-                    props.navigation.goBack()
-                }
-            }),
+            headerLeft: () => (
+                <HeaderBackButton onPress={handleBackPress} />
+            ),
         })
 
         const onHardwareBackPress = () => {
-            props.fetchAndUpdateMarkConfigurationDeviceTracking()
+            if (props.fetchAndUpdateMarkConfigurationDeviceTracking) {
+                props.fetchAndUpdateMarkConfigurationDeviceTracking();
+            }
             props.navigation.goBack()
             return true
         }
