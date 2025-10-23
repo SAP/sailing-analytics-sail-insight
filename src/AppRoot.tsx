@@ -227,7 +227,7 @@ const withLeftHeaderBackButton = (options) => mergeDeepLeft({
   options: {
     headerLeft: (() => {
       let pressed = false; // closure, no hooks
-      return () => (
+      return (
           <HeaderBackButton
               labelVisible={false}
               onPress={() => {

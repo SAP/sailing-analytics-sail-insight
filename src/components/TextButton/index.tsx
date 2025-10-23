@@ -7,9 +7,10 @@ import Text from 'components/TextScalable'
 
 class TextButton extends BaseButton<{
   textStyle?: TextStyle,
+  children?: React.ReactNode,
 } > {
 
-  public renderContent = () => {
+  public renderContent = (): React.ReactNode => {
     const {
       children,
       textStyle,

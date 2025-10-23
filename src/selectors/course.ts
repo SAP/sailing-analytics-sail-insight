@@ -172,6 +172,7 @@ export const getMarkPositionsExceptCurrent = createSelector(
     map(compose(find(__, course.markConfigurations), propEq('id'))),
     reject(equals(selectedMarkConfiguration)),
     flatten,
+    defaultTo([]),
     map(prop('markConfigurationIds')),
     prop('waypoints'))(
     course))
@@ -214,6 +215,7 @@ export const getMarkConfigurationsMapToEditedCourse = createSelector(
     reject(isNil),
     concat(editedCourse.markConfigurations),
     flatten,
+    defaultTo([]),
     map(prop('markConfigurations')))(
     eventCourses))
 
@@ -235,6 +237,7 @@ export const getLinesAndGateOptionsForCurrentEventAndWaypoint = createSelector(
     reject(compose(includes(__, ['Start', 'Finish']), prop('controlPointName'))),
     filter(compose(either(equals(PassingInstruction.Line), equals(PassingInstruction.Gate)), prop('passingInstruction'))),
     flatten,
+    defaultTo([]),
     map(prop('waypoints')),
     append(editedCourse))(
     eventCourses))

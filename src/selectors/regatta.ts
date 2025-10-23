@@ -31,6 +31,7 @@ export const getRegattaPlannedRaces = (name: string) => (state: any) => {
 
   return compose(
     flatten,
+    defaultTo([]),
     map(prop('races')),
     prop('series'))(
     regatta)

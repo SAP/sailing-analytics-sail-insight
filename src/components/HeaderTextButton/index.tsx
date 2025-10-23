@@ -5,7 +5,7 @@ import { button } from 'styles/commons'
 import I18n from 'i18n'
 
 
-export const HeaderTextButton = (props = {}) => () => (
+export const HeaderTextButton = (props = {}) => (
   <TextButton 
     textStyle={button.headerTextButton} 
     {...props}
@@ -14,7 +14,7 @@ export const HeaderTextButton = (props = {}) => () => (
   </TextButton>
 )
 
-export const HeaderCancelTextButton = (props = {}) => () => (
+export const HeaderCancelTextButton = (props = {}) => (
   <TextButton 
     textStyle={button.headerTextButton} 
     {...props}
@@ -23,7 +23,7 @@ export const HeaderCancelTextButton = (props = {}) => () => (
   </TextButton>
 )
 
-export const HeaderSaveTextButton = (props = {}) => () => (
+export const HeaderSaveTextButton = (props = {}) => (
   <TextButton 
     textStyle={button.headerTextButton} 
     {...props}

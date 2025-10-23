@@ -116,8 +116,8 @@ export const ddm2dd = (arr: array) => {
   let coords = [];
 
   for (let i = 0; i < arr.length; i++) {
-    let deg = parseFloat(arr[i][0].replace(',', '.')),
-        min = parseFloat(arr[i][1].replace(',', '.')),
+    let deg = parseFloat(arr[i][0].toString().replace(',', '.')),
+        min = parseFloat(arr[i][1].toString().replace(',', '.')),
         dir = parseFloat(arr[i][2])
 
     coords[i] = dir*(deg+(min/60.0))

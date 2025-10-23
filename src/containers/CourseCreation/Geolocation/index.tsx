@@ -265,12 +265,13 @@ const coordinatesInput = Component((props: any) => compose(
 const latitudeInput = coordinatesInput.contramap(props => mergeRight({
   title: 'Latitude',
   unit: 'latitude',
-  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of(Array), prop('latitude'))(props.region),
-  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, dd2ddm, reject(isNil), of(Array), prop('latitude'))(props.region),
+  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, defaultTo([]), dd2ddm, reject(isNil), of(Array), prop('latitude'))(props.region),
+  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, defaultTo([]), dd2ddm, reject(isNil), of(Array), prop('latitude'))(props.region),
   coordinatesDirection: compose(
     last,
     defaultTo(['N']),
     flatten,
+    defaultTo([]),
     head,
     dd2ddm,
     reject(isNil),
@@ -280,12 +281,13 @@ const latitudeInput = coordinatesInput.contramap(props => mergeRight({
 const longitudeInput = coordinatesInput.contramap(props => mergeRight({
   unit: 'longitude',
   title: 'Longitude',
-  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, dd2ddm, reject(isNil), of(Array), prop('longitude'))(props.region),
-  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, dd2ddm, reject(isNil), of(Array), prop('longitude'))(props.region),
+  degrees: compose(reduce(concat, ''), init, defaultTo(''), head, flatten, defaultTo([]), dd2ddm, reject(isNil), of(Array), prop('longitude'))(props.region),
+  minutes: compose(reduce(concat, ''), init, defaultTo(''), nth(1), flatten, defaultTo([]), dd2ddm, reject(isNil), of(Array), prop('longitude'))(props.region),
   coordinatesDirection: compose(
     last,
     defaultTo(['E']),
     flatten,
+    defaultTo([]),
     last,
     dd2ddm,
     reject(isNil),
