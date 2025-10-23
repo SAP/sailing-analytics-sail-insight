@@ -91,6 +91,7 @@ const nothingWhenNoErrors = branch(compose(
   isEmpty,
   reject(isNil),
   flatten,
+  defaultTo([]),
   values,
   pick(['formErrors', 'apiErrors'])),
   nothingAsClass)

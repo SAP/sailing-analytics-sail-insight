@@ -17,7 +17,7 @@ abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & 
   preserveShapeWhenLoading?: boolean
 }, S, SS> {
 
-  protected abstract renderContent: () => Element | JSX.Element
+  protected abstract renderContent: () => React.ReactNode
 
   protected state = {
     width: undefined,

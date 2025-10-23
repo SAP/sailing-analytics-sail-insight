@@ -254,6 +254,7 @@ const didConfigurationPropertyChangedAcrossCourses = curry((fromCourse, toCourse
 const courseWaypointsUseMarkConfiguration = curry((markConfigurationId, course) => compose(
   includes(markConfigurationId),
   flatten,
+  defaultTo([]),
   map(prop('markConfigurationIds')))(
   course.waypoints))
 
@@ -392,6 +393,7 @@ function* saveCourseFlow({ navigation }: any) {
       compose(isNil, prop('trackingDeviceMappedToMillis')))),
       prop('trackingDevices'))),
     flatten,
+    defaultTo([]),
     map(prop('markConfigurations')),
     reject(isNil))(
     [updatedCourse])

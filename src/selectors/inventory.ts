@@ -19,6 +19,7 @@ export const hasMarkProperties = (state: any) => compose(
 
 export const getMarkProperties = (state: any) => compose(
   flatten,
+  defaultTo([]),
   reverse,
   mapIndexed((set, index) =>
     when(
