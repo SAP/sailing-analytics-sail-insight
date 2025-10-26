@@ -400,6 +400,7 @@ const mainTabsNavigator = Component(props => compose(
       tabBarHideOnKeyboard: Platform.OS === 'android',
 
       lazy: false,
+      headerShown: false,
 
       tabBarIcon: ({color, focused}) => getTabBarIcon(route, color, focused),
       tabBarLabel: ({color, focused}) => getTabBarLabel(route, color, focused),
