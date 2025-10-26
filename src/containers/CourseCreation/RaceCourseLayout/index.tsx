@@ -744,7 +744,7 @@ const withOnNavigationBackPress = withHandlers({
   onNavigationSavePress: saveCourse,
 })
 
-const navigationBackHandler = (props: any) => {
+const NavigationBackHandler = (props: any) => {
     useLayoutEffect(() => {
         // Set header buttons
         props.navigation.setOptions({
@@ -819,11 +819,16 @@ export default Component((props: object) =>
           map(compose(dissoc('waypointLabel'), dissoc('markPropertiesByMarkConfiguration'))))(
           [next, prev]) }),
     withOnNavigationBackPress,
-    scrollView({ style: styles.mainContainer, vertical: true, nestedScrollEnabled: true, contentContainerStyle: { flexGrow: 1 } }),
-    reduce(concat, nothing()))(
-    [
-      navigationBackHandler(props),
-      nothingWhenNotLoading(LoadingIndicator),
-      nothingWhenLoading(WaypointsList),
-      nothingWhenLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm))
-    ]))
+    scrollView({
+      style: styles.mainContainer,
+      vertical: true,
+      nestedScrollEnabled: true,
+      contentContainerStyle: { flexGrow: 1 }
+    }),
+    reduce(concat, nothing())
+  )([
+    Component((innerProps: any) => <NavigationBackHandler {...innerProps} />),
+    nothingWhenNotLoading(LoadingIndicator),
+    nothingWhenLoading(WaypointsList),
+    nothingWhenLoading(nothingWhenNoSelectedWaypoint(WaypointEditForm))
+  ]))
