@@ -230,7 +230,7 @@ const coordinatesInput = Component((props: any) => compose(
           const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
 
           props.setInitialRender(true)
-          props.setRegion(mergeRight(props.region, { [props.unit]: ddm2dd([[value || 0, props.minutes, direction]])[0] }))
+          props.setRegion(mergeRight(props.region, { [props.unit]: ddm2dd([[value || '0', props.minutes || '0', direction]])[0] }))
         },
         maxLength: 3 })),
       text({ style: styles.symbolText }, '°'),
@@ -242,7 +242,7 @@ const coordinatesInput = Component((props: any) => compose(
           const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
 
           props.setInitialRender(true)
-          props.setRegion(mergeRight(props.region, { [props.unit]: ddm2dd([[props.degrees, value || 0, direction]])[0] }))
+          props.setRegion(mergeRight(props.region, { [props.unit]: ddm2dd([[props.degrees || '0', value || '0', direction]])[0] }))
         },
         maxLength: 6 })),
       text({ style: styles.symbolText }, "'"),

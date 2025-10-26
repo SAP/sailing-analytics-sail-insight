@@ -90,23 +90,31 @@ export const dd2ddm = (xy: array) => {
   const coords = [];
 
   for (let i = 0; i < xy.length; i++) {
-    const arr = [1, 0, 1];
-    const spl = xy[i].toString().split('.');
-    const dm = Math.abs(parseFloat('.' + xy[i].toString().split('.')[1]) * 60.0)
-    const fdm = parseFloat(dm).toFixed(6)
-    const parts = fdm.toString().split('.')
+    const value = parseFloat(xy[i]);
 
-    let final = parts[0]
+    // Get degrees (integer part)
+    const degrees = Math.floor(Math.abs(value));
 
-    if (parts[1]) {
-      final += '.' + parts[1].substr(0,3)
-    }
+    // Get minutes (decimal part * 60)
+    const decimalPart = Math.abs(value) - degrees;
+    const minutes = (decimalPart * 60).toFixed(6);
 
-    arr[0] = Math.abs(xy[i].toString().split('.')[0]) + '°';
-    arr[1] = spl.length == 2 ? final + "'" : 0;
-    arr[2] = i === 0 ? (xy[i] >= 0 ? 'N' : 'S') : (xy[i] >= 0 ? 'E' : 'W')
+    // Format minutes to 3 decimal places
+    const minutesParts = minutes.split('.');
+    const formattedMinutes = minutesParts[1]
+        ? minutesParts[0] + '.' + minutesParts[1].substr(0, 3)
+        : minutesParts[0];
 
-    coords[i] = arr;
+    // Determine direction
+    const direction = i === 0
+        ? (value >= 0 ? 'N' : 'S')
+        : (value >= 0 ? 'E' : 'W');
+
+    coords[i] = [
+      degrees + '°',
+      formattedMinutes + "'",
+      direction
+    ];
   }
 
   return coords;
@@ -118,7 +126,7 @@ export const ddm2dd = (arr: array) => {
   for (let i = 0; i < arr.length; i++) {
     let deg = parseFloat(arr[i][0].toString().replace(',', '.')),
         min = parseFloat(arr[i][1].toString().replace(',', '.')),
-        dir = parseFloat(arr[i][2])
+        dir = parseFloat(arr[i][2].toString())
 
     coords[i] = dir*(deg+(min/60.0))
   }

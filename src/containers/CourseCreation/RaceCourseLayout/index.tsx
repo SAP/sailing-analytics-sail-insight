@@ -270,6 +270,7 @@ const MarkPositionPing = Component((props: object) => compose(
     style: styles.pingPositionButton,
     onPress: (props: any) => {
       const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
+        console.log('Pinging position:', lastLatitude, lastLongitude);
 
       const location = { latitude: lastLatitude, longitude: lastLongitude }
       const markConfigurationId = props.selectedMarkConfiguration
