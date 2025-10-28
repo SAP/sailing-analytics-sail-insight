@@ -50,6 +50,7 @@ import styles from './styles'
 import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 import { Dimensions } from 'react-native'
 import I18n from 'i18n'
+import BackgroundGeolocation from 'react-native-background-geolocation';
 
 const mapIndexed = addIndex(map)
 
@@ -269,8 +270,17 @@ const MarkPositionPing = Component((props: object) => compose(
   touchableOpacity({
     style: styles.pingPositionButton,
     onPress: (props: any) => {
-      const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
-        console.log('Pinging position:', lastLatitude, lastLongitude);
+      var { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
+      console.log('Pinging position:', lastLatitude, lastLongitude);
+      if (!lastLatitude || !lastLongitude) {
+        BackgroundGeolocation.getCurrentPosition({}, (location) => {
+          lastLatitude = location.coords.latitude;
+          lastLongitude = location.coords.longitude;
+        }, (error) => {
+          console.warn('BackgroundGeolocation error getting position:', error);
+        });
+      }
+
 
       const location = { latitude: lastLatitude, longitude: lastLongitude }
       const markConfigurationId = props.selectedMarkConfiguration
@@ -303,8 +313,13 @@ const MarkPositionGeolocation = Component((props: object) =>
       style: styles.editPositionButton,
       onPress: (props: any) => {
         if (isEmpty(props.selectedMarkLocation)) {
-          const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
-
+          var { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
+          if (!lastLatitude || !lastLongitude) {
+            BackgroundGeolocation.getCurrentPosition({}, (location) => {
+              lastLatitude = location.coords.latitude;
+              lastLongitude = location.coords.longitude;
+            });
+          }
           openGeolocationScreenWithPosition(props,
             { coords: { latitude: lastLatitude, longitude: lastLongitude }})
         } else {

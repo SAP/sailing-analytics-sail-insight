@@ -179,7 +179,7 @@ const Map = Component((props: any) => compose(
       mapPadding: {top: props.mapOffset, right: 0, bottom: 0, left: 0},
       mapType: 'satellite',
       children: map(marker.fold, props.otherMarksPositions),
-      onRegionChange: region => {
+      onRegionChangeComplete: region => {
         props.setInitialRender(false)
         props.setRegion(region)
       }
@@ -228,9 +228,12 @@ const coordinatesInput = Component((props: any) => compose(
         inputStyle: { width: 70 },
         onBlur: value => {
           const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
-
+          const newCoordinate = ddm2dd([[value || '0', props.minutes || '0', direction]])[0]
+          const newRegion = { ...props.region, [props.unit]: newCoordinate }
           props.setInitialRender(true)
-          props.setRegion(mergeRight(props.region, { [props.unit]: ddm2dd([[value || '0', props.minutes || '0', direction]])[0] }))
+          props.setRegion(newRegion)
+
+          setTimeout(() => props.setInitialRender(false), 100)
         },
         maxLength: 3 })),
       text({ style: styles.symbolText }, '°'),
@@ -240,25 +243,32 @@ const coordinatesInput = Component((props: any) => compose(
         inputStyle: { width: 115 },
         onBlur: value => {
           const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
-
+          const newCoordinate = ddm2dd([[props.degrees || '0', value || '0', direction]])[0]
+          const newRegion = { ...props.region, [props.unit]: newCoordinate }
           props.setInitialRender(true)
-          props.setRegion(mergeRight(props.region, { [props.unit]: ddm2dd([[props.degrees || '0', value || '0', direction]])[0] }))
+          props.setRegion(newRegion)
+
+          setTimeout(() => props.setInitialRender(false), 100)
         },
         maxLength: 6 })),
       text({ style: styles.symbolText }, "'"),
       switchSelector.contramap(mergeRight({
         onValueChange: value => {
-          props.setInitialRender(true)
-          props.setRegion(mergeRight(props.region, {
-            [props.unit]: ddm2dd([[
-              props.degrees,
-              props.minutes,
-              compose(
+          const newCoordinate = ddm2dd([[
+            props.degrees || '0',
+            props.minutes || '0',
+            compose(
                 when(always(propEq('longitude', 'unit', props)), negate),
                 ifElse(equals(true), always(-1), always(1)))(
                 value)
-            ]])[0] }))
-          }
+          ]])[0]
+
+          const newRegion = {...props.region, [props.unit]: newCoordinate}
+          props.setInitialRender(true)
+          props.setRegion(newRegion)
+
+          setTimeout(() => props.setInitialRender(false), 100)
+        }
       }))
     ]))
 
