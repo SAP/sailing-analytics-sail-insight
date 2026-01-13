@@ -470,23 +470,40 @@ function* updateMarkPositionFlow({ payload }: any) {
         timestamp: Date.now(),
       }, secret)
 
-    yield all([updateMarkPropertyCall, updateMarkCall])
+    const [propertyResult, fixResult] = yield all([updateMarkPropertyCall, updateMarkCall])
+
+    // Log failures but don't block - partial success is still useful
+    if (markPropertiesId && !propertyResult) {
+      console.warn('Failed to update mark property position')
+    }
+    if (markId && !fixResult) {
+      console.warn('Failed to send GPS fix for mark')
+    }
   } else if (bindToThisDevice) {
     if (markPropertiesId) {
-      yield safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, getDeviceId())
+      const positionResult = yield safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, getDeviceId())
+      if (!positionResult) {
+        console.warn('Failed to bind mark position to device')
+      }
     }
 
     if (markId) {
       // Update the checkIn
       yield put(updateCheckInAndEventInventory({ leaderboardName, markId }))
       const mark = yield call(api.requestMark, leaderboardName, markId, secret)
-      yield put(receiveEntities(mark))
-
+      if (mark) {
+        yield put(receiveEntities(mark))
+      } else {
+        console.warn('Failed to fetch mark data')
+      }
 
       // Bind this device to the mark if it is not already bound
       const isDeviceBound = yield isThisDeviceBoundToMark({ markId, regattaName, serverUrl })
       if (!isDeviceBound) {
-        yield safeApiCall(api.startDeviceMapping, leaderboardName, checkInDeviceMappingData({ markId, secret }))
+        const mappingResult = yield safeApiCall(api.startDeviceMapping, leaderboardName, checkInDeviceMappingData({ markId, secret }))
+        if (!mappingResult) {
+          console.warn('Failed to bind device to mark')
+        }
       }
     }
   }

@@ -103,12 +103,17 @@ function* fetchCoursesForCurrrentEvent({ payload }: any) {
     safeApiCall(api.requestCourse, payload.regattaName, raceName, 'Default')
   ))
 
-  yield all(raceCourses.map((course: object, index: number) =>
-    put(loadCourse({
-      raceId: `${payload.regattaName} - ${races[index]}`,
-      course
+  // Only update courses that have valid data from the API
+  // This prevents overwriting locally-cached courses with null/undefined
+  yield all(raceCourses
+    .filter((course: object | null | undefined) => course != null)
+    .map((course: object, index: number) => {
+      const originalIndex = raceCourses.indexOf(course)
+      return put(loadCourse({
+        raceId: `${payload.regattaName} - ${races[originalIndex]}`,
+        course
+      }))
     }))
-  ))
 }
 
 function* setRaceTime({ payload }: any) {
@@ -130,13 +135,23 @@ function* setRaceTime({ payload }: any) {
     }
 
     if (eventEndDate < date) {
-      // update event end time
-      yield put(updateEvent({id: eventId, data: { endDate: date }}))
-      yield safeApiCall(api.updateEvent(eventId, { enddateasmillis: date }))
+      // update event end time - API call first, then update Redux only on success
+      const eventUpdateResult = yield safeApiCall(api.updateEvent(eventId, { enddateasmillis: date }))
+      if (eventUpdateResult) {
+        yield put(updateEvent({id: eventId, data: { endDate: date }}))
+      } else {
+        console.warn('Failed to update event end date')
+        return
+      }
     } else {
-      // update event start time
-      yield put(updateEvent({id: eventId, data: { startDate: date }}))
-      yield safeApiCall(api.updateEvent(eventId, { startdateasmillis: date }))
+      // update event start time - API call first, then update Redux only on success
+      const eventUpdateResult = yield safeApiCall(api.updateEvent(eventId, { startdateasmillis: date }))
+      if (eventUpdateResult) {
+        yield put(updateEvent({id: eventId, data: { startDate: date }}))
+      } else {
+        console.warn('Failed to update event start date')
+        return
+      }
     }
 
   }
@@ -186,9 +201,14 @@ function* setDiscards({ payload }: any) {
   const { leaderboardName, serverUrl } = session
   const api = dataApi(serverUrl)
 
-  yield safeApiCall(api.updateLeaderboard, leaderboardName, {
+  const updateResult = yield safeApiCall(api.updateLeaderboard, leaderboardName, {
     resultDiscardingThresholds: discards
   })
+
+  if (!updateResult) {
+    console.warn('Failed to update leaderboard discards')
+    return
+  }
 
   const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
   if (leaderboardData) {
@@ -232,15 +252,26 @@ function* addRaceColumns({ payload }: any) {
     map(inc))(
     [payload.existingNumberOfRaces, payload.existingNumberOfRaces + payload.numberofraces])
 
-  yield all(races.map(race =>
+  // Track denote results to identify failures
+  const denoteResults = yield all(races.map(race =>
     safeApiCall(api.denoteRaceForTracking, payload.leaderboardName, race, 'Default')))
 
+  const failedDenotes = races.filter((_: string, idx: number) => !denoteResults[idx])
+  if (failedDenotes.length > 0) {
+    console.warn('Failed to denote races for tracking:', failedDenotes)
+  }
+
   if (yield select(isCurrentLeaderboardTracking)) {
-    yield all(races.map((race: string) =>
-    safeApiCall(api.startTracking, payload.leaderboardName, {
-      race_column: race,
-      fleet: 'Default'
-    })))
+    const trackingResults = yield all(races.map((race: string) =>
+      safeApiCall(api.startTracking, payload.leaderboardName, {
+        race_column: race,
+        fleet: 'Default'
+      })))
+
+    const failedTracking = races.filter((_: string, idx: number) => !trackingResults[idx])
+    if (failedTracking.length > 0) {
+      console.warn('Failed to start tracking for races:', failedTracking)
+    }
   }
 
   yield call(reloadRegattaAfterRaceColumnsChange, payload)
@@ -295,11 +326,17 @@ function* startTracking({ payload }: any) {
   const api = dataApi(serverUrl)
   const races = yield select(getRegattaPlannedRaces(regattaName))
 
-  yield all(races.map((race: string) =>
+  // Track results to identify failures
+  const trackingResults = yield all(races.map((race: string) =>
     safeApiCall(api.startTracking, leaderboardName, {
       race_column: race,
       fleet: 'Default'
-  })))
+    })))
+
+  const failedRaces = races.filter((_: string, idx: number) => !trackingResults[idx])
+  if (failedRaces.length > 0) {
+    console.warn('Failed to start tracking for races:', failedRaces)
+  }
 
   const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
   if (leaderboardData) {
