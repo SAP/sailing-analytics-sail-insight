@@ -62,6 +62,10 @@ export const overlayPicker = curry((
           marginTop: 30,
           backgroundColor: '#123748',
         },
+        listType: 'FLATLIST',
+        scrollViewPassThruProps: {
+          nestedScrollEnabled: true,
+        },
         optionTextStyle: styles.textOverlay,
         selectedKey: selectedValue,
         onChange: (v: any) => onValueChange(v.key),
