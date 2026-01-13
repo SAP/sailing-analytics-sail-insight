@@ -67,7 +67,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     // sortby is to puts the suggestions that start with the string at the top
     // slice is to limit suggestions to 5 elements max
     const filteredData = sortBy(this.findBoatClass(query), boatclass =>
-      !boatclass.name.toLowerCase().startsWith(query.trim().toLowerCase()),
+      !boatclass?.name?.toLowerCase().startsWith(query.trim().toLowerCase()),
     ).slice(0, 5)
     const comp = (a: string, b: string) => a.toLowerCase().trim() === b.toLowerCase().trim()
     const hideResults = !focused || selected
@@ -106,7 +106,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
     }
 
     const { boatClasses } = this.state
-    return boatClasses.filter(boatclass => boatclass.name.toLowerCase().includes(query.trim().toLowerCase()))
+    return boatClasses.filter(boatclass => boatclass?.name?.toLowerCase().includes(query.trim().toLowerCase()))
   }
 
   protected handleChangeText = (text: string) => {

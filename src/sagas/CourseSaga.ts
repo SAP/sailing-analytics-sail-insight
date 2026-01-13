@@ -223,17 +223,24 @@ function* selectCourseFlow({ payload }: any) {
 
   yield put(editCourse(editedCourse))
 
-  if (isNewCourse) {
+  if (isNewCourse && editedCourse.waypoints?.length >= 2) {
     const startFinishPin = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Pin'))
     const startFinishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Boat'))
     const windwardMark = yield select(getMarkPropertiesOrMarkForCourseByName('Windward Mark'))
 
-    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
-      editedCourse.waypoints[0].id, editedCourse.waypoints[0].markConfigurationIds[0], startFinishPin)
-    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
-      editedCourse.waypoints[0].id, editedCourse.waypoints[0].markConfigurationIds[1], startFinishBoat)
-    yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
-      editedCourse.waypoints[1].id, editedCourse.waypoints[1].markConfigurationIds[0], windwardMark)
+    const waypoint0 = editedCourse.waypoints[0]
+    const waypoint1 = editedCourse.waypoints[1]
+
+    if (waypoint0?.markConfigurationIds?.length >= 2) {
+      yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
+        waypoint0.id, waypoint0.markConfigurationIds[0], startFinishPin)
+      yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
+        waypoint0.id, waypoint0.markConfigurationIds[1], startFinishBoat)
+    }
+    if (waypoint1?.markConfigurationIds?.length >= 1) {
+      yield call(assignMarkOrMarkPropertiesToWaypointMarkConfiguration,
+        waypoint1.id, waypoint1.markConfigurationIds[0], windwardMark)
+    }
   }
 
   yield put(updateCourseLoading(false))
@@ -562,11 +569,11 @@ function* navigateBackFromCourseCreation({ payload }: any) {
   const hasChanged = yield select(hasEditedCourseChanged)
 
   if (!hasChanged) {
-    payload.navigation.goBack()
+    payload?.navigation?.goBack()
     return
   }
 
-  yield call(saveCourseFlow, { navigation: payload.navigation })
+  yield call(saveCourseFlow, { navigation: payload?.navigation })
 }
 
 function* fetchAndUpdateMarkConfigurationDeviceTracking() {

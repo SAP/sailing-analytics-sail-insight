@@ -367,9 +367,12 @@ const DeleteButton = Component((props: object) =>
     fold(props),
     view({ style: styles.deleteWaypointContainer }),
     touchableOpacity({ onPress: (props: any) => {
+        const currentIndex = findIndex(propEq(props.selectedWaypoint.id,'id'), props.course.waypoints)
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : 0
+        const newSelectedWaypoint = props.course.waypoints?.[prevIndex]
         props.removeWaypoint({
           id: props.selectedWaypoint.id,
-          newSelectedId: props.course.waypoints[findIndex(propEq(props.selectedWaypoint.id,'id'), props.course.waypoints) - 1].id
+          newSelectedId: newSelectedWaypoint?.id
         })
         props.setSelectedPositionType(null)
       }

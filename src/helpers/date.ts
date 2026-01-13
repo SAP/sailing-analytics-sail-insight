@@ -104,7 +104,7 @@ export const dateRangeText = (dateValue1: string | number | Date, dateValue2?: 
   const supportedLocale = getSupportedLocale(I18n.locale)
 
   const moment1 =  moment(dateValue1).locale(supportedLocale)
-  const moment2 = dateValue2 ? moment(dateValue1).locale(supportedLocale) : null
+  const moment2 = dateValue2 ? moment(dateValue2).locale(supportedLocale) : null
   
   // No date2 or the same day
   if (moment2 == null || moment1.isSame(moment2, 'day')) {

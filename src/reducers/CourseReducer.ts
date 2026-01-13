@@ -36,6 +36,10 @@ import {
 import { removeUserData } from 'actions/auth'
 
 const updateWaypointMarkConfiguration = (state: any, action: any) => {
+  if (!state || state.length === 0) {
+    return state
+  }
+
   const sameStartFinish = compose(
     apply(equals),
     map(prop('markConfigurationIds')),
@@ -43,7 +47,9 @@ const updateWaypointMarkConfiguration = (state: any, action: any) => {
     move(-1, 0))(
     state)
 
-  const startFinishIds = [head(state).id, last(state).id]
+  const firstWaypoint = head(state)
+  const lastWaypoint = last(state)
+  const startFinishIds = [firstWaypoint?.id, lastWaypoint?.id].filter(Boolean)
   const isStartOrFinish = includes(action.payload.id, startFinishIds)
   const idsToUpdate = isStartOrFinish && sameStartFinish ? startFinishIds : [action.payload.id]
 

@@ -15,10 +15,10 @@ export const validateRequiredWithErrorCode = (errorCode: string) => (value: any)
   value ? undefined : I18n.t(defaultTo('error_field_required', errorCode))
 
 export const validateUsername = (value: any) =>
-    value.length >= 3 ? undefined : I18n.t('error_field_invalid_username')
+    value && value.length >= 3 ? undefined : I18n.t('error_field_invalid_username')
 
 export const validatePassword = (value: any) =>
-    value.length >= 5 ? undefined : I18n.t('error_field_invalid_password')
+    value && value.length >= 5 ? undefined : I18n.t('error_field_invalid_password')
 
 export const validateEmail = (value: string) =>
   (REGEX_EMAIL_VALID.test(value) ? undefined : I18n.t('error_field_invalid_email'))

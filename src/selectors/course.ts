@@ -148,7 +148,9 @@ export const hasEditedCourseChanged = createSelector(
 
 export const waypointLabel = (waypoint: any) => compose(
   course => {
-    const isStartOrFinish = head(course.waypoints).id === waypoint.id || last(course.waypoints).id === waypoint.id
+    const firstWaypoint = course.waypoints?.[0]
+    const lastWaypoint = course.waypoints?.length > 0 ? course.waypoints[course.waypoints.length - 1] : null
+    const isStartOrFinish = (firstWaypoint?.id === waypoint.id) || (lastWaypoint?.id === waypoint.id)
 
     return isStartOrFinish ? waypoint.controlPointName : waypoint.controlPointShortName || compose(
       defaultTo('\u2022'),

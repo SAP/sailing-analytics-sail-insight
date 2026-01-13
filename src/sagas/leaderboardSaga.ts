@@ -39,7 +39,8 @@ function* syncLeaderboard({ rankOnly }) {
             response.entities &&
             response.entities.leaderboard &&
             values(response.entities.leaderboard)
-          const receivedLeaderboard = receivedLeaderboards[0] as Leaderboard
+          const receivedLeaderboard = receivedLeaderboards?.[0] as Leaderboard | undefined
+          if (!receivedLeaderboard) return
 
           yield put(updateLeaderboardTracking(receivedLeaderboard, rankingMetric))
 

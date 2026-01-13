@@ -178,10 +178,12 @@ function* setDiscards({ payload }: any) {
   }
 }
 
-function* createEvent(payload: object) {
-  const data = payload.payload.payload
+function* createEvent(payload: any) {
+  const data = payload?.payload?.payload
+  if (!data) return
+
   const { eventId, leaderboardName, secret, serverUrl, numberOfRaces, regattaName } = data
-  const navigation = payload.payload.navigation
+  const navigation = payload?.payload?.navigation
   const api = dataApi(serverUrl)
   const races = compose(
     map(compose(concat('R'), toString)),
@@ -193,7 +195,7 @@ function* createEvent(payload: object) {
   yield call(api.updateRegatta, regattaName, {
     controlTrackingFromStartAndFinishTimes: true,
     useStartTimeInference: false,
-    defaultCourseAreaUuid: head(regatta.courseAreaIds),
+    defaultCourseAreaUuid: regatta?.courseAreaIds ? head(regatta.courseAreaIds) : undefined,
     autoRestartTrackingUponCompetitorSetChange: true,
   })
   yield all(races.map(race =>
@@ -243,7 +245,8 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
   const api = dataApi(payload.serverUrl)
   const entities = yield call(api.requestRegatta, payload.regattaName)
 
-  const numberOfRaces = getRegattaNumberOfRaces(entities.entities.regatta[payload.regattaName])
+  const regattaData = entities?.entities?.regatta?.[payload.regattaName]
+  const numberOfRaces = regattaData ? getRegattaNumberOfRaces(regattaData) : 0
 
   yield put(updateCheckIn({
     leaderboardName: payload.leaderboardName,
