@@ -43,20 +43,9 @@ class FormSailNumberInput extends React.Component<ViewProps & RNTextInputProps &
         <View>
           <View style={styles.autocompleteContainer}>
             <Autocomplete
-                style={style}
-                data={filteredData.length === 1 && comp(query, filteredData[0].sailNumber) ? [] : filteredData}
-                defaultValue={query}
-                renderTextInput={this.renderTextInput}
-                renderItem={this.renderItem}
-                inputContainerStyle={styles.inputContainer}
-                listStyle={styles.list}
-                {...restInput}
-                {...additionalProps}
-            />
-            <Autocomplete
                 containerStyle={style}
                 data={
-                  filteredData.length === 1 && comp(query, filteredData[0].sailNumber)
+                  filteredData.length === 1 && comp(query, filteredData[0]?.sailNumber ?? '')
                       ? []
                       : filteredData
                 }
@@ -67,7 +56,7 @@ class FormSailNumberInput extends React.Component<ViewProps & RNTextInputProps &
                 flatListProps={{
                   keyboardShouldPersistTaps: 'always',
                   keyExtractor: (item, i) => String(i),
-                  renderItem: ({ item, index }) => this.renderItem(item), // RNU
+                  renderItem: ({ item, index }) => this.renderItem(item),
                 }}
                 {...restInput}
                 {...additionalProps}
@@ -83,7 +72,7 @@ class FormSailNumberInput extends React.Component<ViewProps & RNTextInputProps &
     }
 
     const { teams } = this.props
-    return teams.filter((team: any) => team.sailNumber.toLowerCase().includes(query.trim().toLowerCase()))
+    return teams.filter((team: any) => team?.sailNumber?.toLowerCase().includes(query.trim().toLowerCase()))
   }
 
   protected handleChangeText = (text: string) => {
@@ -91,10 +80,10 @@ class FormSailNumberInput extends React.Component<ViewProps & RNTextInputProps &
   }
 
   protected selectTeam = (team: TeamTemplate) =>  (event: any)  => {
-    this.setState({ query: team.sailNumber })
+    this.setState({ query: team?.sailNumber ?? '' })
 
     const { input, onSelectTeam } = this.props
-    input.onChange(team.sailNumber)
+    input.onChange(team?.sailNumber ?? '')
     onSelectTeam(team)
   }
 
@@ -104,7 +93,7 @@ class FormSailNumberInput extends React.Component<ViewProps & RNTextInputProps &
             style={styles.listItem}
             onPress={this.selectTeam(item)}
         >
-          <Text>{item.sailNumber}</Text>
+          <Text>{item?.sailNumber ?? ''}</Text>
         </TouchableOpacity>
     )
   }

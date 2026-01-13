@@ -37,10 +37,12 @@ export const getOrderedUserTeams = (state: RootState = {}) => orderTeamsLastUsed
 export const getUserTeams = createSelector(
   getOrderedUserTeams,
   getUserImages,
-  (teams: TeamTemplate[], images: any) => teams.map((team: TeamTemplate) => ({
-    ...team,
-    imageData: team.imageUuid && images[team.imageUuid],
-  }))
+  (teams: TeamTemplate[], images: any) => teams
+    .filter((team: TeamTemplate) => team != null)
+    .map((team: TeamTemplate) => ({
+      ...team,
+      imageData: team.imageUuid && images[team.imageUuid],
+    }))
 )
 
 export const getUserBoatsByClass = (boatClass: string) => createSelector(

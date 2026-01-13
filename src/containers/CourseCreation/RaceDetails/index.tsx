@@ -238,7 +238,7 @@ const raceTimePickerComponent = fromClass(DateTimePicker).contramap((props: any)
     props.setDateTimePickerName(null)
   },
   date: new Date(moment(getRaceStartTime(props.item) || new Date())),
-  diplay: 'spinner',
+  display: 'spinner',
   mode: 'datetime',
   confirmTextIOS: I18n.t('caption_confirm'),
   cancelTextIOS: I18n.t('caption_cancel'),

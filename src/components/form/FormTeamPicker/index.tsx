@@ -26,10 +26,12 @@ import { text } from 'styles/commons'
 import styles from './styles'
 
 
-const teamsToPickerItems = (teams: TeamTemplate[] = []) => teams.map(item => ({
-  label: item.name,
-  value: item.name,
-}))
+const teamsToPickerItems = (teams: TeamTemplate[] = []) => teams
+  .filter(item => item != null)
+  .map(item => ({
+    label: item.name ?? '',
+    value: item.name ?? '',
+  }))
 
 class FormTeamPicker extends React.Component<ViewProps & RNTextInputProps & WrappedFieldProps & TextInputProps & {
   label: string,

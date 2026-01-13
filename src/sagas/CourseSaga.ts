@@ -199,8 +199,10 @@ function* selectCourseFlow({ payload }: any) {
 
   const latestCourseState = yield call(fetchCourseFromServer, { regattaName, race, serverUrl })
 
-  if (!latestCourseState)
+  if (!latestCourseState) {
+    yield put(updateCourseLoading(false))
     return
+  }
 
   yield call(loadMarkProperties)
 

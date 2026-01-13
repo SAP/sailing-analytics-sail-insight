@@ -166,10 +166,12 @@ class JoinRegatta extends React.Component<{
     const trackingContextUndefined = trackingContext === undefined
 
     const firstBoat = boats.length !== 0 && boats[0]
-    const boatPickerItems = boats.map((boat, index) => ({
-      label: boat.name || '',
-      value: index
-    }))
+    const boatPickerItems = boats
+      .filter(boat => boat != null)
+      .map((boat, index) => ({
+        label: boat.name || '',
+        value: index
+      }))
 
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
