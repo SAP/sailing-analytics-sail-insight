@@ -81,9 +81,18 @@ function* fetchRacesTimesForCurrentEvent({ payload }: any) {
   const raceTimes = yield all(races.map((raceName: string) =>
     safeApiCall(api.requestRaceTime, payload.leaderboardName, raceName, 'Default')))
 
-  yield all(raceTimes.map((raceTime: object, index: number) => put(updateRaceTime({
-    [`${payload.leaderboardName}-${races[index]}`]: raceTime
-  }))))
+  // Only update race times that have valid data from the API
+  // This prevents overwriting locally-set times with null/undefined
+  // when the API call fails or returns empty data
+  yield all(raceTimes
+    .filter((raceTime: object | null | undefined) => raceTime != null)
+    .map((raceTime: object, index: number) => {
+      // Find the original index since we filtered
+      const originalIndex = raceTimes.indexOf(raceTime)
+      return put(updateRaceTime({
+        [`${payload.leaderboardName}-${races[originalIndex]}`]: raceTime
+      }))
+    }))
 }
 
 function* fetchCoursesForCurrrentEvent({ payload }: any) {
@@ -132,19 +141,28 @@ function* setRaceTime({ payload }: any) {
 
   }
 
+  // Optimistically update Redux first for immediate UI feedback
   yield put(updateRaceTime({
     [`${leaderboardName}-${race}`]: { ...raceTime, startTimeAsMillis: date }
   }))
 
   const { username } = yield select(getUserInfo)
 
-  yield safeApiCall(api.updateRaceTime, leaderboardName, race, 'Default', {
+  const result = yield safeApiCall(api.updateRaceTime, leaderboardName, race, 'Default', {
     authorName: username,
     authorPriority: 3,
     passId: 0,
     startTime: date,
     startProcedureType: 'BASIC'
   })
+
+  // If the API call failed, revert the optimistic update
+  if (!result) {
+    yield put(updateRaceTime({
+      [`${leaderboardName}-${race}`]: raceTime
+    }))
+    return
+  }
 
   const races = yield select(getRegattaPlannedRaces(regattaName))
   const previousRace = compose(
