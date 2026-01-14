@@ -1,3 +1,5 @@
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP/sailing-analytics-sail-insight)](https://api.reuse.software/info/github.com/SAP/sailing-analytics-sail-insight)
+
 **Prerequisites**
 
 React Native setup (from https://facebook.github.io/react-native/docs/getting-started.html)
@@ -14,7 +16,7 @@ npm install -g react-native-cli
 
 **Android**
 
-6. make sure the Android SDK and Android Studio is properly installed 
+6. make sure the Android SDK and Android Studio is properly installed
 - if you have problems with AndroidX import than run:
 ```
 npx jetify -r
@@ -36,11 +38,11 @@ $ sudo gem install cocoapods
 9. install cocoapods
 ````
 cd ios
-pod install  
+pod install
 ````
 10.  install node modules
 ````
 yarn install
-```` 
+````
 
 - Build and run the apps via Android Studio or Xcode
