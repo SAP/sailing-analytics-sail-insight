@@ -33,6 +33,12 @@ Change to the android/ folder and run
 ```
 ./gradlew assembleDevDebug
 ```
+for the `app-dev-debug.apk` output, or
+```
+./gradlew assembleDebug
+```
+for the `app-live-debug.apk` output.
+
 The APKs will be signed using a debug key and can be found under `android/app/build/outputs/apk/live/debug`.
 
 **iOS**
