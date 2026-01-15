@@ -473,16 +473,16 @@ function* updateMarkPositionFlow({ payload }: any) {
     const [propertyResult, fixResult] = yield all([updateMarkPropertyCall, updateMarkCall])
 
     // Log failures but don't block - partial success is still useful
-    if (markPropertiesId && !propertyResult) {
+    if (markPropertiesId && propertyResult === undefined) {
       console.warn('Failed to update mark property position')
     }
-    if (markId && !fixResult) {
+    if (markId && fixResult === undefined) {
       console.warn('Failed to send GPS fix for mark')
     }
   } else if (bindToThisDevice) {
     if (markPropertiesId) {
       const positionResult = yield safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, getDeviceId())
-      if (!positionResult) {
+      if (positionResult === undefined) {
         console.warn('Failed to bind mark position to device')
       }
     }
@@ -501,7 +501,7 @@ function* updateMarkPositionFlow({ payload }: any) {
       const isDeviceBound = yield isThisDeviceBoundToMark({ markId, regattaName, serverUrl })
       if (!isDeviceBound) {
         const mappingResult = yield safeApiCall(api.startDeviceMapping, leaderboardName, checkInDeviceMappingData({ markId, secret }))
-        if (!mappingResult) {
+        if (mappingResult === undefined) {
           console.warn('Failed to bind device to mark')
         }
       }

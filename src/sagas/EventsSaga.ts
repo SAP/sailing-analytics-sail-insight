@@ -137,7 +137,7 @@ function* setRaceTime({ payload }: any) {
     if (eventEndDate < date) {
       // update event end time - API call first, then update Redux only on success
       const eventUpdateResult = yield safeApiCall(api.updateEvent(eventId, { enddateasmillis: date }))
-      if (eventUpdateResult) {
+      if (eventUpdateResult !== undefined) {
         yield put(updateEvent({id: eventId, data: { endDate: date }}))
       } else {
         console.warn('Failed to update event end date')
@@ -146,7 +146,7 @@ function* setRaceTime({ payload }: any) {
     } else {
       // update event start time - API call first, then update Redux only on success
       const eventUpdateResult = yield safeApiCall(api.updateEvent(eventId, { startdateasmillis: date }))
-      if (eventUpdateResult) {
+      if (eventUpdateResult !== undefined) {
         yield put(updateEvent({id: eventId, data: { startDate: date }}))
       } else {
         console.warn('Failed to update event start date')
@@ -205,7 +205,7 @@ function* setDiscards({ payload }: any) {
     resultDiscardingThresholds: discards
   })
 
-  if (!updateResult) {
+  if (updateResult === undefined) {
     console.warn('Failed to update leaderboard discards')
     return
   }
