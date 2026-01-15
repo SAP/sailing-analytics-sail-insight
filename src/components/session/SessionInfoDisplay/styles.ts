@@ -76,9 +76,11 @@ export default EStyleSheets.create({
     borderRadius: 11,
   },
   arrowContainer: {
-    flexDirection: 'column',
+    position: 'absolute',
+    right: '$smallSpacing',
+    top: 0,
+    bottom: 0,
     justifyContent: 'center',
-    marginLeft: 'auto',
   },
   spinnerStyle: {
     paddingRight: 5,

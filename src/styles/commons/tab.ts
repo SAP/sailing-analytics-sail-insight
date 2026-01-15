@@ -10,7 +10,7 @@ export default EStyleSheet.create({
     // which requires the default padding and height values and not the overrides
     ...(Platform.OS !== 'ios' ? {
       paddingBottom: 0,
-      height: 50,
+      height: 65, // TODO :  flexible height based on device
     } : {})
   },
   bottomTabItemText: {
