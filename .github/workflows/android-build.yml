@@ -36,10 +36,14 @@ jobs:
 
       - name: Run Jetifier
         run: |
-          # Use node's internal resolution to find the actual jetify script
-          # and run it directly with reverse mode (-r)
-          JETIFY_PATH=$(node -e "console.log(require.resolve('jetifier/bin/jetify'))")
-          node "$JETIFY_PATH" -r
+          # Find the jetify script anywhere inside the jetifier package folder
+          JETIFY_BIN=$(find node_modules/jetifier -name "jetify" -type f | head -n 1)
+          if [ -z "$JETIFY_BIN" ]; then
+            echo "Error: Jetifier script not found in node_modules/jetifier"
+            exit 1
+          fi
+          echo "Found jetifier at: $JETIFY_BIN"
+          node "$JETIFY_BIN" -r
 
       - name: Change wrapper permissions
         run: chmod +x android/gradlew
