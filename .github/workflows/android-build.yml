@@ -34,8 +34,6 @@ jobs:
           # Use --immutable to ensure the build is deterministic
           # Use --inline-builds to see the EXACT error if a patch fails again
           yarn install --immutable --inline-builds
-          # Install the CLI via npm (this is fine for global tools)
-          npm install -g react-native-cli
 
       - name: Run Jetifier
         run: npx jetify -r
