@@ -33,7 +33,7 @@ jobs:
           corepack enable
           # Use --immutable to ensure the build is deterministic
           # Use --inline-builds to see the EXACT error if a patch fails again
-          yarn install --immutable --ignore-scripts
+          yarn install --immutable --mode=skip-build
           npx patch-package
 
       - name: Run Jetifier
