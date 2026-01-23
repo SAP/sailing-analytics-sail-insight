@@ -33,7 +33,13 @@ jobs:
           yarn config set nodeLinker node-modules
           yarn install --immutable
           ./node_modules/.bin/patch-package
-          ./node_modules/.bin/jetify -r
+
+      - name: Run Jetifier
+        run: |
+          # Use node's internal resolution to find the actual jetify script
+          # and run it directly with reverse mode (-r)
+          JETIFY_PATH=$(node -e "console.log(require.resolve('jetifier/bin/jetify'))")
+          node "$JETIFY_PATH" -r
 
       - name: Change wrapper permissions
         run: chmod +x android/gradlew
