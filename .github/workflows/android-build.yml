@@ -34,16 +34,12 @@ jobs:
           yarn install --immutable
           ./node_modules/.bin/patch-package
 
-      - name: Run Jetifier
+      - name: Force Install and Run Jetifier
         run: |
-          # Find the jetify script anywhere inside the jetifier package folder
-          JETIFY_BIN=$(find node_modules/jetifier -name "jetify" -type f | head -n 1)
-          if [ -z "$JETIFY_BIN" ]; then
-            echo "Error: Jetifier script not found in node_modules/jetifier"
-            exit 1
-          fi
-          echo "Found jetifier at: $JETIFY_BIN"
-          node "$JETIFY_BIN" -r
+          # 1. Install jetifier globally via npm to bypass Yarn 4's filesystem
+          npm install -g jetifier
+          # 2. Run the command directly (it's now in the global PATH)
+          jetify -r
 
       - name: Change wrapper permissions
         run: chmod +x android/gradlew
