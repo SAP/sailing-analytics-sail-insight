@@ -30,15 +30,10 @@ jobs:
       - name: Install Dependencies
         run: |
           corepack enable
-          yarn install --immutable --mode=skip-build
-
-      - name: Apply Patches
-        # 'yarn node' injects the virtual filesystem so the script can find the files
-        run: yarn node node_modules/patch-package/index.js
-
-      - name: Run Jetifier
-        # Same here: 'yarn node' allows the jetifier script to exist virtually
-        run: yarn node node_modules/jetifier/bin/jetify -r
+          yarn config set nodeLinker node-modules
+          yarn install --immutable
+          ./node_modules/.bin/patch-package
+          ./node_modules/.bin/jetify -r
 
       - name: Change wrapper permissions
         run: chmod +x android/gradlew
