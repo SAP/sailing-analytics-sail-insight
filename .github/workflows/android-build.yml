@@ -29,17 +29,16 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          # Enable Corepack to use the Yarn version defined in your project
           corepack enable
-          # Use --immutable to ensure the build is deterministic
-          # Use --inline-builds to see the EXACT error if a patch fails again
           yarn install --immutable --mode=skip-build
-          npx patch-package
+
+      - name: Apply Patches
+        # 'yarn node' injects the virtual filesystem so the script can find the files
+        run: yarn node node_modules/patch-package/index.js
 
       - name: Run Jetifier
-        run: |
-          # Use node to find the actual script location and run it
-          node -e "require('jetifier').run()" -- -r
+        # Same here: 'yarn node' allows the jetifier script to exist virtually
+        run: yarn node node_modules/jetifier/bin/jetify -r
 
       - name: Change wrapper permissions
         run: chmod +x android/gradlew
