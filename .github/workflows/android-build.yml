@@ -37,7 +37,7 @@ jobs:
           npx patch-package
 
       - name: Run Jetifier
-        run: yarn npx jetify -r
+        run: yarn run jetify -r
 
       - name: Change wrapper permissions
         run: chmod +x android/gradlew
