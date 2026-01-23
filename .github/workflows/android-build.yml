@@ -79,6 +79,6 @@ jobs:
         with:
           files: |
             android/app/build/outputs/apk/dev/debug/*.apk
-            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/apk/live/debug/*.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
