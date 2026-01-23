@@ -61,7 +61,7 @@ jobs:
           # This path covers standard React Native output locations
           path: |
             android/app/build/outputs/apk/dev/debug/*.apk
-            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/apk/live/debug/*.apk
           if-no-files-found: warn
           retention-days: 30
 
