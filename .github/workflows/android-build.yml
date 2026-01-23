@@ -29,6 +29,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          # Install yarn globally since the post-install script needs it
+          npm install -g yarn
+          # Use yarn to install dependencies (it handles peer conflicts better
+          # by default and will correctly execute that 'postinstall' script)
+          yarn install --network-timeout 100000
           npm install --legacy-peer-deps
           npm install -g react-native-cli
 
