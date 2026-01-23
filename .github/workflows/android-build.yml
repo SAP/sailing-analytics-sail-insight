@@ -33,7 +33,7 @@ jobs:
           npm install -g yarn
           # Use yarn to install dependencies (it handles peer conflicts better
           # by default and will correctly execute that 'postinstall' script)
-          yarn install --frozen-lockfile
+          yarn install --immutable
           npm install --legacy-peer-deps
           npm install -g react-native-cli
 

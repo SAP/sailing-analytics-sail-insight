@@ -13,7 +13,7 @@ React Native setup (from https://facebook.github.io/react-native/docs/getting-st
 1. install nodejs (https://nodejs.org/en/download/package-manager/)
 2. install watchman (https://facebook.github.io/watchman/docs/install.html)
 3. install yarn (https://yarnpkg.com/lang/en/docs/install)
-4.  install react native cli:
+4. install react native cli:
 ````
 npm install -g react-native-cli
 ````
