@@ -29,12 +29,12 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          # Install yarn globally since the post-install script needs it
-          npm install -g yarn
-          # Use yarn to install dependencies (it handles peer conflicts better
-          # by default and will correctly execute that 'postinstall' script)
-          yarn install --immutable
-          npm install --legacy-peer-deps
+          # Enable Corepack to use the Yarn version defined in your project
+          corepack enable
+          # Use --immutable to ensure the build is deterministic
+          # Use --inline-builds to see the EXACT error if a patch fails again
+          yarn install --immutable --inline-builds
+          # Install the CLI via npm (this is fine for global tools)
           npm install -g react-native-cli
 
       - name: Run Jetifier
