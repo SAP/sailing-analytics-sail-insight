@@ -2,12 +2,18 @@
 
 **Prerequisites**
 
+Node setup, at least version 18.14.0:
+```
+nvm install 18.14.0
+nvm use 18.14.0
+```
+
 React Native setup (from https://facebook.github.io/react-native/docs/getting-started.html)
 
 1. install nodejs (https://nodejs.org/en/download/package-manager/)
 2. install watchman (https://facebook.github.io/watchman/docs/install.html)
 3. install yarn (https://yarnpkg.com/lang/en/docs/install)
-4.  install react native cli:
+4. install react native cli:
 ````
 npm install -g react-native-cli
 ````
@@ -22,10 +28,17 @@ npm install -g react-native-cli
 npx jetify -r
 ```
 
+Ensure you have a Java Development Kit (JDK) in a version >= 17, with ``JAVA_HOME`` pointing to that JDK.
 Change to the android/ folder and run
+```
+./gradlew assembleDevDebug
+```
+for the `app-dev-debug.apk` output, or
 ```
 ./gradlew assembleDebug
 ```
+for the `app-live-debug.apk` output.
+
 The APKs will be signed using a debug key and can be found under `android/app/build/outputs/apk/live/debug`.
 
 **iOS**
