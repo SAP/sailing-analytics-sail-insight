@@ -256,7 +256,7 @@ function* addRaceColumns({ payload }: any) {
   const denoteResults = yield all(races.map(race =>
     safeApiCall(api.denoteRaceForTracking, payload.leaderboardName, race, 'Default')))
 
-  const failedDenotes = races.filter((_: string, idx: number) => !denoteResults[idx])
+  const failedDenotes = races.filter((_: string, idx: number) => denoteResults[idx] === undefined)
   if (failedDenotes.length > 0) {
     console.warn('Failed to denote races for tracking:', failedDenotes)
   }
@@ -268,7 +268,7 @@ function* addRaceColumns({ payload }: any) {
         fleet: 'Default'
       })))
 
-    const failedTracking = races.filter((_: string, idx: number) => !trackingResults[idx])
+    const failedTracking = races.filter((_: string, idx: number) => trackingResults[idx] === undefined)
     if (failedTracking.length > 0) {
       console.warn('Failed to start tracking for races:', failedTracking)
     }
@@ -333,7 +333,7 @@ function* startTracking({ payload }: any) {
       fleet: 'Default'
     })))
 
-  const failedRaces = races.filter((_: string, idx: number) => !trackingResults[idx])
+  const failedRaces = races.filter((_: string, idx: number) => trackingResults[idx] === undefined)
   if (failedRaces.length > 0) {
     console.warn('Failed to start tracking for races:', failedRaces)
   }
