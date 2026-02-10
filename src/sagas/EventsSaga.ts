@@ -172,7 +172,7 @@ function* setRaceTime({ payload }: any) {
   })
 
   // If the API call failed, revert the optimistic update
-  if (!result) {
+  if (result === undefined) {
     yield put(updateRaceTime({
       [`${leaderboardName}-${race}`]: raceTime
     }))
