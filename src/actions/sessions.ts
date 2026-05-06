@@ -39,7 +39,7 @@ import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { selectEvent } from 'actions/events'
 import { saveTeam } from 'actions/user'
-import { getUserInfo, isLoggedIn } from 'selectors/auth'
+import { getUserInfo } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from '../selectors/competitor'
 import { getLocationTrackingStatus } from 'selectors/location'
@@ -336,10 +336,7 @@ export const navigateToTracking = (navigation: any) => (
   dispatch: any,
   getState: any,
 ) => {
-  const isLogged = isLoggedIn(getState())
-  return isLogged
-    ? navigation.navigate(Screens.TrackingNavigator)
-    : navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
+  return navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
 }
 
 export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>

@@ -1,7 +1,6 @@
 import { get } from 'lodash'
 import React, { useEffect } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
-import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import { connect } from 'react-redux'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as Screens from 'navigation/Screens'
@@ -14,7 +13,7 @@ import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { getBoat } from 'selectors/boat'
-import { getTrackedCheckIn, isLoadingCheckIn } from 'selectors/checkIn'
+import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
 import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
@@ -70,7 +69,6 @@ class Tracking extends React.Component<NavigationProps & {
   trackedContextName?: string,
   rank?: number,
   isNetworkConnected: boolean,
-  isLoadingCheckIn?: boolean
 },  any > {
   private removeFocus?: () => void;
   private removeBlur?: () => void;
@@ -110,7 +108,6 @@ class Tracking extends React.Component<NavigationProps & {
       trackingStats,
       trackedContextName,
       rank,
-      isLoadingCheckIn
     } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
@@ -192,7 +189,6 @@ class Tracking extends React.Component<NavigationProps & {
           isLoading={this.state.isLoading}>
           {this.state.buttonText}
         </TextButton>
-        <SpinnerOverlay visible={isLoadingCheckIn} cancelable={false}/>
         {this.state.isFocused && <Timer onUpdate={this.handleTimerEvent}/>}
       </ScrollContentView>
     )
@@ -281,8 +277,7 @@ const mapStateToProps = (state: any) => {
       'name',
     ),
     rank: getTrackedCompetitorLeaderboardRank(state),
-    isNetworkConnected: isNetworkConnected(state),
-    isLoadingCheckIn: isLoadingCheckIn(state)
+    isNetworkConnected: isNetworkConnected(state)
   }
 }
 
