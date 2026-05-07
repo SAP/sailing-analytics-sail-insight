@@ -23,7 +23,7 @@ import QRCode from 'react-native-qrcode-svg'
 import styles from './styles'
 import CompetitorList from '../Leaderboard/CompetitorList'
 import { useFocusEffect, useNavigationState } from '@react-navigation/native';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { getWindowWidth } from 'helpers/screen';
 
@@ -293,7 +293,6 @@ export const competitorsCard = Component((props: any) =>
     ]))
 
 export const withCompetitorListState = compose(
-  withState('competitorListRefreshInterval', 'setCompetitorListRefreshInterval', 0),
   withState('competitorListStale', 'setCompetitorListStale', true)
 )
 
@@ -307,24 +306,24 @@ const nothingIfCompetitorListEmpty = branch(isCompetitorListEmpty, nothingAsClas
 const nothingIfCompetitorListNotEmpty = branch(isCompetitorListNotEmpty, nothingAsClass)
 
 export const competitorListRefreshHandler = Component((props: any) => {
+    const intervalRef = useRef<any>(null);
+    const { leaderboardName, regattaName } = props.session || {};
+
     useFocusEffect(
         useCallback(() => {
             // On Focus
             const callback = async () => {
-                const { leaderboardName, regattaName } = props.session;
                 await props.fetchRegattaCompetitors(regattaName, leaderboardName);
                 props.setCompetitorListStale(false);
             };
             callback();
-            props.setCompetitorListRefreshInterval(
-                setInterval(callback, COMPETITOR_LIST_REFRESH_RATE)
-            );
+            intervalRef.current = setInterval(callback, COMPETITOR_LIST_REFRESH_RATE);
             // On Blur (cleanup)
             return () => {
-                clearInterval(props.competitorListRefreshInterval);
+                clearInterval(intervalRef.current);
                 props.setCompetitorListStale(true);
             };
-        }, [props.session, props.fetchRegattaCompetitors])
+        }, [leaderboardName, regattaName])
     );
 
     return null;
