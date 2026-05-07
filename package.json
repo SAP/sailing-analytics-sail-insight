@@ -108,7 +108,7 @@
     "reselect": "^4.1.7",
     "string-format": "^2.0.0",
     "url-parse": "^1.5.10",
-    "uuid": "^9.0.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
