@@ -136,7 +136,7 @@ function* setRaceTime({ payload }: any) {
 
     if (eventEndDate < date) {
       // update event end time - API call first, then update Redux only on success
-      const eventUpdateResult = yield safeApiCall(api.updateEvent(eventId, { enddateasmillis: date }))
+      const eventUpdateResult = yield safeApiCall(api.updateEvent, eventId, { enddateasmillis: date })
       if (eventUpdateResult !== undefined) {
         yield put(updateEvent({id: eventId, data: { endDate: date }}))
       } else {
@@ -145,7 +145,7 @@ function* setRaceTime({ payload }: any) {
       }
     } else {
       // update event start time - API call first, then update Redux only on success
-      const eventUpdateResult = yield safeApiCall(api.updateEvent(eventId, { startdateasmillis: date }))
+      const eventUpdateResult = yield safeApiCall(api.updateEvent, eventId, { startdateasmillis: date })
       if (eventUpdateResult !== undefined) {
         yield put(updateEvent({id: eventId, data: { startDate: date }}))
       } else {
@@ -172,7 +172,7 @@ function* setRaceTime({ payload }: any) {
   })
 
   // If the API call failed, revert the optimistic update
-  if (!result) {
+  if (result === undefined) {
     yield put(updateRaceTime({
       [`${leaderboardName}-${race}`]: raceTime
     }))
@@ -256,7 +256,7 @@ function* addRaceColumns({ payload }: any) {
   const denoteResults = yield all(races.map(race =>
     safeApiCall(api.denoteRaceForTracking, payload.leaderboardName, race, 'Default')))
 
-  const failedDenotes = races.filter((_: string, idx: number) => !denoteResults[idx])
+  const failedDenotes = races.filter((_: string, idx: number) => denoteResults[idx] === undefined)
   if (failedDenotes.length > 0) {
     console.warn('Failed to denote races for tracking:', failedDenotes)
   }
@@ -268,7 +268,7 @@ function* addRaceColumns({ payload }: any) {
         fleet: 'Default'
       })))
 
-    const failedTracking = races.filter((_: string, idx: number) => !trackingResults[idx])
+    const failedTracking = races.filter((_: string, idx: number) => trackingResults[idx] === undefined)
     if (failedTracking.length > 0) {
       console.warn('Failed to start tracking for races:', failedTracking)
     }
@@ -333,7 +333,7 @@ function* startTracking({ payload }: any) {
       fleet: 'Default'
     })))
 
-  const failedRaces = races.filter((_: string, idx: number) => !trackingResults[idx])
+  const failedRaces = races.filter((_: string, idx: number) => trackingResults[idx] === undefined)
   if (failedRaces.length > 0) {
     console.warn('Failed to start tracking for races:', failedRaces)
   }

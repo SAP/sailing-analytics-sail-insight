@@ -4,8 +4,11 @@ import { useAutomaticDateTimeAndTimezone } from 'helpers/date'
 import { ImageBackground, Text, View, ViewProps, BackHandler, Image, AppState } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import LinearGradient from 'react-native-linear-gradient'
+import { connect } from 'react-redux'
 import TextButton from 'components/TextButton'
 import * as Screens from 'navigation/Screens'
+import { getLocationTrackingStatus, getLocationTrackingContext } from 'selectors/location'
+import * as LocationService from 'services/LocationService'
 
 import Images from '@assets/Images'
 import styles from './styles'
@@ -32,7 +35,9 @@ const AutomaticTimeNotice = () => {
     null
 }
 
-class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps> {
+class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps & {
+  isTrackingActive?: boolean
+}> {
   constructor(props: any) {
     super(props)
     this.onBackButtonPressAndroid = this.onBackButtonPressAndroid.bind(this)
@@ -40,10 +45,23 @@ class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps>
 
   componentDidMount() {
     BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    this.navigateIfTracking()
+  }
+
+  componentDidUpdate(prevProps: any) {
+    if (!prevProps.isTrackingActive && this.props.isTrackingActive) {
+      this.navigateIfTracking()
+    }
   }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+  }
+
+  navigateIfTracking = () => {
+    if (this.props.isTrackingActive) {
+      this.props.navigation.navigate(Screens.Tracking)
+    }
   }
 
   onBackButtonPressAndroid = () => {
@@ -86,4 +104,10 @@ class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps>
   }
 }
 
-export default WelcomeTracking
+const mapStateToProps = (state: any) => ({
+  isTrackingActive:
+    getLocationTrackingContext(state) === LocationService.LocationTrackingContext.REMOTE &&
+    getLocationTrackingStatus(state) === LocationService.LocationTrackingStatus.RUNNING
+})
+
+export default connect(mapStateToProps)(WelcomeTracking)

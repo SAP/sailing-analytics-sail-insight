@@ -107,14 +107,25 @@ export const request = async (
   } finally {
     if (DEV_MODE) {
       const headers = fetchOptions.headers
+      let responseBody = null
+      if (response) {
+        try {
+          responseBody = await response.clone().json()
+        } catch {
+          try {
+            responseBody = await response.clone().text()
+          } catch {
+            responseBody = '[Unable to parse response]'
+          }
+        }
+      }
       Logger.groupedDebug(
         `${(response && response.status) || 'ERR'}: ${fetchOptions.method} ${url}`,
         {
-          data,
+          requestBody: body,
+          responseBody,
           headers,
           method,
-          body,
-          response,
         },
       )
     } else {

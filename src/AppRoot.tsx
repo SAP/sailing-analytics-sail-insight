@@ -31,7 +31,7 @@ import { updateTrackingStatus } from 'actions/locationTrackingData'
 
 // Selectors
 import { getLocationTrackingStatus, getLocationTrackingContext } from 'selectors/location'
-import { areThereActiveCheckIns, isBoundToMark } from 'selectors/checkIn'
+import { areThereActiveCheckIns, isBoundToMark, isLoadingCheckIn } from 'selectors/checkIn'
 import { getSelectedMarkProperties } from 'selectors/course'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { hasMarkProperties } from 'selectors/inventory'
@@ -497,7 +497,7 @@ class AppRoot extends ReactComponent {
   }
 
   public render() {
-    const { isLoggedIn } = this.props
+    const { isLoggedIn, isLoadingCheckIn: loadingCheckIn } = this.props
     return (
       <ActionSheetProvider>
         <AuthContext.Provider value = {{ isLoggedIn }}>
@@ -505,6 +505,7 @@ class AppRoot extends ReactComponent {
             <OrientationLocker orientation={PORTRAIT}/>
             { AppNavigator.fold(this.props) }
           </NavigationContainer>
+          <SpinnerOverlay visible={loadingCheckIn} cancelable={false}/>
         </AuthContext.Provider>
       </ActionSheetProvider>
     )
@@ -548,7 +549,8 @@ class AppRoot extends ReactComponent {
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
   shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state),
-  userHasMarkProperties: hasMarkProperties(state)
+  userHasMarkProperties: hasMarkProperties(state),
+  isLoadingCheckIn: isLoadingCheckIn(state)
 })
 
 export default connect(

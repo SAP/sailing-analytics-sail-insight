@@ -8,8 +8,9 @@ import { getCheckInByLeaderboardName } from 'selectors/checkIn'
 import { getRaces } from 'selectors/race'
 import * as Screens from 'navigation/Screens'
 import * as LocationService from 'services/LocationService'
+import Logger from 'helpers/Logger'
 import { getNowAsMillis } from 'helpers/date'
-import { getUnknownErrorMessage } from 'helpers/texts'
+import { getErrorDisplayMessage, getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
@@ -58,32 +59,31 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     return
   }
 
-  dispatch(resetTrackingStatistics())
-  dispatch(updateTrackingContext(LocationService.LocationTrackingContext.REMOTE))
-
   if (useLoadingSpinner) {
     dispatch(updateLoadingCheckInFlag(true))
   }
 
-  dispatch(updateLatestTrackedRace(null))
-  dispatch(updateTrackedRegatta({
-    leaderboardName: checkInData.leaderboardName,
-    eventId: checkInData.eventId,
-  }))
-
-  if (markTracking) {
-    navigation.navigate(Screens.TrackingNavigator, { screen: Screens.MarkTracking })
-  } else {
-    navigation.navigate(Screens.Tracking)
-  }
-
-  await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId))
-  await dispatch(updateLoadingCheckInFlag(false))
-
-  try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
-  catch (e) {}
-
   try {
+    dispatch(resetTrackingStatistics())
+    dispatch(updateTrackingContext(LocationService.LocationTrackingContext.REMOTE))
+
+    dispatch(updateLatestTrackedRace(null))
+    dispatch(updateTrackedRegatta({
+      leaderboardName: checkInData.leaderboardName,
+      eventId: checkInData.eventId,
+    }))
+
+    if (markTracking) {
+      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator, params: { screen: Screens.MarkTracking } })
+    } else {
+      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator, params: { screen: Screens.Tracking } })
+    }
+
+    await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId))
+
+    try { await dispatch(fetchRegattaAndRaces(checkInData.regattaName, checkInData.secret)) }
+    catch (e) {}
+
     const races = getRaces(checkInData.leaderboardName)(getState())
     const now = getNowAsMillis()
     const activeRaces = races
@@ -109,6 +109,11 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
       dispatch(startUpdateStartLineBasedOnCurrentCourse(fetchData))
     }
   } catch (err) {
-    throw err
+    Logger.debug('startTracking error', err)
+    Alert.alert(getErrorDisplayMessage(err))
+  } finally {
+    if (useLoadingSpinner) {
+      dispatch(updateLoadingCheckInFlag(false))
+    }
   }
 }
