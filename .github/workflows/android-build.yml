@@ -8,6 +8,10 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: write
+      checks: write
+      actions: read
     name: Build Android APKs
     runs-on: ubuntu-latest
 
