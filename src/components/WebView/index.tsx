@@ -25,6 +25,7 @@ class WebView extends React.Component<{
 
   private focusListener: any
   private blurListener: any
+  private backHandlerSubscription: any
 
   componentDidMount() {
     this.handleWillFocus()
@@ -78,11 +79,14 @@ class WebView extends React.Component<{
   }
 
   protected handleWillBlur = () => {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleHardwareBackButton)
+    if (this.backHandlerSubscription) {
+      this.backHandlerSubscription.remove()
+      this.backHandlerSubscription = null
+    }
   }
 
   protected handleWillFocus = () => {
-    BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackButton)
+    this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackButton)
     this.props.navigation.setOptions({
       headerLeft: () => (
         <HeaderBackButton

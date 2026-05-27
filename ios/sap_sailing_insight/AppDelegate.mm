@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 #import <Firebase.h>
 #import <React/RCTBundleURLProvider.h>
+#import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
 
 #if __has_include(<React/RCTAppSetupUtils.h>)
 #import <React/RCTAppSetupUtils.h>
@@ -32,6 +33,7 @@
   }
 
   self.moduleName = @"sap_sailing_insight";
+  self.dependencyProvider = [RCTAppDependencyProvider new];
   self.initialProps = @{};
 
   #if __has_include(<React/RCTAppSetupUtils.h>)

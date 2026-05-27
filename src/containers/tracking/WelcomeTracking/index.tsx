@@ -38,13 +38,15 @@ const AutomaticTimeNotice = () => {
 class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps & {
   isTrackingActive?: boolean
 }> {
+  private backHandlerSubscription: any
+
   constructor(props: any) {
     super(props)
     this.onBackButtonPressAndroid = this.onBackButtonPressAndroid.bind(this)
   }
 
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
     this.navigateIfTracking()
   }
 
@@ -55,7 +57,7 @@ class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps 
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    if (this.backHandlerSubscription) this.backHandlerSubscription.remove()
   }
 
   navigateIfTracking = () => {

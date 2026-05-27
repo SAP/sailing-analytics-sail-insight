@@ -72,6 +72,7 @@ class Tracking extends React.Component<NavigationProps & {
 },  any > {
   private removeFocus?: () => void;
   private removeBlur?: () => void;
+  private backHandlerSubscription?: { remove: () => void };
   public state = {
     isLoading: false,
     durationText: EMPTY_DURATION_TEXT,
@@ -83,21 +84,21 @@ class Tracking extends React.Component<NavigationProps & {
   public componentDidMount() {
     // Run when the screen becomes focused
     this.removeFocus = this.props.navigation.addListener('focus', () => {
-      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+      this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
       this.setState({ isFocused: true });
       activateKeepAwake();
     });
 
     // Run when the screen loses focus
     this.removeBlur = this.props.navigation.addListener('blur', () => {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+      if (this.backHandlerSubscription) this.backHandlerSubscription.remove();
       this.setState({ isFocused: false });
       deactivateKeepAwake();
     });
   }
 
   public componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    if (this.backHandlerSubscription) this.backHandlerSubscription.remove();
     if (this.removeFocus) this.removeFocus();
     if (this.removeBlur) this.removeBlur();
     deactivateKeepAwake();
