@@ -1,5 +1,5 @@
 import { get } from 'lodash'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -38,9 +38,11 @@ const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
 
 const Timer = ({ onUpdate }) => {
-  useEffect(() => {
-    let timer = setInterval(onUpdate, 1000)
+  const callbackRef = useRef(onUpdate)
+  callbackRef.current = onUpdate
 
+  useEffect(() => {
+    const timer = setInterval(() => callbackRef.current(), 1000)
     return () => clearInterval(timer)
   }, [])
 

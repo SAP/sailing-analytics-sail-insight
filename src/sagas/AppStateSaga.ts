@@ -28,7 +28,7 @@ function* handleAppStateChange() {
       yield put(updateAppState(appState === 'active'))
       if (appState === 'active') {
         const networkState = yield call(getNetworkStatePromise)
-        updateNetworkAvailability(networkState)
+        yield* updateNetworkAvailability(networkState)
       }
     }
   } finally {
@@ -55,7 +55,7 @@ function* handleNetworkChange() {
   try {
     while (true) {
       const networkState = yield take(networkChannel)
-      updateNetworkAvailability(networkState)
+      yield* updateNetworkAvailability(networkState)
     }
   } finally {
     networkChannel.close()

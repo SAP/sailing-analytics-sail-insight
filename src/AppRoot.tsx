@@ -477,11 +477,12 @@ const AppNavigator = Component(props => compose(
 
 class AppRoot extends ReactComponent {
   public deepLinkSubscriber: any
+  private statusListenerSubscription: any
 
   public componentDidMount() {
     this.initDeepLinks()
     DeepLinking.addListener(this.handleDeeplink)
-    LocationService.addStatusListener(this.handleLocationTrackingStatus)
+    this.statusListenerSubscription = LocationService.addStatusListener(this.handleLocationTrackingStatus)
     LocationService.addLocationListener(this.handleGeolocation)
     LocationService.registerEvents()
 
@@ -491,7 +492,7 @@ class AppRoot extends ReactComponent {
   public componentWillUnmount() {
     DeepLinking.removeListener(this.handleDeeplink)
     this.finalizeDeepLinks()
-    LocationService.removeStatusListener(this.handleLocationTrackingStatus)
+    if (this.statusListenerSubscription) LocationService.removeStatusListener(this.statusListenerSubscription)
     LocationService.removeLocationListener(this.handleGeolocation)
     LocationService.unregisterEvents()
   }
