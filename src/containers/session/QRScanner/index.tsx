@@ -32,6 +32,8 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
         })()
     }, [])
 
+    const handleValueRef = useRef<(value?: string) => void>(() => {})
+
     const handleValue = async (value?: string) => {
         if (!value || busy) return
         if (lastValueRef.current === value) return
@@ -72,11 +74,13 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
         }
     }
 
+    handleValueRef.current = handleValue
+
     const codeScanner = useCodeScanner({
-        codeTypes: ['qr'], // add more types if you need them
+        codeTypes: ['qr'],
         onCodeScanned: (codes) => {
             const first = codes?.[0]
-            if (first?.value) handleValue(first.value)
+            if (first?.value) handleValueRef.current(first.value)
         },
     })
 

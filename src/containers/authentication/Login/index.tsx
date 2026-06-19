@@ -83,8 +83,7 @@ class Login extends TextInputForm<{
       this.props.navigation.reset({ index: 1, routes: [{ name: Screens.Main }]})
     } catch (err) {
       passwordError = I18n.t('error_login_incorrect')
-      this.setState({ error: passwordError, usernameError, passwordError })
-      this.setState({ isLoading: false })
+      this.setState({ error: passwordError, usernameError, passwordError, isLoading: false })
     }
   }
 
