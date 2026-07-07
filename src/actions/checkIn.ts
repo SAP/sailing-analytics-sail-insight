@@ -15,7 +15,7 @@ import * as Screens from 'navigation/Screens'
 import { fetchEntityAction, withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
-import { getErrorDisplayMessage } from 'helpers/texts'
+import { getInvitationErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { alertPromise, spreadableList } from 'helpers/utils'
 
@@ -375,7 +375,7 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
     dispatch(updateLoadingCheckInFlag(false))
     if (error) {
       // workaround for stuck fullscreen loading indicator when alert is called
-      setTimeout(async () => Alert.alert(getErrorDisplayMessage(error)), 800)
+      setTimeout(async () => Alert.alert(getInvitationErrorMessage(error)), 800)
     }
   }
 }

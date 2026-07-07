@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import { fetchCheckIn } from 'actions/checkIn'
 import { showNetworkRequiredAlert } from 'helpers/network'
-import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
+import { getErrorTitle, getInvitationErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
 import { isNetworkConnected } from 'selectors/network'
@@ -66,7 +66,7 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
         } catch (err: any) {
             Alert.alert(
                 getErrorTitle(),
-                getErrorDisplayMessage(err),
+                getInvitationErrorMessage(err),
                 [{ text: I18n.t('caption_ok'), onPress: () => { lastValueRef.current = null } }],
                 { cancelable: false }
             )

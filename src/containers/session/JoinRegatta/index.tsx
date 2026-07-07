@@ -26,7 +26,7 @@ import { getEventLogoImageUrl, getEventPreviewImageUrl } from 'services/SessionS
 import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { dateRangeText } from 'helpers/date'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
-import { getErrorDisplayMessage } from 'helpers/texts'
+import { getInvitationErrorMessage } from 'helpers/texts'
 import { openEmailToContact } from 'helpers/user'
 import * as Screens from 'navigation/Screens'
 
@@ -125,7 +125,7 @@ class JoinRegatta extends React.Component<{
       }
     } catch (err) {
       console.error(err)
-      Alert.alert(getErrorDisplayMessage(err))
+      Alert.alert(getInvitationErrorMessage(err))
     } finally {
       this.setState({ isLoading: false })
     }
