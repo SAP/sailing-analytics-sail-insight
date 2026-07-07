@@ -7,7 +7,7 @@ import RNPickerSelect from 'react-native-picker-select'
 import { Chevron } from 'react-native-shapes'
 
 import { archiveEvent } from 'actions/events'
-import { navigateToTracking, registerCompetitorAndDevice } from 'actions/sessions'
+import { registerCompetitorAndDevice } from 'actions/sessions'
 
 import { CheckIn } from 'models'
 
@@ -62,7 +62,6 @@ class JoinRegatta extends React.Component<{
   mark?: any,
   boats?: any,
   registerCompetitorAndDevice: any
-  navigateToTracking: any
 } > {
 
   public state = {
@@ -265,10 +264,6 @@ class JoinRegatta extends React.Component<{
       </ImageBackground>
     )
   }
-  private gotoAccountPage = () => {
-    return this.props.navigation.navigate(Screens.Account)
-  }
-
   private onBoatPickerSelect = (selectedBoatIndex: any) => {
     this.setState({ selectedBoatIndex })
   }
@@ -296,6 +291,6 @@ const mapStateToProps = (state: any, props: any) => {
 
 export default connect(
   mapStateToProps,
-  { archiveEvent, navigateToTracking, registerCompetitorAndDevice },
+  { archiveEvent, registerCompetitorAndDevice },
 )(JoinRegatta)
 

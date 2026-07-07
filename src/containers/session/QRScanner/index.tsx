@@ -4,7 +4,6 @@ import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-cam
 import { connect } from 'react-redux'
 
 import { fetchCheckIn } from 'actions/checkIn'
-import Logger from 'helpers/Logger'
 import { showNetworkRequiredAlert } from 'helpers/network'
 import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
 import I18n from 'i18n'
@@ -61,7 +60,9 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
             const checkIn = await fetchCheckIn(value)
 
             navigation.goBack()
-            navigation.navigate(Screens.JoinRegatta, { data: checkIn })
+            // pop: reuse an already-open JoinRegatta instead of stacking a
+            // second one (same as joinLinkInvitation)
+            navigation.navigate(Screens.JoinRegatta, { data: checkIn }, { pop: true })
         } catch (err: any) {
             Alert.alert(
                 getErrorTitle(),

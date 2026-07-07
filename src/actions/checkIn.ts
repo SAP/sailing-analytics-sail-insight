@@ -269,58 +269,62 @@ export const fetchEventList = () => async(dispatch, getState) => {
 
   dispatch(updateLoadingEventList(true))
 
-  const api = dataApi()
-  const { trackedEvents } = await api.requestEventInventory()
+  try {
+    const api = dataApi()
+    const { trackedEvents } = await api.requestEventInventory()
 
-  const deviceId = CheckInService.getDeviceId()
-  const getLastTrackedElementOfType = (trackedElementType: string) => compose(
-    prop(trackedElementType),
-    defaultTo({}),
-    findLast(has(trackedElementType)),
-    filter(propEq(deviceId,'deviceId')),
-    prop('trackedElements')
-  )
+    const deviceId = CheckInService.getDeviceId()
+    const getLastTrackedElementOfType = (trackedElementType: string) => compose(
+      prop(trackedElementType),
+      defaultTo({}),
+      findLast(has(trackedElementType)),
+      filter(propEq(deviceId,'deviceId')),
+      prop('trackedElements')
+    )
 
-  const getTrackedElementsFromDifferentDevices = compose(
-    reject(propEq(deviceId,'deviceId')),
-    prop('trackedElements')
-  )
+    const getTrackedElementsFromDifferentDevices = compose(
+      reject(propEq(deviceId,'deviceId')),
+      prop('trackedElements')
+    )
 
-  const checkIns = map(applySpec({
-    eventId: prop('eventId'),
-    regattaName: prop('leaderboardName'),
-    leaderboardName: prop('leaderboardName'),
-    serverUrl: prop('url'),
-    secret: prop('regattaSecret'),
-    trackPrefix: always('R'),
-    competitorId: getLastTrackedElementOfType('competitorId'),
-    boatId: getLastTrackedElementOfType('boatId'),
-    markId: getLastTrackedElementOfType('markId'),
-    isArchived: prop('isArchived'),
-    trackedElements: getTrackedElementsFromDifferentDevices,
-  }))(trackedEvents)
+    const checkIns = map(applySpec({
+      eventId: prop('eventId'),
+      regattaName: prop('leaderboardName'),
+      leaderboardName: prop('leaderboardName'),
+      serverUrl: prop('url'),
+      secret: prop('regattaSecret'),
+      trackPrefix: always('R'),
+      competitorId: getLastTrackedElementOfType('competitorId'),
+      boatId: getLastTrackedElementOfType('boatId'),
+      markId: getLastTrackedElementOfType('markId'),
+      isArchived: prop('isArchived'),
+      trackedElements: getTrackedElementsFromDifferentDevices,
+    }))(trackedEvents)
 
-  await Promise.all(checkIns.map(async (checkIn) => {
-    try {
-      await dispatch(collectCheckInData(checkIn))
-    } catch (error) {
-      const isKnownError = anyPass([is(ApiException), propEq(STATUS_INTERNAL_ERROR,'status'), propEq(STATUS_NOT_FOUND,'status')])
-      if (isKnownError(error)) {
-        return
-      } else {
-        throw error
+    await Promise.all(checkIns.map(async (checkIn) => {
+      try {
+        await dispatch(collectCheckInData(checkIn))
+      } catch (error) {
+        const isKnownError = anyPass([is(ApiException), propEq(STATUS_INTERNAL_ERROR,'status'), propEq(STATUS_NOT_FOUND,'status')])
+        if (isKnownError(error)) {
+          return
+        } else {
+          throw error
+        }
       }
-    }
-    const regatta = getRegatta(checkIn.regattaName)(getState())
-    const numberOfRaces = getRegattaNumberOfRaces(regatta)
-    const checkInWithNumberOfRaces = {
-      ...checkIn,
-      numberOfRaces
-    }
-    return dispatch(updateCheckIn(checkInWithNumberOfRaces))
-  }))
-
-  dispatch(updateLoadingEventList(false))
+      const regatta = getRegatta(checkIn.regattaName)(getState())
+      const numberOfRaces = getRegattaNumberOfRaces(regatta)
+      const checkInWithNumberOfRaces = {
+        ...checkIn,
+        numberOfRaces
+      }
+      return dispatch(updateCheckIn(checkInWithNumberOfRaces))
+    }))
+  } finally {
+    // Always clear the flag — a thrown request otherwise left the
+    // Sessions list spinning until app restart.
+    dispatch(updateLoadingEventList(false))
+  }
 }
 
 export const fetchCheckIn = (url: string) => async (dispatch: DispatchType) => {
@@ -363,7 +367,7 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
   try {
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
-    navigation.navigate(Screens.JoinRegatta, { data: sessionCheckIn })
+    navigation.navigate(Screens.JoinRegatta, { data: sessionCheckIn }, { pop: true })
   } catch (err) {
     Logger.debug(err)
     error = err

@@ -27,6 +27,7 @@ import { AuthContext } from 'navigation/NavigationContext'
 import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation } from 'actions/locations'
+import { navigateBackToMain } from 'actions/navigation'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 
 // Selectors
@@ -443,7 +444,7 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withoutTitle, withoutHeaderLeft)({
     name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
     options: {
-      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigationContainer.current.navigate(Screens.Main)}>{I18n.t('caption_skip')}</TextButton>,
+      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigateBackToMain(navigationContainer.current)}>{I18n.t('caption_skip')}</TextButton>,
       gestureEnabled: false
     }
   })),

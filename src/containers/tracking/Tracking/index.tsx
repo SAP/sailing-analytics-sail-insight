@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { CommonActions } from '@react-navigation/native'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
@@ -17,6 +18,7 @@ import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
 import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
+import { LocationTrackingStatus } from 'services/LocationService'
 import { getMark } from 'selectors/mark'
 import { isNetworkConnected } from 'selectors/network'
 
@@ -66,6 +68,7 @@ type NavigationProps = {
 class Tracking extends React.Component<NavigationProps & {
   stopTracking: any,
   openLatestRaceTrackDetails: any,
+  locationTrackingStatus?: any,
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
@@ -98,6 +101,27 @@ class Tracking extends React.Component<NavigationProps & {
       deactivateKeepAwake();
     });
   }
+
+  public componentDidUpdate(prevProps: any) {
+    // Tracking can stop outside this screen (OS kills the service,
+    // native enabled-change event) — leave the live view then instead
+    // of showing a running timer while no fixes are recorded. Only an
+    // explicit STOPPED counts: resetTrackingStatistics sets status to
+    // null while a new session starts. The manual stop button navigates
+    // itself (isLoading covers that flow).
+    if (prevProps.locationTrackingStatus === LocationTrackingStatus.RUNNING &&
+        this.props.locationTrackingStatus === LocationTrackingStatus.STOPPED &&
+        !this.state.isLoading) {
+      this.resetToWelcomeTracking()
+    }
+  }
+
+  // Reset instead of navigate so the stack always ends up in the same
+  // shape a fresh launch produces ([WelcomeTracking] only), regardless
+  // of what is currently stacked — and without a transition animation.
+  protected resetToWelcomeTracking = () => this.props.navigation.dispatch(
+    CommonActions.reset({ index: 0, routes: [{ name: Screens.WelcomeTracking }] })
+  )
 
   public componentWillUnmount() {
     if (this.backHandlerSubscription) this.backHandlerSubscription.remove();
@@ -229,7 +253,7 @@ class Tracking extends React.Component<NavigationProps & {
     await this.setState({ isLoading: true })
     try {
       await this.props.stopTracking(this.props.checkInData)
-      this.props.navigation.navigate(Screens.WelcomeTracking)
+      this.resetToWelcomeTracking()
     } catch (err) {
       Logger.debug('onStopTrackingPress Error', err)
     } finally {
