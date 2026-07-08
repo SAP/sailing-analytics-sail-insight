@@ -359,12 +359,18 @@ export const checkOut = (data?: CheckIn) => withDataApi(data && data.serverUrl)(
   },
 )
 
+// Lets initializeApp tell apart "flag is true because a join is running"
+// from "flag is true because the boot-time early-set was never consumed".
+let joinsInFlight = 0
+export const isJoinLinkInvitationInFlight = () => joinsInFlight > 0
+
 export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
   async (dispatch: DispatchType, getState: GetStateType) => {
   let error: any
 
 
   try {
+    joinsInFlight += 1
     dispatch(updateLoadingCheckInFlag(true))
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
     navigation.navigate(Screens.JoinRegatta, { data: sessionCheckIn }, { pop: true })
@@ -372,6 +378,7 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
     Logger.debug(err)
     error = err
   } finally {
+    joinsInFlight -= 1
     dispatch(updateLoadingCheckInFlag(false))
     if (error) {
       // workaround for stuck fullscreen loading indicator when alert is called
