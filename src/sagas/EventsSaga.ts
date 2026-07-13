@@ -20,7 +20,7 @@ import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share, Alert } from 'react-native'
-import { all, call, put, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
+import { all, call, cancelled, put, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo, isPollingEvent, getSelectedEventEndDate, getSelectedEventStartDate, getEventIdThatsBeingSelected } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
@@ -51,32 +51,44 @@ function* selectEventSaga({ payload }: any) {
   const navigation = payload.navigation
   const replaceCurrentScreen = payload.replaceCurrentScreen
 
-  yield put(fetchPermissionsForEvent(eventData))
-  yield take([UPDATE_EVENT_PERMISSION, offlineActionTypes.FETCH_OFFLINE_MODE])
+  try {
+    yield put(fetchPermissionsForEvent(eventData))
+    yield take([UPDATE_EVENT_PERMISSION, offlineActionTypes.FETCH_OFFLINE_MODE])
 
-  const currentUserCanUpdateEvent = yield select(canUpdateEvent(eventData.eventId))
-  const { regattaName, secret, serverUrl } = eventData
+    const currentUserCanUpdateEvent = yield select(canUpdateEvent(eventData.eventId))
+    const { regattaName, secret, serverUrl } = eventData
 
-  yield put(fetchRegatta(regattaName, secret, serverUrl))
-  yield put(fetchRacesTimesForEvent(eventData))
+    yield put(fetchRegatta(regattaName, secret, serverUrl))
+    yield put(fetchRacesTimesForEvent(eventData))
 
-  if (currentUserCanUpdateEvent) {
-    yield call(fetchCoursesForCurrrentEvent, { payload: eventData })
-    if (replaceCurrentScreen) {
-      navigation.dispatch(StackActions.replace(Screens.SessionDetail4Organizer, { data: eventData }))
+    if (currentUserCanUpdateEvent) {
+      yield call(fetchCoursesForCurrrentEvent, { payload: eventData })
+      if (replaceCurrentScreen) {
+        navigation.dispatch(StackActions.replace(Screens.SessionDetail4Organizer, { data: eventData }))
+      } else {
+        navigation.navigate(Screens.SessionDetail4Organizer, { data: eventData })
+      }
     } else {
-      navigation.navigate(Screens.SessionDetail4Organizer, { data: eventData })
+      navigation.navigate(Screens.SessionDetail, { data: eventData })
     }
-  } else {
-    navigation.navigate(Screens.SessionDetail, { data: eventData })
+  } finally {
+    // Always clear the flags — if the saga dies mid-way the tapped
+    // session row's spinner was stuck until app restart. Except on
+    // takeLatest cancellation: the newer SELECT_EVENT has just set the
+    // flags for its own run and clearing would kill the new spinner.
+    if (!(yield cancelled())) {
+      yield put(updateCreatingEvent(false))
+      yield put(updateSelectingEvent(false))
+    }
   }
-  yield put(updateCreatingEvent(false))
-  yield put(updateSelectingEvent(false))
 }
 
 function* fetchRacesTimesForCurrentEvent({ payload }: any) {
   const api = dataApi(payload.serverUrl)
-  const races = yield select(getRegattaPlannedRaces(payload.regattaName))
+  // undefined until the regatta entity arrives — same guard as in
+  // fetchCoursesForCurrrentEvent; an unguarded .map here kills the whole
+  // root saga via takeLatest → watchEvents → yield all
+  const races = (yield select(getRegattaPlannedRaces(payload.regattaName))) || []
 
   const raceTimes = yield all(races.map((raceName: string) =>
     safeApiCall(api.requestRaceTime, payload.leaderboardName, raceName, 'Default')))
@@ -97,7 +109,9 @@ function* fetchRacesTimesForCurrentEvent({ payload }: any) {
 
 function* fetchCoursesForCurrrentEvent({ payload }: any) {
   const api = dataApi(payload.serverUrl)
-  const races = yield select(getRegattaPlannedRaces(payload.regattaName))
+  // undefined until the regatta entity arrives (fetchRegatta is a
+  // non-blocking put in selectEventSaga) — courses load on next visit
+  const races = (yield select(getRegattaPlannedRaces(payload.regattaName))) || []
 
   const raceCourses = yield all(races.map((raceName: string) =>
     safeApiCall(api.requestCourse, payload.regattaName, raceName, 'Default')
