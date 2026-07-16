@@ -20,6 +20,7 @@ import * as LocationService from 'services/LocationService'
 import { addUserPrefix } from 'services/SessionService'
 import SessionException from 'services/SessionService/SessionException'
 
+import { navigateBackToTracking } from 'actions/navigation'
 import { withDataApi } from 'helpers/actions'
 import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { getNowAsMillis } from 'helpers/date'
@@ -39,7 +40,7 @@ import { CHECK_IN_URL_KEY } from 'actions/deepLinking'
 import { normalizeAndReceiveEntities } from 'actions/entities'
 import { selectEvent } from 'actions/events'
 import { saveTeam } from 'actions/user'
-import { getUserInfo, isLoggedIn } from 'selectors/auth'
+import { getUserInfo } from 'selectors/auth'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from '../selectors/competitor'
 import { getLocationTrackingStatus } from 'selectors/location'
@@ -332,16 +333,6 @@ const useBindingFromCheckInLink = (data: CheckIn) => async (dispatch: DispatchTy
   }
 }
 
-export const navigateToTracking = (navigation: any) => (
-  dispatch: any,
-  getState: any,
-) => {
-  const isLogged = isLoggedIn(getState())
-  return isLogged
-    ? navigation.navigate(Screens.TrackingNavigator)
-    : navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
-}
-
 export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {
     if (!data) {
@@ -351,7 +342,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
 
     if (doesCheckInContainBinding(data)) {
       await dispatch(useBindingFromCheckInLink(data))
-      dispatch(navigateToTracking(navigation))
+      navigateBackToTracking(navigation)
       return
     }
 
@@ -364,7 +355,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
-        dispatch(navigateToTracking(navigation))
+        navigateBackToTracking(navigation)
       }
     } catch (err) {
       Logger.debug(err)

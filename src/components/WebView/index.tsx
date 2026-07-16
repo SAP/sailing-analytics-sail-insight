@@ -3,6 +3,7 @@ import { BackHandler, View } from 'react-native'
 import { WebView as RNWebView } from 'react-native-webview'
 import { connect } from 'react-redux'
 import { once } from 'ramda'
+import { navigateBackToTracking } from 'actions/navigation'
 import HeaderBackButton from 'components/HeaderBackButton'
 import * as Screens from 'navigation/Screens'
 import { getCustomScreenParamData } from 'navigation/utils'
@@ -25,6 +26,7 @@ class WebView extends React.Component<{
 
   private focusListener: any
   private blurListener: any
+  private backHandlerSubscription: any
 
   componentDidMount() {
     this.handleWillFocus()
@@ -66,7 +68,11 @@ class WebView extends React.Component<{
   protected goBack = once(() => {
     if (this.props.comingFromTrackingScreen) {
       this.props.navigation.goBack()
-      this.props.navigation.navigate(Screens.Tracking)
+      // No explicit screen: the tracking stack always shows the right one
+      // ([Tracking] while running, [WelcomeTracking] after a stop) —
+      // naming Tracking here would push a dead live view if tracking
+      // stopped while this webview was open.
+      navigateBackToTracking(this.props.navigation)
     } else {
       this.props.navigation.goBack()
     }
@@ -78,11 +84,14 @@ class WebView extends React.Component<{
   }
 
   protected handleWillBlur = () => {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleHardwareBackButton)
+    if (this.backHandlerSubscription) {
+      this.backHandlerSubscription.remove()
+      this.backHandlerSubscription = null
+    }
   }
 
   protected handleWillFocus = () => {
-    BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackButton)
+    this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackButton)
     this.props.navigation.setOptions({
       headerLeft: () => (
         <HeaderBackButton

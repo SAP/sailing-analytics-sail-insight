@@ -1,9 +1,9 @@
 import { get } from 'lodash'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Alert, BackHandler, Image, View, TouchableOpacity } from 'react-native'
-import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import { connect } from 'react-redux'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { CommonActions } from '@react-navigation/native'
 import * as Screens from 'navigation/Screens'
 import Images from '@assets/Images'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
@@ -14,10 +14,11 @@ import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
 import { CheckIn } from 'models'
 import { getBoat } from 'selectors/boat'
-import { getTrackedCheckIn, isLoadingCheckIn } from 'selectors/checkIn'
+import { getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
 import { getTrackedCompetitorLeaderboardRank } from 'selectors/leaderboard'
 import { getLocationStats, getLocationTrackingStatus, LocationStats } from 'selectors/location'
+import { LocationTrackingStatus } from 'services/LocationService'
 import { getMark } from 'selectors/mark'
 import { isNetworkConnected } from 'selectors/network'
 
@@ -39,9 +40,11 @@ const EMPTY_VALUE = '-'
 const EMPTY_DURATION_TEXT = '00:00:00'
 
 const Timer = ({ onUpdate }) => {
-  useEffect(() => {
-    let timer = setInterval(onUpdate, 1000)
+  const callbackRef = useRef(onUpdate)
+  callbackRef.current = onUpdate
 
+  useEffect(() => {
+    const timer = setInterval(() => callbackRef.current(), 1000)
     return () => clearInterval(timer)
   }, [])
 
@@ -65,15 +68,16 @@ type NavigationProps = {
 class Tracking extends React.Component<NavigationProps & {
   stopTracking: any,
   openLatestRaceTrackDetails: any,
+  locationTrackingStatus?: any,
   trackingStats: LocationStats,
   checkInData: CheckIn,
   trackedContextName?: string,
   rank?: number,
   isNetworkConnected: boolean,
-  isLoadingCheckIn?: boolean
 },  any > {
   private removeFocus?: () => void;
   private removeBlur?: () => void;
+  private backHandlerSubscription?: { remove: () => void };
   public state = {
     isLoading: false,
     durationText: EMPTY_DURATION_TEXT,
@@ -85,21 +89,42 @@ class Tracking extends React.Component<NavigationProps & {
   public componentDidMount() {
     // Run when the screen becomes focused
     this.removeFocus = this.props.navigation.addListener('focus', () => {
-      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+      this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
       this.setState({ isFocused: true });
       activateKeepAwake();
     });
 
     // Run when the screen loses focus
     this.removeBlur = this.props.navigation.addListener('blur', () => {
-      BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+      if (this.backHandlerSubscription) this.backHandlerSubscription.remove();
       this.setState({ isFocused: false });
       deactivateKeepAwake();
     });
   }
 
+  public componentDidUpdate(prevProps: any) {
+    // Tracking can stop outside this screen (OS kills the service,
+    // native enabled-change event) — leave the live view then instead
+    // of showing a running timer while no fixes are recorded. Only an
+    // explicit STOPPED counts: resetTrackingStatistics sets status to
+    // null while a new session starts. The manual stop button navigates
+    // itself (isLoading covers that flow).
+    if (prevProps.locationTrackingStatus === LocationTrackingStatus.RUNNING &&
+        this.props.locationTrackingStatus === LocationTrackingStatus.STOPPED &&
+        !this.state.isLoading) {
+      this.resetToWelcomeTracking()
+    }
+  }
+
+  // Reset instead of navigate so the stack always ends up in the same
+  // shape a fresh launch produces ([WelcomeTracking] only), regardless
+  // of what is currently stacked — and without a transition animation.
+  protected resetToWelcomeTracking = () => this.props.navigation.dispatch(
+    CommonActions.reset({ index: 0, routes: [{ name: Screens.WelcomeTracking }] })
+  )
+
   public componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+    if (this.backHandlerSubscription) this.backHandlerSubscription.remove();
     if (this.removeFocus) this.removeFocus();
     if (this.removeBlur) this.removeBlur();
     deactivateKeepAwake();
@@ -110,7 +135,6 @@ class Tracking extends React.Component<NavigationProps & {
       trackingStats,
       trackedContextName,
       rank,
-      isLoadingCheckIn
     } = this.props
 
     const speedOverGround = trackingStats.speedInKnots ? trackingStats.speedInKnots.toFixed(1) : EMPTY_VALUE
@@ -192,7 +216,6 @@ class Tracking extends React.Component<NavigationProps & {
           isLoading={this.state.isLoading}>
           {this.state.buttonText}
         </TextButton>
-        <SpinnerOverlay visible={isLoadingCheckIn} cancelable={false}/>
         {this.state.isFocused && <Timer onUpdate={this.handleTimerEvent}/>}
       </ScrollContentView>
     )
@@ -230,7 +253,7 @@ class Tracking extends React.Component<NavigationProps & {
     await this.setState({ isLoading: true })
     try {
       await this.props.stopTracking(this.props.checkInData)
-      this.props.navigation.navigate(Screens.WelcomeTracking)
+      this.resetToWelcomeTracking()
     } catch (err) {
       Logger.debug('onStopTrackingPress Error', err)
     } finally {
@@ -281,8 +304,7 @@ const mapStateToProps = (state: any) => {
       'name',
     ),
     rank: getTrackedCompetitorLeaderboardRank(state),
-    isNetworkConnected: isNetworkConnected(state),
-    isLoadingCheckIn: isLoadingCheckIn(state)
+    isNetworkConnected: isNetworkConnected(state)
   }
 }
 

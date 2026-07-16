@@ -809,10 +809,10 @@ const NavigationBackHandler = (props: any) => {
             return true;
         };
 
-        BackHandler.addEventListener('hardwareBackPress', onHardwareBackPress);
+        const subscription = BackHandler.addEventListener('hardwareBackPress', onHardwareBackPress);
 
         return () => {
-            BackHandler.removeEventListener('hardwareBackPress', onHardwareBackPress);
+            subscription.remove();
         };
     }, [props.navigation, props.onNavigationSavePress, props.hasCourseChanged]);
 

@@ -27,11 +27,12 @@ import { AuthContext } from 'navigation/NavigationContext'
 import { initializeApp } from 'actions/appLoading'
 import { performDeepLink } from 'actions/deepLinking'
 import { handleLocation } from 'actions/locations'
+import { navigateBackToMain } from 'actions/navigation'
 import { updateTrackingStatus } from 'actions/locationTrackingData'
 
 // Selectors
 import { getLocationTrackingStatus, getLocationTrackingContext } from 'selectors/location'
-import { areThereActiveCheckIns, isBoundToMark } from 'selectors/checkIn'
+import { areThereActiveCheckIns, isBoundToMark, isLoadingCheckIn } from 'selectors/checkIn'
 import { getSelectedMarkProperties } from 'selectors/course'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
 import { hasMarkProperties } from 'selectors/inventory'
@@ -443,7 +444,7 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withoutTitle, withoutHeaderLeft)({
     name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
     options: {
-      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigationContainer.current.navigate(Screens.Main)}>{I18n.t('caption_skip')}</TextButton>,
+      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigateBackToMain(navigationContainer.current)}>{I18n.t('caption_skip')}</TextButton>,
       gestureEnabled: false
     }
   })),
@@ -477,11 +478,12 @@ const AppNavigator = Component(props => compose(
 
 class AppRoot extends ReactComponent {
   public deepLinkSubscriber: any
+  private statusListenerSubscription: any
 
   public componentDidMount() {
     this.initDeepLinks()
     DeepLinking.addListener(this.handleDeeplink)
-    LocationService.addStatusListener(this.handleLocationTrackingStatus)
+    this.statusListenerSubscription = LocationService.addStatusListener(this.handleLocationTrackingStatus)
     LocationService.addLocationListener(this.handleGeolocation)
     LocationService.registerEvents()
 
@@ -491,13 +493,13 @@ class AppRoot extends ReactComponent {
   public componentWillUnmount() {
     DeepLinking.removeListener(this.handleDeeplink)
     this.finalizeDeepLinks()
-    LocationService.removeStatusListener(this.handleLocationTrackingStatus)
+    if (this.statusListenerSubscription) LocationService.removeStatusListener(this.statusListenerSubscription)
     LocationService.removeLocationListener(this.handleGeolocation)
     LocationService.unregisterEvents()
   }
 
   public render() {
-    const { isLoggedIn } = this.props
+    const { isLoggedIn, isLoadingCheckIn: loadingCheckIn } = this.props
     return (
       <ActionSheetProvider>
         <AuthContext.Provider value = {{ isLoggedIn }}>
@@ -505,6 +507,7 @@ class AppRoot extends ReactComponent {
             <OrientationLocker orientation={PORTRAIT}/>
             { AppNavigator.fold(this.props) }
           </NavigationContainer>
+          <SpinnerOverlay visible={loadingCheckIn} cancelable={false}/>
         </AuthContext.Provider>
       </ActionSheetProvider>
     )
@@ -548,7 +551,8 @@ class AppRoot extends ReactComponent {
 const mapStateToProps = (state: any) => ({
   isLoggedIn: isLoggedInSelector(state),
   shouldShowFirstContact: !isLoggedInSelector(state) && !areThereActiveCheckIns(state),
-  userHasMarkProperties: hasMarkProperties(state)
+  userHasMarkProperties: hasMarkProperties(state),
+  isLoadingCheckIn: isLoadingCheckIn(state)
 })
 
 export default connect(

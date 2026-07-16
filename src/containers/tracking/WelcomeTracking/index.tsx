@@ -3,9 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { useAutomaticDateTimeAndTimezone } from 'helpers/date'
 import { ImageBackground, Text, View, ViewProps, BackHandler, Image, AppState } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
+import { CommonActions } from '@react-navigation/native'
 import LinearGradient from 'react-native-linear-gradient'
+import { connect } from 'react-redux'
 import TextButton from 'components/TextButton'
 import * as Screens from 'navigation/Screens'
+import { getLocationTrackingStatus, getLocationTrackingContext } from 'selectors/location'
+import * as LocationService from 'services/LocationService'
 
 import Images from '@assets/Images'
 import styles from './styles'
@@ -32,18 +36,54 @@ const AutomaticTimeNotice = () => {
     null
 }
 
-class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps> {
+class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps & {
+  isTrackingActive?: boolean
+}> {
+  private backHandlerSubscription: any
+  private removeFocusListener?: () => void
+
   constructor(props: any) {
     super(props)
     this.onBackButtonPressAndroid = this.onBackButtonPressAndroid.bind(this)
   }
 
   componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    // Repair on every focus, not only on mount/status transition: the
+    // screen can become visible again without either (e.g. the stack
+    // pops back to it) while tracking is already active.
+    this.removeFocusListener = this.props.navigation.addListener('focus', this.navigateIfTracking)
+    this.navigateIfTracking()
+  }
+
+  componentDidUpdate(prevProps: any) {
+    if (!prevProps.isTrackingActive && this.props.isTrackingActive) {
+      this.navigateIfTracking()
+    }
   }
 
   componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    if (this.backHandlerSubscription) this.backHandlerSubscription.remove()
+    if (this.removeFocusListener) this.removeFocusListener()
+  }
+
+  navigateIfTracking = () => {
+    if (!this.props.isTrackingActive) {
+      return
+    }
+    // Remove this screen (and the start list) from the stack instead of
+    // pushing on top of it: the stack then matches a fresh launch during
+    // tracking ([Tracking] only), nothing can pop back here, and reset
+    // swaps without a transition animation. Existing screens keep their
+    // keys, so a mounted Tracking screen does not remount.
+    this.props.navigation.dispatch((state: any) => {
+      const routes = state.routes.filter((route: any) =>
+        route.name !== Screens.WelcomeTracking && route.name !== Screens.TrackingList)
+      if (routes.length === 0) {
+        routes.push({ name: Screens.Tracking })
+      }
+      return CommonActions.reset({ ...state, routes, index: routes.length - 1 })
+    })
   }
 
   onBackButtonPressAndroid = () => {
@@ -86,4 +126,10 @@ class WelcomeTracking extends React.Component<ViewProps & NavigationScreenProps>
   }
 }
 
-export default WelcomeTracking
+const mapStateToProps = (state: any) => ({
+  isTrackingActive:
+    getLocationTrackingContext(state) === LocationService.LocationTrackingContext.REMOTE &&
+    getLocationTrackingStatus(state) === LocationService.LocationTrackingStatus.RUNNING
+})
+
+export default connect(mapStateToProps)(WelcomeTracking)
