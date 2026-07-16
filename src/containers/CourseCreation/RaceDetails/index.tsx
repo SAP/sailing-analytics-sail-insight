@@ -87,17 +87,21 @@ const withPollingOfEvent = compose(
     componentDidMount() {
       // add only for competitor screen
       if (!this.props.canUpdateCurrentEvent) {
-        this.props.navigation.addListener('focus',
+        this._removeFocusListener = this.props.navigation.addListener('focus',
           () => {
             this.props.registerAppStateListeners()
             this.props.startPollingSelectedEvent()
           })
-        this.props.navigation.addListener('blur',
+        this._removeBlurListener = this.props.navigation.addListener('blur',
           () => {
             this.props.unregisterAppStateListeners()
             this.props.stopPollingSelectedEvent()
           })
       }
+    },
+    componentWillUnmount() {
+      if (this._removeFocusListener) this._removeFocusListener()
+      if (this._removeBlurListener) this._removeBlurListener()
     }
   }))
 

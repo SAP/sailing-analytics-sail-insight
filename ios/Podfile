@@ -48,7 +48,7 @@ target 'sap_sailing_insight' do
   pod 'FirebaseCoreInternal',   :modular_headers => true
   pod 'FirebaseSessions',       :modular_headers => true
   # other modules
-  pod 'TOCropViewController', '2.6.1'
+  pod 'TOCropViewController', '~> 2.8.0'
 
   target 'sap_sailing_insightTests' do
     inherit! :complete
@@ -68,7 +68,11 @@ target 'sap_sailing_insight' do
   end
 
   post_install do |installer|
-    react_native_post_install(installer)
+    react_native_post_install(
+      installer,
+      "../node_modules/react-native",
+      :mac_catalyst_enabled => false,
+    )
 
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
@@ -77,11 +81,5 @@ target 'sap_sailing_insight' do
         config.build_settings['CLANG_ENABLE_MODULES'] = 'YES'
       end
     end
-
-    react_native_post_install(
-      installer,
-      "../node_modules/react-native",
-      :mac_catalyst_enabled => false,
-    )
   end
 end

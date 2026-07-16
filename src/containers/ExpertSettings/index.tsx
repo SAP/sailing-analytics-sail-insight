@@ -105,6 +105,7 @@ class ExpertSettings extends TextInputForm<Props> {
       this.props.navigation.goBack()
     }).catch(() => {
       Alert.alert(I18n.t('error_unknown'))
+    }).finally(() => {
       this.setState({ emailLoading: false })
     })
   }
