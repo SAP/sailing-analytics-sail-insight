@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import React, { Component } from 'react'
 import { ReduxNetworkProvider } from 'react-native-offline'
 import { Provider } from 'react-redux'
@@ -6,8 +5,8 @@ import { PersistGate } from 'redux-persist/integration/react'
 import 'store/init'
 import { getPersistor, getStore } from 'store'
 import { initStyles, recalculateStyles } from 'styles'
+import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
 import AppRoot from './AppRoot'
-import { enableScreens } from 'react-native-screens'
 import 'react-native-get-random-values';
 
 declare var module: any
@@ -35,7 +34,7 @@ class App extends Component {
   public render() {
     return (
       <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
+        <PersistGate loading={<WaveActivityIndicatorFullscreen/>} persistor={persistor}>
           <ReduxNetworkProvider pingInBackground={true} pingInterval={3000}>
             <AppRoot/>
           </ReduxNetworkProvider>
@@ -46,3 +45,4 @@ class App extends Component {
 }
 
 export default App
+

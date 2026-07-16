@@ -59,6 +59,11 @@ export const startLocationUpdates = (
       await LocationService.changePace(true)
     }
 
+    // The native onEnabledChange event is not reliably delivered, so set the
+    // status here explicitly, like stopTracking/stopLocalLocationUpdates do
+    // with STOPPED; screens like WelcomeTracking key off RUNNING.
+    await dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.RUNNING))
+
     await dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
     Logger.debug('Error during startLocationUpdates', err)
@@ -97,6 +102,8 @@ export const startLocalLocationUpdates = () => async (dispatch) => {
   await LocationService.start()
   await LocationService.changePace(true)
   await dispatch(updateTrackingContext(LocationService.LocationTrackingContext.LOCAL))
+  // Explicit status, same reason as in startLocationUpdates above
+  await dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.RUNNING))
 }
 
 export const stopLocalLocationUpdates = () => async (dispatch: DispatchType, getState: GetStateType) => {

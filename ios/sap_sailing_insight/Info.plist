@@ -62,6 +62,8 @@
 	<string>Sail Insight requires background location access, to be able to track you. The permission is only used during tracking and is only used to evaluate the data.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Accelerometer use increases battery efficiency by intelligently toggling location-tracking</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Sail Insight needs permission to save the cropped team image to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Sail Insight requires photo library, so you can choose one of your photos as the team image. The permission is only used for this functionality.</string>
 	<key>Permitted background task scheduler identifiers</key>
@@ -110,6 +112,10 @@
 	<false/>
 	<key>branch_app_domain</key>
 	<string>sailinsight30-app.sapsailing.com</string>
+	<key>branch_universal_link_domains</key>
+	<array>
+		<string>sailinsight30-app.sapsailing.com</string>
+	</array>
 	<key>branch_key</key>
 	<dict>
 		<key>live</key>
