@@ -20,6 +20,7 @@ import * as LocationService from 'services/LocationService'
 import { addUserPrefix } from 'services/SessionService'
 import SessionException from 'services/SessionService/SessionException'
 
+import { navigateBackToTracking } from 'actions/navigation'
 import { withDataApi } from 'helpers/actions'
 import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { getNowAsMillis } from 'helpers/date'
@@ -332,13 +333,6 @@ const useBindingFromCheckInLink = (data: CheckIn) => async (dispatch: DispatchTy
   }
 }
 
-export const navigateToTracking = (navigation: any) => (
-  dispatch: any,
-  getState: any,
-) => {
-  return navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator })
-}
-
 export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: CompetitorInfo, options: any, navigation:object) =>
   async (dispatch: DispatchType, getState) => {
     if (!data) {
@@ -348,7 +342,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
 
     if (doesCheckInContainBinding(data)) {
       await dispatch(useBindingFromCheckInLink(data))
-      dispatch(navigateToTracking(navigation))
+      navigateBackToTracking(navigation)
       return
     }
 
@@ -361,7 +355,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {
-        dispatch(navigateToTracking(navigation))
+        navigateBackToTracking(navigation)
       }
     } catch (err) {
       Logger.debug(err)

@@ -25,6 +25,7 @@ import CompetitorList from '../Leaderboard/CompetitorList'
 import { useFocusEffect, useNavigationState } from '@react-navigation/native';
 import { useCallback, useRef } from 'react';
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
+import { navigateBackToTracking } from 'actions/navigation'
 import { getWindowWidth } from 'helpers/screen';
 
 const maxNumberOfRaces = 50
@@ -262,7 +263,7 @@ export const startTrackingButton = Component((props: any) => compose(
   textButton({
     onPress: async (props: any) => {
       if (props.isTrackingEvent) {
-        props.navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator, params: { screen: Screens.Tracking } })
+        navigateBackToTracking(props.navigation, Screens.Tracking)
       } else {
         props.startTracking({ data: props.checkIn, navigation: props.navigation })
       }
