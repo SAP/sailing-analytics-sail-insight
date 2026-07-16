@@ -13,6 +13,7 @@ import { getNowAsMillis } from 'helpers/date'
 import { getErrorDisplayMessage, getUnknownErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 
+import { navigateBackToTracking } from 'actions/navigation'
 import { updateCheckIn, updateLoadingCheckInFlag } from 'actions/checkIn'
 import { updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
@@ -74,9 +75,9 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     }))
 
     if (markTracking) {
-      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator, params: { screen: Screens.MarkTracking } })
+      navigateBackToTracking(navigation, Screens.MarkTracking)
     } else {
-      navigation.navigate(Screens.Main, { screen: Screens.TrackingNavigator, params: { screen: Screens.Tracking } })
+      navigateBackToTracking(navigation, Screens.Tracking)
     }
 
     await dispatch(startLocationUpdates(checkInData.leaderboardName, checkInData.eventId))

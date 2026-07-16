@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { Field, reduxForm } from 'redux-form'
 import LinearGradient from 'react-native-linear-gradient'
 
+import { navigateBackToMain } from 'actions/navigation'
 import { saveTeam, SaveTeamAction } from 'actions/user'
 
 import {
@@ -26,7 +27,6 @@ import { getFormFieldValue } from '../../../selectors/form'
 import { TeamTemplate } from 'models'
 import { getDefaultHandicap } from 'models/TeamTemplate'
 
-import * as Screens from 'navigation/Screens'
 import { getScreenParamsFromProps } from 'navigation/utils'
 
 import FormBoatClassInput from '../../../components/form/FormBoatClassInput'
@@ -188,7 +188,7 @@ class RegisterBoat extends TextInputForm<Props> {
       if (this.props.actionAfterSubmit) {
         await this.props.actionAfterSubmit(createdBoat)
       } else {
-        this.props.navigation.navigate(Screens.Main)
+        navigateBackToMain(this.props.navigation)
       }
     } catch (err) {
       this.setState({ error: getErrorDisplayMessage(err) })
