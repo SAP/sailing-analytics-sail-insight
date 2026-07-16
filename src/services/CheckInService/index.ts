@@ -25,6 +25,16 @@ export const getDeviceCountryIOC = () => {
   return country && country.ioc
 }
 
+// A structurally valid invitation names a leaderboard or regatta (same rule
+// as createCheckInUrlFromParams) and points at an http(s) server. Arbitrary
+// scanned QR content often still parses as a URL with query params — without
+// this check the app would fire check-in requests at random hosts.
+const isValidCheckInData = (checkIn: any) =>
+  !!checkIn &&
+  typeof checkIn.serverUrl === 'string' &&
+  /^https?:\/\//.test(checkIn.serverUrl) &&
+  !!(checkIn.leaderboardName || checkIn.regattaName)
+
 export const extractData = (url: string): any => {
   if (!url) {
     return null
@@ -53,7 +63,7 @@ export const extractData = (url: string): any => {
     return null
   }
   const checkIn = urlParamsToCheckIn(serverUrl, queryData)
-  return checkIn
+  return isValidCheckInData(checkIn) ? checkIn : null
 }
 
 export const checkInDeviceMappingData = (checkInData: CheckIn) => {

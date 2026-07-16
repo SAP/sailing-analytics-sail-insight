@@ -52,10 +52,12 @@ const reducer = handleActions(
           unsentGpsFixCount: null,
           locationAccuracy: null,
         }),
+    // Reset everything except status and context — the tracking service
+    // lifecycle owns those; checking out of a regatta must not fake a stop.
     [removeTrackedRegatta as any]: (state: any = {}) => ({
-      ...state,
-      status: state.status,
       ...initialState,
+      status: state.status,
+      context: state.context,
     }),
     [updateTrackingStatistics as any]: (state: any = {}, action: any = {}) => {
       let gpsFix: PositionFix
