@@ -10,8 +10,11 @@ import { getRaces } from 'selectors/race'
 
 export const fetchRegatta = (regattaName: string, secret?: string, forcedServerUrl?: string) =>
   withDataApi(forcedServerUrl || { secret, leaderboard: regattaName })(async (dataApi, dispatch) => {
-    await dispatch(fetchEntityAction(dataApi.requestRegatta)(regattaName, secret))
-    await dispatch(fetchEntityAction(dataApi.requestRaces)(regattaName, secret))
+    // independent requests — one round trip of wall time instead of two
+    await Promise.all([
+      dispatch(fetchEntityAction(dataApi.requestRegatta)(regattaName, secret)),
+      dispatch(fetchEntityAction(dataApi.requestRaces)(regattaName, secret)),
+    ])
   })
 
 export const fetchRegattaRace = (regattaName?: string, raceName?: string, secret?: string) => withDataApi({ secret, leaderboard: regattaName })(

@@ -15,7 +15,6 @@ import { getDataApiGenerator } from 'api/config'
 import { keepCommunicationAlive } from 'actions/communications'
 
 const HEARTBEAT_KEY = 'heartbeat'
-const STATUS_KEY = 'enabledchange'
 // const MOTION_CHANGE_KEY = 'motionchange'
 const LOCATION_KEY = 'location'
 
@@ -116,8 +115,8 @@ export const isEnabled: () => any = () => new Promise<any>((resolve, reject) => 
 export const addStatusListener = (listener: (status: any) => void) =>
   BackgroundGeolocation.onEnabledChange(listener)
 
-export const removeStatusListener = (listener: (enabled: boolean) => void) =>
-  BackgroundGeolocation.removeListener(STATUS_KEY, listener)
+export const removeStatusListener = (subscription: { remove: () => void }) =>
+  subscription.remove()
 
 export const addLocationListener = (listener: (location: any) => void) => locationListeners.push(listener)
 

@@ -1,7 +1,18 @@
 import { isString } from 'lodash'
 
 import ApiException from 'api/ApiException'
-import { STATUS_FORBIDDEN, STATUS_PRECONDITION_FAILED, STATUS_UNAUTHORIZED } from 'api/constants'
+import NetworkTimeoutException from 'api/NetworkTimeoutException'
+import {
+  STATUS_BAD_GATEWAY,
+  STATUS_FORBIDDEN,
+  STATUS_GATEWAY_TIMEOUT,
+  STATUS_INTERNAL_ERROR,
+  STATUS_NOT_FOUND,
+  STATUS_PRECONDITION_FAILED,
+  STATUS_SERVICE_UNAVAILABLE,
+  STATUS_UNAUTHORIZED,
+} from 'api/constants'
+import CheckInException from 'services/CheckInService/CheckInException'
 import I18n from 'i18n'
 import { MISSING_PREFIX } from 'i18n/utils'
 
@@ -55,8 +66,23 @@ export const getErrorDisplayMessage = (exception: any) => {
     return getUnknownErrorMessage()
   }
 
-  if (dataErrorCodeName != null) {
-    return I18n.t(ErrorCodes[dataErrorCodeName])
+  // Only translate errorCodeNames we actually have a mapping for —
+  // I18n.t(undefined) would surface a raw "[missing ...]" string.
+  const mappedErrorCode = dataErrorCodeName != null ? (ErrorCodes as any)[dataErrorCodeName] : null
+  if (mappedErrorCode) {
+    return I18n.t(mappedErrorCode)
+  }
+
+  if (exception.name === NetworkTimeoutException.NAME) {
+    return I18n.t(ErrorCodes.NETWORK_TIMEOUT)
+  }
+
+  // React Native's fetch rejects network-level failures (offline, DNS,
+  // unreachable host) with TypeError('Network request failed').
+  if (exception.name === 'TypeError' &&
+      isString(exception.message) &&
+      exception.message.toLowerCase().includes('network request failed')) {
+    return I18n.t(ErrorCodes.NETWORK_TIMEOUT)
   }
 
   if (exception.name === ApiException.NAME || exception.baseTypeName === ApiException.NAME) {
@@ -73,11 +99,28 @@ export const getErrorDisplayMessage = (exception: any) => {
         return isString(errorKey) && errorKey.toLowerCase().includes(USER_EXISTS_TEXT) ?
           I18n.t(ErrorCodes.USER_EXISTS) :
           I18n.t(ErrorCodes.PRECONDITION_FAILED)
+      case STATUS_NOT_FOUND:
+        return I18n.t(ErrorCodes.NOT_FOUND)
+      case STATUS_INTERNAL_ERROR:
+      case STATUS_BAD_GATEWAY:
+      case STATUS_SERVICE_UNAVAILABLE:
+      case STATUS_GATEWAY_TIMEOUT:
+        return I18n.t(ErrorCodes.SERVER_BUSY)
       default:
         return getErrorMessage(errorKey, getUnknownErrorMessage(error.status))
     }
   }
   return getUnknownErrorMessage()
+}
+
+// For the invitation surfaces (QR scan, invitation link, join screen):
+// a CheckInException (unparseable code/link) or a 404 (regatta gone) both
+// mean "this invitation is not valid", not a technical error.
+export const getInvitationErrorMessage = (exception: any) => {
+  if (exception && (exception.name === CheckInException.NAME || exception.status === STATUS_NOT_FOUND)) {
+    return I18n.t(ErrorCodes.INVALID_INVITATION)
+  }
+  return getErrorDisplayMessage(exception)
 }
 
 export const getCaptionTranslationKey = (suffix: string) => `caption_${suffix}`

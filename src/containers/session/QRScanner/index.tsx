@@ -4,9 +4,8 @@ import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-cam
 import { connect } from 'react-redux'
 
 import { fetchCheckIn } from 'actions/checkIn'
-import Logger from 'helpers/Logger'
 import { showNetworkRequiredAlert } from 'helpers/network'
-import { getErrorDisplayMessage, getErrorTitle } from 'helpers/texts'
+import { getErrorTitle, getInvitationErrorMessage } from 'helpers/texts'
 import I18n from 'i18n'
 import WaveActivityIndicatorFullscreen from 'components/WaveActivityIndicatorFullscreen'
 import { isNetworkConnected } from 'selectors/network'
@@ -31,6 +30,8 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
             setHasPermission(status === 'granted')
         })()
     }, [])
+
+    const handleValueRef = useRef<(value?: string) => void>(() => {})
 
     const handleValue = async (value?: string) => {
         if (!value || busy) return
@@ -59,11 +60,13 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
             const checkIn = await fetchCheckIn(value)
 
             navigation.goBack()
-            navigation.navigate(Screens.JoinRegatta, { data: checkIn })
+            // pop: reuse an already-open JoinRegatta instead of stacking a
+            // second one (same as joinLinkInvitation)
+            navigation.navigate(Screens.JoinRegatta, { data: checkIn }, { pop: true })
         } catch (err: any) {
             Alert.alert(
                 getErrorTitle(),
-                getErrorDisplayMessage(err),
+                getInvitationErrorMessage(err),
                 [{ text: I18n.t('caption_ok'), onPress: () => { lastValueRef.current = null } }],
                 { cancelable: false }
             )
@@ -72,11 +75,13 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
         }
     }
 
+    handleValueRef.current = handleValue
+
     const codeScanner = useCodeScanner({
-        codeTypes: ['qr'], // add more types if you need them
+        codeTypes: ['qr'],
         onCodeScanned: (codes) => {
             const first = codes?.[0]
-            if (first?.value) handleValue(first.value)
+            if (first?.value) handleValueRef.current(first.value)
         },
     })
 

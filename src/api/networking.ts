@@ -4,6 +4,7 @@ import { compose, includes, prop, __, when, mergeRight } from 'ramda'
 
 import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
+import NetworkTimeoutException from 'api/NetworkTimeoutException'
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
 import crashlytics from '@react-native-firebase/crashlytics'
@@ -71,8 +72,10 @@ const getHeaders = async (url: string, method: string, body: any, bodyType: Body
 
 const timeoutPromise = (promise: Promise<Response>, timeout: number, error: string) => {
   return new Promise((resolve, reject) => {
-    setTimeout(() => { reject(error) }, timeout)
-    promise.then(resolve, reject)
+    // A typed exception (not a plain string) so getErrorDisplayMessage can
+    // recognize timeouts and show the network alert instead of plain "Oops".
+    const timer = setTimeout(() => { reject(NetworkTimeoutException.create(error)) }, timeout)
+    promise.then(resolve, reject).finally(() => clearTimeout(timer))
   })
 }
 
