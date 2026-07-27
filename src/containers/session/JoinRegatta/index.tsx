@@ -14,6 +14,7 @@ import { CheckIn } from 'models'
 import { getCustomScreenParamData, getScreenParamsFromProps } from 'navigation/utils'
 
 import { getBoat } from 'selectors/boat'
+import { getCheckInByLeaderboardName, getServerUrl } from 'selectors/checkIn'
 import { getCompetitor } from 'selectors/competitor'
 import { getEvent } from 'selectors/event'
 import { getLeaderboard } from 'selectors/leaderboard'
@@ -61,6 +62,9 @@ class JoinRegatta extends React.Component<{
   boat?: any,
   mark?: any,
   boats?: any,
+  isAlreadyRegistered?: boolean,
+  registeredBoat?: any,
+  registeredCompetitor?: any,
   registerCompetitorAndDevice: any
 } > {
 
@@ -80,10 +84,23 @@ class JoinRegatta extends React.Component<{
     const { selectedBoatIndex } = this.state
     const checkInContainsBinding = doesCheckInContainBinding(checkInData)
     // The checkInContainsBinding condition is to make sure that the selectedBoat is falsy
-    // when binding to the object specified in the checkIn
+    // when binding to the object specified in the checkIn.
+    // When this device is already registered, re-join with the registered boat
+    // so a stale picker selection cannot switch the competitor (#42)
     const selectedBoat = checkInContainsBinding
       ? undefined
-      : boats.length > 0 && boats[selectedBoatIndex]
+      : this.props.registeredBoat || (boats.length > 0 && boats[selectedBoatIndex])
+
+    // Already registered but the registered boat could not be matched to a
+    // local team: whatever boat gets sent, the server keeps the first
+    // registration — tell the user up front instead of relying on a
+    // server-side 403 (#42)
+    if (!checkInContainsBinding && this.props.isAlreadyRegistered && !this.props.registeredBoat) {
+      Alert.alert(
+        I18n.t('caption_already_registered'),
+        I18n.t('text_boat_selection_not_applied'),
+      )
+    }
 
     // const continueJoining = await this.props.preventDuplicateCompetitorBindings(
     //   checkInData, selectedBoat
@@ -140,6 +157,9 @@ class JoinRegatta extends React.Component<{
       competitor = {},
       boat = {},
       mark = {},
+      isAlreadyRegistered,
+      registeredBoat,
+      registeredCompetitor,
     } = this.props
     const { selectedBoatIndex } = this.state
 
@@ -163,6 +183,13 @@ class JoinRegatta extends React.Component<{
     ])(checkInData)
 
     const trackingContextUndefined = trackingContext === undefined
+
+    // Explicit checks: the flag may be undefined for older servers, in which
+    // case neither hint is shown
+    const boatsAdminAssigned = leaderboard.canBoatsOfCompetitorsChangePerRace === true
+    const boatFixedAfterRegistration = leaderboard.canBoatsOfCompetitorsChangePerRace === false
+    const registeredBoatName = (registeredBoat && registeredBoat.name) ||
+      (registeredCompetitor && registeredCompetitor.name)
 
     const firstBoat = boats.length !== 0 && boats[0]
     const boatPickerItems = boats
@@ -212,13 +239,20 @@ class JoinRegatta extends React.Component<{
                     boat,
                     mark
                   }}/>
-                { (trackingContextUndefined && boats.length === 1) &&
+                { (trackingContextUndefined && isAlreadyRegistered) &&
+                  <Text style={text.text}>
+                    {registeredBoatName
+                      ? I18n.t('text_join_already_registered_as', { name: registeredBoatName })
+                      : I18n.t('text_join_already_registered')}
+                  </Text>
+                }
+                { (trackingContextUndefined && !isAlreadyRegistered && boats.length === 1) &&
                   <>
                     <Text style={text.text}>{I18n.t('text_join_with_boat_01')}<Text style={text.yellow}>{firstBoat.name}</Text>{I18n.t('text_join_with_boat_02')}</Text>
                     <Text style={text.text}>{I18n.t('text_join_with_boat_explainer_01')}{I18n.t('text_join_with_boat_explainer_02')}{I18n.t('text_join_with_boat_explainer_03')}</Text>
                   </>
                 }
-                { (trackingContextUndefined && boats.length > 1) &&
+                { (trackingContextUndefined && !isAlreadyRegistered && boats.length > 1) &&
                   <>
                     <Text style={[text.text, styles.pickText]}>{I18n.t('text_join_with_boat_choose')}</Text>
                     <View style={[form.formSelectInputWrapper]}>
@@ -241,6 +275,12 @@ class JoinRegatta extends React.Component<{
                       </View>
                     </View>
                   </>
+                }
+                { (trackingContextUndefined && !isAlreadyRegistered && boatFixedAfterRegistration && boats.length > 0) &&
+                  <Text style={text.text}>{I18n.t('text_join_boat_fixed_hint')}</Text>
+                }
+                { (trackingContextUndefined && boatsAdminAssigned) &&
+                  <Text style={text.text}>{I18n.t('text_join_boats_admin_assigned')}</Text>
                 }
                 <View style={[styles.eulaField]}>
                   <EulaLink mode="JOIN" />
@@ -276,6 +316,22 @@ const mapStateToProps = (state: any, props: any) => {
   }
   const actionType = getScreenParamsFromProps(props).actionType
 
+  const boats = getUserTeams(state)
+  const existingCheckIn = getCheckInByLeaderboardName(checkInData.leaderboardName)(state)
+  // 'unknown' is the placeholder the 403 fallback in createUserAttachmentToSession
+  // stores — the device IS registered server-side, we just don't know as whom,
+  // so it must count as registered for the feedback logic
+  const existingCompetitorId = existingCheckIn && existingCheckIn.competitorId
+  const registeredCompetitorId = existingCompetitorId && existingCompetitorId !== 'unknown'
+    ? existingCompetitorId
+    : undefined
+  const serverUrl = checkInData.serverUrl || getServerUrl(checkInData.leaderboardName)(state)
+  const registeredBoat = registeredCompetitorId
+    // competitorId is a runtime map keyed by serverUrl (see saveTeam in actions/sessions.ts),
+    // not declared on TeamTemplate
+    ? boats.find((team: any) => team && team.competitorId && team.competitorId[serverUrl] === registeredCompetitorId)
+    : undefined
+
   return {
     actionType,
     checkInData,
@@ -285,7 +341,10 @@ const mapStateToProps = (state: any, props: any) => {
     competitor: getCompetitor(checkInData.competitorId)(state),
     boat: getBoat(checkInData.boatId)(state),
     mark: getMark(checkInData.markId)(state),
-    boats: getUserTeams(state)
+    boats,
+    isAlreadyRegistered: !!existingCompetitorId,
+    registeredBoat,
+    registeredCompetitor: getCompetitor(registeredCompetitorId)(state),
   }
 }
 

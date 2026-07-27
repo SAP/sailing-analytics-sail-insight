@@ -221,13 +221,24 @@ export const createUserAttachmentToSession = (
 
         competitorId = newCompetitorWithBoat.id
         boatId = newCompetitorWithBoat.boat.id
+        Logger.debug('createAndAddCompetitor succeeded', { competitorId, boatId })
       } catch (err) {
+        Logger.debug('createAndAddCompetitor failed', {
+          status: (err as any).status,
+          data: (err as any).data,
+        })
         if (!(err instanceof ApiException)) {
           throw err
         }
         else {
           if (err.status && err.status === 403 &&
             err.data && typeof err.data === 'string' && err.data.startsWith('Device is already registered')) {
+            // Inform the user that the boat selection was ignored instead of
+            // silently falling back to the previously registered competitor (#42)
+            Alert.alert(
+              I18n.t('caption_already_registered'),
+              I18n.t('text_boat_selection_not_applied'),
+            )
             // allow already joined race from the same device, if biding is allowed
             const competitor =  getExistingLeaderboardCompetitor(regattaName)(getState())
 
