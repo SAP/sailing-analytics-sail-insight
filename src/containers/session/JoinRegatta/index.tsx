@@ -11,7 +11,7 @@ import { registerCompetitorAndDevice } from 'actions/sessions'
 
 import { CheckIn } from 'models'
 
-import { getCustomScreenParamData, getScreenParamsFromProps } from 'navigation/utils'
+import { getCustomScreenParamData, getCustomScreenParamOptions, getScreenParamsFromProps } from 'navigation/utils'
 
 import { getBoat } from 'selectors/boat'
 import { getCompetitor } from 'selectors/competitor'
@@ -120,7 +120,10 @@ class JoinRegatta extends React.Component<{
           await handleRegistration({ startTrackingAfter: true })
           break
         case JoinRegattaActionType.JoinAsCompetitor:
-          await handleRegistration()
+          // joinAsCompetitorButton (session/common) passes options:
+          // { selectSessionAfter } so the user lands back on the event
+          // detail they joined from instead of the tracking tab
+          await handleRegistration(getCustomScreenParamOptions(this.props))
           break
       }
     } catch (err) {

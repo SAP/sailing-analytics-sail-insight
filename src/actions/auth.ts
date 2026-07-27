@@ -58,14 +58,27 @@ export const requestPasswordReset = (usernameOrEmail: string) => {
 export const fetchCurrentUser = () => async (dispatch: DispatchType) =>
   dispatch(updateCurrentUserInformation(await authApi().user()))
 
-export const authBasedNewSession = (navigation:object) => (dispatch: DispatchType, getState: GetStateType) => {
+export const authBasedNewSession = (navigation: any) => (dispatch: DispatchType, getState: GetStateType) => {
   const isNetworkConnected = isNetworkConnectedSelector(getState())
   if (!isNetworkConnected) {
     showNetworkRequiredSnackbarMessage()
     return
   }
   const isLoggedIn = isLoggedInSelector(getState())
-  navigation.navigate(isLoggedIn ? Screens.EventCreation : Screens.RegisterCredentials)
+  if (!isLoggedIn) {
+    navigation.navigate(Screens.RegisterCredentials)
+    return
+  }
+  // EventCreation (and the SessionDetail4Organizer screen it replaces itself
+  // with after submit) is registered in the sessions stack only. The create
+  // button also exists on the TrackingList mount of the Sessions screen, where
+  // a bare navigate(EventCreation) is silently dropped — v7 doesn't resolve
+  // names across sibling navigators. Spell out the full nested target so the
+  // button works from both mounts.
+  navigation.navigate(Screens.Main, {
+    screen: Screens.SessionsNavigator,
+    params: { screen: Screens.EventCreation },
+  })
 }
 
 export const updateUser = (user: User) => async (dispatch: DispatchType) => {

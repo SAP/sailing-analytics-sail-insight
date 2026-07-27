@@ -7,6 +7,7 @@ import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent,
   updateSelectingEvent, updateStartingTracking, updateEventPollingStatus, updateEvent } from 'actions/events'
 import { fetchRegatta } from 'actions/regattas'
+import { navigateBackToMain } from 'actions/navigation'
 import * as Screens from 'navigation/Screens'
 import { UPDATE_EVENT_PERMISSION } from 'actions/permissions'
 import { offlineActionTypes } from 'react-native-offline'
@@ -46,6 +47,18 @@ function eventConfirmationAlert() {
   })
 }
 
+// selectEvent is dispatched with navigation objects from two different
+// navigators: the Sessions screen (sessions stack) and JoinRegatta via
+// options.selectSessionAfter (root stack). A bare navigate(SessionDetail…)
+// from the root stack is silently dropped — v7 doesn't resolve names across
+// navigators — so the nested target is spelled out; navigateBackToMain also
+// pops the JoinRegatta screen so the used invitation closes.
+const openSessionDetail = (navigation: any, screen: string, eventData: any) =>
+  navigateBackToMain(navigation, {
+    screen: Screens.SessionsNavigator,
+    params: { screen, params: { data: eventData } },
+  })
+
 function* selectEventSaga({ payload }: any) {
   const eventData = payload.data
   const navigation = payload.navigation
@@ -64,12 +77,14 @@ function* selectEventSaga({ payload }: any) {
     if (currentUserCanUpdateEvent) {
       yield call(fetchCoursesForCurrrentEvent, { payload: eventData })
       if (replaceCurrentScreen) {
+        // only dispatched from EventCreation, whose navigation lives in the
+        // sessions stack where SessionDetail4Organizer is registered
         navigation.dispatch(StackActions.replace(Screens.SessionDetail4Organizer, { data: eventData }))
       } else {
-        navigation.navigate(Screens.SessionDetail4Organizer, { data: eventData })
+        openSessionDetail(navigation, Screens.SessionDetail4Organizer, eventData)
       }
     } else {
-      navigation.navigate(Screens.SessionDetail, { data: eventData })
+      openSessionDetail(navigation, Screens.SessionDetail, eventData)
     }
   } finally {
     // Always clear the flags — if the saga dies mid-way the tapped
