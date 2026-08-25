@@ -16,6 +16,7 @@ import { updateCheckIn } from 'actions/checkIn'
 import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import { safeApiCall } from './HelpersSaga'
+import { showSaveFailedSnackbarMessage, showServerErrorSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
@@ -259,21 +260,47 @@ function* createEvent(payload: any) {
     numberOfRaces)
   const regatta = yield select(getRegatta(regattaName))
 
-  yield call(api.updateRegatta, regattaName, {
+  const regattaSettings = yield safeApiCall(api.updateRegatta, regattaName, {
     controlTrackingFromStartAndFinishTimes: true,
     useStartTimeInference: false,
     defaultCourseAreaUuid: regatta?.courseAreaIds ? head(regatta.courseAreaIds) : undefined,
     autoRestartTrackingUponCompetitorSetChange: true,
   })
-  yield all(races.map(race =>
-    call(api.denoteRaceForTracking, leaderboardName, race, 'Default')))
+
+  // Without these settings the regatta would be tracked with the wrong
+  // configuration, so stop here rather than opening a silently broken event.
+  // An alert rather than a snackbar: the event itself already exists on the
+  // server at this point, so the user has to know not to create it a second
+  // time — a snackbar is too easy to miss for that.
+  if (regattaSettings === undefined) {
+    yield put(updateCreatingEvent(false))
+    Alert.alert(I18n.t('error_title'), I18n.t('error_event_settings_not_saved'))
+    return
+  }
+
+  const denoteResults = yield all(races.map((race: string) =>
+    safeApiCall(api.denoteRaceForTracking, leaderboardName, race, 'Default')))
+
+  const failedDenotes = races.filter((_: string, idx: number) => denoteResults[idx] === undefined)
+  if (failedDenotes.length > 0) {
+    console.warn('Failed to denote races for tracking:', failedDenotes)
+    showSaveFailedSnackbarMessage()
+  }
+
   yield put(selectEvent({ data, replaceCurrentScreen: true, navigation }))
 }
 
 function* addRaceColumns({ payload }: any) {
   const api = dataApi(payload.serverUrl)
 
-  yield call(api.addRaceColumns, payload.regattaName, payload)
+  const addedRaceColumns = yield safeApiCall(api.addRaceColumns, payload.regattaName, payload)
+
+  // The follow-up calls all operate on the columns this call was supposed to
+  // create, so continuing would only produce a cascade of further failures.
+  if (addedRaceColumns === undefined) {
+    showSaveFailedSnackbarMessage()
+    return
+  }
 
   const races = compose(
     map(compose(concat('R'), toString)),
@@ -321,15 +348,28 @@ function* removeRaceColumns({ payload }: any) {
 
 function* reloadRegattaAfterRaceColumnsChange(payload: any) {
   const api = dataApi(payload.serverUrl)
-  const entities = yield call(api.requestRegatta, payload.regattaName)
+  const entities = yield safeApiCall(api.requestRegatta, payload.regattaName)
+
+  if (entities === undefined) {
+    showServerErrorSnackbarMessage()
+    return
+  }
 
   const regattaData = entities?.entities?.regatta?.[payload.regattaName]
-  const numberOfRaces = regattaData ? getRegattaNumberOfRaces(regattaData) : 0
 
-  yield put(updateCheckIn({
-    leaderboardName: payload.leaderboardName,
-    numberOfRaces
-  }))
+  // Only touch the persisted race count when the regatta actually came back.
+  // Falling through with `numberOfRaces: 0` on a lookup miss would overwrite
+  // the real count in the check-in state, which survives a restart.
+  if (regattaData) {
+    yield put(updateCheckIn({
+      leaderboardName: payload.leaderboardName,
+      numberOfRaces: getRegattaNumberOfRaces(regattaData)
+    }))
+  } else {
+    console.warn('Regatta missing from response, keeping the stored race count:',
+      payload.regattaName)
+  }
+
   yield put(receiveEntities(entities))
 }
 

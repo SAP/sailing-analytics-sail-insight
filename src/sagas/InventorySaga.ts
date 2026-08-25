@@ -1,6 +1,6 @@
 import { filter, compose, not, __, find, propEq, values,
   curry, isEmpty, mergeRight } from 'ramda'
-import { takeLatest, call, put, takeEvery, select, all } from 'redux-saga/effects'
+import { takeLatest, put, takeEvery, select, all } from 'redux-saga/effects'
 import { markPropertiesSchema } from 'api/schemas'
 import { LOAD_MARK_PROPERTIES } from 'actions/inventory'
 
@@ -11,6 +11,7 @@ import { getMarkProperties } from 'selectors/inventory'
 import { isLoggedIn } from 'selectors/auth'
 
 import { dataApi } from 'api'
+import { safeApiCall } from './HelpersSaga'
 
 const defaultMarkProperties = [
   { name: 'Start/Finish Pin', shortName: 'SFP', markType: 'BUOY' },
@@ -30,7 +31,18 @@ export function* loadMarkProperties({ payload }: any = { payload: { createMissin
   if (!hasUser) return
 
   const api = dataApi(getServerUrlSetting())
-  const markProperties = yield call(api.requestMarkProperties)
+  const markProperties = yield safeApiCall(api.requestMarkProperties)
+
+  // A failed request must not fall through as "no mark properties exist":
+  // every default below would then be considered missing and recreated on the
+  // server, producing duplicates on every hiccup.
+  // No snackbar here: this runs as a side step of the course flows, which do
+  // their own messaging. Reporting from here would replace "Course saved" with
+  // an error right after a save that actually succeeded.
+  if (markProperties === undefined) {
+    console.warn('Failed to load mark properties')
+    return
+  }
 
   const markPropertiesList = markProperties?.entities?.markProperties
     ? values(markProperties.entities.markProperties)
@@ -45,9 +57,19 @@ export function* loadMarkProperties({ payload }: any = { payload: { createMissin
   yield put(receiveEntities(mergeRight(markProperties || {}, { replace: true })))
 
   if (!isEmpty(missingDefaultMarkProperties) && payload.createMissingDefaultMarkProperties) {
-    const newMarkProperties = yield all(missingDefaultMarkProperties.map(mp => call(api.createMarkProperties, mp)))
+    const newMarkProperties = yield all(missingDefaultMarkProperties.map(mp =>
+      safeApiCall(api.createMarkProperties, mp)))
 
-    yield put(normalizeAndReceiveEntities(newMarkProperties, [markPropertiesSchema]))
+    const createdMarkProperties = newMarkProperties.filter((mp: any) => mp !== undefined)
+
+    if (createdMarkProperties.length < newMarkProperties.length) {
+      console.warn('Failed to create default mark properties:',
+        newMarkProperties.length - createdMarkProperties.length)
+    }
+
+    if (!isEmpty(createdMarkProperties)) {
+      yield put(normalizeAndReceiveEntities(createdMarkProperties, [markPropertiesSchema]))
+    }
   }
 }
 

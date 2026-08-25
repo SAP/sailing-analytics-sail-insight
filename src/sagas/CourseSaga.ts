@@ -45,7 +45,8 @@ import { receiveEntities } from 'actions/entities'
 import Snackbar from 'react-native-snackbar'
 import I18n from 'i18n'
 import { PassingInstruction } from 'models/Course'
-import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { showNetworkRequiredSnackbarMessage, showSaveFailedSnackbarMessage,
+  showServerErrorSnackbarMessage } from 'helpers/network'
 import { alertPromise } from 'helpers/utils'
 
 const renameKeys = curry((keysMap, obj) =>
@@ -177,8 +178,11 @@ function* fetchCourseFromServer({ regattaName, race, serverUrl }: any) {
   const api = dataApi(serverUrl)
   const latestCourseState = yield safeApiCall(api.requestCourse, regattaName, race, 'Default')
 
+  // Returned as-is so callers can tell a failed request (`undefined`) from a
+  // successful but empty response — `requestCourse` runs without a dataSchema,
+  // so an empty 200 body arrives as ''.
   if (!latestCourseState)
-    return
+    return latestCourseState
 
   yield put(loadCourse({
     raceId: `${regattaName} - ${race}`,
@@ -201,6 +205,18 @@ function* selectCourseFlow({ payload }: any) {
 
   if (!latestCourseState) {
     yield put(updateCourseLoading(false))
+
+    // The screen was already pushed above, so bail out of it instead of leaving
+    // the user on a half-rendered editor without any explanation (issue #64).
+    // Only for a genuinely failed request though: an empty response is not
+    // worth pulling the user out of course creation for.
+    if (latestCourseState === undefined) {
+      showServerErrorSnackbarMessage()
+
+      if (navigation?.canGoBack?.())
+        navigation.goBack()
+    }
+
     return
   }
 
@@ -342,8 +358,10 @@ function* saveCourseFlow({ navigation }: any) {
     serverUrl
   })
 
-  if (!updatedCourse)
+  if (!updatedCourse) {
+    showSaveFailedSnackbarMessage()
     return
+  }
 
   const plannedRaces = yield select(getRegattaPlannedRaces(regattaName))
 
@@ -413,8 +431,13 @@ function* saveCourseFlow({ navigation }: any) {
       markId: markUsedWithCurrentDeviceAsTracker.markId
     }))
 
-    const mark = yield call(api.requestMark, leaderboardName, markUsedWithCurrentDeviceAsTracker.markId, secret)
-    yield put(receiveEntities(mark))
+    const mark = yield safeApiCall(api.requestMark, leaderboardName, markUsedWithCurrentDeviceAsTracker.markId, secret)
+
+    if (mark) {
+      yield put(receiveEntities(mark))
+    } else {
+      console.warn('Failed to fetch mark data after saving the course')
+    }
   }
   Snackbar.show({
     text: I18n.t('text_course_saved'),
@@ -455,6 +478,7 @@ function* updateMarkPositionFlow({ payload }: any) {
   const api = dataApi(serverUrl)
 
   if (!(yield select(isNetworkConnected))) {
+    showNetworkRequiredSnackbarMessage()
     return
   }
 
@@ -490,7 +514,7 @@ function* updateMarkPositionFlow({ payload }: any) {
     if (markId) {
       // Update the checkIn
       yield put(updateCheckInAndEventInventory({ leaderboardName, markId }))
-      const mark = yield call(api.requestMark, leaderboardName, markId, secret)
+      const mark = yield safeApiCall(api.requestMark, leaderboardName, markId, secret)
       if (mark) {
         yield put(receiveEntities(mark))
       } else {
