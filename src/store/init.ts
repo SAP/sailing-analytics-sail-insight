@@ -8,6 +8,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import createSagaMiddleware from 'redux-saga'
 import ReduxThunk from 'redux-thunk'
 
+import { DEV_MODE } from 'environment'
 import Reducers from 'reducers'
 import rootSaga from 'sagas'
 import { initializePersistor, initializeStore } from 'store'
@@ -38,7 +39,12 @@ const sagaMiddleware = createSagaMiddleware({
     crashlytics().setAttribute('sagaStack', sagaStack)
     crashlytics().recordError(error)
 
-    throw error
+    // Deliberately not re-thrown: re-throwing tore down the whole saga tree and
+    // left the app silently unresponsive (issue #64). Watchers restart
+    // themselves in `sagas/index.ts`; this handler only reports.
+    if (DEV_MODE) {
+      console.error('Unhandled saga error:', error, '\n', sagaStack)
+    }
   }
 })
 

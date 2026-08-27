@@ -291,6 +291,7 @@
   "caption_overwrite_courses": "Copiar rumbo",
   "error_title": "Se ha producido un error",
   "error_unknown": "¡Vaya! Se ha producido un error.\nInténtelo de nuevo.",
+  "error_event_settings_not_saved": "El evento se creó, pero no se pudieron guardar sus ajustes. No vuelvas a crearlo: ábrelo desde la lista.",
   "error_with_code": "¡Vaya! Se ha producido un error.\nInténtelo de nuevo. ({{code}})",
   "error_field_required": "El campo es obligatorio.",
   "error_field_already_exists": "Ya existe.",
