@@ -15,7 +15,6 @@ export const init = () => {
   // initializations for local development
   LogBox.ignoreAllLogs(true)
   LogBox.ignoreLogs([
-    'React.createFactory()',
     'VirtualizedLists should never be nested inside plain ScrollViews',
     'Cannot update a component from inside the function body of a different component'
   ])

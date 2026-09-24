@@ -2,10 +2,10 @@
 
 **Prerequisites**
 
-Node setup, at least version 18.14.0:
+Node setup, at least version 20.19.4 (required by React Native 0.81):
 ```
-nvm install 18.14.0
-nvm use 18.14.0
+nvm install 20.19.4
+nvm use 20.19.4
 ```
 
 React Native setup (from https://facebook.github.io/react-native/docs/getting-started.html)
@@ -13,10 +13,7 @@ React Native setup (from https://facebook.github.io/react-native/docs/getting-st
 1. install nodejs (https://nodejs.org/en/download/package-manager/)
 2. install watchman (https://facebook.github.io/watchman/docs/install.html)
 3. install yarn (https://yarnpkg.com/lang/en/docs/install)
-4. install react native cli:
-````
-npm install -g react-native-cli
-````
+4. React Native CLI is installed by the project; do not install the legacy global `react-native-cli`.
 
 5. Install nvm (https://github.com/creationix/nvm)
 

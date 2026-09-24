@@ -22,8 +22,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.0.0'
-          cache: 'npm'
+          node-version: '20.19.4'
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -31,12 +30,19 @@ jobs:
           java-version: '17' # Recommended for modern React Native/Gradle versions
           distribution: 'zulu'
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 16 toolchain
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006" "cmake;3.22.1"
+
       - name: Install Dependencies
         run: |
           corepack enable
           yarn config set nodeLinker node-modules
-          yarn install --immutable
-          ./node_modules/.bin/patch-package
+          # The migration changes dependency descriptors; regenerate yarn.lock once locally,
+          # then restore --immutable here.
+          yarn install
 
       - name: Force Install and Run Jetifier
         run: |

@@ -10,10 +10,8 @@ import {
     withState,
     withStateHandlers,
     mapProps,
-    defaultProps,
-    withProps,
     lifecycle
-} from 'recompose'
+} from './enhancers'
 import { connect } from 'react-redux'
 import { connectActionSheet as rnConnectActionSheet } from '@expo/react-native-action-sheet'
 

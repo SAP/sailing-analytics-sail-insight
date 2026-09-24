@@ -1,35 +1,25 @@
-import { Alert, Linking, NativeModules, Platform } from 'react-native'
+import { Alert, Linking, Platform } from 'react-native'
 import { PERMISSIONS, RESULTS, request, check, Permission } from 'react-native-permissions'
 import I18n from 'i18n'
 
 export const PermissionType = {
-  Photo : Platform.select({ ios: PERMISSIONS.IOS.PHOTO_LIBRARY, android: Platform.Version >= 34
-        ? PERMISSIONS.ANDROID.READ_MEDIA_IMAGES
-        : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
-    }),
-  Camera : Platform.select({ ios: PERMISSIONS.IOS.CAMERA, android: PERMISSIONS.ANDROID.CAMERA }),
-  Location : Platform.select({ ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION }),
-  Contacts : Platform.select({ ios: PERMISSIONS.IOS.CONTACTS, android: PERMISSIONS.ANDROID.READ_CONTACTS })
+  Photo: PERMISSIONS.IOS.PHOTO_LIBRARY,
+  Camera: Platform.select({ ios: PERMISSIONS.IOS.CAMERA, android: PERMISSIONS.ANDROID.CAMERA }) as Permission,
+  Location: Platform.select({ ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION }) as Permission,
+  Contacts: Platform.select({ ios: PERMISSIONS.IOS.CONTACTS, android: PERMISSIONS.ANDROID.READ_CONTACTS }) as Permission,
 }
 
-export const openSettings = () => {
-  if (Platform.OS === 'android') {
-    NativeModules.ShowAppSettings.show()
-  } else {
-    Linking.openURL('app-settings:')
-  }
-}
+export const openSettings = () => Linking.openSettings()
 
 export const requestPermission = async (permissionType: Permission) =>
   await request(permissionType) === RESULTS.GRANTED
-
 
 export const checkPermissionWithSettingsCTA = async (
   permission: Permission,
   alertTitle: string,
   alertMessage: string,
 ) => {
-  const status = await check(permission);
+  const status = await check(permission)
   if (status === RESULTS.DENIED || status === RESULTS.GRANTED) {
     return true
   }
@@ -44,7 +34,6 @@ export const checkPermissionWithSettingsCTA = async (
       { cancelable: false },
     )
   }
-  // if unavailable return false
   return false
 }
 
@@ -56,10 +45,14 @@ export const requestPermissionsForImagePickerUsingCamera = async () =>
   ) &&
   await requestPermission(PermissionType.Camera)
 
-export const requestPermissionsForImagePickerUsingPhotos = async () =>
-  await checkPermissionWithSettingsCTA(
+export const requestPermissionsForImagePickerUsingPhotos = async () => {
+  // Android's picker grants access to the selected URI; broad media permission is not required.
+  if (Platform.OS === 'android') {
+    return true
+  }
+  return await checkPermissionWithSettingsCTA(
     PermissionType.Photo,
     I18n.t('caption_open_photos'),
     I18n.t('text_permission_photo_gallery_settings_cta'),
-  ) &&
-  await requestPermission(PermissionType.Photo)
+  ) && await requestPermission(PermissionType.Photo)
+}
