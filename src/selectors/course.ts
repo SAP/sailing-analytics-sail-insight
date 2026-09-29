@@ -2,7 +2,7 @@ import { prop, propEq, propOr, find, compose, path, defaultTo, append,
   equals, identity, head, when, isNil, always, last, either, isEmpty,
   apply, map, take, move, evolve, dissoc, not, flatten, reject, __, filter,
   curry, reduce, assoc, keys, both, inc, range, concat, join, ifElse, pathOr,
-  fromPairs, mergeWithKey, values, pick, uniqBy, includes, mergeRight, pathEq
+  mergeWithKey, values, pick, uniqBy, includes, mergeRight
 } from 'ramda'
 import { createSelector } from 'reselect'
 import { getSelectedEventInfo } from 'selectors/event'
@@ -201,45 +201,76 @@ export const getCourseSequenceDisplay = (courseId: string) => (state: any) => {
   )(courseById)
 }
 
+export const mapMarkConfigurationsToEditedCourse = (eventCourses: any[], editedCourse: any) => {
+  const editedMarkConfigurations = editedCourse?.markConfigurations || []
+  const eventMarkConfigurations = (eventCourses || []).reduce(
+    (configurations, course) => configurations.concat(course?.markConfigurations || []),
+    [] as any[])
+
+  return editedMarkConfigurations
+    .concat(eventMarkConfigurations)
+    .reduce((configurationMap, configuration) => {
+      const name = configuration?.effectiveProperties?.name
+      const shortName = configuration?.effectiveProperties?.shortName
+
+      // Old/partial course data may not have effective properties, and a
+      // configuration used in another race does not have to exist in the
+      // course currently being edited. Neither case should crash the editor.
+      if (!configuration?.id || isNil(name) || isNil(shortName))
+        return configurationMap
+
+      const matchingConfiguration = editedMarkConfigurations.find(candidate =>
+        candidate?.effectiveProperties?.name === name &&
+        candidate?.effectiveProperties?.shortName === shortName)
+
+      if (!matchingConfiguration?.id)
+        return configurationMap
+
+      return { ...configurationMap, [configuration.id]: matchingConfiguration.id }
+    }, {} as Record<string, string>)
+}
+
 export const getMarkConfigurationsMapToEditedCourse = createSelector(
   getAllCoursesForSelectedEvent,
   getEditedCourse,
-  (eventCourses, editedCourse) => compose(
-    fromPairs,
-    map(conf => ([
-      conf.id,
-      find(
-        both(
-          pathEq(conf.effectiveProperties.name, ['effectiveProperties', 'name']),
-          pathEq(conf.effectiveProperties.shortName, ['effectiveProperties', 'shortName'])),
-        editedCourse.markConfigurations).id
-    ])),
-    reject(isNil),
-    concat(editedCourse.markConfigurations),
-    flatten,
-    defaultTo([]),
-    map(prop('markConfigurations')))(
-    eventCourses))
+  mapMarkConfigurationsToEditedCourse)
 
 export const getLinesAndGateOptionsForCurrentEventAndWaypoint = createSelector(
   isSelectedWaypointLineOrGate,
   getAllCoursesForSelectedEvent,
   getMarkConfigurationsMapToEditedCourse,
   getEditedCourse,
-  (isSelectedWaypointLineOrGate, eventCourses, markConfigurationsMap, editedCourse) => compose(
-    when(always(isSelectedWaypointLineOrGate), always([])),
-    map(compose(
-      mergeRight({ isWaypoint: true }),
-      evolve({ markConfigurationIds: map(prop(__, markConfigurationsMap)) }))),
-    uniqBy(compose(
-      reduce(concat, ''),
-      values,
-      pick(['controlPointName', 'controlPointShortName'])
-    )),
-    reject(compose(includes(__, ['Start', 'Finish']), prop('controlPointName'))),
-    filter(compose(either(equals(PassingInstruction.Line), equals(PassingInstruction.Gate)), prop('passingInstruction'))),
-    flatten,
-    defaultTo([]),
-    map(prop('waypoints')),
-    append(editedCourse))(
-    eventCourses))
+  (isSelectedWaypointLineOrGate, eventCourses, markConfigurationsMap, editedCourse) => {
+    if (isSelectedWaypointLineOrGate)
+      return []
+
+    return compose(
+      reject(isNil),
+      map((waypoint: any) => {
+        const markConfigurationIds = waypoint?.markConfigurationIds || []
+        const mappedMarkConfigurationIds = markConfigurationIds.map(
+          id => markConfigurationsMap[id])
+
+        // Do not offer a line/gate from another race if one of its marks cannot
+        // be mapped to the current edited course.
+        if (mappedMarkConfigurationIds.some(isNil))
+          return null
+
+        return mergeRight(waypoint, {
+          isWaypoint: true,
+          markConfigurationIds: mappedMarkConfigurationIds
+        })
+      }),
+      uniqBy(compose(
+        reduce(concat, ''),
+        values,
+        pick(['controlPointName', 'controlPointShortName'])
+      )),
+      reject(compose(includes(__, ['Start', 'Finish']), prop('controlPointName'))),
+      filter(compose(either(equals(PassingInstruction.Line), equals(PassingInstruction.Gate)), prop('passingInstruction'))),
+      flatten,
+      defaultTo([]),
+      map(prop('waypoints')),
+      append(editedCourse))(
+      eventCourses)
+  })
