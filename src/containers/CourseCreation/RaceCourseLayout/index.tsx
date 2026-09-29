@@ -654,7 +654,7 @@ const WaypointsList = Component(props => {
   const windowWidth = Dimensions.get('window').width
   let finishWidth = 175
 
-  if (!props.course) {
+  if (!props.course || !props.selectedWaypoint || !props.course.waypoints?.length) {
     return null
   }
 

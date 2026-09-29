@@ -178,9 +178,10 @@ function* fetchCourseFromServer({ regattaName, race, serverUrl }: any) {
   const api = dataApi(serverUrl)
   const latestCourseState = yield safeApiCall(api.requestCourse, regattaName, race, 'Default')
 
-  // Returned as-is so callers can tell a failed request (`undefined`) from a
-  // successful but empty response — `requestCourse` runs without a dataSchema,
-  // so an empty 200 body arrives as ''.
+  // A successful response from this endpoint is expected to contain a JSON
+  // course object. `safeApiCall` returns undefined on request failure; jsonData
+  // can only return '' here if the backend violates that contract with an empty
+  // 200 response. In either case there is no usable course to load.
   if (!latestCourseState)
     return latestCourseState
 
@@ -196,26 +197,26 @@ function* selectCourseFlow({ payload }: any) {
   const { race, navigation } = payload
   const { regattaName, serverUrl } = yield select(getSelectedEventInfo)
 
-  navigation.navigate(Screens.RaceCourseLayout)
-
+  // React Native 0.81/React 19 can mount the destination screen immediately.
+  // Set the loading guard first so the course editor never renders against the
+  // previous/empty edited-course state while the current course is fetched.
   yield put(updateCourseLoading(true))
   yield put(selectRace(race))
+
+  navigation.navigate(Screens.RaceCourseLayout)
 
   const latestCourseState = yield call(fetchCourseFromServer, { regattaName, race, serverUrl })
 
   if (!latestCourseState) {
     yield put(updateCourseLoading(false))
 
-    // The screen was already pushed above, so bail out of it instead of leaving
-    // the user on a half-rendered editor without any explanation (issue #64).
-    // Only for a genuinely failed request though: an empty response is not
-    // worth pulling the user out of course creation for.
-    if (latestCourseState === undefined) {
-      showServerErrorSnackbarMessage()
+    // The backend contract for a successful request is a JSON course object.
+    // A falsy result is therefore either a request failure or an invalid empty
+    // 200 response. Do not leave the editor mounted with incomplete state.
+    showServerErrorSnackbarMessage()
 
-      if (navigation?.canGoBack?.())
-        navigation.goBack()
-    }
+    if (navigation?.canGoBack?.())
+      navigation.goBack()
 
     return
   }
@@ -346,8 +347,6 @@ function* saveCourseFlow({ navigation }: any) {
     return
   }
 
-  navigation.goBack()
-
   const updatedCourse = yield call(saveCourseToServer, {
     editedCourse,
     existingCourse,
@@ -359,9 +358,13 @@ function* saveCourseFlow({ navigation }: any) {
   })
 
   if (!updatedCourse) {
+    // Keep the editor open on a failed save so the user's course is not lost
+    // from view and the save can be retried.
     showSaveFailedSnackbarMessage()
     return
   }
+
+  navigation.goBack()
 
   const plannedRaces = yield select(getRegattaPlannedRaces(regattaName))
 

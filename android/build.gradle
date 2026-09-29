@@ -1,43 +1,47 @@
-// android/build.gradle (root project)
+// Root Android build configuration aligned with React Native 0.81.6 / Android 16.
+// Keep the shared Android version properties in buildscript.ext: the React Native
+// root plugin configures subprojects when it is applied, so these values must
+// exist before that plugin runs.
+buildscript {
+  ext {
+    buildToolsVersion = "36.0.0"
+    minSdkVersion = 24
+    compileSdkVersion = 36
+    targetSdkVersion = 36
+    ndkVersion = "27.1.12297006"
+    kotlinVersion = "2.1.20"
 
-plugins {
-  id("com.android.application") version "8.6.0" apply false
-  id("com.android.library") version "8.6.0" apply false
-  id("org.jetbrains.kotlin.android") version "1.9.25" apply false
-  id("com.google.gms.google-services") version "4.4.2" apply false
-  id("com.google.firebase.crashlytics") version "3.0.2" apply false
+    // react-native-background-geolocation configuration.
+    appCompatVersion = "1.7.0"
+    playServicesLocationVersion = "21.3.0"
+    googlePlayServicesLocationVersion = "21.3.0"
+  }
 
-  // Apply RN root plugin at the root (NO version, thanks to includeBuild)
-  id("com.facebook.react.rootproject")
+  repositories {
+    google()
+    mavenCentral()
+    gradlePluginPortal()
+  }
+
+  dependencies {
+    // Pin AGP/Kotlin to the RN 0.81 Android toolchain while keeping the RN
+    // Gradle plugin itself sourced from node_modules via settings.gradle.
+    classpath("com.android.tools.build:gradle:8.11.0")
+    classpath("com.facebook.react:react-native-gradle-plugin")
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.20")
+    classpath("com.google.gms:google-services:4.4.2")
+    classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.2")
+  }
 }
 
-// Centralized versions (read from :app if you prefer; these are just convenience props)
-ext {
-  minSdkVersion      = 24
-  targetSdkVersion   = 34
-  compileSdkVersion  = 35
-  buildToolsVersion  = "35.0.0"
-  kotlinVersion      = "1.9.25"
-  ndkVersion         = "27.0.12077973"
-
-  // RNU ds 4
-  appCompatVersion 	= "1.4.2"      // Or higher.  Required for new AndroidX compatibility.
-  googlePlayServicesLocationVersion = "21.0.1"  // Or higher.
-}
-
-// RNU ds 3
+apply plugin: "com.facebook.react.rootproject"
 
 allprojects {
   repositories {
     google()
     mavenCentral()
-    maven { url 'https://plugins.gradle.org/m2/' } // RNU ds 2
 
-    // NRU ds 4
-    // Required for react-native-background-geolocation
+    // Required by react-native-background-geolocation v4.x.
     maven { url("${project(':react-native-background-geolocation').projectDir}/libs") }
-    maven { url 'https://developer.huawei.com/repo/' }
-    // Required for react-native-background-fetch
-    maven { url("${project(':react-native-background-fetch').projectDir}/libs") }
   }
 }

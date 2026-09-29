@@ -1,4 +1,4 @@
-import { StatusBar } from 'react-native'
+import { Platform, StatusBar } from 'react-native'
 import EStyleSheet from 'react-native-extended-stylesheet'
 
 import { isPlatformAndroid } from 'environment'
@@ -8,7 +8,7 @@ import * as fonts from 'styles/fonts'
 
 export const initStyles = () => {
   StatusBar.setBarStyle('light-content', true)
-  if (isPlatformAndroid) {
+  if (isPlatformAndroid && Number(Platform.Version) < 35) {
     StatusBar.setBackgroundColor('transparent')
     StatusBar.setTranslucent(true)
   }

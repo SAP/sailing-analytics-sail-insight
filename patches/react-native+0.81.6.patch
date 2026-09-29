@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/ReactActivity.java b/node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/ReactActivity.java
+--- a/node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/ReactActivity.java
++++ b/node_modules/react-native/ReactAndroid/src/main/java/com/facebook/react/ReactActivity.java
+@@ -123,6 +123,9 @@ public abstract class ReactActivity extends AppCompatActivity
+     // as super.onBackPressed() will call all enabled callbacks in the dispatcher.
+     mBackPressedCallback.setEnabled(false);
+     super.onBackPressed();
++    // Re-enable callback so JS BackHandler remains functional after the Activity
++    // is backgrounded via the default back action and later resumed on API 36+.
++    mBackPressedCallback.setEnabled(true);
+   }
+ 
+   @Override

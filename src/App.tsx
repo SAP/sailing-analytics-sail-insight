@@ -1,6 +1,8 @@
+import NetInfo, { NetInfoState, NetInfoSubscription } from '@react-native-community/netinfo'
 import React, { Component } from 'react'
-import { ReduxNetworkProvider } from 'react-native-offline'
+import { offlineActionCreators } from 'react-native-offline'
 import { Provider } from 'react-redux'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { PersistGate } from 'redux-persist/integration/react'
 import 'store/init'
 import { getPersistor, getStore } from 'store'
@@ -31,13 +33,31 @@ if (module.hot) {
 
 // must be a component to support hot reloading
 class App extends Component {
+  private unsubscribeNetInfo?: NetInfoSubscription
+
+  public componentDidMount() {
+    // NetInfo is the connectivity source for the app. react-native-offline is
+    // retained only for its Redux reducer/middleware and offline action queue.
+    this.unsubscribeNetInfo = NetInfo.addEventListener(this.handleNetworkChange)
+    NetInfo.fetch().then(this.handleNetworkChange)
+  }
+
+  public componentWillUnmount() {
+    this.unsubscribeNetInfo?.()
+  }
+
+  private handleNetworkChange = (state: NetInfoState) => {
+    const isConnected = Boolean(state.isConnected && state.isInternetReachable)
+    store.dispatch(offlineActionCreators.connectionChange(isConnected))
+  }
+
   public render() {
     return (
       <Provider store={store}>
         <PersistGate loading={<WaveActivityIndicatorFullscreen/>} persistor={persistor}>
-          <ReduxNetworkProvider pingInBackground={true} pingInterval={3000}>
+          <SafeAreaProvider>
             <AppRoot/>
-          </ReduxNetworkProvider>
+          </SafeAreaProvider>
         </PersistGate>
       </Provider>
     )

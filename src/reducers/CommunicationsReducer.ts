@@ -16,8 +16,7 @@ import {
 import { clearArrayHandler, itemUpdateHandler } from 'helpers/reducers'
 import { CommunicationsReducerState } from 'reducers/config'
 
-import { compose } from 'recompose'
-import { lt, when, dropLast, insert, length } from 'ramda'
+import { compose, lt, when, dropLast, insert, length } from 'ramda'
 
 const initialState: CommunicationsReducerState = {
   state: false,

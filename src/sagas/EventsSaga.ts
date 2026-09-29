@@ -22,7 +22,7 @@ import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share, Alert } from 'react-native'
-import { all, call, cancelled, put, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
+import { all, call, cancelled, put, putResolve, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo, isPollingEvent, getSelectedEventEndDate, getSelectedEventStartDate, getEventIdThatsBeingSelected } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
@@ -72,7 +72,16 @@ function* selectEventSaga({ payload }: any) {
     const currentUserCanUpdateEvent = yield select(canUpdateEvent(eventData.eventId))
     const { regattaName, secret, serverUrl } = eventData
 
-    yield put(fetchRegatta(regattaName, secret, serverUrl))
+    // fetchRegatta is an async thunk. A normal `put` only dispatches it and
+    // continues immediately, so the course loader can read the store before
+    // the races have arrived. Wait for the thunk here before loading data that
+    // depends on the planned race list.
+    try {
+      yield putResolve(fetchRegatta(regattaName, secret, serverUrl))
+    } catch (e) {
+      // Keep the previous behaviour on refresh failures: continue with any
+      // cached regatta/race data that may already be available.
+    }
     yield put(fetchRacesTimesForEvent(eventData))
 
     if (currentUserCanUpdateEvent) {
