@@ -3,6 +3,7 @@ import { Alert, Image, ImageBackground, View, ViewProps } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { registerNetStateListeners, unregisterNetStateListeners, registerAppStateListeners, unregisterAppStateListeners } from 'actions/appState'
 import { isNetworkConnected } from 'selectors/network';
@@ -45,7 +46,7 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
     return (
       <ImageBackground source={Images.defaults.map3} style={{ width: '100%', height: '100%' }}>
         <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.97 }}>
-          <View style={[styles.container]}>
+          <SafeAreaView edges={['bottom']} style={[styles.container]}>
             <View style={styles.contentContainer}>
               <Image source={Images.defaults.app_logo} style={styles.appLogo} resizeMode="contain"/>
               <View style={styles.buttonContainer}>
@@ -73,7 +74,7 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
               <Image source={Images.defaults.ws_logo} style={styles.wsLogo} resizeMode="stretch"/>
               <Image source={Images.defaults.sap_logo} style={styles.sapLogo}/>
             </View>
-          </View>
+          </SafeAreaView>
         </LinearGradient>
       </ImageBackground>
     )

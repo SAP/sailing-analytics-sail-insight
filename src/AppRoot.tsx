@@ -3,6 +3,7 @@ import { Text, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import SpinnerOverlay from 'react-native-loading-spinner-overlay'
 import { OrientationLocker, PORTRAIT, LANDSCAPE } from 'react-native-orientation-locker'
 
@@ -84,6 +85,7 @@ import { ShareButton } from 'containers/session/common'
 // Styling & Images
 import Images from '@assets/Images'
 import { button, tab, navigation as navigationStyles } from 'styles/commons'
+import { bottomTabBarInsetStyle } from 'styles/commons/tab'
 import { $headerTintColor, $primaryTextColor, $secondaryTextColor, $siWhite, $siDarkBlue, $siDarkerBlue, $siTransparent } from 'styles/colors'
 
 // Logging
@@ -196,10 +198,14 @@ const MarkLocationHeader = connect(
 
 const navigationContainer = React.createRef()
 
+const editResultsStyle = { flex: 1 }
+
 const EditResultsComponent = (props: any) =>
-  <WebView {...props}>
-    <OrientationLocker orientation={LANDSCAPE}/>
-  </WebView>
+  <SafeAreaView edges={['left', 'right', 'bottom']} style={editResultsStyle}>
+    <WebView {...props}>
+      <OrientationLocker orientation={LANDSCAPE}/>
+    </WebView>
+  </SafeAreaView>
 
 // ----------------------------------------------------------------------------
 // Navigation Modifiers -------------------------------------------------------
@@ -395,7 +401,7 @@ const mainTabsNavigator = Component(props => compose(
     screenOptions: ({route}) => ({ // RNU
       tabBarActiveTintColor: $primaryTextColor,
       tabBarInactiveTintColor: $secondaryTextColor,
-      tabBarStyle: tab.bottomTabBar,
+      tabBarStyle: [tab.bottomTabBar, bottomTabBarInsetStyle(props.bottomInset)],
       tabBarShowLabel: true,
       tabBarLabelPosition: 'below-icon',
       tabBarHideOnKeyboard: Platform.OS === 'android',
@@ -416,6 +422,11 @@ const mainTabsNavigator = Component(props => compose(
   props.userHasMarkProperties ? tabsScreen({ name: Screens.Inventory, component: InventoryScreen }) : null,
   tabsScreen({ name: Screens.Account, component: AccountScreen }),
 ]))
+
+const MainTabs = (props: any) => {
+  const { bottom } = useSafeAreaInsets()
+  return mainTabsNavigator.fold(mergeRight(props, { bottomInset: bottom }))
+}
 
 const joinRegattaScreenMixins = compose(withLeftHeaderCloseButton, withTransparentHeader, withoutTitle)
 
@@ -453,7 +464,8 @@ const AppNavigator = Component(props => compose(
   })),
   stackScreen(withoutHeader({
     name: Screens.Main,
-    component: mainTabsNavigator.contramap(mergeRight({ userHasMarkProperties: props.userHasMarkProperties })).fold
+    component: Component((screenProps: any) => <MainTabs {...screenProps} />)
+      .contramap(mergeRight({ userHasMarkProperties: props.userHasMarkProperties })).fold
   })),
   stackScreen(compose(withLeftHeaderCloseButton, withTransparentHeader, withGradientHeaderBackground, withoutTitle)({
     name: Screens.QRScanner, component: QRScanner
