@@ -42,7 +42,7 @@
     "i18n-js": "^4.2.3",
     "js-sha256": "^0.9.0",
     "lodash": "^4.18.1",
-    "moment": "^2.29.4",
+    "moment": "^2.31.0",
     "moment-duration-format": "^2.3.2",
     "normalizr": "^3.6.2",
     "prop-types": "^15.8.1",
