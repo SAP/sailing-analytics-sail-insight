@@ -12,7 +12,6 @@ import { CreateEventBody } from 'api/endpoints/types'
 import { DispatchType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
 import EventCreationData, { RegattaType } from 'models/EventCreationData'
-import { getRegattaPlannedRaces } from 'selectors/regatta'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
@@ -30,6 +29,8 @@ export const FETCH_RACES_TIMES_FOR_EVENT = 'FETCH_RACES_TIMES_FOR_EVENT'
 export const SET_RACE_TIME = 'SET_RACE_TIME'
 export const ADD_RACE_COLUMNS = 'ADD_RACE_COLUMNS'
 export const REMOVE_RACE_COLUMNS = 'REMOVE_RACE_COLUMNS'
+export const SET_NUMBER_OF_RACES = 'SET_NUMBER_OF_RACES'
+export const UPDATE_SAVING_RACE_SETTINGS = 'UPDATE_SAVING_RACE_SETTINGS'
 export const SET_DISCARDS = 'SET_DISCARDS'
 export const OPEN_SAP_ANALYTICS_EVENT = 'OPEN_SAP_ANALYTICS_EVENT'
 export const OPEN_EVENT_LEADERBOARD = 'OPEN_EVENT_LEADERBOARD'
@@ -106,29 +107,17 @@ export const createEventActionQueue = ({ eventData, navigation }: any) => (
     ),
   ])
 
-export const updateEventSettings = (session: object, data: object) => (dispatch: DispatchType, getState) => {
-  const regattaRaces = getRegattaPlannedRaces(session.regattaName)(getState())
-
-  const sessionData = {
+// The race count is reconciled in the events saga against the freshly fetched
+// server state (changes are queued and run one after the other), so the diff
+// is never computed from a stale local race list.
+export const updateEventSettings = (session: any, data: any) => (dispatch: DispatchType) =>
+  dispatch(createAction(SET_NUMBER_OF_RACES)({
     regattaName: session.regattaName,
     leaderboardName: session.leaderboardName,
     prefix: session.trackPrefix,
     serverUrl: session.serverUrl,
-    existingNumberOfRaces: regattaRaces.length
-  }
-
-  if (regattaRaces.length < data.numberOfRaces) {
-    dispatch(createAction(ADD_RACE_COLUMNS)({
-      ...sessionData,
-      numberofraces: data.numberOfRaces - regattaRaces.length
-    }))
-  } else if (regattaRaces.length > data.numberOfRaces) {
-    dispatch(createAction(REMOVE_RACE_COLUMNS)({
-      ...sessionData,
-      numberofraces: regattaRaces.length - data.numberOfRaces
-    }))
-  }
-}
+    numberOfRaces: data.numberOfRaces,
+  }))
 
 export const updateCreatingEvent = createAction(UPDATE_CREATING_EVENT)
 export const updateLoadingEventList = createAction(UPDATE_LOADING_EVENT_LIST)
@@ -136,6 +125,7 @@ export const updateSelectingEvent = createAction(UPDATE_SELECTING_EVENT)
 export const startPollingSelectedEvent = createAction(START_POLLING_SELECTED_EVENT)
 export const stopPollingSelectedEvent = createAction(STOP_POLLING_SELECTED_EVENT)
 export const updateEventPollingStatus = createAction(UPDATE_EVENT_POLLING_STATUS)
+export const updateSavingRaceSettings = createAction(UPDATE_SAVING_RACE_SETTINGS)
 export const updateStartingTracking = createAction(UPDATE_STARTING_TRACKING)
 export const selectEvent = createAction(SELECT_EVENT)
 export const selectRace = createAction(SELECT_RACE)
@@ -146,4 +136,8 @@ export const setDiscards = createAction(SET_DISCARDS)
 export const openSAPAnalyticsEvent = createAction(OPEN_SAP_ANALYTICS_EVENT)
 export const openEventLeaderboard = createAction(OPEN_EVENT_LEADERBOARD)
 export const startTracking = createAction(START_TRACKING)
+// Resolves with true once tracking was started (false if it failed), so callers
+// can wait for the result before e.g. navigating to the analytics.
+export const startTrackingAndWait = (session: any) => (dispatch: DispatchType) =>
+  new Promise<boolean>(resolve => dispatch(startTracking({ ...session, onDone: resolve })))
 export const stopTracking = createAction(STOP_TRACKING)

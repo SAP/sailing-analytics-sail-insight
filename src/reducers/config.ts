@@ -83,6 +83,7 @@ export interface EventState {
   isCreatingEvent: boolean
   isSelectingEvent: boolean
   isStartingTracking: boolean
+  isSavingRaceSettings: boolean
   isLoadingEventList: boolean
   isPollingEvent: boolean
 }

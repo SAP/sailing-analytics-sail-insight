@@ -1,11 +1,11 @@
 import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
-import { ADD_RACE_COLUMNS, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
+import { SET_NUMBER_OF_RACES, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
   START_TRACKING, STOP_TRACKING, fetchRacesTimesForEvent, OPEN_EVENT_LEADERBOARD,
-  OPEN_SAP_ANALYTICS_EVENT, REMOVE_RACE_COLUMNS, SELECT_EVENT, SET_RACE_TIME,
+  OPEN_SAP_ANALYTICS_EVENT, SELECT_EVENT, SET_RACE_TIME,
   START_POLLING_SELECTED_EVENT, STOP_POLLING_SELECTED_EVENT,
   SET_DISCARDS, updateRaceTime, selectEvent, updateCreatingEvent,
-  updateSelectingEvent, updateStartingTracking, updateEventPollingStatus, updateEvent } from 'actions/events'
+  updateSelectingEvent, updateStartingTracking, updateSavingRaceSettings, updateEventPollingStatus, updateEvent } from 'actions/events'
 import { fetchRegatta } from 'actions/regattas'
 import { navigateBackToMain } from 'actions/navigation'
 import * as Screens from 'navigation/Screens'
@@ -22,11 +22,12 @@ import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
          head, inc, indexOf, map, pick, range, toString, values } from 'ramda'
 import { Share, Alert } from 'react-native'
-import { all, call, cancelled, put, putResolve, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
+import { actionChannel, all, call, cancelled, fork, put, putResolve, select, takeEvery, takeLatest, take, delay } from 'redux-saga/effects'
 import { getUserInfo } from 'selectors/auth'
 import { getSelectedEventInfo, isPollingEvent, getSelectedEventEndDate, getSelectedEventStartDate, getEventIdThatsBeingSelected } from 'selectors/event'
 import { canUpdateEvent } from 'selectors/permissions'
 import { isAppActive } from 'selectors/appState'
+import { isNetworkConnected } from 'selectors/network'
 import { getRegatta, getRegattaNumberOfRaces, getRegattaPlannedRaces } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
 import { StackActions } from '@react-navigation/native'
@@ -38,6 +39,17 @@ const valueAtIndex = curry((index, array) => compose(
   values,
   pick(__, array))(
   [index]))
+
+function removeRacesConfirmationAlert(races: string[]) {
+  return new Promise(resolve => {
+    Alert.alert(I18n.t('error_race_removal_confirm_title'),
+      I18n.t('error_race_removal_confirm_message', { races: races.join(', ') }),
+      [ { text: I18n.t('caption_cancel'), style: 'cancel', onPress: () => resolve(false) },
+        { text: I18n.t('button_remove_races'), style: 'destructive', onPress: () => resolve(true) }
+      ],
+      { cancelable: true, onDismiss: () => resolve(false) })
+  })
+}
 
 function eventConfirmationAlert() {
   return new Promise(resolve => {
@@ -118,18 +130,15 @@ function* fetchRacesTimesForCurrentEvent({ payload }: any) {
   const raceTimes = yield all(races.map((raceName: string) =>
     safeApiCall(api.requestRaceTime, payload.leaderboardName, raceName, 'Default')))
 
-  // Only update race times that have valid data from the API
-  // This prevents overwriting locally-set times with null/undefined
-  // when the API call fails or returns empty data
-  yield all(raceTimes
-    .filter((raceTime: object | null | undefined) => raceTime != null)
-    .map((raceTime: object, index: number) => {
-      // Find the original index since we filtered
-      const originalIndex = raceTimes.indexOf(raceTime)
-      return put(updateRaceTime({
-        [`${payload.leaderboardName}-${races[originalIndex]}`]: raceTime
-      }))
-    }))
+  // Only update race times that have valid data from the API (an empty 200
+  // body arrives as '') — this prevents overwriting locally-set times. Each
+  // result is stored under the race it was requested for.
+  yield all(races
+    .map((raceName: string, index: number) => [raceName, raceTimes[index]])
+    .filter(([, raceTime]: any) => raceTime != null && typeof raceTime === 'object')
+    .map(([raceName, raceTime]: any) => put(updateRaceTime({
+      [`${payload.leaderboardName}-${raceName}`]: raceTime
+    }))))
 }
 
 function* fetchCoursesForCurrrentEvent({ payload }: any) {
@@ -142,17 +151,15 @@ function* fetchCoursesForCurrrentEvent({ payload }: any) {
     safeApiCall(api.requestCourse, payload.regattaName, raceName, 'Default')
   ))
 
-  // Only update courses that have valid data from the API
-  // This prevents overwriting locally-cached courses with null/undefined
-  yield all(raceCourses
-    .filter((course: object | null | undefined) => course != null)
-    .map((course: object, index: number) => {
-      const originalIndex = raceCourses.indexOf(course)
-      return put(loadCourse({
-        raceId: `${payload.regattaName} - ${races[originalIndex]}`,
-        course
-      }))
-    }))
+  // Only update courses that have valid data from the API; each course is
+  // loaded for the race it was requested for.
+  yield all(races
+    .map((raceName: string, index: number) => [raceName, raceCourses[index]])
+    .filter(([, course]: any) => course != null && typeof course === 'object')
+    .map(([raceName, course]: any) => put(loadCourse({
+      raceId: `${payload.regattaName} - ${raceName}`,
+      course
+    }))))
 }
 
 function* setRaceTime({ payload }: any) {
@@ -180,6 +187,7 @@ function* setRaceTime({ payload }: any) {
         yield put(updateEvent({id: eventId, data: { endDate: date }}))
       } else {
         console.warn('Failed to update event end date')
+        showSaveFailedSnackbarMessage()
         return
       }
     } else {
@@ -189,6 +197,7 @@ function* setRaceTime({ payload }: any) {
         yield put(updateEvent({id: eventId, data: { startDate: date }}))
       } else {
         console.warn('Failed to update event start date')
+        showSaveFailedSnackbarMessage()
         return
       }
     }
@@ -215,6 +224,7 @@ function* setRaceTime({ payload }: any) {
     yield put(updateRaceTime({
       [`${leaderboardName}-${race}`]: raceTime
     }))
+    showSaveFailedSnackbarMessage()
     return
   }
 
@@ -226,16 +236,35 @@ function* setRaceTime({ payload }: any) {
     races)
 
   if (previousRace) {
-    yield safeApiCall(api.setTrackingTimes, regattaName,
+    const trackingTimesResult = yield safeApiCall(api.setTrackingTimes, regattaName,
       {
         fleet: 'Default',
         race_column: previousRace,
         endoftrackingasmillis: moment(date).subtract(1, 'minutes').valueOf()
       })
+
+    if (trackingTimesResult === undefined) {
+      showSaveFailedSnackbarMessage()
+    }
+  }
+
+  // Tracking is only started once the race time is actually saved (and the
+  // user confirmed any event boundary change) — not when the picker closes.
+  if (!(yield select(isCurrentLeaderboardTracking))) {
+    yield call(startTrackingForEvent, { regattaName, serverUrl, leaderboardName })
   }
 }
 
 function* setDiscards({ payload }: any) {
+  yield put(updateSavingRaceSettings(true))
+  try {
+    yield call(saveDiscards, payload)
+  } finally {
+    yield put(updateSavingRaceSettings(false))
+  }
+}
+
+function* saveDiscards(payload: any) {
   const { discards, session } = payload
   const { leaderboardName, serverUrl } = session
   const api = dataApi(serverUrl)
@@ -246,6 +275,7 @@ function* setDiscards({ payload }: any) {
 
   if (updateResult === undefined) {
     console.warn('Failed to update leaderboard discards')
+    showSaveFailedSnackbarMessage()
     return
   }
 
@@ -299,7 +329,7 @@ function* createEvent(payload: any) {
   yield put(selectEvent({ data, replaceCurrentScreen: true, navigation }))
 }
 
-function* addRaceColumns({ payload }: any) {
+function* addRaceColumns(payload: any) {
   const api = dataApi(payload.serverUrl)
 
   const addedRaceColumns = yield safeApiCall(api.addRaceColumns, payload.regattaName, payload)
@@ -318,12 +348,13 @@ function* addRaceColumns({ payload }: any) {
     [payload.existingNumberOfRaces, payload.existingNumberOfRaces + payload.numberofraces])
 
   // Track denote results to identify failures
-  const denoteResults = yield all(races.map(race =>
+  const denoteResults = yield all(races.map((race: string) =>
     safeApiCall(api.denoteRaceForTracking, payload.leaderboardName, race, 'Default')))
 
   const failedDenotes = races.filter((_: string, idx: number) => denoteResults[idx] === undefined)
   if (failedDenotes.length > 0) {
     console.warn('Failed to denote races for tracking:', failedDenotes)
+    showSaveFailedSnackbarMessage()
   }
 
   if (yield select(isCurrentLeaderboardTracking)) {
@@ -336,23 +367,67 @@ function* addRaceColumns({ payload }: any) {
     const failedTracking = races.filter((_: string, idx: number) => trackingResults[idx] === undefined)
     if (failedTracking.length > 0) {
       console.warn('Failed to start tracking for races:', failedTracking)
+      showSaveFailedSnackbarMessage()
     }
   }
 
   yield call(reloadRegattaAfterRaceColumnsChange, payload)
 }
 
-function* removeRaceColumns({ payload }: any) {
+function* removeRaceColumns(payload: any, races: string[]) {
   const api = dataApi(payload.serverUrl)
-  const races = compose(
-    map(compose(concat('R'), toString)),
-    apply(range),
-    map(inc))(
-    [payload.existingNumberOfRaces - payload.numberofraces, payload.existingNumberOfRaces])
 
-  yield all(races.map((race: string) =>
+  const removeResults = yield all(races.map((race: string) =>
     safeApiCall(api.removeRaceColumn, payload.regattaName, race)))
+
+  if (removeResults.some((result: any) => result === undefined)) {
+    showSaveFailedSnackbarMessage()
+  }
   yield call(reloadRegattaAfterRaceColumnsChange, payload)
+}
+
+// Reconciles the race count against the regatta as it currently is on the
+// server, not against the (possibly stale) local race list.
+function* changeNumberOfRaces({ payload }: any) {
+  const api = dataApi(payload.serverUrl)
+  const entities = yield safeApiCall(api.requestRegatta, payload.regattaName)
+
+  if (entities === undefined) {
+    showServerErrorSnackbarMessage()
+    return
+  }
+
+  yield put(receiveEntities(entities))
+  const races: string[] = (yield select(getRegattaPlannedRaces(payload.regattaName))) || []
+  const sessionData = { ...payload, existingNumberOfRaces: races.length }
+
+  if (races.length < payload.numberOfRaces) {
+    yield call(addRaceColumns, {
+      ...sessionData,
+      numberofraces: payload.numberOfRaces - races.length
+    })
+  } else if (races.length > payload.numberOfRaces) {
+    const racesToRemove = races.slice(payload.numberOfRaces)
+    const confirmed = yield call(removeRacesConfirmationAlert, racesToRemove)
+    if (confirmed) {
+      yield call(removeRaceColumns, sessionData, racesToRemove)
+    }
+  }
+}
+
+// Race count changes are processed strictly one after the other, so the last
+// requested count always wins.
+function* watchRaceCountChanges() {
+  const channel = yield actionChannel(SET_NUMBER_OF_RACES)
+  while (true) {
+    const action = yield take(channel)
+    yield put(updateSavingRaceSettings(true))
+    try {
+      yield call(changeNumberOfRaces, action)
+    } finally {
+      yield put(updateSavingRaceSettings(false))
+    }
+  }
 }
 
 function* reloadRegattaAfterRaceColumnsChange(payload: any) {
@@ -399,10 +474,10 @@ function* openSAPAnalyticsEvent() {
   }), 1)
 }
 
-function* startTracking({ payload }: any) {
-  const { regattaName, serverUrl, leaderboardName } = payload
+// Returns true unless starting tracking failed for all races.
+function* startTrackingForEvent({ regattaName, serverUrl, leaderboardName }: any) {
   const api = dataApi(serverUrl)
-  const races = yield select(getRegattaPlannedRaces(regattaName))
+  const races = (yield select(getRegattaPlannedRaces(regattaName))) || []
 
   // Track results to identify failures
   const trackingResults = yield all(races.map((race: string) =>
@@ -414,6 +489,7 @@ function* startTracking({ payload }: any) {
   const failedRaces = races.filter((_: string, idx: number) => trackingResults[idx] === undefined)
   if (failedRaces.length > 0) {
     console.warn('Failed to start tracking for races:', failedRaces)
+    showSaveFailedSnackbarMessage()
   }
 
   const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
@@ -421,7 +497,18 @@ function* startTracking({ payload }: any) {
     yield put(receiveEntities(leaderboardData))
   }
 
-  yield put(updateStartingTracking(false))
+  return failedRaces.length < races.length || races.length === 0
+}
+
+function* startTracking({ payload }: any) {
+  let success = false
+  try {
+    success = yield call(startTrackingForEvent, payload)
+  } finally {
+    yield put(updateStartingTracking(false))
+    // also resolves (as failed) when this run is cancelled by a newer one
+    if (payload.onDone) { payload.onDone(success) }
+  }
 }
 
 function* stopTracking({ payload }: any) {
@@ -456,7 +543,10 @@ function* handleSelectedEventPolling() {
     while (true && isPolling)
     {
       const isForeground = yield select(isAppActive())
-      if (isForeground) {
+      // skip while offline: the dispatched fetch would be intercepted by the
+      // network middleware and show the "network required" snackbar every time
+      const isOnline = yield select(isNetworkConnected)
+      if (isForeground && isOnline) {
         const eventData = yield select(getSelectedEventInfo)
         const { regattaName, secret, serverUrl } = eventData
         yield put(fetchRegatta(regattaName, secret, serverUrl))
@@ -483,8 +573,7 @@ export default function* watchEvents() {
     yield takeLatest(FETCH_COURSES_FOR_EVENT, fetchCoursesForCurrrentEvent)
     yield takeEvery(SET_RACE_TIME, setRaceTime)
     yield takeEvery(CREATE_EVENT, createEvent)
-    yield takeEvery(ADD_RACE_COLUMNS, addRaceColumns)
-    yield takeEvery(REMOVE_RACE_COLUMNS, removeRaceColumns)
+    yield fork(watchRaceCountChanges)
     yield takeEvery(SET_DISCARDS, setDiscards)
     yield takeLatest(OPEN_EVENT_LEADERBOARD, openEventLeaderboard)
     yield takeLatest(OPEN_SAP_ANALYTICS_EVENT, openSAPAnalyticsEvent)
