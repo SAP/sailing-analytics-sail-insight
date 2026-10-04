@@ -4,6 +4,7 @@ import ApiDataException from './ApiDataException'
 import ApiException from './ApiException'
 import AuthException from './AuthException'
 import { ERR_NOT_FOUND, ERR_UNAUTHORIZED, ERR_UNKNOWN, STATUS_NOT_FOUND, STATUS_UNAUTHORIZED } from './constants'
+import { HttpMethods } from './config'
 import * as networking from './networking'
 
 
@@ -17,7 +18,10 @@ const getData = async (dataHandler?: (r: any) => any, response?: any) => {
 
 const getErrorData = async (response: any) => response && await response.text()
 
-const defaultResponseHandler = (dataHandler?: (response: any) => any) => async (response: any) => {
+const defaultResponseHandler = (
+  dataHandler?: (response: any) => any,
+  requestInfo: { url?: string, method?: string } = {},
+) => async (response: any) => {
   if (!response) {
     return null
   }
@@ -33,11 +37,14 @@ const defaultResponseHandler = (dataHandler?: (response: any) => any) => async (
       case STATUS_UNAUTHORIZED:
         throw AuthException.create(data || ERR_UNAUTHORIZED)
       default:
-        throw ApiException.create(
+        const exception = ApiException.create(
           data || ERR_UNKNOWN,
           response.status,
           data,
         )
+        exception.url = requestInfo.url
+        exception.method = requestInfo.method
+        throw exception
     }
 
   }
@@ -67,7 +74,10 @@ const requestWithHandler = (dataHandler?: (response: any) => any) => async (
 ) => {
   const { dataSchema, dataProcessor, ...options } = allOptions
   const response = await networking.request(url, options)
-  let data = await defaultResponseHandler(dataHandler)(response)
+  let data = await defaultResponseHandler(dataHandler, {
+    url,
+    method: (options.method || HttpMethods.GET).toUpperCase(),
+  })(response)
   data = dataProcessor ? dataProcessor(data) : data
   return dataSchema && data ? normalize(data, dataSchema) : data
 }

@@ -10,7 +10,7 @@ import * as Screens from 'navigation/Screens'
 import * as LocationService from 'services/LocationService'
 import Logger from 'helpers/Logger'
 import { getNowAsMillis } from 'helpers/date'
-import { getErrorDisplayMessage, getUnknownErrorMessage } from 'helpers/texts'
+import { showErrorAlert } from 'helpers/errorAlert'
 import { DispatchType, GetStateType } from 'helpers/types'
 
 import { navigateBackToTracking } from 'actions/navigation'
@@ -111,7 +111,7 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     }
   } catch (err) {
     Logger.debug('startTracking error', err)
-    Alert.alert(getErrorDisplayMessage(err))
+    showErrorAlert(undefined, err)
   } finally {
     if (useLoadingSpinner) {
       dispatch(updateLoadingCheckInFlag(false))

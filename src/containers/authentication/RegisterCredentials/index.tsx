@@ -18,6 +18,7 @@ import { getErrorDisplayMessage } from 'helpers/texts'
 
 import I18n from 'i18n'
 
+import ErrorBalloon from 'components/ErrorBalloon'
 import EulaLink from 'components/EulaLink'
 import FormTextInput from 'components/form/FormTextInput'
 import ScrollContentView from 'components/ScrollContentView'
@@ -40,6 +41,7 @@ class RegisterCredentials extends TextInputForm<Props> {
 
   public state = {
     error: null,
+    rawError: null,
     usernameError: null,
     passwordError: null,
     emailError: null,
@@ -47,7 +49,7 @@ class RegisterCredentials extends TextInputForm<Props> {
   }
 
   public render() {
-    const { error, usernameError, passwordError, emailError, isLoading } = this.state
+    const { error, rawError, usernameError, passwordError, emailError, isLoading } = this.state
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
         <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.35 }}>
@@ -118,10 +120,10 @@ class RegisterCredentials extends TextInputForm<Props> {
                   isLoading={isLoading}>
                     {I18n.t('caption_register').toUpperCase()}
                 </TextButton>
+                <ErrorBalloon message={error} error={rawError} />
                 <Text onPress={() => this.props.navigation.navigate(Screens.Login)} style={text.mediumText}>
                   {I18n.t('text_login_already_account')} {'›'}
                 </Text>
-                {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}
               </View>
             </View>
           </ScrollContentView>
@@ -131,7 +133,7 @@ class RegisterCredentials extends TextInputForm<Props> {
   }
 
   protected onSubmit = async (values: any) => {
-    this.setState({ error: null })
+    this.setState({ error: null, rawError: null })
 
     // custom validation
     let errorMsg = null
@@ -181,7 +183,7 @@ class RegisterCredentials extends TextInputForm<Props> {
       this.props.destroy()
     } catch (err) {
       const errorMessage = getErrorDisplayMessage(err)
-      this.setState({ error: errorMessage, usernameError: errorMessage })
+      this.setState({ error: errorMessage, rawError: err, usernameError: errorMessage })
     } finally {
       this.setState({ isLoading: false })
     }

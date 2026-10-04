@@ -1,5 +1,7 @@
 import { isString } from 'lodash'
 
+import AuthException from 'api/AuthException'
+
 import ApiException from 'api/ApiException'
 import NetworkTimeoutException from 'api/NetworkTimeoutException'
 import {
@@ -22,6 +24,10 @@ import { ErrorCodes } from './errors'
 const ERROR_TRANSLATION_PREFIX = 'error_'
 const USER_EXISTS_TEXT = 'user already exists'
 const DEVICE_ALREADY_REGISTERED = 'device is already registered'
+const PERMISSION_DENIED_TEXTS = ['unauthorizedexception', 'does not have permission']
+const SIGNUP_RATE_LIMIT_TEXT = 'locked for user creation'
+const MAX_ERROR_BODY_LENGTH = 2000
+const SENSITIVE_QUERY_PARAM = /([?&][^=&#]*(?:secret|token|password)[^=&#]*=)[^&#]*/gi
 
 const getTranslation = (translationKey: string, defaultMessage?: string, params?: any) => {
   const result = I18n.t(translationKey, params)
@@ -88,6 +94,10 @@ export const getErrorDisplayMessage = (exception: any) => {
   if (exception.name === ApiException.NAME || exception.baseTypeName === ApiException.NAME) {
     const error = exception as ApiException
     const errorKey = error.message
+    const lowerCaseKey = isString(errorKey) ? errorKey.toLowerCase() : ''
+    if (PERMISSION_DENIED_TEXTS.some(text => lowerCaseKey.includes(text))) {
+      return I18n.t(ErrorCodes.PERMISSION_DENIED)
+    }
     switch (error.status) {
       case STATUS_UNAUTHORIZED:
         return I18n.t(ErrorCodes.UNAUTHORIZED)
@@ -96,7 +106,10 @@ export const getErrorDisplayMessage = (exception: any) => {
           I18n.t(ErrorCodes.DEVICE_ALREADY_EXISTS) :
           I18n.t(ErrorCodes.FORBIDDEN)
       case STATUS_PRECONDITION_FAILED:
-        return isString(errorKey) && errorKey.toLowerCase().includes(USER_EXISTS_TEXT) ?
+        if (lowerCaseKey.includes(SIGNUP_RATE_LIMIT_TEXT)) {
+          return I18n.t(ErrorCodes.SIGNUP_RATE_LIMITED)
+        }
+        return lowerCaseKey.includes(USER_EXISTS_TEXT) ?
           I18n.t(ErrorCodes.USER_EXISTS) :
           I18n.t(ErrorCodes.PRECONDITION_FAILED)
       case STATUS_NOT_FOUND:
@@ -111,6 +124,36 @@ export const getErrorDisplayMessage = (exception: any) => {
     }
   }
   return getUnknownErrorMessage()
+}
+
+// A timeout or server outage must not be reported as "wrong password".
+export const getLoginErrorMessage = (exception: any) => {
+  const isUnauthorized = exception && (
+    exception.name === AuthException.NAME ||
+    exception.status === STATUS_UNAUTHORIZED)
+  return isUnauthorized ? I18n.t(ErrorCodes.LOGIN_INCORRECT) : getErrorDisplayMessage(exception)
+}
+
+const redactUrl = (url: string) => url.replace(SENSITIVE_QUERY_PARAM, '$1***')
+
+// Technical description of an error for pro users / support (see ErrorDetails).
+export const getErrorDetails = (exception: any): string | undefined => {
+  if (!exception) {
+    return undefined
+  }
+  const lines: string[] = []
+  lines.push(`${exception.name || 'Error'}: ${exception.message || ''}`)
+  if (exception.status) {
+    lines.push(`Status: ${exception.status}`)
+  }
+  if (exception.url) {
+    lines.push(`${exception.method || 'GET'} ${redactUrl(String(exception.url))}`)
+  }
+  if (exception.data != null && exception.data !== '') {
+    const body = isString(exception.data) ? exception.data : JSON.stringify(exception.data)
+    lines.push(`Response: ${body && body.substring(0, MAX_ERROR_BODY_LENGTH)}`)
+  }
+  return lines.join('\n')
 }
 
 // For the invitation surfaces (QR scan, invitation link, join screen):

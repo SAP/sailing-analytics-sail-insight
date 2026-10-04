@@ -1,6 +1,6 @@
 import { Alert } from 'react-native'
 
-import { getErrorDisplayMessage } from 'helpers/texts'
+import { showErrorAlert } from 'helpers/errorAlert'
 import { DispatchType } from 'helpers/types'
 import I18n from 'i18n'
 
@@ -43,7 +43,7 @@ export const showTestCheckInAlert = () => (dispatch: DispatchType) => {
           try {
             await dispatch(insertTestCheckIns())
           } catch (err) {
-            Alert.alert(getErrorDisplayMessage(err))
+            showErrorAlert(undefined, err)
           }
         },
       },

@@ -5,6 +5,7 @@ import {
   updateAnalyticsSettings,
   updateServerUrlSetting,
   updateVerboseLoggingSetting,
+  updateShowErrorDetailsSetting,
 } from 'actions/settings'
 import { itemUpdateHandler } from 'helpers/reducers'
 import { SettingsState } from 'reducers/config'
@@ -17,6 +18,7 @@ const initialState: SettingsState = {
   enableAnalytics: false,
   serverUrl: DEFAULT_SERVER_URL,
   verboseLogging: false,
+  showErrorDetails: false,
 }
 
 const reducer = handleActions(
@@ -25,7 +27,12 @@ const reducer = handleActions(
     [updateAnalyticsSettings as any]: itemUpdateHandler('enableAnalytics'),
     [updateServerUrlSetting as any]: itemUpdateHandler('serverUrl'),
     [updateVerboseLoggingSetting as any]: itemUpdateHandler('verboseLogging'),
-    [removeUserData as any]: (state:SettingsState) => ({ ...initialState, serverUrl: state.serverUrl }),
+    [updateShowErrorDetailsSetting as any]: itemUpdateHandler('showErrorDetails'),
+    [removeUserData as any]: (state:SettingsState) => ({
+      ...initialState,
+      serverUrl: state.serverUrl,
+      showErrorDetails: state.showErrorDetails,
+    }),
   },
   initialState,
 )

@@ -16,84 +16,88 @@ import Logger from 'helpers/Logger'
 
 const isNotNil = compose(not, isNil)
 
+function* updateTrackedLeaderboard(receivedLeaderboard: Leaderboard, rankingMetric: string | undefined) {
+  yield put(updateLeaderboardTracking(receivedLeaderboard, rankingMetric))
+
+  const trackedRaces = compose(
+    fromPairs,
+    map(trackedRace => ([
+      trackedRace.raceColumnName,
+      compose(
+        prop('trackedRace'),
+        defaultTo({}),
+        head,
+        defaultTo([])
+      )(trackedRace.fleets),
+    ])),
+    defaultTo([]),
+    prop('trackedRacesInfo')
+  )(receivedLeaderboard)
+
+  const fourMinutesInMillis = 1000 * 60 * 4
+  const hasRaceStarted = propSatisfies(gt(new Date().valueOf() - fourMinutesInMillis), 'startTimeMillis')
+
+  const firstStartedRace = compose(
+    head, // Just the race name
+    defaultTo([]),
+    head, // Get the first race by start time
+    sortBy(compose(prop('startTimeMillis'), last)),
+    toPairs,
+    filter(propSatisfies(isNotNil, 'startTimeMillis')),
+    filter(isNotNil))(
+    trackedRaces)
+
+  const latestTrackedRace = compose(
+    head, // Just the race name
+    defaultTo([]),
+    head, // Get the last race (that already started) by start time
+    reverse,
+    sortBy(compose(prop('startTimeMillis'), last)),
+    toPairs,
+    defaultTo({}),
+    filter(hasRaceStarted),
+    filter(propSatisfies(isNotNil, 'startTimeMillis')),
+    filter(isNotNil))(
+    trackedRaces)
+
+  yield put(updateLatestTrackedRace(latestTrackedRace || firstStartedRace))
+}
+
 function* syncLeaderboard({ rankOnly }) {
-  let isPolling = yield select(isPollingLeaderboard())
-  if (!isPolling) {
-    isPolling = true
-    yield put(updateLeaderboardPollingStatus(true))
+  // takeLatest guarantees a single loop: a repeated START cancels the previous
+  // loop, so the new one must (re)start even if the flag is already set.
+  let isPolling = true
+  yield put(updateLeaderboardPollingStatus(true))
 
-    while (true && isPolling)
-    {
-      const isForeground = yield select(isAppActive())
-      if (isForeground) {
-        const checkIn = yield select(getTrackedCheckIn)
-        const { leaderboardName, secret, competitorId, serverUrl } = checkIn
-        const api = dataApi(serverUrl)
-        const rankingMetric: string | undefined = yield select(getTrackedRegattaRankingMetric)
+  while (true && isPolling)
+  {
+    const isForeground = yield select(isAppActive())
+    if (isForeground) {
+      const checkIn = yield select(getTrackedCheckIn)
+      const { leaderboardName, secret, competitorId, serverUrl } = checkIn
+      const api = dataApi(serverUrl)
+      const rankingMetric: string | undefined = yield select(getTrackedRegattaRankingMetric)
 
-        try {
-          const response = yield call(api.requestLeaderboardV2, leaderboardName, secret, competitorId, rankOnly)
-          yield put(receiveEntities(response))
+      try {
+        const response = yield call(api.requestLeaderboardV2, leaderboardName, secret, competitorId, rankOnly)
+        yield put(receiveEntities(response))
 
-          const receivedLeaderboards =
-            response.entities &&
-            response.entities.leaderboard &&
-            values(response.entities.leaderboard)
-          const receivedLeaderboard = receivedLeaderboards?.[0] as Leaderboard | undefined
-          if (!receivedLeaderboard) return
-
-          yield put(updateLeaderboardTracking(receivedLeaderboard, rankingMetric))
-
-          const trackedRaces = compose(
-            fromPairs,
-            map(trackedRace => ([
-              trackedRace.raceColumnName,
-              compose(
-                prop('trackedRace'),
-                defaultTo({}),
-                head,
-                defaultTo([])
-              )(trackedRace.fleets),
-            ])),
-            defaultTo([]),
-            prop('trackedRacesInfo')
-          )(receivedLeaderboard)
-
-          const fourMinutesInMillis = 1000 * 60 * 4
-          const hasRaceStarted = propSatisfies(gt(new Date().valueOf() - fourMinutesInMillis), 'startTimeMillis')
-
-          const firstStartedRace = compose(
-            head, // Just the race name
-            defaultTo([]),
-            head, // Get the first race by start time
-            sortBy(compose(prop('startTimeMillis'), last)),
-            toPairs,
-            filter(propSatisfies(isNotNil, 'startTimeMillis')),
-            filter(isNotNil))(
-            trackedRaces)
-
-          const latestTrackedRace = compose(
-            head, // Just the race name
-            defaultTo([]),
-            head, // Get the last race (that already started) by start time
-            reverse,
-            sortBy(compose(prop('startTimeMillis'), last)),
-            toPairs,
-            defaultTo({}),
-            filter(hasRaceStarted),
-            filter(propSatisfies(isNotNil, 'startTimeMillis')),
-            filter(isNotNil))(
-            trackedRaces)
-
-          yield put(updateLatestTrackedRace(latestTrackedRace || firstStartedRace))
-        } catch (err) {
-          Logger.debug('Error while executing syncLeaderboard', err)
+        const receivedLeaderboards =
+          response.entities &&
+          response.entities.leaderboard &&
+          values(response.entities.leaderboard)
+        const receivedLeaderboard = receivedLeaderboards?.[0] as Leaderboard | undefined
+        // an empty response must not end the polling loop
+        if (receivedLeaderboard) {
+          yield call(updateTrackedLeaderboard, receivedLeaderboard, rankingMetric)
         }
+      } catch (err) {
+        Logger.debug('Error while executing syncLeaderboard', err)
       }
-
-      yield delay(10000)
-      isPolling = yield select(isPollingLeaderboard())
     }
+
+    yield delay(10000)
+    isPolling = yield select(isPollingLeaderboard())
   }
 }
 

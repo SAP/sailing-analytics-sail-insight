@@ -27,7 +27,7 @@ class EditItemSwitch extends React.Component<ViewProps & {
   }
 
   public renderSwitch = () => {
-    const { switchValue, isLoading } = this.props
+    const { switchValue, isLoading, testID } = this.props
     const switchProps = Platform.OS !== 'android' ? {
       trackColor: { true: '#476987', false: $secondaryBackgroundColor },
       tintColor: '#476987',
@@ -35,6 +35,7 @@ class EditItemSwitch extends React.Component<ViewProps & {
     return (
       <Switch
         {...switchProps}
+        testID={testID}
         onValueChange={this.valueChanged}
         value={isLoading ? this.state.tempValue : switchValue}
       />

@@ -1,11 +1,11 @@
 import React from 'react'
-import { Alert, View, ViewProps } from 'react-native'
+import { View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import Images from '@assets/Images'
 import { sendWind, SendWindAction } from 'actions/wind'
 import { degToCompass, speedToWindClassification } from 'helpers/physics'
-import { getErrorDisplayMessage } from 'helpers/texts'
+import { showErrorAlert } from 'helpers/errorAlert'
 import I18n from 'i18n'
 import { WindFix } from 'models'
 import { getCustomScreenParamData } from 'navigation/utils'
@@ -112,7 +112,7 @@ class SetWind extends React.Component<ViewProps & {
       await this.props.sendWind(windAngleInDeg, windSpeedInKnots)
       this.props.navigation.goBack()
     } catch (err) {
-      Alert.alert(getErrorDisplayMessage(err))
+      showErrorAlert(undefined, err)
     } finally {
       this.setState({ isLoading: false })
     }

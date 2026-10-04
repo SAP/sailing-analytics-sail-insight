@@ -12,3 +12,6 @@ export const getServerUrlSetting = (state: RootState = {}) =>
 
 export const getVerboseLoggingSetting = (state: RootState = {}) =>
   state.settings && state.settings.verboseLogging
+
+export const getShowErrorDetailsSetting = (state: RootState = {}) =>
+  !!(state.settings && state.settings.showErrorDetails)

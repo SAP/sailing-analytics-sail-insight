@@ -2,7 +2,7 @@ import Text from 'components/Text'
 import { sortBy } from 'lodash'
 import { isNil } from 'ramda'
 import React from 'react'
-import { Alert, TextInputProps as RNTextInputProps, TouchableOpacity, View, ViewProps } from 'react-native'
+import { TextInputProps as RNTextInputProps, TouchableOpacity, View, ViewProps } from 'react-native'
 import Autocomplete from 'react-native-autocomplete-input'
 import { WrappedFieldProps } from 'redux-form'
 import I18n from 'i18n'
@@ -10,7 +10,7 @@ import I18n from 'i18n'
 import { assetApiEndpoint, selfTrackingApi } from '../../../api'
 import { getApiServerUrl } from '../../../api/config'
 import { BoatClassesBody } from '../../../api/endpoints/types'
-import { getErrorDisplayMessage } from 'helpers/texts'
+import { showErrorAlert } from 'helpers/errorAlert'
 
 import Image from '../../Image'
 import TextInput, { TextInputProps } from '../../TextInput'
@@ -44,7 +44,7 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       selfTrackingApi().requestBoatClasses().then((boatClasses: BoatClassesBody[]) => {
         this.setState({ boatClasses })
       }).catch((err) => {
-        Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
+        showErrorAlert(I18n.t('error_load_boat_classes'), err)
       })
     }
   }

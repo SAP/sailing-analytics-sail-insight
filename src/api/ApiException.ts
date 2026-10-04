@@ -10,6 +10,8 @@ class ApiException extends Error {
   public baseTypeName: string = ApiException.NAME
   public data?: any
   public status?: number
+  public url?: string
+  public method?: string
 
   protected constructor(message: string) {
     super(message)

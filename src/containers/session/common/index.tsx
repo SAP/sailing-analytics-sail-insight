@@ -314,8 +314,13 @@ export const competitorListRefreshHandler = Component((props: any) => {
         useCallback(() => {
             // On Focus
             const callback = async () => {
-                await props.fetchRegattaCompetitors(regattaName, leaderboardName);
-                props.setCompetitorListStale(false);
+                try {
+                    await props.fetchRegattaCompetitors(regattaName, leaderboardName);
+                } catch (err) {
+                    // keep the list as it is, but don't show an endless loader
+                } finally {
+                    props.setCompetitorListStale(false);
+                }
             };
             callback();
             intervalRef.current = setInterval(callback, COMPETITOR_LIST_REFRESH_RATE);

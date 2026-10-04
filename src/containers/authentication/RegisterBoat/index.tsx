@@ -20,6 +20,7 @@ import { validateRequired, validateHandicap } from 'forms/validators'
 import { selfTrackingApi } from 'api'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import { getErrorDisplayMessage } from 'helpers/texts'
+import ErrorBalloon from 'components/ErrorBalloon'
 
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { getFormFieldValue } from '../../../selectors/form'
@@ -53,7 +54,7 @@ interface Props {
 
 class RegisterBoat extends TextInputForm<Props> {
 
-  public state = { error: null, isLoading: false, showMore: false }
+  public state = { error: null, rawError: null, isLoading: false, showMore: false }
 
   private toggleShowMore(e: Event) {
     e.preventDefault();
@@ -65,7 +66,7 @@ class RegisterBoat extends TextInputForm<Props> {
   }
 
   public render() {
-    const { error, isLoading } = this.state
+    const { error, rawError, isLoading } = this.state
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
         <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.65 }}>
@@ -136,6 +137,7 @@ class RegisterBoat extends TextInputForm<Props> {
                   isLoading={this.state.isLoading}>
                     {I18n.t('caption_add_boat').toUpperCase()}
                 </TextButton>
+                <ErrorBalloon message={error} error={rawError} />
               </View>
             </View>
           </ScrollContentView>
@@ -158,7 +160,7 @@ class RegisterBoat extends TextInputForm<Props> {
     }
 
     try {
-      this.setState({ isLoading: true, error: null })
+      this.setState({ isLoading: true, error: null, rawError: null })
 
       const sailNumber = toUpper(values[FORM_KEY_SAIL_NUMBER])
       let countryList = []
@@ -191,7 +193,7 @@ class RegisterBoat extends TextInputForm<Props> {
         navigateBackToMain(this.props.navigation)
       }
     } catch (err) {
-      this.setState({ error: getErrorDisplayMessage(err) })
+      this.setState({ error: getErrorDisplayMessage(err), rawError: err })
     } finally {
       this.setState({ isLoading: false })
     }

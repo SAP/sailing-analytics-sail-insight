@@ -8,6 +8,8 @@ export const updateServerUrlSetting = createAction('SETTINGS_UPDATE_SERVER_URL')
 export const updateAnalyticsSettings = createAction('SETTINGS_UPDATE_ANALYTICS')
 export const updateVerboseLoggingSetting = createAction('SETTINGS_UPDATE_VERBOSE_LOGGING')
 
+export const updateShowErrorDetailsSetting = createAction('SETTINGS_UPDATE_SHOW_ERROR_DETAILS')
+
 export const changeAnalyticsSetting = (value: boolean) => (dispatch: DispatchType) => {
     analytics().setAnalyticsCollectionEnabled(value)
     return dispatch(updateAnalyticsSettings(value))

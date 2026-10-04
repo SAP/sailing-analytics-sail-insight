@@ -63,6 +63,7 @@ export interface SettingsState {
   enableAnalytics: boolean,
   serverUrl: string,
   verboseLogging: boolean,
+  showErrorDetails: boolean,
 }
 
 export interface AuthState {

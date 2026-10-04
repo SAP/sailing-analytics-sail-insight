@@ -16,12 +16,14 @@ import { registration } from 'styles/components'
 import { $extraSpacingScrollContent } from 'styles/dimensions'
 import {
   updateServerUrlSetting,
+  updateShowErrorDetailsSetting,
   updateVerboseLoggingSetting,
 } from '../../actions/settings'
 import TextInputForm from '../../components/base/TextInputForm'
 import EditItemSwitch from '../../components/EditItemSwitch'
 import * as expertSettingsForm from '../../forms/settings'
 import {
+  getShowErrorDetailsSetting,
   getVerboseLoggingSetting,
 } from '../../selectors/settings'
 import styles from './styles'
@@ -30,6 +32,8 @@ interface Props {
   updateServerUrlSetting: (value: string) => void,
   verboseLogging: boolean,
   updateVerboseLoggingSetting: (value: boolean) => void,
+  showErrorDetails: boolean,
+  updateShowErrorDetailsSetting: (value: boolean) => void,
 }
 
 class ExpertSettings extends TextInputForm<Props> {
@@ -55,6 +59,14 @@ class ExpertSettings extends TextInputForm<Props> {
             title={I18n.t('text_verbose_logging')}
             switchValue={this.props.verboseLogging}
             onSwitchValueChange={this.props.updateVerboseLoggingSetting}
+          />
+          <EditItemSwitch
+            testID="e2e-show-error-details-switch"
+            style={styles.item}
+            titleStyle={{ color: 'white' }}
+            title={I18n.t('text_show_error_details')}
+            switchValue={this.props.showErrorDetails}
+            onSwitchValueChange={this.props.updateShowErrorDetailsSetting}
           />
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
@@ -114,12 +126,13 @@ class ExpertSettings extends TextInputForm<Props> {
 const mapStateToProps = (state: any) => {
   return {
     verboseLogging: getVerboseLoggingSetting(state),
+    showErrorDetails: getShowErrorDetailsSetting(state),
   };
 }
 
 export default connect(
   mapStateToProps,
-  { updateServerUrlSetting, updateVerboseLoggingSetting },
+  { updateServerUrlSetting, updateVerboseLoggingSetting, updateShowErrorDetailsSetting },
 )(reduxForm<{}, Props>({
   form: expertSettingsForm.EXPERT_SETTINGS_FORM_NAME,
   enableReinitialize: true,

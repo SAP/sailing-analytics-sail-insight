@@ -20,7 +20,13 @@ export const removeUserData = createAction('REMOVE_USER_DATA')
 const handleAccessToken = (dataPromise?: Promise<ApiAccessToken>) => async (dispatch: DispatchType) => {
   const data = await dataPromise
   await dispatch(updateToken(data && data.accessToken))
-  await dispatch(fetchCurrentUser())
+  try {
+    await dispatch(fetchCurrentUser())
+  } catch (err) {
+    // don't keep a token without a user profile (half-logged-in state)
+    dispatch(removeAuthInfo())
+    throw err
+  }
   await LocationService.setAccessToken(data?.accessToken || '')
 }
 
@@ -40,19 +46,27 @@ export const register: RegisterActionType = (username, email, password, name) =>
 export const login = (email: string, password: string) =>
   handleAccessToken(authApi().accessToken(email, password))
 
-export const logout = () => (dispatch: DispatchType) => {
+export const logout = () => async (dispatch: DispatchType) => {
   dispatch(removeUserData())
+  // don't keep tracking / uploading GPS fixes with the previous user's token
+  try {
+    await LocationService.stop()
+    await LocationService.setAccessToken('')
+  } catch (err) {
+    // logout must not fail because of the native tracking service
+  }
 }
 
-export const requestPasswordReset = (usernameOrEmail: string) => {
+export const requestPasswordReset = (usernameOrEmail: string) => async () => {
   // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   const isEmail = re.test(usernameOrEmail.toLowerCase()) // Use the regex to test whether the string is an email
   if (isEmail) {
-    return authApi().requestPasswordReset('', usernameOrEmail)
+    await authApi().requestPasswordReset('', usernameOrEmail)
+    return
   }
 
-  return authApi().requestPasswordReset(usernameOrEmail, '')
+  await authApi().requestPasswordReset(usernameOrEmail, '')
 }
 
 export const fetchCurrentUser = () => async (dispatch: DispatchType) =>

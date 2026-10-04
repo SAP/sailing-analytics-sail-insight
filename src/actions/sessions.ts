@@ -25,7 +25,7 @@ import { withDataApi } from 'helpers/actions'
 import { doesCheckInContainBinding } from 'helpers/checkIn'
 import { getNowAsMillis } from 'helpers/date'
 import Logger from 'helpers/Logger'
-import { getErrorDisplayMessage } from 'helpers/texts'
+import { showErrorAlert } from 'helpers/errorAlert'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { addUrlParams } from 'helpers/utils'
 import { getSharingUuid } from 'helpers/uuid'
@@ -370,7 +370,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
       }
     } catch (err) {
       Logger.debug(err)
-      Alert.alert(getErrorDisplayMessage(err))
+      showErrorAlert(undefined, err)
       throw err
     }
   }

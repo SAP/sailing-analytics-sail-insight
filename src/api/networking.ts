@@ -70,11 +70,20 @@ const getHeaders = async (url: string, method: string, body: any, bodyType: Body
   return signer ? await signer({ body, url, method, headers }) : headers
 }
 
-const timeoutPromise = (promise: Promise<Response>, timeout: number, error: string) => {
+const timeoutPromise = (
+  promise: Promise<Response>,
+  timeout: number,
+  error: string,
+  controller?: AbortController,
+) => {
   return new Promise((resolve, reject) => {
     // A typed exception (not a plain string) so getErrorDisplayMessage can
     // recognize timeouts and show the network alert instead of plain "Oops".
-    const timer = setTimeout(() => { reject(NetworkTimeoutException.create(error)) }, timeout)
+    const timer = setTimeout(() => {
+      reject(NetworkTimeoutException.create(error))
+      // stop the abandoned request instead of letting it run in the background
+      controller && controller.abort()
+    }, timeout)
     promise.then(resolve, reject).finally(() => clearTimeout(timer))
   })
 }
@@ -95,8 +104,10 @@ export const request = async (
 
   let headers = await getHeaders(url, method, body, bodyType, signer)
 
+  const controller = new AbortController()
   const fetchOptions = {
     method,
+    signal: controller.signal,
     timeout,
     headers: mergeRight(headers, options.headers),
     credentials: 'omit',
@@ -104,7 +115,7 @@ export const request = async (
   }
   let response
   try {
-    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout');
+    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout', controller)
   } catch (err) {
     throw err
   } finally {

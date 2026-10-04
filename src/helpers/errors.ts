@@ -13,5 +13,8 @@ export const ErrorCodes = {
   NOT_FOUND: 'error_not_found_on_server',
   SERVER_BUSY: 'error_server_busy',
   INVALID_INVITATION: 'error_invalid_invitation',
-  NETWORK_TIMEOUT: 'error_network_required_alert'
+  NETWORK_TIMEOUT: 'error_network_required_alert',
+  PERMISSION_DENIED: 'error_permission_denied',
+  SIGNUP_RATE_LIMITED: 'error_signup_rate_limited',
+  LOGIN_INCORRECT: 'error_login_incorrect',
 }

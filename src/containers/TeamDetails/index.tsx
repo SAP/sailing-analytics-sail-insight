@@ -14,7 +14,7 @@ import * as teamForm from 'forms/team'
 import { ComparisonValidatorViewProps, validateNameExists, validateRequired, validateHandicap } from 'forms/validators'
 
 import Logger from 'helpers/Logger'
-import { getErrorDisplayMessage } from 'helpers/texts'
+import { showErrorAlert } from 'helpers/errorAlert'
 
 import { TeamTemplate } from 'models'
 import { getDefaultHandicap, Handicap, hasHandicapChanged, HandicapTypes } from 'models/TeamTemplate'
@@ -234,7 +234,7 @@ class TeamDetails extends TextInputForm<Props> {
       return true
     } catch (err) {
       Logger.debug(err)
-      Alert.alert(getErrorDisplayMessage(err))
+      showErrorAlert(undefined, err)
       return false
     } finally {
       this.setState({ isLoading: false })

@@ -11,7 +11,9 @@ import { FORM_KEY_PASSWORD, FORM_KEY_USERNAME } from 'forms/registration'
 import * as Screens from 'navigation/Screens'
 import { PasswordReset } from 'navigation/Screens'
 import { isNetworkConnected } from 'selectors/network'
+import { getLoginErrorMessage } from 'helpers/texts'
 import EulaLink from 'components/EulaLink'
+import ErrorBalloon from 'components/ErrorBalloon'
 
 import I18n from 'i18n'
 
@@ -37,12 +39,13 @@ class Login extends TextInputForm<{
     password: '',
     isLoading: false,
     error: null,
+    rawError: null,
     usernameError: null,
     passwordError: null,
   }
 
   public onSubmit = async () => {
-    this.setState({ error: null })
+    this.setState({ error: null, rawError: null })
     const { username, password } = this.state
 
     // custom validation
@@ -82,8 +85,10 @@ class Login extends TextInputForm<{
       this.props.syncEventList()
       this.props.navigation.reset({ index: 1, routes: [{ name: Screens.Main }]})
     } catch (err) {
-      passwordError = I18n.t('error_login_incorrect')
-      this.setState({ error: passwordError, usernameError, passwordError, isLoading: false })
+      const errorMessage = getLoginErrorMessage(err)
+      // only wrong credentials are marked on the password field
+      passwordError = (err as any)?.status === 401 ? errorMessage : null
+      this.setState({ error: errorMessage, rawError: err, usernameError, passwordError, isLoading: false })
     }
   }
 
@@ -91,7 +96,7 @@ class Login extends TextInputForm<{
   public onPasswordChange = (newValue: string) => this.setState({ password: newValue })
 
   public render() {
-    const { error, isLoading, usernameError, passwordError } = this.state
+    const { error, rawError, isLoading, usernameError, passwordError } = this.state
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
         <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.35 }}>
@@ -132,7 +137,6 @@ class Login extends TextInputForm<{
                 secureTextEntry={true}
                 onSubmitEditing={this.onSubmit}
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}/>
-              {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}
               <TextButton
                   testID="e2e-login-submit"
                   style={[button.primary, button.fullWidth, styles.loginButton]}
@@ -141,6 +145,7 @@ class Login extends TextInputForm<{
                   isLoading={isLoading}>
                 {I18n.t('caption_login').toUpperCase()}
               </TextButton>
+              <ErrorBalloon message={error} error={rawError} />
               <TouchableOpacity testID="e2e-login-forgot-password" style={[text.mediumText, styles.forgotPasswordLink]} onPress={() => this.props.navigation.navigate(PasswordReset)}>
                 <Text style={[text.mediumText]}>
                   {I18n.t('caption_forgot_password')} {'›'}
