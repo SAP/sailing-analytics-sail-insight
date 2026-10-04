@@ -51,13 +51,14 @@ const styledButton = curry(({ onPress }, content: any) =>
 
 export const overlayPicker = curry((
   { selectedValue, onValueChange, style, min = 1, max = maxNumberOfRaces + 1,
-    withRemoveOption = false }, c) =>
+    withRemoveOption = false, disabled = false }, c) =>
     Component(props => compose(
       fold(props),
       fromClass(ModalSelector).contramap,
       always,
       mergeRight({
-        style: mergeRight({ backgroundColor: 'transparent' }, style),
+        disabled,
+        style: mergeRight({ backgroundColor: 'transparent', opacity: disabled ? 0.4 : 1 }, style),
         optionContainerStyle: {
           marginTop: 30,
           backgroundColor: '#123748',
@@ -103,6 +104,7 @@ const DiscardSelectorItem = Component((props: any) => compose(
       props.removeDiscardItem(props.item.index) :
       props.updateDiscardItem(props.item.index, value),
     max: props.maxNumberOfDiscards || maxNumberOfRaces + 1,
+    disabled: props.item.disabled,
     withRemoveOption: true
   }),
   view({ style: styles.discardSelectorItemContainer }),
@@ -113,6 +115,7 @@ const AddDiscardButton = Component((props: any) => compose(
   fold(props),
   overlayPicker({
     onValueChange: (value: number) => props.addDiscard(value),
+    disabled: props.item.disabled,
     max: props.maxNumberOfDiscards || maxNumberOfRaces + 1
   }),
   view({ style: styles.discardSelectorPlusContainer }))(

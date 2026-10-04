@@ -5,7 +5,7 @@ import { __, always, append, compose, concat, cond, defaultTo,
 } from 'ramda'
 import Images from '@assets/Images'
 import { selectCourse } from 'actions/courses'
-import { selectRace, setRaceTime, startTracking, setDiscards, updateEventSettings, startPollingSelectedEvent, stopPollingSelectedEvent } from 'actions/events'
+import { selectRace, setRaceTime, startTrackingAndWait, setDiscards, updateEventSettings, startPollingSelectedEvent, stopPollingSelectedEvent } from 'actions/events'
 import { registerAppStateListeners, unregisterAppStateListeners } from 'actions/appState'
 import { openTrackDetails } from 'actions/navigation'
 import {
@@ -30,7 +30,7 @@ import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import DateTimePicker from 'react-native-modal-datetime-picker'
 import { getCourseById, getCourseSequenceDisplay } from 'selectors/course'
-import { getRaceTime, getSelectedEventInfo } from 'selectors/event'
+import { getRaceTime, getSelectedEventInfo, isSavingRaceSettings } from 'selectors/event'
 import { isNetworkConnected } from 'selectors/network'
 import { getRegattaPlannedRaces, getSelectedRegatta } from 'selectors/regatta'
 import { isCurrentLeaderboardTracking } from 'selectors/leaderboard'
@@ -144,6 +144,7 @@ const mapStateToProps = (state: any, props: any) => {
     numberOfRaces: races.length,
     discards: path(['leaderboard', 'discardIndexResultsStartingWithHowManyRaces'])(session),
     isNetworkConnected: isNetworkConnected(state),
+    isSavingRaceSettings: isSavingRaceSettings(state),
     races,
   }
 }
@@ -155,6 +156,7 @@ const raceNumberSelector = Component((props: any) =>
     view({ style: styles.raceNumberContainer }),
     overlayPicker({
       selectedValue: props.numberOfRaces,
+      disabled: props.isSavingRaceSettings,
       onValueChange: value => value && props.updateEventSettings(props.session, { numberOfRaces: value })
     }))(
     FramedNumber.contramap(always({ value: props.numberOfRaces }))))
@@ -209,8 +211,12 @@ const raceAnalyticsButton = Component((props: any) =>
         [always(!props.isNetworkConnected), showNetworkRequiredSnackbarMessage],
         [always(props.isTracking), () => props.openTrackDetails(props.item, props.navigation)],
         [T, async () => {
-          await props.startTracking(props.session)
-          props.openTrackDetails(props.item, props.navigation)
+          // only open the analytics once tracking was actually started; on
+          // failure the saga has already shown an error snackbar
+          const started = await props.startTrackingAndWait(props.session)
+          if (started) {
+            props.openTrackDetails(props.item, props.navigation)
+          }
         }]
       ])
     }))(
@@ -229,9 +235,7 @@ const clockIcon = Component((props: any) => compose(
 const raceTimePickerComponent = fromClass(DateTimePicker).contramap((props: any) => ({
   onConfirm: (value: number) => {
     props.setDateTimePickerName(null)
-    if (!props.isTracking) {
-      props.startTracking(props.session)
-    }
+    // tracking is started by the setRaceTime saga once the time was saved
     return props.setRaceTime({
       race: props.item.name,
       raceTime: props.item.raceTime,
@@ -310,8 +314,8 @@ const mapIndexed = addIndex(map)
 const withDiscardDataFromEvent = mapProps(props => compose(
   mergeRight(props),
   objOf('data'),
-  append({ type: 'add' }),
-  mapIndexed((value, index) => ({ value, index })),
+  append({ type: 'add', disabled: props.isSavingRaceSettings }),
+  mapIndexed((value, index) => ({ value, index, disabled: props.isSavingRaceSettings })),
   prop('discards')
 )(props))
 
@@ -346,7 +350,7 @@ export default Component((props: Object) =>
   compose(
     fold(props),
     connect(mapStateToProps, {
-      selectCourse, selectRace, setRaceTime, startTracking,
+      selectCourse, selectRace, setRaceTime, startTrackingAndWait,
       updateEventSettings, openTrackDetails, setDiscards,
       startPollingSelectedEvent, stopPollingSelectedEvent,
       registerAppStateListeners, unregisterAppStateListeners }, null,

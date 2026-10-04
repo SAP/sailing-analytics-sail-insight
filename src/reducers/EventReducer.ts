@@ -11,6 +11,7 @@ import {
   updateCreatingEvent,
   updateSelectingEvent,
   updateStartingTracking,
+  updateSavingRaceSettings,
   updateEventPollingStatus,
 } from "actions/events";
 import { EventFilter } from 'models/EventFilter'
@@ -26,6 +27,7 @@ const initialState: EventState = {
   isCreatingEvent: false,
   isSelectingEvent: false,
   isStartingTracking: false,
+  isSavingRaceSettings: false,
   isLoadingEventList: false,
   isPollingEvent: false,
 } as EventState
@@ -95,6 +97,7 @@ const reducer = handleActions(
     [updateCreatingEvent as any]: itemUpdateHandler('isCreatingEvent'),
     [updateSelectingEvent as any]: itemUpdateHandler('isSelectingEvent'),
     [updateStartingTracking as any]: itemUpdateHandler('isStartingTracking'),
+    [updateSavingRaceSettings as any]: itemUpdateHandler('isSavingRaceSettings'),
     [updateLoadingEventList as any]: itemUpdateHandler('isLoadingEventList'),
     [updateEventPollingStatus as any]: itemUpdateHandler('isPollingEvent'),
   },

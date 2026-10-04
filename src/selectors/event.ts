@@ -70,6 +70,9 @@ export const getEventIdThatsBeingSelected = (state: any) =>
 export const isStartingTracking = (state: any) =>
   !!(state.events && state.events.isStartingTracking)
 
+export const isSavingRaceSettings = (state: any) =>
+  !!(state.events && state.events.isSavingRaceSettings)
+
 export const isLoadingEventList = (state: any) =>
   !!(state.events && state.events.isLoadingEventList)
 
