@@ -13,7 +13,8 @@
 import React from 'react'
 import TestRenderer, { act } from 'react-test-renderer'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { applyMiddleware, createStore } from 'redux'
+import thunk from 'redux-thunk'
 
 import ApiException from 'api/ApiException'
 import AuthException from 'api/AuthException'
@@ -22,6 +23,7 @@ import I18n from 'i18n'
 import * as texts from 'helpers/texts'
 
 declare var beforeAll: any
+declare var beforeEach: any
 declare var describe: any
 declare var test: any
 declare var expect: any
@@ -49,8 +51,12 @@ beforeAll(() => {
   I18n.locale = 'en'
 })
 
+beforeEach(() => {
+  mockLogin.mockReset()
+})
+
 const renderLogin = (isConnected: boolean) => {
-  const store = createStore(() => ({ network: { isConnected } }))
+  const store = createStore(() => ({ network: { isConnected } }), applyMiddleware(thunk))
   let renderer: any
   act(() => {
     renderer = TestRenderer.create(
