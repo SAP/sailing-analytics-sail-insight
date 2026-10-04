@@ -5,13 +5,14 @@ import { CheckIn, Session } from 'models'
 
 import { ActionQueue, fetchAction } from 'helpers/actions'
 
-import { collectCheckInData, updateCheckInAndEventInventory } from 'actions/checkIn'
+import { collectCheckInData, fetchEventList, updateCheckInAndEventInventory } from 'actions/checkIn'
 import { selfTrackingApi } from 'api'
 import { getApiServerUrl } from 'api/config'
 import { CreateEventBody } from 'api/endpoints/types'
 import { DispatchType } from 'helpers/types'
 import { getSharingUuid } from 'helpers/uuid'
 import EventCreationData, { RegattaType } from 'models/EventCreationData'
+import EventCreatedSetupIncompleteException from 'helpers/EventCreatedSetupIncompleteException'
 import { eventCreationResponseToCheckIn } from 'services/CheckInService'
 
 export const CREATE_EVENT = 'CREATE_EVENT'
@@ -90,6 +91,23 @@ const createEvent = (eventData: EventCreationData) => async () => {
   })
 }
 
+// Once the createEvent POST succeeded the event exists on the server. A failure
+// of any later step must not look like a failed creation (the user would retry
+// and create a duplicate), so it is wrapped and shown as "setup incomplete".
+const afterEventCreated = (step: any) => async (dispatch: DispatchType) => {
+  try {
+    return await dispatch(step)
+  } catch (error) {
+    // the event now exists, so make it show up in the list
+    try {
+      await dispatch(fetchEventList())
+    } catch (e) {
+      // best effort
+    }
+    throw new EventCreatedSetupIncompleteException(error)
+  }
+}
+
 export const createEventActionQueue = ({ eventData, navigation }: any) => (
   dispatch: DispatchType,
 ) =>
@@ -97,10 +115,10 @@ export const createEventActionQueue = ({ eventData, navigation }: any) => (
     updateCreatingEvent(true),
     createEvent(eventData),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
-      collectCheckInData(data),
+      afterEventCreated(collectCheckInData(data)),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
-      updateCheckInAndEventInventory(data),
+      afterEventCreated(updateCheckInAndEventInventory(data)),
     ),
     ActionQueue.createItemUsingPreviousResult((data: CheckIn) =>
       createAction(CREATE_EVENT)({ ...data, navigation }),

@@ -1,7 +1,9 @@
-import { always, compose, concat, objOf, reduce, flatten, isEmpty,
+import { __, always, compose, concat, objOf, reduce, flatten, isEmpty,
   map, values, defaultTo, reject, isNil, when, equals, pick } from 'ramda'
+import React from 'react'
 import { Alert, Platform, Keyboard } from 'react-native'
 import { getErrorDisplayMessage } from 'helpers/texts'
+import ConnectedErrorDetails from 'components/ConnectedErrorDetails'
 import { Component,  fold, nothing, fromClass, nothingAsClass,
   recomposeLifecycle as lifecycle,
   recomposeWithStateHandlers as withStateHandlers,
@@ -19,6 +21,8 @@ import {
   EVENT_CREATION_FORM_NAME,
   eventCreationDataFromFormValues,
   FORM_KEY_DATE_TO,
+  FORM_KEY_BOAT_CLASS,
+  FORM_KEY_DATE_FROM,
   FORM_KEY_REGATTA_TYPE,
   FORM_KEY_NUMBER_OF_RACES,
   generateInitialValues,
@@ -57,11 +61,32 @@ const mapStateToProps = (state: any) => ({
   isNetworkConnected: isNetworkConnected(state),
 })
 
+// The ScrollView and the y position of each section, so the screen can bring
+// a field into view above the keyboard or after a failed submit.
+const scrollViewRef: any = React.createRef()
+const sectionY: { [key: string]: number } = {}
+const SECTION_BASICS = 'basics'
+const SECTION_TYPE = 'type'
+const SECTION_RACES = 'races'
+
+const scrollToSection = (key: string) => {
+  const scrollTo = () =>
+    scrollViewRef.current && scrollViewRef.current.scrollTo({ y: Math.max((sectionY[key] || 0) - 10, 0), animated: true })
+  // on Android the window is resized when the keyboard opens; wait for it so
+  // the scroll range is large enough
+  Platform.OS === 'android' ? setTimeout(scrollTo, 300) : scrollTo()
+}
+
+const trackSection = (key: string, c: any) => view({
+  onLayout: (e: any) => { sectionY[key] = e.nativeEvent.layout.y },
+}, c)
+
 const createEvent = (props: any) => async (formValues: any) => {
   const eventCreationData = eventCreationDataFromFormValues({...props.defaultValues, ...formValues})
 
   Keyboard.dismiss()
   props.setApiErrors([])
+  props.setApiErrorRaw(null)
 
   if (!props.isNetworkConnected) {
     showNetworkRequiredSnackbarMessage()
@@ -72,12 +97,21 @@ const createEvent = (props: any) => async (formValues: any) => {
     await props.createEventActionQueue({ eventData: eventCreationData, navigation: props.navigation }).execute()
   } catch (e) {
     props.setApiErrors([getErrorDisplayMessage(e)])
+    props.setApiErrorRaw(e)
     props.updateCreatingEvent(false)
   }
 }
 
-const createEventSubmitFailed = () => {
+// Scroll to the first section containing an invalid field (in screen order),
+// so the field and its inline error are visible, not only the summary below.
+const createEventSubmitFailed = (errors: any = {}) => {
   Keyboard.dismiss()
+  const hasError = (key: string) => !!errors[key]
+  const section =
+    ['name', 'location', FORM_KEY_DATE_FROM].some(hasError) ? SECTION_BASICS :
+    hasError(FORM_KEY_BOAT_CLASS) ? SECTION_TYPE :
+    SECTION_RACES
+  scrollToSection(section)
 }
 
 const formSettings = {
@@ -86,7 +120,9 @@ const formSettings = {
   form: EVENT_CREATION_FORM_NAME
 }
 
-const withApiErrors = withState('apiErrors', 'setApiErrors', [])
+const withApiErrors = compose(
+  withState('apiErrors', 'setApiErrors', []),
+  withState('apiErrorRaw', 'setApiErrorRaw', null))
 const nothingWhenNoErrors = branch(compose(
   isEmpty,
   reject(isNil),
@@ -105,6 +141,8 @@ const withBoatClasses = compose(
       selfTrackingApi().requestBoatClasses().then((boatClasses: BoatClassesBody[]) => {
         this.props.setBoatClasses(boatClasses)
       }).catch((err) => {
+        // loaded (empty) so the boat class input does not try, and alert, again
+        this.props.setBoatClasses([])
         Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
       })
     }
@@ -117,8 +155,11 @@ const arrowUp = icon({
   style: { justifyContent: 'flex-end', height: 25 },
   iconStyle: { height: 12, tintColor: $declineColor } })
 
+const errorDetails = fromClass(ConnectedErrorDetails).contramap((props: any) => ({ error: props.apiErrorRaw }))
+
 const errorText = Component(props => compose(
   fold(props),
+  concat(__, errorDetails),
   concat(arrowUp),
   view({ style: styles.errorsContainer }),
   reduce(concat, nothing()),
@@ -157,12 +198,15 @@ export default Component(
       }),
     reduxForm(formSettings),
     keyboardAvoidingView({ behavior: Platform.OS === 'ios' ? 'padding' : null }),
-    scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: props.setScrollViewRef }),
+    scrollView({ style: styles.container, keyboardShouldPersistTaps: 'always', ref: scrollViewRef }),
     view({ style: styles.content }),
     reduce(concat, nothing()))([
-      BasicsSetup,
-      TypeAndBoatClass,
-      RacesAndScoring,
+      trackSection(SECTION_BASICS, BasicsSetup),
+      trackSection(SECTION_TYPE, TypeAndBoatClass.contramap((props: any) => ({
+        ...props,
+        onBoatClassFocus: () => scrollToSection(SECTION_TYPE),
+      }))),
+      trackSection(SECTION_RACES, RacesAndScoring),
       createButton,
       nothingWhenNoErrors(errorText)
     ]))

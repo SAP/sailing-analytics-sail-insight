@@ -63,8 +63,9 @@ export const validate = (values: any = {}, props: any = {}) => ({
   [FORM_KEY_DATE_FROM]: values[FORM_KEY_DATE_FROM] && values[FORM_KEY_DATE_TO] &&
     values[FORM_KEY_DATE_FROM].isAfter(values[FORM_KEY_DATE_TO]) ?
     I18n.t('error_start_date_after_end_date') :
-    undefined
-  // [FORM_KEY_DISCARDS]:
-  //   validateNoUndefined(values[FORM_KEY_DISCARDS]) ||
-  //   validateAscendingOrder(values[FORM_KEY_DISCARDS]),
+    undefined,
+  [FORM_KEY_DISCARDS]: values[FORM_KEY_DISCARDS] ?
+    validateNoUndefined(values[FORM_KEY_DISCARDS]) ||
+    validateAscendingOrder(values[FORM_KEY_DISCARDS]) :
+    undefined,
 })

@@ -30,6 +30,8 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   meta?: any,
   query?: string,
   boatClasses?: any[],
+  skipBoatClassFetch?: boolean,
+  onInputFocus?: () => void,
 }, State > {
   public readonly state: Readonly<State> = {
     boatClasses: [],
@@ -40,12 +42,18 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   public componentDidMount() {
     this.setState({ query: this.props.input.value, boatClasses: this.props.boatClasses })
 
-    if (!this.props.boatClasses) {
+    if (!this.props.skipBoatClassFetch && !this.props.boatClasses) {
       selfTrackingApi().requestBoatClasses().then((boatClasses: BoatClassesBody[]) => {
         this.setState({ boatClasses })
       }).catch((err) => {
         showErrorAlert(I18n.t('error_load_boat_classes'), err)
       })
+    }
+  }
+
+  public componentDidUpdate(prevProps: any) {
+    if (this.props.boatClasses !== prevProps.boatClasses) {
+      this.setState({ boatClasses: this.props.boatClasses || [] })
     }
   }
 
@@ -61,6 +69,9 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       input: { name, ...restInput } = { name: undefined },
       style,
       containerStyle,
+      boatClasses: _boatClasses,
+      skipBoatClassFetch,
+      onInputFocus,
       ...additionalProps
     } = this.props
     const { query, selected, focused } = this.state
@@ -127,7 +138,6 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   }
 
   protected renderItem = ({ item }: any) => {
-    console.log(item);
     const iconSource = item?.iconUrl ? { uri: assetApiEndpoint(getApiServerUrl())(item.iconUrl)() } : ''
     return (
         <TouchableOpacity
@@ -145,6 +155,9 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
       input: { name, value, ...restInput } = { name: undefined },
       meta: { touched: showError, error } = { touched: () => {}, error: undefined },
       style,
+      boatClasses: _boatClasses,
+      skipBoatClassFetch,
+      onInputFocus,
       ...additionalProps
     } = this.props
 
@@ -165,7 +178,12 @@ class FormBoatClassInput extends React.Component<ViewProps & RNTextInputProps & 
   }
 
   protected onTextInputFocusChange = (focused: boolean) =>
-    () => this.setState({ focused })
+    () => {
+      this.setState({ focused })
+      if (focused && this.props.onInputFocus) {
+        this.props.onInputFocus()
+      }
+    }
 }
 
 export default FormBoatClassInput

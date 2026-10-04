@@ -287,7 +287,10 @@ function* saveDiscards(payload: any) {
 
 function* createEvent(payload: any) {
   const data = payload?.payload?.payload
-  if (!data) return
+  if (!data) {
+    yield put(updateCreatingEvent(false))
+    return
+  }
 
   const { eventId, leaderboardName, secret, serverUrl, numberOfRaces, regattaName } = data
   const navigation = payload?.payload?.navigation
