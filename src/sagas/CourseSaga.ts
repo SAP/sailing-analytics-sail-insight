@@ -4,7 +4,7 @@ import { any, allPass, map, evolve, mergeRight, curry, dissoc, not, has,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
   toPairs, values, fromPairs, ifElse, always, findIndex, equals, takeLast, indexOf, pick
 } from 'ramda'
-import { all, call, put, select, takeEvery, takeLatest, delay } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest, takeLeading, delay } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe, safeApiCall } from './HelpersSaga'
 import { v4 as uuidv4 } from 'uuid';
@@ -48,6 +48,18 @@ import { PassingInstruction } from 'models/Course'
 import { showNetworkRequiredSnackbarMessage, showSaveFailedSnackbarMessage,
   showServerErrorSnackbarMessage } from 'helpers/network'
 import { alertPromise } from 'helpers/utils'
+
+const showMarkBindingFailedSnackbarMessage = () =>
+  Snackbar.show({
+    text: I18n.t('error_mark_binding_failed'),
+    duration: Snackbar.LENGTH_LONG
+  })
+
+const showDefaultMarksMissingSnackbarMessage = () =>
+  Snackbar.show({
+    text: I18n.t('error_course_default_marks_missing'),
+    duration: Snackbar.LENGTH_LONG
+  })
 
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
@@ -245,6 +257,15 @@ function* selectCourseFlow({ payload }: any) {
     const startFinishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Boat'))
     const windwardMark = yield select(getMarkPropertiesOrMarkForCourseByName('Windward Mark'))
 
+    // The default marks are missing if the inventory is empty or failed to
+    // load. Leave the new course without preassigned marks (the user can still
+    // pick them manually) instead of crashing and leaving the loading flag set.
+    if (!startFinishPin || !startFinishBoat || !windwardMark) {
+      yield put(updateCourseLoading(false))
+      showDefaultMarksMissingSnackbarMessage()
+      return
+    }
+
     const waypoint0 = editedCourse.waypoints[0]
     const waypoint1 = editedCourse.waypoints[1]
 
@@ -368,6 +389,8 @@ function* saveCourseFlow({ navigation }: any) {
 
   const plannedRaces = yield select(getRegattaPlannedRaces(regattaName))
 
+  let followingRacesFailed = false
+
   const nextRacesColumnNames = compose(
     ifElse(
       id => id >= 0 && id < plannedRaces.length - 1,
@@ -379,9 +402,15 @@ function* saveCourseFlow({ navigation }: any) {
 
   if (nextRacesColumnNames) {
 
-    const nextCourses = yield all(nextRacesColumnNames.map((raceName: string) =>
+    const fetchedNextCourses = yield all(nextRacesColumnNames.map((raceName: string) =>
       fetchCourseFromServer({regattaName, race: raceName, serverUrl})
     ))
+    // A following race whose course could not be fetched is not touched.
+    const nextCourses = fetchedNextCourses.filter(Boolean)
+    const nextCourseRaceNames = nextRacesColumnNames.filter((_: string, i: number) => !!fetchedNextCourses[i])
+    if (nextCourses.length < fetchedNextCourses.length) {
+      followingRacesFailed = true
+    }
     const updatedCourseMarks = getMarkConfigurations(updatedCourse)
 
     let overwriteRequired = false // any next course differs from the current edited course
@@ -400,17 +429,25 @@ function* saveCourseFlow({ navigation }: any) {
 
     if (overwriteApproved || overwriteAllNew) {
       for (const nextCourse of nextCourses) {
-        const editedNextCourse = copyCourse(editedCourse, updatedCourse, nextCourse)
         const index = indexOf(nextCourse, nextCourses)
-        yield call(saveCourseToServer, {
-          regattaName,
-          fleet,
-          serverUrl,
-          editedCourse: editedNextCourse,
-          existingCourse: nextCourse,
-          raceColumnName: nextRacesColumnNames[index],
-          raceId: getRaceId(regattaName, nextRacesColumnNames[index]),
-        })
+        try {
+          const editedNextCourse = copyCourse(editedCourse, updatedCourse, nextCourse)
+          const savedNextCourse = yield call(saveCourseToServer, {
+            regattaName,
+            fleet,
+            serverUrl,
+            editedCourse: editedNextCourse,
+            existingCourse: nextCourse,
+            raceColumnName: nextCourseRaceNames[index],
+            raceId: getRaceId(regattaName, nextCourseRaceNames[index]),
+          })
+          if (!savedNextCourse) {
+            followingRacesFailed = true
+          }
+        } catch (e) {
+          console.warn('Failed to copy the course to a following race', e)
+          followingRacesFailed = true
+        }
       }
     }
 
@@ -443,7 +480,9 @@ function* saveCourseFlow({ navigation }: any) {
     }
   }
   Snackbar.show({
-    text: I18n.t('text_course_saved'),
+    text: I18n.t(followingRacesFailed
+      ? 'error_course_saved_following_races_failed'
+      : 'text_course_saved'),
     duration: Snackbar.LENGTH_LONG
   })
   yield call(loadMarkProperties)
@@ -454,7 +493,9 @@ function* isThisDeviceBoundToMark({ markId, regattaName, serverUrl }: any) {
   const trackingDevices = yield safeApiCall(api.requestTrackingDevices, regattaName)
 
   if (!trackingDevices) {
-    return false // If the call failed just assume that the device is unbound
+    // A failed lookup must not be treated as "unbound": that would create a
+    // duplicate device mapping.
+    return undefined
   }
 
   const activeBindings = compose(
@@ -487,6 +528,15 @@ function* updateMarkPositionFlow({ payload }: any) {
 
   if (location) {
     const { latitude, longitude } = location
+
+    // Never send missing/invalid coordinates (e.g. no GPS fix yet) to the server.
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+      Snackbar.show({
+        text: I18n.t('error_mark_position_invalid'),
+        duration: Snackbar.LENGTH_LONG
+      })
+      return
+    }
     const updateMarkPropertyCall = markPropertiesId &&
       safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, undefined, latitude, longitude)
 
@@ -506,11 +556,15 @@ function* updateMarkPositionFlow({ payload }: any) {
     if (markId && fixResult === undefined) {
       console.warn('Failed to send GPS fix for mark')
     }
+    if ((markPropertiesId && propertyResult === undefined) || (markId && fixResult === undefined)) {
+      showServerErrorSnackbarMessage()
+    }
   } else if (bindToThisDevice) {
     if (markPropertiesId) {
       const positionResult = yield safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, getDeviceId())
       if (positionResult === undefined) {
         console.warn('Failed to bind mark position to device')
+        showMarkBindingFailedSnackbarMessage()
       }
     }
 
@@ -526,10 +580,13 @@ function* updateMarkPositionFlow({ payload }: any) {
 
       // Bind this device to the mark if it is not already bound
       const isDeviceBound = yield isThisDeviceBoundToMark({ markId, regattaName, serverUrl })
-      if (!isDeviceBound) {
+      if (isDeviceBound === undefined) {
+        showMarkBindingFailedSnackbarMessage()
+      } else if (!isDeviceBound) {
         const mappingResult = yield safeApiCall(api.startDeviceMapping, leaderboardName, checkInDeviceMappingData({ markId, secret }))
         if (mappingResult === undefined) {
           console.warn('Failed to bind device to mark')
+          showMarkBindingFailedSnackbarMessage()
         }
       }
     }
@@ -562,6 +619,11 @@ function* assignMarkOrMarkPropertiesToWaypointMarkConfiguration(waypointId, mark
 function* toggleSameStartFinish() {
   const editedCourse = yield select(getEditedCourse)
   const isSameStartFinish = yield select(hasSameStartFinish)
+
+  if (!(editedCourse?.waypoints?.length >= 2)) {
+    return
+  }
+
   const startMarkConfigurations = head(editedCourse.waypoints).markConfigurationIds
   const finishMarkConfigurations = last(editedCourse.waypoints).markConfigurationIds
   const startWaypointId = head(editedCourse.waypoints).id
@@ -572,6 +634,13 @@ function* toggleSameStartFinish() {
     const startBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start Boat'))
     const finishPin = yield select(getMarkPropertiesOrMarkForCourseByName('Finish Pin'))
     const finishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Finish Boat'))
+
+    // Verify everything is available before mutating the course so a missing
+    // default mark can't leave a half-rewired finish line behind.
+    if (!startPin || !startBoat || !finishPin || !finishBoat) {
+      showDefaultMarksMissingSnackbarMessage()
+      return
+    }
 
     const newFinishMarkConfigurations = [uuidv4(), uuidv4()]
 
@@ -590,6 +659,11 @@ function* toggleSameStartFinish() {
   } else {
     const startFinishPin = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Pin'))
     const startFinishBoat = yield select(getMarkPropertiesOrMarkForCourseByName('Start/Finish Boat'))
+
+    if (!startFinishPin || !startFinishBoat) {
+      showDefaultMarksMissingSnackbarMessage()
+      return
+    }
 
     yield put(replaceWaypointMarkConfiguration({
       id: finishWaypointId,
@@ -666,7 +740,7 @@ export default function* watchCourses() {
     takeLatest(SELECT_COURSE, selectCourseFlow),
     takeEvery(SAVE_COURSE, saveCourseFlow),
     takeLatest(TOGGLE_SAME_START_FINISH, toggleSameStartFinish),
-    takeLatest(NAVIGATE_BACK_FROM_COURSE_CREATION, navigateBackFromCourseCreation),
+    takeLeading(NAVIGATE_BACK_FROM_COURSE_CREATION, navigateBackFromCourseCreation),
     takeLatest(FETCH_AND_UPDATE_MARK_CONFIGURATION_DEVICE_TRACKING, fetchAndUpdateMarkConfigurationDeviceTracking),
     takeEvery(UPDATE_MARK_POSITION, updateMarkPositionFlow)
   ])

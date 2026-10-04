@@ -30,7 +30,7 @@ import IconText from 'components/IconText'
 import styles from './styles'
 import {Switch, Platform, Alert} from 'react-native'
 import {useLayoutEffect} from 'react';
-import {dd2ddm, ddm2dd} from 'helpers/utils'
+import {dd2ddm, ddm2dd, isValidDdmCoordinate} from 'helpers/utils'
 import {$Orange, $primaryBackgroundColor, $secondaryBackgroundColor} from 'styles/colors'
 import {HeaderSaveTextButton, HeaderCancelTextButton} from 'components/HeaderTextButton'
 import I18n from 'i18n'
@@ -94,6 +94,17 @@ const withNavigationHandlers = withHandlers({
   },
   onNavigationSavePress: (props: any) => () => {
     const location = pick(['latitude', 'longitude'], props.region)
+
+    // Block saving invalid coordinates (pending input errors or an
+    // out-of-range/non-finite region).
+    const { latitude, longitude } = location
+    if (
+      props.coordinateErrors?.latitude || props.coordinateErrors?.longitude ||
+      !Number.isFinite(latitude) || !Number.isFinite(longitude) ||
+      Math.abs(latitude) > 90 || Math.abs(longitude) > 180
+    ) {
+      return
+    }
     const markConfigurationId = props.selectedMarkConfiguration
 
     props.updateMarkConfigurationLocation({
@@ -163,6 +174,27 @@ const defaultProps = (props) => ({
 const withRegion = withState('region', 'setRegion', prop('region'))
 const withInitialRender = withState('initialRender', 'setInitialRender', true)
 const withMapOffset = withState('mapOffset', 'setMapOffset', 0)
+const withCoordinateErrors = withState('coordinateErrors', 'setCoordinateErrors', {})
+
+// Applies manually entered degrees/minutes to the map region, unless they are
+// not a valid coordinate. Then an inline error is shown and the region (and
+// thereby the saved position) stays untouched.
+const applyDdmInput = (props: any, degrees: string, minutes: string) => {
+  const valid = isValidDdmCoordinate(degrees, minutes, props.unit)
+  props.setCoordinateErrors({ ...props.coordinateErrors, [props.unit]: !valid })
+
+  if (!valid) {
+    return
+  }
+
+  const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
+  const newCoordinate = ddm2dd([[degrees, minutes, direction]])[0]
+  const newRegion = { ...props.region, [props.unit]: newCoordinate }
+  props.setInitialRender(true)
+  props.setRegion(newRegion)
+
+  setTimeout(() => props.setInitialRender(false), 100)
+}
 
 const centeredMarker = Component(props => compose(
   fold(props),
@@ -219,37 +251,23 @@ const switchSelector = Component(props => compose(
 const coordinatesInput = Component((props: any) => compose(
     fold(props),
     view({ style: styles.coordinatesContainer }),
-    concat(text({ style: styles.coordinatesTitle }, props.title)),
+    concat(text(
+      { style: [styles.coordinatesTitle, props.coordinateErrors?.[props.unit] && styles.coordinatesTitleError] },
+      props.coordinateErrors?.[props.unit] ? `${props.title} - ${I18n.t('error_coordinate_invalid')}` : props.title)),
     view({ style: styles.coordinatesControlContainer }),
     reduce(concat, nothing()))([
       textInput.contramap(mergeRight({
         decimal: false,
         value: defaultTo('', props.degrees),
         inputStyle: { width: 70 },
-        onBlur: value => {
-          const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
-          const newCoordinate = ddm2dd([[value || '0', props.minutes || '0', direction]])[0]
-          const newRegion = { ...props.region, [props.unit]: newCoordinate }
-          props.setInitialRender(true)
-          props.setRegion(newRegion)
-
-          setTimeout(() => props.setInitialRender(false), 100)
-        },
+        onBlur: value => applyDdmInput(props, value || '0', props.minutes || '0'),
         maxLength: 3 })),
       text({ style: styles.symbolText }, '°'),
       textInput.contramap(mergeRight({
         decimal: true,
         value: defaultTo('', props.minutes),
         inputStyle: { width: 115 },
-        onBlur: value => {
-          const direction = props.coordinatesDirection === 'N' || props.coordinatesDirection === 'E' ? 1 : -1
-          const newCoordinate = ddm2dd([[props.degrees || '0', value || '0', direction]])[0]
-          const newRegion = { ...props.region, [props.unit]: newCoordinate }
-          props.setInitialRender(true)
-          props.setRegion(newRegion)
-
-          setTimeout(() => props.setInitialRender(false), 100)
-        },
+        onBlur: value => applyDdmInput(props, props.degrees || '0', value || '0'),
         maxLength: 6 })),
       text({ style: styles.symbolText }, "'"),
       switchSelector.contramap(mergeRight({
@@ -320,6 +338,7 @@ export default Component((props: object) =>
     withInitialRender,
     withRegion,
     withMapOffset,
+    withCoordinateErrors,
     withNavigationHandlers,
     concat(navigationBackHandler),
     concat(nothingWhenNoPadding(Map)),

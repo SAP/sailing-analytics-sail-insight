@@ -200,10 +200,10 @@ export const warnAboutMultipleBindingsToTheSameMark = (markConfiguration: any) =
   const markDeviceTracking: any = getMarkDeviceTrackingByMarkConfiguration(markConfiguration)(getState())
   if (!markDeviceTracking || !markDeviceTracking.trackingDeviceHash) return true
   const differentDeviceBound = markDeviceTracking.trackingDeviceHash !== getHashedDeviceId()
-  if (!differentDeviceBound) return false
+  // This device is already bound: continue (binding is idempotent), no prompt.
+  if (!differentDeviceBound) return true
 
-  const message = 'There\'s already another device bound to this mark. Do you want to continue with the binding?'
-  return await alertPromise('', message, I18n.t('button_yes'))
+  return await alertPromise('', I18n.t('text_mark_already_bound_to_other_device'), I18n.t('button_yes'))
 }
 
 export const collectCheckInData = (checkInData?: CheckIn) => withDataApi(checkInData && checkInData.serverUrl)(

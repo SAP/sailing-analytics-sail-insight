@@ -134,6 +134,26 @@ export const ddm2dd = (arr: array) => {
   return coords;
 }
 
+export const isValidDdmCoordinate = (
+  degrees: string | number,
+  minutes: string | number,
+  unit: 'latitude' | 'longitude'
+): boolean => {
+  const parse = (v: string | number) => {
+    if (typeof v === 'number') return v
+    const str = (v === null || v === undefined ? '' : String(v)).trim().replace(',', '.')
+    return /^[+-]?(\d+\.?\d*|\.\d+)$/.test(str) ? parseFloat(str) : NaN
+  }
+  const deg = parse(degrees)
+  const min = parse(minutes)
+  const limit = unit === 'latitude' ? 90 : 180
+
+  return Number.isFinite(deg) && Number.isFinite(min) &&
+    Number.isInteger(deg) && deg >= 0 && deg <= limit &&
+    min >= 0 && min < 60 &&
+    deg + min / 60 <= limit
+}
+
 export const coordinatesToString = ({ latitude_deg, longitude_deg }: any) =>
   compose(
     join(' / '),

@@ -19,6 +19,7 @@ import {
   fetchAndUpdateMarkConfigurationDeviceTracking,
   updateMarkPosition,
 } from 'actions/courses'
+import { warnAboutMultipleBindingsToTheSameMark } from 'actions/checkIn'
 import { getDeviceId } from 'selectors/user'
 import { getSelectedEventInfo } from 'selectors/event'
 import { getMarkConfigurationById } from 'selectors/course'
@@ -74,10 +75,14 @@ const useThisDeviceButton = Component(props => compose(
   fold(props),
   touchableOpacity({
     onPress: async () => {
-      // const continueBinding = await props.warnAboutMultipleBindingsToTheSameMark(
-      //   props.selectedMarkConfiguration,
-      // )
-      //
+      // Ask before replacing a binding of another device.
+      const continueBinding = await props.warnAboutMultipleBindingsToTheSameMark(
+        props.selectedMarkConfiguration,
+      )
+      if (!continueBinding) {
+        return
+      }
+
       const markConfigurationId = props.selectedMarkConfiguration
       props.updateMarkConfigurationWithCurrentDeviceAsTracker({
         id: markConfigurationId,
@@ -133,6 +138,7 @@ export default Component((props: object) =>
       updateMarkConfigurationWithCurrentDeviceAsTracker,
       fetchAndUpdateMarkConfigurationDeviceTracking,
       updateMarkPosition,
+      warnAboutMultipleBindingsToTheSameMark,
     }),
     view({ style: styles.container }),
     reduce(concat, nothing()))([
