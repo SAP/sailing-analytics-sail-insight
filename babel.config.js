@@ -15,6 +15,9 @@ module.exports = {
     ['@babel/plugin-proposal-decorators', { legacy: true }],
     ['@babel/plugin-proposal-class-properties', { loose: true }],
 
+    // Only inline the dev-only E2E backend seam, not unrelated environment variables.
+    ['transform-inline-environment-variables', { include: ['E2E_BACKEND_URL'] }],
+
     // keep this LAST
     'react-native-reanimated/plugin',
   ],

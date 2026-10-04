@@ -29,7 +29,12 @@ android {
         versionName "2.11.4"
 
         ndk {
-            abiFilters 'armeabi-v7a', 'arm64-v8a'
+            def e2eAbi = System.getenv("E2E_ANDROID_ABI")
+            if (e2eAbi) {
+                abiFilters e2eAbi
+            } else {
+                abiFilters 'armeabi-v7a', 'arm64-v8a'
+            }
         }
     }
 
@@ -106,6 +111,8 @@ android {
 }
 
 react {
+    // Flavored debug builds load JavaScript from Metro, including the dev-only E2E URL.
+    debuggableVariants = ["devDebug", "liveDebug"]
     nodeExecutableAndArgs = ["node", "--no-warnings"]
     // RNU ds 3
 

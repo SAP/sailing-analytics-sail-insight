@@ -71,3 +71,7 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Local artifacts and Pi agent settings
+/artifacts/
+/.pi/settings.json

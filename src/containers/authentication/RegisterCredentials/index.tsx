@@ -60,6 +60,7 @@ class RegisterCredentials extends TextInputForm<Props> {
               </Text>
               <View style={form.formSegment1}>
                 <Field
+                  testID="e2e-register-username"
                   label={I18n.t('text_placeholder_your_username')}
                   error={usernameError}
                   name={registrationForm.FORM_KEY_USERNAME}
@@ -73,6 +74,7 @@ class RegisterCredentials extends TextInputForm<Props> {
                   inputRef={this.handleInputRef(registrationForm.FORM_KEY_USERNAME)}
                 />
                 <Field
+                  testID="e2e-register-password"
                   label={I18n.t('text_placeholder_enter_password')}
                   error={passwordError}
                   name={registrationForm.FORM_KEY_PASSWORD}
@@ -89,6 +91,7 @@ class RegisterCredentials extends TextInputForm<Props> {
               </View>
               <View style={form.formSegment2}>
                 <Field
+                  testID="e2e-register-email"
                   label={I18n.t('text_placeholder_email')}
                   error={emailError}
                   name={registrationForm.FORM_KEY_EMAIL}
@@ -108,6 +111,7 @@ class RegisterCredentials extends TextInputForm<Props> {
                   <EulaLink/>
                 </View>
                 <TextButton
+                  testID="e2e-register-submit"
                   style={[button.primary, button.fullWidth, styles.registerButton]}
                   textStyle={button.primaryText}
                   onPress={this.props.handleSubmit(this.onSubmit)}

@@ -91,6 +91,7 @@ class UserProfile extends TextInputForm<Props> {
               </TextButton>*/}
             <View style={[form.lastFormSegment]}>
               <TextButton
+                  testID="e2e-logout"
                   style={[button.secondary, button.fullWidth, styles.saveButton]}
                   textStyle={button.secondaryText}
                   onPress={this.deleteUserDataAlert}>

@@ -1,0 +1,33 @@
+services:
+  sailing-analytics:
+    image: "${E2E_BACKEND_IMAGE:-ghcr.io/sap/sailing-analytics:main-202609252301}"
+    ports:
+      - "127.0.0.1:${E2E_BACKEND_PORT:-8888}:8888"
+    environment:
+      MEMORY: 2g
+      MONGODB_URI: mongodb://mongo/sail_insight_e2e
+      SERVER_NAME: sail-insight-e2e
+      REPLICATION_HOST: rabbitmq
+      REPLICATION_CHANNEL: sail-insight-e2e
+      REPLICATION_PORT: 5672
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:7.0.15
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  rabbitmq:
+    image: rabbitmq:3.13.7
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 2s
+      timeout: 5s
+      retries: 30

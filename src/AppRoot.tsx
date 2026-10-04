@@ -399,6 +399,7 @@ const mainTabsNavigator = Component(props => compose(
       tabBarShowLabel: true,
       tabBarLabelPosition: 'below-icon',
       tabBarHideOnKeyboard: Platform.OS === 'android',
+      tabBarButtonTestID: route.name === Screens.Account ? 'e2e-account-tab' : undefined,
 
       lazy: false,
       headerShown: false,
@@ -444,7 +445,9 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withoutTitle, withoutHeaderLeft)({
     name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
     options: {
-      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigateBackToMain(navigationContainer.current)}>{I18n.t('caption_skip')}</TextButton>,
+      // Floating transparent headers retain native bounds for Android accessibility.
+      headerMode: 'float',
+      headerRight: () => <TextButton testID="e2e-register-skip" textStyle={button.headerTextButton} onPress={() => navigateBackToMain(navigationContainer.current)}>{I18n.t('caption_skip')}</TextButton>,
       gestureEnabled: false
     }
   })),

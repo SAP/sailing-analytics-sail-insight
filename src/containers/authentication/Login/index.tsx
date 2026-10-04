@@ -101,6 +101,7 @@ class Login extends TextInputForm<{
                 {I18n.t('text_login')}
               </Text>
               <TextInput
+                testID="e2e-login-username"
                 value={this.state.username}
                 error={usernameError}
                 onChangeText={this.onUsernameChange}
@@ -115,6 +116,7 @@ class Login extends TextInputForm<{
                 onSubmitEditing={this.handleOnSubmitInput(FORM_KEY_PASSWORD)}
                 inputRef={this.handleInputRef(FORM_KEY_USERNAME)}/>
               <TextInput
+                testID="e2e-login-password"
                 value={this.state.password}
                 error={passwordError}
                 onChangeText={this.onPasswordChange}
@@ -132,6 +134,7 @@ class Login extends TextInputForm<{
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}/>
               {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}
               <TextButton
+                  testID="e2e-login-submit"
                   style={[button.primary, button.fullWidth, styles.loginButton]}
                   textStyle={button.primaryText}
                   onPress={this.onSubmit}

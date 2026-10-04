@@ -8,6 +8,20 @@ import { getServerUrlSetting } from '../selectors/settings'
 import { getStore } from '../store'
 
 
+// This override is deliberately unavailable to production bundles.
+const getE2EBackendUrl = () => {
+  const backendUrl = __DEV__ ? process.env.E2E_BACKEND_URL : undefined
+  if (!backendUrl) {
+    return undefined
+  }
+
+  const normalizedUrl = backendUrl.replace(/\/+$/, '')
+  if (!/^http:\/\/(127\.0\.0\.1|localhost|10\.0\.2\.2)(:\d+)?$/.test(normalizedUrl)) {
+    throw new Error(`E2E_BACKEND_URL must point to a loopback HTTP server, got: ${backendUrl}`)
+  }
+  return normalizedUrl
+}
+
 export const getPathWithParams = (path: string, urlOptions?: UrlOptions) => {
   if (!urlOptions) {
     return path
@@ -55,6 +69,11 @@ export const HttpMethods = {
 export type BodyType = 'x-www-form-urlencoded' | 'json' | 'image'
 
 export const getApiServerUrl = () => {
+  const e2eBackendUrl = getE2EBackendUrl()
+  if (e2eBackendUrl) {
+    return e2eBackendUrl
+  }
+
   let serverUrl = getServerUrlSetting(getStore().getState())
   if (!serverUrl) {
     serverUrl = DEFAULT_SERVER_URL

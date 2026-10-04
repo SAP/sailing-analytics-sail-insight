@@ -1,0 +1,111 @@
+name: Android E2E
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      backend_image:
+        description: Pinned Sailing Analytics backend image
+        required: false
+        default: ghcr.io/sap/sailing-analytics:main-202609252301
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  auth-e2e:
+    name: Register - logout - login (API 36)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      E2E_ANDROID_API: "36"
+      E2E_ANDROID_ABI: x86_64
+      E2E_BACKEND_URL: http://127.0.0.1:8888
+      E2E_BACKEND_IMAGE: ${{ inputs.backend_image || 'ghcr.io/sap/sailing-analytics:main-202609252301' }}
+      E2E_HEADLESS: "1"
+      E2E_MAESTRO_VERSION: "2.10.0"
+
+    steps:
+      - name: Checkout Sail Insight
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.19.4"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 36 build tools
+        shell: bash
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006" "cmake;3.22.1"
+
+      # Build first: do not keep Java/Mongo/RabbitMQ containers in RAM during Gradle.
+      - name: Build Sail Insight devDebug APK
+        shell: bash
+        run: ./e2e/build-app.sh
+
+      - name: Test E2E helpers and app seams
+        shell: bash
+        run: |
+          shellcheck -x e2e/*.sh
+          node --test e2e/*.test.cjs
+          corepack yarn test --runInBand --roots src
+
+      - name: Start pinned backend
+        shell: bash
+        run: ./e2e/backend.sh start
+
+      - name: Enable KVM
+        shell: bash
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run auth E2E on Android 36
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          disk-size: 4096M
+          heap-size: 512M
+          emulator-options: -no-snapshot -no-window -no-audio -no-boot-anim -camera-back none -camera-front none -gpu swiftshader_indirect -feature -Vulkan
+          script: ./e2e/run-on-device.sh
+
+      - name: Cleanup
+        if: always()
+        shell: bash
+        run: ./e2e/cleanup.sh
+
+      - name: Verify E2E did not rewrite source
+        if: always()
+        shell: bash
+        run: git diff --exit-code
+
+      - name: Upload E2E artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-e2e-${{ github.run_id }}-${{ github.run_attempt }}
+          path: e2e/artifacts
+          if-no-files-found: ignore
+          retention-days: 14
