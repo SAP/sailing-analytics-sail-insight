@@ -51,6 +51,7 @@ import { $MediumBlue, $Orange, $DarkBlue, $LightDarkBlue } from 'styles/colors'
 import { Dimensions } from 'react-native'
 import I18n from 'i18n'
 import BackgroundGeolocation from 'react-native-background-geolocation';
+import Snackbar from 'react-native-snackbar'
 
 const mapIndexed = addIndex(map)
 
@@ -140,6 +141,37 @@ const openGeolocationScreenWithPosition = curry((props, location) => compose(
       markPosition: props.selectedMarkLocation } }),
   prop('coords'))(
   location))
+
+const isValidCoordinate = (value: any) => typeof value === 'number' && isFinite(value)
+
+// Resolves with the last known position, or asks the GPS for a fresh one. Never
+// resolves with missing coordinates; rejects on GPS errors/permission denial.
+const getCurrentCoordinates = (): Promise<{ latitude: number, longitude: number }> => {
+  const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState()) || {} as any
+
+  if (isValidCoordinate(lastLatitude) && isValidCoordinate(lastLongitude)) {
+    return Promise.resolve({ latitude: lastLatitude, longitude: lastLongitude })
+  }
+
+  return new Promise((resolve, reject) => {
+    BackgroundGeolocation.getCurrentPosition({ timeout: 30 }, (location: any) => {
+      const { latitude, longitude } = location?.coords || {} as any
+      if (isValidCoordinate(latitude) && isValidCoordinate(longitude)) {
+        resolve({ latitude, longitude })
+      } else {
+        reject(new Error('Invalid position received'))
+      }
+    }, reject)
+  })
+}
+
+const showGpsPositionUnavailableSnackbar = (error?: any) => {
+  console.warn('Could not get the current GPS position:', error)
+  Snackbar.show({
+    text: I18n.t('error_gps_position_unavailable'),
+    duration: Snackbar.LENGTH_LONG
+  })
+}
 
 const changeSelectedWaypointToNewLine = ({ passingInstruction, markOrMarkPropertiesOptions }, props) => {
   const markConfigurationIds = [uuidv4(), uuidv4()]
@@ -269,21 +301,15 @@ const MarkPositionPing = Component((props: object) => compose(
   fold(props),
   touchableOpacity({
     style: styles.pingPositionButton,
-    onPress: (props: any) => {
-      var { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
-      console.log('Pinging position:', lastLatitude, lastLongitude);
-      if (!lastLatitude || !lastLongitude) {
-        BackgroundGeolocation.getCurrentPosition({}, (location) => {
-          lastLatitude = location.coords.latitude;
-          lastLongitude = location.coords.longitude;
-        }, (error) => {
-          console.warn('BackgroundGeolocation error getting position:', error);
-        });
-      }
-
-
-      const location = { latitude: lastLatitude, longitude: lastLongitude }
+    onPress: async (props: any) => {
       const markConfigurationId = props.selectedMarkConfiguration
+      let location
+      try {
+        location = await getCurrentCoordinates()
+      } catch (error) {
+        showGpsPositionUnavailableSnackbar(error)
+        return
+      }
       props.updateMarkConfigurationLocation({
         id: markConfigurationId,
         value: location
@@ -311,17 +337,16 @@ const MarkPositionGeolocation = Component((props: object) =>
     concat(MarkPositionPing),
     touchableOpacity({
       style: styles.editPositionButton,
-      onPress: (props: any) => {
+      onPress: async (props: any) => {
         if (isEmpty(props.selectedMarkLocation)) {
-          var { lastLatitude, lastLongitude } = getLocationStats(getStore().getState())
-          if (!lastLatitude || !lastLongitude) {
-            BackgroundGeolocation.getCurrentPosition({}, (location) => {
-              lastLatitude = location.coords.latitude;
-              lastLongitude = location.coords.longitude;
-            });
+          let position
+          try {
+            position = await getCurrentCoordinates()
+          } catch (error) {
+            showGpsPositionUnavailableSnackbar(error)
+            return
           }
-          openGeolocationScreenWithPosition(props,
-            { coords: { latitude: lastLatitude, longitude: lastLongitude }})
+          openGeolocationScreenWithPosition(props, { coords: position })
         } else {
           openGeolocationScreenWithPosition(props, { coords: props.selectedMarkLocation })
         }
@@ -764,6 +789,20 @@ const withOnNavigationBackPress = withHandlers({
 })
 
 const NavigationBackHandler = (props: any) => {
+    // Course editing needs live GPS positions (ping position, edit position).
+    // Start on focus, stop on blur/unmount.
+    const { startLocalLocationUpdates, stopLocalLocationUpdates } = props
+    useFocusEffect(
+        useCallback(() => {
+            Promise.resolve(startLocalLocationUpdates()).catch((e: any) =>
+                console.warn('Could not start local location updates:', e))
+            return () => {
+                Promise.resolve(stopLocalLocationUpdates()).catch((e: any) =>
+                    console.warn('Could not stop local location updates:', e))
+            }
+        }, [startLocalLocationUpdates, stopLocalLocationUpdates])
+    );
+
     useLayoutEffect(() => {
         // Set header buttons
         props.navigation.setOptions({
@@ -796,7 +835,6 @@ const NavigationBackHandler = (props: any) => {
                         { text: I18n.t('button_save'), onPress: () => {
                                 Keyboard.dismiss();
                                 setTimeout(() => {
-                                    props?.navigateBackFromCourseCreation({ navigation: props.navigation }); // RNU
                                     props?.onNavigationSavePress();
                                 }, 50);
                             }

@@ -21,6 +21,9 @@ export default EStyleSheets.create({
     fontSize: 22,
     marginBottom: 10
   },
+  coordinatesTitleError: {
+    color: '#FF6B6B'
+  },
   coordinatesInput: {
     backgroundColor: '$DarkBlue',
     borderBottomColor: '#FFFFFF',

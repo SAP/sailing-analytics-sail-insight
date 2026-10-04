@@ -25,7 +25,10 @@ const defaultMarkProperties = [
   { name: 'Reaching Mark', shortName: 'R', markType: 'BUOY' },
 ]
 
-export function* loadMarkProperties({ payload }: any = { payload: { createMissingDefaultMarkProperties: true }}) {
+export function* loadMarkProperties(action: any = {}) {
+  // Dispatched without payload by the Mark Inventory screen: use the default.
+  const createMissingDefaultMarkProperties =
+    action?.payload?.createMissingDefaultMarkProperties ?? true
   const hasUser = yield select(isLoggedIn)
 
   if (!hasUser) return
@@ -39,7 +42,8 @@ export function* loadMarkProperties({ payload }: any = { payload: { createMissin
   // No snackbar here: this runs as a side step of the course flows, which do
   // their own messaging. Reporting from here would replace "Course saved" with
   // an error right after a save that actually succeeded.
-  if (markProperties === undefined) {
+  // An empty 200 body ('') is as invalid as a failed request.
+  if (!markProperties) {
     console.warn('Failed to load mark properties')
     return
   }
@@ -56,7 +60,7 @@ export function* loadMarkProperties({ payload }: any = { payload: { createMissin
 
   yield put(receiveEntities(mergeRight(markProperties || {}, { replace: true })))
 
-  if (!isEmpty(missingDefaultMarkProperties) && payload.createMissingDefaultMarkProperties) {
+  if (!isEmpty(missingDefaultMarkProperties) && createMissingDefaultMarkProperties) {
     const newMarkProperties = yield all(missingDefaultMarkProperties.map(mp =>
       safeApiCall(api.createMarkProperties, mp)))
 
