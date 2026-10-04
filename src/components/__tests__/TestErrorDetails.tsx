@@ -12,16 +12,8 @@ import TestRenderer, { act } from 'react-test-renderer'
 declare var test: any
 declare var expect: any
 
-const loadComponent = () => {
-  let mod: any
-  try {
-    mod = require('components/ErrorDetails')
-  } catch (e) {
-    mod = undefined
-  }
-  expect(mod && mod.default).toBeDefined()
-  return mod.default
-}
+// Plain require so a load failure surfaces its real error.
+const loadComponent = () => require('components/ErrorDetails').default
 
 const DETAILS = 'ApiException: Internal error\nStatus: 500\nPOST https://example.com/api'
 
