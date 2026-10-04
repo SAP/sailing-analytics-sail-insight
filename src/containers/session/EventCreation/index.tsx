@@ -133,6 +133,7 @@ const createButton = Component(
     view({ style: { backgroundColor: $LightBlue }}),
   )(
   textButton({
+    testID: 'e2e-event-create',
     style: styles.createButton,
     textStyle: styles.createButtonText,
     onPress: props.handleSubmit(createEvent(props)),

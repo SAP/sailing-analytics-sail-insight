@@ -1,0 +1,5 @@
+# Restores connectivity; used as onFlowComplete so a failing offline flow
+# never leaves the device in airplane mode for the next flow.
+appId: ${APP_ID}
+---
+- setAirplaneMode: disabled

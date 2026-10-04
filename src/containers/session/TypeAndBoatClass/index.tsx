@@ -57,6 +57,7 @@ const boatClassInput = Component(props => compose(
   fold(props))(
   reduxFormField({
     name: FORM_KEY_BOAT_CLASS,
+    testID: 'e2e-event-boat-class',
     style: styles.boatClassInput,
     label: I18n.t('text_placeholder_boat_class'),
     component: FormBoatClassInput

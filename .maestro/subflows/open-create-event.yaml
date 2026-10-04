@@ -1,0 +1,35 @@
+# From the main tabs, open Create Event and fill name/venue/boat class.
+appId: ${APP_ID}
+---
+- tapOn:
+    id: "e2e-events-tab"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-create-event"
+    timeout: 30000
+- tapOn:
+    id: "e2e-create-event"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-event-venue"
+    timeout: 30000
+- runFlow:
+    when:
+      true: ${VENUE != ''}
+    commands:
+      - tapOn:
+          id: "e2e-event-venue"
+      - inputText: ${VENUE}
+      - hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-boat-class"
+    direction: DOWN
+- tapOn:
+    id: "e2e-event-boat-class"
+- inputText: "Laser 2"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-create"
+    direction: DOWN

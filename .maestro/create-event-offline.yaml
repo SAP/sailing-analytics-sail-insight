@@ -1,0 +1,29 @@
+# Offline Create shows the network message and leaves the button usable once
+# the connection returns (no stuck spinner).
+appId: ${APP_ID}
+tags:
+  - create-event
+  - offline
+onFlowComplete:
+  - runFlow: subflows/network-on.yaml
+---
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/open-create-event.yaml
+    env:
+      VENUE: "Kiel"
+- setAirplaneMode: enabled
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    id: "e2e-event-create"
+- extendedWaitUntil:
+    visible: ".*[Nn]etwork connection required.*"
+    timeout: 10000
+- takeScreenshot: create-event-offline
+- setAirplaneMode: disabled
+- waitForAnimationToEnd:
+    timeout: 5000
+- assertVisible:
+    id: "e2e-event-create"
+    enabled: true

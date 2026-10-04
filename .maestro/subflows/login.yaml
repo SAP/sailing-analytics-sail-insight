@@ -1,0 +1,34 @@
+# Logs in the run's account (registered once by auth-register-login, which runs
+# first). The backend rate-limits sign-ups per IP, so flows must not register
+# their own accounts. Ends on the main tab screen.
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: "e2e-first-contact-login"
+    timeout: 60000
+- tapOn:
+    id: "e2e-first-contact-login"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-login-username"
+    timeout: 30000
+- tapOn:
+    id: "e2e-login-username"
+- setClipboard: ${E2E_USERNAME}
+- pasteText
+- tapOn:
+    id: "e2e-login-password"
+- setClipboard: ${E2E_PASSWORD}
+- pasteText
+- hideKeyboard
+- tapOn:
+    id: "e2e-login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-account-tab"
+    timeout: 60000

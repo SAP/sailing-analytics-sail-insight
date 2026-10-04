@@ -1,0 +1,20 @@
+# Missing venue: the error must be visible next to the Venue field after
+# tapping Create, without the user hunting for it.
+appId: ${APP_ID}
+tags:
+  - create-event
+---
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/open-create-event.yaml
+    env:
+      VENUE: ""
+- tapOn:
+    id: "e2e-event-create"
+- takeScreenshot: create-event-validation-after-tap
+# The field-level error must be on screen together with the Venue field.
+- extendedWaitUntil:
+    visible:
+      id: "e2e-event-venue"
+    timeout: 5000
+- assertVisible: "No location chosen. Please select a location."

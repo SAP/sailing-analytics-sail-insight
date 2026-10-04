@@ -169,7 +169,7 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
 
   public renderHint = () => {
     return (
-      <View style={this.styles.hintContainer}>
+      <View style={this.styles.hintContainer} testID="e2e-sessions-empty-hint">
         <Image
           source={
             I18n.locale.substring(0, 3) === 'de-'
@@ -195,6 +195,7 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
         >
           {this.props.route?.params?.forTracking && <Text style={this.styles.headLine}>{I18n.t('text_tracking_headline')}</Text>}
           <TouchableOpacity
+            testID="e2e-create-event"
             style={this.styles.createButton}
             onPress={() => this.debouncedButtonClick('CREATE', this.props.navigation)}>
             <IconText

@@ -1,0 +1,38 @@
+# Login form feedback: empty fields and wrong credentials must be explained.
+appId: ${APP_ID}
+tags:
+  - auth
+---
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: "e2e-first-contact-login"
+    timeout: 60000
+- tapOn:
+    id: "e2e-first-contact-login"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-login-submit"
+    timeout: 30000
+- tapOn:
+    id: "e2e-login-submit"
+- assertVisible: "Please enter a user name"
+- assertVisible: "Please enter a password"
+
+- tapOn:
+    id: "e2e-login-username"
+- setClipboard: "nonexistent${E2E_USERNAME}"
+- pasteText
+- tapOn:
+    id: "e2e-login-password"
+- setClipboard: "wrong-password-1A!"
+- pasteText
+- hideKeyboard
+- tapOn:
+    id: "e2e-login-submit"
+- extendedWaitUntil:
+    visible: "The username or password you entered is incorrect"
+    timeout: 30000

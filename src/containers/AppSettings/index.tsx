@@ -81,6 +81,7 @@ class AppSettings extends React.Component<ViewProps & {
   protected renderVersionNumber = () => {
     return (
       <TouchableWithoutFeedback
+        testID="e2e-expert-settings-trigger"
         onPress={this.handleExpertSettings}
       >
         <Text style={styles.item}>

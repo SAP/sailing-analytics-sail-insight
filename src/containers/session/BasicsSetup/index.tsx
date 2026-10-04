@@ -62,12 +62,14 @@ const nameInput = Component((props: any) => compose(
     label: I18n.t('text_placeholder_session_name'),
     placeholder: props.defaultValues && props.defaultValues[FORM_KEY_NAME],
     name: FORM_KEY_NAME,
+    testID: 'e2e-event-name',
     component: boxedTextInput.fold,
 })))
 
 const locationInput = reduxFormField({
   label: I18n.t('text_location'),
   name: FORM_KEY_LOCATION,
+  testID: 'e2e-event-venue',
   component: boxedTextInput.fold,
 })
 

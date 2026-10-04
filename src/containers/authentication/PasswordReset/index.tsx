@@ -76,6 +76,7 @@ class PasswordReset extends TextInputForm<{
               </Text>
               <View style={form.formSegment1}>
                 <TextInput
+                  testID="e2e-reset-username"
                   value={this.state.usernameOrEmail}
                   error={usernameError}
                   onChangeText={this.onUsernameOrEmailChange}
@@ -92,6 +93,7 @@ class PasswordReset extends TextInputForm<{
               <View style={form.lastFormSegment}>
                 {/* {error && <View style={styles.redBalloon}><Text style={styles.redBalloonText}>{error}</Text><Image resizeMode='center' style={styles.attention} source={Images.defaults.attention} /></View>} */}
                 <TextButton
+                  testID="e2e-reset-submit"
                   style={[button.primary, button.fullWidth, styles.resetButton]}
                   textStyle={button.primaryText}
                   onPress={this.onSubmit}

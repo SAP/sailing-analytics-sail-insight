@@ -32,7 +32,12 @@ export E2E_EMAIL="${E2E_EMAIL:-${E2E_USERNAME}@example.test}"
 export E2E_PASSWORD="${E2E_PASSWORD:-E2e-${run_id}!Aa9qZ}"
 
 maestro_device_args
-log "Running auth E2E as $E2E_USERNAME on Android $(adb shell getprop ro.build.version.sdk | tr -d '\r')"
+# E2E_FLOWS: space-separated flow files/dirs (default: all flows via .maestro/config.yaml).
+read -r -a flows <<<"${E2E_FLOWS:-$ROOT_DIR/.maestro}"
+tag_args=()
+[[ -z "${E2E_INCLUDE_TAGS:-}" ]] || tag_args+=(--include-tags "$E2E_INCLUDE_TAGS")
+[[ -z "${E2E_EXCLUDE_TAGS:-}" ]] || tag_args+=(--exclude-tags "$E2E_EXCLUDE_TAGS")
+log "Running E2E flows (${flows[*]}) as $E2E_USERNAME on Android $(adb shell getprop ro.build.version.sdk | tr -d '\r')"
 set +e
 # Device/endpoint options belong to Maestro's root command.
 maestro "${MAESTRO_DEVICE_ARGS[@]}" test \
@@ -44,7 +49,8 @@ maestro "${MAESTRO_DEVICE_ARGS[@]}" test \
   --test-output-dir "$E2E_ARTIFACTS_DIR/maestro-results" \
   --format junit \
   --output "$E2E_ARTIFACTS_DIR/maestro-junit.xml" \
-  "$ROOT_DIR/.maestro/auth-register-login.yaml"
+  ${tag_args[@]+"${tag_args[@]}"} \
+  "${flows[@]}"
 status=$?
 set -e
 adb logcat -d >"$E2E_ARTIFACTS_DIR/android-logcat.txt" 2>&1 || true
@@ -54,4 +60,4 @@ if (( status != 0 )); then
   exit "$status"
 fi
 adb exec-out screencap -p >"$E2E_ARTIFACTS_DIR/success.png" 2>/dev/null || true
-log "Auth E2E passed."
+log "E2E flows passed."

@@ -1,0 +1,60 @@
+# Server rejections must be explained, and pro users (Expert settings →
+# "Show technical error details") can expand the raw technical details.
+# Relies on the pinned local backend's default: new users lack
+# SERVER:CREATE_OBJECT, so createEvent fails with a permission error.
+appId: ${APP_ID}
+tags:
+  - create-event
+  - backend-default-permissions
+---
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/open-create-event.yaml
+    env:
+      VENUE: "Kiel"
+- tapOn:
+    id: "e2e-event-create"
+- extendedWaitUntil:
+    visible: ".*permission.*"
+    timeout: 30000
+- assertNotVisible: ".*Oops.*"
+# Details are hidden for normal users.
+- assertNotVisible:
+    id: "e2e-error-details-toggle"
+- takeScreenshot: create-event-permission-error-normal-user
+
+# Enable technical details in the hidden Expert settings (15 taps).
+- back
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "SETTINGS"
+- repeat:
+    times: 15
+    commands:
+      - tapOn:
+          id: "e2e-expert-settings-trigger"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-show-error-details-switch"
+    timeout: 10000
+- tapOn:
+    id: "e2e-show-error-details-switch"
+- back
+- back
+- runFlow:
+    file: subflows/open-create-event.yaml
+    env:
+      VENUE: "Kiel"
+- tapOn:
+    id: "e2e-event-create"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-error-details-toggle"
+    timeout: 30000
+- takeScreenshot: create-event-permission-error-collapsed
+- tapOn:
+    id: "e2e-error-details-toggle"
+- assertVisible: ".*UnauthorizedException.*"
+- assertVisible: ".*400.*"
+- assertVisible: ".*POST.*createEvent.*"
+- takeScreenshot: create-event-permission-error-expanded

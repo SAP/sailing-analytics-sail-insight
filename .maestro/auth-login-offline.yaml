@@ -1,0 +1,42 @@
+# Offline login must tell the user why nothing happens (today the message
+# is set in state but its renderer is commented out).
+appId: ${APP_ID}
+tags:
+  - auth
+  - offline
+onFlowComplete:
+  - runFlow: subflows/network-on.yaml
+---
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: "e2e-first-contact-login"
+    timeout: 60000
+- tapOn:
+    id: "e2e-first-contact-login"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-login-username"
+    timeout: 30000
+- tapOn:
+    id: "e2e-login-username"
+- setClipboard: ${E2E_USERNAME}
+- pasteText
+- tapOn:
+    id: "e2e-login-password"
+- setClipboard: ${E2E_PASSWORD}
+- pasteText
+- hideKeyboard
+- setAirplaneMode: enabled
+# Give NetInfo time to report the change to the app.
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    id: "e2e-login-submit"
+- extendedWaitUntil:
+    visible: ".*[Nn]etwork connection required.*"
+    timeout: 10000
+- takeScreenshot: auth-login-offline

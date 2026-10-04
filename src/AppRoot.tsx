@@ -399,7 +399,11 @@ const mainTabsNavigator = Component(props => compose(
       tabBarShowLabel: true,
       tabBarLabelPosition: 'below-icon',
       tabBarHideOnKeyboard: Platform.OS === 'android',
-      tabBarButtonTestID: route.name === Screens.Account ? 'e2e-account-tab' : undefined,
+      tabBarButtonTestID: ({
+        [Screens.Account]: 'e2e-account-tab',
+        [Screens.SessionsNavigator]: 'e2e-events-tab',
+        [Screens.TrackingNavigator]: 'e2e-tracking-tab',
+      } as Record<string, string>)[route.name],
 
       lazy: false,
       headerShown: false,

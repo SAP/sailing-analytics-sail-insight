@@ -1,0 +1,16 @@
+# A brand-new account sees an explained empty Events list with both next actions.
+appId: ${APP_ID}
+tags:
+  - events
+---
+- runFlow: subflows/login.yaml
+- tapOn:
+    id: "e2e-events-tab"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-sessions-empty-hint"
+    timeout: 30000
+- assertVisible:
+    id: "e2e-create-event"
+- assertVisible: "SCAN A QR-CODE"
+- takeScreenshot: events-empty-state
