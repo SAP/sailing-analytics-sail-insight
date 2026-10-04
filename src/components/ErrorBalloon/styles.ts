@@ -4,24 +4,23 @@ export default EStyleSheets.create({
   container: {
     alignSelf: 'stretch',
     marginTop: '$smallSpacing',
+    marginBottom: '$smallSpacing',
   },
   redBalloon: {
-    paddingLeft: '$largeSpacing',
-    paddingRight: '$largeSpacing',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: '$smallSpacing',
+    paddingVertical: '$tinySpacing',
     backgroundColor: '#FD3737',
     borderRadius: '$baseBorderRadius',
-    position: 'relative',
   },
   redBalloonText: {
+    flex: 1,
     color: '#FFFFFF',
-    alignSelf: 'center',
-    marginTop: '$tinySpacing',
-    marginBottom: '$tinySpacing',
   },
   attention: {
-    position: 'absolute',
-    left: 20,
-    height: '100%',
     width: 16,
+    height: 16,
+    marginRight: '$smallSpacing',
   },
 })

@@ -16,8 +16,8 @@ interface Props {
 const ErrorBalloon = ({ message, error }: Props) => message ? (
   <View style={styles.container}>
     <View style={styles.redBalloon}>
+      <Image resizeMode="contain" style={styles.attention} source={Images.defaults.attention} />
       <Text style={styles.redBalloonText}>{message}</Text>
-      <Image resizeMode="center" style={styles.attention} source={Images.defaults.attention} />
     </View>
     <ConnectedErrorDetails error={error} />
   </View>
