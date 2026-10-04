@@ -338,6 +338,7 @@
   "error_field_invalid_handicap": "Handicap kann nicht 0 sein.",
   "error_device_already_exists": "Dieses Gerät ist bereits für diese Regatta registriert",
   "error_invalid_invitation": "Diese Regatta-Einladung ist ungültig oder abgelaufen.\nBitte überprüfe den Link bzw. QR-Code und versuche es erneut.",
+  "error_event_created_setup_incomplete": "Dein Event wurde erstellt, aber die Einrichtung ist fehlgeschlagen. Bitte öffne es in der Eventliste und prüfe die Einstellungen.",
   "error_server_busy": "Der Server ist vorübergehend nicht erreichbar.\nBitte versuche es gleich noch einmal.",
   "error_not_found_on_server": "Die angeforderten Daten wurden auf dem Server nicht gefunden.",
 

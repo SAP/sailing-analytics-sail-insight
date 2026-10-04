@@ -60,6 +60,10 @@ const boatClassInput = Component(props => compose(
     testID: 'e2e-event-boat-class',
     style: styles.boatClassInput,
     label: I18n.t('text_placeholder_boat_class'),
+    // EventCreation already loads the boat classes (and reports a failure once)
+    boatClasses: props.boatClasses,
+    skipBoatClassFetch: true,
+    onInputFocus: props.onBoatClassFocus,
     component: FormBoatClassInput
   })))
 

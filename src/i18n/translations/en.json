@@ -344,6 +344,7 @@
   "error_field_invalid_handicap": "Handicap can not be 0.",
   "error_device_already_exists": "This device is already registered to this regatta",
   "error_invalid_invitation": "This race invitation is invalid or has expired.\nPlease check the link or QR code and try again.",
+  "error_event_created_setup_incomplete": "Your event was created, but setting it up failed. Please open it from the event list and check its settings.",
   "error_server_busy": "The server is temporarily unavailable.\nPlease try again in a moment.",
   "error_not_found_on_server": "The requested data could not be found on the server.",
 

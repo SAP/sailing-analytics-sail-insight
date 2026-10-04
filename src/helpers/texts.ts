@@ -14,6 +14,7 @@ import {
   STATUS_SERVICE_UNAVAILABLE,
   STATUS_UNAUTHORIZED,
 } from 'api/constants'
+import EventCreatedSetupIncompleteException from 'helpers/EventCreatedSetupIncompleteException'
 import CheckInException from 'services/CheckInService/CheckInException'
 import I18n from 'i18n'
 import { MISSING_PREFIX } from 'i18n/utils'
@@ -77,6 +78,10 @@ export const getErrorDisplayMessage = (exception: any) => {
   const mappedErrorCode = dataErrorCodeName != null ? (ErrorCodes as any)[dataErrorCodeName] : null
   if (mappedErrorCode) {
     return I18n.t(mappedErrorCode)
+  }
+
+  if (exception.name === EventCreatedSetupIncompleteException.NAME) {
+    return I18n.t('error_event_created_setup_incomplete')
   }
 
   if (exception.name === NetworkTimeoutException.NAME) {
