@@ -99,6 +99,8 @@ const createEvent = (props: any) => async (formValues: any) => {
     props.setApiErrors([getErrorDisplayMessage(e)])
     props.setApiErrorRaw(e)
     props.updateCreatingEvent(false)
+    // the error is rendered below the Create button — bring it into view
+    setTimeout(() => scrollViewRef.current && scrollViewRef.current.scrollToEnd({ animated: true }), 100)
   }
 }
 

@@ -71,7 +71,7 @@ export const isStartingTracking = (state: any) =>
   !!(state.events && state.events.isStartingTracking)
 
 export const isSavingRaceSettings = (state: any) =>
-  !!(state.events && state.events.isSavingRaceSettings)
+  !!(state.events && state.events.savingRaceSettingsCount > 0)
 
 export const isLoadingEventList = (state: any) =>
   !!(state.events && state.events.isLoadingEventList)

@@ -3,7 +3,7 @@ import * as DeepLinking from 'integrations/DeepLinking'
 
 import { checkCurrentAuthSession } from './auth'
 import { containsCheckInLink, getInitialUrlParams, handleAppStartDeepLink } from './deepLinking'
-import { updateCreatingEvent, updateLoadingEventList, updateSelectingEvent, updateStartingTracking, updateEventPollingStatus } from './events'
+import { updateCreatingEvent, updateLoadingEventList, updateSelectingEvent, updateStartingTracking, updateEventPollingStatus, resetSavingRaceSettings } from './events'
 import { updateDeletingMarkBinding, updateLoadingCheckInFlag, isJoinLinkInvitationInFlight } from './checkIn'
 import { initLocationUpdates } from './locations'
 import { updateStartLine, stopUpdateStartLineBasedOnCurrentCourse } from './communications'
@@ -41,6 +41,7 @@ export const initializeApp = (navigation:object) => async (dispatch: DispatchTyp
   dispatch(updateSelectingEvent(false))
   dispatch(updateDeletingMarkBinding(false))
   dispatch(updateStartingTracking(false))
+  dispatch(resetSavingRaceSettings())
   dispatch(updateLoadingEventList(false))
   dispatch(updateStartLine({}))
   dispatch(stopUpdateStartLineBasedOnCurrentCourse())

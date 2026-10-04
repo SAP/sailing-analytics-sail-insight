@@ -33,19 +33,12 @@ const defaultResponseHandler = (
       data = response
     }
 
-    switch (response.status) {
-      case STATUS_UNAUTHORIZED:
-        throw AuthException.create(data || ERR_UNAUTHORIZED)
-      default:
-        const exception = ApiException.create(
-          data || ERR_UNKNOWN,
-          response.status,
-          data,
-        )
-        exception.url = requestInfo.url
-        exception.method = requestInfo.method
-        throw exception
-    }
+    const exception = response.status === STATUS_UNAUTHORIZED ?
+      AuthException.create(data || ERR_UNAUTHORIZED) :
+      ApiException.create(data || ERR_UNKNOWN, response.status, data)
+    exception.url = requestInfo.url
+    exception.method = requestInfo.method
+    throw exception
 
   }
   return getData(dataHandler, response)

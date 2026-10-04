@@ -28,7 +28,7 @@ const DEVICE_ALREADY_REGISTERED = 'device is already registered'
 const PERMISSION_DENIED_TEXTS = ['unauthorizedexception', 'does not have permission']
 const SIGNUP_RATE_LIMIT_TEXT = 'locked for user creation'
 const MAX_ERROR_BODY_LENGTH = 2000
-const SENSITIVE_QUERY_PARAM = /([?&][^=&#]*(?:secret|token|password)[^=&#]*=)[^&#]*/gi
+const SENSITIVE_QUERY_PARAM = /([?&][^=&#]*(?:secret|token|password|email|mail|username|user)[^=&#]*=)[^&#]*/gi
 
 const getTranslation = (translationKey: string, defaultMessage?: string, params?: any) => {
   const result = I18n.t(translationKey, params)
@@ -139,6 +139,9 @@ export const getLoginErrorMessage = (exception: any) => {
   return isUnauthorized ? I18n.t(ErrorCodes.LOGIN_INCORRECT) : getErrorDisplayMessage(exception)
 }
 
+const SENSITIVE_BODY_VALUE = /("[^"]*(?:secret|token|password)[^"]*"\s*:\s*)"(?:[^"\\]|\\.)*"/gi
+const redactBody = (body: string) => body.replace(SENSITIVE_BODY_VALUE, '$1"***"')
+
 const redactUrl = (url: string) => url.replace(SENSITIVE_QUERY_PARAM, '$1***')
 
 // Technical description of an error for pro users / support (see ErrorDetails).
@@ -156,7 +159,7 @@ export const getErrorDetails = (exception: any): string | undefined => {
   }
   if (exception.data != null && exception.data !== '') {
     const body = isString(exception.data) ? exception.data : JSON.stringify(exception.data)
-    lines.push(`Response: ${body && body.substring(0, MAX_ERROR_BODY_LENGTH)}`)
+    lines.push(`Response: ${body && redactBody(body).substring(0, MAX_ERROR_BODY_LENGTH)}`)
   }
   return lines.join('\n')
 }

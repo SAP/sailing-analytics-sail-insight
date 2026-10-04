@@ -28,7 +28,6 @@ import { getSelectedWaypoint, waypointLabel, getMarkPropertiesByMarkConfiguratio
   isDefaultWaypointSelection,
   hasEditedCourseChanged,
   getLinesAndGateOptionsForCurrentEventAndWaypoint } from 'selectors/course'
-import { getLocationStats } from 'selectors/location'
 import { getSelectedEventInfo } from 'selectors/event'
 import {
   getFilteredMarkPropertiesAndMarksOptionsForCourse,
@@ -144,17 +143,13 @@ const openGeolocationScreenWithPosition = curry((props, location) => compose(
 
 const isValidCoordinate = (value: any) => typeof value === 'number' && isFinite(value)
 
-// Resolves with the last known position, or asks the GPS for a fresh one. Never
+// Resolves with a recent position (the plugin reuses a fix younger than
+// maximumAge, otherwise asks the GPS for a fresh one). The persisted
+// lastLatitude/lastLongitude carry no timestamp and may be stale. Never
 // resolves with missing coordinates; rejects on GPS errors/permission denial.
 const getCurrentCoordinates = (): Promise<{ latitude: number, longitude: number }> => {
-  const { lastLatitude, lastLongitude } = getLocationStats(getStore().getState()) || {} as any
-
-  if (isValidCoordinate(lastLatitude) && isValidCoordinate(lastLongitude)) {
-    return Promise.resolve({ latitude: lastLatitude, longitude: lastLongitude })
-  }
-
   return new Promise((resolve, reject) => {
-    BackgroundGeolocation.getCurrentPosition({ timeout: 30 }, (location: any) => {
+    BackgroundGeolocation.getCurrentPosition({ timeout: 30, maximumAge: 10000, samples: 1, desiredAccuracy: 20 }, (location: any) => {
       const { latitude, longitude } = location?.coords || {} as any
       if (isValidCoordinate(latitude) && isValidCoordinate(longitude)) {
         resolve({ latitude, longitude })

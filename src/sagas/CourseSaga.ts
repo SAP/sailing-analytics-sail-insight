@@ -4,7 +4,7 @@ import { any, allPass, map, evolve, mergeRight, curry, dissoc, not, has,
   __, head, last, includes, flatten, reject, filter, both, reverse, sortBy,
   toPairs, values, fromPairs, ifElse, always, findIndex, equals, takeLast, indexOf, pick
 } from 'ramda'
-import { all, call, put, select, takeEvery, takeLatest, takeLeading, delay } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest, takeLeading, delay, spawn } from 'redux-saga/effects'
 import { dataApi } from 'api'
 import { safe, safeApiCall } from './HelpersSaga'
 import { v4 as uuidv4 } from 'uuid';
@@ -387,6 +387,27 @@ function* saveCourseFlow({ navigation }: any) {
 
   navigation.goBack()
 
+  // Detached, so the (leading) save task ends here and a later save from
+  // another race's editor is accepted while the propagation still runs.
+  yield spawn(propagateSavedCourse, {
+    editedCourse, updatedCourse, serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret,
+  })
+}
+
+function* propagateSavedCourse(params: any) {
+  try {
+    yield call(propagateSavedCourseFlow, params)
+  } catch (e) {
+    // A spawned task has no parent to report to.
+    console.warn('Failed to finish saving the course', e)
+    showSaveFailedSnackbarMessage()
+  }
+}
+
+function* propagateSavedCourseFlow({
+  editedCourse, updatedCourse, serverUrl, regattaName, raceColumnName, fleet, leaderboardName, secret,
+}: any) {
+  const api = dataApi(serverUrl)
   const plannedRaces = yield select(getRegattaPlannedRaces(regattaName))
 
   let followingRacesFailed = false

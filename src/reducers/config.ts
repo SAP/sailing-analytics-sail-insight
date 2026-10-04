@@ -83,7 +83,8 @@ export interface EventState {
   isCreatingEvent: boolean
   isSelectingEvent: boolean
   isStartingTracking: boolean
-  isSavingRaceSettings: boolean
+  // number of in-flight race settings saves (discards, race count)
+  savingRaceSettingsCount: number
   isLoadingEventList: boolean
   isPollingEvent: boolean
 }

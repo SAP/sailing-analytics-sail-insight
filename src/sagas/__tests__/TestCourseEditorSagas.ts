@@ -332,6 +332,25 @@ describe('double save', () => {
 
     expect(createCourseCallsFor('R1').length).toBe(1)
   })
+
+  // User impact: a Save in another race's editor was silently dropped while
+  // the first save was still propagating to following races.
+  test('a later save is accepted while the first one still propagates to following races', async () => {
+    fake.editedCourse = editedCourse
+    fake.courses['Regatta - R1'] = { markConfigurations: [], waypoints: [] }
+    fake.plannedRaces = ['R1', 'R2']
+    mockApi.createCourse.mockResolvedValue(savedPrimaryCourse)
+    mockApi.requestCourse.mockImplementation(() => new Promise(() => {})) // propagation hangs
+    const nav = navigation()
+
+    dispatch(navigateBackFromCourseCreation({ navigation: nav }))
+    await flush()
+    expect(nav.goBack).toHaveBeenCalledTimes(1)
+    dispatch(navigateBackFromCourseCreation({ navigation: nav }))
+    await flush()
+
+    expect(createCourseCallsFor('R1').length).toBe(2)
+  })
 })
 
 // ---------------------------------------------------------------------------

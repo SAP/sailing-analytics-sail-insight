@@ -328,7 +328,7 @@
   "error_offline_competitor_registration": "Du musst mit dem Internet verbunden sein um die Anmeldung abzuschließen",
   "error_network_required_alert": "Bitte überprüfe die Internetverbindung und dann wiederhole den Vorgang. Sollte der Fehler weiter bestehen kontaktiere bitte support@sapsailing.com",
   "error_network_required_snackbar": "Network connection required to perform this action",
-  "error_course_saved_following_races_failed": "Kurs gespeichert, konnte aber nicht in einen oder mehrere folgende Wettfahrten übernommen werden.",
+  "error_course_saved_following_races_failed": "Kurs gespeichert, konnte aber nicht in ein oder mehrere folgende Rennen übernommen werden.",
   "error_course_default_marks_missing": "Die Standardmarken sind nicht verfügbar. Bitte prüfe dein Marken-Inventar und versuche es erneut.",
   "error_mark_position_invalid": "Keine gültige Position verfügbar. Bitte versuche es erneut.",
   "error_mark_binding_failed": "Dieses Gerät konnte nicht an die Marke gebunden werden. Bitte versuche es erneut.",

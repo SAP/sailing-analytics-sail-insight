@@ -39,7 +39,7 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
   const checkInData = isString(data) ? getCheckInByLeaderboardName(data)(getState()) : data
 
   if (!checkInData) {
-    Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
+    showErrorAlert(I18n.t('caption_start_tracking'), undefined)
     return
   }
 

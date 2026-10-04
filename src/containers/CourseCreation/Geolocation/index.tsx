@@ -34,6 +34,7 @@ import {dd2ddm, ddm2dd, isValidDdmCoordinate} from 'helpers/utils'
 import {$Orange, $primaryBackgroundColor, $secondaryBackgroundColor} from 'styles/colors'
 import {HeaderSaveTextButton, HeaderCancelTextButton} from 'components/HeaderTextButton'
 import I18n from 'i18n'
+import Snackbar from 'react-native-snackbar'
 
 // --- Updated navigationBackHandler using hooks ---
 const navigationBackHandler = Component((props: any) => {
@@ -103,6 +104,7 @@ const withNavigationHandlers = withHandlers({
       !Number.isFinite(latitude) || !Number.isFinite(longitude) ||
       Math.abs(latitude) > 90 || Math.abs(longitude) > 180
     ) {
+      Snackbar.show({ text: I18n.t('error_coordinate_invalid'), duration: Snackbar.LENGTH_LONG })
       return
     }
     const markConfigurationId = props.selectedMarkConfiguration
@@ -214,6 +216,8 @@ const Map = Component((props: any) => compose(
       onRegionChangeComplete: region => {
         props.setInitialRender(false)
         props.setRegion(region)
+        // the map position replaces any invalid manual input
+        props.setCoordinateErrors({})
       }
     }))))
 
@@ -282,6 +286,7 @@ const coordinatesInput = Component((props: any) => compose(
           ]])[0]
 
           const newRegion = {...props.region, [props.unit]: newCoordinate}
+          props.setCoordinateErrors({ ...props.coordinateErrors, [props.unit]: false })
           props.setInitialRender(true)
           props.setRegion(newRegion)
 

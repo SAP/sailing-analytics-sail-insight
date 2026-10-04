@@ -12,6 +12,7 @@ import {
   updateSelectingEvent,
   updateStartingTracking,
   updateSavingRaceSettings,
+  resetSavingRaceSettings,
   updateEventPollingStatus,
 } from "actions/events";
 import { EventFilter } from 'models/EventFilter'
@@ -27,7 +28,7 @@ const initialState: EventState = {
   isCreatingEvent: false,
   isSelectingEvent: false,
   isStartingTracking: false,
-  isSavingRaceSettings: false,
+  savingRaceSettingsCount: 0,
   isLoadingEventList: false,
   isPollingEvent: false,
 } as EventState
@@ -97,7 +98,12 @@ const reducer = handleActions(
     [updateCreatingEvent as any]: itemUpdateHandler('isCreatingEvent'),
     [updateSelectingEvent as any]: itemUpdateHandler('isSelectingEvent'),
     [updateStartingTracking as any]: itemUpdateHandler('isStartingTracking'),
-    [updateSavingRaceSettings as any]: itemUpdateHandler('isSavingRaceSettings'),
+    // discards and race count saves can overlap, so count them
+    [updateSavingRaceSettings as any]: (state: any, { payload }: any) => ({
+      ...state,
+      savingRaceSettingsCount: Math.max(0, (state.savingRaceSettingsCount || 0) + (payload ? 1 : -1)),
+    }),
+    [resetSavingRaceSettings as any]: (state: any) => ({ ...state, savingRaceSettingsCount: 0 }),
     [updateLoadingEventList as any]: itemUpdateHandler('isLoadingEventList'),
     [updateEventPollingStatus as any]: itemUpdateHandler('isPollingEvent'),
   },
