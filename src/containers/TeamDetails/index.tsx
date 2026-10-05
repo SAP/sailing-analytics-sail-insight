@@ -93,6 +93,7 @@ class TeamDetails extends TextInputForm<Props> {
               <View style={form.formSegment1}>
                 <Field
                   hint={I18n.t('text_hint_competitor_name')}
+                  testID="e2e-boat-competitor-name"
                   label={I18n.t('text_placeholder_competitor_name')}
                   name={teamForm.FORM_KEY_TEAM_NAME}
                   component={FormTextInput}
@@ -101,6 +102,7 @@ class TeamDetails extends TextInputForm<Props> {
                   {...this.commonProps}
                   validate={[validateRequired, validateNameExists]} />
                 <Field
+                  testID="e2e-boat-class"
                   label={I18n.t('text_placeholder_boat_class')}
                   name={teamForm.FORM_KEY_BOAT_CLASS}
                   component={FormBoatClassInput}
@@ -118,6 +120,7 @@ class TeamDetails extends TextInputForm<Props> {
                   onChange={this.handleNationalityChanged}
                   {...this.commonProps} />
                 <Field
+                  testID="e2e-boat-sail-number"
                   label={I18n.t('text_placeholder_sail_number')}
                   name={teamForm.FORM_KEY_SAIL_NUMBER}
                   component={FormSailNumberInput}
@@ -148,6 +151,7 @@ class TeamDetails extends TextInputForm<Props> {
               </View>
               <View style={form.lastFormSegment}>
                 <TextButton
+                  testID="e2e-boat-save"
                   style={[button.primary, button.fullWidth, styles.saveButton]}
                   textStyle={button.primaryText}
                   onPress={this.props.handleSubmit(this.onSavePress)}

@@ -1,0 +1,20 @@
+# From the organizer's Event Overview: join the own event as competitor.
+# Without a boat yet, the app asks for one (COMPETITOR_NAME / SAIL_NUMBER,
+# Laser 2); with a boat it joins right away. Ends back on the overview.
+appId: ${APP_ID}
+---
+- scrollUntilVisible:
+    element: "JOIN AS COMPETITOR"
+    direction: DOWN
+- tapOn: "JOIN AS COMPETITOR"
+- tapOn: "JOIN RACE"
+- waitForAnimationToEnd:
+    timeout: 10000
+- runFlow:
+    when:
+      visible:
+        id: "e2e-register-boat-competitor-name"
+    file: register-boat.yaml
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 60000

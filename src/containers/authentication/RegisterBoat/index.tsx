@@ -81,6 +81,7 @@ class RegisterBoat extends TextInputForm<Props> {
               <View style={form.formSegment1}>
                 <Field
                   hint={I18n.t('text_hint_competitor_name')}
+                  testID="e2e-register-boat-competitor-name"
                   label={I18n.t('text_placeholder_competitor_name')}
                   name={FORM_KEY_BOAT_NAME}
                   component={FormTextInput}
@@ -92,6 +93,7 @@ class RegisterBoat extends TextInputForm<Props> {
                   autoCompleteType="name"
                   {...this.commonProps} />
                 <Field
+                  testID="e2e-register-boat-sail-number"
                   label={I18n.t('text_placeholder_sail_number')}
                   name={FORM_KEY_SAIL_NUMBER}
                   component={FormTextInput}
@@ -101,6 +103,7 @@ class RegisterBoat extends TextInputForm<Props> {
                   returnKeyType="next"
                   {...this.commonProps} />
                 <Field
+                  testID="e2e-register-boat-class"
                   label={I18n.t('text_placeholder_boat_class')}
                   name={FORM_KEY_BOAT_CLASS}
                   component={FormBoatClassInput}
@@ -131,6 +134,7 @@ class RegisterBoat extends TextInputForm<Props> {
               }
               <View style={form.lastFormSegment}>
                 <TextButton
+                  testID="e2e-register-boat-submit"
                   style={[button.primary, button.fullWidth, styles.addBoatButton]}
                   textStyle={button.primaryText}
                   onPress={this.props.handleSubmit(this.onSubmit)}

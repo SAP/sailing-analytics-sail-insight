@@ -1,0 +1,16 @@
+# Fills the "Add Boat" form shown when joining without a boat.
+appId: ${APP_ID}
+---
+- tapOn:
+    id: "e2e-register-boat-competitor-name"
+- inputText: ${COMPETITOR_NAME}
+- tapOn:
+    id: "e2e-register-boat-sail-number"
+- inputText: ${SAIL_NUMBER}
+- tapOn:
+    id: "e2e-register-boat-class"
+# Type the exact class name; the suggestion list is not needed.
+- inputText: "Laser 2"
+- hideKeyboard
+- tapOn:
+    id: "e2e-register-boat-submit"

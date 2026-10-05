@@ -1,0 +1,49 @@
+# Competitor: join the own event, start tracking, see live values, stop.
+# The tracking timer must run, and Back must not leave the tracking screen
+# (tracking would silently continue in the background).
+appId: ${APP_ID}
+tags:
+  - competitor
+---
+- evalScript: ${output.eventName = 'Track ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- runFlow:
+    file: subflows/join-as-competitor.yaml
+    env:
+      COMPETITOR_NAME: "E2E Sailor"
+      SAIL_NUMBER: "GER 4711"
+- scrollUntilVisible:
+    element: "START TRACKING"
+    direction: DOWN
+- assertNotVisible: "JOIN AS COMPETITOR"
+- setLocation:
+    latitude: 54.35
+    longitude: 10.15
+- tapOn: "START TRACKING"
+- runFlow:
+    when:
+      visible: "OK"
+    commands:
+      - tapOn: "OK"
+- extendedWaitUntil:
+    visible: "My Rank"
+    timeout: 30000
+- assertVisible: "STOP"
+# The elapsed tracking time must advance.
+- extendedWaitUntil:
+    visible: "00:00:0[3-9]|00:00:[1-5]\\d|00:0[1-9]:\\d\\d"
+    timeout: 15000
+- takeScreenshot: competitor-tracking-running
+# Back is blocked while tracking.
+- back
+- assertVisible: "STOP"
+- tapOn: "STOP"
+- assertVisible: "Do you really want to stop tracking?"
+- tapOn: "YES"
+- extendedWaitUntil:
+    visible: "Welcome to Sail Insight"
+    timeout: 30000

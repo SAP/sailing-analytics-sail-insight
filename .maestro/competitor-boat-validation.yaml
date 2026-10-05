@@ -1,0 +1,60 @@
+# Joining with a blank (whitespace-only) competitor name or sail number must be
+# rejected: such a boat shows up as an empty row in leaderboards and My Boats.
+# With valid values the competitor then appears in the event's competitor list.
+appId: ${APP_ID}
+tags:
+  - competitor
+---
+- evalScript: ${output.eventName = 'Blank ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- scrollUntilVisible:
+    element: "JOIN AS COMPETITOR"
+    direction: DOWN
+- tapOn: "JOIN AS COMPETITOR"
+- tapOn: "JOIN RACE"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-register-boat-competitor-name"
+    timeout: 30000
+- tapOn:
+    id: "e2e-register-boat-competitor-name"
+- inputText: "   "
+- tapOn:
+    id: "e2e-register-boat-sail-number"
+- inputText: "  "
+- tapOn:
+    id: "e2e-register-boat-class"
+- inputText: "Laser 2"
+- hideKeyboard
+- tapOn:
+    id: "e2e-register-boat-submit"
+- extendedWaitUntil:
+    visible: "Field is required."
+    timeout: 10000
+- assertVisible:
+    id: "e2e-register-boat-submit"
+- takeScreenshot: competitor-blank-name-rejected
+
+# Correct the values and join for real.
+- tapOn:
+    id: "e2e-register-boat-competitor-name"
+- eraseText: 10
+- inputText: "E2E Sailor"
+- tapOn:
+    id: "e2e-register-boat-sail-number"
+- eraseText: 10
+- inputText: "GER 4711"
+- hideKeyboard
+- tapOn:
+    id: "e2e-register-boat-submit"
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 60000
+- scrollUntilVisible:
+    element: ".*E2E Sailor.*"
+    direction: DOWN
+- takeScreenshot: competitor-joined-list

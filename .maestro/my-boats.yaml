@@ -1,0 +1,54 @@
+# Account → My boats: add a boat, then delete it — also when its name was
+# edited (but not saved) before deleting.
+appId: ${APP_ID}
+tags:
+  - boats
+---
+- evalScript: ${output.boat = 'Boat ' + Date.now()}
+- runFlow: subflows/login.yaml
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "MY BOATS"
+- tapOn:
+    id: "e2e-new-boat"
+- tapOn:
+    id: "e2e-boat-competitor-name"
+- inputText: ${output.boat}
+- tapOn:
+    id: "e2e-boat-class"
+- inputText: "Laser 2"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-boat-sail-number"
+    direction: DOWN
+- tapOn:
+    id: "e2e-boat-sail-number"
+- eraseText: 20
+- inputText: "GER 123"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-boat-save"
+    direction: DOWN
+- tapOn:
+    id: "e2e-boat-save"
+- extendedWaitUntil:
+    visible: ${output.boat}
+    timeout: 30000
+- takeScreenshot: my-boats-added
+
+# Edit the name without saving, then delete: the boat must really be gone.
+- tapOn: ${output.boat}
+- tapOn:
+    id: "e2e-boat-competitor-name"
+- inputText: " renamed"
+- hideKeyboard
+- tapOn:
+    id: "e2e-boat-delete"
+- tapOn: "OK"
+- extendedWaitUntil:
+    visible: "NEW BOAT"
+    timeout: 30000
+- assertNotVisible: "${output.boat}.*"
+- takeScreenshot: my-boats-after-delete

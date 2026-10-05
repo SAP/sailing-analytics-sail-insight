@@ -1,6 +1,7 @@
 # Top-level flows only; subflows/ are helpers. auth-register-login runs first
 # and creates the run's account that the other flows log in with;
-# events-empty-state must see that account before any flow creates events.
+# events-empty-state must see that account before any flow creates events,
+# competitor-boat-validation before any flow creates a boat.
 # Organizer flows need the backend provisioning done by e2e/backend.sh.
 flows:
   - "*"
@@ -9,3 +10,5 @@ executionOrder:
   flowsOrder:
     - auth-register-login
     - events-empty-state
+    # Needs an account without boats (it checks the Add Boat form).
+    - competitor-boat-validation

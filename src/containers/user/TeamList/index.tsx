@@ -53,6 +53,7 @@ class TeamList extends React.Component<ViewProps & {
     return(
       <TouchableOpacity
         style={[button.actionRectangular, styles.addButton]}
+        testID="e2e-new-boat"
         onPress={() => this.props.navigation.navigate(Screens.TeamDetails)}>
         <Text style={styles.textStyle}>
           {I18n.t('caption_new_team').toUpperCase()}
