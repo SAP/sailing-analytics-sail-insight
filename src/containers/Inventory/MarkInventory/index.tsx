@@ -36,7 +36,9 @@ const withLoadingOfMarkProperties = compose(
         if (this._loading) return
         this._loading = true
         this.props.setRefreshing(true)
+        // Never recreate default marks here: the user may have deleted them.
         this.props.loadMarkProperties({
+          createMissingDefaultMarkProperties: false,
           onDone: (success: boolean) => {
             this._loading = false
             this._loadSucceeded = success
@@ -128,7 +130,7 @@ const List = Component((props: object) => compose(
       refreshing: props.refreshing,
       onRefresh: () => {
         props.setRefreshing(true)
-        props.loadMarkProperties({ onDone: () => props.setRefreshing(false) })
+        props.loadMarkProperties({ createMissingDefaultMarkProperties: false, onDone: () => props.setRefreshing(false) })
       },
       ListEmptyComponent: () => <Text style={[styles.markName, { padding: 20 }]}>{I18n.t('text_mark_inventory_empty')}</Text>,
       renderItem: MarkPropertiesItem.fold,
