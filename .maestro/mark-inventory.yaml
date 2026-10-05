@@ -24,6 +24,11 @@ tags:
     visible: ".*Start/Finish Pin.*"
     timeout: 30000
 - tapOn: "Cancel"
+- runFlow:
+    when:
+      visible: "Are you sure?"
+    commands:
+      - tapOn: "YES"
 - extendedWaitUntil:
     visible: "Inventory"
     timeout: 30000
