@@ -99,6 +99,10 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
     this._unsubscribeFromFocus = this.props.navigation.addListener('focus', () => {
       this.setState({ openedWhenLoading: this.props.isLoadingEventList });
     });
+    // the initial focus event has already fired when this mounts
+    if (this.props.navigation.isFocused?.()) {
+      this.setState({ openedWhenLoading: this.props.isLoadingEventList });
+    }
     this._unsubscribeFromBlur = this.props.navigation.addListener('blur', () => {
       this.setState({ swipeableLeftOpenEventId: '' })
       this.closeSwipeableRows()

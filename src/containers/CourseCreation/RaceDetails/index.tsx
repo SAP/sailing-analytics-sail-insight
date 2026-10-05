@@ -87,11 +87,15 @@ const withPollingOfEvent = compose(
     componentDidMount() {
       // add only for competitor screen
       if (!this.props.canUpdateCurrentEvent) {
-        this._removeFocusListener = this.props.navigation.addListener('focus',
-          () => {
-            this.props.registerAppStateListeners()
-            this.props.startPollingSelectedEvent()
-          })
+        const onFocus = () => {
+          this.props.registerAppStateListeners()
+          this.props.startPollingSelectedEvent()
+        }
+        this._removeFocusListener = this.props.navigation.addListener('focus', onFocus)
+        // the initial focus event has already fired when this mounts
+        if (this.props.navigation.isFocused && this.props.navigation.isFocused()) {
+          onFocus()
+        }
         this._removeBlurListener = this.props.navigation.addListener('blur',
           () => {
             this.props.unregisterAppStateListeners()
@@ -312,7 +316,7 @@ const raceList = Component((props: object) => compose(
 const mapIndexed = addIndex(map)
 
 const withDiscardDataFromEvent = mapProps(props => compose(
-  mergeRight(props),
+  mergeRight({ ...props, maxNumberOfDiscards: props.numberOfRaces + 1 }),
   objOf('data'),
   append({ type: 'add', disabled: props.isSavingRaceSettings }),
   mapIndexed((value, index) => ({ value, index, disabled: props.isSavingRaceSettings })),

@@ -10,6 +10,8 @@ import { getServerUrlSetting } from 'selectors/settings'
 import { getMarkProperties } from 'selectors/inventory'
 import { isLoggedIn } from 'selectors/auth'
 
+import I18n from 'i18n'
+import { showErrorAlert } from 'helpers/errorAlert'
 import { dataApi } from 'api'
 import { safeApiCall } from './HelpersSaga'
 
@@ -93,6 +95,12 @@ function* removeEntity({ payload }: any) {
   try {
     yield api.removeMarkProperty(payload.id)
   } catch (e) {
+    // The server refused (e.g. the mark is used in a course) or is not
+    // reachable: it was already removed locally, so bring it back.
+    if (payload.entity) {
+      yield put(receiveEntities({ entities: { markProperties: { [payload.id]: payload.entity } } }))
+    }
+    showErrorAlert(I18n.t('text_deleting_mark'), e)
   }
 }
 

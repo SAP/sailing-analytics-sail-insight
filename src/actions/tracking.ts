@@ -19,6 +19,7 @@ import { updateLatestTrackedRace } from 'actions/leaderboards'
 import { startLocationUpdates, stopLocationUpdates } from 'actions/locations'
 import { updateTrackedRegatta, updateTrackingStatus } from 'actions/locationTrackingData'
 import { fetchRegattaAndRaces } from 'actions/regattas'
+import { getLocationTrackingStatus, getTrackedLeaderboardName } from 'selectors/location'
 import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/network'
 import { removeTrackedRegatta, resetTrackingStatistics, updateTrackingContext } from './locationTrackingData'
 import { stopUpdateStartLineBasedOnCurrentCourse, startUpdateStartLineBasedOnCurrentCourse } from 'actions/communications'
@@ -30,6 +31,26 @@ export const stopTracking = () => async (dispatch: DispatchType, getState: GetSt
   dispatch(removeTrackedRegatta())
   // stop updating start line start line
   dispatch(stopUpdateStartLineBasedOnCurrentCourse())
+}
+
+// Starting another track ends the running one (the location service is
+// restarted), so the user has to confirm that first.
+export const confirmSwitchTracking = (state: any, leaderboardName: string) => {
+  const trackedLeaderboardName = getTrackedLeaderboardName(state)
+  const isTrackingOther = getLocationTrackingStatus(state) === LocationService.LocationTrackingStatus.RUNNING &&
+    !!trackedLeaderboardName && trackedLeaderboardName !== leaderboardName
+  if (!isTrackingOther) {
+    return Promise.resolve(true)
+  }
+  return new Promise<boolean>(resolve => Alert.alert(
+    I18n.t('caption_start_tracking'),
+    I18n.t('text_tracking_alert_switch_confirmation_message', { current: trackedLeaderboardName, next: leaderboardName }),
+    [
+      { text: I18n.t('caption_cancel'), style: 'cancel', onPress: () => resolve(false) },
+      { text: I18n.t('button_yes'), onPress: () => resolve(true) },
+    ],
+    { cancelable: true, onDismiss: () => resolve(false) },
+  ))
 }
 
 export const startTracking = ({ data, navigation, useLoadingSpinner = true }: any) => async (
@@ -57,6 +78,10 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
     } else {
       Alert.alert('', I18n.t('error_offline_competitor_registration'))
     }
+    return
+  }
+
+  if (!(await confirmSwitchTracking(getState(), checkInData.leaderboardName))) {
     return
   }
 

@@ -6,6 +6,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import RNPickerSelect from 'react-native-picker-select'
 import { Chevron } from 'react-native-shapes'
 
+import Logger from 'helpers/Logger'
 import { archiveEvent } from 'actions/events'
 import { registerCompetitorAndDevice } from 'actions/sessions'
 
@@ -144,8 +145,11 @@ class JoinRegatta extends React.Component<{
           break
       }
     } catch (err) {
-      console.error(err)
-      Alert.alert(getInvitationErrorMessage(err))
+      // registerCompetitorAndDevice already alerted for its own failures
+      if (!(err && err.alertShown)) {
+        Logger.debug('JoinRegatta error', err)
+        Alert.alert(getInvitationErrorMessage(err))
+      }
     } finally {
       this.setState({ isLoading: false })
     }
