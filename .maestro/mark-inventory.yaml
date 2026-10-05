@@ -1,0 +1,54 @@
+# Inventory: deleting a mark asks twice, removes it, and it stays deleted
+# after an app restart (i.e. the server really deleted it).
+appId: ${APP_ID}
+tags:
+  - organizer
+---
+- evalScript: ${output.eventName = 'Marks ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+# Opening the course editor once creates the default marks.
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- tapOn: "DEFINE RACES"
+- tapOn:
+    text: "Define Course"
+    index: 0
+- runFlow:
+    when:
+      visible: "Turn on"
+    commands:
+      - tapOn: "Turn on"
+- extendedWaitUntil:
+    visible: ".*Start/Finish Pin.*"
+    timeout: 30000
+- tapOn: "Cancel"
+- extendedWaitUntil:
+    visible: "Inventory"
+    timeout: 30000
+- tapOn: "Inventory"
+- extendedWaitUntil:
+    visible: ".*Reaching Mark"
+    timeout: 30000
+- tapOn: ".*Reaching Mark"
+- tapOn: "DELETE MARK"
+- assertVisible: ".*irretrievably delete Reaching Mark.*"
+- tapOn: "YES"
+- extendedWaitUntil:
+    notVisible: ".*Reaching Mark"
+    timeout: 15000
+- assertVisible: ".*Windward Mark"
+- takeScreenshot: mark-inventory-after-delete
+
+# Restart: the list comes from the server again.
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Inventory"
+    timeout: 60000
+- tapOn: "Inventory"
+- extendedWaitUntil:
+    visible: ".*Windward Mark"
+    timeout: 30000
+- assertNotVisible: ".*Reaching Mark"
