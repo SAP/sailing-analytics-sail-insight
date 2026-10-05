@@ -70,6 +70,8 @@
 	<array>
 		<string>com.transistorsoft.fetch</string>
 	</array>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>BentonSans-Bold.otf</string>
@@ -112,14 +114,14 @@
 	<false/>
 	<key>branch_app_domain</key>
 	<string>sailinsight30-app.sapsailing.com</string>
-	<key>branch_universal_link_domains</key>
-	<array>
-		<string>sailinsight30-app.sapsailing.com</string>
-	</array>
 	<key>branch_key</key>
 	<dict>
 		<key>live</key>
 		<string>key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0</string>
 	</dict>
+	<key>branch_universal_link_domains</key>
+	<array>
+		<string>sailinsight30-app.sapsailing.com</string>
+	</array>
 </dict>
 </plist>
