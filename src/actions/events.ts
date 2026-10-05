@@ -5,7 +5,10 @@ import { CheckIn, Session } from 'models'
 
 import { ActionQueue, fetchAction } from 'helpers/actions'
 
-import { collectCheckInData, fetchEventList, updateCheckInAndEventInventory } from 'actions/checkIn'
+import { collectCheckInData, fetchEventList, updateCheckIn, updateCheckInAndEventInventory } from 'actions/checkIn'
+import { getCheckInByLeaderboardName } from 'selectors/checkIn'
+import { showErrorAlert } from 'helpers/errorAlert'
+import I18n from 'i18n'
 import { selfTrackingApi } from 'api'
 import { getApiServerUrl } from 'api/config'
 import { CreateEventBody } from 'api/endpoints/types'
@@ -48,10 +51,22 @@ export const fetchEvent = (requestFunction: ((...args: any[]) => void)) =>
     return await dispatch(fetchAction(requestFunction, receiveEvent)(...args))
   }
 
-export const archiveEvent = (session: Session, isArchived: boolean) => updateCheckInAndEventInventory({
-  isArchived,
-  leaderboardName: session.leaderboardName,
-})
+// Resolves to true when the change was saved. On failure (offline, server error)
+// the local state is reverted, an error is shown and it resolves to false.
+export const archiveEvent = (session: Session, isArchived: boolean) =>
+  async (dispatch: DispatchType, getState: any) => {
+    const { leaderboardName } = session
+    const wasArchived = !!getCheckInByLeaderboardName(leaderboardName)(getState())?.isArchived
+    try {
+      const result = await dispatch(updateCheckInAndEventInventory({ isArchived, leaderboardName }))
+      // undefined: offline, nothing was changed (the snackbar was already shown)
+      return result !== undefined
+    } catch (err) {
+      dispatch(updateCheckIn({ isArchived: wasArchived, leaderboardName } as any))
+      showErrorAlert(I18n.t('caption_archive_event'), err)
+      return false
+    }
+  }
 
 const mapRegattaTypeToApiConstant = (regattaType: RegattaType) => ({
   [RegattaType.OneDesign]: 'ONE_DESIGN',
@@ -161,3 +176,5 @@ export const startTracking = createAction(START_TRACKING)
 export const startTrackingAndWait = (session: any) => (dispatch: DispatchType) =>
   new Promise<boolean>(resolve => dispatch(startTracking({ ...session, onDone: resolve })))
 export const stopTracking = createAction(STOP_TRACKING)
+export const stopTrackingAndWait = (session: any) => (dispatch: DispatchType) =>
+  new Promise<boolean>(resolve => dispatch(stopTracking({ ...session, onDone: resolve })))

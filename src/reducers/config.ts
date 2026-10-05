@@ -39,6 +39,11 @@ export interface LocationTrackingState {
   lastLongitude: number | null
   lastWindCourse: number | null
   lastWindSpeedInKnots: number | null
+  // plugin odometer value / fix time of the previous update, and the distance
+  // of rejected GPS jumps that has to be subtracted from the odometer
+  lastOdometer?: number | null
+  lastFixTimeMillis?: number | null
+  odometerOffset?: number
 }
 
 export interface CompetitorGap {

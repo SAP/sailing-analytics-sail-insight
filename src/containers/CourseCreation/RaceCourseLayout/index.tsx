@@ -773,7 +773,7 @@ const saveCourse = (props: any) => () => {
 const withOnNavigationBackPress = withHandlers({
   onNavigationCancelPress: (props: any) => () => {
     if (props.hasCourseChanged) {
-      Alert.alert(I18n.t('caption_leave'), '',
+      Alert.alert(I18n.t('caption_leave'), I18n.t('text_discard_course_changes'),
       [ { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
       { text: I18n.t('button_no'), onPress: () => {} }])
     } else {
@@ -810,7 +810,7 @@ const NavigationBackHandler = (props: any) => {
             headerLeft: () => HeaderCancelTextButton({
                 onPress: () => {
                     if (props.hasCourseChanged) {
-                        Alert.alert(I18n.t('caption_leave'), '',
+                        Alert.alert(I18n.t('caption_leave'), I18n.t('text_discard_course_changes'),
                             [
                                 { text: I18n.t('button_yes'), onPress: () => props.navigation.goBack() },
                                 { text: I18n.t('button_no'), onPress: () => {} }

@@ -143,6 +143,14 @@ export const getFilteredSessionList = (forTracking: any) => createSelector(
       reject((session: Session) => !session.isArchived)))(
     sessions))
 
+export const hasArchivedSessions = createSelector(
+  getSessionList,
+  (sessions: Session[]) => sessions.some((session: Session) => !!session.isArchived))
+
+export const areArchivedSessionsShown = createSelector(
+  getActiveEventFilters,
+  (filters: EventFilter[]) => filters.includes(EventFilter.Archived))
+
 export const isSessionListEmpty = forTracking => createSelector(
   getFilteredSessionList(forTracking),
   (checkInList: any[]) => isEmpty(checkInList))

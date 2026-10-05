@@ -17,6 +17,7 @@ type Props = OwnProps & InjectedProps & { navigation: NavProp };
 class LeaderboardFetcherInner extends React.PureComponent<Props> {
   private removeFocusListener?: () => void;
   private removeBlurListener?: () => void;
+  private startTimer?: ReturnType<typeof setTimeout>;
 
   componentDidMount() {
     const {navigation} = this.props;
@@ -36,13 +37,16 @@ class LeaderboardFetcherInner extends React.PureComponent<Props> {
   }
 
   private onFocus = () => {
-    setTimeout(
+    clearTimeout(this.startTimer);
+    this.startTimer = setTimeout(
         () => this.props.startPollingLeaderboard({rankOnly: this.props.rankOnly}),
         1000
     );
   };
 
   private onBlur = () => {
+    // a pending delayed start must not fire after leaving the screen
+    clearTimeout(this.startTimer);
     this.props.stopPollingLeaderboard();
   };
 

@@ -22,22 +22,38 @@ import { Alert, Text } from 'react-native'
 import styles from './styles'
 import I18n from 'i18n'
 
-// A failed load leaves the list empty; retry on every focus (and via
-// pull-to-refresh) until there is something to show.
+// Entities are persisted, so the cached list can be stale: load from the server
+// on the first focus per mount, and on later focus only if that load failed.
+// The spinner follows the actual load (the saga reports completion via onDone).
 const withLoadingOfMarkProperties = compose(
   withState('refreshing', 'setRefreshing', false),
   lifeCycle({
     componentDidMount() {
-      const loadIfEmpty = () => isEmpty(this.props.markProperties) && this.props.loadMarkProperties()
-      this._removeFocusListener = this.props.navigation.addListener('focus', loadIfEmpty)
+      this._mounted = true
+      this._loadSucceeded = false
+      this._loading = false
+      this._load = () => {
+        if (this._loading) return
+        this._loading = true
+        this.props.setRefreshing(true)
+        this.props.loadMarkProperties({
+          onDone: (success: boolean) => {
+            this._loading = false
+            this._loadSucceeded = success
+            if (this._mounted) this.props.setRefreshing(false)
+          }
+        })
+      }
+      const loadIfNeeded = () => !this._loadSucceeded && this._load()
+      this._removeFocusListener = this.props.navigation.addListener('focus', loadIfNeeded)
       // the initial focus event has already fired when this mounts
       if (this.props.navigation.isFocused && this.props.navigation.isFocused()) {
-        loadIfEmpty()
+        loadIfNeeded()
       }
     },
     componentWillUnmount() {
+      this._mounted = false
       if (this._removeFocusListener) this._removeFocusListener()
-      clearTimeout(this._refreshTimer)
     }
   }))
 
@@ -111,9 +127,8 @@ const List = Component((props: object) => compose(
       data: props.markProperties,
       refreshing: props.refreshing,
       onRefresh: () => {
-        props.loadMarkProperties()
         props.setRefreshing(true)
-        setTimeout(() => props.setRefreshing(false), 1500)
+        props.loadMarkProperties({ onDone: () => props.setRefreshing(false) })
       },
       ListEmptyComponent: () => <Text style={[styles.markName, { padding: 20 }]}>{I18n.t('text_mark_inventory_empty')}</Text>,
       renderItem: MarkPropertiesItem.fold,

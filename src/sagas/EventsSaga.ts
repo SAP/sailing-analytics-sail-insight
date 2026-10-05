@@ -518,34 +518,42 @@ function* startTracking({ payload }: any) {
 function* stopTracking({ payload }: any) {
   const { serverUrl, leaderboardName, regattaName } = payload
   const api = dataApi(serverUrl)
+  let success = false
 
-  yield safeApiCall(api.stopTracking, leaderboardName, { fleet: 'Default' })
+  try {
+    yield call(api.stopTracking, leaderboardName, { fleet: 'Default' })
 
-  // Set end of tracking time for the last race
-  const races = yield select(getRegattaPlannedRaces(regattaName))
-  const lastRace = last(races)
+    // Set end of tracking time for the last race
+    const races = yield select(getRegattaPlannedRaces(regattaName))
+    const lastRace = last(races)
 
-  yield safeApiCall(api.setTrackingTimes, regattaName,
-    {
-      fleet: 'Default',
-      race_column: lastRace,
-      endoftrackingasmillis: moment().valueOf()
-    })
+    yield call(api.setTrackingTimes, regattaName,
+      {
+        fleet: 'Default',
+        race_column: lastRace,
+        endoftrackingasmillis: moment().valueOf()
+      })
+    success = true
 
-  const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
-  if (leaderboardData) {
-    yield put(receiveEntities(leaderboardData))
+    const leaderboardData = yield safeApiCall(api.requestLeaderboardV2, leaderboardName)
+    if (leaderboardData) {
+      yield put(receiveEntities(leaderboardData))
+    }
+  } catch (e) {
+    // reported to the caller via onDone (the screen shows the error)
+    console.warn('Failed to end event', e)
+  } finally {
+    // also resolves (as failed) when this run is cancelled by a newer one
+    if (payload.onDone) { payload.onDone(success) }
   }
 }
 
 function* handleSelectedEventPolling() {
-  let isPolling = yield select(isPollingEvent())
-  if (!isPolling) {
-    isPolling = true
-    yield put(updateEventPollingStatus(true))
-
-    while (true && isPolling)
-    {
+  // always (re)start: a stale isPolling flag must never prevent polling
+  yield put(updateEventPollingStatus(true))
+  try {
+    let isPolling = true
+    while (isPolling) {
       const isForeground = yield select(isAppActive())
       // skip while offline: the dispatched fetch would be intercepted by the
       // network middleware and show the "network required" snackbar every time
@@ -560,6 +568,10 @@ function* handleSelectedEventPolling() {
       yield delay(EventPollingInterval)
       isPolling = yield select(isPollingEvent())
     }
+  } finally {
+    // cancelled (takeLatest restart) or finished: do not leave the flag set.
+    // A restart queues its own `true` after this, so the order is preserved.
+    yield put(updateEventPollingStatus(false))
   }
 }
 

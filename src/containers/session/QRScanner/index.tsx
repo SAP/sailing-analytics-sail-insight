@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Alert, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Linking, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Camera, useCameraDevice, useCodeScanner } from 'react-native-vision-camera'
 import { connect } from 'react-redux'
@@ -52,7 +52,9 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
         // Original behavior: fetch check-in (with network guard)
         if (!isNetworkConnected) {
             showNetworkRequiredAlert()
-            // navigation.goBack()
+            // allow the same code again after reconnecting; the delay keeps the
+            // continuously scanning camera from stacking alerts
+            setTimeout(() => { lastValueRef.current = null }, 3000)
             return
         }
 
@@ -89,7 +91,13 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
     if (hasPermission === false) {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'black', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: 'white' }}>{'Camera permission is required'}</Text>
+                <Text style={{ color: 'white', textAlign: 'center', marginHorizontal: 24 }}>{I18n.t('text_camera_permission_required')}</Text>
+                <TouchableOpacity
+                    testID="e2e-open-app-settings"
+                    style={{ marginTop: 16, padding: 12, borderWidth: 2, borderColor: 'white' }}
+                    onPress={() => Linking.openSettings()}>
+                    <Text style={{ color: 'white' }}>{I18n.t('caption_open_settings').toUpperCase()}</Text>
+                </TouchableOpacity>
             </SafeAreaView>
         )
     }
@@ -97,7 +105,7 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
     if (!device || hasPermission == null) {
         return (
             <SafeAreaView style={{ flex: 1, backgroundColor: 'black', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: 'white' }}>{'Loading camera…'}</Text>
+                <Text style={{ color: 'white' }}>{I18n.t('text_loading_camera')}</Text>
             </SafeAreaView>
         )
     }

@@ -33,16 +33,21 @@ export interface ComparisonValidatorViewProps {
   ignoredValue?: string
   comparisonValue?: string | string[]
 }
+// names are stored trimmed (see teamFromFormValues), so compare trimmed and
+// case-insensitively; otherwise "Optimist " would silently replace "Optimist"
+const normalizeName = (name: any) => isString(name) ? name.trim().toLowerCase() : name
+
 export const validateNameExists = (value: string, cxt: any, viewProps: ComparisonValidatorViewProps = {}) => {
   const { ignoredValue, comparisonValue } = viewProps
-  if (!viewProps.comparisonValue) {
+  if (!comparisonValue) {
     return undefined
   }
-  if (ignoredValue && value === ignoredValue) {
+  const name = normalizeName(value)
+  if (ignoredValue && name === normalizeName(ignoredValue)) {
     return undefined
   }
-  return comparisonValue && value &&
-    ((isString(comparisonValue) && comparisonValue === value) || includes(comparisonValue, value)) ?
+  const existing = isString(comparisonValue) ? [comparisonValue] : comparisonValue
+  return name && existing.some(candidate => normalizeName(candidate) === name) ?
      I18n.t('error_field_already_exists') :
      undefined
 }

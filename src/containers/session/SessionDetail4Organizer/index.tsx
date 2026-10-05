@@ -4,7 +4,9 @@ import Images from '@assets/Images'
 import { checkOut, collectCheckInData } from 'actions/checkIn'
 import { shareSessionRegatta } from 'actions/sessions'
 import { fetchRegattaCompetitors } from 'actions/regattas'
-import { stopTracking } from 'actions/events'
+import { stopTrackingAndWait } from 'actions/events'
+import { stopTracking as stopLocalTracking } from 'actions/tracking'
+import { updateLoadingCheckInFlag } from 'actions/checkIn'
 import { startTracking } from 'actions/tracking'
 import { updateShowCopyResultsDisclaimer, updateShowEditResultsDisclaimer } from 'actions/uiState'
 import * as Screens from 'navigation/Screens'
@@ -87,9 +89,35 @@ const sessionData = {
   inviteCompetitors: (props: any) => props.shareSessionRegatta(props.session.leaderboardName),
 }
 
+const endEventNow = async (props: any) => {
+  props.updateLoadingCheckInFlag(true)
+  let ended = false
+  try {
+    ended = await props.stopTrackingAndWait(props.session)
+    // the organizer is also tracking this event on this device: stop that too
+    if (ended && props.isTrackingEvent) {
+      try { await props.stopLocalTracking() } catch (e) {}
+    }
+  } finally {
+    props.updateLoadingCheckInFlag(false)
+  }
+  if (ended) {
+    Alert.alert(
+      I18n.t('caption_end_event'),
+      props.isTrackingEvent ?
+        `${I18n.t('text_end_event_long_text_finished')} ${I18n.t('text_end_event_local_tracking_stopped')}` :
+        I18n.t('text_end_event_long_text_finished'))
+  } else {
+    Alert.alert(I18n.t('caption_end_event'), I18n.t('text_end_event_failed'))
+  }
+}
+
 const endEvent = (props: any) => {
+  if (!props.isNetworkConnected) {
+    return showNetworkRequiredSnackbarMessage()
+  }
   Alert.alert(I18n.t('caption_end_event'), I18n.t('text_end_event_alert_message'), [
-    { text: I18n.t('button_yes'), onPress: () => props.stopTracking(props.session) },
+    { text: I18n.t('button_yes'), onPress: () => endEventNow(props) },
     { text: I18n.t('button_no') },
   ])
 }
@@ -108,7 +136,7 @@ export const sessionDetailsCard = Component((props: any) => compose(
       source: Images.info.location,
       alignment: 'horizontal'}, props.location),
     inlineText({ style: props.boatClass !== '' ? styles.text : styles.textLast }, [
-      text({ style: styles.textLight }, 'Style '),
+      text({ style: styles.textLight }, `${I18n.t('text_style')} `),
       text({ style: styles.textValue }, I18n.t(props.boatClass !== '' ? 'caption_one_design' : 'text_handicap_label').toUpperCase())
     ]),
     nothingWhenNoBoatClass(inlineText( { style: styles.textLast }, [
@@ -204,7 +232,7 @@ export default Component((props: any) => compose(
     fold(mergeRight(props, sessionData)),
     connect(
       mapStateToProps,
-      { checkOut, startTracking, stopTracking, collectCheckInData, shareSessionRegatta,
+      { checkOut, startTracking, stopTrackingAndWait, stopLocalTracking, updateLoadingCheckInFlag, collectCheckInData, shareSessionRegatta,
         fetchRegattaCompetitors, updateShowCopyResultsDisclaimer, updateShowEditResultsDisclaimer },
       null,
       {

@@ -19,6 +19,32 @@ import {
 import { removeUserData } from '../actions/auth'
 
 
+// Anything faster than this between two updates is a GPS jump (e.g. from a stale
+// first fix to the real position), not sailing.
+export const MAX_PLAUSIBLE_SPEED_IN_KNOTS = 60
+const MAX_PLAUSIBLE_SPEED_IN_MPS = MAX_PLAUSIBLE_SPEED_IN_KNOTS / 1.94384
+
+// The plugin odometer adds every segment between accepted fixes, including
+// jumps. Returns the total of such jump segments seen so far, so that
+// distance = odometer - offset ignores them.
+export const nextOdometerOffset = (
+  state: { lastOdometer?: number | null, lastFixTimeMillis?: number | null, odometerOffset?: number },
+  odometer: number | undefined,
+  timeMillis: number,
+) => {
+  const offset = state.odometerOffset || 0
+  if (typeof odometer !== 'number' || typeof state.lastOdometer !== 'number') {
+    return offset
+  }
+  const delta = odometer - state.lastOdometer
+  if (delta < 0) {
+    // odometer was reset
+    return 0
+  }
+  const seconds = Math.max(1, (timeMillis - (state.lastFixTimeMillis || timeMillis)) / 1000)
+  return delta / seconds > MAX_PLAUSIBLE_SPEED_IN_MPS ? offset + delta : offset
+}
+
 const initialState: LocationTrackingState = {
   status: null,
   leaderboardName: null,
@@ -78,12 +104,18 @@ const reducer = handleActions(
           gpsFix.bearingInDeg :
           null
 
+      const timeMillis = typeof gpsFix.timeMillis === 'number' ? gpsFix.timeMillis : Date.now()
+      const odometerOffset = nextOdometerOffset(state, gpsFix.odometer, timeMillis)
+
       return ({
         ...state,
+        odometerOffset,
+        lastOdometer: typeof gpsFix.odometer === 'number' ? gpsFix.odometer : state.lastOdometer,
+        lastFixTimeMillis: timeMillis,
         locationAccuracy,
         speedInKnots,
         headingInDeg,
-        distance: gpsFix.odometer,
+        distance: typeof gpsFix.odometer === 'number' ? gpsFix.odometer - odometerOffset : gpsFix.odometer,
         lastLatitude: gpsFix.latitude,
         lastLongitude: gpsFix.longitude,
       })

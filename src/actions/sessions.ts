@@ -41,6 +41,7 @@ import { normalizeAndReceiveEntities } from 'actions/entities'
 import { selectEvent } from 'actions/events'
 import { saveTeam } from 'actions/user'
 import { getUserInfo } from 'selectors/auth'
+import { getSession } from 'selectors/session'
 import { getCheckInByLeaderboardName, getServerUrl, getTrackedCheckIn } from 'selectors/checkIn'
 import { getCompetitor } from '../selectors/competitor'
 import { getLocationTrackingStatus } from 'selectors/location'
@@ -362,7 +363,17 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
 
       if (options && options.startTrackingAfter) {
         const checkIn = getCheckInByLeaderboardName(data.leaderboardName)(getState())
-        dispatch(startTracking({ data: checkIn, navigation }))
+        const started = await dispatch(startTracking({ data: checkIn, navigation }))
+        if (started === false) {
+          // the user declined to switch tracking: registration succeeded, so
+          // leave the Join screen and go to the event instead of staying stuck
+          const session = options.selectSessionAfter || getSession(data.leaderboardName)(getState())
+          if (session) {
+            dispatch(selectEvent({ data: session, navigation }))
+          } else {
+            navigateBackToTracking(navigation)
+          }
+        }
       } else if (options && options.selectSessionAfter) {
         dispatch(selectEvent({ data: options.selectSessionAfter, navigation }))
       } else {

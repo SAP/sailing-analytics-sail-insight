@@ -28,25 +28,11 @@ import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { navigateBackToTracking } from 'actions/navigation'
 import { getWindowWidth } from 'helpers/screen';
 import { getDiscardBounds } from 'helpers/discards'
+import { withInFlightGuard } from 'helpers/inFlightGuard'
 
 const maxNumberOfRaces = 50
 
-// Ignores presses while the previous one is still running (plus a short
-// cool-down for the navigation transition), like the debounce in Sessions.
-export const withInFlightGuard = <T extends (...args: any[]) => any>(fn: T, coolDownMs = 1000) => {
-  let busy = false
-  return async (...args: Parameters<T>) => {
-    if (busy) {
-      return
-    }
-    busy = true
-    try {
-      return await fn(...args)
-    } finally {
-      setTimeout(() => { busy = false }, coolDownMs)
-    }
-  }
-}
+export { withInFlightGuard }
 
 export const fieldValueOrInitialIfEmpty = props => compose(
   when(either(isNil, isEmpty), always(props.meta.initial)),
@@ -424,7 +410,7 @@ const shareActionSheet = curry((Comp: any) => Component(props => compose(
   connectActionSheet,
   touchableOpacity({
     onPress: props => props.showActionSheetWithOptions({
-      options: ['Share SAP Sailing Analytics Link', 'Visit Overall Leaderboard', 'Cancel'],
+      options: [I18n.t('caption_share_sap_link'), I18n.t('caption_visit_overall_leaderboard'), I18n.t('caption_cancel')],
       cancelButtonIndex: 2,
     },
     compose(

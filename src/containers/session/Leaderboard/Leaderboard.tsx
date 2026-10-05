@@ -90,7 +90,7 @@ class Leaderboard extends React.Component<{
       <View style={styles.mainContainer}>
         <LeaderboardFetcher rankOnly={false} />
         <ConnectivityIndicator style={styles.connectivity} />
-        <Text style={styles.header}>{'Leaderboard'.toUpperCase()}</Text>
+        <Text style={styles.header}>{I18n.t('title_leaderboard').toUpperCase()}</Text>
         <View style={styles.container}>
           <View style={styles.propertyRow}>
             <View style={styles.leftPropertyContainer}>

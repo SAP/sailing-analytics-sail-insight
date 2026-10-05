@@ -12,11 +12,12 @@ import I18n from 'i18n'
 import { debounce } from 'lodash'
 
 import { authBasedNewSession } from 'actions/auth'
-import { selectEvent } from 'actions/events'
+import { selectEvent, updateEventFilters } from 'actions/events'
+import { EventFilter } from 'models/EventFilter'
 import { fetchEventList } from 'actions/checkIn'
 import { Session } from 'models'
 import { isLoggedIn as isLoggedInSelector } from 'selectors/auth'
-import { getFilteredSessionList, isSessionListEmpty } from 'selectors/session'
+import { areArchivedSessionsShown, getFilteredSessionList, hasArchivedSessions, isSessionListEmpty } from 'selectors/session'
 import { getEventIdThatsBeingSelected, isLoadingEventList } from 'selectors/event'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import FloatingComponentList from 'components/FloatingComponentList'
@@ -52,6 +53,9 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
   eventIdThatsBeingSelected?: string,
   isLoggedIn: boolean,
   showHints: boolean,
+  hasArchived: boolean,
+  archivedShown: boolean,
+  updateEventFilters: any,
 }, any > {
   private _unsubscribeFromFocus?: () => void;
   private _unsubscribeFromBlur?: () => void;
@@ -235,6 +239,16 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
                 }
               />
           }
+          {!this.props.route?.params?.forTracking && (this.props.hasArchived || this.props.archivedShown) &&
+            <TouchableOpacity
+              testID="e2e-toggle-archived-events"
+              style={this.styles.archivedToggle}
+              onPress={() => this.props.updateEventFilters(
+                this.props.archivedShown ? [EventFilter.All] : [EventFilter.All, EventFilter.Archived])}>
+              <Text style={this.styles.archivedToggleText}>
+                {I18n.t(this.props.archivedShown ? 'text_hide_archived_events' : 'text_show_archived_events')}
+              </Text>
+            </TouchableOpacity>}
         </View>
         
           <TextButton
@@ -254,10 +268,12 @@ const mapStateToProps = (state: any, props: any) => {
   return ({
     sessions,
     showHints: isSessionListEmpty(props.route?.params?.forTracking)(state),
+    hasArchived: hasArchivedSessions(state),
+    archivedShown: areArchivedSessionsShown(state),
     isLoggedIn: isLoggedInSelector(state),
     eventIdThatsBeingSelected: getEventIdThatsBeingSelected(state),
     isLoadingEventList: isLoadingEventList(state)
   })
 }
 
-export default connect(mapStateToProps, { fetchEventList, selectEvent, startTracking, authBasedNewSession })(Sessions)
+export default connect(mapStateToProps, { fetchEventList, selectEvent, startTracking, authBasedNewSession, updateEventFilters })(Sessions)

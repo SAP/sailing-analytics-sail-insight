@@ -75,6 +75,16 @@ export default (forTracking: boolean) => EStyleSheets.create({
     fontSize: 24,
     ...withSecondaryHeavyFont,
   },
+  archivedToggle: {
+    alignItems: 'center',
+    padding: 12,
+  },
+  archivedToggleText: {
+    color: 'white',
+    fontSize: 16,
+    textDecorationLine: 'underline',
+    ...withSecondaryMediumFont,
+  },
   hintContainer: {
     marginTop: 5,
     marginBottom: 5,

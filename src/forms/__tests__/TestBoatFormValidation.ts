@@ -3,7 +3,7 @@
  * handicap values must be positive finite numbers.
  */
 import { teamFromFormValues } from '../team'
-import { validateHandicap, validateRequired } from '../validators'
+import { validateHandicap, validateNameExists, validateRequired } from '../validators'
 
 declare var describe: any
 declare var test: any
@@ -47,5 +47,19 @@ describe('teamFromFormValues', () => {
     expect(team.name).toBe('Ace')
     expect(team.boatName).toBe('B')
     expect(team.sailNumber).toBe('GER 12')
+  })
+})
+
+describe('validateNameExists', () => {
+  const existing = { comparisonValue: ['Optimist', 'Laser'] } as any
+
+  test('detects duplicates despite trailing whitespace and case', () => {
+    expect(validateNameExists('Optimist ', {}, existing)).toBeTruthy()
+    expect(validateNameExists(' optimist', {}, existing)).toBeTruthy()
+    expect(validateNameExists('Finn', {}, existing)).toBeUndefined()
+  })
+
+  test('allows the unchanged name of the item being edited', () => {
+    expect(validateNameExists('Laser ', {}, { ...existing, ignoredValue: 'Laser' })).toBeUndefined()
   })
 })

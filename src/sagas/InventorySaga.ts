@@ -1,6 +1,6 @@
 import { filter, compose, not, __, find, propEq, values,
   curry, isEmpty, mergeRight } from 'ramda'
-import { takeLatest, put, takeEvery, select, all } from 'redux-saga/effects'
+import { takeLatest, put, takeEvery, select, all, call } from 'redux-saga/effects'
 import { markPropertiesSchema } from 'api/schemas'
 import { LOAD_MARK_PROPERTIES } from 'actions/inventory'
 
@@ -28,12 +28,24 @@ const defaultMarkProperties = [
 ]
 
 export function* loadMarkProperties(action: any = {}) {
+  // optional completion callback (used by the Mark Inventory screen to drive its
+  // spinner and retry logic); also called when the load is cancelled
+  const onDone = action?.payload?.onDone
+  let loaded = false
+  try {
+    loaded = yield call(loadMarkPropertiesFromServer, action)
+  } finally {
+    if (typeof onDone === 'function') onDone(!!loaded)
+  }
+}
+
+function* loadMarkPropertiesFromServer(action: any = {}) {
   // Dispatched without payload by the Mark Inventory screen: use the default.
   const createMissingDefaultMarkProperties =
     action?.payload?.createMissingDefaultMarkProperties ?? true
   const hasUser = yield select(isLoggedIn)
 
-  if (!hasUser) return
+  if (!hasUser) return false
 
   const api = dataApi(getServerUrlSetting())
   const markProperties = yield safeApiCall(api.requestMarkProperties)
@@ -47,7 +59,7 @@ export function* loadMarkProperties(action: any = {}) {
   // An empty 200 body ('') is as invalid as a failed request.
   if (!markProperties) {
     console.warn('Failed to load mark properties')
-    return
+    return false
   }
 
   const markPropertiesList = markProperties?.entities?.markProperties
@@ -77,6 +89,7 @@ export function* loadMarkProperties(action: any = {}) {
       yield put(normalizeAndReceiveEntities(createdMarkProperties, [markPropertiesSchema]))
     }
   }
+  return true
 }
 
 function* removeAllMarkProperties() {

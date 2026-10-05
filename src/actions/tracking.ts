@@ -82,7 +82,8 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
   }
 
   if (!(await confirmSwitchTracking(getState(), checkInData.leaderboardName))) {
-    return
+    // resolves to false so callers can react to the user declining the switch
+    return false
   }
 
   if (useLoadingSpinner) {

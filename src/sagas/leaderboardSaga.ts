@@ -13,6 +13,7 @@ import { getTrackedRegattaRankingMetric } from 'selectors/regatta'
 import { getTrackedCheckIn } from 'selectors/checkIn'
 import { updateLeaderboardTracking, updateLatestTrackedRace } from 'actions/leaderboards'
 import Logger from 'helpers/Logger'
+import { showServerErrorSnackbarMessage } from 'helpers/network'
 
 const isNotNil = compose(not, isNil)
 
@@ -69,11 +70,13 @@ function* syncLeaderboard({ rankOnly }) {
   let isPolling = true
   yield put(updateLeaderboardPollingStatus(true))
 
+  let lastFetchFailed = false
   while (true && isPolling)
   {
     const isForeground = yield select(isAppActive())
-    if (isForeground) {
-      const checkIn = yield select(getTrackedCheckIn)
+    // no tracked check-in (e.g. tracking ended meanwhile): nothing to fetch
+    const checkIn = isForeground ? yield select(getTrackedCheckIn) : undefined
+    if (isForeground && checkIn) {
       const { leaderboardName, secret, competitorId, serverUrl } = checkIn
       const api = dataApi(serverUrl)
       const rankingMetric: string | undefined = yield select(getTrackedRegattaRankingMetric)
@@ -91,8 +94,14 @@ function* syncLeaderboard({ rankOnly }) {
         if (receivedLeaderboard) {
           yield call(updateTrackedLeaderboard, receivedLeaderboard, rankingMetric)
         }
+        lastFetchFailed = false
       } catch (err) {
         Logger.debug('Error while executing syncLeaderboard', err)
+        // non-blocking hint, once per failure streak (the loop retries every 10s)
+        if (!lastFetchFailed) {
+          showServerErrorSnackbarMessage()
+        }
+        lastFetchFailed = true
       }
     }
 

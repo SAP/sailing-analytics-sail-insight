@@ -5,6 +5,8 @@ import {
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { RectButton } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
+import Snackbar from 'react-native-snackbar'
+import I18n from 'i18n'
 import Images from '@assets/Images'
 import { OnPressType } from 'helpers/types'
 import { Session } from 'models'
@@ -53,6 +55,10 @@ class SessionItem extends React.Component<ViewProps & {
       return (
         <RectButton
           style={styles.leftAction}
+          testID="e2e-archive-event"
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel={I18n.t(archived ? 'caption_unarchive_event' : 'caption_archive_event')}
           onPress={() => archived ? this.setArchiveValue(false) : this.setArchiveValue(true)}
         >
           {this.state.isArchiving ? (
@@ -93,10 +99,41 @@ class SessionItem extends React.Component<ViewProps & {
     )
   }
 
+  public componentDidMount() {
+    this.mounted = true
+  }
+
+  public componentWillUnmount() {
+    this.mounted = false
+  }
+
+  private mounted = false
+
   private setArchiveValue = async (archived: boolean) => {
+    if (this.state.isArchiving) {
+      return
+    }
     this.setState({ isArchiving: true })
-    await this.props.archiveEvent(this.props.session, archived)
-    this.setState({ isArchiving: false })
+    let saved = false
+    try {
+      // archiveEvent reverts its local change and shows the error itself on failure
+      saved = await this.props.archiveEvent(this.props.session, archived)
+    } finally {
+      if (this.mounted) {
+        this.setState({ isArchiving: false })
+      }
+    }
+    if (saved && archived) {
+      // the row disappears from the list: offer to take it back
+      Snackbar.show({
+        text: I18n.t('text_event_archived'),
+        duration: Snackbar.LENGTH_LONG,
+        action: {
+          text: I18n.t('caption_undo').toUpperCase(),
+          onPress: () => this.props.archiveEvent(this.props.session, false),
+        },
+      })
+    }
   }
 }
 

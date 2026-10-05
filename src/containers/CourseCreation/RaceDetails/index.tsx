@@ -87,7 +87,11 @@ const withPollingOfEvent = compose(
     componentDidMount() {
       // add only for competitor screen
       if (!this.props.canUpdateCurrentEvent) {
+        // idempotent: the manual initial call and the 'focus' event must not both start polling
+        let focused = false
         const onFocus = () => {
+          if (focused) return
+          focused = true
           this.props.registerAppStateListeners()
           this.props.startPollingSelectedEvent()
         }
@@ -98,6 +102,7 @@ const withPollingOfEvent = compose(
         }
         this._removeBlurListener = this.props.navigation.addListener('blur',
           () => {
+            focused = false
             this.props.unregisterAppStateListeners()
             this.props.stopPollingSelectedEvent()
           })
