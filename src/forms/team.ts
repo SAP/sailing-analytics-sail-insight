@@ -12,12 +12,14 @@ export const FORM_KEY_SAIL_NUMBER = 'sailNumber'
 export const FORM_KEY_IMAGE = 'image'
 export const FORM_KEY_HANDICAP = 'handicap'
 
+export const trimString = (value: any) => typeof value === 'string' ? value.trim() : value
+
 export const teamFromFormValues = (values: any) => values && ({
-  name: values[FORM_KEY_TEAM_NAME],
+  name: trimString(values[FORM_KEY_TEAM_NAME]),
   nationality: values[FORM_KEY_NATIONALITY],
   imageData: values[FORM_KEY_IMAGE] || undefined,
   boatClass: values[FORM_KEY_BOAT_CLASS],
-  boatName: values[FORM_KEY_BOAT_NAME],
-  sailNumber: toUpper(values[FORM_KEY_SAIL_NUMBER]),
+  boatName: trimString(values[FORM_KEY_BOAT_NAME]),
+  sailNumber: toUpper(trimString(values[FORM_KEY_SAIL_NUMBER])),
   handicap: values[FORM_KEY_HANDICAP],
 } as TeamTemplate)

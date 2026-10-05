@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, ViewProps } from 'react-native'
+import { TouchableOpacity, View, ViewProps } from 'react-native'
 import { connect } from 'react-redux'
 
 import { fetchUserInfo } from 'actions/user'
@@ -17,6 +17,7 @@ import styles from './styles'
 class TeamList extends React.Component<ViewProps & {
   teams: TeamTemplate[],
   lastUsedTeam?: TeamTemplate,
+  navigation?: any,
   fetchUserInfo: () => void,
 }> {
 
@@ -34,6 +35,8 @@ class TeamList extends React.Component<ViewProps & {
         refreshing={this.state.refreshing}
         onRefresh={this.onRefresh}
         hideFloatingItemOnScroll={false}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={this.renderEmpty}
       />
     )
   }
@@ -48,6 +51,12 @@ class TeamList extends React.Component<ViewProps & {
       this.setState({ refreshing: false })
     }
   }
+
+  protected renderEmpty = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>{I18n.t('text_no_boats')}</Text>
+    </View>
+  )
 
   protected renderAddItem = () => {
     return(
@@ -73,7 +82,7 @@ class TeamList extends React.Component<ViewProps & {
 
 const mapStateToProps = (state: any) => ({
   teams: getUserTeams(state),
-  lastUsedBoat: getLastUsedTeam(state),
+  lastUsedTeam: getLastUsedTeam(state),
 })
 
 export default connect(mapStateToProps, { fetchUserInfo })(TeamList)

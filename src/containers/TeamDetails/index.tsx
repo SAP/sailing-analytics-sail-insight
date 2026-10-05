@@ -15,12 +15,14 @@ import { ComparisonValidatorViewProps, validateNameExists, validateRequired, val
 
 import Logger from 'helpers/Logger'
 import { showErrorAlert } from 'helpers/errorAlert'
+import { scrollFieldToTop, SUGGESTIONS_BOTTOM_PADDING } from 'helpers/scroll'
 
 import { TeamTemplate } from 'models'
-import { getDefaultHandicap, Handicap, hasHandicapChanged, HandicapTypes } from 'models/TeamTemplate'
+import { getDefaultHandicap, Handicap, parseHandicapValue, hasHandicapChanged, HandicapTypes } from 'models/TeamTemplate'
 
 import { getCustomScreenParamData } from 'navigation/utils'
 
+import { isLoggedIn } from 'selectors/auth'
 import { getFormFieldValue } from 'selectors/form'
 import { getUserTeamNames } from 'selectors/user'
 
@@ -51,6 +53,7 @@ interface Props extends ViewProps, NavigationScreenProps, ComparisonValidatorVie
   formTeamImage?: any
   formHandicap?: Handicap
   paramTeamName?: string
+  isLoggedIn?: boolean
   saveTeam: SaveTeamAction
   deleteTeam: DeleteTeamAction
   updateTeamImage: updateTeamImageAction
@@ -61,6 +64,9 @@ class TeamDetails extends TextInputForm<Props> {
   public state = {
     isLoading: false,
   }
+
+  private scrollViewRef: any = null
+  private boatClassFieldRef: any = null
 
   private commonProps = {
     keyboardType: 'default' as KeyboardType,
@@ -82,7 +88,10 @@ class TeamDetails extends TextInputForm<Props> {
 
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
-        <ScrollContentView style={styles.container}>
+        <ScrollContentView
+          style={styles.container}
+          contentContainerStyle={{ paddingBottom: SUGGESTIONS_BOTTOM_PADDING }}
+          innerRef={(ref: any) => { this.scrollViewRef = ref }}>
           <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0.0, y: 0.36 }}>
             <View style={styles.contentContainer}>
               <Field
@@ -101,6 +110,7 @@ class TeamDetails extends TextInputForm<Props> {
                   onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_BOAT_CLASS)}
                   {...this.commonProps}
                   validate={[validateRequired, validateNameExists]} />
+                <View ref={(ref: any) => { this.boatClassFieldRef = ref }} collapsable={false}>
                 <Field
                   testID="e2e-boat-class"
                   label={I18n.t('text_placeholder_boat_class')}
@@ -109,8 +119,10 @@ class TeamDetails extends TextInputForm<Props> {
                   inputRef={this.handleInputRef(teamForm.FORM_KEY_BOAT_CLASS)}
                   onSubmitEditing={this.handleOnSubmitInput(teamForm.FORM_KEY_NATIONALITY)}
                   validate={[validateRequired]}
+                  onInputFocus={this.onBoatClassFocus}
                   editable={!isEditingExistingBoat}
                   {...this.commonProps} />
+                </View>
                 <Field
                   label={I18n.t('text_nationality')}
                   name={teamForm.FORM_KEY_NATIONALITY}
@@ -181,20 +193,34 @@ class TeamDetails extends TextInputForm<Props> {
     }
   }
 
+  protected onBoatClassFocus = () => scrollFieldToTop(this.scrollViewRef, this.boatClassFieldRef)
+
   protected deleteTeam = () => {
-    const { deleteTeam: deleteTeamAction, formTeamName } = this.props
-    if (!formTeamName) {
+    // delete the stored boat (original name), not the possibly edited form value
+    const { deleteTeam: deleteTeamAction, paramTeamName } = this.props
+    if (!paramTeamName || this.state.isLoading) {
       return
     }
     Alert.alert(
       I18n.t('caption_delete'),
-      I18n.t('text_confirm_delete_team'),
+      I18n.t('text_confirm_delete_boat'),
       [
         { text: I18n.t('caption_cancel'), style: 'cancel' },
         {
           text: I18n.t('caption_ok'), onPress: async () => {
-            deleteTeamAction(formTeamName)
-            this.props.navigation.goBack()
+            try {
+              this.setState({ isLoading: true })
+              if (!this.props.isLoggedIn) {
+                throw new Error(I18n.t('error_login_required_for_boats'))
+              }
+              await deleteTeamAction(paramTeamName)
+              this.props.navigation.goBack()
+            } catch (err) {
+              Logger.debug(err)
+              showErrorAlert(undefined, err)
+            } finally {
+              this.setState({ isLoading: false })
+            }
           },
         },
       ],
@@ -206,10 +232,15 @@ class TeamDetails extends TextInputForm<Props> {
     try {
       this.setState({ isLoading: true })
 
+      if (!this.props.isLoggedIn) {
+        throw new Error(I18n.t('error_login_required_for_boats'))
+      }
+
       // use raw values when present
       const { handicap } = values
       const handicapType = handicap.handicapTypeRaw !== undefined ? handicap.handicapTypeRaw : handicap.handicapType
-      const handicapValue = handicap.handicapValueRaw !== undefined ? Number(handicap.handicapValueRaw) : Number(handicap.handicapValue)
+      const handicapValue = parseHandicapValue(
+        handicap.handicapValueRaw !== undefined ? handicap.handicapValueRaw : handicap.handicapValue)
       const valuesRaw = { 
         ...values,
         handicap : { handicapType, handicapValue}
@@ -293,6 +324,7 @@ const mapStateToProps = (state: any, props: any) => {
   const paramTeamName = team && team.name
   return {
     team,
+    isLoggedIn: isLoggedIn(state),
     formTeamName,
     formSailNumber,
     formNationality,
