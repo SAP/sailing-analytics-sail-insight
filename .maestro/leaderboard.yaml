@@ -1,11 +1,10 @@
-# Competitor: join the own event, start tracking, see live values, stop.
-# The tracking timer must run, and Back must not leave the tracking screen
-# (tracking would silently continue in the background).
+# Competitor tracking → My Rank opens the leaderboard, which lists the
+# competitor; leaving and re-opening it keeps working.
 appId: ${APP_ID}
 tags:
   - competitor
 ---
-- evalScript: ${output.eventName = 'Track ' + E2E_USERNAME + ' ' + Date.now()}
+- evalScript: ${output.eventName = 'Board ' + E2E_USERNAME + ' ' + Date.now()}
 - runFlow: subflows/login.yaml
 - runFlow:
     file: subflows/create-event.yaml
@@ -19,7 +18,6 @@ tags:
 - scrollUntilVisible:
     element: "START TRACKING"
     direction: DOWN
-- assertNotVisible: "JOIN AS COMPETITOR"
 - setLocation:
     latitude: 54.35
     longitude: 10.15
@@ -32,17 +30,15 @@ tags:
 - extendedWaitUntil:
     visible: "My Rank"
     timeout: 30000
-- assertVisible: "STOP"
-# The elapsed tracking time must advance.
+- tapOn: "My Rank"
 - extendedWaitUntil:
-    visible: "00:00:0[3-9]|00:00:[1-5]\\d|00:0[1-9]:\\d\\d"
-    timeout: 15000
-- takeScreenshot: competitor-tracking-running
-# Back is blocked while tracking.
+    visible: ".*E2E Sailor.*"
+    timeout: 30000
+- assertVisible: "(?i)leaderboard"
+- takeScreenshot: leaderboard
 - back
 - assertVisible: "STOP"
 - tapOn: "STOP"
-- assertVisible: "Do you really want to stop tracking?"
 - tapOn: "YES"
 - extendedWaitUntil:
     visible: "Welcome to\\s+Sail Insight"

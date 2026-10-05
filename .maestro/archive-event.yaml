@@ -1,0 +1,47 @@
+# Archiving an event from the Events list is reversible: the user can undo
+# it right away, and archived events can be shown and unarchived later.
+appId: ${APP_ID}
+tags:
+  - events
+---
+- evalScript: ${output.eventName = 'Archive ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- back
+- extendedWaitUntil:
+    visible: ${output.eventName}
+    timeout: 30000
+- swipe:
+    from: ${output.eventName}
+    direction: RIGHT
+- tapOn:
+    id: "e2e-archive-event"
+- extendedWaitUntil:
+    notVisible: ${output.eventName}
+    timeout: 15000
+- takeScreenshot: archive-event-archived
+
+# Show archived events and bring it back.
+- scrollUntilVisible:
+    element:
+      id: "e2e-toggle-archived-events"
+    direction: DOWN
+- tapOn:
+    id: "e2e-toggle-archived-events"
+- extendedWaitUntil:
+    visible: ${output.eventName}
+    timeout: 15000
+- swipe:
+    from: ${output.eventName}
+    direction: RIGHT
+- tapOn:
+    id: "e2e-archive-event"
+- tapOn:
+    id: "e2e-toggle-archived-events"
+- extendedWaitUntil:
+    visible: ${output.eventName}
+    timeout: 15000
+- takeScreenshot: archive-event-restored
