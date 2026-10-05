@@ -9,6 +9,7 @@ import Images from '@assets/Images'
 import { openLatestRaceTrackDetails } from 'actions/navigation'
 import { stopTracking } from 'actions/tracking'
 import { durationText } from 'helpers/date'
+import { showErrorAlert } from 'helpers/errorAlert'
 import Logger from 'helpers/Logger'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
 import I18n from 'i18n'
@@ -88,18 +89,34 @@ class Tracking extends React.Component<NavigationProps & {
 
   public componentDidMount() {
     // Run when the screen becomes focused
-    this.removeFocus = this.props.navigation.addListener('focus', () => {
-      this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
-      this.setState({ isFocused: true });
-      activateKeepAwake();
-    });
+    this.removeFocus = this.props.navigation.addListener('focus', this.onScreenFocus);
 
     // Run when the screen loses focus
-    this.removeBlur = this.props.navigation.addListener('blur', () => {
-      if (this.backHandlerSubscription) this.backHandlerSubscription.remove();
-      this.setState({ isFocused: false });
-      deactivateKeepAwake();
-    });
+    this.removeBlur = this.props.navigation.addListener('blur', this.onScreenBlur);
+
+    // The initial focus event has already fired before the listeners
+    // above exist, so apply it manually.
+    if (this.props.navigation.isFocused?.()) {
+      this.onScreenFocus();
+    }
+  }
+
+  protected onScreenFocus = () => {
+    // idempotent: never register the back handler twice
+    if (!this.backHandlerSubscription) {
+      this.backHandlerSubscription = BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    }
+    this.setState({ isFocused: true });
+    activateKeepAwake();
+  }
+
+  protected onScreenBlur = () => {
+    if (this.backHandlerSubscription) {
+      this.backHandlerSubscription.remove();
+      this.backHandlerSubscription = undefined;
+    }
+    this.setState({ isFocused: false });
+    deactivateKeepAwake();
   }
 
   public componentDidUpdate(prevProps: any) {
@@ -124,7 +141,10 @@ class Tracking extends React.Component<NavigationProps & {
   )
 
   public componentWillUnmount() {
-    if (this.backHandlerSubscription) this.backHandlerSubscription.remove();
+    if (this.backHandlerSubscription) {
+      this.backHandlerSubscription.remove();
+      this.backHandlerSubscription = undefined;
+    }
     if (this.removeFocus) this.removeFocus();
     if (this.removeBlur) this.removeBlur();
     deactivateKeepAwake();
@@ -253,22 +273,27 @@ class Tracking extends React.Component<NavigationProps & {
     await this.setState({ isLoading: true })
     try {
       await this.props.stopTracking(this.props.checkInData)
+      this.setState({ isLoading: false })
+      this.showStoppedToast()
       this.resetToWelcomeTracking()
     } catch (err) {
       Logger.debug('onStopTrackingPress Error', err)
-    } finally {
       this.setState({ isLoading: false })
-      Toast.show(I18n.t('text_info_event_finished'), {
-        duration: Toast.durations.SHORT,
-        position: Toast.positions.CENTER,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-        backgroundColor: '#E09D00',
-        textColor: 'black',
-      })
+      showErrorAlert(I18n.t('caption_stop_tracking'), err)
     }
+  }
+
+  protected showStoppedToast = () => {
+    Toast.show(I18n.t('text_info_event_finished'), {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.CENTER,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+      backgroundColor: '#E09D00',
+      textColor: 'black',
+    })
   }
 
   protected onLeaderboardPress = () => {

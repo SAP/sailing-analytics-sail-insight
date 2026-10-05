@@ -132,7 +132,9 @@ const trackingButton = Component((props: any) =>
         if (await stopTrackingConfirmationDialog()) {
           try {
             await props.stopTracking(props.checkIn)
-          } catch (err) {}
+          } catch (err) {
+            showErrorAlert(I18n.t('caption_stop_tracking'), err)
+          }
         }
       } else {
         try {

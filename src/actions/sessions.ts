@@ -371,6 +371,10 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
     } catch (err) {
       Logger.debug(err)
       showErrorAlert(undefined, err)
+      // callers must not alert a second time
+      if (err && typeof err === 'object') {
+        (err as any).alertShown = true
+      }
       throw err
     }
   }

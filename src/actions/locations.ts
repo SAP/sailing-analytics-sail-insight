@@ -83,6 +83,8 @@ export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
     }
   } catch (e) {
     Logger.debug('Error during stopping location updates', e)
+    // callers must know that the service might still be running
+    throw e
   }
 }
 
@@ -113,7 +115,11 @@ export const stopLocalLocationUpdates = () => async (dispatch: DispatchType, get
     return
   }
 
-  await dispatch(stopLocationUpdates())
+  try {
+    await dispatch(stopLocationUpdates())
+  } catch (e) {
+    // already logged; local tracking is reset regardless
+  }
   await dispatch(updateTrackingStatus(LocationService.LocationTrackingStatus.STOPPED))
 }
 

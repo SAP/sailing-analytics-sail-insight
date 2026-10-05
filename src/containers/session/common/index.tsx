@@ -27,8 +27,26 @@ import { useCallback, useRef } from 'react';
 import { openEventLeaderboard, openSAPAnalyticsEvent } from 'actions/events'
 import { navigateBackToTracking } from 'actions/navigation'
 import { getWindowWidth } from 'helpers/screen';
+import { getDiscardBounds } from 'helpers/discards'
 
 const maxNumberOfRaces = 50
+
+// Ignores presses while the previous one is still running (plus a short
+// cool-down for the navigation transition), like the debounce in Sessions.
+export const withInFlightGuard = <T extends (...args: any[]) => any>(fn: T, coolDownMs = 1000) => {
+  let busy = false
+  return async (...args: Parameters<T>) => {
+    if (busy) {
+      return
+    }
+    busy = true
+    try {
+      return await fn(...args)
+    } finally {
+      setTimeout(() => { busy = false }, coolDownMs)
+    }
+  }
+}
 
 export const fieldValueOrInitialIfEmpty = props => compose(
   when(either(isNil, isEmpty), always(props.meta.initial)),
@@ -97,13 +115,21 @@ export const FramedNumber = Component(props => compose(
   toString)(
   props.value))
 
+const discardBounds = (props: any, index?: number) => {
+  const { min, max, hasOptions } = getDiscardBounds(
+    compose(map(prop('value')), reject(propEq('add', 'type')), defaultTo([]))(props.data),
+    index,
+    props.maxNumberOfDiscards || maxNumberOfRaces + 1)
+  return { min, max, hasOptions }
+}
+
 const DiscardSelectorItem = Component((props: any) => compose(
   fold(props),
   overlayPicker({
     onValueChange: (value: number) => value === 0 ?
       props.removeDiscardItem(props.item.index) :
       props.updateDiscardItem(props.item.index, value),
-    max: props.maxNumberOfDiscards || maxNumberOfRaces + 1,
+    ...discardBounds(props, props.item.index),
     disabled: props.item.disabled,
     withRemoveOption: true
   }),
@@ -115,8 +141,8 @@ const AddDiscardButton = Component((props: any) => compose(
   fold(props),
   overlayPicker({
     onValueChange: (value: number) => props.addDiscard(value),
-    disabled: props.item.disabled,
-    max: props.maxNumberOfDiscards || maxNumberOfRaces + 1
+    ...discardBounds(props),
+    disabled: props.item.disabled || !discardBounds(props).hasOptions,
   }),
   view({ style: styles.discardSelectorPlusContainer }))(
   plusIcon))
@@ -244,10 +270,21 @@ export const inviteCompetitorsButton = Component(props => compose(
   text({ style: styles.buttonContent }))(
   I18n.t('caption_invite_competitors').toUpperCase()))
 
+const joinAsCompetitorPress = withInFlightGuard((props: any) =>
+  props.navigation.navigate(Screens.JoinRegattaAsCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } }))
+
+const startTrackingPress = withInFlightGuard(async (props: any) => {
+  if (props.isTrackingEvent) {
+    navigateBackToTracking(props.navigation, Screens.Tracking)
+  } else {
+    await props.startTracking({ data: props.checkIn, navigation: props.navigation })
+  }
+})
+
 export const joinAsCompetitorButton = Component(props => compose(
   fold(props),
   styledButton({
-    onPress: (props: any) => props.navigation.navigate(Screens.JoinRegattaAsCompetitor, { data: props.checkIn, options: { selectSessionAfter: props.session } })
+    onPress: joinAsCompetitorPress
   }),
   text({ style: styles.buttonContent }))(
   I18n.t('caption_join_as_competitor').toUpperCase()))
@@ -264,13 +301,7 @@ export const startTrackingButton = Component((props: any) => compose(
   fold(props),
   nothingIfShouldntShowStartTracking,
   textButton({
-    onPress: async (props: any) => {
-      if (props.isTrackingEvent) {
-        navigateBackToTracking(props.navigation, Screens.Tracking)
-      } else {
-        props.startTracking({ data: props.checkIn, navigation: props.navigation })
-      }
-    },
+    onPress: startTrackingPress,
     style: [styles.button, styles.trackingButton],
     textStyle: styles.buttonContent,
   })

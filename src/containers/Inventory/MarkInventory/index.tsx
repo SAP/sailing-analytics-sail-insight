@@ -1,4 +1,5 @@
-import { __, always, compose, concat, defaultTo, map, mergeRight, reduce, equals } from 'ramda'
+import React from 'react'
+import { __, always, compose, concat, defaultTo, isEmpty, map, mergeRight, reduce, equals } from 'ramda'
 
 import {
   Component,
@@ -17,19 +18,26 @@ import { deleteMarkProperties, loadMarkProperties } from 'actions/inventory'
 
 import Images from '@assets/Images'
 import IconText from 'components/IconText'
-import { Alert } from 'react-native'
+import { Alert, Text } from 'react-native'
 import styles from './styles'
 import I18n from 'i18n'
 
+// A failed load leaves the list empty; retry on every focus (and via
+// pull-to-refresh) until there is something to show.
 const withLoadingOfMarkProperties = compose(
-  withState('markPropertiesLoaded', 'setMarkPropertiesLoaded', false),
+  withState('refreshing', 'setRefreshing', false),
   lifeCycle({
     componentDidMount() {
-      this.props.navigation.addListener('focus',
-        () => {
-          !this.props.markPropertiesLoaded && this.props.loadMarkProperties()
-          this.props.setMarkPropertiesLoaded(true)
-        })
+      const loadIfEmpty = () => isEmpty(this.props.markProperties) && this.props.loadMarkProperties()
+      this._removeFocusListener = this.props.navigation.addListener('focus', loadIfEmpty)
+      // the initial focus event has already fired when this mounts
+      if (this.props.navigation.isFocused && this.props.navigation.isFocused()) {
+        loadIfEmpty()
+      }
+    },
+    componentWillUnmount() {
+      if (this._removeFocusListener) this._removeFocusListener()
+      clearTimeout(this._refreshTimer)
     }
   }))
 
@@ -101,6 +109,13 @@ const List = Component((props: object) => compose(
   forwardingPropsFlatList.contramap((props: any) =>
     mergeRight({
       data: props.markProperties,
+      refreshing: props.refreshing,
+      onRefresh: () => {
+        props.loadMarkProperties()
+        props.setRefreshing(true)
+        setTimeout(() => props.setRefreshing(false), 1500)
+      },
+      ListEmptyComponent: () => <Text style={[styles.markName, { padding: 20 }]}>{I18n.t('text_mark_inventory_empty')}</Text>,
       renderItem: MarkPropertiesItem.fold,
     }, props))))
 

@@ -25,6 +25,8 @@ const mockApi: any = {
   removeMarkProperty: jest.fn(),
 }
 
+const mockShowErrorAlert = jest.fn()
+jest.mock('helpers/errorAlert', () => ({ showErrorAlert: (...a: any[]) => mockShowErrorAlert(...a) }))
 jest.mock('api', () => ({ dataApi: () => mockApi }))
 jest.mock('selectors/auth', () => ({
   ...jest.requireActual('selectors/auth'),
@@ -53,6 +55,7 @@ const dispatch = (action: any) => {
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {})
+  mockShowErrorAlert.mockReset()
   Object.keys(mockApi).forEach(k => mockApi[k].mockReset())
   mockApi.createMarkProperties.mockImplementation((mp: any) => Promise.resolve({ ...mp, id: `id-${mp.name}` }))
   dispatched = []
@@ -109,5 +112,31 @@ describe('loading the mark inventory', () => {
     const createdNames = mockApi.createMarkProperties.mock.calls.map((c: any[]) => c[0].name)
     expect(createdNames).not.toContain('Start/Finish Pin')
     expect(createdNames.length).toBe(8)
+  })
+})
+
+describe('deleting a mark property', () => {
+  const mark = { id: 'm1', name: 'Windward Mark' }
+
+  test('restores the mark locally when the server refuses the deletion', async () => {
+    mockApi.removeMarkProperty.mockRejectedValue(new Error('mark is used in a course'))
+
+    dispatch({ type: 'REMOVE_ENTITY', payload: { entityType: 'markProperties', id: 'm1', entity: mark } })
+    await flush()
+
+    expect(sagaErrors).toEqual([])
+    const restore = dispatched.find((a: any) => a.type === 'RECEIVE_ENTITIES')
+    expect(restore.payload.entities.markProperties).toEqual({ m1: mark })
+    expect(mockShowErrorAlert).toHaveBeenCalledTimes(1)
+  })
+
+  test('does not restore or alert when the server deletes it', async () => {
+    mockApi.removeMarkProperty.mockResolvedValue({})
+
+    dispatch({ type: 'REMOVE_ENTITY', payload: { entityType: 'markProperties', id: 'm1', entity: mark } })
+    await flush()
+
+    expect(dispatched.find((a: any) => a.type === 'RECEIVE_ENTITIES')).toBeUndefined()
+    expect(mockShowErrorAlert).not.toHaveBeenCalled()
   })
 })

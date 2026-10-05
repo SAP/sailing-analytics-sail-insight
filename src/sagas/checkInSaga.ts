@@ -50,7 +50,11 @@ function* deleteMarkBinding({ payload }: any) {
   const { shouldStopTracking } = payload
 
   if (shouldStopTracking) {
-    yield put(stopTracking(checkIn))
+    try {
+      yield (yield put(stopTracking(checkIn)))
+    } catch (e) {
+      // continue removing the binding even if the service could not be stopped
+    }
   }
 
   const api = dataApi(serverUrl)
