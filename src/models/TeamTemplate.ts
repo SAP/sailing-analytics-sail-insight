@@ -1,4 +1,4 @@
-import { compose, not, prop, defaultTo, equals, replace, either, isNil, is, when } from 'ramda'
+import { isNil, is } from 'ramda'
 
 export const ApiBodyKeys = {
   Name: 'name',
@@ -51,18 +51,20 @@ export const hasHandicapChanged = (oldHandicap?: Handicap, newHandicap?: Handica
       (newHandicap.handicapValue !== undefined &&
         newHandicap.handicapType !== oldHandicap.handicapType)))
 
-// fails if handicalValue is defined and 0 or Infinity
-// replace , with . for float conversion
-export const isHandicapValid = (handicap: Handicap) => compose(
-  not,
-  either(equals(0), equals(Infinity)),
-  parseFloat,
-  replace(/,/g, '.'),
-  when(compose(not, is(String)), toString),
-  defaultTo("1"),
-  prop('handicapValue'),
-  defaultTo({}))
-  (handicap)
+// A missing handicap value is valid (a default applies). A defined value
+// must be a finite number greater than 0 (rejects 0, NaN, Infinity, negatives).
+// "," is accepted as decimal separator.
+export const parseHandicapValue = (value?: any): number | undefined => {
+  if (isNil(value) || (is(String, value) && value.trim() === '')) {
+    return undefined
+  }
+  return parseFloat(String(value).replace(/,/g, '.'))
+}
+
+export const isHandicapValid = (handicap?: Handicap) => {
+  const value = parseHandicapValue(handicap && handicap.handicapValue)
+  return value === undefined || (isFinite(value) && value > 0)
+}
 
 export const convertHandicapValue = (
   fromType: HandicapTypes,

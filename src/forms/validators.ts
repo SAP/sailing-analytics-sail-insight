@@ -8,11 +8,14 @@ import I18n from 'i18n'
 const REGEX_EMAIL_VALID = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 const REGEX_SESSIONNAME_VALID = /^[^/\?\[\];"]{0,255}$/
 
+// whitespace-only strings count as empty
+const hasContent = (value: any) => isString(value) ? value.trim() !== '' : !!value
+
 export const validateRequired = (value: any) =>
-value ? undefined : I18n.t('error_field_required')
+  hasContent(value) ? undefined : I18n.t('error_field_required')
 
 export const validateRequiredWithErrorCode = (errorCode: string) => (value: any) =>
-  value ? undefined : I18n.t(defaultTo('error_field_required', errorCode))
+  hasContent(value) ? undefined : I18n.t(defaultTo('error_field_required', errorCode))
 
 export const validateUsername = (value: any) =>
     value && value.length >= 3 ? undefined : I18n.t('error_field_invalid_username')

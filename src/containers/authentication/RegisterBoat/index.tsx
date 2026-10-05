@@ -14,11 +14,13 @@ import {
   FORM_KEY_HANDICAP,
   FORM_KEY_SAIL_NUMBER,
   TEAM_FORM_NAME,
+  trimString,
 } from 'forms/team'
 import { validateRequired, validateHandicap } from 'forms/validators'
 
 import { selfTrackingApi } from 'api'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { scrollFieldToTop, SUGGESTIONS_BOTTOM_PADDING } from 'helpers/scroll'
 import { getErrorDisplayMessage } from 'helpers/texts'
 import ErrorBalloon from 'components/ErrorBalloon'
 
@@ -26,7 +28,7 @@ import { isNetworkConnected as isNetworkConnectedSelector } from 'selectors/netw
 import { getFormFieldValue } from '../../../selectors/form'
 
 import { TeamTemplate } from 'models'
-import { getDefaultHandicap } from 'models/TeamTemplate'
+import { getDefaultHandicap, parseHandicapValue } from 'models/TeamTemplate'
 
 import { getScreenParamsFromProps } from 'navigation/utils'
 
@@ -61,6 +63,9 @@ class RegisterBoat extends TextInputForm<Props> {
     this.setState({ showMore: !this.state.showMore })
   }
 
+  private scrollViewRef: any = null
+  private boatClassFieldRef: any = null
+
   private commonProps = {
     keyboardType: 'default' as KeyboardType,
   }
@@ -70,7 +75,10 @@ class RegisterBoat extends TextInputForm<Props> {
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
         <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.65 }}>
-          <ScrollContentView style={styles.container}>
+          <ScrollContentView
+            style={styles.container}
+            contentContainerStyle={{ paddingBottom: SUGGESTIONS_BOTTOM_PADDING }}
+            innerRef={(ref: any) => { this.scrollViewRef = ref }}>
           <View style={styles.contentContainer}>
               <Text style={[text.h1, styles.h1]}>
                 {I18n.t('title_add_boat_01')}
@@ -102,6 +110,7 @@ class RegisterBoat extends TextInputForm<Props> {
                   validate={[validateRequired]}
                   returnKeyType="next"
                   {...this.commonProps} />
+                <View ref={(ref: any) => { this.boatClassFieldRef = ref }} collapsable={false}>
                 <Field
                   testID="e2e-register-boat-class"
                   label={I18n.t('text_placeholder_boat_class')}
@@ -109,8 +118,10 @@ class RegisterBoat extends TextInputForm<Props> {
                   component={FormBoatClassInput}
                   inputRef={this.handleInputRef(FORM_KEY_BOAT_CLASS)}
                   validate={[validateRequired]}
+                  onInputFocus={this.onBoatClassFocus}
                   autoCorrect={false}
                   {...this.commonProps} />
+                </View>
               </View>
               { !this.state.showMore &&
                 <View style={form.formDivider}>
@@ -150,6 +161,8 @@ class RegisterBoat extends TextInputForm<Props> {
     )
   }
 
+  protected onBoatClassFocus = () => scrollFieldToTop(this.scrollViewRef, this.boatClassFieldRef)
+
   protected handleNationalityChanged = (event?: ChangeEvent<any> | NativeSyntheticEvent<TextInputChangeEventData>,
                                         newValue?: any, previousValue?: any) => {
     if (!this.props.formSailNumber || this.props.formSailNumber === previousValue) {
@@ -166,7 +179,7 @@ class RegisterBoat extends TextInputForm<Props> {
     try {
       this.setState({ isLoading: true, error: null, rawError: null })
 
-      const sailNumber = toUpper(values[FORM_KEY_SAIL_NUMBER])
+      const sailNumber = toUpper(trimString(values[FORM_KEY_SAIL_NUMBER]))
       let countryList = []
       try {
         const countryCodeResponse = await selfTrackingApi().requestCountryCodes()
@@ -181,13 +194,14 @@ class RegisterBoat extends TextInputForm<Props> {
 
       const handicap = values[FORM_KEY_HANDICAP]
       const handicapType = handicap.handicapTypeRaw !== undefined ? handicap.handicapTypeRaw : handicap.handicapType
-      const handicapValue = handicap.handicapValueRaw !== undefined ? Number(handicap.handicapValueRaw) : Number(handicap.handicapValue)
+      const handicapValue = parseHandicapValue(
+        handicap.handicapValueRaw !== undefined ? handicap.handicapValueRaw : handicap.handicapValue)
 
       const createdBoat = await this.props.saveTeam({
         sailNumber,
         nationality,
-        name: values[FORM_KEY_BOAT_NAME],
-        boatClass: values[FORM_KEY_BOAT_CLASS],
+        name: trimString(values[FORM_KEY_BOAT_NAME]),
+        boatClass: trimString(values[FORM_KEY_BOAT_CLASS]),
         handicap: { handicapType, handicapValue },
       } as TeamTemplate)
 
