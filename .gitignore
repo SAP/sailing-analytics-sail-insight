@@ -71,3 +71,6 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Local agent settings
+/.pi/
