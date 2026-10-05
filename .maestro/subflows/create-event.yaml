@@ -1,0 +1,26 @@
+# Creates an event (name EVENT_NAME, venue Kiel, Laser 2, 3 races) and ends on
+# the organizer's Event Overview. Requires a provisioned backend (e2e/backend.sh).
+appId: ${APP_ID}
+---
+- runFlow:
+    file: open-create-event.yaml
+    env:
+      VENUE: "Kiel"
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-name"
+    direction: UP
+- tapOn:
+    id: "e2e-event-name"
+- inputText: ${EVENT_NAME}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-create"
+    direction: DOWN
+- tapOn:
+    id: "e2e-event-create"
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 60000
+- assertVisible: ${EVENT_NAME}

@@ -8,6 +8,7 @@ start_backend() {
   require_cmd curl
   if [[ "${E2E_USE_EXISTING_BACKEND:-0}" == "1" ]]; then
     wait_http "$E2E_BACKEND_URL/gwt/status" 30 || die "Existing backend is not healthy."
+    provision_backend
     return
   fi
   require_cmd docker
@@ -22,6 +23,14 @@ start_backend() {
     die "Backend did not become healthy at $E2E_BACKEND_URL/gwt/status"
   fi
   log "Backend is healthy: $E2E_BACKEND_URL/gwt/status"
+  provision_backend
+}
+
+# Organizer flows need users who may create events; a fresh server does not
+# grant that. Idempotent; fails the run if the grant cannot be verified.
+provision_backend() {
+  require_cmd node
+  node "$ROOT_DIR/e2e/provision-backend.cjs" || die "Backend provisioning failed."
 }
 
 stop_backend() {

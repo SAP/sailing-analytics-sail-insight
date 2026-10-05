@@ -6,9 +6,9 @@ services:
     environment:
       MEMORY: 2g
       MONGODB_URI: mongodb://mongo/sail_insight_e2e
-      SERVER_NAME: sail-insight-e2e
+      SERVER_NAME: ${E2E_BACKEND_SERVER_NAME:-sail-insight-e2e}
       REPLICATION_HOST: rabbitmq
-      REPLICATION_CHANNEL: sail-insight-e2e
+      REPLICATION_CHANNEL: ${E2E_BACKEND_SERVER_NAME:-sail-insight-e2e}
       REPLICATION_PORT: 5672
     depends_on:
       mongo:

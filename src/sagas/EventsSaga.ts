@@ -43,7 +43,8 @@ const valueAtIndex = curry((index, array) => compose(
 function removeRacesConfirmationAlert(races: string[]) {
   return new Promise(resolve => {
     Alert.alert(I18n.t('error_race_removal_confirm_title'),
-      I18n.t('error_race_removal_confirm_message', { races: races.join(', ') }),
+      I18n.t(races.length === 1 ? 'error_race_removal_confirm_message_one' : 'error_race_removal_confirm_message',
+        { races: races.join(', ') }),
       [ { text: I18n.t('caption_cancel'), style: 'cancel', onPress: () => resolve(false) },
         { text: I18n.t('button_remove_races'), style: 'destructive', onPress: () => resolve(true) }
       ],

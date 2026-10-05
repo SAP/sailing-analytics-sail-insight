@@ -1,0 +1,51 @@
+# Organizer: create an event, then change the planned races. Reducing the
+# count deletes races and their data on the server, so it must be confirmed;
+# cancelling keeps every race.
+appId: ${APP_ID}
+tags:
+  - organizer
+---
+# Unique per run, so re-runs with the same account never collide.
+- evalScript: ${output.eventName = 'Races ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- tapOn: "DEFINE RACES"
+- extendedWaitUntil:
+    visible: "Race Overview"
+    timeout: 30000
+- assertVisible: "R1"
+- assertVisible: "R2"
+- assertVisible: "R3"
+
+# 3 -> 2, cancelled: nothing is deleted.
+- tapOn: "3"
+- tapOn: "2"
+- extendedWaitUntil:
+    visible: "Remove races?"
+    timeout: 10000
+- assertVisible: ".*R3.*deleted permanently.*"
+- takeScreenshot: define-races-remove-confirmation
+- tapOn: "CANCEL"
+- assertVisible: "R3"
+
+# 3 -> 2, confirmed: R3 is gone after the server round trip.
+- tapOn: "3"
+- tapOn: "2"
+- tapOn: "DELETE RACES"
+- extendedWaitUntil:
+    notVisible: "R3"
+    timeout: 30000
+- assertVisible: "R2"
+
+# 2 -> 4: adding races needs no confirmation.
+- tapOn: "2"
+- tapOn: "4"
+- assertNotVisible: "Remove races?"
+- extendedWaitUntil:
+    visible: "R4"
+    timeout: 30000
+- assertVisible: "R3"
+- takeScreenshot: define-races-after-add

@@ -1,29 +1,47 @@
-# Server rejections must be explained, and pro users (Expert settings →
-# "Show technical error details") can expand the raw technical details.
-# Relies on the pinned local backend's default: new users lack
-# SERVER:CREATE_OBJECT, so createEvent fails with a permission error.
+# A legitimate server rejection (an event with this name already exists) is
+# explained to everybody; pro users (Expert settings → "Show technical error
+# details") can additionally expand what the server actually answered.
 appId: ${APP_ID}
 tags:
   - create-event
-  - backend-default-permissions
+  - organizer
 ---
+# Unique per run, so re-runs with the same account never collide.
+- evalScript: ${output.eventName = 'Duplicate ' + E2E_USERNAME + ' ' + Date.now()}
 - runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- back
 - runFlow:
     file: subflows/open-create-event.yaml
     env:
       VENUE: "Kiel"
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-name"
+    direction: UP
+- tapOn:
+    id: "e2e-event-name"
+- inputText: ${output.eventName}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-create"
+    direction: DOWN
 - tapOn:
     id: "e2e-event-create"
 - extendedWaitUntil:
-    visible: ".*permission.*"
+    visible: ".*already exists.*"
     timeout: 30000
 - assertNotVisible: ".*Oops.*"
-# Details are hidden for normal users.
+# Technical details are hidden for normal users.
 - assertNotVisible:
     id: "e2e-error-details-toggle"
-- takeScreenshot: create-event-permission-error-normal-user
+- takeScreenshot: create-event-duplicate-normal-user
 
-# Enable technical details in the hidden Expert settings (15 taps).
+# Enable technical details in the hidden Expert settings (15 taps on the version).
 - back
 - tapOn:
     id: "e2e-account-tab"
@@ -45,16 +63,27 @@ tags:
     file: subflows/open-create-event.yaml
     env:
       VENUE: "Kiel"
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-name"
+    direction: UP
+- tapOn:
+    id: "e2e-event-name"
+- inputText: ${output.eventName}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-create"
+    direction: DOWN
 - tapOn:
     id: "e2e-event-create"
 - extendedWaitUntil:
     visible:
       id: "e2e-error-details-toggle"
     timeout: 30000
-- takeScreenshot: create-event-permission-error-collapsed
+- takeScreenshot: create-event-duplicate-details-collapsed
 - tapOn:
     id: "e2e-error-details-toggle"
-- assertVisible: ".*UnauthorizedException.*"
-- assertVisible: ".*400.*"
-- assertVisible: ".*POST.*createEvent.*"
-- takeScreenshot: create-event-permission-error-expanded
+- assertVisible: ".*POST .*createEvent.*"
+- assertVisible: ".*Status: 4\\d\\d.*"
+- takeScreenshot: create-event-duplicate-details-expanded

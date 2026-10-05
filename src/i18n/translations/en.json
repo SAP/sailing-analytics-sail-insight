@@ -295,6 +295,7 @@
   "error_unknown" : "Oops, something went wrong here.\nPlease try again!",
   "error_race_removal_confirm_title" : "Remove races?",
   "error_race_removal_confirm_message" : "The races {{races}} and all their data will be deleted permanently. This cannot be undone.",
+  "error_race_removal_confirm_message_one" : "The race {{races}} and all its data will be deleted permanently. This cannot be undone.",
   "button_remove_races" : "Delete races",
   "error_event_settings_not_saved" : "The event was created, but its settings could not be saved. Please do not create it again – open it from the list instead.",
   "error_with_code" : "Oops, something went wrong here.\nPlease try again! ({{code}})",

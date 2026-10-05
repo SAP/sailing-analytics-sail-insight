@@ -1,12 +1,11 @@
 # Top-level flows only; subflows/ are helpers. auth-register-login runs first
-# and creates the run's account that the other flows log in with.
-# Flows tagged needs-create-permission require a backend where new users may
-# create events.
+# and creates the run's account that the other flows log in with;
+# events-empty-state must see that account before any flow creates events.
+# Organizer flows need the backend provisioning done by e2e/backend.sh.
 flows:
   - "*"
-excludeTags:
-  - needs-create-permission
 executionOrder:
   continueOnFailure: true
   flowsOrder:
     - auth-register-login
+    - events-empty-state

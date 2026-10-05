@@ -1,6 +1,15 @@
-# Android E2E smoke test
+# Android E2E tests
 
-Real scenario: fresh app → register → load authenticated user data → skip optional boat setup → logout → login with the same account → load authenticated user data again. No API mocks or pre-created test accounts.
+Real scenarios against a real, freshly created backend; no API mocks or pre-created test accounts. Flows live in `.maestro/` (`config.yaml` sets the order):
+
+- `auth-register-login` registers the run's account (the backend rate-limits sign-ups per IP, so all other flows log in with it), then logs out and in again.
+- `events-empty-state`, `auth-login-validation`, `auth-login-offline`, `auth-password-reset-offline`: empty and error states, offline via airplane mode.
+- `create-event-validation`, `create-event-offline`, `create-event-error-details` (duplicate event name: friendly message for everyone, expandable technical details for pro users).
+- `define-races` (destructive race removal must be confirmed), `define-course` (mark placed at the device's GPS position, persisted).
+
+### Backend provisioning
+
+`e2e/backend.sh start` provisions every backend it starts (and an existing one with `E2E_USE_EXISTING_BACKEND=1`) via `e2e/provision-backend.cjs`: a fresh server lets new users only view, so the script grants `SERVER:CREATE_OBJECT` to all users through a role on the server's user group, using the fresh container's built-in admin account (`E2E_BACKEND_ADMIN_USER`/`E2E_BACKEND_ADMIN_PASSWORD`, default `admin`/`admin`). It is idempotent and verifies the result; the run fails if provisioning fails. Nothing has to be configured by hand.
 
 ## Local
 
@@ -48,7 +57,7 @@ Artifacts in `e2e/artifacts/` include JUnit results, Maestro command traces/hier
 ## Fast checks
 
 ```bash
-node --test e2e/*.test.cjs
+node --test e2e/*.test.cjs   # includes provisioning against a fake security API
 corepack yarn test --runInBand
 E2E_BACKEND_URL=http://127.0.0.1:8888 node e2e/verify-babel-e2e-url.cjs
 ```

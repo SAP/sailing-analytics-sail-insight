@@ -289,6 +289,7 @@
   "error_unknown" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal!",
   "error_race_removal_confirm_title" : "Rennen entfernen?",
   "error_race_removal_confirm_message" : "Die Rennen {{races}} und alle zugehörigen Daten werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+  "error_race_removal_confirm_message_one" : "Das Rennen {{races}} und alle zugehörigen Daten werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
   "button_remove_races" : "Rennen löschen",
   "error_event_settings_not_saved" : "Das Event wurde angelegt, aber die Einstellungen konnten nicht gespeichert werden. Bitte erstelle es nicht noch einmal – öffne es stattdessen aus der Liste.",
   "error_with_code" : "Ups, da ist was schief gegangen.\nBitte versuche es nochmal! ({{code}})",

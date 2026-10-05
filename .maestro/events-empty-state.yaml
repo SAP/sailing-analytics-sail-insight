@@ -1,4 +1,5 @@
 # A brand-new account sees an explained empty Events list with both next actions.
+# Runs right after auth-register-login (see config.yaml), before any event exists.
 appId: ${APP_ID}
 tags:
   - events

@@ -1,0 +1,66 @@
+# Organizer: define R1's course and place the start/finish pin at the
+# device's GPS position. The position must be the real current one (the
+# editor used to send empty coordinates) and must survive saving.
+appId: ${APP_ID}
+tags:
+  - organizer
+---
+# Unique per run, so re-runs with the same account never collide.
+- evalScript: ${output.eventName = 'Course ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- setLocation:
+    latitude: 54.35
+    longitude: 10.15
+- tapOn: "DEFINE RACES"
+- extendedWaitUntil:
+    visible: "R1"
+    timeout: 30000
+- tapOn:
+    text: "Define Course"
+    index: 0
+- extendedWaitUntil:
+    visible: "Race Course"
+    timeout: 30000
+# Google Play services may ask to enable location accuracy on first use.
+- runFlow:
+    when:
+      visible: "Turn on"
+    commands:
+      - tapOn: "Turn on"
+- extendedWaitUntil:
+    visible: ".*Start/Finish Pin.*"
+    timeout: 30000
+- tapOn: "Location"
+- tapOn: "PING CURRENT POSITION"
+# 54.35° N / 10.15° E in degrees and decimal minutes.
+- extendedWaitUntil:
+    visible: "N 54° 21.000' / E 10° 9.000'"
+    timeout: 30000
+- takeScreenshot: define-course-pinged-position
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Race Overview"
+    timeout: 30000
+- assertNotVisible: ".*[Ss]omething went wrong.*"
+# R1 now shows its course sequence instead of "Define Course".
+- extendedWaitUntil:
+    visible: "S-.*-F"
+    timeout: 30000
+- takeScreenshot: define-course-saved
+
+# Reopen: the saved pin position comes back from the server.
+- tapOn:
+    text: "S-.*-F"
+    index: 0
+- extendedWaitUntil:
+    visible: "Race Course"
+    timeout: 30000
+- tapOn: "Location"
+- extendedWaitUntil:
+    visible: "N 54° 21.000' / E 10° 9.000'"
+    timeout: 30000
+- takeScreenshot: define-course-reopened
