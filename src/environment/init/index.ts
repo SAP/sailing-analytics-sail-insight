@@ -4,6 +4,12 @@ import { LogBox } from 'react-native'
 
 export const DEFAULT_SERVER_URL = 'https://my.sapsailing.com'
 // export const DEFAULT_SERVER_URL = 'https://dev.sapsailing.com'
+// Fallback hosts tried, in order, when login against the configured server
+// fails for reasons other than rejected credentials (network error / server down).
+export const LOGIN_FALLBACK_SERVER_URLS = [
+  'https://sapsailing.com',
+  'https://security-service.sapsailing.com',
+]
 export const DATA_API_PREFIX = '/sailingserver/api/v1'
 export const SHARED_DATA_API_PREFIX = '/sharedsailingserver/api/v1'
 export const DATA_API_V2_PREFIX = '/sailingserver/api/v2'
