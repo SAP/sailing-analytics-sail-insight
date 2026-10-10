@@ -7,7 +7,16 @@ export const updateGpsBulkSetting = createAction('SETTINGS_UPDATE_BULK_GPS')
 export const updateServerUrlSetting = createAction('SETTINGS_UPDATE_SERVER_URL')
 export const updateAnalyticsSettings = createAction('SETTINGS_UPDATE_ANALYTICS')
 export const updateVerboseLoggingSetting = createAction('SETTINGS_UPDATE_VERBOSE_LOGGING')
-
+export const changeVerboseLoggingSetting = (value: boolean) => async (dispatch: DispatchType) => {
+  // Apply immediately to the native GPS logger as well as persisted Redux state.
+  try {
+    await LocationService.setVerboseLogging(value)
+    dispatch(updateVerboseLoggingSetting(value))
+  } catch (error) {
+    // Do not persist a setting the native service could not apply.
+    throw error
+  }
+}
 export const updateShowErrorDetailsSetting = createAction('SETTINGS_UPDATE_SHOW_ERROR_DETAILS')
 
 export const changeAnalyticsSetting = (value: boolean) => (dispatch: DispatchType) => {

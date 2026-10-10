@@ -1,30 +1,19 @@
 /* tslint:disable:no-console no-empty */
-
-import { isUndefined, keys } from 'lodash'
-
 import { DEV_MODE } from 'environment'
+import { serializeDiagnostic } from './diagnosticsRedaction'
+import { writePersistentLog } from './PersistentLog'
 
-
-const envAction = (logAction: ((...args: any[]) => void)) => (DEV_MODE ? logAction : () => {})
+const log = (level: 'INFO' | 'WARN' | 'ERROR', method: (...args: any[]) => void, persist: boolean) => (...args: any[]) => {
+  try {
+    const safe = args.slice(0, 32).map(serializeDiagnostic)
+    if (persist) void writePersistentLog(level, ...safe)
+    if (DEV_MODE || level === 'INFO' && persist) method(...safe)
+  } catch (_) { /* Diagnostics must not interrupt application work. */ }
+}
 
 export default {
-  log: console.log,
-  error: envAction(console.error),
-  debug: envAction(console.log),
-  warn: envAction(console.warn),
-  groupedDebug: envAction((message, data = {}) => {
-    if (console.groupCollapsed) {
-      console.groupCollapsed(message)
-    } else {
-      console.log(message)
-    }
-    keys(data).forEach((property) => {
-      const value = data[property]
-      if (isUndefined(value)) {
-        return
-      }
-      console.log(property, value)
-    })
-    if (console.groupEnd) { console.groupEnd() }
-  }),
+  log: log('INFO', console.log, true),
+  warn: log('WARN', console.warn, true),
+  error: log('ERROR', console.error, true),
+  debug: DEV_MODE ? log('INFO', console.log, false) : () => {},
 }

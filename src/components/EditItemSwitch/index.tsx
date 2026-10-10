@@ -36,6 +36,7 @@ class EditItemSwitch extends React.Component<ViewProps & {
       <Switch
         {...switchProps}
         testID={testID}
+        disabled={isLoading}
         onValueChange={this.valueChanged}
         value={isLoading ? this.state.tempValue : switchValue}
       />

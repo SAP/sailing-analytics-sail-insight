@@ -4,8 +4,7 @@
 
 import '@react-native-firebase/app';
 
-import {AppRegistry} from 'react-native';
-import App from './src/App';
+import {AppRegistry, ScrollView, Text} from 'react-native';
 import {name as appName} from './app.json';
 
 function BootErrorScreen({error}) {
@@ -27,7 +26,12 @@ const getApp = () => {
         // IMPORTANT: require inside try/catch so top-level errors surface
         return require('./src/App').default;
     } catch (e) {
-        console.error('Boot error', e, e?.stack);
+        try {
+            require('./src/helpers/Logger').default.error('Boot error', e);
+        } catch (_) {
+            // Keep bootstrap diagnostics safe even if the logger itself failed to load.
+            console.error('Boot error');
+        }
         return () => <BootErrorScreen error={e} />;
     }
 

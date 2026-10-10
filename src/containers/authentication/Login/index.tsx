@@ -44,7 +44,12 @@ class Login extends TextInputForm<{
     passwordError: null,
   }
 
+  private submitPending = false
+
   public onSubmit = async () => {
+    // Keyboard submit and button press can arrive before React commits the
+    // loading state. Guard the operation itself, not just the disabled button.
+    if (this.submitPending) return
     this.setState({ error: null, rawError: null })
     const { username, password } = this.state
 
@@ -78,6 +83,7 @@ class Login extends TextInputForm<{
     }
 
     try {
+      this.submitPending = true
       this.setState({ isLoading: true })
       await this.props.login(username, password)
       this.props.fetchUserInfo()
@@ -89,6 +95,8 @@ class Login extends TextInputForm<{
       // only wrong credentials are marked on the password field
       passwordError = (err as any)?.status === 401 ? errorMessage : null
       this.setState({ error: errorMessage, rawError: err, usernameError, passwordError, isLoading: false })
+    } finally {
+      this.submitPending = false
     }
   }
 

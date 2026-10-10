@@ -41,7 +41,10 @@ class PasswordReset extends TextInputForm<{
     usernameError: null,
   }
 
+  private submitPending = false
+
   public onSubmit = async () => {
+    if (this.submitPending) return
     let usernameError = null
     
     this.setState({ error: null, rawError: null })
@@ -56,6 +59,7 @@ class PasswordReset extends TextInputForm<{
       return
     }
     try {
+      this.submitPending = true
       this.setState({ isLoading: true, usernameError })
       await this.props.requestPasswordReset(usernameOrEmail)
     } catch (err) {
@@ -68,6 +72,8 @@ class PasswordReset extends TextInputForm<{
         Snackbar.show({ text: errorMessage, duration: Snackbar.LENGTH_LONG })
         return
       }
+    } finally {
+      this.submitPending = false
     }
     this.setState({ isLoading: false })
     Alert.alert(

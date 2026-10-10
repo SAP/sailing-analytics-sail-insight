@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   auth-e2e:
-    name: Register - logout - login (API 36)
+    name: Android QA journeys (API 36)
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
@@ -78,7 +78,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Run auth E2E on Android 36
+      - name: Run Maestro suite on Android 36
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 36

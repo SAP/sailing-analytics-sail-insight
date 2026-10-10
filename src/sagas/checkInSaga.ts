@@ -1,5 +1,6 @@
+import Logger from 'helpers/Logger'
 import I18n from 'i18n'
-import Snackbar from 'react-native-snackbar'
+import { showFailureSnackbarMessage } from 'helpers/network'
 import { DELETE_MARK_BINDING } from 'actions/checkIn'
 import { takeLatest, all, call, put, select } from 'redux-saga/effects'
 
@@ -73,11 +74,8 @@ function* deleteMarkBinding({ payload }: any) {
     // error because of missing permissions, which we can ignore.
     } catch (err) {}
   } catch (err) {
-    console.log('Failed to delete mark binding', { err })
-    Snackbar.show({
-      text: I18n.t('error_unknown'),
-      duration: Snackbar.LENGTH_SHORT
-    })
+    Logger.warn('Failed to delete mark binding', err)
+    showFailureSnackbarMessage(I18n.t('error_unknown'), err)
   }
 
   yield put(updateDeletingMarkBinding(false))

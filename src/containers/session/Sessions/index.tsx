@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import { connectActionSheet } from '@expo/react-native-action-sheet'
 import React from 'react'
 
@@ -73,7 +74,7 @@ class Sessions extends React.Component<ViewProps & NavigationProps & {
         case 'CREATE':
           return this.props.authBasedNewSession(...args)
         case 'TRACK':
-          console.log('tracking selected')
+          Logger.debug('tracking selected')
           if (isPlatformAndroid) {
             return Alert.alert(I18n.t('text_background_tracking_disclosure_title'), I18n.t('text_background_tracking_disclosure_content'),
               [{ text: I18n.t('caption_ok'), onPress: () => this.props.startTracking(...args) }])

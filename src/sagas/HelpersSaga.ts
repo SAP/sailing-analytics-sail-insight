@@ -1,6 +1,8 @@
 import crashlytics from '@react-native-firebase/crashlytics'
 
 import { call } from 'redux-saga/effects'
+import Logger from 'helpers/Logger'
+import { serializeDiagnostic } from 'helpers/diagnosticsRedaction'
 
 export function* safe(effect: any) {
     try {
@@ -16,8 +18,13 @@ export function* safe(effect: any) {
     try {
       result = yield call(method, ...args)
     } catch (e) {
-      crashlytics().setAttribute('saga', 'true')
-      crashlytics().recordError(e)
+      Logger.error('Saga API call failed', e)
+      try {
+        yield call([crashlytics(), crashlytics().setAttribute], 'saga', 'true')
+        yield call([crashlytics(), crashlytics().recordError], new Error(serializeDiagnostic(e)))
+      } catch (_) {
+        // Crash reporting must not mask the original API failure.
+      }
     }
   
     return result

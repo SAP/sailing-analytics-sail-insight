@@ -36,11 +36,11 @@ tags:
 - extendedWaitUntil:
     visible: ${output.boat}
     timeout: 30000
+# Scroll to the end so the saved checkpoint includes the complete last row.
+- scroll
 - takeScreenshot: my-boats-added
 
 # Edit the name without saving, then delete: the boat must really be gone.
-# Scroll to the end: the last row must sit fully above the NEW BOAT button.
-- scroll
 - tapOn: ${output.boat}
 - tapOn:
     id: "e2e-boat-competitor-name"

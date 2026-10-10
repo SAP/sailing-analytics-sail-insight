@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import { __, compose, always, both, path, when, move, length, subtract, curry, of as Rof,
   prop, map, reduce, concat, mergeRight, defaultTo, any, take, props as rProps, dissoc, reject,
   objOf, isNil, not, equals, ifElse, insert, complement, uncurryN, apply, T, cond,
@@ -143,13 +144,11 @@ const openGeolocationScreenWithPosition = curry((props, location) => compose(
 
 const isValidCoordinate = (value: any) => typeof value === 'number' && isFinite(value)
 
-// Resolves with a recent position (the plugin reuses a fix younger than
-// maximumAge, otherwise asks the GPS for a fresh one). The persisted
-// lastLatitude/lastLongitude carry no timestamp and may be stale. Never
-// resolves with missing coordinates; rejects on GPS errors/permission denial.
+// Await the SDK callback before using its coordinates. Keep the SDK's
+// acquisition defaults; reject missing coordinates and surface GPS errors.
 const getCurrentCoordinates = (): Promise<{ latitude: number, longitude: number }> => {
   return new Promise((resolve, reject) => {
-    BackgroundGeolocation.getCurrentPosition({ timeout: 30, maximumAge: 10000, samples: 1, desiredAccuracy: 20 }, (location: any) => {
+    BackgroundGeolocation.getCurrentPosition({}, (location: any) => {
       const { latitude, longitude } = location?.coords || {} as any
       if (isValidCoordinate(latitude) && isValidCoordinate(longitude)) {
         resolve({ latitude, longitude })
@@ -161,7 +160,7 @@ const getCurrentCoordinates = (): Promise<{ latitude: number, longitude: number 
 }
 
 const showGpsPositionUnavailableSnackbar = (error?: any) => {
-  console.warn('Could not get the current GPS position:', error)
+  Logger.warn('Could not get the current GPS position:', error)
   Snackbar.show({
     text: I18n.t('error_gps_position_unavailable'),
     duration: Snackbar.LENGTH_LONG
@@ -790,10 +789,10 @@ const NavigationBackHandler = (props: any) => {
     useFocusEffect(
         useCallback(() => {
             Promise.resolve(startLocalLocationUpdates()).catch((e: any) =>
-                console.warn('Could not start local location updates:', e))
+                Logger.warn('Could not start local location updates:', e))
             return () => {
                 Promise.resolve(stopLocalLocationUpdates()).catch((e: any) =>
-                    console.warn('Could not stop local location updates:', e))
+                    Logger.warn('Could not stop local location updates:', e))
             }
         }, [startLocalLocationUpdates, stopLocalLocationUpdates])
     );

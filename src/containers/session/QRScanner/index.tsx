@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import React, { useEffect, useRef, useState } from 'react'
 import { Alert, Linking, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -39,7 +40,7 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
         if (lastValueRef.current === value) return
         lastValueRef.current = value
 
-        console.log('[VisionCamera] QR value:', value)
+        Logger.log('[VisionCamera] QR code scanned')
 
         // If a callback was provided by the previous screen, use it and go back, optional
         const cb = route?.params?.onRead

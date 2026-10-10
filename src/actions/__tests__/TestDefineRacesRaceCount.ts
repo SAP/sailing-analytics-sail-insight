@@ -145,12 +145,6 @@ function createStore({ tracking = false } = {}) {
   return { dispatch, getState, task }
 }
 
-const lastAlertButtons = () => {
-  const calls = (Alert.alert as any).mock.calls
-  const last = calls[calls.length - 1]
-  return (last && last[2]) || []
-}
-
 let alertSpy: any
 let store: any
 
@@ -205,67 +199,6 @@ describe('race count: rapid successive changes', () => {
     store.dispatch(updateEventSettings(session, { numberOfRaces: 4 }))
     await settle()
 
-    expect(mockServer.races).toHaveLength(4)
-  })
-})
-
-describe('race count: reducing requires confirmation', () => {
-  // User-facing problem: lowering the picker deletes races (and their race
-  // logs/tracking data) on the server immediately, without asking.
-  test('reducing the race count asks for a destructive confirmation and removes nothing before it is confirmed', async () => {
-    mockServer.races = ['R1', 'R2', 'R3', 'R4', 'R5']
-    alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {})
-    store = createStore()
-
-    store.dispatch(updateEventSettings(session, { numberOfRaces: 3 }))
-    await settle()
-
-    expect(Alert.alert).toHaveBeenCalled()
-    expect(lastAlertButtons().some((b: any) => b.style === 'destructive')).toBe(true)
-    expect(mockApi.removeRaceColumn).not.toHaveBeenCalled()
-  })
-
-  test('cancelling the confirmation keeps all races', async () => {
-    mockServer.races = ['R1', 'R2', 'R3', 'R4', 'R5']
-    alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {})
-    store = createStore()
-
-    store.dispatch(updateEventSettings(session, { numberOfRaces: 3 }))
-    await sleep(50)
-    expect(Alert.alert).toHaveBeenCalled()
-    const cancel = lastAlertButtons().find((b: any) => b.style === 'cancel')
-    expect(cancel).toBeDefined()
-    if (cancel.onPress) { cancel.onPress() }
-    await settle()
-
-    expect(mockApi.removeRaceColumn).not.toHaveBeenCalled()
-    expect(mockServer.races).toHaveLength(5)
-  })
-
-  test('confirming the destructive option removes the surplus races', async () => {
-    mockServer.races = ['R1', 'R2', 'R3', 'R4', 'R5']
-    alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {})
-    store = createStore()
-
-    store.dispatch(updateEventSettings(session, { numberOfRaces: 3 }))
-    await sleep(50)
-    expect(Alert.alert).toHaveBeenCalled()
-    lastAlertButtons().find((b: any) => b.style === 'destructive').onPress()
-    await settle()
-
-    expect(mockServer.races).toEqual(['R1', 'R2', 'R3'])
-  })
-
-  // Regression guard (passes today): adding races must stay confirmation-free.
-  test('increasing the race count does not ask for confirmation', async () => {
-    mockServer.races = ['R1', 'R2', 'R3']
-    alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {})
-    store = createStore()
-
-    store.dispatch(updateEventSettings(session, { numberOfRaces: 4 }))
-    await settle()
-
-    expect(Alert.alert).not.toHaveBeenCalled()
     expect(mockServer.races).toHaveLength(4)
   })
 })

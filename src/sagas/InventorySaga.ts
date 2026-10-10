@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import { filter, compose, not, __, find, propEq, values,
   curry, isEmpty, mergeRight } from 'ramda'
 import { takeLatest, put, takeEvery, select, all, call } from 'redux-saga/effects'
@@ -58,7 +59,7 @@ function* loadMarkPropertiesFromServer(action: any = {}) {
   // an error right after a save that actually succeeded.
   // An empty 200 body ('') is as invalid as a failed request.
   if (!markProperties) {
-    console.warn('Failed to load mark properties')
+    Logger.warn('Failed to load mark properties')
     return false
   }
 
@@ -81,7 +82,7 @@ function* loadMarkPropertiesFromServer(action: any = {}) {
     const createdMarkProperties = newMarkProperties.filter((mp: any) => mp !== undefined)
 
     if (createdMarkProperties.length < newMarkProperties.length) {
-      console.warn('Failed to create default mark properties:',
+      Logger.warn('Failed to create default mark properties:',
         newMarkProperties.length - createdMarkProperties.length)
     }
 

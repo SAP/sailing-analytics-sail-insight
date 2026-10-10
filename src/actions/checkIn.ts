@@ -1,5 +1,4 @@
 import I18n from 'i18n'
-import { Alert } from 'react-native'
 import { createAction } from 'redux-actions'
 import { always, applySpec, compose, concat, defaultTo, filter, findLast, has, head, isNil,
   map, partition, pick, prop, propEq, reject, toPairs, is, cond, anyPass, T, F  } from 'ramda'
@@ -15,6 +14,7 @@ import * as Screens from 'navigation/Screens'
 import { fetchEntityAction, withDataApi } from 'helpers/actions'
 import Logger from 'helpers/Logger'
 import { showNetworkRequiredSnackbarMessage } from 'helpers/network'
+import { showErrorAlert } from 'helpers/errorAlert'
 import { getInvitationErrorMessage } from 'helpers/texts'
 import { DispatchType, GetStateType } from 'helpers/types'
 import { alertPromise, spreadableList } from 'helpers/utils'
@@ -382,7 +382,7 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
     dispatch(updateLoadingCheckInFlag(false))
     if (error) {
       // workaround for stuck fullscreen loading indicator when alert is called
-      setTimeout(async () => Alert.alert(getInvitationErrorMessage(error)), 800)
+      setTimeout(async () => showErrorAlert(undefined, error, getInvitationErrorMessage(error)), 800)
     }
   }
 }

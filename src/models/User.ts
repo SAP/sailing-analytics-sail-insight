@@ -6,12 +6,17 @@ export const ApiBodyKeys = {
   Nationality: 'nationality',
 }
 
-export const mapResToUser = (data: any) => data && ({
-  username: data.username,
-  fullName: data.fullName,
-  email: data.email,
-  company: data.company,
-} as User)
+export const mapResToUser = (data: any) => {
+  if (!data || typeof data.username !== 'string' || data.username.trim().length === 0) {
+    throw new Error('Invalid user response: missing username')
+  }
+  return {
+    username: data.username,
+    fullName: data.fullName,
+    email: data.email,
+    company: data.company,
+  } as User
+}
 
 export const mapUserToRes = (user: User) => ({
   [ApiBodyKeys.Username]: user.username,

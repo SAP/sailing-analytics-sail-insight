@@ -96,10 +96,10 @@ function* syncLeaderboard({ rankOnly }) {
         }
         lastFetchFailed = false
       } catch (err) {
-        Logger.debug('Error while executing syncLeaderboard', err)
+        Logger.warn('Error while executing syncLeaderboard', err)
         // non-blocking hint, once per failure streak (the loop retries every 10s)
         if (!lastFetchFailed) {
-          showServerErrorSnackbarMessage()
+          showServerErrorSnackbarMessage(err)
         }
         lastFetchFailed = true
       }

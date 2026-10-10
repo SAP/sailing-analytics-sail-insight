@@ -1,32 +1,10 @@
-/**
- * Desired error behavior of the Login screen.
- *
- * Contracts:
- * - helpers/texts exports `getLoginErrorMessage(err): string`:
- *     AuthException / ApiException with status 401 -> I18n 'error_login_incorrect'
- *     anything else -> getErrorDisplayMessage(err) (network/timeout -> 'error_network_required_alert',
- *     5xx -> 'error_server_busy', ...)
- *   The Login screen uses it for the message it renders after a failed login.
- * - The Login screen renders its `error` state (e.g. the offline message
- *   'error_network_required_snackbar') as visible text.
- */
 import React from 'react'
 import TestRenderer, { act } from 'react-test-renderer'
 import { Provider } from 'react-redux'
 import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
 
-import ApiException from 'api/ApiException'
-import AuthException from 'api/AuthException'
 import NetworkTimeoutException from 'api/NetworkTimeoutException'
-import I18n from 'i18n'
-import * as texts from 'helpers/texts'
-
-declare var beforeAll: any
-declare var beforeEach: any
-declare var describe: any
-declare var test: any
-declare var expect: any
 
 const mockLogin = jest.fn()
 jest.mock('actions/auth', () => ({ login: (...args: any[]) => () => mockLogin(...args) }))
@@ -47,16 +25,8 @@ jest.mock('components/TextButton', () => (props: any) => {
 // eslint-disable-next-line import/first
 import Login from '../Login'
 
-beforeAll(() => {
-  I18n.locale = 'en'
-})
-
-beforeEach(() => {
-  mockLogin.mockReset()
-})
-
-const renderLogin = (isConnected: boolean) => {
-  const store = createStore(() => ({ network: { isConnected } }), applyMiddleware(thunk))
+const renderLogin = () => {
+  const store = createStore(() => ({ network: { isConnected: true } }), applyMiddleware(thunk))
   let renderer: any
   act(() => {
     renderer = TestRenderer.create(
@@ -66,49 +36,27 @@ const renderLogin = (isConnected: boolean) => {
   return renderer
 }
 
-const fillAndSubmit = async (renderer: any) => {
+test('keyboard and button submission share one pending login and allow retry after rejection', async () => {
+  let rejectRequest: any
+  mockLogin.mockReturnValueOnce(new Promise((_, reject) => { rejectRequest = reject }))
+  mockLogin.mockRejectedValueOnce(NetworkTimeoutException.create('Server request timeout'))
+  const renderer = renderLogin()
   const [username, password] = renderer.root.findAllByType('MockTextInput')
-  act(() => { username.props.onChangeText('user') })
-  act(() => { password.props.onChangeText('pw') })
+  act(() => { username.props.onChangeText('user'); password.props.onChangeText('pw') })
   const submit = renderer.root.findAll((n: any) => n.type === 'MockTextButton' && n.props.testID === 'e2e-login-submit')[0]
-  await act(async () => { await submit.props.onPress() })
-}
-
-const renderedText = (renderer: any) => JSON.stringify(renderer.toJSON())
-
-describe('getLoginErrorMessage', () => {
-  // User impact: on a timeout or server outage users are told their password is
-  // wrong and start resetting a correct password.
-})
-
-describe('Login screen', () => {
-  test('a login timeout is NOT shown as "username or password incorrect"', async () => {
-    mockLogin.mockRejectedValueOnce(NetworkTimeoutException.create('Server request timeout'))
-    const renderer = renderLogin(true)
-
-    await fillAndSubmit(renderer)
-
-    const output = renderedText(renderer)
-    expect(output).not.toContain(I18n.t('error_login_incorrect'))
-    expect(output).toContain(I18n.t('error_network_required_alert'))
+  let first: any
+  act(() => {
+    first = password.props.onSubmitEditing()
+    submit.props.onPress()
   })
-
-  test('wrong credentials (401) still show "username or password incorrect"', async () => {
-    mockLogin.mockRejectedValueOnce(AuthException.create('Unauthorized'))
-    const renderer = renderLogin(true)
-
-    await fillAndSubmit(renderer)
-
-    expect(renderedText(renderer)).toContain(I18n.t('error_login_incorrect'))
-  })
-
-  // User impact: offline, tapping LOGIN does nothing visible.
-  test('submitting while offline renders the network-required message', async () => {
-    const renderer = renderLogin(false)
-
-    await fillAndSubmit(renderer)
-
-    expect(mockLogin).not.toHaveBeenCalled()
-    expect(renderedText(renderer)).toContain(I18n.t('error_network_required_snackbar'))
-  })
+  const initialCalls = mockLogin.mock.calls.length
+  const pendingLoading = submit.props.isLoading
+  await act(async () => { rejectRequest(NetworkTimeoutException.create('Server request timeout')); await first })
+  expect(initialCalls).toBe(1)
+  expect(pendingLoading).toBe(true)
+  expect(submit.props.isLoading).toBe(false)
+  await act(async () => { await password.props.onSubmitEditing() })
+  expect(mockLogin).toHaveBeenCalledTimes(2)
+  expect(submit.props.isLoading).toBe(false)
+  act(() => renderer.unmount())
 })

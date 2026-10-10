@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import React from 'react';
 import {
   compose, curry, reject, isNil, always, prop,
@@ -31,7 +32,7 @@ const ComponentRenderer = ({ props, g }) => compose(
 export const Component = compose(
     g => {
         if (!g || typeof g !== 'function') {
-            console.error('Component received invalid g:', g);
+            Logger.error('Component received invalid g:', g);
             return {
                 g: () => [],
                 map: () => Component(() => []),
@@ -47,7 +48,7 @@ export const Component = compose(
             contramap: f => Component(x => g(f(x))),
             concat:    other => {
                 if (!other || !other.g) {
-                    console.error('concat received invalid other:', other);
+                    Logger.error('concat received invalid other:', other);
                     return Component(g);
                 }
                 return Component(x => g(x).concat(other.g(x)));

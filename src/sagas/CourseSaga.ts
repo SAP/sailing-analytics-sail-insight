@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import { any, allPass, map, evolve, mergeRight, curry, dissoc, not, has,
   prop, assoc, mergeLeft, compose, reduce, keys, objOf,
   find, findLast, eqProps, pathEq, propEq, propOr, when, tap, defaultTo, isEmpty, isNil,
@@ -46,20 +47,14 @@ import Snackbar from 'react-native-snackbar'
 import I18n from 'i18n'
 import { PassingInstruction } from 'models/Course'
 import { showNetworkRequiredSnackbarMessage, showSaveFailedSnackbarMessage,
-  showServerErrorSnackbarMessage } from 'helpers/network'
+  showServerErrorSnackbarMessage, showFailureSnackbarMessage, getErrorSnackbarAction } from 'helpers/network'
 import { alertPromise } from 'helpers/utils'
 
 const showMarkBindingFailedSnackbarMessage = () =>
-  Snackbar.show({
-    text: I18n.t('error_mark_binding_failed'),
-    duration: Snackbar.LENGTH_LONG
-  })
+  showFailureSnackbarMessage(I18n.t('error_mark_binding_failed'))
 
 const showDefaultMarksMissingSnackbarMessage = () =>
-  Snackbar.show({
-    text: I18n.t('error_course_default_marks_missing'),
-    duration: Snackbar.LENGTH_LONG
-  })
+  showFailureSnackbarMessage(I18n.t('error_course_default_marks_missing'))
 
 const renameKeys = curry((keysMap, obj) =>
   reduce((acc, key) => assoc(keysMap[key] || key, obj[key], acc), {}, keys(obj)));
@@ -399,8 +394,8 @@ function* propagateSavedCourse(params: any) {
     yield call(propagateSavedCourseFlow, params)
   } catch (e) {
     // A spawned task has no parent to report to.
-    console.warn('Failed to finish saving the course', e)
-    showSaveFailedSnackbarMessage()
+    Logger.warn('Failed to finish saving the course', e)
+    showSaveFailedSnackbarMessage(e)
   }
 }
 
@@ -466,7 +461,7 @@ function* propagateSavedCourseFlow({
             followingRacesFailed = true
           }
         } catch (e) {
-          console.warn('Failed to copy the course to a following race', e)
+          Logger.warn('Failed to copy the course to a following race', e)
           followingRacesFailed = true
         }
       }
@@ -497,14 +492,15 @@ function* propagateSavedCourseFlow({
     if (mark) {
       yield put(receiveEntities(mark))
     } else {
-      console.warn('Failed to fetch mark data after saving the course')
+      Logger.warn('Failed to fetch mark data after saving the course')
     }
   }
   Snackbar.show({
     text: I18n.t(followingRacesFailed
       ? 'error_course_saved_following_races_failed'
       : 'text_course_saved'),
-    duration: Snackbar.LENGTH_LONG
+    duration: Snackbar.LENGTH_LONG,
+    ...(followingRacesFailed ? { action: getErrorSnackbarAction() } : {}),
   })
   yield call(loadMarkProperties)
 }
@@ -572,10 +568,10 @@ function* updateMarkPositionFlow({ payload }: any) {
 
     // Log failures but don't block - partial success is still useful
     if (markPropertiesId && propertyResult === undefined) {
-      console.warn('Failed to update mark property position')
+      Logger.warn('Failed to update mark property position')
     }
     if (markId && fixResult === undefined) {
-      console.warn('Failed to send GPS fix for mark')
+      Logger.warn('Failed to send GPS fix for mark')
     }
     if ((markPropertiesId && propertyResult === undefined) || (markId && fixResult === undefined)) {
       showServerErrorSnackbarMessage()
@@ -584,7 +580,7 @@ function* updateMarkPositionFlow({ payload }: any) {
     if (markPropertiesId) {
       const positionResult = yield safeApiCall(api.updateMarkPropertyPositioning, markPropertiesId, getDeviceId())
       if (positionResult === undefined) {
-        console.warn('Failed to bind mark position to device')
+        Logger.warn('Failed to bind mark position to device')
         showMarkBindingFailedSnackbarMessage()
       }
     }
@@ -596,7 +592,7 @@ function* updateMarkPositionFlow({ payload }: any) {
       if (mark) {
         yield put(receiveEntities(mark))
       } else {
-        console.warn('Failed to fetch mark data')
+        Logger.warn('Failed to fetch mark data')
       }
 
       // Bind this device to the mark if it is not already bound
@@ -606,7 +602,7 @@ function* updateMarkPositionFlow({ payload }: any) {
       } else if (!isDeviceBound) {
         const mappingResult = yield safeApiCall(api.startDeviceMapping, leaderboardName, checkInDeviceMappingData({ markId, secret }))
         if (mappingResult === undefined) {
-          console.warn('Failed to bind device to mark')
+          Logger.warn('Failed to bind device to mark')
           showMarkBindingFailedSnackbarMessage()
         }
       }

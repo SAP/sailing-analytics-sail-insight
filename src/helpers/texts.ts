@@ -20,6 +20,7 @@ import I18n from 'i18n'
 import { MISSING_PREFIX } from 'i18n/utils'
 
 import { ErrorCodes } from './errors'
+import { sanitizeDiagnostic } from './diagnosticsRedaction'
 
 
 const ERROR_TRANSLATION_PREFIX = 'error_'
@@ -28,7 +29,6 @@ const DEVICE_ALREADY_REGISTERED = 'device is already registered'
 const PERMISSION_DENIED_TEXTS = ['unauthorizedexception', 'does not have permission']
 const SIGNUP_RATE_LIMIT_TEXT = 'locked for user creation'
 const MAX_ERROR_BODY_LENGTH = 2000
-const SENSITIVE_QUERY_PARAM = /([?&][^=&#]*(?:secret|token|password|email|mail|username|user)[^=&#]*=)[^&#]*/gi
 
 const getTranslation = (translationKey: string, defaultMessage?: string, params?: any) => {
   const result = I18n.t(translationKey, params)
@@ -139,29 +139,24 @@ export const getLoginErrorMessage = (exception: any) => {
   return isUnauthorized ? I18n.t(ErrorCodes.LOGIN_INCORRECT) : getErrorDisplayMessage(exception)
 }
 
-const SENSITIVE_BODY_VALUE = /("[^"]*(?:secret|token|password)[^"]*"\s*:\s*)"(?:[^"\\]|\\.)*"/gi
-const redactBody = (body: string) => body.replace(SENSITIVE_BODY_VALUE, '$1"***"')
-
-const redactUrl = (url: string) => url.replace(SENSITIVE_QUERY_PARAM, '$1***')
-
 // Technical description of an error for pro users / support (see ErrorDetails).
 export const getErrorDetails = (exception: any): string | undefined => {
-  if (!exception) {
-    return undefined
+  if (!exception) return undefined
+  try {
+    const safe = sanitizeDiagnostic(exception) || {}
+    const lines: string[] = []
+    const format = (value: any): string => typeof value === 'string' ? value : JSON.stringify(value)
+    lines.push(`${format(safe.name || 'Error')}: ${safe.message == null ? '' : format(safe.message)}`)
+    if (safe.status != null && safe.status !== '') lines.push(`Status: ${format(safe.status)}`)
+    if (safe.url) lines.push(`${format(safe.method || 'GET')} ${format(safe.url)}`)
+    if (safe.data != null && safe.data !== '') {
+      const body = format(safe.data)
+      lines.push(`Response: ${body.substring(0, MAX_ERROR_BODY_LENGTH)}`)
+    }
+    return lines.join('\n')
+  } catch (_) {
+    return 'Error: [Unavailable]'
   }
-  const lines: string[] = []
-  lines.push(`${exception.name || 'Error'}: ${exception.message || ''}`)
-  if (exception.status) {
-    lines.push(`Status: ${exception.status}`)
-  }
-  if (exception.url) {
-    lines.push(`${exception.method || 'GET'} ${redactUrl(String(exception.url))}`)
-  }
-  if (exception.data != null && exception.data !== '') {
-    const body = isString(exception.data) ? exception.data : JSON.stringify(exception.data)
-    lines.push(`Response: ${body && redactBody(body).substring(0, MAX_ERROR_BODY_LENGTH)}`)
-  }
-  return lines.join('\n')
 }
 
 // For the invitation surfaces (QR scan, invitation link, join screen):

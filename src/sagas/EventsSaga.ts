@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import { FETCH_COURSES_FOR_EVENT, fetchCoursesForEvent, loadCourse } from 'actions/courses'
 import { receiveEntities } from 'actions/entities'
 import { SET_NUMBER_OF_RACES, CREATE_EVENT, FETCH_RACES_TIMES_FOR_EVENT,
@@ -17,6 +18,7 @@ import { dataApi } from 'api'
 import { openUrl } from 'helpers/utils'
 import { safeApiCall } from './HelpersSaga'
 import { showSaveFailedSnackbarMessage, showServerErrorSnackbarMessage } from 'helpers/network'
+import { showErrorAlert } from 'helpers/errorAlert'
 import I18n from 'i18n'
 import moment from 'moment/min/moment-with-locales'
 import { __, apply, compose, concat, curry, dec, path, prop, last, length,
@@ -187,7 +189,7 @@ function* setRaceTime({ payload }: any) {
       if (eventUpdateResult !== undefined) {
         yield put(updateEvent({id: eventId, data: { endDate: date }}))
       } else {
-        console.warn('Failed to update event end date')
+        Logger.warn('Failed to update event end date')
         showSaveFailedSnackbarMessage()
         return
       }
@@ -197,7 +199,7 @@ function* setRaceTime({ payload }: any) {
       if (eventUpdateResult !== undefined) {
         yield put(updateEvent({id: eventId, data: { startDate: date }}))
       } else {
-        console.warn('Failed to update event start date')
+        Logger.warn('Failed to update event start date')
         showSaveFailedSnackbarMessage()
         return
       }
@@ -275,7 +277,7 @@ function* saveDiscards(payload: any) {
   })
 
   if (updateResult === undefined) {
-    console.warn('Failed to update leaderboard discards')
+    Logger.warn('Failed to update leaderboard discards')
     showSaveFailedSnackbarMessage()
     return
   }
@@ -317,7 +319,7 @@ function* createEvent(payload: any) {
   // time — a snackbar is too easy to miss for that.
   if (regattaSettings === undefined) {
     yield put(updateCreatingEvent(false))
-    Alert.alert(I18n.t('error_title'), I18n.t('error_event_settings_not_saved'))
+    showErrorAlert(I18n.t('error_title'), undefined, I18n.t('error_event_settings_not_saved'))
     return
   }
 
@@ -326,7 +328,7 @@ function* createEvent(payload: any) {
 
   const failedDenotes = races.filter((_: string, idx: number) => denoteResults[idx] === undefined)
   if (failedDenotes.length > 0) {
-    console.warn('Failed to denote races for tracking:', failedDenotes)
+    Logger.warn('Failed to denote races for tracking:', failedDenotes)
     showSaveFailedSnackbarMessage()
   }
 
@@ -357,7 +359,7 @@ function* addRaceColumns(payload: any) {
 
   const failedDenotes = races.filter((_: string, idx: number) => denoteResults[idx] === undefined)
   if (failedDenotes.length > 0) {
-    console.warn('Failed to denote races for tracking:', failedDenotes)
+    Logger.warn('Failed to denote races for tracking:', failedDenotes)
     showSaveFailedSnackbarMessage()
   }
 
@@ -370,7 +372,7 @@ function* addRaceColumns(payload: any) {
 
     const failedTracking = races.filter((_: string, idx: number) => trackingResults[idx] === undefined)
     if (failedTracking.length > 0) {
-      console.warn('Failed to start tracking for races:', failedTracking)
+      Logger.warn('Failed to start tracking for races:', failedTracking)
       showSaveFailedSnackbarMessage()
     }
   }
@@ -454,7 +456,7 @@ function* reloadRegattaAfterRaceColumnsChange(payload: any) {
       numberOfRaces: getRegattaNumberOfRaces(regattaData)
     }))
   } else {
-    console.warn('Regatta missing from response, keeping the stored race count:',
+    Logger.warn('Regatta missing from response, keeping the stored race count:',
       payload.regattaName)
   }
 
@@ -492,7 +494,7 @@ function* startTrackingForEvent({ regattaName, serverUrl, leaderboardName }: any
 
   const failedRaces = races.filter((_: string, idx: number) => trackingResults[idx] === undefined)
   if (failedRaces.length > 0) {
-    console.warn('Failed to start tracking for races:', failedRaces)
+    Logger.warn('Failed to start tracking for races:', failedRaces)
     showSaveFailedSnackbarMessage()
   }
 
@@ -541,7 +543,7 @@ function* stopTracking({ payload }: any) {
     }
   } catch (e) {
     // reported to the caller via onDone (the screen shows the error)
-    console.warn('Failed to end event', e)
+    Logger.warn('Failed to end event', e)
   } finally {
     // also resolves (as failed) when this run is cancelled by a newer one
     if (payload.onDone) { payload.onDone(success) }

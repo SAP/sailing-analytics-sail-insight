@@ -2,6 +2,7 @@
 jest.mock('react-native-device-info', () =>
     require('react-native-device-info/jest/react-native-device-info-mock'));
 jest.mock('react-native-localize', () => require('react-native-localize/mock'));
+jest.mock('@react-native-clipboard/clipboard', () => require('@react-native-clipboard/clipboard/jest/clipboard-mock'));
 
 // Native modules pulled in by sagas/actions. Saga tests assert on these mocks.
 jest.mock('@react-native-firebase/crashlytics', () => {

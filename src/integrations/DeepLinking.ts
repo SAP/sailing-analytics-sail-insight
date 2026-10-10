@@ -12,7 +12,7 @@ const handleEvent = ({ error, params }: any) => {
     Logger.debug(`Error from Branch.io: ${error}`)
     return
   }
-  Logger.debug('Branch.io:', params)
+  Logger.debug('Branch.io link received')
   listeners.forEach(listener => listener(params))
 }
 

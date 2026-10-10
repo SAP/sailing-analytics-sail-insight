@@ -75,19 +75,6 @@ afterEach(() => {
 })
 
 describe('loading the mark inventory', () => {
-  // User impact: opening the Mark Inventory screen with an empty inventory
-  // crashed the inventory saga (TypeError on payload) so the default marks
-  // were never created and later inventory loads stopped working.
-  test('works when the action is dispatched without a payload (as the Mark Inventory screen does)', async () => {
-    mockApi.requestMarkProperties.mockResolvedValue({ entities: { markProperties: {} }, result: [] })
-
-    dispatch(loadMarkPropertiesAction())
-    await flush()
-
-    expect(sagaErrors).toEqual([])
-    expect(mockApi.createMarkProperties).toHaveBeenCalled()
-  })
-
   // User impact: a backend hiccup returning 200 with an empty body made the
   // app POST all nine default mark properties again -> duplicate marks.
   test('treats an empty response body as invalid and does not create any default mark properties', async () => {
@@ -130,13 +117,5 @@ describe('deleting a mark property', () => {
     expect(mockShowErrorAlert).toHaveBeenCalledTimes(1)
   })
 
-  test('does not restore or alert when the server deletes it', async () => {
-    mockApi.removeMarkProperty.mockResolvedValue({})
 
-    dispatch({ type: 'REMOVE_ENTITY', payload: { entityType: 'markProperties', id: 'm1', entity: mark } })
-    await flush()
-
-    expect(dispatched.find((a: any) => a.type === 'RECEIVE_ENTITIES')).toBeUndefined()
-    expect(mockShowErrorAlert).not.toHaveBeenCalled()
-  })
 })

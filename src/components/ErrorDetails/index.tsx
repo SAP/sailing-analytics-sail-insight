@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity, View, Alert } from 'react-native'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 import Text from 'components/Text'
 import I18n from 'i18n'
@@ -20,7 +21,19 @@ const ErrorDetails = ({ details }: { details?: string }) => {
           {I18n.t(expanded ? 'caption_hide_error_details' : 'caption_show_error_details')}
         </Text>
       </TouchableOpacity>
-      {expanded && <Text selectable style={styles.details}>{details}</Text>}
+      {expanded && <>
+        <Text selectable style={styles.details}>{details}</Text>
+        <TouchableOpacity testID="e2e-error-details-copy" onPress={() => {
+          try {
+            Clipboard.setString(details)
+            Alert.alert(I18n.t('text_diagnostics_copied_to_clipboard'))
+          } catch (_) {
+            Alert.alert(I18n.t('error_copy_diagnostics'))
+          }
+        }}>
+          <Text style={styles.toggle}>{I18n.t('caption_copy_error_details')}</Text>
+        </TouchableOpacity>
+      </>}
     </View>
   )
 }

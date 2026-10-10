@@ -12,7 +12,7 @@ const getData = async (dataHandler?: (r: any) => any, response?: any) => {
   try {
     return dataHandler ? await dataHandler(response) : response
   } catch (err) {
-    throw ApiDataException.create(err)
+    throw ApiDataException.create(err instanceof Error ? err.message : String(err))
   }
 }
 
@@ -54,7 +54,10 @@ const jsonData = async (response: any) => {
 
 const jsonDataArray = async (response: any) => {
   const data = await jsonData(response)
-  return data || []
+  if (!Array.isArray(data)) {
+    throw new Error('Invalid API response: expected an array')
+  }
+  return data
 }
 
 /**
@@ -71,7 +74,13 @@ const requestWithHandler = (dataHandler?: (response: any) => any) => async (
     url,
     method: (options.method || HttpMethods.GET).toUpperCase(),
   })(response)
-  data = dataProcessor ? dataProcessor(data) : data
+  if (dataProcessor) {
+    try {
+      data = dataProcessor(data)
+    } catch (err) {
+      throw ApiDataException.create(err instanceof Error ? err.message : String(err))
+    }
+  }
   return dataSchema && data ? normalize(data, dataSchema) : data
 }
 

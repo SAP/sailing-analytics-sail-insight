@@ -1,17 +1,14 @@
 import { isString } from 'lodash'
 import querystring from 'query-string'
-import { compose, includes, prop, __, when, mergeRight } from 'ramda'
+import { mergeRight } from 'ramda'
 
 import { Signer, tokenSigner } from 'api/authorization'
 import { BodyType, HttpMethods } from 'api/config'
 import NetworkTimeoutException from 'api/NetworkTimeoutException'
 import { DEV_MODE, isPlatformAndroid } from 'environment'
 import Logger from 'helpers/Logger'
+import { serializeDiagnostic } from 'helpers/diagnosticsRedaction'
 import crashlytics from '@react-native-firebase/crashlytics'
-
-const responseHasFatalError = compose(
-  includes(__, [400, 404, 405]),
-  prop('status'))
 
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
@@ -102,53 +99,38 @@ export const request = async (
 
   const data = body && { body: getBody(bodyType, body) }
 
-  let headers = await getHeaders(url, method, body, bodyType, signer)
-
-  const controller = new AbortController()
-  const fetchOptions = {
-    method,
-    signal: controller.signal,
-    timeout,
-    headers: mergeRight(headers, options.headers),
-    credentials: 'omit',
-    ...data,
-  }
-  let response
+  let response: Response
   try {
-    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout', controller)
-  } catch (err) {
-    throw err
-  } finally {
-    if (DEV_MODE) {
-      const headers = fetchOptions.headers
-      let responseBody = null
-      if (response) {
-        try {
-          responseBody = await response.clone().json()
-        } catch {
-          try {
-            responseBody = await response.clone().text()
-          } catch {
-            responseBody = '[Unable to parse response]'
-          }
-        }
-      }
-      Logger.groupedDebug(
-        `${(response && response.status) || 'ERR'}: ${fetchOptions.method} ${url}`,
-        {
-          requestBody: body,
-          responseBody,
-          headers,
-          method,
-        },
-      )
-    } else {
-      when(responseHasFatalError, async (response: any) => {
-        const error = await response.clone().text()
-        crashlytics().setAttribute('status', response.status.toString())
-        crashlytics().setAttribute('url', response.url)
-        crashlytics().recordError(new Error(error))
-      })(response)
+    const headers = await getHeaders(url, method, body, bodyType, signer)
+    const controller = new AbortController()
+    const fetchOptions = {
+      method,
+      signal: controller.signal,
+      timeout,
+      headers: mergeRight(headers, options.headers),
+      credentials: 'omit',
+      ...data,
+    }
+    response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout', controller) as Response
+  } catch (error) {
+    Logger.error('Network request failed', {
+      failureType: error instanceof Error ? error.name : 'NetworkError', method, url,
+    })
+    throw error
+  }
+
+  if (!response.ok) {
+    Logger.error('HTTP request failed', {
+      failureType: 'HttpError', status: response.status, method, url: response.url || url,
+    })
+    if (!DEV_MODE && [400, 404, 405].includes(response.status)) {
+      // Crashlytics SDK calls may reject asynchronously; diagnostics must not create an
+      // unhandled rejection or interfere with the request's HTTP response.
+      void Promise.resolve().then(async () => {
+        await crashlytics().setAttribute('status', String(response.status))
+        await crashlytics().setAttribute('url', serializeDiagnostic(response.url || url))
+        await crashlytics().recordError(new Error(`HTTP ${response.status}`))
+      }).catch(() => undefined)
     }
   }
   return response

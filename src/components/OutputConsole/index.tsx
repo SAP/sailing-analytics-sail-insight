@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import React, { useState } from 'react'
 import { FlatList, Share, TouchableOpacity, View, ViewProps } from 'react-native'
 
@@ -81,7 +82,7 @@ class OutputConsole extends React.Component<OutputConsoleProps, OutputConsoleSta
         message,
       })
     } catch (error) {
-      console.log(error.message)
+      Logger.log(error.message)
     }
   }
 

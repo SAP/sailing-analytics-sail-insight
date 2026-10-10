@@ -1,0 +1,102 @@
+# A rejected login creates a genuine HTTP diagnostic. Then log in without
+# clearing app data, so Expert Settings must copy that persisted history.
+appId: ${APP_ID}
+tags:
+  - diagnostics
+  - organizer
+---
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: "e2e-first-contact-login"
+    timeout: 60000
+- tapOn:
+    id: "e2e-first-contact-login"
+- tapOn:
+    id: "e2e-login-username"
+- setClipboard: ${E2E_USERNAME}
+- pasteText
+- tapOn:
+    id: "e2e-login-password"
+- setClipboard: "wrong-password-1A!"
+- pasteText
+- hideKeyboard
+- tapOn:
+    id: "e2e-login-submit"
+- extendedWaitUntil:
+    visible: "The username or password you entered is incorrect"
+    timeout: 30000
+- tapOn:
+    id: "e2e-login-password"
+- eraseText
+- setClipboard: ${E2E_PASSWORD}
+- pasteText
+- hideKeyboard
+- tapOn:
+    id: "e2e-login-submit"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-account-tab"
+    timeout: 60000
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "SETTINGS"
+- repeat:
+    times: 15
+    commands:
+      - tapOn:
+          id: "e2e-expert-settings-trigger"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-verbose-logging-switch"
+    timeout: 10000
+- assertVisible:
+    id: "e2e-show-error-details-switch"
+- assertVisible:
+    id: "e2e-verbose-logging-switch"
+    checked: false
+- takeScreenshot: expert-settings-default
+- tapOn:
+    id: "e2e-verbose-logging-switch"
+- assertVisible:
+    id: "e2e-verbose-logging-switch"
+    checked: true
+- takeScreenshot: expert-settings-verbose-logging-enabled
+- launchApp:
+    clearState: false
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "SETTINGS"
+- repeat:
+    times: 15
+    commands:
+      - tapOn:
+          id: "e2e-expert-settings-trigger"
+- assertVisible:
+    id: "e2e-verbose-logging-switch"
+    checked: true
+- tapOn:
+    id: "e2e-copy-local-diagnostics"
+- assertVisible: ".*Diagnostics copied to clipboard.*"
+- tapOn: "OK"
+- tapOn:
+    id: "e2e-verbose-logging-switch"
+- assertVisible:
+    id: "e2e-verbose-logging-switch"
+    checked: false
+- launchApp:
+    clearState: false
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "SETTINGS"
+- repeat:
+    times: 15
+    commands:
+      - tapOn:
+          id: "e2e-expert-settings-trigger"
+- assertVisible:
+    id: "e2e-verbose-logging-switch"
+    checked: false

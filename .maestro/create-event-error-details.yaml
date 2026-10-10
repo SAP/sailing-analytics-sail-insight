@@ -7,7 +7,7 @@ tags:
   - organizer
 ---
 # Unique per run, so re-runs with the same account never collide.
-- evalScript: ${output.eventName = 'Duplicate ' + E2E_USERNAME + ' ' + Date.now()}
+- evalScript: ${output.eventName = 'Duplicate ' + Date.now()}
 - runFlow: subflows/login.yaml
 - runFlow:
     file: subflows/create-event.yaml
@@ -86,4 +86,31 @@ tags:
     id: "e2e-error-details-toggle"
 - assertVisible: ".*POST .*createEvent.*"
 - assertVisible: ".*Status: 4\\d\\d.*"
+- scrollUntilVisible:
+    element:
+      id: "e2e-error-details-copy"
+    direction: DOWN
 - takeScreenshot: create-event-duplicate-details-expanded
+- tapOn:
+    id: "e2e-error-details-copy"
+- assertVisible: ".*Diagnostics copied to clipboard.*"
+- tapOn: "OK"
+- tapOn:
+    id: "e2e-error-details-toggle"
+- assertNotVisible: ".*POST .*createEvent.*"
+# Returning to settings and disabling the option restores normal-user behavior.
+- back
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "SETTINGS"
+- repeat:
+    times: 15
+    commands:
+      - tapOn:
+          id: "e2e-expert-settings-trigger"
+- tapOn:
+    id: "e2e-show-error-details-switch"
+- back
+- back
+- launchApp:
+    clearState: false

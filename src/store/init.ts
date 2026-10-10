@@ -8,7 +8,8 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import createSagaMiddleware from 'redux-saga'
 import ReduxThunk from 'redux-thunk'
 
-import { DEV_MODE } from 'environment'
+import Logger from 'helpers/Logger'
+import { serializeDiagnostic } from 'helpers/diagnosticsRedaction'
 import Reducers from 'reducers'
 import rootSaga from 'sagas'
 import { initializePersistor, initializeStore } from 'store'
@@ -35,16 +36,16 @@ const persistConfig = {
 
 const sagaMiddleware = createSagaMiddleware({
   onError: (error: Error, { sagaStack }) => {
-    crashlytics().setAttribute('saga', 'true')
-    crashlytics().setAttribute('sagaStack', sagaStack)
-    crashlytics().recordError(error)
+    // Report locally first. Neither a synchronous nor an asynchronous telemetry
+    // failure may tear down the saga tree or hide the original diagnostic.
+    Logger.error('Unhandled saga error:', error, sagaStack)
+    void Promise.resolve().then(async () => {
+      await crashlytics().setAttribute('saga', 'true')
+      await crashlytics().setAttribute('sagaStack', serializeDiagnostic(sagaStack))
+      await crashlytics().recordError(new Error(serializeDiagnostic(error)))
+    }).catch(() => undefined)
 
-    // Deliberately not re-thrown: re-throwing tore down the whole saga tree and
-    // left the app silently unresponsive (issue #64). Watchers restart
-    // themselves in `sagas/index.ts`; this handler only reports.
-    if (DEV_MODE) {
-      console.error('Unhandled saga error:', error, '\n', sagaStack)
-    }
+    // Deliberately not re-thrown: watchers restart themselves in sagas/index.ts.
   }
 })
 
