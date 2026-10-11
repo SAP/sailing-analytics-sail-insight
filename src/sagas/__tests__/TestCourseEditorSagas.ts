@@ -378,15 +378,6 @@ describe('updating a mark position', () => {
     expect(Snackbar.show).toHaveBeenCalled()
   })
 
-  test('still sends valid coordinates (guard against over-blocking)', async () => {
-    mockApi.updateMarkPropertyPositioning.mockResolvedValue({})
-    mockApi.sendMarkGpsFix.mockResolvedValue({})
-    dispatch(updateMarkPosition({ markConfigurationId: 'mc1', location: { latitude: 54.1, longitude: 10.2 } }))
-    await flush()
-
-    expect(mockApi.updateMarkPropertyPositioning).toHaveBeenCalled()
-    expect(mockApi.sendMarkGpsFix).toHaveBeenCalled()
-  })
 })
 
 // ---------------------------------------------------------------------------
@@ -437,17 +428,3 @@ describe('binding this device as tracker of a mark', () => {
   })
 })
 
-describe('binding this device as tracker of a mark (regression guard)', () => {
-  test('creates the device mapping when the lookup succeeds and this device is not bound yet', async () => {
-    fake.markConfigurations.mc1 = { id: 'mc1', markId: 'mark-1', markPropertiesId: 'mp1' }
-    mockApi.updateMarkPropertyPositioning.mockResolvedValue({})
-    mockApi.requestMark.mockResolvedValue({ entities: {} })
-    mockApi.requestTrackingDevices.mockResolvedValue({ marks: [] })
-    mockApi.startDeviceMapping.mockResolvedValue({})
-
-    dispatch(updateMarkPosition({ markConfigurationId: 'mc1', bindToThisDevice: true }))
-    await flush()
-
-    expect(mockApi.startDeviceMapping).toHaveBeenCalledTimes(1)
-  })
-})

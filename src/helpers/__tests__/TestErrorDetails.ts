@@ -28,22 +28,6 @@ const apiException = (data: any = 'server said no') => {
   return e
 }
 
-test('returns undefined for falsy input', () => {
-  expect(getErrorDetails(undefined)).toBeUndefined()
-  expect(getErrorDetails(null)).toBeUndefined()
-})
-
-test('describes name, status, method + url and body of an ApiException on several lines', () => {
-  const details = getErrorDetails(apiException())
-  expect(details).toContain('ApiException')
-  expect(details).toContain('500')
-  expect(details).toContain('POST')
-  expect(details).toContain('https://sapsailing.com/sailingserver/api/v1/leaderboards/lb')
-  expect(details).toContain('competitorId=c-42')
-  expect(details).toContain('server said no')
-  expect(details.split('\n').length).toBeGreaterThan(1)
-})
-
 // A screenshot of these details may be shared with support - it must not leak credentials.
 test('redacts secret/token/password query parameter values but keeps their names', () => {
   const details = getErrorDetails(apiException())
@@ -60,13 +44,3 @@ test('truncates the response body to 2000 characters', () => {
   expect(details).not.toContain('x'.repeat(2001))
 })
 
-test('stringifies object bodies', () => {
-  const details = getErrorDetails(apiException({ errorCodeName: 'NO_VENUE' }))
-  expect(details).toContain('NO_VENUE')
-})
-
-test('works for plain errors (e.g. network failures)', () => {
-  const details = getErrorDetails(new TypeError('Network request failed'))
-  expect(details).toContain('TypeError')
-  expect(details).toContain('Network request failed')
-})

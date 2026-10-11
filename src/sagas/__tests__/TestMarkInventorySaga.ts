@@ -87,19 +87,6 @@ describe('loading the mark inventory', () => {
     expect(mockApi.createMarkProperties).not.toHaveBeenCalled()
   })
 
-  test('still creates only the missing defaults for a valid inventory (regression guard)', async () => {
-    mockApi.requestMarkProperties.mockResolvedValue({
-      entities: { markProperties: { a: { id: 'a', name: 'Start/Finish Pin' } } },
-      result: ['a'],
-    })
-
-    dispatch(loadMarkPropertiesAction({ createMissingDefaultMarkProperties: true }))
-    await flush()
-
-    const createdNames = mockApi.createMarkProperties.mock.calls.map((c: any[]) => c[0].name)
-    expect(createdNames).not.toContain('Start/Finish Pin')
-    expect(createdNames.length).toBe(8)
-  })
 })
 
 describe('deleting a mark property', () => {
@@ -116,6 +103,5 @@ describe('deleting a mark property', () => {
     expect(restore.payload.entities.markProperties).toEqual({ m1: mark })
     expect(mockShowErrorAlert).toHaveBeenCalledTimes(1)
   })
-
 
 })

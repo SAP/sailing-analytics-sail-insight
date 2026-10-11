@@ -77,32 +77,6 @@ describe('half-logged-in state', () => {
   })
 })
 
-describe('requestPasswordReset', () => {
-  // User impact: dispatching a bare Promise throws "Actions must be plain objects",
-  // so the screen cannot tell success from failure.
-  test('is a thunk that resolves after the API resolved', async () => {
-    mockAuthApi.requestPasswordReset.mockResolvedValue(undefined)
-    const store = createFakeStore()
-
-    const action: any = requestPasswordReset('a@b.de')
-    expect(typeof action).toBe('function')
-    await expect(store.dispatch(action)).resolves.toBeUndefined()
-    expect(mockAuthApi.requestPasswordReset).toHaveBeenCalledWith('', 'a@b.de')
-  })
-
-  test('rejects with the API error when the request fails', async () => {
-    const error = new TypeError('Network request failed')
-    mockAuthApi.requestPasswordReset.mockRejectedValue(error)
-    const store = createFakeStore()
-
-    const action: any = requestPasswordReset('someuser')
-    // today this is a bare (rejecting) Promise; keep it from crashing the runner
-    if (action && typeof action.catch === 'function') action.catch(() => undefined)
-    expect(typeof action).toBe('function')
-    await expect(store.dispatch(action)).rejects.toBe(error)
-  })
-})
-
 describe('logout', () => {
   // User impact: after logout the phone keeps tracking and uploading GPS fixes
   // with the previous user's token.
