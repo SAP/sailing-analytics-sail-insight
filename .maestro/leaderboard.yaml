@@ -1,5 +1,5 @@
 # Competitor tracking → My Rank opens the leaderboard, which lists the
-# competitor; leaving and re-opening it keeps working.
+# competitor and can switch its second column; leaving it keeps tracking.
 appId: ${APP_ID}
 tags:
   - competitor
@@ -25,11 +25,23 @@ tags:
 - tapOn: "START TRACKING"
 - runFlow: subflows/tracking-started.yaml
 - tapOn: "My Rank"
+# The sailor's own boat (whichever the account joined with) is ranked.
 - extendedWaitUntil:
-    visible: ".*E2E Sailor.*"
+    visible: "My rank"
     timeout: 30000
 - assertVisible: "(?i)leaderboard"
+- assertVisible: "Gap to leader\\s*"
 - takeScreenshot: leaderboard
+# The second column can show another measure.
+- tapOn: "Gap to leader\\s*"
+- extendedWaitUntil:
+    visible: "Average speed"
+    timeout: 10000
+- tapOn: "Average speed"
+- extendedWaitUntil:
+    visible: "Average speed\\s*"
+    timeout: 10000
+- assertNotVisible: "Gap to leader\\s*"
 - back
 - assertVisible: "STOP"
 - tapOn: "STOP"
