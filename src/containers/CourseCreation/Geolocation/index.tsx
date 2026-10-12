@@ -239,7 +239,8 @@ const textInput = Component(props => compose(
     // Tapping a coordinate selects it, so typing replaces the old value instead of
     // leaving digits behind the cursor (e.g. "12" + "0" -> 120').
     selectTextOnFocus: true,
-    selectionColor: 'white'
+    // Visible when the whole value is selected (white hid the digits).
+    selectionColor: $Orange
   })))(
   fromClass(TextInputDeprecated)))
 
