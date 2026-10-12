@@ -9,7 +9,7 @@ const listeners: DeepLinkListenerType[] = []
 
 const handleEvent = ({ error, params }: any) => {
   if (error) {
-    Logger.debug(`Error from Branch.io: ${error}`)
+    Logger.warn(`Error from Branch.io: ${error}`)
     return
   }
   Logger.debug('Branch.io link received')
@@ -83,7 +83,7 @@ export const showShareSheet = async (sharingData: Shareable) => {
     controlParams
   )
   if (error) {
-    Logger.debug('Share session error:', error)
+    Logger.warn('Share session error:', error)
   }
   if (completed) {
     branchUniversalObject.release()

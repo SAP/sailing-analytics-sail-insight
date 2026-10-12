@@ -277,7 +277,7 @@ class Tracking extends React.Component<NavigationProps & {
       this.showStoppedToast()
       this.resetToWelcomeTracking()
     } catch (err) {
-      Logger.debug('onStopTrackingPress Error', err)
+      Logger.warn('onStopTrackingPress Error', err)
       this.setState({ isLoading: false })
       showErrorAlert(I18n.t('caption_stop_tracking'), err)
     }

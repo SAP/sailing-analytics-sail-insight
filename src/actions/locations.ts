@@ -29,7 +29,7 @@ export const startLocationUpdates = (
       await LocationService.stop()
     }
   } catch (err) {
-    Logger.debug('Error during stop for start location service', err)
+    Logger.warn('Error during stop for start location service', err)
   }
 
   try {
@@ -66,7 +66,7 @@ export const startLocationUpdates = (
 
     await dispatch(updateStartedAt(currentTimestampAsText()))
   } catch (err) {
-    Logger.debug('Error during startLocationUpdates', err)
+    Logger.warn('Error during startLocationUpdates', err)
     // dispatch(removeTrackedRegatta())
   }
 }
@@ -82,7 +82,7 @@ export const stopLocationUpdates = () => async (dispatch: DispatchType) => {
       Logger.debug('stopLocationUpdates already stopped.')
     }
   } catch (e) {
-    Logger.debug('Error during stopping location updates', e)
+    Logger.warn('Error during stopping location updates', e)
     // callers must know that the service might still be running
     throw e
   }

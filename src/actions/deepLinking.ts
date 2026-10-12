@@ -66,7 +66,7 @@ export const getInitialUrlParams = async () => {
     const url = await Linking.getInitialURL()
     return url ? parseQueryParams(url) : null
   } catch (err) {
-    Logger.debug(err)
+    Logger.warn(err)
     return null
   }
 }
@@ -107,6 +107,6 @@ export const handleAppStartDeepLink = (navigation: any, linkParams?: any) => asy
       await dispatch(fallbackAction)
       return true
     }
-  } catch (err) { Logger.debug(err) }
+  } catch (err) { Logger.warn(err) }
   return false
 }

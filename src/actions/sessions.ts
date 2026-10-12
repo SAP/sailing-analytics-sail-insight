@@ -224,7 +224,7 @@ export const createUserAttachmentToSession = (
         boatId = newCompetitorWithBoat.boat.id
         Logger.debug('createAndAddCompetitor succeeded', { competitorId, boatId })
       } catch (err) {
-        Logger.debug('createAndAddCompetitor failed', {
+        Logger.warn('createAndAddCompetitor failed', {
           status: (err as any).status,
           data: (err as any).data,
         })
@@ -380,7 +380,7 @@ export const registerCompetitorAndDevice = (data: CheckIn, competitorValues: Com
         navigateBackToTracking(navigation)
       }
     } catch (err) {
-      Logger.debug(err)
+      Logger.warn(err)
       showErrorAlert(undefined, err)
       // callers must not alert a second time
       if (err && typeof err === 'object') {
@@ -431,7 +431,7 @@ export const handleManeuverChange = (maneuverChangeData?: ManeuverChangeItem[]) 
       if (trackingStatus !== LocationService.LocationTrackingStatus.RUNNING) { return }
       //navigateToManeuver(maneuver)
     } catch (err) {
-      Logger.debug(err)
+      Logger.warn(err)
     }
   },
 )

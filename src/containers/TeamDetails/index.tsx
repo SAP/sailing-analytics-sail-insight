@@ -216,7 +216,7 @@ class TeamDetails extends TextInputForm<Props> {
               await deleteTeamAction(paramTeamName)
               this.props.navigation.goBack()
             } catch (err) {
-              Logger.debug(err)
+              Logger.warn(err)
               showErrorAlert(undefined, err)
             } finally {
               this.setState({ isLoading: false })
@@ -268,7 +268,7 @@ class TeamDetails extends TextInputForm<Props> {
       this.props.navigation.goBack()
       return true
     } catch (err) {
-      Logger.debug(err)
+      Logger.warn(err)
       showErrorAlert(undefined, err)
       return false
     } finally {

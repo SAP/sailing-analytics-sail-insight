@@ -551,7 +551,7 @@ class AppRoot extends ReactComponent {
       if (!err) {
         return
       }
-      Logger.debug(err.message, err.data)
+      Logger.warn(err.message, err.data)
     }
   }
 }

@@ -136,7 +136,7 @@ export const startTracking = ({ data, navigation, useLoadingSpinner = true }: an
       dispatch(startUpdateStartLineBasedOnCurrentCourse(fetchData))
     }
   } catch (err) {
-    Logger.debug('startTracking error', err)
+    Logger.warn('startTracking error', err)
     showErrorAlert(undefined, err)
   } finally {
     if (useLoadingSpinner) {

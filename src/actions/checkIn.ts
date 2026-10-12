@@ -375,7 +375,7 @@ export const joinLinkInvitation = (checkInUrl: string, navigation: any) =>
     const sessionCheckIn = await dispatch(fetchCheckIn(checkInUrl))
     navigation.navigate(Screens.JoinRegatta, { data: sessionCheckIn }, { pop: true })
   } catch (err) {
-    Logger.debug(err)
+    Logger.warn(err)
     error = err
   } finally {
     joinsInFlight -= 1

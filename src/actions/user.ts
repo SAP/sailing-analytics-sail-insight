@@ -126,7 +126,7 @@ export const fetchMissingImages = (teams: any[]) => async (dispatch: DispatchTyp
         imagePath = await saveFile(imageData, imageUuid)
       } catch (err) {
         // Saving image to device failed
-        Logger.debug('Saving image to device failed')
+        Logger.warn('Saving image to device failed')
         return
       }
 
