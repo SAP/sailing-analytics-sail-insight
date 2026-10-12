@@ -18,18 +18,12 @@ tags:
 - scrollUntilVisible:
     element: "START TRACKING"
     direction: DOWN
+    centerElement: true
 - setLocation:
     latitude: 54.35
     longitude: 10.15
 - tapOn: "START TRACKING"
-- runFlow:
-    when:
-      visible: "OK"
-    commands:
-      - tapOn: "OK"
-- extendedWaitUntil:
-    visible: "My Rank"
-    timeout: 30000
+- runFlow: subflows/tracking-started.yaml
 - tapOn: "My Rank"
 - extendedWaitUntil:
     visible: ".*E2E Sailor.*"

@@ -5,6 +5,11 @@ source "$(cd "$(dirname "$0")" && pwd)/lib.sh"
 require_cmd curl
 
 if curl -fsS http://127.0.0.1:8081/status 2>/dev/null | grep -q 'packager-status:running'; then
+  # Started earlier in this run (e.g. by e2e/regatta.sh): keep its ownership.
+  if [[ -f "$E2E_METRO_PID_FILE" ]] && kill -0 "$(<"$E2E_METRO_PID_FILE")" 2>/dev/null; then
+    log "Using Metro started by this run on :8081"
+    exit 0
+  fi
   [[ "${E2E_ALLOW_EXISTING_METRO:-0}" == "1" ]] || die "Metro already runs on :8081. Stop it so E2E_BACKEND_URL is guaranteed to be applied."
   rm -f "$E2E_METRO_PID_FILE"
   log "Using explicitly allowed existing Metro on :8081"

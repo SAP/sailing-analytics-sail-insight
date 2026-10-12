@@ -1,0 +1,42 @@
+# Regatta, device B: a sailor without an account opens the invitation link
+# (what scanning the organizer's QR code does), joins with a new boat and
+# starts tracking from the Tracking tab. MAESTRO_INVITE_LINK comes from e2e/regatta.cjs.
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: "e2e-first-contact-login"
+    timeout: 60000
+- stopApp
+- openLink: ${MAESTRO_INVITE_LINK}
+- extendedWaitUntil:
+    visible: "JOIN RACE"
+    timeout: 60000
+- assertVisible: ".*${MAESTRO_REGATTA_NAME}.*"
+- takeScreenshot: regatta-sailor-invitation
+- tapOn: "JOIN RACE"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-register-boat-competitor-name"
+    timeout: 30000
+- runFlow:
+    file: ../subflows/register-boat.yaml
+    env:
+      COMPETITOR_NAME: "Guest Boat"
+      SAIL_NUMBER: "DEN 2"
+# Without an account the app returns to the Tracking tab; start from there
+# and pick the event (the "which event" list).
+- extendedWaitUntil:
+    visible: "Welcome to\\s+Sail Insight"
+    timeout: 60000
+- tapOn: "START TRACKING"
+- extendedWaitUntil:
+    visible: ".*${MAESTRO_REGATTA_NAME}.*"
+    timeout: 30000
+- tapOn: ".*${MAESTRO_REGATTA_NAME}.*"
+- runFlow: ../subflows/tracking-started.yaml
+- takeScreenshot: regatta-sailor-tracking

@@ -1,0 +1,70 @@
+# Regatta, device A (organizer who also sails): create the event, place the
+# start line (SFP/SFB) and windward mark (W) of R1 at simulated GPS positions,
+# start R1 now, join as competitor and start tracking.
+# Started by e2e/regatta.sh with MAESTRO_REGATTA_NAME.
+appId: ${APP_ID}
+---
+- runFlow: ../subflows/login.yaml
+- runFlow:
+    file: ../subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${MAESTRO_REGATTA_NAME}
+- tapOn: "DEFINE RACES"
+- extendedWaitUntil:
+    visible: "R1"
+    timeout: 30000
+- tapOn:
+    text: "Define Course"
+    index: 0
+- extendedWaitUntil:
+    visible: "Race Course"
+    timeout: 30000
+- runFlow:
+    when:
+      visible: "Turn on"
+    commands:
+      - tapOn: "Turn on"
+- extendedWaitUntil:
+    visible: ".*Start/Finish Pin.*"
+    timeout: 30000
+# Start/finish line across the course, 200 m wide, at 54.3480 N, and the
+# windward mark ~900 m north. Typed in, so the phones' GPS is only moved by
+# e2e/regatta.cjs (the course editor and tracking share the device GPS).
+- runFlow:
+    file: ../subflows/place-mark.yaml
+    env: { LAT_DEG: "54", LAT_MIN: "20.88", LON_DEG: "10", LON_MIN: "9", SHOWN: "N 54° 20.880' / E 10° 9.000'" }
+- tapOn: "SFB"
+- runFlow:
+    file: ../subflows/place-mark.yaml
+    env: { LAT_DEG: "54", LAT_MIN: "20.88", LON_DEG: "10", LON_MIN: "9.18", SHOWN: "N 54° 20.880' / E 10° 9.180'" }
+# The waypoint strip is not exposed as text: tap W by position.
+- tapOn:
+    point: "39%,17%"
+- extendedWaitUntil:
+    visible: ".*Windward.*"
+    timeout: 10000
+- runFlow:
+    file: ../subflows/place-mark.yaml
+    env: { LAT_DEG: "54", LAT_MIN: "21.36", LON_DEG: "10", LON_MIN: "9.09", SHOWN: "N 54° 21.360' / E 10° 9.090'" }
+- takeScreenshot: regatta-course-windward-mark
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Race Overview"
+    timeout: 30000
+- extendedWaitUntil:
+    visible: "S-.*-F"
+    timeout: 30000
+# Start R1 now: the native date and time pickers open at the current time.
+- runFlow: ../subflows/set-race-time-now.yaml
+- assertVisible: "\\d\\d:\\d\\d"
+- takeScreenshot: regatta-race-started
+- back
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 30000
+- runFlow:
+    file: ../subflows/join-as-competitor.yaml
+    env:
+      COMPETITOR_NAME: "Organizer Boat"
+      SAIL_NUMBER: "GER 1"
+- runFlow: start-tracking.yaml

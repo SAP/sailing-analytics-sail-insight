@@ -1,0 +1,10 @@
+# From the Event Overview of a joined event: start tracking (e2e/regatta.cjs
+# holds the GPS south of the start line). Ends on the tracking screen.
+appId: ${APP_ID}
+---
+- scrollUntilVisible:
+    element: "START TRACKING"
+    direction: DOWN
+    centerElement: true
+- tapOn: "START TRACKING"
+- runFlow: ../subflows/tracking-started.yaml

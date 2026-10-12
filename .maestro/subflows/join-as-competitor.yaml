@@ -6,6 +6,7 @@ appId: ${APP_ID}
 - scrollUntilVisible:
     element: "JOIN AS COMPETITOR"
     direction: DOWN
+    centerElement: true
 - tapOn: "JOIN AS COMPETITOR"
 - tapOn: "JOIN RACE"
 - waitForAnimationToEnd:

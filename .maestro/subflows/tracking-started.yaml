@@ -1,0 +1,24 @@
+# After START TRACKING: accept the app's background-location notice and, on a
+# fresh device, Google's "Location Accuracy" prompt, then wait for the
+# tracking screen.
+appId: ${APP_ID}
+---
+- runFlow:
+    when:
+      visible: "OK"
+    commands:
+      - tapOn: "OK"
+- extendedWaitUntil:
+    visible: "My Rank|Turn on"
+    timeout: 30000
+- waitForAnimationToEnd:
+    timeout: 3000
+- runFlow:
+    when:
+      visible: "Turn on"
+    commands:
+      - tapOn: "Turn on"
+- extendedWaitUntil:
+    visible: "My Rank"
+    timeout: 30000
+- assertNotVisible: "Turn on"

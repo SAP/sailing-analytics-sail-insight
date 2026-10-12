@@ -19,19 +19,13 @@ tags:
 - scrollUntilVisible:
     element: "START TRACKING"
     direction: DOWN
+    centerElement: true
 - assertNotVisible: "JOIN AS COMPETITOR"
 - setLocation:
     latitude: 54.35
     longitude: 10.15
 - tapOn: "START TRACKING"
-- runFlow:
-    when:
-      visible: "OK"
-    commands:
-      - tapOn: "OK"
-- extendedWaitUntil:
-    visible: "My Rank"
-    timeout: 30000
+- runFlow: subflows/tracking-started.yaml
 - assertVisible: "STOP"
 # The elapsed tracking time must advance.
 - extendedWaitUntil:

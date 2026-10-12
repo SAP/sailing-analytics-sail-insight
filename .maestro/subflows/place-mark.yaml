@@ -1,0 +1,38 @@
+# Course editor, selected mark: Location → Define Position On Map → type the
+# position in degrees and decimal minutes (N/E) → Save. SHOWN is the position
+# text the editor must show afterwards.
+appId: ${APP_ID}
+---
+- tapOn: "Location"
+- tapOn: "Define Position On Map"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-latitude-degrees"
+    timeout: 30000
+- tapOn:
+    id: "e2e-latitude-degrees"
+- eraseText
+- setClipboard: ${LAT_DEG}
+- pasteText
+- tapOn:
+    id: "e2e-latitude-minutes"
+- eraseText
+- setClipboard: ${LAT_MIN}
+- pasteText
+- tapOn:
+    id: "e2e-longitude-degrees"
+- eraseText
+- setClipboard: ${LON_DEG}
+- pasteText
+- tapOn:
+    id: "e2e-longitude-minutes"
+- eraseText
+- setClipboard: ${LON_MIN}
+- pasteText
+- tapOn:
+    id: "e2e-latitude-degrees"
+- hideKeyboard
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: ${SHOWN}
+    timeout: 30000

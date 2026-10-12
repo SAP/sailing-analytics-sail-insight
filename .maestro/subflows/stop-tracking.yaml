@@ -1,0 +1,8 @@
+# Tracking screen: stop tracking and confirm.
+appId: ${APP_ID}
+---
+- tapOn: "STOP"
+- tapOn: "YES"
+- extendedWaitUntil:
+    visible: "Welcome to\\s+Sail Insight"
+    timeout: 30000

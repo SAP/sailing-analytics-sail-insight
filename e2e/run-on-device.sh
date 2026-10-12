@@ -51,6 +51,7 @@ set +e
   -e E2E_USERNAME="$E2E_USERNAME" \
   -e E2E_EMAIL="$E2E_EMAIL" \
   -e E2E_PASSWORD="$E2E_PASSWORD" \
+  -e E2E_BACKEND_URL="$E2E_BACKEND_URL" \
   --debug-output "$E2E_ARTIFACTS_DIR/maestro-debug" \
   --test-output-dir "$E2E_ARTIFACTS_DIR/maestro-results" \
   --format junit \

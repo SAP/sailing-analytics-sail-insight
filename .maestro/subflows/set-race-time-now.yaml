@@ -1,0 +1,27 @@
+# Race Overview: set the first race whose time is not set yet to now. The
+# native date and time pickers open at the current time; each OK is tapped
+# only once its picker is shown (taps during the transition get lost).
+appId: ${APP_ID}
+---
+- tapOn:
+    text: "Set Time"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: "android:id/button1"
+    timeout: 10000
+- tapOn:
+    id: "android:id/button1"
+- extendedWaitUntil:
+    visible:
+      id: "android:id/divider"
+    timeout: 10000
+- tapOn:
+    id: "android:id/button1"
+- extendedWaitUntil:
+    notVisible:
+      id: "android:id/button1"
+    timeout: 10000
+- extendedWaitUntil:
+    visible: "GO TO SAP SAILING ANALYTICS"
+    timeout: 30000

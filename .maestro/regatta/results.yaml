@@ -1,0 +1,17 @@
+# Regatta, device A after R1: the leaderboard lists both boats with the
+# organizer's (faster) boat first; then stop tracking.
+appId: ${APP_ID}
+---
+- assertVisible: "My Rank"
+- extendedWaitUntil:
+    visible: "1"
+    timeout: 60000
+- takeScreenshot: regatta-organizer-tracking-after-race
+- tapOn: "My Rank"
+- extendedWaitUntil:
+    visible: ".*Guest Boat.*"
+    timeout: 60000
+- assertVisible: ".*Organizer Boat.*"
+- takeScreenshot: regatta-leaderboard
+- back
+- runFlow: ../subflows/stop-tracking.yaml
