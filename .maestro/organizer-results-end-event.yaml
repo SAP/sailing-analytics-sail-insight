@@ -1,0 +1,81 @@
+# Organizer: copy the result-editing link (with its one-time disclaimer), open
+# result editing, and end the event once its last race has started.
+appId: ${APP_ID}
+tags:
+  - organizer
+---
+- evalScript: ${output.eventName = 'End ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+
+# Copy Edit Link: the disclaimer appears once, "Don't show again" is honored.
+- scrollUntilVisible:
+    element: "COPY EDIT LINK"
+    direction: DOWN
+    centerElement: true
+- tapOn: "COPY EDIT LINK"
+- extendedWaitUntil:
+    visible: ".*link to the Result Editing Page.*"
+    timeout: 10000
+- tapOn: "(?i)don.t show again"
+- extendedWaitUntil:
+    visible: "Link copied to clipboard"
+    timeout: 10000
+# The second copy goes straight to the clipboard, without the disclaimer.
+- extendedWaitUntil:
+    notVisible: "Link copied to clipboard"
+    timeout: 10000
+- tapOn: "COPY EDIT LINK"
+- assertNotVisible: ".*link to the Result Editing Page.*"
+
+# Edit results opens the server's result editing page inside the app.
+- tapOn: "EDIT RESULTS"
+- extendedWaitUntil:
+    visible: ".*not optimized for mobile.*"
+    timeout: 10000
+- tapOn: "OK"
+- waitForAnimationToEnd:
+    timeout: 15000
+- takeScreenshot: organizer-edit-results
+- back
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 30000
+
+# End Event is offered only after the last planned race has started:
+# reduce to one race and start it now.
+- assertNotVisible: "END EVENT"
+- scrollUntilVisible:
+    element: "DEFINE RACES"
+    direction: UP
+- tapOn: "DEFINE RACES"
+- extendedWaitUntil:
+    visible: "R3"
+    timeout: 30000
+- tapOn: "3"
+- tapOn: "1"
+- tapOn: "DELETE RACES"
+- extendedWaitUntil:
+    notVisible: "R2"
+    timeout: 30000
+- runFlow: subflows/set-race-time-now.yaml
+- back
+- scrollUntilVisible:
+    element: "END EVENT"
+    direction: DOWN
+    centerElement: true
+- tapOn: "END EVENT"
+- assertVisible: "Do you really want to end the event? No more tracks will be recorded."
+- tapOn: "NO"
+- assertVisible: "END EVENT"
+- tapOn: "END EVENT"
+- tapOn: "YES"
+- extendedWaitUntil:
+    visible: ".*Your event has been ended\\..*"
+    timeout: 30000
+- takeScreenshot: organizer-event-ended
+- tapOn: "OK"
+- assertNotVisible: "END EVENT"

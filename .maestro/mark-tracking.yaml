@@ -1,0 +1,94 @@
+# Organizer: bind this phone as the tracker of the start/finish pin. The
+# Tracking tab then tracks the mark: start, stop (confirmed) and delete the
+# binding again, after which the normal tracking start screen returns.
+appId: ${APP_ID}
+tags:
+  - organizer
+---
+- evalScript: ${output.eventName = 'Mark ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- setLocation:
+    latitude: 54.35
+    longitude: 10.15
+- tapOn: "DEFINE RACES"
+- extendedWaitUntil:
+    visible: "R1"
+    timeout: 30000
+- tapOn:
+    text: "Define Course"
+    index: 0
+- extendedWaitUntil:
+    visible: "Race Course"
+    timeout: 30000
+- runFlow:
+    when:
+      visible: "Turn on"
+    commands:
+      - tapOn: "Turn on"
+- extendedWaitUntil:
+    visible: ".*Start/Finish Pin.*"
+    timeout: 30000
+# Mark properties are shared between events: the pin may already have a
+# position or (after an interrupted run) this phone as tracker.
+- tapOn: "Tracker"
+- extendedWaitUntil:
+    visible: "No Device Assigned|This Device is Tracking"
+    timeout: 10000
+- runFlow:
+    when:
+      visible: "No Device Assigned"
+    commands:
+      - tapOn: "CHANGE TRACKING DEVICE"
+      - extendedWaitUntil:
+          visible: "USE THIS DEVICE"
+          timeout: 30000
+      - takeScreenshot: mark-tracking-bind-device
+      - tapOn: "USE THIS DEVICE"
+      - extendedWaitUntil:
+          visible: "Race Course"
+          timeout: 30000
+- extendedWaitUntil:
+    visible: "This Device is Tracking"
+    timeout: 30000
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Race Overview"
+    timeout: 30000
+# The "Course successfully saved" snackbar covers the tab bar.
+- extendedWaitUntil:
+    notVisible: "Course successfully saved"
+    timeout: 15000
+
+# The Tracking tab now belongs to the mark.
+- tapOn:
+    id: "e2e-tracking-tab"
+- extendedWaitUntil:
+    visible: "(?i)start tracking"
+    timeout: 30000
+- assertVisible: ".*Start/Finish Pin.*"
+- tapOn: "(?i)start tracking"
+- runFlow:
+    when:
+      visible: "OK"
+    commands:
+      - tapOn: "OK"
+- extendedWaitUntil:
+    visible: "(?i)stop tracking"
+    timeout: 30000
+- takeScreenshot: mark-tracking-running
+- tapOn: "(?i)stop tracking"
+- assertVisible: "Do you really want to stop tracking?"
+- tapOn: "YES"
+- extendedWaitUntil:
+    visible: "(?i)start tracking"
+    timeout: 30000
+- tapOn: "Delete binding with this device"
+- assertVisible: "Do you really want to delete the binding?"
+- tapOn: "YES"
+- extendedWaitUntil:
+    visible: "Welcome to\\s+Sail Insight"
+    timeout: 30000

@@ -1,0 +1,69 @@
+# Organizer of a handicap event: after joining, the organizer opens the
+# competitor from the competitor list and changes its time-on-time handicap.
+appId: ${APP_ID}
+tags:
+  - organizer
+---
+- evalScript: ${output.eventName = 'Handicap ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- tapOn:
+    id: "e2e-events-tab"
+- tapOn:
+    id: "e2e-create-event"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-event-venue"
+    timeout: 30000
+- tapOn:
+    id: "e2e-event-venue"
+- inputText: "Kiel"
+- hideKeyboard
+- tapOn:
+    id: "e2e-event-name"
+- inputText: ${output.eventName}
+- hideKeyboard
+- scrollUntilVisible:
+    element: "HANDICAP"
+    direction: DOWN
+    centerElement: true
+- tapOn: "HANDICAP"
+- takeScreenshot: create-handicap-event
+- scrollUntilVisible:
+    element:
+      id: "e2e-event-create"
+    direction: DOWN
+- tapOn:
+    id: "e2e-event-create"
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 60000
+- runFlow:
+    file: subflows/join-as-competitor.yaml
+    env:
+      COMPETITOR_NAME: "Handicap Sailor"
+      SAIL_NUMBER: "NED 5"
+# The handicap (1.00) is shown next to the competitor; tapping opens the editor.
+- scrollUntilVisible:
+    element: "1.00"
+    direction: DOWN
+    centerElement: true
+- tapOn: "1.00"
+- extendedWaitUntil:
+    visible: "Edit competitor"
+    timeout: 30000
+- tapOn: "Handicap"
+- tapOn: "1"
+- eraseText
+- setClipboard: "1.25"
+- pasteText
+- hideKeyboard
+- takeScreenshot: edit-competitor
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 30000
+- scrollUntilVisible:
+    element: "1.25"
+    direction: DOWN
+    centerElement: true
+- assertNotVisible: "1.00"

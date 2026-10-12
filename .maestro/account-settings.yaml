@@ -1,0 +1,51 @@
+# Account → Settings: the analytics and battery-saving switches keep their
+# state after an app restart.
+appId: ${APP_ID}
+tags:
+  - account
+---
+- runFlow: subflows/login.yaml
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "SETTINGS"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-bulk-gps-switch"
+    timeout: 10000
+- assertVisible:
+    id: "e2e-bulk-gps-switch"
+    checked: false
+- assertVisible:
+    id: "e2e-analytics-switch"
+    checked: false
+- tapOn:
+    id: "e2e-bulk-gps-switch"
+- tapOn:
+    id: "e2e-analytics-switch"
+- assertVisible:
+    id: "e2e-bulk-gps-switch"
+    checked: true
+- assertVisible:
+    id: "e2e-analytics-switch"
+    checked: true
+- takeScreenshot: app-settings-switched-on
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: "e2e-account-tab"
+    timeout: 60000
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "SETTINGS"
+- assertVisible:
+    id: "e2e-bulk-gps-switch"
+    checked: true
+- assertVisible:
+    id: "e2e-analytics-switch"
+    checked: true
+- tapOn:
+    id: "e2e-bulk-gps-switch"
+- assertVisible:
+    id: "e2e-bulk-gps-switch"
+    checked: false

@@ -33,6 +33,7 @@ class AppSettings extends React.Component<ViewProps & {
           {this.renderDeviceId()}
           <View>
             <EditItemSwitch
+              testID="e2e-analytics-switch"
               style={styles.item}
               titleStyle={styles.title}
               title={I18n.t('caption_setting_analytics')}
@@ -40,6 +41,7 @@ class AppSettings extends React.Component<ViewProps & {
               onSwitchValueChange={this.props.changeAnalyticsSetting}
             />
             <EditItemSwitch
+              testID="e2e-bulk-gps-switch"
               style={styles.item2}
               titleStyle={styles.title}
               title={I18n.t('caption_setting_bulk_gps')}

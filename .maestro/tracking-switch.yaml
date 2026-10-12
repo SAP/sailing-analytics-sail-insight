@@ -1,0 +1,67 @@
+# A sailor in two events: start tracking the first from the Tracking tab's
+# event list, then start the second from its overview. The app asks before it
+# stops the running track (CANCEL keeps it, YES switches).
+appId: ${APP_ID}
+tags:
+  - competitor
+---
+- evalScript: ${output.first = 'SwitchA ' + Date.now()}
+- evalScript: ${output.second = 'SwitchB ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.first}
+- runFlow:
+    file: subflows/join-as-competitor.yaml
+    env:
+      COMPETITOR_NAME: "Switch Sailor"
+      SAIL_NUMBER: "GER 99"
+- tapOn:
+    id: "e2e-events-tab"
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.second}
+- runFlow:
+    file: subflows/join-as-competitor.yaml
+    env:
+      COMPETITOR_NAME: "Switch Sailor"
+      SAIL_NUMBER: "GER 99"
+
+# Tracking tab → START TRACKING lists the events to track.
+- setLocation:
+    latitude: 54.35
+    longitude: 10.15
+- tapOn:
+    id: "e2e-tracking-tab"
+- tapOn: "START TRACKING"
+- extendedWaitUntil:
+    visible: "(?i)for which event.*"
+    timeout: 30000
+- takeScreenshot: tracking-event-list
+- tapOn: ${output.first}
+- runFlow: subflows/tracking-started.yaml
+
+# Starting the second event asks first.
+- tapOn:
+    id: "e2e-events-tab"
+- tapOn: ${output.second}
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 30000
+- scrollUntilVisible:
+    element: "START TRACKING"
+    direction: DOWN
+    centerElement: true
+- tapOn: "START TRACKING"
+- extendedWaitUntil:
+    visible: "You are currently tracking ${output.first}\\. Stop it and start tracking ${output.second}\\?"
+    timeout: 10000
+- takeScreenshot: tracking-switch-confirmation
+- tapOn: "CANCEL"
+- assertVisible: "Event Overview"
+- tapOn: "START TRACKING"
+- tapOn: "YES"
+- runFlow: subflows/tracking-started.yaml
+- runFlow: subflows/stop-tracking.yaml

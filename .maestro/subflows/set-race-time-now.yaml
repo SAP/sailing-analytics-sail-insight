@@ -18,6 +18,13 @@ appId: ${APP_ID}
     timeout: 10000
 - tapOn:
     id: "android:id/button1"
+# The event starts at its creation time and the picker has whole minutes, so
+# "now" right after creating the event can fall seconds before the event start.
+- runFlow:
+    when:
+      visible: "This start time is outside the date range.*"
+    commands:
+      - tapOn: "PROCEED"
 - extendedWaitUntil:
     notVisible:
       id: "android:id/button1"

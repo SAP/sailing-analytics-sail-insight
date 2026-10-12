@@ -1,0 +1,67 @@
+# A sailor without an account opens an organizer's invitation link (what the
+# event's QR code contains), joins with a new boat and sees the event from
+# the sailor's side: event overview and read-only race overview.
+appId: ${APP_ID}
+tags:
+  - competitor
+---
+- evalScript: ${output.eventName = 'Invite ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- runScript:
+    file: subflows/invite-link.js
+    env:
+      EVENT_NAME: ${output.eventName}
+# New, logged-out installation.
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- extendedWaitUntil:
+    visible:
+      id: "e2e-first-contact-login"
+    timeout: 60000
+- stopApp
+- openLink: ${output.inviteLink}
+- extendedWaitUntil:
+    visible: "JOIN RACE"
+    timeout: 60000
+- assertVisible: ${output.eventName}
+- takeScreenshot: invitation-join
+- tapOn: "JOIN RACE"
+- runFlow:
+    file: subflows/register-boat.yaml
+    env:
+      COMPETITOR_NAME: "Invited Sailor"
+      SAIL_NUMBER: "SWE 7"
+- extendedWaitUntil:
+    visible: "Welcome to\\s+Sail Insight"
+    timeout: 60000
+# The joined event is listed and opens in the sailor's (read-only) view.
+- tapOn:
+    id: "e2e-events-tab"
+- extendedWaitUntil:
+    visible: ${output.eventName}
+    timeout: 30000
+- tapOn: ${output.eventName}
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 30000
+- assertNotVisible: "DEFINE RACES"
+- scrollUntilVisible:
+    element: ".*Invited Sailor.*"
+    direction: DOWN
+    centerElement: true
+- takeScreenshot: invitation-sailor-event-overview
+- scrollUntilVisible:
+    element: "(?i)see races & scoring"
+    direction: UP
+- tapOn: "(?i)see races & scoring"
+- extendedWaitUntil:
+    visible: "R1"
+    timeout: 30000
+- assertNotVisible: "Set Time"
+- takeScreenshot: invitation-sailor-race-overview

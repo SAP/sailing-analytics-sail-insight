@@ -1,0 +1,27 @@
+# SCAN A QR-CODE without camera permission explains why and offers the
+# system settings instead of showing a black screen. (The test emulators have
+# no camera, so scanning itself is not covered here.)
+appId: ${APP_ID}
+tags:
+  - competitor
+---
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+      camera: deny
+- extendedWaitUntil:
+    visible:
+      id: "e2e-first-contact-login"
+    timeout: 60000
+- tapOn: "SCAN A QR-CODE"
+- runFlow:
+    when:
+      visible: "Don.t allow"
+    commands:
+      - tapOn: "Don.t allow"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-open-app-settings"
+    timeout: 15000
+- takeScreenshot: qr-scanner-permission-denied

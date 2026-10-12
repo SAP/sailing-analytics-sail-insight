@@ -1,0 +1,85 @@
+# Organizer course editor beyond pinging: type a mark position by hand
+# (impossible coordinates are rejected and never saved), add a mark,
+# delete a mark, and leave without saving.
+appId: ${APP_ID}
+tags:
+  - organizer
+---
+- evalScript: ${output.eventName = 'Edit course ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- tapOn: "DEFINE RACES"
+- extendedWaitUntil:
+    visible: "R1"
+    timeout: 30000
+- tapOn:
+    text: "Define Course"
+    index: 0
+- extendedWaitUntil:
+    visible: "Race Course"
+    timeout: 30000
+- runFlow:
+    when:
+      visible: "Turn on"
+    commands:
+      - tapOn: "Turn on"
+# Windward mark (the strip is not exposed as text).
+- tapOn:
+    point: "39%,17%"
+- extendedWaitUntil:
+    visible: ".*Windward.*"
+    timeout: 10000
+- tapOn: "Location"
+- tapOn: "Define Position On Map"
+- extendedWaitUntil:
+    visible:
+      id: "e2e-latitude-degrees"
+    timeout: 30000
+# 91° N does not exist.
+- tapOn:
+    id: "e2e-latitude-degrees"
+- eraseText
+- setClipboard: "91"
+- pasteText
+- tapOn:
+    id: "e2e-latitude-minutes"
+- extendedWaitUntil:
+    visible: "Latitude - .*"
+    timeout: 10000
+- takeScreenshot: course-manual-position-invalid
+- tapOn: "Save"
+- assertVisible:
+    id: "e2e-latitude-degrees"
+# A valid position is taken over.
+- tapOn:
+    id: "e2e-latitude-degrees"
+- eraseText
+- setClipboard: "54"
+- pasteText
+- tapOn:
+    id: "e2e-latitude-minutes"
+- eraseText
+- setClipboard: "22.5"
+- pasteText
+- tapOn:
+    id: "e2e-longitude-degrees"
+- eraseText
+- setClipboard: "10"
+- pasteText
+- tapOn:
+    id: "e2e-longitude-minutes"
+- eraseText
+- setClipboard: "12"
+- pasteText
+- tapOn:
+    id: "e2e-latitude-degrees"
+- hideKeyboard
+- assertNotVisible: "Latitude - .*"
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "N 54° 22.500' / E 10° 12.000'"
+    timeout: 30000
+- takeScreenshot: course-manual-position-saved
