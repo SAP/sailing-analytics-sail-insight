@@ -1,0 +1,76 @@
+# A sailor with several boats chooses which one joins the race: the boat
+# picked on the join screen is the one in the competitor list.
+appId: ${APP_ID}
+tags:
+  - competitor
+  - boats
+---
+- evalScript: ${output.boat = 'Picker ' + Date.now()}
+- evalScript: ${output.eventName = 'Pick ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+# A second boat, so the join screen offers a choice.
+- tapOn:
+    id: "e2e-account-tab"
+- tapOn: "MY BOATS"
+- tapOn:
+    id: "e2e-new-boat"
+- tapOn:
+    id: "e2e-boat-competitor-name"
+- inputText: ${output.boat}
+- tapOn:
+    id: "e2e-boat-class"
+- inputText: "Laser 2"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-boat-sail-number"
+    direction: DOWN
+- tapOn:
+    id: "e2e-boat-sail-number"
+- eraseText: 20
+- inputText: "ITA 8"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-boat-save"
+    direction: DOWN
+- tapOn:
+    id: "e2e-boat-save"
+- extendedWaitUntil:
+    visible: "NEW BOAT"
+    timeout: 30000
+- scrollUntilVisible:
+    element: ${output.boat}
+    direction: DOWN
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- scrollUntilVisible:
+    element: "JOIN AS COMPETITOR"
+    direction: DOWN
+    centerElement: true
+- tapOn: "JOIN AS COMPETITOR"
+- extendedWaitUntil:
+    visible: "JOIN RACE"
+    timeout: 30000
+- assertVisible: "Pick the boat you will be sailing with:"
+- tapOn:
+    below: "Boat "
+- extendedWaitUntil:
+    visible: ${output.boat}
+    timeout: 10000
+- tapOn: ${output.boat}
+- extendedWaitUntil:
+    visible: "Pick the boat you will be sailing with:"
+    timeout: 10000
+- assertVisible: ${output.boat}
+- takeScreenshot: join-boat-picker
+- tapOn: "JOIN RACE"
+- extendedWaitUntil:
+    visible: "Event Overview"
+    timeout: 60000
+- scrollUntilVisible:
+    element: ${output.boat}
+    direction: DOWN
+    centerElement: true
