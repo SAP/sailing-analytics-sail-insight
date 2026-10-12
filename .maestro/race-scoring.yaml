@@ -1,0 +1,71 @@
+# Organizer, Race Overview: a discard ("discard after race 2") is stored on the
+# server's leaderboard and can be removed again; a started race opens its
+# SAP Sailing Analytics race page inside the app.
+appId: ${APP_ID}
+tags:
+  - organizer
+---
+- evalScript: ${output.eventName = 'Scoring ' + E2E_USERNAME + ' ' + Date.now()}
+- runFlow: subflows/login.yaml
+- runFlow:
+    file: subflows/create-event.yaml
+    env:
+      EVENT_NAME: ${output.eventName}
+- tapOn: "DEFINE RACES"
+- extendedWaitUntil:
+    visible: "R1"
+    timeout: 30000
+
+# "Discard after race" + (not exposed as text) → 2.
+- tapOn:
+    point: "10%,35%"
+- tapOn: "2"
+- extendedWaitUntil:
+    notVisible: "Cancel"
+    timeout: 10000
+- takeScreenshot: race-scoring-discard
+- repeat:
+    while:
+      true: ${output.discards != '2'}
+    times: 10
+    commands:
+      - runScript:
+          file: subflows/leaderboard-discards.js
+          env:
+            EVENT_NAME: ${output.eventName}
+- assertTrue: ${output.discards == '2'}
+
+# Tap the discard → Remove: the server has no discard any more.
+- tapOn:
+    point: "10%,35%"
+- tapOn: "Remove"
+- repeat:
+    while:
+      true: ${output.discards != ''}
+    times: 10
+    commands:
+      - runScript:
+          file: subflows/leaderboard-discards.js
+          env:
+            EVENT_NAME: ${output.eventName}
+- assertTrue: ${output.discards == ''}
+
+# A race with a start time links to its SAP Sailing Analytics page.
+- runFlow: subflows/set-race-time-now.yaml
+- tapOn: "GO TO SAP SAILING ANALYTICS"
+- runFlow:
+    when:
+      visible: "OK"
+    commands:
+      - tapOn: "OK"
+- waitForAnimationToEnd:
+    timeout: 15000
+- extendedWaitUntil:
+    visible: "SAP Sailing Analytics"
+    timeout: 30000
+- assertVisible: ${output.eventName}
+- takeScreenshot: race-scoring-sap-sailing-analytics
+- back
+- extendedWaitUntil:
+    visible: "Race Overview"
+    timeout: 30000

@@ -1,6 +1,6 @@
 # Organizer course editor beyond pinging: type a mark position by hand
-# (impossible coordinates are rejected and never saved), add a mark,
-# delete a mark, and leave without saving.
+# (impossible coordinates are rejected and never saved), add a mark and
+# delete it again; each change survives saving and reopening.
 appId: ${APP_ID}
 tags:
   - organizer
@@ -83,3 +83,52 @@ tags:
     visible: "N 54° 22.500' / E 10° 12.000'"
     timeout: 30000
 - takeScreenshot: course-manual-position-saved
+
+# Add a mark: + after W → Leeward Mark. The course has two marks after saving.
+- tapOn:
+    point: "53%,17%"
+- tapOn: "(L) Leeward Mark"
+- extendedWaitUntil:
+    visible: "Delete this Mark from Course"
+    timeout: 10000
+- takeScreenshot: course-mark-added
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Race Overview"
+    timeout: 30000
+- extendedWaitUntil:
+    visible: "S-•-•-F"
+    timeout: 30000
+
+# Reopen, delete the leeward mark again: back to one mark.
+- tapOn:
+    text: "S-•-•-F"
+    index: 0
+- extendedWaitUntil:
+    visible: ".*Start/Finish Pin.*"
+    timeout: 30000
+# Strip: Start, W, L, +, Finish – L is where + was.
+- tapOn:
+    point: "53%,17%"
+- extendedWaitUntil:
+    visible: ".*Leeward Mark.*"
+    timeout: 10000
+- tapOn: "Delete this Mark from Course"
+- assertNotVisible: ".*Leeward Mark.*"
+- tapOn: "Save"
+# Following races already have a course: the app asks before overwriting them.
+- extendedWaitUntil:
+    visible: "Do you want to overwrite the next courses?"
+    timeout: 30000
+- takeScreenshot: course-copy-question
+- tapOn: "CANCEL"
+- extendedWaitUntil:
+    visible: "Race Overview"
+    timeout: 30000
+# R1 has one mark again, R2 keeps its two.
+- extendedWaitUntil:
+    visible:
+      text: "S-•-F"
+      index: 0
+    timeout: 30000
+- assertVisible: "S-•-•-F"
