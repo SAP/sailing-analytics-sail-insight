@@ -17,7 +17,12 @@ const getRNFS = () => {
   }
   return rnfs
 }
-const directory = () => `${getRNFS().DocumentDirectoryPath}/sail-insight-logs`
+// Android: app-specific external storage (Android/data/<app id>/files), reachable over USB
+// without any permission. iOS: Documents, shown in the Files app (UIFileSharingEnabled).
+const baseDirectory = (): string => (Platform.OS === 'android' && getRNFS().ExternalDirectoryPath) ||
+  getRNFS().DocumentDirectoryPath
+export const persistentLogDirectory = () => `${baseDirectory()}/sail-insight-logs`
+const directory = persistentLogDirectory
 let queue: Promise<any> = Promise.resolve()
 let initialized = false
 let writesSinceCleanup = 0

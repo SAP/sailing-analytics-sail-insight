@@ -319,6 +319,8 @@
   "caption_show_error_details": "Show details",
   "caption_copy_error_details": "Copy technical details",
   "caption_copy_local_diagnostics": "Copy local diagnostics",
+  "text_local_diagnostics_location_android": "Log files are also saved on the phone: connect it to a computer and open Android/data/org.sailyachtresearch.sailinsight/files/sail-insight-logs.",
+  "text_local_diagnostics_location_ios": "Log files are also saved on the phone: Files app › On My iPhone › Sail Insight › sail-insight-logs.",
   "text_no_local_diagnostics": "No local diagnostics are available.",
   "text_gps_email_privacy_warning": "GPS email logs may include positions and device details. Review before sharing; they are not sanitized.",
   "caption_hide_error_details": "Hide details",

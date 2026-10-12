@@ -7,6 +7,12 @@ import '@react-native-firebase/app';
 import {AppRegistry, ScrollView, Text} from 'react-native';
 import {name as appName} from './app.json';
 
+try {
+    require('./src/helpers/globalErrorLogging').installGlobalErrorLogging();
+} catch (_) {
+    // Diagnostics must never prevent the app from starting.
+}
+
 function BootErrorScreen({error}) {
     const msg = String(error?.message ?? error);
     const stack = String(error?.stack ?? '');

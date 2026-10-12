@@ -313,6 +313,8 @@
   "caption_show_error_details": "Details anzeigen",
   "caption_copy_error_details": "Technische Details kopieren",
   "caption_copy_local_diagnostics": "Lokale Diagnose kopieren",
+  "text_local_diagnostics_location_android": "Die Protokolldateien liegen auch auf dem Telefon: Telefon mit einem Computer verbinden und Android/data/org.sailyachtresearch.sailinsight/files/sail-insight-logs öffnen.",
+  "text_local_diagnostics_location_ios": "Die Protokolldateien liegen auch auf dem Telefon: Dateien-App › Auf meinem iPhone › Sail Insight › sail-insight-logs.",
   "text_gps_email_privacy_warning": "GPS-E-Mail-Protokolle können Positionen und Gerätedetails enthalten. Vor dem Teilen prüfen; sie sind nicht bereinigt.",
   "text_no_local_diagnostics": "Keine lokalen Diagnosedaten verfügbar.",
   "caption_hide_error_details": "Details ausblenden",

@@ -1,4 +1,5 @@
 import { always, compose, concat, not, prop, reduce } from 'ramda'
+import Logger from 'helpers/Logger'
 import { Alert, Dimensions } from 'react-native'
 
 import Images from '@assets/Images'
@@ -140,6 +141,7 @@ const trackingButton = Component((props: any) =>
         try {
           await props.startTracking({ data: props.checkIn, navigation: props.navigation, useLoadingSpinner: false })
         } catch (err) {
+          Logger.warn('Failed to start mark tracking:', err)
           Alert.alert(I18n.t('caption_start_tracking'), getUnknownErrorMessage())
         }
       }

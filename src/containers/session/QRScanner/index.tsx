@@ -68,6 +68,7 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
             // second one (same as joinLinkInvitation)
             navigation.navigate(Screens.JoinRegatta, { data: checkIn }, { pop: true })
         } catch (err: any) {
+            Logger.warn('QR code invitation failed:', err)
             Alert.alert(
                 getErrorTitle(),
                 getInvitationErrorMessage(err),

@@ -85,6 +85,8 @@ const timeoutPromise = (
   })
 }
 
+const isGpsFixUpload = (url: any) => isString(url) && /\/api\/v1\/gps_fixes(?:\?|$)/.test(url)
+
 export const request = async (
   url: any,
   options: RequestOptions = {},
@@ -99,6 +101,7 @@ export const request = async (
 
   const data = body && { body: getBody(bodyType, body) }
 
+  const startedAt = Date.now()
   let response: Response
   try {
     const headers = await getHeaders(url, method, body, bodyType, signer)
@@ -114,14 +117,21 @@ export const request = async (
     response = await timeoutPromise(fetch(url, fetchOptions), timeout, 'Server request timeout', controller) as Response
   } catch (error) {
     Logger.error('Network request failed', {
-      failureType: error instanceof Error ? error.name : 'NetworkError', method, url,
+      failureType: error instanceof Error ? error.name : 'NetworkError', method, url, durationMs: Date.now() - startedAt,
     })
     throw error
   }
 
-  if (!response.ok) {
+  if (response.ok) {
+    // Every API call is logged for support; successful GPS fix uploads are too frequent
+    // and are covered by the separate GPS log.
+    if (!isGpsFixUpload(url)) {
+      Logger.log(`API ${method} ${url} ${response.status} ${Date.now() - startedAt}ms`)
+    }
+  } else {
     Logger.error('HTTP request failed', {
       failureType: 'HttpError', status: response.status, method, url: response.url || url,
+      durationMs: Date.now() - startedAt,
     })
     if (!DEV_MODE && [400, 404, 405].includes(response.status)) {
       // Crashlytics SDK calls may reject asynchronously; diagnostics must not create an

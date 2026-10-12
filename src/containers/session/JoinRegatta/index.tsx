@@ -147,7 +147,7 @@ class JoinRegatta extends React.Component<{
     } catch (err) {
       // registerCompetitorAndDevice already alerted for its own failures
       if (!(err && err.alertShown)) {
-        Logger.debug('JoinRegatta error', err)
+        Logger.warn('Joining the event failed:', err)
         Alert.alert(getInvitationErrorMessage(err))
       }
     } finally {

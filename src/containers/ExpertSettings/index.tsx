@@ -6,7 +6,7 @@ import TextButton from 'components/TextButton'
 import { validateRequired } from 'forms/validators'
 import I18n from 'i18n'
 import React from 'react'
-import { Alert, Image, View } from 'react-native'
+import { Alert, Image, Platform, View } from 'react-native'
 import Clipboard from '@react-native-clipboard/clipboard'
 import Logger from 'helpers/Logger'
 import { showErrorAlert } from 'helpers/errorAlert'
@@ -82,6 +82,9 @@ class ExpertSettings extends TextInputForm<Props> {
             onPress={this.onCopyDiagnostics} isLoading={this.state.diagnosticsLoading}>
             {I18n.t('caption_copy_local_diagnostics')}
           </TextButton>
+          <Text style={{ color: 'white', marginBottom: 16 }}>{I18n.t(Platform.OS === 'ios'
+            ? 'text_local_diagnostics_location_ios'
+            : 'text_local_diagnostics_location_android')}</Text>
           <Text style={{ color: 'white' }}>{I18n.t('text_gps_email_privacy_warning')}</Text>
           <TextButton
             style={styles.button}

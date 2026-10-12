@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import { __, always, compose, concat, objOf, reduce, flatten, isEmpty,
   map, values, defaultTo, reject, isNil, when, equals, pick } from 'ramda'
 import React from 'react'
@@ -96,7 +97,9 @@ const createEvent = (props: any) => async (formValues: any) => {
   try {
     await props.createEventActionQueue({ eventData: eventCreationData, navigation: props.navigation }).execute()
   } catch (e) {
-    props.setApiErrors([getErrorDisplayMessage(e)])
+    const message = getErrorDisplayMessage(e)
+    Logger.warn('Error shown to user (create event):', message, e)
+    props.setApiErrors([message])
     props.setApiErrorRaw(e)
     props.updateCreatingEvent(false)
     // the error is rendered below the Create button — bring it into view
@@ -145,6 +148,7 @@ const withBoatClasses = compose(
       }).catch((err) => {
         // loaded (empty) so the boat class input does not try, and alert, again
         this.props.setBoatClasses([])
+        Logger.warn('Failed to load boat classes:', err)
         Alert.alert(I18n.t('error_load_boat_classes'), getErrorDisplayMessage(err))
       })
     }

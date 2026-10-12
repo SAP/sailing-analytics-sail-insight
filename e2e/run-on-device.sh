@@ -60,6 +60,21 @@ set +e
 status=$?
 set -e
 adb -s "$E2E_ANDROID_SERIAL" logcat -d >"$E2E_ARTIFACTS_DIR/android-logcat.txt" 2>&1 || true
+
+# The app log must be where support looks for it (Android/data/<app id>/files/sail-insight-logs),
+# record API calls, and never contain the run's credentials.
+app_log="$E2E_ARTIFACTS_DIR/app-log.txt"
+adb -s "$E2E_ANDROID_SERIAL" shell "cat /sdcard/Android/data/$E2E_APP_ID/files/sail-insight-logs/*.log" >"$app_log" 2>&1 || true
+if ! grep -q '\[INFO\] API ' "$app_log"; then
+  log "App log in Android/data/$E2E_APP_ID/files/sail-insight-logs is missing or has no API calls."
+  status=1
+elif grep -qF -e "$E2E_PASSWORD" -e "$E2E_EMAIL" "$app_log"; then
+  # The username is not checked: E2E event names contain it on purpose.
+  log "App log contains the test account's password or e-mail address."
+  status=1
+else
+  log "App log found with $(grep -c '\[INFO\] API ' "$app_log") API calls; no password or e-mail address."
+fi
 adb -s "$E2E_ANDROID_SERIAL" shell dumpsys package "$E2E_APP_ID" >"$E2E_ARTIFACTS_DIR/app-package.txt" 2>&1 || true
 if (( status != 0 )); then
   adb -s "$E2E_ANDROID_SERIAL" exec-out screencap -p >"$E2E_ARTIFACTS_DIR/failure.png" 2>/dev/null || true

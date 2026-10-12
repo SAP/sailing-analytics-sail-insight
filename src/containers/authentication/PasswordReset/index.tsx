@@ -1,4 +1,5 @@
 import React from 'react'
+import Logger from 'helpers/Logger'
 import { Alert, View, ImageBackground } from 'react-native'
 import Snackbar from 'react-native-snackbar'
 import { connect } from 'react-redux'
@@ -68,6 +69,7 @@ class PasswordReset extends TextInputForm<{
       // below on purpose, so accounts can't be enumerated.
       if (isNetworkOrServerError(err)) {
         const errorMessage = getErrorDisplayMessage(err)
+        Logger.warn('Password reset request failed:', err)
         this.setState({ error: errorMessage, rawError: err, isLoading: false })
         Snackbar.show({ text: errorMessage, duration: Snackbar.LENGTH_LONG })
         return

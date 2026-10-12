@@ -6,6 +6,7 @@ import { getShowErrorDetailsSetting } from 'selectors/settings'
 import { getStore } from 'store'
 
 import { getErrorDetails, getErrorDisplayMessage } from './texts'
+import Logger from './Logger'
 import { readPersistentLogs } from './PersistentLog'
 let diagnosticsReadPending = false
 
@@ -71,6 +72,7 @@ const isShowErrorDetailsEnabled = () => {
  */
 export const showErrorAlert = (title: string | undefined, error: any, friendlyMessage?: string) => {
   const message = friendlyMessage || getErrorDisplayMessage(error)
+  Logger.warn('Error shown to user (alert):', title || '', message, ...(error ? [error] : []))
   const expertDetailsEnabled = isShowErrorDetailsEnabled()
   const details = expertDetailsEnabled ? getErrorDetails(error) : undefined
   const buttons = details ? [

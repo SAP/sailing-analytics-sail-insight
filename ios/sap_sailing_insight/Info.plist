@@ -121,5 +121,9 @@
 		<key>live</key>
 		<string>key_live_kjHOAqtytu1CNDoBMOW9OfcdyEd1gPL0</string>
 	</dict>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 </dict>
 </plist>

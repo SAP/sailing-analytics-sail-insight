@@ -1,3 +1,4 @@
+import Logger from 'helpers/Logger'
 import { __, compose, concat, curry, mergeRight, reduce, toUpper, propEq,
   prop, isNil, equals } from 'ramda'
 import Images from '@assets/Images'
@@ -96,7 +97,7 @@ const endEventNow = async (props: any) => {
     ended = await props.stopTrackingAndWait(props.session)
     // the organizer is also tracking this event on this device: stop that too
     if (ended && props.isTrackingEvent) {
-      try { await props.stopLocalTracking() } catch (e) {}
+      try { await props.stopLocalTracking() } catch (e) { Logger.warn('Failed to stop local tracking after ending the event:', e) }
     }
   } finally {
     props.updateLoadingCheckInFlag(false)
@@ -108,6 +109,7 @@ const endEventNow = async (props: any) => {
         `${I18n.t('text_end_event_long_text_finished')} ${I18n.t('text_end_event_local_tracking_stopped')}` :
         I18n.t('text_end_event_long_text_finished'))
   } else {
+    Logger.warn('Ending the event failed')
     Alert.alert(I18n.t('caption_end_event'), I18n.t('text_end_event_failed'))
   }
 }
