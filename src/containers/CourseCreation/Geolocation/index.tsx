@@ -213,7 +213,12 @@ const Map = Component((props: any) => compose(
       mapPadding: {top: props.mapOffset, right: 0, bottom: 0, left: 0},
       mapType: 'satellite',
       children: map(marker.fold, props.otherMarksPositions),
-      onRegionChangeComplete: region => {
+      onRegionChangeComplete: (region, details) => {
+        // Google Maps also reports the end of its own animation to a typed position, with a
+        // slightly different center; only a user's drag may replace the typed coordinates.
+        if (details && details.isGesture === false) {
+          return
+        }
         props.setInitialRender(false)
         props.setRegion(region)
         // the map position replaces any invalid manual input
@@ -231,6 +236,9 @@ const textInput = Component(props => compose(
     value: props.value,
     keyboardType: props.decimal ? 'decimal-pad' : 'number-pad',
     returnKeyType: 'done',
+    // Tapping a coordinate selects it, so typing replaces the old value instead of
+    // leaving digits behind the cursor (e.g. "12" + "0" -> 120').
+    selectTextOnFocus: true,
     selectionColor: 'white'
   })))(
   fromClass(TextInputDeprecated)))
@@ -262,6 +270,7 @@ const coordinatesInput = Component((props: any) => compose(
     reduce(concat, nothing()))([
       textInput.contramap(mergeRight({
         decimal: false,
+        testID: `e2e-${props.unit}-degrees`,
         value: defaultTo('', props.degrees),
         inputStyle: { width: 70 },
         onBlur: value => applyDdmInput(props, value || '0', props.minutes || '0'),
@@ -269,6 +278,7 @@ const coordinatesInput = Component((props: any) => compose(
       text({ style: styles.symbolText }, '°'),
       textInput.contramap(mergeRight({
         decimal: true,
+        testID: `e2e-${props.unit}-minutes`,
         value: defaultTo('', props.minutes),
         inputStyle: { width: 115 },
         onBlur: value => applyDdmInput(props, props.degrees || '0', value || '0'),
