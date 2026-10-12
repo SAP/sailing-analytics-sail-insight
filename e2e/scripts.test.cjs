@@ -32,7 +32,8 @@ if [[ "\${1:-}" == devices ]]; then printf 'List of devices attached\\n'; cat "$
 serial="\${ANDROID_SERIAL:-}"; if [[ "\${1:-}" == -s ]]; then serial="$2"; shift 2; fi
 case "\${1:-}" in
 get-state) awk -v serial="$serial" '$1==serial && $2=="device" {print "device";found=1} END {exit !found}' "$DEVICES" ;;
-shell) case "\${3:-}" in sys.boot_completed) echo 1 ;; ro.product.cpu.abi) echo x86_64 ;; ro.build.version.sdk) echo 36 ;; esac ;;
+shell) case "\${2:-}" in *sail-insight-logs*) printf '%s\\n' "\${FAKE_APP_LOG:-2026-01-01T00:00:00.000Z [INFO] API GET http://127.0.0.1:8888/x 200 1ms}"; exit ;; esac
+  case "\${3:-}" in sys.boot_completed) echo 1 ;; ro.product.cpu.abi) echo x86_64 ;; ro.build.version.sdk) echo 36 ;; esac ;;
 esac`)
   mock('curl', 'printf "curl %s\\n" "$*" >>"$CALLS"; exit "${CURL_STATUS:-0}"')
   mock('maestro', 'printf "maestro %s\\n" "$*" >>"$CALLS"; exit "${MAESTRO_STATUS:-0}"')
@@ -103,6 +104,14 @@ for (const [extra, args] of [
 test('device test preserves Maestro failure status', t => {
   const f = fixture(t); f.devices('usb\tdevice\n'); const apk = path.join(f.root, 'test.apk'); fs.writeFileSync(apk, '')
   assert.equal(f.run('e2e/run-on-device.sh', { E2E_APK: apk, MAESTRO_STATUS: '7' }).status, 7)
+})
+test('device test checks the app log: present with API calls, without the password', t => {
+  const f = fixture(t); f.devices('usb\tdevice\n'); const apk = path.join(f.root, 'test.apk'); fs.writeFileSync(apk, '')
+  const env = { E2E_APK: apk, E2E_PASSWORD: 'Secret-123!x' }
+  ok(f.run('e2e/run-on-device.sh', env))
+  assert.equal(f.run('e2e/run-on-device.sh', { ...env, FAKE_APP_LOG: '2026-01-01T00:00:00.000Z [WARN] nothing' }).status, 1)
+  assert.equal(f.run('e2e/run-on-device.sh', { ...env,
+    FAKE_APP_LOG: '2026-01-01T00:00:00.000Z [INFO] API GET http://127.0.0.1:8888/x?p=Secret-123!x 200 1ms' }).status, 1)
 })
 test('cleanup terminates an owned process, but leaves reused services alone', async t => {
   const f = fixture(t), child = spawn(process.execPath, ['-e', 'console.log("ready"); setInterval(()=>{},1000)'], { stdio: ['ignore', 'pipe', 'ignore'] })

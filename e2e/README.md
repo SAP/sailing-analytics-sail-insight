@@ -11,7 +11,7 @@ Real scenarios against a real, freshly created backend; no API mocks or pre-crea
 - `expert-local-diagnostics`: a rejected login creates real diagnostic history; expert controls persist the GPS logging switch and must successfully copy that history.
 - `invitation-join`: a sailor without an account opens an organizer's invitation link (the content of the event's QR code), joins with a new boat and sees the event and races read-only.
 - `auth-password-reset`, `account-settings`, `qr-scanner-permission`: reset confirmation (known and unknown account), settings switches that survive a restart, Expedition server switch, camera permission denied/granted.
-- `course-editing`, `mark-tracking`, `handicap-edit-competitor`, `organizer-results-end-event`, `tracking-switch`: manual mark positions (invalid ones rejected), the phone as mark tracker, editing a competitor in a handicap event, result-editing link/page, ending an event, and switching tracking between two events.
+- `course-editing`, `race-scoring`, `mark-tracking`, `handicap-edit-competitor`, `organizer-results-end-event`, `tracking-switch`, `join-boat-picker`: typed mark positions (invalid ones rejected), adding/deleting marks and the copy-course question, discards stored on the server, the SAP Sailing Analytics race page, the phone as mark tracker, editing a competitor's handicap, result editing, ending an event, switching tracking between events, and choosing one of several boats.
 
 After the flows, `run-on-device.sh` reads the app's log folder (`Android/data/<app id>/files/sail-insight-logs`): it must exist, record API calls and contain neither the run's password nor its e-mail address.
 
