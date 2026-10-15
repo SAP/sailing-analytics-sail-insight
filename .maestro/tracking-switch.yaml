@@ -18,7 +18,7 @@ tags:
       COMPETITOR_NAME: "Switch Sailor"
       SAIL_NUMBER: "GER 99"
 - tapOn:
-    id: "e2e-events-tab"
+    text: "Events"
 - runFlow:
     file: subflows/create-event.yaml
     env:
@@ -34,7 +34,7 @@ tags:
     latitude: 54.35
     longitude: 10.15
 - tapOn:
-    id: "e2e-tracking-tab"
+    text: "Tracking"
 - tapOn: "START TRACKING"
 - extendedWaitUntil:
     visible: "(?i)for which event.*"
@@ -45,7 +45,7 @@ tags:
 
 # Starting the second event asks first.
 - tapOn:
-    id: "e2e-events-tab"
+    text: "Events"
 - tapOn: ${output.second}
 - extendedWaitUntil:
     visible: "Event Overview"

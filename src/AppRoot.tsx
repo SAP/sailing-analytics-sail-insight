@@ -176,7 +176,8 @@ const getTabBarLabel = (route: any, color: any, focused: any) => {
 
 const teamDeleteHeader = (route: any) => (route?.params?.paramTeamName) && (
   <ImageButton
-    testID="e2e-boat-delete"
+    accessibilityRole="button"
+    accessibilityLabel={I18n.t('caption_delete')}
     source={Images.actions.delete}
     style={button.actionIconNavBar}
     imageStyle={{ tintColor: 'white' }}
@@ -400,12 +401,6 @@ const mainTabsNavigator = Component(props => compose(
       tabBarShowLabel: true,
       tabBarLabelPosition: 'below-icon',
       tabBarHideOnKeyboard: Platform.OS === 'android',
-      tabBarButtonTestID: ({
-        [Screens.Account]: 'e2e-account-tab',
-        [Screens.SessionsNavigator]: 'e2e-events-tab',
-        [Screens.TrackingNavigator]: 'e2e-tracking-tab',
-      } as Record<string, string>)[route.name],
-
       lazy: false,
       headerShown: false,
 
@@ -450,9 +445,7 @@ const AppNavigator = Component(props => compose(
   stackScreen(compose(withTransparentHeader, withoutTitle, withoutHeaderLeft)({
     name: Screens.RegisterBoatAfterRegistration, component: RegisterBoat,
     options: {
-      // Floating transparent headers retain native bounds for Android accessibility.
-      headerMode: 'float',
-      headerRight: () => <TextButton testID="e2e-register-skip" textStyle={button.headerTextButton} onPress={() => navigateBackToMain(navigationContainer.current)}>{I18n.t('caption_skip')}</TextButton>,
+      headerRight: () => <TextButton textStyle={button.headerTextButton} onPress={() => navigateBackToMain(navigationContainer.current)}>{I18n.t('caption_skip')}</TextButton>,
       gestureEnabled: false
     }
   })),

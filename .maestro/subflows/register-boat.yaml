@@ -7,10 +7,16 @@ appId: ${APP_ID}
 - tapOn:
     id: "e2e-register-boat-sail-number"
 - inputText: ${SAIL_NUMBER}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-register-boat-class"
+    direction: DOWN
 - tapOn:
     id: "e2e-register-boat-class"
 # Type the exact class name; the suggestion list is not needed.
 - inputText: "Laser 2"
 - hideKeyboard
 - tapOn:
-    id: "e2e-register-boat-submit"
+    text: "ADD BOAT"
+    below: "MORE"

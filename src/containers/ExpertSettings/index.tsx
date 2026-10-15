@@ -78,7 +78,7 @@ class ExpertSettings extends TextInputForm<Props> {
           />
         </View>
         <View style={[container.largeHorizontalMargin, styles.emailContainer]}>
-          <TextButton testID="e2e-copy-local-diagnostics" style={styles.button} textStyle={styles.buttonText}
+          <TextButton style={styles.button} textStyle={styles.buttonText}
             onPress={this.onCopyDiagnostics} isLoading={this.state.diagnosticsLoading}>
             {I18n.t('caption_copy_local_diagnostics')}
           </TextButton>

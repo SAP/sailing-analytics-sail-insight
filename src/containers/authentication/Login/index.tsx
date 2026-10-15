@@ -146,7 +146,6 @@ class Login extends TextInputForm<{
                 onSubmitEditing={this.onSubmit}
                 inputRef={this.handleInputRef(FORM_KEY_PASSWORD)}/>
               <TextButton
-                  testID="e2e-login-submit"
                   style={[button.primary, button.fullWidth, styles.loginButton]}
                   textStyle={button.primaryText}
                   onPress={this.onSubmit}
@@ -154,7 +153,7 @@ class Login extends TextInputForm<{
                 {I18n.t('caption_login').toUpperCase()}
               </TextButton>
               <ErrorBalloon message={error} error={rawError} />
-              <TouchableOpacity testID="e2e-login-forgot-password" style={[text.mediumText, styles.forgotPasswordLink]} onPress={() => this.props.navigation.navigate(PasswordReset)}>
+              <TouchableOpacity style={[text.mediumText, styles.forgotPasswordLink]} onPress={() => this.props.navigation.navigate(PasswordReset)}>
                 <Text style={[text.mediumText]}>
                   {I18n.t('caption_forgot_password')} {'›'}
                 </Text>

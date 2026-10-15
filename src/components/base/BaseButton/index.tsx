@@ -56,7 +56,8 @@ abstract class BaseButton<P = {}, S = {}, SS = any> extends React.Component<P & 
     const additionalStyle = disabled ? [styles.disabled, disabledStyle] : undefined
     return (
       <TouchableOpacity
-        testID={this.props.testID}
+        accessibilityRole={this.props.accessibilityRole}
+        accessibilityLabel={this.props.accessibilityLabel}
         onLayout={this.handleContentSizeChanged}
         style={[
           !touchableStyle || isLoading

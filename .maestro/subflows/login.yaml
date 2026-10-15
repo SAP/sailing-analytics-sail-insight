@@ -9,10 +9,10 @@ appId: ${APP_ID}
       all: allow
 - extendedWaitUntil:
     visible:
-      id: "e2e-first-contact-login"
+      text: "LOGIN"
     timeout: 60000
 - tapOn:
-    id: "e2e-first-contact-login"
+    text: "LOGIN"
 - extendedWaitUntil:
     visible:
       id: "e2e-login-username"
@@ -27,8 +27,9 @@ appId: ${APP_ID}
 - pasteText
 - hideKeyboard
 - tapOn:
-    id: "e2e-login-submit"
+    text: "LOGIN"
+    below: "Password"
 - extendedWaitUntil:
     visible:
-      id: "e2e-account-tab"
+      text: "Account"
     timeout: 60000

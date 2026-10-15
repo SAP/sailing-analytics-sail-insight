@@ -122,7 +122,6 @@ class PasswordReset extends TextInputForm<{
               </View>
               <View style={form.lastFormSegment}>
                 <TextButton
-                  testID="e2e-reset-submit"
                   style={[button.primary, button.fullWidth, styles.resetButton]}
                   textStyle={button.primaryText}
                   onPress={this.onSubmit}

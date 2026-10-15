@@ -163,7 +163,6 @@ class TeamDetails extends TextInputForm<Props> {
               </View>
               <View style={form.lastFormSegment}>
                 <TextButton
-                  testID="e2e-boat-save"
                   style={[button.primary, button.fullWidth, styles.saveButton]}
                   textStyle={button.primaryText}
                   onPress={this.props.handleSubmit(this.onSavePress)}

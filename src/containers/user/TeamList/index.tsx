@@ -64,7 +64,6 @@ class TeamList extends React.Component<ViewProps & {
       <TextButton
         style={[button.primary, styles.addButton]}
         textStyle={button.primaryText}
-        testID="e2e-new-boat"
         onPress={() => this.props.navigation.navigate(Screens.TeamDetails)}>
         {I18n.t('caption_new_team').toUpperCase()}
       </TextButton>

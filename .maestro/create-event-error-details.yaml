@@ -28,23 +28,23 @@ tags:
 - hideKeyboard
 - scrollUntilVisible:
     element:
-      id: "e2e-event-create"
+      text: "CREATE"
     direction: DOWN
 - tapOn:
-    id: "e2e-event-create"
+    text: "CREATE"
 - extendedWaitUntil:
     visible: ".*already exists.*"
     timeout: 30000
 - assertNotVisible: ".*Oops.*"
 # Technical details are hidden for normal users.
 - assertNotVisible:
-    id: "e2e-error-details-toggle"
+    text: "Show details"
 - takeScreenshot: create-event-duplicate-normal-user
 
 # Enable technical details in the hidden Expert settings (15 taps on the version).
 - back
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - tapOn: "SETTINGS"
 - repeat:
     times: 15
@@ -73,35 +73,35 @@ tags:
 - hideKeyboard
 - scrollUntilVisible:
     element:
-      id: "e2e-event-create"
+      text: "CREATE"
     direction: DOWN
 - tapOn:
-    id: "e2e-event-create"
+    text: "CREATE"
 - extendedWaitUntil:
     visible:
-      id: "e2e-error-details-toggle"
+      text: "Show details"
     timeout: 30000
 - takeScreenshot: create-event-duplicate-details-collapsed
 - tapOn:
-    id: "e2e-error-details-toggle"
+    text: "Show details"
 - assertVisible: ".*POST .*createEvent.*"
 - assertVisible: ".*Status: 4\\d\\d.*"
 - scrollUntilVisible:
     element:
-      id: "e2e-error-details-copy"
+      text: "Copy technical details"
     direction: DOWN
 - takeScreenshot: create-event-duplicate-details-expanded
 - tapOn:
-    id: "e2e-error-details-copy"
+    text: "Copy technical details"
 - assertVisible: ".*Diagnostics copied to clipboard.*"
 - tapOn: "OK"
 - tapOn:
-    id: "e2e-error-details-toggle"
+    text: "Hide details"
 - assertNotVisible: ".*POST .*createEvent.*"
 # Returning to settings and disabling the option restores normal-user behavior.
 - back
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - tapOn: "SETTINGS"
 - repeat:
     times: 15

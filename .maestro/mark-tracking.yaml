@@ -65,7 +65,7 @@ tags:
 
 # The Tracking tab now belongs to the mark.
 - tapOn:
-    id: "e2e-tracking-tab"
+    text: "Tracking"
 - extendedWaitUntil:
     visible: "(?i)start tracking"
     timeout: 30000

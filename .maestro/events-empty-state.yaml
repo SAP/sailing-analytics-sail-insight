@@ -6,12 +6,10 @@ tags:
 ---
 - runFlow: subflows/login.yaml
 - tapOn:
-    id: "e2e-events-tab"
+    text: "Events"
 - extendedWaitUntil:
-    visible:
-      id: "e2e-sessions-empty-hint"
+    visible: "CREATE A NEW EVENT"
     timeout: 30000
-- assertVisible:
-    id: "e2e-create-event"
+- assertVisible: "CREATE A NEW EVENT"
 - assertVisible: "SCAN A QR-CODE"
 - takeScreenshot: events-empty-state

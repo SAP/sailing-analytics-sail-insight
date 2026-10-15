@@ -13,10 +13,10 @@ onFlowComplete:
       all: allow
 - extendedWaitUntil:
     visible:
-      id: "e2e-first-contact-login"
+      text: "LOGIN"
     timeout: 60000
 - tapOn:
-    id: "e2e-first-contact-login"
+    text: "LOGIN"
 - extendedWaitUntil:
     visible:
       id: "e2e-login-username"
@@ -35,7 +35,8 @@ onFlowComplete:
 - waitForAnimationToEnd:
     timeout: 5000
 - tapOn:
-    id: "e2e-login-submit"
+    text: "LOGIN"
+    below: "Password"
 - extendedWaitUntil:
     visible: ".*[Nn]etwork connection required.*"
     timeout: 10000

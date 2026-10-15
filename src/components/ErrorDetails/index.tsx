@@ -16,14 +16,14 @@ const ErrorDetails = ({ details }: { details?: string }) => {
   }
   return (
     <View style={styles.container}>
-      <TouchableOpacity testID="e2e-error-details-toggle" onPress={() => setExpanded(!expanded)}>
+      <TouchableOpacity onPress={() => setExpanded(!expanded)}>
         <Text style={styles.toggle}>
           {I18n.t(expanded ? 'caption_hide_error_details' : 'caption_show_error_details')}
         </Text>
       </TouchableOpacity>
       {expanded && <>
         <Text selectable style={styles.details}>{details}</Text>
-        <TouchableOpacity testID="e2e-error-details-copy" onPress={() => {
+        <TouchableOpacity onPress={() => {
           try {
             Clipboard.setString(details)
             Alert.alert(I18n.t('text_diagnostics_copied_to_clipboard'))

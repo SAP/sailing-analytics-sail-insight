@@ -16,10 +16,10 @@ appId: ${APP_ID}
 - hideKeyboard
 - scrollUntilVisible:
     element:
-      id: "e2e-event-create"
+      text: "CREATE"
     direction: DOWN
 - tapOn:
-    id: "e2e-event-create"
+    text: "CREATE"
 - extendedWaitUntil:
     visible: "Event Overview"
     timeout: 60000

@@ -2,13 +2,13 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-    id: "e2e-events-tab"
+    text: "Events"
 - extendedWaitUntil:
     visible:
-      id: "e2e-create-event"
+      text: "CREATE A NEW EVENT"
     timeout: 30000
 - tapOn:
-    id: "e2e-create-event"
+    text: "CREATE A NEW EVENT"
 - extendedWaitUntil:
     visible:
       id: "e2e-event-venue"
@@ -31,5 +31,5 @@ appId: ${APP_ID}
 - hideKeyboard
 - scrollUntilVisible:
     element:
-      id: "e2e-event-create"
+      text: "CREATE"
     direction: DOWN

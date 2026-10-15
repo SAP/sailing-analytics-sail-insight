@@ -127,7 +127,7 @@ test('Babel inlining is scoped and Reanimated remains last', () => {
   assert.ok(code.includes('process.env.UNRELATED_E2E_TEST_VALUE'))
 })
 
-// Regression checks for the native selectors used by the same auth smoke flow.
+// Regression checks for native selectors and accessibility semantics used by E2E flows.
 function loadComponent(relativePath, dependencies) {
   const componentFilename = path.join(root, relativePath)
   const { code } = babel.transformFileSync(componentFilename, {
@@ -167,18 +167,28 @@ function findElement(element, type) {
   }
 }
 
-test('TextButton forwards testID through BaseButton to native TouchableOpacity', () => {
+test('ImageButton exposes accessibility role and label on BaseButton TouchableOpacity', () => {
   const BaseButton = loadComponent('src/components/base/BaseButton/index.tsx', {
     '/components/ActivityIndicator': 'ActivityIndicator',
     '/styles': {},
   })
-  const TextButton = loadComponent('src/components/TextButton/index.tsx', {
+  const ImageButton = loadComponent('src/components/ImageButton/index.tsx', {
     '/components/base/BaseButton': BaseButton,
-    '/components/TextScalable': 'Text',
+    'styles/dimensions': { $defaultImageButtonSize: 48 },
+    '/styles': {},
   })
-  const element = new TextButton({ testID: 'e2e-login-submit', children: 'Log in' }).render()
+  const element = new ImageButton({
+    source: 'delete',
+    accessibilityRole: 'button',
+    accessibilityLabel: 'Delete',
+  }).render()
   assert.equal(element.type, 'TouchableOpacity')
-  assert.equal(element.props.testID, 'e2e-login-submit')
+  assert.equal(element.props.accessibilityRole, 'button')
+  assert.equal(element.props.accessibilityLabel, 'Delete')
+  const image = findElement(element, 'Image')
+  assert.ok(image)
+  assert.equal(image.props.accessibilityRole, undefined)
+  assert.equal(image.props.accessibilityLabel, undefined)
 })
 
 test('redux Field custom props and both input wrappers retain native testID', () => {

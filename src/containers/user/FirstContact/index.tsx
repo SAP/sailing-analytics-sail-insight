@@ -50,7 +50,6 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
               <Image source={Images.defaults.app_logo} style={styles.appLogo} resizeMode="contain"/>
               <View style={styles.buttonContainer}>
                 <TextButton
-                  testID="e2e-first-contact-register"
                   style={[button.primary]}
                   textStyle={button.primaryText}
                   onPress={() => this.props.isConnected ? this.props.navigation.navigate(RegisterCredentials) : this.showNetworkAlert()}>
@@ -63,7 +62,6 @@ class FirstContact extends React.Component<ViewProps & NavigationScreenProps & P
                   {I18n.t('caption_qr_scanner').toUpperCase()}
                 </TextButton>
                 <TextButton
-                  testID="e2e-first-contact-login"
                   style={[button.secondary]}
                   textStyle={button.secondaryText}
                   onPress={() => this.props.isConnected ? this.props.navigation.navigate(LoginFromSplash) : this.showNetworkAlert()}>

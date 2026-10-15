@@ -10,7 +10,7 @@ tags:
     env:
       VENUE: ""
 - tapOn:
-    id: "e2e-event-create"
+    text: "CREATE"
 - takeScreenshot: create-event-validation-after-tap
 # The field-level error must be on screen together with the Venue field.
 - extendedWaitUntil:

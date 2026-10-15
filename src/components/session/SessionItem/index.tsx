@@ -55,7 +55,6 @@ class SessionItem extends React.Component<ViewProps & {
       return (
         <RectButton
           style={styles.leftAction}
-          testID="e2e-archive-event"
           accessible
           accessibilityRole="button"
           accessibilityLabel={I18n.t(archived ? 'caption_unarchive_event' : 'caption_archive_event')}

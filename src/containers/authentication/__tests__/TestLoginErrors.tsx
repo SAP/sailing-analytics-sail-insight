@@ -43,7 +43,8 @@ test('keyboard and button submission share one pending login and allow retry aft
   const renderer = renderLogin()
   const [username, password] = renderer.root.findAllByType('MockTextInput')
   act(() => { username.props.onChangeText('user'); password.props.onChangeText('pw') })
-  const submit = renderer.root.findAll((n: any) => n.type === 'MockTextButton' && n.props.testID === 'e2e-login-submit')[0]
+  const submit = renderer.root.findAll((n: any) => n.type === 'MockTextButton' && n.props.children === 'LOGIN')[0]
+  expect(submit).toBeDefined()
   let first: any
   act(() => {
     first = password.props.onSubmitEditing()

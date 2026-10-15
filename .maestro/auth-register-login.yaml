@@ -7,10 +7,10 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: "e2e-first-contact-register"
+      text: "REGISTER"
     timeout: 60000
 - tapOn:
-    id: "e2e-first-contact-register"
+    text: "REGISTER"
 
 - extendedWaitUntil:
     visible:
@@ -25,48 +25,51 @@ appId: ${APP_ID}
     id: "e2e-register-password"
 - setClipboard: ${E2E_PASSWORD}
 - pasteText
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "e2e-register-email"
+    direction: DOWN
 - tapOn:
     id: "e2e-register-email"
 - setClipboard: ${E2E_EMAIL}
 - pasteText
 - hideKeyboard
 - tapOn:
-    id: "e2e-register-submit"
+    text: "REGISTER"
 
 # Registration logs the user in and opens optional first-boat onboarding.
 - extendedWaitUntil:
     visible:
-      id: "e2e-register-skip"
+      text: "Skip"
     timeout: 60000
 - tapOn:
-    id: "e2e-register-skip"
+    text: "Skip"
 
 # Open the account and user profile; the username comes from the protected user API.
 - extendedWaitUntil:
     visible:
-      id: "e2e-account-tab"
+      text: "Account"
     timeout: 60000
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - extendedWaitUntil:
     visible: ${E2E_USERNAME}
     timeout: 30000
 - tapOn: ${E2E_USERNAME}
 - extendedWaitUntil:
-    visible:
-      id: "e2e-logout"
+    visible: "LOG OUT"
     timeout: 30000
-- tapOn:
-    id: "e2e-logout"
+- tapOn: "LOG OUT"
 - tapOn: "OK"
 
 # Log back in with the same account.
 - extendedWaitUntil:
     visible:
-      id: "e2e-first-contact-login"
+      text: "LOGIN"
     timeout: 30000
 - tapOn:
-    id: "e2e-first-contact-login"
+    text: "LOGIN"
 - extendedWaitUntil:
     visible:
       id: "e2e-login-username"
@@ -81,15 +84,16 @@ appId: ${APP_ID}
 - pasteText
 - hideKeyboard
 - tapOn:
-    id: "e2e-login-submit"
+    text: "LOGIN"
+    below: "Password"
 
 # Final assertion: authenticated user data is loaded after the second login.
 - extendedWaitUntil:
     visible:
-      id: "e2e-account-tab"
+      text: "Account"
     timeout: 60000
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - extendedWaitUntil:
     visible: ${E2E_USERNAME}
     timeout: 30000

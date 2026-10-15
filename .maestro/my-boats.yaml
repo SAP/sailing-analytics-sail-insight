@@ -7,10 +7,10 @@ tags:
 - evalScript: ${output.boat = 'Boat ' + Date.now()}
 - runFlow: subflows/login.yaml
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - tapOn: "MY BOATS"
 - tapOn:
-    id: "e2e-new-boat"
+    text: "NEW BOAT"
 - tapOn:
     id: "e2e-boat-competitor-name"
 - inputText: ${output.boat}
@@ -29,10 +29,10 @@ tags:
 - hideKeyboard
 - scrollUntilVisible:
     element:
-      id: "e2e-boat-save"
+      text: "SAVE"
     direction: DOWN
 - tapOn:
-    id: "e2e-boat-save"
+    text: "SAVE"
 - extendedWaitUntil:
     visible: ${output.boat}
     timeout: 30000
@@ -46,8 +46,7 @@ tags:
     id: "e2e-boat-competitor-name"
 - inputText: " renamed"
 - hideKeyboard
-- tapOn:
-    id: "e2e-boat-delete"
+- tapOn: "Delete"
 - tapOn: "OK"
 - extendedWaitUntil:
     visible: "NEW BOAT"

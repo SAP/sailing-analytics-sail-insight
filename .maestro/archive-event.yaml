@@ -18,7 +18,7 @@ tags:
     from: ${output.eventName}
     direction: RIGHT
 - tapOn:
-    id: "e2e-archive-event"
+    text: "Archive event"
 - extendedWaitUntil:
     notVisible: ${output.eventName}
     timeout: 15000
@@ -27,10 +27,9 @@ tags:
 # Show archived events and bring it back.
 - scrollUntilVisible:
     element:
-      id: "e2e-toggle-archived-events"
+      text: "Show archived events"
     direction: DOWN
-- tapOn:
-    id: "e2e-toggle-archived-events"
+- tapOn: "Show archived events"
 - extendedWaitUntil:
     visible: ${output.eventName}
     timeout: 15000
@@ -38,9 +37,8 @@ tags:
     from: ${output.eventName}
     direction: RIGHT
 - tapOn:
-    id: "e2e-archive-event"
-- tapOn:
-    id: "e2e-toggle-archived-events"
+    text: "Unarchive event"
+- tapOn: "Hide archived events"
 - extendedWaitUntil:
     visible: ${output.eventName}
     timeout: 15000

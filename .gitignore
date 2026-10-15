@@ -77,4 +77,4 @@ yarn-error.log
 
 # Local artifacts and Pi agent settings
 /artifacts/
-/.pi/settings.json
+/.pi/

@@ -11,10 +11,10 @@ tags:
       all: allow
 - extendedWaitUntil:
     visible:
-      id: "e2e-first-contact-login"
+      text: "LOGIN"
     timeout: 60000
 - tapOn:
-    id: "e2e-first-contact-login"
+    text: "LOGIN"
 - tapOn:
     id: "e2e-login-username"
 - setClipboard: ${E2E_USERNAME}
@@ -25,7 +25,8 @@ tags:
 - pasteText
 - hideKeyboard
 - tapOn:
-    id: "e2e-login-submit"
+    text: "LOGIN"
+    below: "Password"
 - extendedWaitUntil:
     visible: "The username or password you entered is incorrect"
     timeout: 30000
@@ -36,13 +37,14 @@ tags:
 - pasteText
 - hideKeyboard
 - tapOn:
-    id: "e2e-login-submit"
+    text: "LOGIN"
+    below: "Password"
 - extendedWaitUntil:
     visible:
-      id: "e2e-account-tab"
+      text: "Account"
     timeout: 60000
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - tapOn: "SETTINGS"
 - repeat:
     times: 15
@@ -68,7 +70,7 @@ tags:
 - launchApp:
     clearState: false
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - tapOn: "SETTINGS"
 - repeat:
     times: 15
@@ -79,7 +81,7 @@ tags:
     id: "e2e-verbose-logging-switch"
     checked: true
 - tapOn:
-    id: "e2e-copy-local-diagnostics"
+    text: "Copy local diagnostics"
 - assertVisible: ".*Diagnostics copied to clipboard.*"
 - tapOn: "OK"
 - tapOn:
@@ -90,7 +92,7 @@ tags:
 - launchApp:
     clearState: false
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - tapOn: "SETTINGS"
 - repeat:
     times: 15

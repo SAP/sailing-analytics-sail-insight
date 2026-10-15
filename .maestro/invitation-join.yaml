@@ -22,7 +22,7 @@ tags:
       all: allow
 - extendedWaitUntil:
     visible:
-      id: "e2e-first-contact-login"
+      text: "LOGIN"
     timeout: 60000
 - stopApp
 - openLink: ${output.inviteLink}
@@ -42,7 +42,7 @@ tags:
     timeout: 60000
 # The joined event is listed and opens in the sailor's (read-only) view.
 - tapOn:
-    id: "e2e-events-tab"
+    text: "Events"
 - extendedWaitUntil:
     visible: ${output.eventName}
     timeout: 30000

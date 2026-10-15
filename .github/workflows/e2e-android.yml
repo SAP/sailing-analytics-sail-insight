@@ -21,7 +21,7 @@ jobs:
   auth-e2e:
     name: Android QA journeys (API 36)
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       E2E_ANDROID_API: "36"
       E2E_ANDROID_ABI: x86_64

@@ -16,7 +16,7 @@ onFlowComplete:
 - waitForAnimationToEnd:
     timeout: 5000
 - tapOn:
-    id: "e2e-event-create"
+    text: "CREATE"
 - extendedWaitUntil:
     visible: ".*[Nn]etwork connection required.*"
     timeout: 10000
@@ -25,5 +25,5 @@ onFlowComplete:
 - waitForAnimationToEnd:
     timeout: 5000
 - assertVisible:
-    id: "e2e-event-create"
+    text: "CREATE"
     enabled: true

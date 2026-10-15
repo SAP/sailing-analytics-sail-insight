@@ -57,6 +57,8 @@ class ImageButton<P = {}> extends BaseButton<P & ImageProps & {
       source,
       onPress,
       activeOpacity,
+      accessibilityLabel,
+      accessibilityRole,
       isLoading,
       ...remainingProps
     } = this.props

@@ -9,7 +9,7 @@ appId: ${APP_ID}
       all: allow
 - extendedWaitUntil:
     visible:
-      id: "e2e-first-contact-login"
+      text: "LOGIN"
     timeout: 60000
 - stopApp
 - openLink: ${MAESTRO_INVITE_LINK}

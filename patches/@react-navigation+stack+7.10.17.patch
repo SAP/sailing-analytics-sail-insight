@@ -1,0 +1,25 @@
+diff --git a/node_modules/@react-navigation/stack/lib/module/views/Stack/CardContainer.js b/node_modules/@react-navigation/stack/lib/module/views/Stack/CardContainer.js
+--- a/node_modules/@react-navigation/stack/lib/module/views/Stack/CardContainer.js
++++ b/node_modules/@react-navigation/stack/lib/module/views/Stack/CardContainer.js
+@@ -157,8 +157,9 @@
+     gestureDirection,
+     gestureEnabled,
+     gestureResponseDistance,
+     gestureVelocityImpact,
+     headerMode,
+     headerShown,
++    headerTransparent,
+     transitionSpec
+   } = scene.descriptor.options;
+@@ -240,7 +241,10 @@
+             scenes: [previousScene, scene],
+             getPreviousScene,
+             getFocusedRoute,
+             contentHeight: headerHeight,
+             onContentHeightChange: onHeaderHeightChange,
+-            style: styles.header
++            style: [styles.header, headerTransparent ? {
++              // Specify an explicit min height for Android screen readers
++              minHeight: headerHeight
++            } : null]
+           }) : null, /*#__PURE__*/_jsx(View, {

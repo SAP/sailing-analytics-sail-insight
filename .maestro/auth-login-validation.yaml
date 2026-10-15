@@ -9,16 +9,17 @@ tags:
       all: allow
 - extendedWaitUntil:
     visible:
-      id: "e2e-first-contact-login"
+      text: "LOGIN"
     timeout: 60000
 - tapOn:
-    id: "e2e-first-contact-login"
+    text: "LOGIN"
 - extendedWaitUntil:
     visible:
-      id: "e2e-login-submit"
+      text: "LOGIN"
     timeout: 30000
 - tapOn:
-    id: "e2e-login-submit"
+    text: "LOGIN"
+    below: "Password"
 - assertVisible: "Please enter a user name"
 - assertVisible: "Please enter a password"
 
@@ -32,7 +33,8 @@ tags:
 - pasteText
 - hideKeyboard
 - tapOn:
-    id: "e2e-login-submit"
+    text: "LOGIN"
+    below: "Password"
 - extendedWaitUntil:
     visible: "The username or password you entered is incorrect"
     timeout: 30000

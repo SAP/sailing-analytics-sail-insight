@@ -113,7 +113,6 @@ class RegisterCredentials extends TextInputForm<Props> {
                   <EulaLink/>
                 </View>
                 <TextButton
-                  testID="e2e-register-submit"
                   style={[button.primary, button.fullWidth, styles.registerButton]}
                   textStyle={button.primaryText}
                   onPress={this.props.handleSubmit(this.onSubmit)}

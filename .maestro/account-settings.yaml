@@ -6,7 +6,7 @@ tags:
 ---
 - runFlow: subflows/login.yaml
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - tapOn: "SETTINGS"
 - extendedWaitUntil:
     visible:
@@ -33,10 +33,10 @@ tags:
     clearState: false
 - extendedWaitUntil:
     visible:
-      id: "e2e-account-tab"
+      text: "Account"
     timeout: 60000
 - tapOn:
-    id: "e2e-account-tab"
+    text: "Account"
 - tapOn: "SETTINGS"
 - assertVisible:
     id: "e2e-bulk-gps-switch"

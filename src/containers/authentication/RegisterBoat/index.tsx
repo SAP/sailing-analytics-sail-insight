@@ -145,7 +145,6 @@ class RegisterBoat extends TextInputForm<Props> {
               }
               <View style={form.lastFormSegment}>
                 <TextButton
-                  testID="e2e-register-boat-submit"
                   style={[button.primary, button.fullWidth, styles.addBoatButton]}
                   textStyle={button.primaryText}
                   onPress={this.props.handleSubmit(this.onSubmit)}

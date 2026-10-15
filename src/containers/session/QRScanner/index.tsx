@@ -95,7 +95,6 @@ const QRScanner = ({ navigation, route, fetchCheckIn, isNetworkConnected }: Prop
             <SafeAreaView style={{ flex: 1, backgroundColor: 'black', alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ color: 'white', textAlign: 'center', marginHorizontal: 24 }}>{I18n.t('text_camera_permission_required')}</Text>
                 <TouchableOpacity
-                    testID="e2e-open-app-settings"
                     style={{ marginTop: 16, padding: 12, borderWidth: 2, borderColor: 'white' }}
                     onPress={() => Linking.openSettings()}>
                     <Text style={{ color: 'white' }}>{I18n.t('caption_open_settings').toUpperCase()}</Text>
