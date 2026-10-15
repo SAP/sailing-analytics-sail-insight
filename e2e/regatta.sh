@@ -107,5 +107,6 @@ node "$ROOT_DIR/e2e/regatta.cjs" sail "$serial_a:9" "$serial_b:6" || die "Sailin
 
 E2E_REGATTA_WINNER="Organizer Boat" node "$ROOT_DIR/e2e/regatta.cjs" verify "$MAESTRO_REGATTA_NAME" | tee "$art/server-result.json"
 run_on "$serial_a" "$art/a" "$ROOT_DIR/.maestro/regatta/results.yaml"
+adb -s "$serial_b" shell am start -n "$E2E_APP_ID/.MainActivity" >/dev/null
 run_on "$serial_b" "$art/b" "$ROOT_DIR/.maestro/subflows/stop-tracking.yaml"
 log "Regatta passed."
