@@ -43,5 +43,7 @@ allprojects {
 
     // Required by react-native-background-geolocation v4.x.
     maven { url("${project(':react-native-background-geolocation').projectDir}/libs") }
+    // Required by react-native-background-fetch 4.2.x.
+    maven { url("${project(':react-native-background-fetch').projectDir}/libs") }
   }
 }

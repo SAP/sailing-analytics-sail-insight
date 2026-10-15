@@ -1,6 +1,8 @@
 import { getApiServerUrl, getSecurityGenerator, HttpMethods } from 'api/config'
 import { dataRequest, request } from 'api/handler'
-import { isEmpty } from 'lodash'
+import AuthException from 'api/AuthException'
+import { LOGIN_FALLBACK_SERVER_URLS } from 'environment/init'
+import { isEmpty, uniq } from 'lodash'
 import {
   ApiAccessToken,
   User,
@@ -33,7 +35,23 @@ const securityEndpoints = (serverUrl: string) => {
 }
 
 const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
-  const endpoints = securityEndpoints(serverUrl ? serverUrl : getApiServerUrl())
+  const resolvedServerUrl = serverUrl ? serverUrl : getApiServerUrl()
+  const endpoints = securityEndpoints(resolvedServerUrl)
+
+  // Builds the access-token request against an explicit host, so login can be
+  // retried against fallback servers (see accessToken below). The
+  // X-SAPSSE-Forward-Request-To header lets our load balancers forward this
+  // POST to any replica instance rather than pinning it to the primary.
+  const requestAccessToken = (host: string, email: string, password: string) => dataRequest(
+    securityEndpoints(host).accessToken(),
+    { method: HttpMethods.POST,
+      dataProcessor: mapResToAccessTokenData,
+      signer: null,
+      body: { password, username: email },
+      bodyType: 'x-www-form-urlencoded',
+      headers: { 'X-SAPSSE-Forward-Request-To': 'replica' },
+    },
+  ) as Promise<ApiAccessToken>
 
   return {
     user: (username?: string) => dataRequest(
@@ -46,15 +64,24 @@ const securityApi: (serverUrl?: string) => SecurityApi = (serverUrl) => {
       { method: HttpMethods.POST, dataProcessor: mapResToAccessTokenData, signer: null },
     ) as Promise<ApiAccessToken>,
 
-    accessToken: (email: string, password: string) => dataRequest(
-      endpoints.accessToken(),
-      { method: HttpMethods.POST,
-        dataProcessor: mapResToAccessTokenData,
-        signer: null,
-        body: { password, username: email },
-        bodyType: 'x-www-form-urlencoded'
-      },
-    ) as Promise<ApiAccessToken>,
+    // Logs in against the configured server, then falls back to the shared
+    // SAP Sailing hosts if that server is unreachable/broken. A rejected
+    // credential (401 -> AuthException) is final and is NOT retried elsewhere.
+    accessToken: async (email: string, password: string) => {
+      const hosts = uniq([resolvedServerUrl, ...LOGIN_FALLBACK_SERVER_URLS])
+      let lastError: any
+      for (const host of hosts) {
+        try {
+          return await requestAccessToken(host, email, password)
+        } catch (err: any) {
+          if (err && err.name === AuthException.NAME) {
+            throw err
+          }
+          lastError = err
+        }
+      }
+      throw lastError
+    },
 
     removeAccessToken: () => dataRequest(
       endpoints.removeAccessToken(),

@@ -68,6 +68,9 @@ target 'sap_sailing_insight' do
   end
 
   post_install do |installer|
+    xcode_version = Pod::Executable.execute_command('xcodebuild', ['-version'])
+    xcode_major_version = xcode_version.match(/Xcode (\d+)/)&.captures&.first&.to_i || 0
+
     react_native_post_install(
       installer,
       "../node_modules/react-native",
@@ -75,6 +78,12 @@ target 'sap_sailing_insight' do
     )
 
     installer.pods_project.targets.each do |target|
+      if target.name == 'fmt' && xcode_major_version >= 26
+        target.build_configurations.each do |config|
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+        end
+      end
+
       target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
         config.build_settings['DEFINES_MODULE'] = 'YES'
