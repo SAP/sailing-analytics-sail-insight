@@ -17,6 +17,7 @@ import { validateEmail, validatePassword, validateUsername } from 'forms/validat
 import { getErrorDisplayMessage } from 'helpers/texts'
 
 import I18n from 'i18n'
+import { joinableSentenceParts } from 'i18n/utils'
 
 import EulaLink from 'components/EulaLink'
 import FormTextInput from 'components/form/FormTextInput'
@@ -48,15 +49,20 @@ class RegisterCredentials extends TextInputForm<Props> {
 
   public render() {
     const { error, usernameError, passwordError, emailError, isLoading } = this.state
+    const title = joinableSentenceParts(
+      I18n.t('title_create_account_01'),
+      I18n.t('title_create_account_02'),
+      I18n.t('title_create_account_03'),
+    )
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
         <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.35 }}>
           <ScrollContentView style={styles.container}>
             <View style={styles.contentContainer}>
               <Text style={[text.h1, styles.h1]}>
-                {I18n.t('title_create_account_01')}
-                <Text style={text.yellow}>{I18n.t('title_create_account_02')}</Text>
-                {I18n.t('title_create_account_03')}
+                {title[0]}
+                <Text style={text.yellow}>{title[1]}</Text>
+                {title[2]}
               </Text>
               <View style={form.formSegment1}>
                 <Field

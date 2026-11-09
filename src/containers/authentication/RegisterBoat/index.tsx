@@ -38,6 +38,7 @@ import TextButton from 'components/TextButton'
 import TextInputForm from 'components/base/TextInputForm'
 
 import I18n from 'i18n'
+import { joinableSentenceParts } from 'i18n/utils'
 
 import Images from '@assets/Images'
 import styles from './styles'
@@ -66,15 +67,20 @@ class RegisterBoat extends TextInputForm<Props> {
 
   public render() {
     const { error, isLoading } = this.state
+    const title = joinableSentenceParts(
+      I18n.t('title_add_boat_01'),
+      I18n.t('title_add_boat_02'),
+      I18n.t('title_add_boat_03'),
+    )
     return (
       <ImageBackground source={Images.defaults.dots} style={{ width: '100%', height: '100%' }}>
         <LinearGradient colors={[$siTransparent, $siDarkBlue]} style={{ width: '100%', height: '100%' }} start={{ x: 0, y: 0 }} end={{ x: 0, y: 0.65 }}>
           <ScrollContentView style={styles.container}>
           <View style={styles.contentContainer}>
               <Text style={[text.h1, styles.h1]}>
-                {I18n.t('title_add_boat_01')}
-                <Text style={text.yellow}>{I18n.t('title_add_boat_02')}</Text>
-                {I18n.t('title_add_boat_03')}
+                {title[0]}
+                <Text style={text.yellow}>{title[1]}</Text>
+                {title[2]}
               </Text>
               <Text style={[text.mediumText, styles.introText]}>{I18n.t('text_add_boat_explainer')}</Text>
               <View style={form.formSegment1}>

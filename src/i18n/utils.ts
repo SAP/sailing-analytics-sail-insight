@@ -36,3 +36,23 @@ export const pluralizationTranslation = (translationKey: string, values: any) =>
   }
   return I18n.t(`${translationKey}__${mode}`, values)
 }
+
+// CJK ideographs, kana, CJK punctuation and full-width forms
+const CJK_CHARACTER = /[　-ヿ㐀-䶿一-鿿豈-﫿＀-￯]/
+
+// Some sentences are rendered from several parts (e.g. to highlight one of
+// them), and the translations carry the separating spaces at the joins like
+// en.json does. Chinese and Japanese don't put spaces between words, so drop
+// the spaces at a join where the text on either side is CJK.
+export const joinableSentenceParts = (...parts: string[]) => {
+  const result = [...parts]
+  for (let i = 0; i < result.length - 1; i += 1) {
+    const before = result[i].trimEnd()
+    const after = result[i + 1].trimStart()
+    if (CJK_CHARACTER.test(before.slice(-1)) || CJK_CHARACTER.test(after.charAt(0))) {
+      result[i] = before
+      result[i + 1] = after
+    }
+  }
+  return result
+}
