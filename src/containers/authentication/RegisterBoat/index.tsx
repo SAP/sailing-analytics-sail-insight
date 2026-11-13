@@ -38,6 +38,7 @@ import TextButton from 'components/TextButton'
 import TextInputForm from 'components/base/TextInputForm'
 
 import I18n from 'i18n'
+import { renderFormattedMessage } from 'i18n/format'
 
 import Images from '@assets/Images'
 import styles from './styles'
@@ -72,9 +73,9 @@ class RegisterBoat extends TextInputForm<Props> {
           <ScrollContentView style={styles.container}>
           <View style={styles.contentContainer}>
               <Text style={[text.h1, styles.h1]}>
-                {I18n.t('title_add_boat_01')}
-                <Text style={text.yellow}>{I18n.t('title_add_boat_02')}</Text>
-                {I18n.t('title_add_boat_03')}
+                {renderFormattedMessage(I18n.t('title_add_boat'), {
+                  highlight: (value, index) => <Text key={index} style={text.yellow}>{value}</Text>,
+                })}
               </Text>
               <Text style={[text.mediumText, styles.introText]}>{I18n.t('text_add_boat_explainer')}</Text>
               <View style={form.formSegment1}>

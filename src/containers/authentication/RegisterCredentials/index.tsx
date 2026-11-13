@@ -17,6 +17,7 @@ import { validateEmail, validatePassword, validateUsername } from 'forms/validat
 import { getErrorDisplayMessage } from 'helpers/texts'
 
 import I18n from 'i18n'
+import { renderFormattedMessage } from 'i18n/format'
 
 import EulaLink from 'components/EulaLink'
 import FormTextInput from 'components/form/FormTextInput'
@@ -54,9 +55,9 @@ class RegisterCredentials extends TextInputForm<Props> {
           <ScrollContentView style={styles.container}>
             <View style={styles.contentContainer}>
               <Text style={[text.h1, styles.h1]}>
-                {I18n.t('title_create_account_01')}
-                <Text style={text.yellow}>{I18n.t('title_create_account_02')}</Text>
-                {I18n.t('title_create_account_03')}
+                {renderFormattedMessage(I18n.t('title_create_account'), {
+                  highlight: (value, index) => <Text key={index} style={text.yellow}>{value}</Text>,
+                })}
               </Text>
               <View style={form.formSegment1}>
                 <Field
