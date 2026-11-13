@@ -40,7 +40,7 @@ import Text from 'components/Text'
 import TextButton from 'components/TextButton'
 
 import I18n from 'i18n'
-import { joinableSentenceParts } from 'i18n/utils'
+import { renderFormattedMessage } from 'i18n/format'
 
 import Images from '@assets/Images'
 import styles from './styles'
@@ -252,9 +252,12 @@ class JoinRegatta extends React.Component<{
                 }
                 { (trackingContextUndefined && !isAlreadyRegistered && boats.length === 1) &&
                   <>
-                    <Text style={text.text}>{joinableSentenceParts(I18n.t('text_join_with_boat_01'), firstBoat.name || '', I18n.t('text_join_with_boat_02')).map((part, index) =>
-                      index === 1 ? <Text key={index} style={text.yellow}>{part}</Text> : part)}</Text>
-                    <Text style={text.text}>{joinableSentenceParts(I18n.t('text_join_with_boat_explainer_01'), I18n.t('text_join_with_boat_explainer_02'), I18n.t('text_join_with_boat_explainer_03')).join('')}</Text>
+                    <Text style={text.text}>
+                      {renderFormattedMessage(I18n.t('text_join_with_boat'), {
+                        boatName: (_value, index) => <Text key={index} style={text.yellow}>{firstBoat.name || ''}</Text>,
+                      })}
+                    </Text>
+                    <Text style={text.text}>{I18n.t('text_join_with_boat_explainer')}</Text>
                   </>
                 }
                 { (trackingContextUndefined && !isAlreadyRegistered && boats.length > 1) &&
